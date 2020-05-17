@@ -81,9 +81,16 @@
 					"enum": [
 						"ANSI",
 						"Kernighan&Ritchie",
-						"gnu"
+						"GNU",
+						"Indent only"
 					]
 				},
+				"teroshdl.formatting.verilog.spaces": {
+					"description": "Indent using N spaces per indent.",
+					"type": "number",
+					"default": 2
+				},
+
 
 				"teroshdl.formatting.vhdl.on-save": {
 					"description": "On save",
