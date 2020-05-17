@@ -22,7 +22,7 @@ export default class lint_manager {
         this.config_linter();
     }
 
-    config_linter(doc: vscode.TextDocument) {
+    config_linter() {
         //todo: use doc!! .git error
         let linter_name;
         linter_name = vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get<string>("linter");
@@ -40,7 +40,7 @@ export default class lint_manager {
         }
     }
 
-	public remove_file_diagnostics(doc: TextDocument) {
+	public remove_file_diagnostics(doc: vscode.TextDocument) {
         let pepe = doc.uri;
 		this.diagnostic_collection.delete(doc.uri);
 	}

@@ -21,53 +21,8 @@
 import * as vscode from 'vscode';
 import * as jsteros from 'jsteros';
 
-export async function format() {
-    let active_editor = vscode.window.activeTextEditor;
-    if (!active_editor) {
-        return; // no editor
-    }
-    //Current position
-    let position = active_editor.selection.active;
-    let position_character = position.character;
-    let position_line = position.line;
-
-    let document = active_editor.document;
-    let language_id : string = document.languageId;
-    let code : string = document.getText();
-    let code_format : string = "";
-
-    if(language_id == "vhdl"){
-        code_format = format_vhdl(code);
-    }
-    else if (language_id == "verilog"){
-    }
-    else{
-        vscode.window.showErrorMessage('Select a valid file.!');
-        return;
-    }
-    //Error
-    if (code_format == null){
-        vscode.window.showErrorMessage('Select a valid file.!');
-        console.log("Error format code.");
-        return;
-    }
-    else{
-        active_editor.edit(edit => {
-            let firstLine = document.lineAt(0);
-            let lastLine = document.lineAt(document.lineCount - 1);
-            let textRange = new vscode.Range(firstLine.range.start, lastLine.range.end);
-            //Delete all code
-            edit.delete(textRange);
-            //Insert formatted code
-            edit.insert(new vscode.Position(0, 0), code_format);
-        });
-        // vscode.WorkspaceEdit.set("","");
-        console.log("Code formatted.")
-        //Change position
-        let new_position = position.with(position_line, position_character);
-        let new_selection = new vscode.Selection(new_position, new_position);
-        active_editor.selection = new_selection;
-    }
+export async function format(){
+    vscode.commands.executeCommand("editor.action.formatDocument")
 }
 
 function format_vhdl(code: string) {
@@ -106,3 +61,40 @@ function format_vhdl(code: string) {
     let code_format : string = beautifuler.beauty(code,settings);
     return code_format;
   }
+
+  export async function provideDocumentFormattingEdits(
+    document: vscode.TextDocument,
+    options: vscode.FormattingOptions,
+    token: vscode.CancellationToken
+  ): Promise<vscode.TextEdit[]> {
+    const edits: vscode.TextEdit[] = [];
+
+    let code : string = document.getText();
+    let opt = options;
+    let code_format : string = format_vhdl(code);
+
+    //Error
+    if (code_format == null){
+        // vscode.window.showErrorMessage('Select a valid file.!');
+        console.log("Error format code.");
+        return edits;
+    }
+    else{
+        const replacement = vscode.TextEdit.replace(
+            getDocumentRange(document),
+            code_format
+        );
+        edits.push(replacement);
+        return edits;
+    }
+}
+
+const getDocumentRange = (document: vscode.TextDocument): vscode.Range => {
+    const lastLineId = document.lineCount - 1;
+    return new vscode.Range(
+      0,
+      0,
+      lastLineId,
+      document.lineAt(lastLineId).text.length
+    );
+  };
