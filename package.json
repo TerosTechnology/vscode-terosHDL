@@ -19,6 +19,18 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"grammars": [
+			{
+				"language": "vhdl",
+				"scopeName": "source.vhdl",
+				"path": "./syntaxes/vhdl.tmLanguage"
+			},
+			{
+				"language": "verilog",
+				"scopeName": "source.verilog",
+				"path": "./syntaxes/verilog.tmLanguage"
+			}
+		],
 		"configuration": {
 			"title": "teroshdl",
 			"properties": {
@@ -240,7 +252,7 @@
 				"extensions": [
 					".vhd",
 					".vho",
-					"vhdl"
+					".vhdl"
 				]
 			},
 			{
