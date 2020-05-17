@@ -29,6 +29,11 @@
 				"language": "verilog",
 				"scopeName": "source.verilog",
 				"path": "./syntaxes/verilog.tmLanguage"
+			},
+			{
+				"language": "systemverilog",
+				"scopeName": "source.systemverilog",
+				"path": "./syntaxes/systemverilog.tmLanguage"
 			}
 		],
 		"configuration": {
@@ -277,6 +282,20 @@
 					".sv",
 					".SV"
 				]
+			}
+		],
+		"snippets": [
+			{
+				"language": "vhdl",
+				"path": "./snippets/vhdl/vhdl.json"
+			},
+			{
+				"language": "vhdl",
+				"path": "./snippets/vhdl/verilog.json"
+			},
+			{
+				"language": "systemverilog",
+				"path": "./snippets/vhdl/systemverilog.json"
 			}
 		]
 	},
