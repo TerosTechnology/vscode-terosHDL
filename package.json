@@ -22,6 +22,8 @@
 		"configuration": {
 			"title": "teroshdl",
 			"properties": {
+
+
 				"teroshdl.linter.vhdl.enable": {
 					"description": "Enable VHDL linter",
 					"type": "boolean",
@@ -52,6 +54,9 @@
 					],
 					"default": "Icarus"
 				},
+
+
+				
 				"teroshdl.documenter.vhdl.symbol": {
 					"description": "Comment symbol",
 					"type": "string",
@@ -62,6 +67,24 @@
 					"type": "string",
 					"default": "!"
 				},
+
+
+				"teroshdl.formatting.verilog.on-save": {
+					"description": "On save",
+					"type": "boolean",
+					"default": false
+				},
+				"teroshdl.formatting.verilog.style": {
+					"description": "Predefined Styling options",
+					"type": "string",
+					"default": "ANSI",
+					"enum": [
+						"ANSI",
+						"Kernighan&Ritchie",
+						"gnu"
+					]
+				},
+
 				"teroshdl.formatting.vhdl.on-save": {
 					"description": "On save",
 					"type": "boolean",
@@ -143,7 +166,7 @@
 					"group": "navigation"
 				},
 				{
-					"when": "resourceLangId == vhdl",
+					"when": "resourceLangId == vhdl || resourceLangId == verilog",
 					"command": "teroshdl.format",
 					"group": "navigation"
 				},
@@ -227,6 +250,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
+		"temp": "^0.9.0",
 		"d3": "5.12.0",
 		"d3-graphviz": "2.6.1",
 		"jsteros": "file:/home/carlos/repo/vscode-colibri",
