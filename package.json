@@ -38,6 +38,18 @@
 					],
 					"default": "GHDL"
 				},
+				"teroshdl.linter.vhdl.ghdl_path": {
+					"description": "GHDL path",
+					"type": "string",
+					"default": ""
+				},
+				"teroshdl.linter.vhdl.modelsim_path": {
+					"description": "ModelSim path",
+					"type": "string",
+					"default": ""
+				},
+
+
 				"teroshdl.linter.verilog.enable": {
 					"description": "Enable verilog linter",
 					"type": "boolean",
@@ -49,12 +61,20 @@
 					"enum": [
 						"Icarus",
 						"ModelSim",
-						"Vivado",
 						"Verilator"
 					],
 					"default": "Icarus"
 				},
-
+				"teroshdl.linter.verilog.icarus_path": {
+					"description": "Icarus path",
+					"type": "string",
+					"default": ""
+				},
+				"teroshdl.linter.verilog.verilator_path": {
+					"description": "Verilator path",
+					"type": "string",
+					"default": ""
+				},
 
 				
 				"teroshdl.documenter.vhdl.symbol": {

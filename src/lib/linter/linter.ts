@@ -24,15 +24,20 @@ export default class lint_manager {
 
     config_linter() {
         //todo: use doc!! .git error
-        let linter_name;
-        linter_name = vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get<string>("linter");
+        let linter_name: string;
+        linter_name = <string>vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get("linter");
         linter_name = linter_name.toLowerCase();
         this.linter_name = linter_name;
 
+        let linter_path = <string>vscode.workspace.getConfiguration(
+            "teroshdl.linter." + this.lang).get(linter_name + "_path");
+
         this.linter_enable = vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get<boolean>("enable");
         if (this.linter_enable == true) {
-            console.log("Using linter " + linter_name);
-            this.linter = new jsteros.Linter.LinterFactory(linter_name, null);
+            if (linter_path == "")
+                this.linter = new jsteros.Linter.LinterFactory(linter_name, null);
+            else
+                this.linter = new jsteros.Linter.LinterFactory(linter_name, linter_path);
         }
         else{
             this.linter = null;
