@@ -39,8 +39,6 @@
 		"configuration": {
 			"title": "teroshdl",
 			"properties": {
-
-
 				"teroshdl.linter.vhdl.enable": {
 					"description": "Enable VHDL linter",
 					"type": "boolean",
@@ -65,8 +63,6 @@
 					"type": "string",
 					"default": ""
 				},
-
-
 				"teroshdl.linter.verilog.enable": {
 					"description": "Enable verilog linter",
 					"type": "boolean",
@@ -92,8 +88,6 @@
 					"type": "string",
 					"default": ""
 				},
-
-				
 				"teroshdl.documenter.vhdl.symbol": {
 					"description": "Comment symbol",
 					"type": "string",
@@ -104,8 +98,6 @@
 					"type": "string",
 					"default": "!"
 				},
-
-
 				"teroshdl.formatting.verilog.on-save": {
 					"description": "On save",
 					"type": "boolean",
@@ -127,8 +119,6 @@
 					"type": "number",
 					"default": 2
 				},
-
-
 				"teroshdl.formatting.vhdl.on-save": {
 					"description": "On save",
 					"type": "boolean",
@@ -288,14 +278,6 @@
 			{
 				"language": "vhdl",
 				"path": "./snippets/vhdl/vhdl.json"
-			},
-			{
-				"language": "vhdl",
-				"path": "./snippets/vhdl/verilog.json"
-			},
-			{
-				"language": "systemverilog",
-				"path": "./snippets/vhdl/systemverilog.json"
 			}
 		]
 	},
