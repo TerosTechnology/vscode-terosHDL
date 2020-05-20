@@ -13,7 +13,7 @@
 		"Formatters",
 		"Linters"
 	],
-	"icon": "resources/images/logo_128_128.png",
+	"icon": "resources/images/icon_128_128_circle.png",
 	"homepage": "https://www.terostech.com/",
 	"repository": {
 		"type": "git",
