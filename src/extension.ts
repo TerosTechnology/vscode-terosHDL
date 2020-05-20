@@ -31,12 +31,13 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand(
             'teroshdl.documentation.module',
-            () => {
-				documentation.get_documentation_module(context);
+            async () => {
+				await documentation.get_documentation_module(context);
             }
 		),
-        vscode.workspace.onDidChangeTextDocument((e) => documentation.update_documentation_module(e.document)),
-	)
+        // vscode.workspace.onDidChangeTextDocument((e) => documentation.update_documentation_module(e.document)),
+        vscode.workspace.onDidSaveTextDocument((e) => documentation.update_documentation_module(e)),
+        );
 	linter_vhdl = new linter.default("vhdl");
 	linter_verilog = new linter.default("verilog");
 }
@@ -54,14 +55,14 @@ export async function provideDocumentFormattingEdits(
     let code : string = document.getText();
     let opt = options;
     let code_format : string;
-    if (document.languageId == "vhdl"){
+    if (document.languageId === "vhdl"){
         code_format = formatter.format_vhdl(code);
     }
     else {
         code_format = formatter.format_verilog(code,current_context);
     }
     //Error
-    if (code_format == null){
+    if (code_format === null){
         // vscode.window.showErrorMessage('Select a valid file.!');
         console.log("Error format code.");
         return edits;

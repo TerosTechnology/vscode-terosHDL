@@ -4,9 +4,9 @@ import * as vscode from 'vscode';
 
 export default class lint_manager {
 	// private diagnostic_collection: vscode.DiagnosticCollection;
-    private subscriptions: Disposable[];
+    private subscriptions: vscode.Disposable[] | undefined;
     private linter;
-    private linter_name: string;
+    private linter_name: string | undefined;
     private linter_enable;
     private lang : string;
     protected diagnostic_collection: vscode.DiagnosticCollection;

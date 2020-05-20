@@ -33,7 +33,7 @@ const style_map: { [style: string]: string } = {
 };
 
 export function format_verilog(code: string, context: vscode.ExtensionContext) {
-    const istyle_path = context.asAbsolutePath("src/lib/formatter/bin/iStyle");
+    const istyle_path = context.asAbsolutePath("resources/bin/istyle/iStyle");
 	const istyle_extra_args = get_extra_args();
 	var args: string[] = [
 		"-n", // Do not create a .orig file

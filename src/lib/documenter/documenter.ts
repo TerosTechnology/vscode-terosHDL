@@ -36,7 +36,7 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     let language_id : string = document.languageId;
     let code : string = document.getText();
 
-    if(language_id != "vhdl" && language_id != "verilog"){
+    if(language_id !== "vhdl" && language_id !== "verilog"){
         vscode.window.showErrorMessage('Select a valid file.!');
         return;
     }
@@ -45,12 +45,12 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
     current_documenter = new jsteros.Documenter.BaseStructure(code,language_id,"!");
-    if (current_documenter.isAlive() == true){
+    if (await current_documenter.check_correct_file() === true){
         let previewHtml = await node_utilities.readFileAsync(
-                context.asAbsolutePath("/src/lib/documenter/resources/preview_module_doc.html"), "utf8");
-        previewHtml += current_documenter.html;
+                context.asAbsolutePath("/resources/preview_module_doc.html"), "utf8");
+        previewHtml += await current_documenter.get_html(true);
 
-        if (panel == undefined){
+        if (panel === undefined){
             // Create and show panel
             panel = vscode.window.createWebviewPanel(
                 'catCoding',
@@ -63,8 +63,8 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
             panel.onDidDispose(
                 () => {
                   // When the panel is closed, cancel any future updates to the webview content
-                  panel = null;
-                  current_documenter = null;
+                  panel = undefined;
+                  current_documenter = undefined;
                 },
                 null,
                 context.subscriptions
@@ -92,7 +92,7 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
 }
 
 export async function update_documentation_module(document) {
-    if (panel != undefined){
+    if (panel !== undefined){
         let active_editor = vscode.window.activeTextEditor;
         if (!active_editor) {
             return; // no editor
@@ -101,7 +101,7 @@ export async function update_documentation_module(document) {
         let language_id : string = document.languageId;
         let code : string = document.getText();
     
-        if(language_id != "vhdl" && language_id != "verilog"){
+        if(language_id !== "vhdl" && language_id !== "verilog"){
             return;
         }
         current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
@@ -109,10 +109,10 @@ export async function update_documentation_module(document) {
         let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
         current_documenter = new jsteros.Documenter.BaseStructure(code,language_id,comment_symbol);
-        if (current_documenter.isAlive() == true){
+        if (await current_documenter.check_correct_file() === true){
             let previewHtml = await node_utilities.readFileAsync(
-                main_context.asAbsolutePath("/src/lib/documenter/resources/preview_module_doc.html"), "utf8");
-            previewHtml += current_documenter.html;
+                main_context.asAbsolutePath("/resources/preview_module_doc.html"), "utf8");
+            previewHtml += await current_documenter.get_html(true);
             panel.webview.html = previewHtml;
         }
         else{
@@ -132,43 +132,43 @@ async function export_as(type: string) {
     // /one/two/five
     let full_path = path_lib.dirname(current_path) + path_lib.sep + filename;
 
-    if (type == "markdown"){
-        let filter = {'markdown':['md']}
+    if (type === "markdown"){
+        let filter = {'markdown':['md']};
         let default_path = full_path + '.md';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
-            if (fileInfos?.path != null){
-                current_documenter.saveMarkdown(fileInfos?.path);
+            if (fileInfos?.path !== null){
+                current_documenter.save_markdown(fileInfos?.path);
             }
         });
     }
-    else if (type == "pdf"){
-        let filter = {'PDF':['pdf']}
+    else if (type === "pdf"){
+        let filter = {'PDF':['pdf']};
         let default_path = full_path + '.pdf';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
-            if (fileInfos?.path != null){
-                current_documenter.saveMarkdown(fileInfos?.path);
+            if (fileInfos?.path !== null){
+                current_documenter.save_pdf(fileInfos?.path);
             }
         });
     }
-    else if (type == "html"){
-        let filter = {'HTML':['html']}
+    else if (type === "html"){
+        let filter = {'HTML':['html']};
         let default_path = full_path + '.html';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
-            if (fileInfos?.path != null){
-                current_documenter.saveHtml(fileInfos?.path);
+            if (fileInfos?.path !== null){
+                current_documenter.save_html(fileInfos?.path);
             }
         });
     }
-    else if (type == "image"){
-        let filter = {'SVG':['svg']}
+    else if (type === "image"){
+        let filter = {'SVG':['svg']};
         let default_path = full_path + '.svg';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
-            if (fileInfos?.path != null){
-                current_documenter.saveSVG(fileInfos?.path);
+            if (fileInfos?.path !== null){
+                current_documenter.save_svg(fileInfos?.path);
             }
         });
     }

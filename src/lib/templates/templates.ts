@@ -42,22 +42,22 @@ export async function get_template() {
 
     let type : string = "";
     let subtype : string = "";
-    if(language_id == "vhdl"){
+    if(language_id === "vhdl"){
         let picker_value = await vscode.window.showQuickPick(TYPES_VHDL_INFO, 
                                                 { placeHolder: 'Select the template type.' });
         for (let i = 0; i < TYPES_VHDL_INFO.length; i++) {
-            if (picker_value == TYPES_VHDL_INFO[i]){
+            if (picker_value === TYPES_VHDL_INFO[i]){
                 type = TYPES_VHDL[i];
                 subtype = SUBTYPES_VHDL[i];
                 break;
             }            
         }
     }
-    else if (language_id == "verilog"){
+    else if (language_id === "verilog"){
         let picker_value = await vscode.window.showQuickPick(TYPES_VERILOG_INFO, 
                                                 { placeHolder: 'Select the template type.' });
         for (let i = 0; i < TYPES_VERILOG_INFO.length; i++) {
-            if (picker_value == TYPES_VERILOG_INFO[i]){
+            if (picker_value === TYPES_VERILOG_INFO[i]){
                 type = TYPES_VERILOG[i];
                 subtype = SUBTYPES_VERILOG[i];
                 break;
@@ -75,12 +75,12 @@ export async function get_template() {
     let code : string = document.getText();
 
     let templates_cl = new jsteros.Templates.Templates();
-    let template : string = templates_cl.getTemplate(type,code,options);
+    let template : string = await templates_cl.getTemplate(type,code,options);
 
     //Error
-    if (template == null){
+    if (template === null){
         vscode.window.showErrorMessage('Select a valid file.!');
-        console.log("Error parser template.")
+        console.log("Error parser template.");
     }
     else{
         vscode.window.showInformationMessage('Template copied to clipboard!\n');

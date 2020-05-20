@@ -1,6 +1,7 @@
 {
 	"name": "teroshdl",
 	"displayName": "terosHDL",
+	"publisher": "teros-technology",
 	"description": "VHDL and Verilog IDE.",
 	"version": "0.0.1",
 	"engines": {
@@ -195,7 +196,7 @@
 		"menus": {
 			"editor/title": [
 				{
-					"when": "resourceLangId == vhdl",
+					"when": "resourceLangId == vhdl || resourceLangId == verilog",
 					"command": "teroshdl.generate_template",
 					"group": "navigation"
 				},
@@ -205,7 +206,7 @@
 					"group": "navigation"
 				},
 				{
-					"when": "resourceLangId == vhdl",
+					"when": "resourceLangId == vhdl || resourceLangId == verilog",
 					"command": "teroshdl.documentation.module",
 					"group": "navigation"
 				}
@@ -230,7 +231,7 @@
 			},
 			{
 				"command": "teroshdl.documentation.module",
-				"title": "Format",
+				"title": "Module documentation preview",
 				"icon": {
 					"light": "resources/light/book.svg",
 					"dark": "resources/dark/book.svg"
@@ -291,10 +292,7 @@
 	},
 	"dependencies": {
 		"temp": "^0.9.0",
-		"d3": "5.12.0",
-		"d3-graphviz": "2.6.1",
-		"jsteros": "file:/home/carlos/repo/vscode-colibri",
-		"package01": "file:/home/carlos/repo/typescript-develop-multiple-modules-in-parallel-with-code-navigation/package01"
+		"jsteros": "file:/home/carlos/repo/colibri"
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.45.0",
