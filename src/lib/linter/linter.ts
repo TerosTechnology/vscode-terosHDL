@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/class-name-casing */
 // import { Disposable, workspace, TextDocument, window, QuickPickItem, ProgressLocation} from "vscode";
 import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 
-export default class lint_manager {
+export default class Lint_manager {
 	// private diagnostic_collection: vscode.DiagnosticCollection;
     private subscriptions: vscode.Disposable[] | undefined;
     private linter;
@@ -16,7 +17,7 @@ export default class lint_manager {
 		this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
         vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
         vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
-        vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions)
+        vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
 
         vscode.workspace.onDidChangeConfiguration(this.config_linter, this, this.subscriptions);
         this.config_linter();
@@ -33,11 +34,13 @@ export default class lint_manager {
             "teroshdl.linter." + this.lang).get(linter_name + "_path");
 
         this.linter_enable = vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get<boolean>("enable");
-        if (this.linter_enable == true) {
-            if (linter_path == "")
+        if (this.linter_enable === true) {
+            if (linter_path === ""){
                 this.linter = new jsteros.Linter.LinterFactory(linter_name, null);
-            else
+            }
+            else{
                 this.linter = new jsteros.Linter.LinterFactory(linter_name, linter_path);
+            }
         }
         else{
             this.linter = null;
@@ -52,12 +55,12 @@ export default class lint_manager {
 
     async lint(doc: vscode.TextDocument) {
         //todo: use doc!! .git error check sheme
-        if (vscode.window.activeTextEditor == null){
+        if (vscode.window.activeTextEditor === undefined){
             return;
         }
         let document = vscode.window.activeTextEditor.document;
         let language_id : string = document.languageId;
-        if(this.linter == null || (language_id != this.lang)){
+        if(this.linter === null || (language_id !== this.lang)){
             return;
         }
         // let docUri: string = doc.uri.fsPath;
@@ -67,17 +70,19 @@ export default class lint_manager {
         let diagnostics: vscode.Diagnostic[] = [];
         for (var i=0; i<errors.length;++i){
             const line = errors[i]['location']['position'][0];
-            const col  = errors[i]['location']['position'][1];
-            const range = [[(+line) - 1, (+col) - 1], [(+line) - 1, 1000]];
+            let col    = errors[i]['location']['position'][1];
+            if (col === 0){
+                col = 1;
+            }
+            const range = [[Math.abs((+line) - 1), Math.abs((+col) - 1)], [(+line) - 1, 1000]];
             diagnostics.push({
                 severity: vscode.DiagnosticSeverity.Error,
                 range:new vscode.Range((+line) - 1, (+col) - 1, (+line) - 1, Number.MAX_VALUE),
                 message: errors[i]['description'],
                 code: this.linter_name,
-                    source: 'terosHDL'
+                    source: 'TerosHDL'
                 });
         }
-        let juan = document.uri;
         this.diagnostic_collection.set(document.uri, diagnostics);
     }
 

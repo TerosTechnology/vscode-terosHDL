@@ -36,6 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
 		),
         // vscode.workspace.onDidChangeTextDocument((e) => documentation.update_documentation_module(e.document)),
+        vscode.workspace.onDidOpenTextDocument((e) => documentation.update_documentation_module(e)),
         vscode.workspace.onDidSaveTextDocument((e) => documentation.update_documentation_module(e)),
         );
 	linter_vhdl = new linter.default("vhdl");

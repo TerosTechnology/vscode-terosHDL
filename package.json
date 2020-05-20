@@ -1,6 +1,6 @@
 {
 	"name": "teroshdl",
-	"displayName": "terosHDL",
+	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
 	"description": "VHDL and Verilog IDE.",
 	"version": "0.0.1",
@@ -8,8 +8,20 @@
 		"vscode": "^1.45.0"
 	},
 	"categories": [
-		"Other"
+		"Programming Languages",
+		"Snippets",
+		"Formatters",
+		"Linters"
 	],
+	"icon": "resources/images/logo_128_128.png",
+	"homepage": "https://www.terostech.com/",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/TerosTechnology/vscode-terosHDL"
+	},
+	"bugs": {
+		"url": "https://github.com/TerosTechnology/vscode-terosHDL/issues"
+	},
 	"activationEvents": [
 		"onCommand:teroshdl.generate_template",
 		"onCommand:teroshdl.format",

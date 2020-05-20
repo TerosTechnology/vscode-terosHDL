@@ -21,6 +21,7 @@
 import * as vscode from 'vscode';
 import * as jsteros from 'jsteros';
 import * as node_utilities from './node_utilities';
+import * as path_lib from 'path';
 
 let panel;
 let main_context;
@@ -46,8 +47,9 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
 
     current_documenter = new jsteros.Documenter.BaseStructure(code,language_id,"!");
     if (await current_documenter.check_correct_file() === true){
+        let path_html = path_lib.sep + "resources" + path_lib.sep + "preview_module_doc.html";
         let previewHtml = await node_utilities.readFileAsync(
-                context.asAbsolutePath("/resources/preview_module_doc.html"), "utf8");
+                context.asAbsolutePath(path_html), "utf8");
         previewHtml += await current_documenter.get_html(true);
 
         if (panel === undefined){
@@ -110,8 +112,9 @@ export async function update_documentation_module(document) {
 
         current_documenter = new jsteros.Documenter.BaseStructure(code,language_id,comment_symbol);
         if (await current_documenter.check_correct_file() === true){
+            let path_html = path_lib.sep + "resources" + path_lib.sep + "preview_module_doc.html";
             let previewHtml = await node_utilities.readFileAsync(
-                main_context.asAbsolutePath("/resources/preview_module_doc.html"), "utf8");
+                main_context.asAbsolutePath(path_html), "utf8");
             previewHtml += await current_documenter.get_html(true);
             panel.webview.html = previewHtml;
         }
@@ -137,7 +140,7 @@ async function export_as(type: string) {
         let default_path = full_path + '.md';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
-            if (fileInfos?.path !== null){
+            if (fileInfos?.path !== undefined){
                 current_documenter.save_markdown(fileInfos?.path);
             }
         });
@@ -147,7 +150,7 @@ async function export_as(type: string) {
         let default_path = full_path + '.pdf';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
-            if (fileInfos?.path !== null){
+            if (fileInfos?.path !== undefined){
                 current_documenter.save_pdf(fileInfos?.path);
             }
         });
@@ -157,7 +160,7 @@ async function export_as(type: string) {
         let default_path = full_path + '.html';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
-            if (fileInfos?.path !== null){
+            if (fileInfos?.path !== undefined){
                 current_documenter.save_html(fileInfos?.path);
             }
         });
@@ -167,7 +170,7 @@ async function export_as(type: string) {
         let default_path = full_path + '.svg';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
-            if (fileInfos?.path !== null){
+            if (fileInfos?.path !== undefined){
                 current_documenter.save_svg(fileInfos?.path);
             }
         });

@@ -24,6 +24,8 @@ import * as child from 'child_process';
 import * as temp from 'temp';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
+import * as path_lib from 'path';
+import * as os from 'os';
 
 const style_map: { [style: string]: string } = {
     "Indent only": "",
@@ -33,7 +35,22 @@ const style_map: { [style: string]: string } = {
 };
 
 export function format_verilog(code: string, context: vscode.ExtensionContext) {
-    const istyle_path = context.asAbsolutePath("resources/bin/istyle/iStyle");
+	let path_bin = path_lib.sep + "resources" + path_lib.sep + "bin" + path_lib.sep + "istyle" + path_lib.sep;
+	let platform = <unknown>os.platform;
+	// eslint-disable-next-line eqeqeq
+	if (platform == "darwin"){
+		path_bin += "istyle-darwin";
+	}
+	// eslint-disable-next-line eqeqeq
+	else if (platform == "linux"){
+		path_bin += "istyle-linux";
+
+	}
+	// eslint-disable-next-line eqeqeq
+	else if (platform == "win32"){
+		path_bin += "istyle-win32.exe";
+	}
+  const istyle_path = context.asAbsolutePath(path_bin);
 	const istyle_extra_args = get_extra_args();
 	var args: string[] = [
 		"-n", // Do not create a .orig file
@@ -71,6 +88,7 @@ function get_extra_args(): string {
 function create_temp_file_of_code(content: string) {
 	const temp_file = temp.openSync();
 	if (temp_file === undefined) {
+		// eslint-disable-next-line no-throw-literal
 		throw "Unable to create temporary file";
 	}
 	fs.writeSync(temp_file.fd, content);

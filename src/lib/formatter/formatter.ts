@@ -23,7 +23,7 @@ import * as jsteros from 'jsteros';
 import * as formatter_verilog from "./formatter_verilog";
 
 export async function format(){
-    vscode.commands.executeCommand("editor.action.formatDocument")
+    vscode.commands.executeCommand("editor.action.formatDocument");
 }
 
 export function format_vhdl(code: string) {
