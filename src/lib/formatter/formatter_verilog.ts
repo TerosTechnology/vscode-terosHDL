@@ -36,9 +36,8 @@ const style_map: { [style: string]: string } = {
 
 export function format_verilog(code: string, context: vscode.ExtensionContext) {
 	let path_bin = path_lib.sep + "resources" + path_lib.sep + "bin" + path_lib.sep + "istyle" + path_lib.sep;
-	let platform = <unknown>os.platform;
-	// eslint-disable-next-line eqeqeq
-	if (platform == "darwin"){
+	let platform = os.platform();
+	if (platform === "darwin"){
 		path_bin += "istyle-darwin";
 	}
 	// eslint-disable-next-line eqeqeq

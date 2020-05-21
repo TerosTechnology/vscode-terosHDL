@@ -7,6 +7,24 @@ import * as documentation from "./lib/documenter/documenter";
 import * as linter from "./lib/linter/linter";
 // import {provideDocumentFormattingEdits} from "./lib/formatter/formatter";
 
+import {workspace, window, DocumentSelector, ExtensionContext, extensions, Uri, languages, commands} from "vscode";
+
+// ctags
+import {CtagsManager} from "./lib/language_providers/ctags";
+
+// Providers
+import VerilogDocumentSymbolProvider from "./lib/language_providers/providers/DocumentSymbolProvider";
+import VerilogHoverProvider from "./lib/language_providers/providers/HoverProvider";
+import VerilogDefinitionProvider from "./lib/language_providers/providers/DefinitionProvider";
+import VerilogCompletionItemProvider from "./lib/language_providers/providers/CompletionItemProvider";
+
+// Logger
+import {Logger} from "./lib/language_providers/Logger";
+
+let logger: Logger = new Logger();
+export let ctagsManager: CtagsManager;
+// export let ctagsManager: CtagsManager = new CtagsManager(logger);
+
 let linter_vhdl;
 let linter_verilog;
 let current_context;
@@ -40,7 +58,42 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.workspace.onDidSaveTextDocument((e) => documentation.update_documentation_module(e)),
         );
 	linter_vhdl = new linter.default("vhdl");
-	linter_verilog = new linter.default("verilog");
+    linter_verilog = new linter.default("verilog");
+
+    // document selector
+    let systemverilogSelector:DocumentSelector = { scheme: 'file', language: 'systemverilog' };
+    let verilogSelector:DocumentSelector = {scheme: 'file', language: 'verilog'};
+    let vhdlSelector:DocumentSelector = {scheme: 'file', language: 'vhdl'};
+
+    // Configure ctags
+    ctagsManager = new CtagsManager(logger, context);
+    ctagsManager.configure();
+
+    // Configure Document Symbol Provider
+    let docProvider = new VerilogDocumentSymbolProvider(logger);
+    // context.subscriptions.push(languages.registerDocumentSymbolProvider(systemverilogSelector, docProvider));
+    context.subscriptions.push(languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
+    context.subscriptions.push(languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
+
+    // Configure Completion Item Provider
+    // Trigger on ".", "(", "="
+    let compItemProvider = new VerilogCompletionItemProvider(logger);
+    // context.subscriptions.push(languages.registerCompletionItemProvider(systemverilogSelector, compItemProvider, ".", "(", "="));
+    context.subscriptions.push(languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
+    context.subscriptions.push(languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
+
+    // Configure Hover Providers
+    let hoverProvider = new VerilogHoverProvider(logger);
+    // context.subscriptions.push(languages.registerHoverProvider(systemverilogSelector, hoverProvider));
+    // context.subscriptions.push(languages.registerHoverProvider(verilogSelector, hoverProvider));
+    context.subscriptions.push(languages.registerHoverProvider(vhdlSelector, hoverProvider));
+    context.subscriptions.push(languages.registerHoverProvider(verilogSelector, hoverProvider));
+
+    // Configure Definition Providers
+    let defProvider = new VerilogDefinitionProvider(logger);
+    // context.subscriptions.push(languages.registerDefinitionProvider(systemverilogSelector, defProvider));
+    context.subscriptions.push(languages.registerDefinitionProvider(vhdlSelector, defProvider));
+    context.subscriptions.push(languages.registerDefinitionProvider(verilogSelector, defProvider));
 }
 
 // this method is called when your extension is deactivated

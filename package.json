@@ -260,8 +260,10 @@
 				"extensions": [
 					".vhd",
 					".vho",
-					".vhdl"
-				]
+					".vhdl",
+					".vhd"
+				],
+				"configuration": "./configs/vhdl.configuration.json"
 			},
 			{
 				"id": "verilog",
@@ -273,7 +275,8 @@
 					".v",
 					".vh",
 					".vl"
-				]
+				],
+				"configuration": "./configs/verilog.configuration.json"
 			},
 			{
 				"id": "systemverilog",
