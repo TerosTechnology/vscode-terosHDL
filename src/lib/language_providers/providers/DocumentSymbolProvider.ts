@@ -1,4 +1,4 @@
-import {DocumentSymbolProvider, CancellationToken, TextDocument, SymbolKind, DocumentSymbol, window} from 'vscode'
+import {DocumentSymbolProvider, CancellationToken, TextDocument, SymbolKind, DocumentSymbol, window, commands, workspace, ExtensionContext} from 'vscode'
 import {Ctags, CtagsManager, Symbol} from '../ctags';
 import {Logger, Log_Severity} from '../Logger';
 
@@ -7,9 +7,30 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
     public docSymbols : DocumentSymbol [] = [];
 
     private logger : Logger;
-    constructor(logger: Logger)
+    private context : ExtensionContext;
+    constructor(logger: Logger, context: ExtensionContext)
     {
-        this.logger = logger
+        this.logger = logger;
+        this.context = context;
+        // workspace.onDidSaveTextDocument(this.onSave);
+    }
+
+
+    onSave(doc){
+        console.log("on save pepe");
+        CtagsManager.ctags.clearSymbols();
+
+        CtagsManager.ctags.index()
+        .then(() => {
+            let symbols = CtagsManager.ctags.symbols;
+            console.log(symbols);
+            this.docSymbols =  this.buildDocumentSymbolList(symbols);
+            this.logger.log(this.docSymbols.length + " top-level symbols returned", (this.docSymbols.length > 0)? Log_Severity.Info : Log_Severity.Warn);
+            let syms = [ ...this.docSymbols ];
+            this.context.workspaceState.update("symbols", syms);
+            // commands.executeCommand('vscode.executeDocumentSymbolProvider', doc.uri);
+        });
+
     }
 
     provideDocumentSymbols(document: TextDocument, token: CancellationToken): Thenable<DocumentSymbol[]> {

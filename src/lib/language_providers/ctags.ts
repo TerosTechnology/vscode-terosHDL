@@ -259,16 +259,17 @@ export class CtagsManager {
 
     configure() {
         console.log("ctags manager configure");
-        workspace.onDidSaveTextDocument(this.onSave);
-        window.onDidChangeActiveTextEditor(this.onDidChangeActiveTextEditor);
+        // workspace.onDidSaveTextDocument(this.onSave);
+        // window.onDidChangeActiveTextEditor(this.onDidChangeActiveTextEditor);
     }
 
-    onSave(doc:TextDocument) {
-        console.log("on save");
-        CtagsManager.ctags.clearSymbols();
-        // Should automatically refresh the Document symbols show, but doesn't seem to be working
-        commands.executeCommand('vscode.executeDocumentSymbolProvider', doc.uri);
-    }
+    // onSave(doc:TextDocument) {
+    //     console.log("on save");
+    //     CtagsManager.ctags.clearSymbols();
+    //     // Should automatically refresh the Document symbols show, but doesn't seem to be working
+    //     commands.executeCommand('vscode.executeDocumentSymbolProvider', doc.uri);
+    //     console.log()
+    // }
 
     onDidChangeActiveTextEditor(editor) {
         if(!this.isOutputPanel(editor.document.uri))

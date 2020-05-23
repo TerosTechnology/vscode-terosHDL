@@ -5,6 +5,8 @@ import * as templates from "./lib/templates/templates";
 import * as formatter from "./lib/formatter/formatter";
 import * as documentation from "./lib/documenter/documenter";
 import * as linter from "./lib/linter/linter";
+import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
+
 // import {provideDocumentFormattingEdits} from "./lib/formatter/formatter";
 
 import {workspace, window, DocumentSelector, ExtensionContext, extensions, Uri, languages, commands} from "vscode";
@@ -21,13 +23,14 @@ import VerilogCompletionItemProvider from "./lib/language_providers/providers/Co
 // Logger
 import {Logger} from "./lib/language_providers/Logger";
 
-let logger: Logger = new Logger();
-export let ctagsManager: CtagsManager;
+// let logger: Logger = new Logger();
+// export let ctagsManager: CtagsManager;
 // export let ctagsManager: CtagsManager = new CtagsManager(logger);
 
 let linter_vhdl;
 let linter_verilog;
 let current_context;
+let dependencies_viewer_manager : dependencies_viewer.default;
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -56,44 +59,63 @@ export function activate(context: vscode.ExtensionContext) {
         // vscode.workspace.onDidChangeTextDocument((e) => documentation.update_documentation_module(e.document)),
         vscode.workspace.onDidOpenTextDocument((e) => documentation.update_documentation_module(e)),
         vscode.workspace.onDidSaveTextDocument((e) => documentation.update_documentation_module(e)),
-        );
+    );
 	linter_vhdl = new linter.default("vhdl");
     linter_verilog = new linter.default("verilog");
 
-    // document selector
-    let systemverilogSelector:DocumentSelector = { scheme: 'file', language: 'systemverilog' };
-    let verilogSelector:DocumentSelector = {scheme: 'file', language: 'verilog'};
-    let vhdlSelector:DocumentSelector = {scheme: 'file', language: 'vhdl'};
 
-    // Configure ctags
-    ctagsManager = new CtagsManager(logger, context);
-    ctagsManager.configure();
+    //Dependencies viewer
+    dependencies_viewer_manager = new dependencies_viewer.default(context);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.dependencies.viewer',
+            async () => {
+				await dependencies_viewer_manager.open_viewer();
+            }
+		)
+    );
 
-    // Configure Document Symbol Provider
-    let docProvider = new VerilogDocumentSymbolProvider(logger);
-    // context.subscriptions.push(languages.registerDocumentSymbolProvider(systemverilogSelector, docProvider));
-    context.subscriptions.push(languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
-    context.subscriptions.push(languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
 
-    // Configure Completion Item Provider
-    // Trigger on ".", "(", "="
-    let compItemProvider = new VerilogCompletionItemProvider(logger);
-    // context.subscriptions.push(languages.registerCompletionItemProvider(systemverilogSelector, compItemProvider, ".", "(", "="));
-    context.subscriptions.push(languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
-    context.subscriptions.push(languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
 
-    // Configure Hover Providers
-    let hoverProvider = new VerilogHoverProvider(logger);
-    // context.subscriptions.push(languages.registerHoverProvider(systemverilogSelector, hoverProvider));
+
+
+
+    // // document selector
+    // let systemverilogSelector:DocumentSelector = { scheme: 'file', language: 'systemverilog' };
+    // let verilogSelector:DocumentSelector = {scheme: 'file', language: 'verilog'};
+    // let vhdlSelector:DocumentSelector = {scheme: 'file', language: 'vhdl'};
+
+    // // Configure ctags
+    // ctagsManager = new CtagsManager(logger, context);
+    // ctagsManager.configure();
+
+    // // Configure Document Symbol Provider
+    // let docProvider = new VerilogDocumentSymbolProvider(logger,context);
+    // // context.subscriptions.push(languages.registerDocumentSymbolProvider(systemverilogSelector, docProvider));
+    // context.subscriptions.push(languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
+    // context.subscriptions.push(languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
+
+    // // Configure Completion Item Provider
+    // // Trigger on ".", "(", "="
+    // let compItemProvider = new VerilogCompletionItemProvider(logger);
+    // context.subscriptions.push(languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
+    // context.subscriptions.push(languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
+
+    // // Configure Hover Providers
+    // let hoverProvider = new VerilogHoverProvider(logger);
+    // context.subscriptions.push(languages.registerHoverProvider(vhdlSelector, hoverProvider));
     // context.subscriptions.push(languages.registerHoverProvider(verilogSelector, hoverProvider));
-    context.subscriptions.push(languages.registerHoverProvider(vhdlSelector, hoverProvider));
-    context.subscriptions.push(languages.registerHoverProvider(verilogSelector, hoverProvider));
 
-    // Configure Definition Providers
-    let defProvider = new VerilogDefinitionProvider(logger);
-    // context.subscriptions.push(languages.registerDefinitionProvider(systemverilogSelector, defProvider));
-    context.subscriptions.push(languages.registerDefinitionProvider(vhdlSelector, defProvider));
-    context.subscriptions.push(languages.registerDefinitionProvider(verilogSelector, defProvider));
+    // // Configure Definition Providers
+    // let defProvider = new VerilogDefinitionProvider(logger);
+    // context.subscriptions.push(languages.registerDefinitionProvider(vhdlSelector, defProvider));
+    // context.subscriptions.push(languages.registerDefinitionProvider(verilogSelector, defProvider));
+
+    // context.subscriptions.push(workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc)  }));
+
+
+
+
 }
 
 // this method is called when your extension is deactivated

@@ -26,6 +26,7 @@
 		"onCommand:teroshdl.generate_template",
 		"onCommand:teroshdl.format",
 		"onCommand:teroshdl.documentation.module",
+		"onCommand:teroshdl.dependencies.viewer",
 		"onLanguage:verilog",
 		"onLanguage:systemverilog",
 		"onLanguage:vhdl"
@@ -225,6 +226,10 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl.dependencies.viewer",
+				"title": "Open dependencies viewer"
+			},
 			{
 				"command": "teroshdl.generate_template",
 				"title": "Generate template",

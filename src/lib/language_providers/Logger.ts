@@ -22,7 +22,7 @@ export class Logger {
     }
 
     CheckIfEnabled() {
-        this.isEnabled = <boolean>workspace.getConfiguration().get('verilog.logging.enabled');
+        this.isEnabled = true;
     }
 
     log(msg: string, severity:Log_Severity = Log_Severity.Info) {
