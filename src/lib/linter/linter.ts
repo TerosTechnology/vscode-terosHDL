@@ -4,7 +4,6 @@ import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 
 export default class Lint_manager {
-	// private diagnostic_collection: vscode.DiagnosticCollection;
     private subscriptions: vscode.Disposable[] | undefined;
     private linter;
     private linter_name: string | undefined;

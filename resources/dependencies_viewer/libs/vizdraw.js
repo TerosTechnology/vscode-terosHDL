@@ -62,14 +62,4 @@ let panConfig = {
     center: true,
 };
 let panZoom;
-let lastTheme = CodeTheme.Unknown;
-function checkIfThemeChange() {
-    setInterval(() => {
-        let curTheme = getTheme();
-        if (lastTheme !== CodeTheme.Unknown &&
-            lastTheme !== curTheme) {
-            renderFsm(targetFsm);
-        }
-        lastTheme = curTheme;
-    }, 250);
-}
+

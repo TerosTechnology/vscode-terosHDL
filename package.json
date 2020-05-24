@@ -72,6 +72,16 @@
 					"type": "string",
 					"default": ""
 				},
+				"teroshdl.linter.vhdl.ghdl_custom_call": {
+					"description": "GHDL custom call. It is useful for Windows Subsystem for Linux",
+					"type": "string",
+					"default": "wsl ghdl"
+				},
+				"teroshdl.linter.vhdl.ghdl_enable_custom_call": {
+					"description": "Enable GHDL custom call",
+					"type": "boolean",
+					"default": false
+				},
 				"teroshdl.linter.vhdl.modelsim_path": {
 					"description": "ModelSim path",
 					"type": "string",
@@ -81,6 +91,16 @@
 					"description": "Enable verilog linter",
 					"type": "boolean",
 					"default": true
+				},
+				"teroshdl.linter.vhdl.modelsim_custom_call": {
+					"description": "ModelSim custom call. It is useful for Windows Subsystem for Linux",
+					"type": "string",
+					"default": ""
+				},
+				"teroshdl.linter.vhdl.modelsim_enable_custom_call": {
+					"description": "Enable ModelSim custom call",
+					"type": "boolean",
+					"default": false
 				},
 				"teroshdl.linter.verilog.linter": {
 					"description": "Select verilog linter",
@@ -97,6 +117,16 @@
 					"type": "string",
 					"default": ""
 				},
+				"teroshdl.linter.verilog.icarus_custom_call": {
+					"description": "Icarus custom call. It is useful for Windows Subsystem for Linux",
+					"type": "string",
+					"default": "wsl iverilog"
+				},
+				"teroshdl.linter.verilog.icarus_enable_custom_call": {
+					"description": "Enable Icarus custom call",
+					"type": "boolean",
+					"default": false
+				},
 				"teroshdl.linter.verilog.verilator_path": {
 					"description": "Verilator path",
 					"type": "string",
@@ -106,6 +136,16 @@
 					"description": "Comment symbol",
 					"type": "string",
 					"default": "!"
+				},
+				"teroshdl.linter.verilog.verilator_custom_call": {
+					"description": "Verilator custom call. It is useful for Windows Subsystem for Linux",
+					"type": "string",
+					"default": "wsl verilator"
+				},
+				"teroshdl.linter.verilog.verilator_enable_custom_call": {
+					"description": "Enable Verilator custom call",
+					"type": "boolean",
+					"default": false
 				},
 				"teroshdl.documenter.verilog.symbol": {
 					"description": "Comment symbol",

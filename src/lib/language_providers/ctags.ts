@@ -157,9 +157,6 @@ export class Ctags {
         let path_options = this.context.asAbsolutePath(path_lib.sep + "resources" + path_lib.sep
                                          + "bin" + path_lib.sep + "ctags" + path_lib.sep + ".ctags");
 
-        // let path_bin = current_dir + path_lib.sep + "bin" + path_lib.sep;
-
-
         let platform = os.platform();
         if (platform === "darwin"){
             path_bin += "universal-ctags-darwin";
