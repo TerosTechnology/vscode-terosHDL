@@ -22,8 +22,7 @@ import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as node_utilities from './node_utilities';
-import { PreviewManager } from "./viewer/previewManager";
-import { InteractiveWebviewGenerator } from "./manager";
+import * as fs from 'fs';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export default class Dependencies_viewer_manager {
@@ -40,16 +39,6 @@ export default class Dependencies_viewer_manager {
   }
 
   async create_viewer(){
-    // const previewHtml = await node_utilities.readFileAsync(this.context.asAbsolutePath("resources/preview.html"), "utf8");
-    // const previewManager = new PreviewManager(this.context, previewHtml);
-
-    // let active_editor = vscode.window.activeTextEditor;
-    // previewManager.showPreviewToSide(<vscode.TextEditor>active_editor);
-
-
-    let project_manager = new jsteros.ProjectManager.Manager("",null,null);
-    project_manager.addSource(["/home/carlos/repo/vscode-terosHDL/resources/dependencies_viewer.html"]);
-
     // Create panel
     this.panel = vscode.window.createWebviewPanel(
       'catCoding',
@@ -59,6 +48,7 @@ export default class Dependencies_viewer_manager {
           enableScripts : true
       }
     );
+
     this.panel.onDidDispose(
       () => {
         // When the panel is closed, cancel any future updates to the webview content
@@ -71,43 +61,89 @@ export default class Dependencies_viewer_manager {
     this.panel.webview.onDidReceiveMessage(
         message => {
             switch (message.command) {
-                case 'export':
-                    console.log(message.text);
-                    return;
+                case 'add_source':
+                  this.add_source();
+                   console.log("Add source: " + message.text);
+                  return;
+                case 'clear_graph':
+                  this.clear_viewer();
+                  console.log("Clear graph");
+                  return;
+                case 'generate_documentation':
+                  this.generate_documentation();
+                  console.log("Generate documentation");
+                  return;
             }
         },
         undefined,
         this.context.subscriptions
     );
-    let path_html = path_lib.sep + "resources" + path_lib.sep + "dependencies_viewer.html";
-    let previewHtml = await node_utilities.readFileAsync(
-            this.context.asAbsolutePath(path_html), "utf8");
+    let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
-
-
-
   }
 
-  private add_source(source: string){
-    this.sources.push(source);
-    this.refresh_viewer();
+  private async add_source(){
+    let files = await vscode.window.showOpenDialog({canSelectMany: true});
+    if (files !== undefined){
+      this.sources.push();
+      for (let i=0; i < files.length; ++i){
+        this.sources.push(files[i]['path']);
+      }
+      await this.update_viewer();
+    }
   }
 
-  private refresh_viewer(){
+  private async get_dot(){
+    let project_manager = new jsteros.ProjectManager.Manager("",null,null);
+    project_manager.addSource(this.sources);
+    let dependencies_dot = await project_manager.get_dependency_graph_dot();
+    return dependencies_dot;
+  }
 
+
+  private async update_viewer(){
+    let dot = await this.get_dot();
+    await this.panel?.webview.postMessage({ command: "update", message: dot});
   }
 
   //Clear
-  private clear_viewer(){
+  private async clear_viewer(){
     this.clear_sources();
-    this.refresh_viewer();
+    await this.panel?.webview.postMessage({ command: "clear"});
   }
 
   private clear_sources(){
     this.sources = [];
   }
 
+  private generate_documentation(){
+    vscode.window.showOpenDialog({canSelectFiles:false, canSelectFolders:true, canSelectMany:false}).then(file_uri => {
+      if (file_uri && file_uri[0]){
+          this.generate_and_save_documentation(file_uri[0].fsPath);
+      }
+    });
+  }
 
+  private generate_and_save_documentation(output_path){
+    let configuration : vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
+    let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
+    let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
 
+    let project_manager = new jsteros.ProjectManager.Manager("",null,null);
+    project_manager.addSource(this.sources);
+    project_manager.save_md_doc(output_path,comment_symbol_vhdl,comment_symbol_verilog,false);
+  }
+
+  private getWebviewContent(context: vscode.ExtensionContext) {
+      let template_path = 'resources' + path_lib.sep + 'dependencies_viewer' + path_lib.sep  + 'dependencies_viewer.html';
+      const resource_path = path_lib.join(context.extensionPath, template_path);
+      const dir_path = path_lib.dirname(resource_path);
+      let html = fs.readFileSync(resource_path, 'utf-8');
+
+      html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
+          return $1 + vscode.Uri.file(path_lib.resolve(dir_path, $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
+      });
+      return html;
+  }
 
 }

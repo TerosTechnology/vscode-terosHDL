@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dependencies viewer</title>
+
+    <script src="libs/jquery-2.2.4.min.js"></script>
+    <script src="libs/svg-pan-zoom.min.js"></script>
+    <script src="libs/viz.js"></script>
+    <script src="libs/full.render.js"></script>
+    
+    <div id="svg" style="text-align: center;"></div>
+    
+    <link rel="stylesheet" href="dependencies_viewer.css" type="text/css" />
+    <style type="text/css">
+        body {
+        }
+        svg{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toolbar">
+        <div class="center-panel">
+            <label class="fancy-checkbox">
+                <input id="add-source" name="zoom-mode" type="radio" value="fixed" />
+                <div class="button">Add source</div>
+            </label>
+            <label class="fancy-checkbox">
+                <input id="clear-graph" name="zoom-mode" type="radio" value="fit"/>
+                <div class="button">Clear graph</div>
+            </label>
+            <label class="fancy-checkbox">
+                <input id="generate-documentation" name="zoom-mode" type="radio" value="fit"/>
+                <div class="button">Generate documentation</div>
+            </label>
+        </div>
+    </div>
+    <div id="error-info" class="trontron"><div id="inner" class="fuck"></div></div>
+</body>
+<script src="libs/vizdraw.js"></script>
+
+</html>

@@ -23,8 +23,8 @@ import VerilogCompletionItemProvider from "./lib/language_providers/providers/Co
 // Logger
 import {Logger} from "./lib/language_providers/Logger";
 
-// let logger: Logger = new Logger();
-// export let ctagsManager: CtagsManager;
+let logger: Logger = new Logger();
+export let ctagsManager: CtagsManager;
 // export let ctagsManager: CtagsManager = new CtagsManager(logger);
 
 let linter_vhdl;
@@ -75,46 +75,38 @@ export function activate(context: vscode.ExtensionContext) {
 		)
     );
 
+    // document selector
+    let systemverilogSelector:DocumentSelector = { scheme: 'file', language: 'systemverilog' };
+    let verilogSelector:DocumentSelector = {scheme: 'file', language: 'verilog'};
+    let vhdlSelector:DocumentSelector = {scheme: 'file', language: 'vhdl'};
 
+    // Configure ctags
+    ctagsManager = new CtagsManager(logger, context);
+    ctagsManager.configure();
 
+    // Configure Document Symbol Provider
+    let docProvider = new VerilogDocumentSymbolProvider(logger,context);
+    // context.subscriptions.push(languages.registerDocumentSymbolProvider(systemverilogSelector, docProvider));
+    context.subscriptions.push(languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
+    context.subscriptions.push(languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
 
+    // Configure Completion Item Provider
+    // Trigger on ".", "(", "="
+    let compItemProvider = new VerilogCompletionItemProvider(logger);
+    context.subscriptions.push(languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
+    context.subscriptions.push(languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
 
+    // Configure Hover Providers
+    let hoverProvider = new VerilogHoverProvider(logger);
+    context.subscriptions.push(languages.registerHoverProvider(vhdlSelector, hoverProvider));
+    context.subscriptions.push(languages.registerHoverProvider(verilogSelector, hoverProvider));
 
-    // // document selector
-    // let systemverilogSelector:DocumentSelector = { scheme: 'file', language: 'systemverilog' };
-    // let verilogSelector:DocumentSelector = {scheme: 'file', language: 'verilog'};
-    // let vhdlSelector:DocumentSelector = {scheme: 'file', language: 'vhdl'};
+    // Configure Definition Providers
+    let defProvider = new VerilogDefinitionProvider(logger);
+    context.subscriptions.push(languages.registerDefinitionProvider(vhdlSelector, defProvider));
+    context.subscriptions.push(languages.registerDefinitionProvider(verilogSelector, defProvider));
 
-    // // Configure ctags
-    // ctagsManager = new CtagsManager(logger, context);
-    // ctagsManager.configure();
-
-    // // Configure Document Symbol Provider
-    // let docProvider = new VerilogDocumentSymbolProvider(logger,context);
-    // // context.subscriptions.push(languages.registerDocumentSymbolProvider(systemverilogSelector, docProvider));
-    // context.subscriptions.push(languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
-    // context.subscriptions.push(languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
-
-    // // Configure Completion Item Provider
-    // // Trigger on ".", "(", "="
-    // let compItemProvider = new VerilogCompletionItemProvider(logger);
-    // context.subscriptions.push(languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
-    // context.subscriptions.push(languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
-
-    // // Configure Hover Providers
-    // let hoverProvider = new VerilogHoverProvider(logger);
-    // context.subscriptions.push(languages.registerHoverProvider(vhdlSelector, hoverProvider));
-    // context.subscriptions.push(languages.registerHoverProvider(verilogSelector, hoverProvider));
-
-    // // Configure Definition Providers
-    // let defProvider = new VerilogDefinitionProvider(logger);
-    // context.subscriptions.push(languages.registerDefinitionProvider(vhdlSelector, defProvider));
-    // context.subscriptions.push(languages.registerDefinitionProvider(verilogSelector, defProvider));
-
-    // context.subscriptions.push(workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc)  }));
-
-
-
+    context.subscriptions.push(workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc);}));
 
 }
 
