@@ -37,8 +37,9 @@ export default class VerilogHoverProvider implements HoverProvider {
         this.logger.log("Hover requested");
         // get word start and end
         let textRange = document.getWordRangeAtPosition(position);
-        if(textRange?.isEmpty)
+        if(textRange?.isEmpty){
             return;
+        }
         // hover word
         let targetText = document.getText(textRange);
         let ctags : Ctags = CtagsManager.ctags;

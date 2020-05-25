@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import { CompletionItemProvider, CompletionItem, TextDocument, Position, CancellationToken, CompletionContext, ProviderResult, CompletionItemKind, CompletionTriggerKind, Range, MarkdownString } from "vscode";
+import { CompletionItemProvider, CompletionItem, TextDocument, Position, 
+        CancellationToken, CompletionContext, ProviderResult, CompletionItemKind, 
+        CompletionTriggerKind, Range, MarkdownString } from "vscode";
 import {Ctags, CtagsManager, Symbol} from '../ctags';
 import { Logger } from "../Logger";
 
@@ -69,9 +71,11 @@ export default class VerilogCompletionItemProvider implements CompletionItemProv
             case 'event'    : return CompletionItemKind.Event;
             case 'function' : return CompletionItemKind.Function;
             case 'module'   : return CompletionItemKind.Module;
+            case 'entity'   : return CompletionItemKind.Module; //VHDL
             case 'net'      : return CompletionItemKind.Variable;
             case 'port'     : return CompletionItemKind.Variable;
             case 'register' : return CompletionItemKind.Variable;
+            case 'signal'   : return CompletionItemKind.Variable; //VHDL
             case 'task'     : return CompletionItemKind.Function;
             case 'block'    : return CompletionItemKind.Module;
             case 'assert'   : return CompletionItemKind.Variable;   // No idea what to use
@@ -82,6 +86,7 @@ export default class VerilogCompletionItemProvider implements CompletionItemProv
             case 'modport'  : return CompletionItemKind.Variable;    // same as ports
             case 'package'  : return CompletionItemKind.Module;
             case 'program'  : return CompletionItemKind.Module;
+            case 'process'  : return CompletionItemKind.Method; //VHDL
             case 'prototype': return CompletionItemKind.Function;
             case 'property' : return CompletionItemKind.Property;
             case 'struct'   : return CompletionItemKind.Struct;

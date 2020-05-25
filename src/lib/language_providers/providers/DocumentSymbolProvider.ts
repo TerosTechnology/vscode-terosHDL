@@ -20,7 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import {DocumentSymbolProvider, CancellationToken, TextDocument, SymbolKind, DocumentSymbol, window, commands, workspace, ExtensionContext} from 'vscode'
+import {DocumentSymbolProvider, CancellationToken, TextDocument, SymbolKind, 
+        DocumentSymbol, window, commands, workspace, ExtensionContext} from 'vscode';
 import {Ctags, CtagsManager, Symbol} from '../ctags';
 import {Logger, Log_Severity} from '../Logger';
 
@@ -47,7 +48,8 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
             let symbols = CtagsManager.ctags.symbols;
             console.log(symbols);
             this.docSymbols =  this.buildDocumentSymbolList(symbols);
-            this.logger.log(this.docSymbols.length + " top-level symbols returned", (this.docSymbols.length > 0)? Log_Severity.Info : Log_Severity.Warn);
+            this.logger.log(this.docSymbols.length + " top-level symbols returned", 
+                (this.docSymbols.length > 0)? Log_Severity.Info : Log_Severity.Warn);
             let syms = [ ...this.docSymbols ];
             this.context.workspaceState.update("symbols", syms);
             // commands.executeCommand('vscode.executeDocumentSymbolProvider', doc.uri);
@@ -57,29 +59,31 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
 
     provideDocumentSymbols(document: TextDocument, token: CancellationToken): Thenable<DocumentSymbol[]> {
         return new Promise((resolve) => {
-            this.logger.log("Symbols Requested: " + document.uri)
+            this.logger.log("Symbols Requested: " + document.uri);
             let symbols: Symbol [] = [];
             console.log("symbol provider");
             let activeDoc : TextDocument | undefined = window.activeTextEditor?.document;
-            if(CtagsManager.ctags.doc === undefined || CtagsManager.ctags.doc.uri.fsPath !== activeDoc?.uri.fsPath)
+            if(CtagsManager.ctags.doc === undefined || CtagsManager.ctags.doc.uri.fsPath !== activeDoc?.uri.fsPath){
                 CtagsManager.ctags.setDocument(<TextDocument>activeDoc);
-                let ctags : Ctags = CtagsManager.ctags;
-                // If dirty, re index and then build symbols
-                if(ctags.isDirty) {
-                    ctags.index()
-                    .then(() => {
-                        symbols = ctags.symbols;
-                        console.log(symbols);
-                        this.docSymbols =  this.buildDocumentSymbolList(symbols);
-                        this.logger.log(this.docSymbols.length + " top-level symbols returned", (this.docSymbols.length > 0)? Log_Severity.Info : Log_Severity.Warn)
-                        resolve(this.docSymbols);
-                    })
-                }
-                else {
-                    this.logger.log(this.docSymbols.length + " top-level symbols returned")
-                    resolve(this.docSymbols);
             }
-        })
+            let ctags : Ctags = CtagsManager.ctags;
+            // If dirty, re index and then build symbols
+            if(ctags.isDirty) {
+                ctags.index()
+                .then(() => {
+                    symbols = ctags.symbols;
+                    console.log(symbols);
+                    this.docSymbols =  this.buildDocumentSymbolList(symbols);
+                    this.logger.log(this.docSymbols.length + " top-level symbols returned", 
+                        (this.docSymbols.length > 0)? Log_Severity.Info : Log_Severity.Warn);
+                    resolve(this.docSymbols);
+                });
+            }
+            else {
+                this.logger.log(this.docSymbols.length + " top-level symbols returned");
+                resolve(this.docSymbols);
+            }
+        });
     }
 
     isContainer(type: SymbolKind) : boolean | undefined{
@@ -98,7 +102,7 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
             case SymbolKind.String:
             case SymbolKind.TypeParameter:
             case SymbolKind.Variable:
-                return false
+                return false;
             case SymbolKind.Class:
             case SymbolKind.Constructor:
             case SymbolKind.Enum:
@@ -110,7 +114,7 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
             case SymbolKind.Namespace:
             case SymbolKind.Package:
             case SymbolKind.Struct:
-                return true
+                return true;
         }
     }
 
@@ -123,7 +127,7 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
         for(let i of con.children) {
             if(this.isContainer(i.kind) && i.range.contains(sym.range)) {
                 res = this.findContainer(i, sym);
-                if(res) return true;
+                if(res) {return true;};
             }
         }
         if(!res) {
@@ -137,10 +141,10 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
     buildDocumentSymbolList(symbolsList : Symbol []) : DocumentSymbol[] {
         let list : DocumentSymbol [] = [];
         symbolsList = symbolsList.sort((a,b) : number => {
-            if(a.startPosition.isBefore(b.startPosition)) return -1;
-            if(a.startPosition.isAfter(b.startPosition)) return 1;
+            if(a.startPosition.isBefore(b.startPosition)) {return -1;};
+            if(a.startPosition.isAfter(b.startPosition)) {return 1;};
             return 0;
-        })
+        });
         // Add each of the symbols in order
         for(let i of symbolsList) {
             let sym: DocumentSymbol = i.getDocumentSymbol();
@@ -160,8 +164,9 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
                     }
                 }
                 // add a new top level element
-                if(!done)
+                if(!done){
                     list.push(sym);
+                }
             }
         }
 

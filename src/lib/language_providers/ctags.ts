@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import {TextDocument, Position, SymbolKind, Range, DocumentSymbol, workspace, window, TextEditor, commands, Uri, ExtensionContext} from 'vscode'
+import {TextDocument, Position, SymbolKind, Range, DocumentSymbol, workspace, window, TextEditor, commands, Uri, ExtensionContext} from 'vscode';
 import * as child from 'child_process';
 import {Logger, Log_Severity} from './Logger';
 import * as os from 'os';
@@ -93,10 +93,12 @@ export class Symbol {
             case 'event'    : return SymbolKind.Event;
             case 'function' : return SymbolKind.Function;
             case 'module'   : return SymbolKind.Module;
+            case 'entity'   : return SymbolKind.Module; //VHDL
             case 'net'      : return SymbolKind.Variable;
             // Boolean uses a double headed arrow as symbol (kinda looks like a port)
             case 'port'     : return SymbolKind.Boolean;
             case 'register' : return SymbolKind.Variable;
+            case 'signal'   : return SymbolKind.Variable; //VHDL
             case 'task'     : return SymbolKind.Function;
             case 'block'    : return SymbolKind.Module;
             case 'assert'   : return SymbolKind.Variable;   // No idea what to use
@@ -107,6 +109,7 @@ export class Symbol {
             case 'modport'  : return SymbolKind.Boolean;    // same as ports
             case 'package'  : return SymbolKind.Package;
             case 'program'  : return SymbolKind.Module;
+            case 'process'  : return SymbolKind.Method; //VHDL
             case 'prototype': return SymbolKind.Function;
             case 'property' : return SymbolKind.Property;
             case 'struct'   : return SymbolKind.Struct;
@@ -171,7 +174,8 @@ export class Ctags {
             path_bin += "universal-ctags-win32.exe";
         }
 
-        let command: string = this.context.asAbsolutePath(path_bin) + ' --options=' + path_options + ' -f - --fields=+K --sort=no --excmd=n "' + filepath + '"';
+        let command: string = this.context.asAbsolutePath(path_bin) + ' --options=' 
+                + path_options + ' -f - --fields=+K --sort=no --excmd=n "' + filepath + '"';
         console.log(command);
         this.logger.log(command, Log_Severity.Command);
         return new Promise((resolve, reject) =>{
@@ -190,7 +194,7 @@ export class Ctags {
         name = parts[0];
         // pattern = parts[2];
         type = parts[3];
-        if(parts.length == 5) {
+        if(parts.length === 5) {
             scope = parts[4].split(':');
             parentType = scope[0];
             parentScope = scope[1];
@@ -204,9 +208,9 @@ export class Ctags {
         return new Symbol(name, type, pattern, lineNo, parentScope, parentType, lineNo, false);
         }
         catch(e) {
-            console.log(e)
-            this.logger.log('Ctags Line Parser: ' + e, Log_Severity.Error)
-            this.logger.log('Line: ' + line, Log_Severity.Error)
+            console.log(e);
+            this.logger.log('Ctags Line Parser: ' + e, Log_Severity.Error);
+            this.logger.log('Line: ' + line, Log_Severity.Error);
         }
     }
 
@@ -220,8 +224,9 @@ export class Ctags {
         // Parse ctags output
         let lines: string [] = tags.split(/\r?\n/);
         lines.forEach(line => {
-            if(line !== '')
+            if(line !== ''){
                 this.symbols.push(<Symbol>this.parseTagLine(line));
+            }
         });
 
         // end tags are not supported yet in ctags. So, using regex
@@ -252,8 +257,8 @@ export class Ctags {
         }
         console.log(this.symbols);
         this.isDirty = false;
-        return Promise.resolve()
-    } catch(e) {console.log(e)}
+        return Promise.resolve();
+    } catch(e) {console.log(e);}
     }
 
     index() : Thenable<void> {
@@ -262,7 +267,7 @@ export class Ctags {
             this.execCtags(<string>this.doc?.uri.fsPath)
             .then(output => this.buildSymbolsList(output))
             .then(() => resolve());
-        })
+        });
     }
 
 }

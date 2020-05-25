@@ -23,6 +23,7 @@
 		"url": "https://github.com/TerosTechnology/vscode-terosHDL/issues"
 	},
 	"activationEvents": [
+		"*",
 		"onCommand:teroshdl.generate_template",
 		"onCommand:teroshdl.format",
 		"onCommand:teroshdl.documentation.module",
@@ -352,8 +353,13 @@
 	},
 	"dependencies": {
 		"temp": "^0.9.0",
-		"jsteros": "file:/home/carlos/repo/colibri"
+		"jsteros": "file:/home/carlos/repo/colibri",
+		"vscode-test-adapter-api": "^1.7.0",
+		"vscode-test-adapter-util": "^0.7.0"
 	},
+	"extensionDependencies": [
+		"hbenl.vscode-test-explorer"
+	],
 	"devDependencies": {
 		"@types/vscode": "^1.45.0",
 		"@types/glob": "^7.1.1",

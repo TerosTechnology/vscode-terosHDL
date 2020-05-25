@@ -39,7 +39,7 @@ export class Logger {
         // Register for any changes to logging
         workspace.onDidChangeConfiguration(() => {
             this.CheckIfEnabled();
-        })
+        });
         this.CheckIfEnabled();
     }
 

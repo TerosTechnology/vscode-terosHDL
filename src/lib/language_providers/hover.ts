@@ -60,7 +60,9 @@ export class HoverProvider implements vscode.HoverProvider {
 
           let variableType: string = '';
           if(this.lang === "systemverilog"){
-            variableType = String.raw`\b(input|output|inout|reg|wire|logic|integer|bit|byte|shortint|int|longint|time|shortreal|real|double|realtime|rand|randc)\b\s+`;
+            variableType = String.raw`\b(input|output|inout|reg|wire|` + 
+                `logic|integer|bit|byte|shortint|int|longint|time|shortreal|` + 
+                `real|double|realtime|rand|randc)\b\s+`;
           }
           else if(this.lang === "verilog"){
             variableType = String.raw`\b(input|output|inout|reg|wire|integer|time|real)\b\s+`;
@@ -95,8 +97,9 @@ export class HoverProvider implements vscode.HoverProvider {
                   subText = subText.replace(/(\[.+?\])?/g, '').trim();
                   if (subText.search(regexTarget) !== -1) {
                       let comment : string | undefined = getPrefixedComment(document, i);
-                      if (comment)
-                          return { element: element, comment: comment };
+                      if (comment){
+                        return { element: element, comment: comment };
+                      }
                       else {
                           comment = getSuffixedComment(document, i);
                           return { element: element, comment: comment };
@@ -107,8 +110,9 @@ export class HoverProvider implements vscode.HoverProvider {
               // find parameter declaration type
               if (element.search(regexParaType) !== -1) {
                   let comment : string | undefined = getPrefixedComment(document, i);
-                  if(comment)
-                      return { element: element, comment: comment };
+                  if(comment){
+                    return { element: element, comment: comment };
+                  }
                   else{
                       comment = getSuffixedComment(document, i);
                       return { element: element, comment: comment };
@@ -123,8 +127,9 @@ function getPrefixedComment(document: vscode.TextDocument, lineNo: number) {
     let buf = '';
     while (true) {
         let line = document.lineAt(i).text.trim();
-        if (!line.startsWith('//'))
+        if (!line.startsWith('//')){
             break;
+        }
         buf = line.substring(3) + '\n' + buf;
         i--;
     }
@@ -135,8 +140,10 @@ function getSuffixedComment(document: vscode.TextDocument, lineNo: number) : str
     // Spearate comment after the declaration
     let line = document.lineAt(lineNo).text;
     let idx = line.indexOf("//");
-    if(idx !== -1)
+    if(idx !== -1){
         return line.substr(idx + 2).trim();
-    else
+    }
+    else{
         return undefined;
+    }
 }

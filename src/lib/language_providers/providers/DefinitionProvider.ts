@@ -20,7 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import {DefinitionProvider, TextDocument, CancellationToken, Position, ProviderResult, DefinitionLink, Range} from 'vscode';
+import {DefinitionProvider, TextDocument, CancellationToken, Position, 
+        ProviderResult, DefinitionLink, Range} from 'vscode';
 import {Ctags, CtagsManager, Symbol} from '../ctags';
 import {Logger} from '../Logger';
 
@@ -29,12 +30,12 @@ export default class VerilogDefinitionProvider implements DefinitionProvider {
     private logger : Logger;
     constructor(logger: Logger)
     {
-        this.logger = logger
+        this.logger = logger;
     }
     
-    
-    provideDefinition(document: TextDocument, position: Position, token: CancellationToken) : Promise<DefinitionLink[]> {
-        this.logger.log("Definitions Requested: " + document.uri)
+    provideDefinition(document: TextDocument, position: Position, 
+                        token: CancellationToken) : Promise<DefinitionLink[]> {
+        this.logger.log("Definitions Requested: " + document.uri);
         return new Promise((resolve, reject) => {
             // get word start and end
             let textRange = document.getWordRangeAtPosition(position);
@@ -53,7 +54,7 @@ export default class VerilogDefinitionProvider implements DefinitionProvider {
                 // find all matching symbols
                 for(let i of ctags.symbols) {
                     if(i.name === targetText) {
-                        matchingSymbols.push(i)
+                        matchingSymbols.push(i);
                     }
                 }
                 for(let i of matchingSymbols) {
@@ -63,10 +64,10 @@ export default class VerilogDefinitionProvider implements DefinitionProvider {
                         targetSelectionRange : new Range(i.startPosition, i.endPosition)
                     });
                 }
-                this.logger.log(definitions.length + " definitions returned")
+                this.logger.log(definitions.length + " definitions returned");
                 resolve(definitions);
             }
-        })
+        });
     }
 
 }

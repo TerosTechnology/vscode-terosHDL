@@ -48,7 +48,6 @@ export default class Lint_manager {
     }
 
 	public remove_file_diagnostics(doc: vscode.TextDocument) {
-        let pepe = doc.uri;
 		this.diagnostic_collection.delete(doc.uri);
 	}
 
@@ -83,9 +82,5 @@ export default class Lint_manager {
                 });
         }
         this.diagnostic_collection.set(document.uri, diagnostics);
-    }
-
-    get_bug_path(doc: vscode.TextDocument){
-
     }
 }
