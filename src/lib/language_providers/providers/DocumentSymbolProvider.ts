@@ -23,7 +23,7 @@
 import {DocumentSymbolProvider, CancellationToken, TextDocument, SymbolKind, 
         DocumentSymbol, window, commands, workspace, ExtensionContext} from 'vscode';
 import {Ctags, CtagsManager, Symbol} from '../ctags';
-import {Logger, Log_Severity} from '../Logger';
+import {Logger, Log_Severity} from '../Logger'
 
 export default class VerilogDocumentSymbolProvider implements DocumentSymbolProvider {
 

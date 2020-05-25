@@ -30,7 +30,7 @@ export default class Lint_manager {
         this.linter_name = linter_name;
 
         let linter_path = <string>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang).get(linter_name + "_path");
+            "teroshdl.linter." + this.lang + ".linter." + linter_name).get("path");
 
         this.linter_enable = vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get<boolean>("enable");
         if (this.linter_enable === true) {
@@ -48,6 +48,7 @@ export default class Lint_manager {
     }
 
 	public remove_file_diagnostics(doc: vscode.TextDocument) {
+        let pepe = doc.uri;
 		this.diagnostic_collection.delete(doc.uri);
 	}
 

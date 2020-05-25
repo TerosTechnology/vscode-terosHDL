@@ -54,6 +54,7 @@
 		"configuration": {
 			"title": "teroshdl",
 			"properties": {
+
 				"teroshdl.linter.vhdl.enable": {
 					"description": "Enable VHDL linter",
 					"type": "boolean",
@@ -68,41 +69,53 @@
 					],
 					"default": "GHDL"
 				},
-				"teroshdl.linter.vhdl.ghdl_path": {
+
+				"teroshdl.linter.vhdl.linter.ghdl.path": {
 					"description": "GHDL path",
 					"type": "string",
 					"default": ""
 				},
-				"teroshdl.linter.vhdl.ghdl_custom_call": {
-					"description": "GHDL custom call. It is useful for Windows Subsystem for Linux",
-					"type": "string",
-					"default": "wsl ghdl"
-				},
-				"teroshdl.linter.vhdl.ghdl_enable_custom_call": {
+				"teroshdl.linter.vhdl.linter.ghdl.xcall.enable": {
 					"description": "Enable GHDL custom call",
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.linter.vhdl.modelsim_path": {
+				"teroshdl.linter.vhdl.linter.ghdl.xcall.bin": {
+					"description": "GHDL custom call. It is useful for Windows Subsystem for Linux",
+					"type": "string",
+					"default": "wsl ghdl"
+				},
+
+
+				"teroshdl.linter.vhdl.modelsim.path": {
 					"description": "ModelSim path",
 					"type": "string",
 					"default": ""
 				},
+				"teroshdl.linter.vhdl.modelsim.enable.xcall.enable": {
+					"description": "Enable ModelSim custom call",
+					"type": "boolean",
+					"default": false
+				},
+				"teroshdl.linter.vhdl.modelsim.xcall.bin": {
+					"description": "ModelSim custom call. It is useful for Windows Subsystem for Linux",
+					"type": "string",
+					"default": ""
+				},
+
+
+
+
+
+
+
+
 				"teroshdl.linter.verilog.enable": {
 					"description": "Enable verilog linter",
 					"type": "boolean",
 					"default": true
 				},
-				"teroshdl.linter.vhdl.modelsim_custom_call": {
-					"description": "ModelSim custom call. It is useful for Windows Subsystem for Linux",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.vhdl.modelsim_enable_custom_call": {
-					"description": "Enable ModelSim custom call",
-					"type": "boolean",
-					"default": false
-				},
+
 				"teroshdl.linter.verilog.linter": {
 					"description": "Select verilog linter",
 					"type": "string",
@@ -113,48 +126,62 @@
 					],
 					"default": "Icarus"
 				},
-				"teroshdl.linter.verilog.icarus_path": {
+
+				"teroshdl.linter.verilog.linter.icarus.path": {
 					"description": "Icarus path",
 					"type": "string",
 					"default": ""
 				},
-				"teroshdl.linter.verilog.icarus_custom_call": {
+				"teroshdl.linter.verilog.linter.icarus.xcall.bin": {
 					"description": "Icarus custom call. It is useful for Windows Subsystem for Linux",
 					"type": "string",
 					"default": "wsl iverilog"
 				},
-				"teroshdl.linter.verilog.icarus_enable_custom_call": {
+				"teroshdl.linter.verilog.linter.icarus.xcall.enable": {
 					"description": "Enable Icarus custom call",
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.linter.verilog.verilator_path": {
+
+
+
+				"teroshdl.linter.verilog.linter.verilator.path": {
 					"description": "Verilator path",
 					"type": "string",
 					"default": ""
 				},
-				"teroshdl.documenter.vhdl.symbol": {
-					"description": "Comment symbol",
-					"type": "string",
-					"default": "!"
-				},
-				"teroshdl.linter.verilog.verilator_custom_call": {
+				"teroshdl.linter.verilog.linter.verilator.xcall.bin": {
 					"description": "Verilator custom call. It is useful for Windows Subsystem for Linux",
 					"type": "string",
 					"default": "wsl verilator"
 				},
-				"teroshdl.linter.verilog.verilator_enable_custom_call": {
+				"teroshdl.linter.verilog.linter.verilator.xcall.enable": {
 					"description": "Enable Verilator custom call",
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.documenter.verilog.symbol": {
-					"description": "Comment symbol",
+
+
+
+
+
+
+
+				"teroshdl.documenter.vhdl.symbol": {
+					"markdownDescription": "Special symbol at the begin of the comment symbol to extract documentation. Example: ```--! Code comment```",
 					"type": "string",
 					"default": "!"
 				},
+				"teroshdl.documenter.verilog.symbol": {
+					"markdownDescription": "Special symbol at the begin of the comment symbol to extract documentation. Example: ```//! Code comment```",
+					"type": "string",
+					"default": "!"
+				},
+
+
+
 				"teroshdl.formatting.verilog.on-save": {
-					"description": "On save",
+					"description": "Enable on save mode.",
 					"type": "boolean",
 					"default": false
 				},
@@ -174,8 +201,11 @@
 					"type": "number",
 					"default": 2
 				},
+
+
+
 				"teroshdl.formatting.vhdl.on-save": {
-					"description": "On save",
+					"description": "Enable on save mode.",
 					"type": "boolean",
 					"default": false
 				},
