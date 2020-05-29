@@ -3,7 +3,7 @@
 import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 
-export default class Lint_manager {
+export default class Vsg_manager {
     private subscriptions: vscode.Disposable[] | undefined;
     private uri_collections: vscode.Uri[] = [];
     private linter;
@@ -15,11 +15,6 @@ export default class Lint_manager {
     private enable_custom_exec : boolean = false;
     private custom_exec : string = "";
 
-
-
-    // private linter_options : {'custom_bin' : string | undefined,
-    //                           'custom_arguments' : string | undefined,
-    //                           'custom_path' : string | undefined};
     private lang : string;
     protected diagnostic_collection: vscode.DiagnosticCollection;
     

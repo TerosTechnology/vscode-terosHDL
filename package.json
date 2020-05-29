@@ -54,22 +54,26 @@
 		"configuration": {
 			"title": "teroshdl",
 			"properties": {
-
 				"teroshdl.linter.vhdl.enable": {
 					"description": "Enable VHDL linter",
 					"type": "boolean",
 					"default": true
 				},
-				"teroshdl.linter.vhdl.linter": {
+				"teroshdl.linter.vhdl.linter.a": {
 					"description": "Select VHDL linter",
 					"type": "string",
 					"enum": [
 						"GHDL",
-						"ModelSim"
+						"ModelSim",
+						"xvhdl"
 					],
 					"default": "GHDL"
 				},
-
+				"teroshdl.linter.vhdl.linter.ghdl.arguments": {
+					"description": "GHDL arguments",
+					"type": "string",
+					"default": "--std=08"
+				},
 				"teroshdl.linter.vhdl.linter.ghdl.path": {
 					"description": "GHDL path",
 					"type": "string",
@@ -85,14 +89,17 @@
 					"type": "string",
 					"default": "wsl ghdl"
 				},
-
-
-				"teroshdl.linter.vhdl.modelsim.path": {
+				"teroshdl.linter.vhdl.linter.modelsim.arguments": {
+					"description": "ModelSim arguments",
+					"type": "string",
+					"default": ""
+				},
+				"teroshdl.linter.vhdl.linter.modelsim.path": {
 					"description": "ModelSim path",
 					"type": "string",
 					"default": ""
 				},
-				"teroshdl.linter.vhdl.modelsim.enable.xcall.enable": {
+				"teroshdl.linter.vhdl.linter.modelsim.enable.xcall.enable": {
 					"description": "Enable ModelSim custom call",
 					"type": "boolean",
 					"default": false
@@ -102,31 +109,47 @@
 					"type": "string",
 					"default": ""
 				},
-
-
-
-
-
-
-
-
+				"teroshdl.linter.vhdl.linter.xvhdl.arguments": {
+					"description": "xvhdl arguments",
+					"type": "string",
+					"default": ""
+				},
+				"teroshdl.linter.vhdl.linter.xvhdl.path": {
+					"description": "xvhdl path",
+					"type": "string",
+					"default": ""
+				},
+				"teroshdl.linter.vhdl.linter.xvhdl.xcall.enable": {
+					"description": "Enable xvhdl custom call",
+					"type": "boolean",
+					"default": false
+				},
+				"teroshdl.linter.vhdl.linter.xvhdl.xcall.bin": {
+					"description": "xvhdl custom call. It is useful for Windows Subsystem for Linux",
+					"type": "string",
+					"default": "wsl xvhdl"
+				},
 				"teroshdl.linter.verilog.enable": {
 					"description": "Enable verilog linter",
 					"type": "boolean",
 					"default": true
 				},
-
-				"teroshdl.linter.verilog.linter": {
+				"teroshdl.linter.verilog.linter.a": {
 					"description": "Select verilog linter",
 					"type": "string",
 					"enum": [
 						"Icarus",
 						"ModelSim",
-						"Verilator"
+						"Verilator",
+						"xvlog"
 					],
 					"default": "Icarus"
 				},
-
+				"teroshdl.linter.verilog.linter.icarus.arguments": {
+					"description": "Icarus arguments",
+					"type": "string",
+					"default": ""
+				},
 				"teroshdl.linter.verilog.linter.icarus.path": {
 					"description": "Icarus path",
 					"type": "string",
@@ -142,9 +165,11 @@
 					"type": "boolean",
 					"default": false
 				},
-
-
-
+				"teroshdl.linter.verilog.linter.verilator.arguments": {
+					"description": "Verilator arguments",
+					"type": "string",
+					"default": ""
+				},
 				"teroshdl.linter.verilog.linter.verilator.path": {
 					"description": "Verilator path",
 					"type": "string",
@@ -160,13 +185,26 @@
 					"type": "boolean",
 					"default": false
 				},
-
-
-
-
-
-
-
+				"teroshdl.linter.verilog.linter.xvlog.arguments": {
+					"description": "xvlog arguments",
+					"type": "string",
+					"default": ""
+				},
+				"teroshdl.linter.verilog.linter.xvlog.path": {
+					"description": "xvlog path",
+					"type": "string",
+					"default": ""
+				},
+				"teroshdl.linter.verilog.linter.xvlog.xcall.bin": {
+					"description": "xvlog custom call. It is useful for Windows Subsystem for Linux",
+					"type": "string",
+					"default": "wsl xvlog"
+				},
+				"teroshdl.linter.verilog.linter.xvlog.xcall.enable": {
+					"description": "Enable xvlog custom call",
+					"type": "boolean",
+					"default": false
+				},
 				"teroshdl.documenter.vhdl.symbol": {
 					"markdownDescription": "Special symbol at the begin of the comment symbol to extract documentation. Example: ```--! Code comment```",
 					"type": "string",
@@ -177,9 +215,6 @@
 					"type": "string",
 					"default": "!"
 				},
-
-
-
 				"teroshdl.formatting.verilog.on-save": {
 					"description": "Enable on save mode.",
 					"type": "boolean",
@@ -201,9 +236,6 @@
 					"type": "number",
 					"default": 2
 				},
-
-
-
 				"teroshdl.formatting.vhdl.on-save": {
 					"description": "Enable on save mode.",
 					"type": "boolean",

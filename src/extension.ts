@@ -77,6 +77,23 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
 	linter_vhdl = new linter.default("vhdl");
     linter_verilog = new linter.default("verilog");
+
+    // context.subscriptions.push(
+    //     vscode.workspace.onDidOpenTextDocument((e) => {
+    //         linter_vhdl.lint(e);
+    //         linter_verilog.lint(e);
+    //     }),
+    //     vscode.workspace.onDidSaveTextDocument((e) => {
+    //         linter_vhdl.lint(e);
+    //         linter_verilog.lint(e);
+    //     }),
+    //     vscode.workspace.onDidCloseTextDocument((e) => {
+    //         linter_vhdl.remove_file_diagnostics();
+    //         linter_verilog.remove_file_diagnostics();
+    //     })
+    // );
+
+
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
