@@ -13,8 +13,10 @@ import * as documentation from "./lib/documenter/documenter";
 // Linter
 import * as linter from "./lib/linter/linter";
 
+
 let linter_vhdl;
 let linter_verilog;
+let linter_vhdl_style;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager : dependencies_viewer.default;
@@ -75,23 +77,12 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Linter
     /**************************************************************************/
-	linter_vhdl = new linter.default("vhdl");
-    linter_verilog = new linter.default("verilog");
-
-    // context.subscriptions.push(
-    //     vscode.workspace.onDidOpenTextDocument((e) => {
-    //         linter_vhdl.lint(e);
-    //         linter_verilog.lint(e);
-    //     }),
-    //     vscode.workspace.onDidSaveTextDocument((e) => {
-    //         linter_vhdl.lint(e);
-    //         linter_verilog.lint(e);
-    //     }),
-    //     vscode.workspace.onDidCloseTextDocument((e) => {
-    //         linter_vhdl.remove_file_diagnostics();
-    //         linter_verilog.remove_file_diagnostics();
-    //     })
-    // );
+	linter_vhdl = new linter.default("vhdl","linter");
+    linter_verilog = new linter.default("verilog","linter");
+    /**************************************************************************/
+    // Check style
+    /**************************************************************************/
+    linter_vhdl_style = new linter.default("vhdl","linter_style");
 
 
     /**************************************************************************/

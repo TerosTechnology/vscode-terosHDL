@@ -7,6 +7,7 @@ export default class Lint_manager {
     private subscriptions: vscode.Disposable[] | undefined;
     private uri_collections: vscode.Uri[] = [];
     private linter;
+    private linter_type : string = "";
     private linter_name: string | undefined;
     private linter_enable;
     //Configuration
@@ -15,16 +16,15 @@ export default class Lint_manager {
     private enable_custom_exec : boolean = false;
     private custom_exec : string = "";
 
-
-
     // private linter_options : {'custom_bin' : string | undefined,
     //                           'custom_arguments' : string | undefined,
     //                           'custom_path' : string | undefined};
     private lang : string;
     protected diagnostic_collection: vscode.DiagnosticCollection;
     
-    constructor(language: string) {
+    constructor(language: string, linter_type: string) {
         this.lang = language;
+        this.linter_type = linter_type;
 		this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
         vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
         vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
@@ -38,27 +38,29 @@ export default class Lint_manager {
     config_linter() {
         //todo: use doc!! .git error
         let linter_name: string;
-        linter_name = <string>vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get("linter.a");
+        linter_name = <string>vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + this.lang).get("linter.a");
         linter_name = linter_name.toLowerCase();
         this.linter_name = linter_name;
 
-        //Enable custom binary exec
-        let custom_call_enable = <boolean>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang + ".linter." + linter_name + ".xcall").get("enable");
-        let custom_call_bin = <string>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang + ".linter." + linter_name + ".xcall").get("bin");
-        this.custom_exec = custom_call_bin;
-        this.enable_custom_exec = custom_call_enable;
-        //Custom linter path
-        let linter_path = <string>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang + ".linter." + linter_name).get("path");
-        this.linter_path = linter_path;
-        //Custom arguments
-        let linter_arguments = <string>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang + ".linter." + linter_name).get("arguments");  
-        this.linter_arguments = linter_arguments;
+        if (this.linter_type === "linter"){
+            //Enable custom binary exec
+            let custom_call_enable = <boolean>vscode.workspace.getConfiguration(
+                `teroshdl.${this.linter_type}.` + this.lang + ".linter." + linter_name + ".xcall").get("enable");
+            let custom_call_bin = <string>vscode.workspace.getConfiguration(
+                `teroshdl.${this.linter_type}.` + this.lang + ".linter." + linter_name + ".xcall").get("bin");
+            this.custom_exec = custom_call_bin;
+            this.enable_custom_exec = custom_call_enable;
+            //Custom linter path
+            let linter_path = <string>vscode.workspace.getConfiguration(
+                `teroshdl.${this.linter_type}.` + this.lang + ".linter." + linter_name).get("path");
+            this.linter_path = linter_path;
+            //Custom arguments
+            let linter_arguments = <string>vscode.workspace.getConfiguration(
+                `teroshdl.${this.linter_type}.` + this.lang + ".linter." + linter_name).get("arguments");  
+            this.linter_arguments = linter_arguments;
+        }
 
-        this.linter_enable = vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get<boolean>("enable");
+        this.linter_enable = vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + this.lang).get<boolean>("enable");
         if (this.linter_enable === true) {
             this.linter = new jsteros.Linter.Linter(linter_name);
             this.refresh_lint();            
@@ -138,7 +140,7 @@ export default class Lint_manager {
                 col = 1;
             }
             diagnostics.push({
-                severity: vscode.DiagnosticSeverity.Error,
+                severity: this.get_severity(errors[i]['severity']),
                 range:new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
                 message: errors[i]['description'],
                 code: this.linter_name,
@@ -146,6 +148,18 @@ export default class Lint_manager {
                 });
         }
         this.diagnostic_collection.set(doc.uri, diagnostics);
+    }
+
+    get_severity(sev){
+        if (sev === "error"){
+            return vscode.DiagnosticSeverity.Error;
+        }
+        else if(sev === "warning"){
+            return vscode.DiagnosticSeverity.Warning;
+        }
+        else{
+            return vscode.DiagnosticSeverity.Error;
+        }
     }
 
     async lint_from_uri(uri: vscode.Uri) {

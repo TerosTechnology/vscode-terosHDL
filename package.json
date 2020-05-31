@@ -54,6 +54,21 @@
 		"configuration": {
 			"title": "teroshdl",
 			"properties": {
+				"teroshdl.linter_style.vhdl.linter.a": {
+					"description": "Select VHDL linter style",
+					"type": "string",
+					"enum": [
+						"vsg"
+					],
+					"default": "vsg"
+				},
+				"teroshdl.linter_style.vhdl.enable": {
+					"description": "Enable VHDL linter style",
+					"type": "boolean",
+					"default": true
+				},
+
+
 				"teroshdl.linter.vhdl.enable": {
 					"description": "Enable VHDL linter",
 					"type": "boolean",
