@@ -6,17 +6,19 @@ import * as path from 'path';
 import * as fs from 'fs';
 // Templates
 import * as templates from "./lib/templates/templates";
-// Formatter
-import * as formatter from "./lib/formatter/formatter";
 // Documenter
 import * as documentation from "./lib/documenter/documenter";
 // Linter
 import * as linter from "./lib/linter/linter";
-
+// Formatter
+import * as formatter from "./lib/formatter/formatter_manager";
 
 let linter_vhdl;
 let linter_verilog;
 let linter_vhdl_style;
+let linter_verilog_style;
+let formatter_vhdl;
+let formatter_verilog;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager : dependencies_viewer.default;
@@ -54,7 +56,9 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Formatter
     /**************************************************************************/
-	context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
+    formatter_vhdl = new formatter.default("vhdl");
+    formatter_verilog = new formatter.default("verilog");
+	// context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
 	const disposable = vscode.languages.registerDocumentFormattingEditProvider(
 		[{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" }],
 		{ provideDocumentFormattingEdits }
@@ -83,8 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Check style
     /**************************************************************************/
     linter_vhdl_style = new linter.default("vhdl","linter_style");
-
-
+    linter_verilog_style = new linter.default("verilog","linter_style");
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
@@ -170,10 +173,10 @@ export async function provideDocumentFormattingEdits(
     let opt = options;
     let code_format : string;
     if (document.languageId === "vhdl"){
-        code_format = formatter.format_vhdl(code);
+        code_format = await formatter_vhdl.format(code);
     }
     else {
-        code_format = formatter.format_verilog(code,current_context);
+        code_format = await formatter_verilog.format(code);
     }
     //Error
     if (code_format === null){

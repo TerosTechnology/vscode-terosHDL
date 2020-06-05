@@ -66,7 +66,7 @@ export default class Lint_manager {
             this.refresh_lint();            
         }
         else{
-            this.linter = null;
+            this.linter = undefined;
             return;
         }
     }
@@ -123,7 +123,7 @@ export default class Lint_manager {
             return;
         }
         let language_id : string = doc.languageId;
-        if(this.linter === null || (language_id !== this.lang)){
+        if(this.linter === undefined || (language_id !== this.lang)){
             return;
         }
         // let current_path = vscode.window.activeTextEditor?.document.uri.fsPath;

@@ -144,6 +144,21 @@
 					"type": "string",
 					"default": "wsl xvhdl"
 				},
+
+				"teroshdl.linter_style.verilog.linter.a": {
+					"description": "Select Verilog linter style",
+					"type": "string",
+					"enum": [
+						"verible"
+					],
+					"default": "verible"
+				},
+				"teroshdl.linter_style.verilog.enable": {
+					"description": "Enable Verilog linter style",
+					"type": "boolean",
+					"default": true
+				},
+
 				"teroshdl.linter.verilog.enable": {
 					"description": "Enable verilog linter",
 					"type": "boolean",
@@ -230,12 +245,24 @@
 					"type": "string",
 					"default": "!"
 				},
-				"teroshdl.formatting.verilog.on-save": {
+
+
+
+				"teroshdl.formatter.verilog.on-save": {
 					"description": "Enable on save mode.",
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.formatting.verilog.style": {
+				"teroshdl.formatter.verilog.type.a": {
+					"description": "Select verilog formatter",
+					"type": "string",
+					"enum": [
+						"Istyle",
+						"verible"
+					],
+					"default": "Istyle"
+				},
+				"teroshdl.formatter.verilog.type.istyle.style": {
 					"description": "Predefined Styling options",
 					"type": "string",
 					"default": "ANSI",
@@ -246,17 +273,31 @@
 						"Indent only"
 					]
 				},
-				"teroshdl.formatting.verilog.spaces": {
+				"teroshdl.formatter.verilog.type.istyle.spaces": {
 					"description": "Indent using N spaces per indent.",
 					"type": "number",
 					"default": 2
 				},
-				"teroshdl.formatting.vhdl.on-save": {
+
+
+
+
+
+				"teroshdl.formatter.vhdl.on-save": {
 					"description": "Enable on save mode.",
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.formatting.vhdl.keyword-case": {
+				"teroshdl.formatter.vhdl.type.a": {
+					"description": "Select verilog formatter",
+					"type": "string",
+					"enum": [
+						"VSG",
+						"Standalone"
+					],
+					"default": "VSG"
+				},
+				"teroshdl.formatter.vhdl.type.standalone.keyword-case": {
 					"description": "Keyword case",
 					"type": "string",
 					"default": "LowerCase",
@@ -265,7 +306,7 @@
 						"UpperCase"
 					]
 				},
-				"teroshdl.formatting.vhdl.type-name-case": {
+				"teroshdl.formatter.vhdl.type.standalone.type-name-case": {
 					"description": "Type name case",
 					"type": "string",
 					"default": "LowerCase",
@@ -274,22 +315,22 @@
 						"UpperCase"
 					]
 				},
-				"teroshdl.formatting.vhdl.remove-comments": {
+				"teroshdl.formatter.vhdl.type.standalone.remove-comments": {
 					"description": "Remove comments",
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.formatting.vhdl.remove-asserts": {
+				"teroshdl.formatter.vhdl.type.standalone.remove-asserts": {
 					"description": "Remove asserts",
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.formatting.vhdl.indentation": {
+				"teroshdl.formatter.vhdl.type.standalone.indentation": {
 					"description": "Indentation",
 					"type": "string",
 					"default": "  "
 				},
-				"teroshdl.formatting.vhdl.mode": {
+				"teroshdl.formatter.vhdl.type.standalone.mode": {
 					"description": "Align mode",
 					"type": "string",
 					"default": "local",
@@ -298,12 +339,12 @@
 						"global"
 					]
 				},
-				"teroshdl.formatting.vhdl.align-port": {
+				"teroshdl.formatter.vhdl.type.standalone.align-port": {
 					"description": "Align signs in port",
 					"type": "boolean",
 					"default": true
 				},
-				"teroshdl.formatting.vhdl.align-generic": {
+				"teroshdl.formatter.vhdl.type.standalone.align-generic": {
 					"description": "Align signs in generic",
 					"type": "boolean",
 					"default": true,
@@ -312,12 +353,12 @@
 						false
 					]
 				},
-				"teroshdl.formatting.vhdl.align-procedure": {
+				"teroshdl.formatter.vhdl.type.standalone.align-procedure": {
 					"description": "Align signs in procedure",
 					"type": "boolean",
 					"default": true
 				},
-				"teroshdl.formatting.vhdl.align-function": {
+				"teroshdl.formatter.vhdl.type.standalone.align-function": {
 					"description": "Align signs in function",
 					"type": "boolean",
 					"default": true

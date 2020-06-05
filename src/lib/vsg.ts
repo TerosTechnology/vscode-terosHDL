@@ -31,37 +31,7 @@ export default class Vsg_manager {
     }
 
     config_linter() {
-        //todo: use doc!! .git error
-        let linter_name: string;
-        linter_name = <string>vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get("linter.a");
-        linter_name = linter_name.toLowerCase();
-        this.linter_name = linter_name;
-
-        //Enable custom binary exec
-        let custom_call_enable = <boolean>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang + ".linter." + linter_name + ".xcall").get("enable");
-        let custom_call_bin = <string>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang + ".linter." + linter_name + ".xcall").get("bin");
-        this.custom_exec = custom_call_bin;
-        this.enable_custom_exec = custom_call_enable;
-        //Custom linter path
-        let linter_path = <string>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang + ".linter." + linter_name).get("path");
-        this.linter_path = linter_path;
-        //Custom arguments
-        let linter_arguments = <string>vscode.workspace.getConfiguration(
-            "teroshdl.linter." + this.lang + ".linter." + linter_name).get("arguments");  
-        this.linter_arguments = linter_arguments;
-
-        this.linter_enable = vscode.workspace.getConfiguration("teroshdl.linter." + this.lang).get<boolean>("enable");
-        if (this.linter_enable === true) {
-            this.linter = new jsteros.Linter.Linter(linter_name);
-            this.refresh_lint();            
-        }
-        else{
-            this.linter = null;
-            return;
-        }
+        this.linter = new jsteros.Vsg.Vsg();
     }
 
 	public remove_file_diagnostics(doc: vscode.TextDocument) {
@@ -81,13 +51,6 @@ export default class Vsg_manager {
             }
         }
         this.uri_collections.push(uri);
-    }
-
-    refresh_lint(){
-        for (let i=0; i< this.uri_collections.length; ++i){
-            // this.remove_file_diagnostics();
-            this.lint_from_uri(this.uri_collections[i]);
-        }
     }
 
     get_config(){
@@ -124,7 +87,7 @@ export default class Vsg_manager {
         //Save the uri linted
         this.add_uri_to_collections(doc.uri);
 
-        let errors  = await this.linter.lint_from_file(current_path,this.get_config());
+        let errors  = await this.linter.check_style_from_code(doc.getText());
         let diagnostics: vscode.Diagnostic[] = [];
         for (var i=0; i<errors.length;++i){
             const line = errors[i]['location']['position'][0];
@@ -133,7 +96,7 @@ export default class Vsg_manager {
                 col = 1;
             }
             diagnostics.push({
-                severity: vscode.DiagnosticSeverity.Error,
+                severity: vscode.DiagnosticSeverity.Warning,
                 range:new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
                 message: errors[i]['description'],
                 code: this.linter_name,
@@ -142,27 +105,4 @@ export default class Vsg_manager {
         }
         this.diagnostic_collection.set(doc.uri, diagnostics);
     }
-
-    async lint_from_uri(uri: vscode.Uri) {
-        let current_path = uri.fsPath;
-
-        let errors  = await this.linter.lint_from_file(current_path,this.get_config());
-        let diagnostics: vscode.Diagnostic[] = [];
-        for (var i=0; i<errors.length;++i){
-            const line = errors[i]['location']['position'][0];
-            let col    = errors[i]['location']['position'][1];
-            if (col === 0){
-                col = 1;
-            }
-            diagnostics.push({
-                severity: vscode.DiagnosticSeverity.Error,
-                range:new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
-                message: errors[i]['description'],
-                code: this.linter_name,
-                    source: 'TerosHDL'
-                });
-        }
-        this.diagnostic_collection.set(uri, diagnostics);
-    }
-
 }
