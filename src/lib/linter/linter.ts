@@ -2,6 +2,7 @@
 // import { Disposable, workspace, TextDocument, window, QuickPickItem, ProgressLocation} from "vscode";
 import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
+import * as vsg_action_provider from './vsg_action_provider';
 
 export default class Lint_manager {
     private subscriptions: vscode.Disposable[] | undefined;
@@ -22,7 +23,7 @@ export default class Lint_manager {
     private lang : string;
     protected diagnostic_collection: vscode.DiagnosticCollection;
     
-    constructor(language: string, linter_type: string) {
+    constructor(language: string, linter_type: string, context: vscode.ExtensionContext) {
         this.lang = language;
         this.linter_type = linter_type;
 		this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
@@ -33,6 +34,16 @@ export default class Lint_manager {
         vscode.workspace.onDidChangeConfiguration(this.config_linter, this, this.subscriptions);
         this.config_linter();
         this.lint(<vscode.TextDocument>vscode.window.activeTextEditor?.document);
+
+        if (language === "vhdl" && linter_type === "linter_style"){
+            context.subscriptions.push(
+                vscode.languages.registerCodeActionsProvider('vhdl', new vsg_action_provider.Vsg_action_provider(), {
+                    providedCodeActionKinds: vsg_action_provider.Vsg_action_provider.providedCodeActionKinds
+                })
+            );
+        }
+
+
     }
 
     config_linter() {
@@ -136,16 +147,20 @@ export default class Lint_manager {
         for (var i=0; i<errors.length;++i){
             const line = errors[i]['location']['position'][0];
             let col    = errors[i]['location']['position'][1];
-            if (col === 0){
-                col = 1;
+            let code = "";
+            if (errors[i].code !== undefined){
+                code = errors[i].code;   
+            }
+            else{
+                code = errors[i].severity;
             }
             diagnostics.push({
                 severity: this.get_severity(errors[i]['severity']),
                 range:new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
                 message: errors[i]['description'],
-                code: this.linter_name,
-                    source: 'TerosHDL'
-                });
+                code: code,
+                source: `TerosHDL:${this.linter_name}`
+            });
         }
         this.diagnostic_collection.set(doc.uri, diagnostics);
     }
@@ -170,16 +185,20 @@ export default class Lint_manager {
         for (var i=0; i<errors.length;++i){
             const line = errors[i]['location']['position'][0];
             let col    = errors[i]['location']['position'][1];
-            if (col === 0){
-                col = 1;
+            let code = "";
+            if (errors[i].code !== undefined){
+                code = errors[i].code;   
+            }
+            else{
+                code = errors[i].severity;
             }
             diagnostics.push({
-                severity: vscode.DiagnosticSeverity.Error,
+                severity: this.get_severity(errors[i]['severity']),
                 range:new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
                 message: errors[i]['description'],
-                code: this.linter_name,
-                    source: 'TerosHDL'
-                });
+                code: code,
+                source: `TerosHDL:${this.linter_name}`
+            });
         }
         this.diagnostic_collection.set(uri, diagnostics);
     }

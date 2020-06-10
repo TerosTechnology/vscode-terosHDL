@@ -1,5 +1,24 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+// Copyright 2020 Teros Technology
+//
+// Ismael Perez Rojo
+// Carlos Alberto Ruiz Naranjo
+// Alfredo Saez
+//
+// This file is part of Colibri.
+//
+// Colibri is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Colibri is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
+
 import * as vscode from 'vscode';
 // Common libraries
 import * as path from 'path';
@@ -58,12 +77,32 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     formatter_vhdl = new formatter.default("vhdl");
     formatter_verilog = new formatter.default("verilog");
-	// context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
-	const disposable = vscode.languages.registerDocumentFormattingEditProvider(
-		[{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" }],
-		{ provideDocumentFormattingEdits }
-	  );
-	context.subscriptions.push(disposable);
+    // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
+    const disposable = vscode.languages.registerDocumentFormattingEditProvider(
+        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" }],
+        { provideDocumentFormattingEdits }
+    );
+    context.subscriptions.push(disposable);
+    
+    // vscode.languages.registerCodeActionsProvider('vhdl', {
+    //     provideCodeActions(document) {
+    //         let action = new vscode.CodeAction("Disable for this line");
+    //         action.kind = vscode.CodeActionKind.QuickFix;
+    //         action.diagnostics = vscode.languages.getDiagnostics(document.uri);
+    //         return [action];
+    //     }
+    // });    
+	// let disposable2 = vscode.commands.registerCommand('extension.helloWorld', () => {
+	// 	// The code you place here will be executed every time your command is executed
+    //     const activeEditor = vscode.window.activeTextEditor;
+    //     if (activeEditor) {
+    //         console.log(activeEditor.selection.active.line);
+    //     }
+	// 	// Display a message box to the user
+	// 	vscode.window.showInformationMessage('Hello World!');
+    // });
+    // context.subscriptions.push(disposable2);
+
     /**************************************************************************/
     // Documenter
     /**************************************************************************/
@@ -81,13 +120,13 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Linter
     /**************************************************************************/
-	linter_vhdl = new linter.default("vhdl","linter");
-    linter_verilog = new linter.default("verilog","linter");
+	linter_vhdl = new linter.default("vhdl","linter",context);
+    linter_verilog = new linter.default("verilog","linter",context);
     /**************************************************************************/
     // Check style
     /**************************************************************************/
-    linter_vhdl_style = new linter.default("vhdl","linter_style");
-    linter_verilog_style = new linter.default("verilog","linter_style");
+    linter_vhdl_style = new linter.default("vhdl","linter_style",context);
+    linter_verilog_style = new linter.default("verilog","linter_style",context);
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
@@ -193,3 +232,6 @@ export async function provideDocumentFormattingEdits(
         return edits;
     }
 }
+
+
+

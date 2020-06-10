@@ -67,8 +67,6 @@
 					"type": "boolean",
 					"default": true
 				},
-
-
 				"teroshdl.linter.vhdl.enable": {
 					"description": "Enable VHDL linter",
 					"type": "boolean",
@@ -144,7 +142,6 @@
 					"type": "string",
 					"default": "wsl xvhdl"
 				},
-
 				"teroshdl.linter_style.verilog.linter.a": {
 					"description": "Select Verilog linter style",
 					"type": "string",
@@ -158,7 +155,6 @@
 					"type": "boolean",
 					"default": true
 				},
-
 				"teroshdl.linter.verilog.enable": {
 					"description": "Enable verilog linter",
 					"type": "boolean",
@@ -245,9 +241,6 @@
 					"type": "string",
 					"default": "!"
 				},
-
-
-
 				"teroshdl.formatter.verilog.on-save": {
 					"description": "Enable on save mode.",
 					"type": "boolean",
@@ -278,11 +271,6 @@
 					"type": "number",
 					"default": 2
 				},
-
-
-
-
-
 				"teroshdl.formatter.vhdl.on-save": {
 					"description": "Enable on save mode.",
 					"type": "boolean",
