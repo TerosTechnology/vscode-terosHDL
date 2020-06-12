@@ -94,8 +94,8 @@ export default class Dependencies_viewer_manager {
   }
 
   private async get_dot(){
-    let project_manager = new jsteros.ProjectManager.Manager("",null,null);
-    project_manager.addSource(this.sources);
+    let project_manager = new jsteros.Project_manager.Manager("");
+    project_manager.add_source_from_array(this.sources);
     let dependencies_dot = await project_manager.get_dependency_graph_dot();
     return dependencies_dot;
   }
@@ -129,9 +129,9 @@ export default class Dependencies_viewer_manager {
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
 
-    let project_manager = new jsteros.ProjectManager.Manager("",null,null);
-    project_manager.addSource(this.sources);
-    project_manager.save_md_doc(output_path,comment_symbol_vhdl,comment_symbol_verilog,false);
+    let project_manager = new jsteros.Project_manager.Manager("");
+    project_manager.add_source_from_array(this.sources);
+    project_manager.save_markdown_doc(output_path,comment_symbol_vhdl,comment_symbol_verilog,false);
   }
 
   private getWebviewContent(context: vscode.ExtensionContext) {

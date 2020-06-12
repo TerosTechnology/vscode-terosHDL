@@ -69,21 +69,21 @@ export async function get_template() {
     }
 
     let options = {
-        "type": subtype,
-        "language": language_id
+        "type": subtype
       };
     let code : string = document.getText();
 
-    let templates_cl = new jsteros.Templates.Templates();
-    let template : string = await templates_cl.getTemplate(type,code,options);
+    let templates_cl = new jsteros.Templates.Templates_factory();
+    let template = await templates_cl.get_template(type,language_id);
+    let template_str : string = await template.generate(code,options);
 
     //Error
-    if (template === null){
+    if (template_str === undefined){
         vscode.window.showErrorMessage('Select a valid file.!');
         console.log("Error parser template.");
     }
     else{
         vscode.window.showInformationMessage('Template copied to clipboard!\n');
-        vscode.env.clipboard.writeText(template);
+        vscode.env.clipboard.writeText(template_str);
     }
 }
