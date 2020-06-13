@@ -83,26 +83,14 @@ export function activate(context: vscode.ExtensionContext) {
         { provideDocumentFormattingEdits }
     );
     context.subscriptions.push(disposable);
-    
-    // vscode.languages.registerCodeActionsProvider('vhdl', {
-    //     provideCodeActions(document) {
-    //         let action = new vscode.CodeAction("Disable for this line");
-    //         action.kind = vscode.CodeActionKind.QuickFix;
-    //         action.diagnostics = vscode.languages.getDiagnostics(document.uri);
-    //         return [action];
-    //     }
-    // });    
-	// let disposable2 = vscode.commands.registerCommand('extension.helloWorld', () => {
-	// 	// The code you place here will be executed every time your command is executed
-    //     const activeEditor = vscode.window.activeTextEditor;
-    //     if (activeEditor) {
-    //         console.log(activeEditor.selection.active.line);
-    //     }
-	// 	// Display a message box to the user
-	// 	vscode.window.showInformationMessage('Hello World!');
-    // });
-    // context.subscriptions.push(disposable2);
-
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.format',
+            async () => {
+				vscode.commands.executeCommand("editor.action.format");
+            }
+		)
+    );
     /**************************************************************************/
     // Documenter
     /**************************************************************************/
