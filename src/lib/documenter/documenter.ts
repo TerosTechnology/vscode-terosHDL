@@ -45,7 +45,7 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     let configuration : vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
-    current_documenter = new jsteros.Documenter.Documenter(code,language_id,"!");
+    current_documenter = new jsteros.Documenter.Documenter(code,language_id,comment_symbol);
     if (true){
     // if (await current_documenter.check_correct_file() === true){
         let path_html = path_lib.sep + "resources" + path_lib.sep + "preview_module_doc.html";
