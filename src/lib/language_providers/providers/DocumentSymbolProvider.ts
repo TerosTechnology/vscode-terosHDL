@@ -147,6 +147,9 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
         });
         // Add each of the symbols in order
         for(let i of symbolsList) {
+            if (i === undefined){
+                break;
+            }
             let sym: DocumentSymbol = i.getDocumentSymbol();
             // if no top level elements present
             if(list.length === 0) {
