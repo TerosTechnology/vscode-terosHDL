@@ -111,9 +111,13 @@ end counter;
 
 ## Supported formatters
 
+<center> 
+
 | Verilog | VHDL       |
 | ------: | ---------- |
 |  iStyle | Standalone |
+
+</center> 
 
 ## Configuration
 
