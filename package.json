@@ -250,10 +250,9 @@
 					"description": "Select verilog formatter",
 					"type": "string",
 					"enum": [
-						"Istyle",
-						"verible"
+						"iStyle"
 					],
-					"default": "Istyle"
+					"default": "iStyle"
 				},
 				"teroshdl.formatter.verilog.type.istyle.style": {
 					"description": "Predefined Styling options",

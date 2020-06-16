@@ -100,10 +100,14 @@ export default class Dependencies_viewer_manager {
     return dependencies_dot;
   }
 
-
   private async update_viewer(){
     let dot = await this.get_dot();
-    await this.panel?.webview.postMessage({ command: "update", message: dot});
+    if (dot === undefined){
+      vscode.window.showInformationMessage("Please, install Python 3.");
+    }
+    else{
+      await this.panel?.webview.postMessage({ command: "update", message: dot});
+    }
   }
 
   //Clear

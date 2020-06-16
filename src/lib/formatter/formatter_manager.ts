@@ -28,10 +28,12 @@ export default class Formatter_manager {
     private lang : string = "";
     private formatter_name : string = "";
     private formatter;
+    private subscriptions: vscode.Disposable[] | undefined;
 
     constructor(language: string) {
         this.lang = language;
         this.config_formatter();
+        vscode.workspace.onDidChangeConfiguration(this.config_formatter, this, this.subscriptions);
     }
 
     public async format (code){
