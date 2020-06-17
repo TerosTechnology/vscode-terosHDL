@@ -155,6 +155,37 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
     context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc);}));
     /**************************************************************************/
+    // Hover Hexa
+    /**************************************************************************/
+    let aa = vscode.languages.registerHoverProvider({scheme: 'file', language: 'vhdl'}, { 
+        provideHover(document, position, token) {
+            // const wordRange = document.getText(document.getWordRangeAtPosition(position,/\w[-\w\.\""]*/g));
+            let wordRange = document.getWordRangeAtPosition(position, /\w[-\w\.\"]*/g);
+            if (wordRange !== undefined){
+                let leadingText = document.getText(new vscode.Range(wordRange.start, wordRange.end));
+                if (/x"[0-9a-fA-F_]+"/g.test(leadingText)) {
+                    const regex = /x"([0-9a-fA-F_]+)"/g;
+                    let number = regex.exec(leadingText.replace('_',''));
+                    if (number === null || number[1] === null){
+                        return;
+                    }
+                    let x = parseInt(number[1], 16);
+                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)');
+                }
+                else if (/[0-1_]+"/g.test(leadingText)) {
+                    const regex = /([0-1_]+)"/g;
+                    let number = regex.exec(leadingText.replace('_',''));
+                    if (number === null || number[1] === null){
+                        return;
+                    }
+                    let x = parseInt(number[0], 2);
+                    return new vscode.Hover('"' + leadingText + ' = ' + x + ' (unsigned)');
+                }
+            }
+        }
+    });
+    context.subscriptions.push(aa); 
+    /**************************************************************************/
     // Test manager
     /**************************************************************************/
     // get the Test Explorer extension
