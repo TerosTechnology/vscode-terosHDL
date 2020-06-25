@@ -157,7 +157,7 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Hover Hexa
     /**************************************************************************/
-    let aa = vscode.languages.registerHoverProvider({scheme: 'file', language: 'vhdl'}, { 
+    let hover_numbers_vhdl = vscode.languages.registerHoverProvider({scheme: 'file', language: 'vhdl'}, { 
         provideHover(document, position, token) {
             // const wordRange = document.getText(document.getWordRangeAtPosition(position,/\w[-\w\.\""]*/g));
             let wordRange = document.getWordRangeAtPosition(position, /\w[-\w\.\"]*/g);
@@ -184,7 +184,44 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }
     });
-    context.subscriptions.push(aa); 
+    let hover_numbers_verilog = vscode.languages.registerHoverProvider({scheme: 'file', language: 'verilog'}, { 
+        provideHover(document, position, token) {
+            // const wordRange = document.getText(document.getWordRangeAtPosition(position,/\w[-\w\.\""]*/g));
+            let wordRange = document.getWordRangeAtPosition(position, /\w[-\w\.\']*/g);
+            if (wordRange !== undefined){
+                let leadingText = document.getText(new vscode.Range(wordRange.start, wordRange.end));
+                if (/h[0-9a-fA-F_]+/g.test(leadingText)) {
+                    const regex = /h([0-9a-fA-F_]+)/g;
+                    let number = regex.exec(leadingText.replace('_',''));
+                    if (number === null || number[1] === null){
+                        return;
+                    }
+                    let x = parseInt(number[1], 16);
+                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)');
+                }
+                else if (/b[0-1_]+/g.test(leadingText)) {
+                    const regex = /b([0-1_]+)/g;
+                    let number = regex.exec(leadingText.replace('_',''));
+                    if (number === null || number[1] === null){
+                        return;
+                    }
+                    let x = parseInt(number[1], 2);
+                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)');
+                }
+                else if (/o[0-8_]+/g.test(leadingText)) {
+                    const regex = /o([0-7_]+)/g;
+                    let number = regex.exec(leadingText.replace('_',''));
+                    if (number === null || number[1] === null){
+                        return;
+                    }
+                    let x = parseInt(number[1], 8);
+                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)');
+                }
+            }
+        }
+    });
+    context.subscriptions.push(hover_numbers_vhdl); 
+    context.subscriptions.push(hover_numbers_verilog); 
     /**************************************************************************/
     // Test manager
     /**************************************************************************/

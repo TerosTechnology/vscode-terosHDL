@@ -87,7 +87,12 @@ export default class Dependencies_viewer_manager {
     if (files !== undefined){
       this.sources.push();
       for (let i=0; i < files.length; ++i){
-        this.sources.push(files[i]['path']);
+        if (files[i]['path'][0] === '/' && require('os').platform() === 'win32' ){
+          this.sources.push(files[i]['path'].substring(1));
+        }
+        else{
+          this.sources.push(files[i]['path']);
+        }
       }
       await this.update_viewer();
     }

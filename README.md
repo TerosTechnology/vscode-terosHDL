@@ -10,7 +10,8 @@
 8. [Style checking](#id8)
 9. [Formatting](#id9)
 10. [Dependencies viewer](#id10)
-11. [Future work](#id11)
+11. [Hover to evaluate binary, hexadecimal and octal values](#id11)
+12. [Future work](#id12)
 
 # 1. Introduction <a name="id1"></a>
 
@@ -111,13 +112,9 @@ end counter;
 
 ## Supported formatters
 
-<center> 
-
 | Verilog | VHDL       |
 | ------: | ---------- |
 |  iStyle | Standalone |
-
-</center> 
 
 ## Configuration
 
@@ -136,4 +133,12 @@ end counter;
 5. You can generate the indexed markdown documentation for all the files.
    ![alt text](./resources/images/readme/sample_dependencies_documentation.png "title")
 
-# 11. Future work
+
+# 11. Hover to evaluate binary, hexadecimal and octal values <a name="id11"></a>
+
+![alt text](./resources/images/readme/hover_binary_vhdl.png "title")
+
+![alt text](./resources/images/readme/hover_hexadecimal_verilog.png "title")
+
+
+# 12. Future work

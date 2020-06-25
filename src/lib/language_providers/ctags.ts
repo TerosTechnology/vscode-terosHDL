@@ -99,6 +99,7 @@ export class Symbol {
             case 'port'     : return SymbolKind.Boolean;
             case 'register' : return SymbolKind.Variable;
             case 'signal'   : return SymbolKind.Variable; //VHDL
+            case 'function' : return SymbolKind.Function; //VHDL
             case 'task'     : return SymbolKind.Function;
             case 'block'    : return SymbolKind.Module;
             case 'assert'   : return SymbolKind.Variable;   // No idea what to use

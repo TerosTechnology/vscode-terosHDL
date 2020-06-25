@@ -7,3 +7,4 @@
 --regex-vhdl=/^[ \t]*constant[ \t]*([^ ]+)/\1/c,constant/
 --regex-vhdl=/^[ \t]*([^ \t:]+)[ \t]*:[ \t]*process[ \t]*\(/\1/p,process/
 --regex-vhdl=/^[ \t]*([^ ]+)[ \t]*:[ \t]*(in|out|inout)/\1/o,port/i
+--regex-vhdl=/^[ \t]*function[ \t]+([a-z0-9_]+)/\1/f,function/i
