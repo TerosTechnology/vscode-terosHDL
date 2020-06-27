@@ -126,6 +126,15 @@ export async function update_documentation_module(document) {
     }
 }
 
+function normalize_path(path : string){
+    if (path[0] === '/' && require('os').platform() === 'win32' ){
+        return path.substring(1);
+    }
+    else{
+        return path;
+    }
+}
+
 async function export_as(type: string) {
     const path_lib = require('path');
     // /one/two/five.h --> five.h
@@ -143,17 +152,23 @@ async function export_as(type: string) {
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
             if (fileInfos?.path !== undefined){
-                current_documenter.save_markdown(fileInfos?.path);
+                current_documenter.save_markdown(normalize_path(fileInfos?.path));
             }
         });
     }
     else if (type === "pdf"){
+        let platform = require('os').platform();
+        if (platform !== 'linux' ){
+            vscode.window.showErrorMessage('Currently this feature is only supported for Linux.');
+            return;
+        }
+
         let filter = {'PDF':['pdf']};
         let default_path = full_path + '.pdf';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
             if (fileInfos?.path !== undefined){
-                current_documenter.save_pdf(fileInfos?.path);
+                current_documenter.save_pdf(normalize_path(fileInfos?.path));
             }
         });
     }
@@ -163,7 +178,7 @@ async function export_as(type: string) {
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
             if (fileInfos?.path !== undefined){
-                current_documenter.save_html(fileInfos?.path);
+                current_documenter.save_html(normalize_path(fileInfos?.path));
             }
         });
     }
@@ -173,7 +188,7 @@ async function export_as(type: string) {
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
             if (fileInfos?.path !== undefined){
-                current_documenter.save_svg(fileInfos?.path);
+                current_documenter.save_svg(normalize_path((fileInfos?.path)));
             }
         });
     }
