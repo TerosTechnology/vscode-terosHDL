@@ -85,6 +85,15 @@ end counter;
 4. Export your documentation to PDF, Markdown, HTML or SVG diagram.
 5. Edit your VHDL/Verilog file and save it. The preview will show automatically.
 
+## Wavedrom support
+
+TerosHDL supports WaveJSON format in the module description, a format that describes Digital Timing Diagrams:
+
+https://wavedrom.com/tutorial.html
+
+![alt text](./resources/images/readme/example_wavedrom.png "title")
+
+
 # 7. Errors checking <a name="id7"></a>
 
 ## Supported linters
