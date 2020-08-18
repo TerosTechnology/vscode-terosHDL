@@ -51,13 +51,29 @@ export default class VerilogHoverProvider implements HoverProvider {
             for(let i of ctags.symbols) {
                 // returns the first found tag. Disregards others
                 // TODO: very basic hover implementation. Can be extended
-                if(i.name === targetText) {
-                    let codeRange = new Range(i.startPosition, new Position (i.startPosition.line, Number.MAX_VALUE));
-                    let code = document.getText(codeRange).trim();
-                    let hoverText : MarkdownString = new MarkdownString();
-                    hoverText.appendCodeblock(code, document.languageId);
-                    this.logger.log("Hover object returned");
-                    return new Hover(hoverText);
+
+
+                //VHDL is case insensitive
+                if (document.languageId === "vhdl"){
+                    if(i.name.toUpperCase() === targetText.toUpperCase()) {
+                        let codeRange = new Range(i.startPosition, new Position (i.startPosition.line, Number.MAX_VALUE));
+                        let code = document.getText(codeRange).trim();
+                        let hoverText : MarkdownString = new MarkdownString();
+                        hoverText.appendCodeblock(code, document.languageId);
+                        this.logger.log("Hover object returned");
+                        return new Hover(hoverText);
+                    }
+                }
+                //Verilog is case sensitive
+                else if(document.languageId === "verilog"){
+                    if(i.name === targetText) {
+                        let codeRange = new Range(i.startPosition, new Position (i.startPosition.line, Number.MAX_VALUE));
+                        let code = document.getText(codeRange).trim();
+                        let hoverText : MarkdownString = new MarkdownString();
+                        hoverText.appendCodeblock(code, document.languageId);
+                        this.logger.log("Hover object returned");
+                        return new Hover(hoverText);
+                    }
                 }
             }
             this.logger.log("Hover object not found", Log_Severity.Warn);

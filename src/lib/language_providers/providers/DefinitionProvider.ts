@@ -53,8 +53,17 @@ export default class VerilogDefinitionProvider implements DefinitionProvider {
                 let definitions : DefinitionLink [] = [];
                 // find all matching symbols
                 for(let i of ctags.symbols) {
-                    if(i.name === targetText) {
-                        matchingSymbols.push(i);
+                    //VHDL is case insensitive
+                    if (document.languageId === "vhdl"){
+                        if(i.name.toUpperCase() === targetText.toUpperCase()) {
+                            matchingSymbols.push(i);
+                        }
+                    }
+                    //Verilog is case sensitive
+                    else if(document.languageId === "verilog"){
+                        if(i.name === targetText) {
+                            matchingSymbols.push(i);
+                        }
                     }
                 }
                 for(let i of matchingSymbols) {
