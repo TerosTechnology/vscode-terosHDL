@@ -93,7 +93,7 @@ TerosHDL supports WaveJSON format in the module description, a format that descr
 
 https://wavedrom.com/tutorial.html
 
-![alt text](./resources/images/readme/example_wavedrom.png "title")
+![alt text](./resources/images/readme/wavedrom_example.png "title")
 
 
 # 7. Errors checking <a name="id7"></a>
