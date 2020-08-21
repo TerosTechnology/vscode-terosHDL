@@ -87,6 +87,8 @@ end counter;
 
 ## Wavedrom support
 
+**THIS FEATURE IS EXPERIMENTAL. PLEASE, OPEN AN ISSUE IF YOU HAVE A BUG**
+
 TerosHDL supports WaveJSON format in the module description, a format that describes Digital Timing Diagrams:
 
 https://wavedrom.com/tutorial.html
