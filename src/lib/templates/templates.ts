@@ -36,9 +36,9 @@ export async function get_template() {
     const TYPES_VHDL      : string[] = ["cocotb", "tb", "tb", "component", "component", "component"];
     const SUBTYPES_VHDL   : string[] = ["cocotb", "vunit", "normal", "component", "signals", "instance"];
 
-    const TYPES_VERILOG_INFO : string[] = ["cocotb", "Verilator", "VUnit testbench", "Verilog testbench", "Copy as component", "Copy as signal", "Copy as instance"];
-    const TYPES_VERILOG      : string[] = ["cocotb", "verilator", "tb", "tb", "component", "component", "component"];
-    const SUBTYPES_VERILOG   : string[] = ["cocotb", "verilator", "vunit", "normal", "component", "signals", "instance"];
+    const TYPES_VERILOG_INFO : string[] = ["cocotb", "Verilator", "VUnit testbench", "Verilog testbench", "Copy as signal", "Copy as instance"];
+    const TYPES_VERILOG      : string[] = ["cocotb", "verilator", "tb", "tb", "component", "component"];
+    const SUBTYPES_VERILOG   : string[] = ["cocotb", "verilator", "vunit", "normal", "signals", "instance"];
 
     let type : string = "";
     let subtype : string = "";

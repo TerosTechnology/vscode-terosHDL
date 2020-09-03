@@ -212,6 +212,7 @@ export class Ctags {
             console.log(e);
             this.logger.log('Ctags Line Parser: ' + e, Log_Severity.Error);
             this.logger.log('Line: ' + line, Log_Severity.Error);
+            return undefined;
         }
     }
 
@@ -226,7 +227,10 @@ export class Ctags {
         let lines: string [] = tags.split(/\r?\n/);
         lines.forEach(line => {
             if(line !== ''){
-                this.symbols.push(<Symbol>this.parseTagLine(line));
+                let symbol = this.parseTagLine(line);
+                if (symbol !== undefined){
+                    this.symbols.push(<Symbol>symbol);    
+                }
             }
         });
 

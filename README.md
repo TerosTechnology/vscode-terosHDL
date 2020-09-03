@@ -24,6 +24,7 @@ The goal of TerosHDL is make the FPGA development easier and reliable. It is a p
 - Verilog HDL/SystemVerilog (https://marketplace.visualstudio.com/items?itemName=mshr-h.VerilogHDL)
 - VUnit (https://vunit.github.io/)
 - VSG (https://github.com/jeremiah-c-leary/vhdl-style-guide)
+- Wavedrom (https://github.com/wavedrom/wavedrom)
 
 # 3. Go to definition <a name="id3"></a>
 

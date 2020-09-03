@@ -3,7 +3,7 @@
 	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
 	"description": "VHDL and Verilog IDE.",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
@@ -458,7 +458,7 @@
 	},
 	"dependencies": {
 		"temp": "^0.9.0",
-		"jsteros": "file:/home/carlos/repo/colibri",
+		"jsteros": "file:../colibri",
 		"vscode-test-adapter-api": "^1.7.0",
 		"vscode-test-adapter-util": "^0.7.0"
 	},
