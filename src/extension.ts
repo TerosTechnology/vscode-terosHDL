@@ -65,7 +65,9 @@ let current_context;
 export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "teroshdl" is now active!');
+    console.log('Congratulations, your extension "teroshdl" is now active!');
+    // Help message
+    help_message();
 	//Context
 	current_context = context;
     /**************************************************************************/
@@ -289,5 +291,32 @@ export async function provideDocumentFormattingEdits(
     }
 }
 
+function help_message(){
+    const fs = require('fs');
+    const path = 'hello_teroshdl.txt';
+    try {
+      if (fs.existsSync(path)) {
+        //file exists
+        return;
+      }
+      else{
+        fs.writeFileSync(path, "Hello TerosHDL");
+      }
+    } catch(err) {
+      console.error(err);
+    }
+    vscode.window
+    .showInformationMessage('TerosHDL needs your help!', ...['Know the project', 'Donate'])
+    .then(selection => {
+        if (selection === 'Know the project') {
+            vscode.env.openExternal(vscode.Uri.parse(
+                'https://www.terostech.com/#Team'));
+        }
+        else if(selection === 'Donate'){
+            vscode.env.openExternal(vscode.Uri.parse(
+                'https://www.terostech.com/#donate'));
+        }
+    });
+}
 
 
