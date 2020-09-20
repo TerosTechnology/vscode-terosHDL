@@ -3,7 +3,7 @@
 1. [Introduction](#id1)
 2. [Thanks](#id2)
 3. [Go to definition](#id3)
-4. [Hover](#id4)
+4. [Hover and structure](#id4)
 5. [Template generator](#id5)
 6. [Documenter](#id6)
 7. [Errors checking](#id7)
@@ -32,7 +32,7 @@ You can jump to the definition with Ctrl+Click.
 
 ![alt text](./resources/images/readme/goto.png "title")
 
-# 4. Hover <a name="id4"></a>
+# 4. Hover and structure <a name="id4"></a>
 
 If you hover over a symbol, a preview of the declaration will appear.
 
@@ -63,7 +63,7 @@ If you hover over a symbol, a preview of the declaration will appear.
 
 ## Special comment symbols
 
-You can configure what symbol will be used to extract the comments in the HDL file. In the following example is used the symbol "!":
+You can configure what symbol will be used to extract the comments in the HDL file. It supports MarkDown style. In the following example is used the symbol "!":
 
 ```
 --! This is a description
@@ -71,7 +71,7 @@ You can configure what symbol will be used to extract the comments in the HDL fi
 entity counter is
   port (
     clk: in std_logic; --! Clock comment
-    out_data: out std_logic --! Description port comment
+    out_data: out std_logic --! Description **port comment**
   );
 end counter;
 ```
@@ -88,13 +88,17 @@ end counter;
 
 ## Wavedrom support
 
-**THIS FEATURE IS EXPERIMENTAL. PLEASE, OPEN AN ISSUE IF YOU HAVE A BUG**
-
 TerosHDL supports WaveJSON format in the module description, a format that describes Digital Timing Diagrams:
 
 https://wavedrom.com/tutorial.html
 
 ![alt text](./resources/images/readme/wavedrom_example.png "title")
+
+## Bitfield
+
+https://observablehq.com/collection/@drom/bitfield
+
+![alt text](./resources/images/readme/bitfield_example.png "title")
 
 
 # 7. Errors checking <a name="id7"></a>

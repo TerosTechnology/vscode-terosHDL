@@ -55,6 +55,7 @@ import VerilogDefinitionProvider from "./lib/language_providers/providers/Defini
 import VerilogCompletionItemProvider from "./lib/language_providers/providers/CompletionItemProvider";
 import {CtagsManager} from "./lib/language_providers/ctags";
 import {Logger} from "./lib/language_providers/Logger";
+import { openStdin } from 'process';
 
 let logger: Logger = new Logger();
 export let ctagsManager: CtagsManager;
@@ -293,7 +294,8 @@ export async function provideDocumentFormattingEdits(
 
 function help_message(){
     const fs = require('fs');
-    const path = 'hello_teroshdl.txt';
+    const path_lib = require('path');
+    const path = __dirname + path_lib.sep + 'hello_teroshdl.txt';
     try {
       if (fs.existsSync(path)) {
         //file exists
@@ -306,7 +308,7 @@ function help_message(){
       console.error(err);
     }
     vscode.window
-    .showInformationMessage('TerosHDL needs your help!', ...['Know the project', 'Donate'])
+    .showInformationMessage('TerosHDL needs your help!  😊', ...['Know the project', 'Donate'])
     .then(selection => {
         if (selection === 'Know the project') {
             vscode.env.openExternal(vscode.Uri.parse(
