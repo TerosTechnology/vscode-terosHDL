@@ -172,6 +172,7 @@
 						"Icarus",
 						"ModelSim",
 						"Verilator",
+						"svlint",
 						"xvlog"
 					],
 					"default": "Icarus"
