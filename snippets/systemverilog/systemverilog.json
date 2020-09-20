@@ -1,0 +1,199 @@
+{
+	"always_ff block": {
+		"prefix": "ff",
+		"body": [
+			"always_ff @( ${1:clock} ) begin : ${2:blockName}",
+			"\t$0",
+			"end"
+		],
+		"description": "Insert an always_ff block"
+	},
+	"always_comb block": {
+		"prefix": "comb",
+		"body": [
+			"always_comb begin : ${1:blockName}",
+			"\t$0",
+			"end"
+		],
+		"description": "Insert an always_comb block"
+	},
+	"include": {
+		"prefix": "inc",
+		"body": [
+			"`include \"$1\""
+		],
+		"description": "`include \"..\""
+	},
+	"parameter": {
+		"prefix": "parameter",
+		"body": [
+			"parameter $1 = $2;"
+		],
+		"description": "paramter var = val;"
+	},
+	"initial": {
+		"prefix": "initial",
+		"body": [
+			"initial begin",
+			"\t$0",
+			"end"
+		],
+		"description": "initial begin ... end"
+	},
+	"bit": {
+		"prefix": "bit",
+		"body": "bit"
+	},
+	"int": {
+		"prefix": "int",
+		"body": "int"
+	},
+	"byte": {
+		"prefix": "byte",
+		"body": "byte"
+	},
+	"logic": {
+		"prefix": "logic",
+		"body": "logic"
+	},
+	"packed": {
+		"prefix": "packed",
+		"body": "packed"
+	},
+	"this": {
+		"prefix": "this",
+		"body": "this"
+	},
+	"array": {
+		"prefix": "array",
+		"body": "[${1:8}:${2:0}]$0",
+		"description": "insert [x:y]"
+	},
+	"typedef struct packed": {
+		"prefix": "typedefstructpacked",
+		"body": [
+			"typedef struct packed {",
+			"\t$0",
+			"} ${1:struct_name};"
+		],
+		"description": "typedef struct packed { ... } name"
+	},
+	"class": {
+		"prefix": "class",
+		"body": [
+			"class ${1:className};",
+			"\tfunction new();",
+			"\t\t$0",
+			"\tendfunction //new()",
+			"endclass //$1"
+		],
+		"description": "class name; ... endclass"
+	},
+	"class extends": {
+		"prefix": "classextends",
+		"body": [
+			"class ${1:className} extends ${2:superClass};",
+			"\tfunction new();",
+			"\t\t$0",
+			"\tendfunction //new()",
+			"endclass //$1 extends $2"
+		],
+		"description": "class name extends super; ... endclass"
+	},
+	"task": {
+		"prefix": "task",
+		"body": [
+			"task ${1:automatic} ${2:taskName}(${3:arguments});",
+			"\t$0",
+			"endtask //$1"
+		],
+		"description": "task name; ... endtask"
+	},
+	"interface": {
+		"prefix": "interface",
+		"body": [
+			"interface ${1:interfacename};",
+			"\t$0",
+			"endinterface //$1"
+		],
+		"description": "interface name; ... endinterface"
+	},
+	"display": {
+		"prefix": "display",
+		"body": [
+			"\\$display(\"$1\"$2);$0"
+		],
+		"description": "$display(\"...\", params...)"
+	},
+	"timescale": {
+		"prefix": "ts",
+		"body": [
+			"`timescale ${1:1ps}/${2:1ps}$0"
+		]
+	},
+	"set Module": {
+		"prefix": "setmodule",
+		"body": [
+			"${1:mod_name} ${2:instance_name} (${3:.*}$0);"
+		],
+		"description": "set module, mod i0 (.*);"
+	},
+	"typedef enum": {
+		"prefix": "typedefenum",
+		"body": [
+			"typedef enum ${1:data_type} { $0 } ${2:name};"
+		],
+		"description": "typedef enum (data_type) { ... } name"
+	},
+	"enum": {
+		"prefix": "enum",
+		"body": [
+			"enum ${1:data_type} { $0 } ${2:name}"
+		],
+		"description": "enum (data_type) { ... } name"
+	},
+	"queue": {
+		"prefix": "queue",
+		"body": "${1:data_type} ${2:queue_name}[\\$];",
+		"description": "insert queue."
+	},
+	"mailbox": {
+		"prefix": "mailbox",
+		"body": [
+			"mailbox mbx",
+			"${1:mbx = new();}"
+		],
+		"description": "insert mailbox instance"
+	},
+	"Associative array": {
+		"prefix": "AA",
+		"body": "${1:data_type} ${2:name}[${3:index_type}];$0",
+		"description": "insert Associative array(AA)."
+	},
+	"assert": {
+		"prefix": "assert",
+		"body": [
+			"assert (${1:condition}) $2",
+			"else   ${3:error_process}"
+		],
+		"description": "insert assert() ... else ..."
+	},
+	"fork-join": {
+		"prefix": "forkjoin",
+		"body": [
+			"fork",
+			"\t$0",
+			"join"
+		],
+		"description": "fork ... join"
+	},
+	"forever": {
+		"prefix": "forever",
+		"body": [
+			"forever begin",
+			"\t$0",
+			"end"
+		],
+		"description": "forever begin ... end"
+	}
+}

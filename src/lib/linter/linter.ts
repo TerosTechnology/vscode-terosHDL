@@ -42,38 +42,40 @@ export default class Lint_manager {
                 })
             );
         }
-
-
     }
 
     config_linter() {
         //todo: use doc!! .git error
+        let normalized_lang = this.lang;
+        if (this.lang === "systemverilog"){
+            normalized_lang = "verilog";
+        }
         let linter_name: string;
-        linter_name = <string>vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + this.lang).get("linter.a");
+        linter_name = <string>vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + normalized_lang).get("linter.a");
         linter_name = linter_name.toLowerCase();
         this.linter_name = linter_name;
 
         if (this.linter_type === "linter"){
             //Enable custom binary exec
             let custom_call_enable = <boolean>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + this.lang + ".linter." + linter_name + ".xcall").get("enable");
+                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name + ".xcall").get("enable");
             let custom_call_bin = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + this.lang + ".linter." + linter_name + ".xcall").get("bin");
+                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name + ".xcall").get("bin");
             this.custom_exec = custom_call_bin;
             this.enable_custom_exec = custom_call_enable;
             //Custom linter path
             let linter_path = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + this.lang + ".linter." + linter_name).get("path");
+                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("path");
             this.linter_path = linter_path;
             //Custom arguments
             let linter_arguments = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + this.lang + ".linter." + linter_name).get("arguments");  
+                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("arguments");  
             this.linter_arguments = linter_arguments;
         }
 
-        this.linter_enable = vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + this.lang).get<boolean>("enable");
+        this.linter_enable = vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + normalized_lang).get<boolean>("enable");
         if (this.linter_enable === true) {
-            this.linter = new jsteros.Linter.Linter(linter_name);
+            this.linter = new jsteros.Linter.Linter(linter_name, this.lang);
             this.refresh_lint();            
         }
         else{

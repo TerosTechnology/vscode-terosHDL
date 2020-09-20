@@ -34,6 +34,7 @@ import * as formatter from "./lib/formatter/formatter_manager";
 
 let linter_vhdl;
 let linter_verilog;
+let linter_systemverilog;
 let linter_vhdl_style;
 let linter_verilog_style;
 let formatter_vhdl;
@@ -82,7 +83,8 @@ export function activate(context: vscode.ExtensionContext) {
     formatter_verilog = new formatter.default("verilog");
     // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
     const disposable = vscode.languages.registerDocumentFormattingEditProvider(
-        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" }],
+        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" }, 
+                { scheme: "file", language: "systemverilog" }],
         { provideDocumentFormattingEdits }
     );
     context.subscriptions.push(disposable);
@@ -113,6 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
 	linter_vhdl = new linter.default("vhdl","linter",context);
     linter_verilog = new linter.default("verilog","linter",context);
+    linter_systemverilog = new linter.default("systemverilog","linter",context);
     /**************************************************************************/
     // Check style
     /**************************************************************************/
