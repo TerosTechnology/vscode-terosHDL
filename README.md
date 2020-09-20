@@ -63,7 +63,7 @@ If you hover over a symbol, a preview of the declaration will appear.
 
 ## Special comment symbols
 
-You can configure what symbol will be used to extract the comments in the HDL file. In the following example is used the symbol "!":
+You can configure what symbol will be used to extract the comments in the HDL file. It supports MarkDown style. In the following example is used the symbol "!":
 
 ```
 --! This is a description
@@ -71,7 +71,7 @@ You can configure what symbol will be used to extract the comments in the HDL fi
 entity counter is
   port (
     clk: in std_logic; --! Clock comment
-    out_data: out std_logic --! Description port comment
+    out_data: out std_logic --! Description **port comment**
   );
 end counter;
 ```
