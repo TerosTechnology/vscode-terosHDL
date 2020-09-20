@@ -67,7 +67,7 @@ export default class Formatter_manager {
         else if(this.formatter_name === "istyle"){
             let style = <string>vscode.workspace
                 .getConfiguration("teroshdl.formatter.verilog.type.istyle").get("style");
-            options = {'style': get_istyle_style()};
+            options = {'style': get_istyle_style(),'extra_args':get_istyle_extra_args()};
         }
         return options;
     }
@@ -86,7 +86,14 @@ function get_istyle_style(){
         return "--style=ansi";
 	} else {
 		return map_style;
-	}
+    }
+}
+
+function get_istyle_extra_args(){
+    let extra_args = "";
+    let number_of_spaces = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.type.istyle").get("spaces");
+    extra_args = "-s" + number_of_spaces + " ";
+    return extra_args;
 }
 
 function get_standalone_vhdl_config() {

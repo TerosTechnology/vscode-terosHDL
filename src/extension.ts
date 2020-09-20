@@ -83,7 +83,8 @@ export function activate(context: vscode.ExtensionContext) {
     formatter_verilog = new formatter.default("verilog");
     // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
     const disposable = vscode.languages.registerDocumentFormattingEditProvider(
-        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" }],
+        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" }, 
+                { scheme: "file", language: "systemverilog" }],
         { provideDocumentFormattingEdits }
     );
     context.subscriptions.push(disposable);

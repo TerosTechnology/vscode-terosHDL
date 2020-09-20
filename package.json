@@ -361,17 +361,17 @@
 		"menus": {
 			"editor/title": [
 				{
-					"when": "resourceLangId == vhdl || resourceLangId == verilog",
+					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
 					"command": "teroshdl.generate_template",
 					"group": "navigation"
 				},
 				{
-					"when": "resourceLangId == vhdl || resourceLangId == verilog",
+					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
 					"command": "teroshdl.format",
 					"group": "navigation"
 				},
 				{
-					"when": "resourceLangId == vhdl || resourceLangId == verilog",
+					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
 					"command": "teroshdl.documentation.module",
 					"group": "navigation"
 				}
