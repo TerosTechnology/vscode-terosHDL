@@ -34,6 +34,7 @@ import * as formatter from "./lib/formatter/formatter_manager";
 
 let linter_vhdl;
 let linter_verilog;
+let linter_systemverilog;
 let linter_vhdl_style;
 let linter_verilog_style;
 let formatter_vhdl;
@@ -113,6 +114,7 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
 	linter_vhdl = new linter.default("vhdl","linter",context);
     linter_verilog = new linter.default("verilog","linter",context);
+    linter_systemverilog = new linter.default("systemverilog","linter",context);
     /**************************************************************************/
     // Check style
     /**************************************************************************/

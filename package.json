@@ -49,6 +49,11 @@
 				"language": "systemverilog",
 				"scopeName": "source.systemverilog",
 				"path": "./syntaxes/systemverilog.tmLanguage"
+			},
+			{
+				"language": "ucf",
+				"scopeName": "source.ucfconstraints",
+				"path": "./syntaxes/ucf.tmLanguage"
 			}
 		],
 		"configuration": {
@@ -417,6 +422,17 @@
 				"configuration": "./configs/vhdl.configuration.json"
 			},
 			{
+				"id": "ucf",
+				"aliases": [
+					"vivado ucf",
+					"ucf constraints"
+				],
+				"extensions": [
+					".ucf"
+				],
+				"configuration": "./configs/ucfconstraints.configuration.json"
+			},
+			{
 				"id": "verilog",
 				"aliases": [
 					"Verilog",
@@ -438,13 +454,22 @@
 				"extensions": [
 					".sv",
 					".SV"
-				]
+				],
+				"configuration": "./configs/systemverilog.configuration.json"
 			}
 		],
 		"snippets": [
 			{
 				"language": "vhdl",
 				"path": "./snippets/vhdl/vhdl.json"
+			},
+			{
+				"language": "verilog",
+				"path": "./snippets/verilog/verilog.json"
+			},
+			{
+				"language": "systemverilog",
+				"path": "./snippets/systemverilog/systemverilog.json"
 			}
 		]
 	},

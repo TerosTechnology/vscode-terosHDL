@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC '-//Apple//DTD PLIST 1.0//EN' 'http://www.apple.com/DTDs/PropertyList-1.0.dtd'>
+<plist>
+    <dict>
+        <key>fileTypes</key>
+        <array>
+            <string>ucf</string>
+            <string>UCF</string>
+        </array>
+        <key>name</key>
+        <string>ucfconstraints</string>
+        <key>patterns</key>
+        <array>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.other</string>
+                <key>match</key>
+                <string>\b(NET|TIMESPEC|TIMEGRP|INST|AREA_GROUP|RANGE|LOC|TNM|TIG|TNM_NET)\b</string>
+            </dict>
+
+            <dict>
+                <key>match</key>
+                <string>(#).*$\n?</string>
+                <key>name</key>
+                <string>comment.line</string>
+            </dict>
+
+            <dict>
+                <key>match</key>
+                <string>(=)</string>
+                <key>name</key>
+                <string>keyword.other</string>
+            </dict>
+
+        </array>
+        <key>scopeName</key>
+        <string>source.ucfconstraints</string>
+        <key>uuid</key>
+        <string>443130c7-cdc8-4a90-836c-a530d3b17266</string>
+    </dict>
+</plist>
