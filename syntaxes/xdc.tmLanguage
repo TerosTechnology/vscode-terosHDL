@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC 'Teros Technology' 'http://www.terostech.com'>
+<plist>
+    <dict>
+        <key>fileTypes</key>
+        <array>
+            <string>xdc</string>
+            <string>XDC</string>
+        </array>
+        <key>name</key>
+        <string>xdcconstraints</string>
+        <key>patterns</key>
+        <array>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.sdc.timing.const</string>
+                <key>match</key>
+                <string>\b(create_clock|create_generated_clock|
+                group_path|set_clock_groups|set_clock_latency|set_clock_sense|
+                set_clock_uncertainty|set_data_check|set_disable_timing|
+                set_input_delay|set_max_time_borrow|set_output_delay|
+                set_propagated_clock|add|add_delay|asynchronous|capacitance|clock|clock_fall|
+                decimal_places|divide_by|end|edge_rise|lib_cell|fall|fall_from|
+                fall_to|from|from_clock|group|hold|include_generated_clock|library|
+                logically_exclusive|master_clock|max|min|multiply_by|name|of_objects|
+                offset|period|phase|physically_exclusive|picofarads|picoseconds|
+                pin_load|edge_fall|input|output|port|rise|ris|pin|rise_from|rise_to|
+                section_id|setup|setup|source|through|time|to|to_clock|unit|waveform)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.sdc.timing.exceptions</string>
+                <key>match</key>
+                <string>\b(set_false_path|set_max_delay|set_min_delay|set_multicycle_path)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.sdc.logic</string>
+                <key>match</key>
+                <string>\b(set_case_analysis|set_logic_dc|set_logic_one|set_logic_zero)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.sdc.access</string>
+                <key>match</key>
+                <string>\b(all_clocks|all_fanin|all_fanout|all_inputs|all_outputs|
+                all_registers|current_design|get_cells|get_clocks|get_nets|
+                get_pins|get_ports|get_timing_arcs|get_timing_paths)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.sdc.general</string>
+                <key>match</key>
+                <string>\b(current_instance|set_hierarchy_separator|set_units|foreach_in_collection)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.sdc.wireload</string>
+                <key>match</key>
+                <string>\b(set_wire_load_min_block_size|set_wire_load_mode|
+                set_wire_load_model|set_wire_load_selection_group)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.sdc.set</string>
+                <key>match</key>
+                <string>\b(set_drive|set_driving_cell|set_fanout_load|
+                set_input_transition|set_port_fanout_number|
+                set_max_capacitance|set_min_capacitance|set_max_fanout|
+                set_max_transition|set_clock_gating_check|set_clock_transition|
+                set_ideal_latency|set_ideal_network|set_ideal_transition|
+                set_resistance|set_timing_derate|
+                set_max_area|create_voltage_area|set_level_shifter_strategy|
+                set_level_shifter_threshold|set_max_dynamic_power|
+                set_max_leakage_power|create_timing_netlist|update_timing_netlist)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.xdc.operating</string>
+                <key>match</key>
+                <string>\b(report_operating_conditions|reset_operating_conditions)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.xdc.timing</string>
+                <key>match</key>
+                <string>\b(set_input_jitter|set_external_delay|set_system_jitter)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.xdc.access</string>
+                <key>match</key>
+                <string>\b(set_logic_unconnected|all_cpus|all_dsps|all_ffs|all_hsios|all_latches|all_rams|
+                get_generated_clocks|get_iobanks|get_package_pins|get_path_groups|get_sites|filter|set_property|
+                get_hierarchy_separator)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.xdc.floorplan</string>
+                <key>match</key>
+                <string>\b(add_cells_to_pblock|create_pblock|delete_pblock|get_pblocks|
+                remove_cells_from_pblock|resize_pblock)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.xdc.power</string>
+                <key>match</key>
+                <string>\b(set_default_switching_activity|set_power_opt|set_switching_activity)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.xdc.pin</string>
+                <key>match</key>
+                <string>\b(set_package_pin_val)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.xdc.constant</string>
+                <key>match</key>
+                <string>\b(NO|YES|FALSE|TRUE|DISABLE|ENABLE|NONE|BACKBONE|SLOW|FAST|DONTCARE
+                NORMAL|HIGH|IBUF|IFD|BOTH|HALT|CONTINUE|CORRECT_AND_CONTINUE
+                CORRECT_AND_HALT|PRE_COMPUTED|FIRST_READBACK
+                DIFF_HSTL_I|DIFF_HSTL_II|DIFF_HSTL_II_18|DIFF_HSTL_II_DCI
+                DIFF_HSTL_II_DCI_18|DIFF_HSTL_II_T_DCI|DIFF_HSTL_II_T_DCI_18
+                DIFF_HSTL_II__T_DCI|DIFF_HSTL_I_18|DIFF_HSTL_I_DCI
+                DIFF_HSTL_I_DCI_18|DIFF_HSUL_12_DCI|DIFF_SSTL12_DCI
+                DIFF_SSTL12_T_DCI|DIFF_SSTL135|DIFF_SSTL135_DCI|DIFF_SSTL135_R
+                DIFF_SSTL135_T_DCI|DIFF_SSTL15|DIFF_SSTL15_DCI|DIFF_SSTL15_R
+                DIFF_SSTL15_T_DCI|DIFF_SSTL18_I|DIFF_SSTL18_II|DIFF_SSTL18_II_DCI
+                DIFF_SSTL18_II_T_DCI|DIFF_SSTL18_I_DCI|HSLVDCI_15|HSLVDCI_18|HSTL_I
+                HSTL_II|HSTL_II_18|HSTL_II_DCI|HSTL_II_DCI_18|HSTL_II_T_DCI
+                HSTL_II_T_DCI_18|HSTL_I_18|HSTL_I_DCI|HSTL_I_DCI_18|HSUL_12_DCI
+                LVCMOS12|LVCMOS18|LVCMOS25|LVCMOS33|LVDCI_15|LVDCI_18|LVDCI_DV2_15|LVDS
+                LVDCI_DV2_18|SSTL12_DCI|SSTL12_T_DCI|SSTL135|SSTL135_DCI|SSTL135_R
+                SSTL135_T_DCI|SSTL15|SSTL15_DCI|SSTL15_R|SSTL15_T_DCI|SSTL18_I
+                SSTL18_II|SSTL18_II_DCI|SSTL18_II_T_DCI|SSTL18_I_DCI
+                TUNED_SPLIT|UNTUNED_SPLIT_25|UNTUNED_SPLIT_40|UNTUNED_SPLIT_50
+                UNTUNED_SPLIT_60|UNTINED_SPLIT_75|TUNED|UNTUNED_25|UNTUNED_50
+                UNTUNED_75)\b</string>
+            </dict>
+
+            <dict>
+                <key>name</key>
+                <string>keyword.xdc.parameters</string>
+                <key>match</key>
+                <string>\b(ASYNC_REG|BEL|BLACK_BOX|BUFFER_TYPE|CFGBVS|CLOCK_BUFFER_TYPE|
+                CLOCK_DEDICATED_ROUTE|CLOCK_REGION|CLOCK_ROOT|CONFIG_MODE|
+                CONFIG_VOLTAGE|CONTAIN_ROUTING|DCI_CASCADE|DELAY_BYPASS|
+                DIFF_TERM|DIFF_TERM_ADV|DIRECT_ENABLE|DIRECT_RESET|DONT_TOUCH|DRIVE|
+                EDIF_EXTRA_SEARCH_PATHS|EQUALIZATION|EXCLUDE_PLACEMENT|FSM_ENCODING|
+                FSM_SAFE_STATE|GATED_CLOCK|H_SET|HIODELAY_GROUP|HLUTNM|HU_SET|
+                IBUF_LOW_PWR|IN_TERM|INTERNAL_VREF|IO_BUFFER_TYPE|IOB|IOBDELAY|
+                IODELAY_GROUP|IOSTANDARD|IP_REPO_PATHS|KEEP|KEEP_COMPATIBLE|
+                KEEP_HIERARCHY|KEEPER|LOC|LOCK_PINS|LUTNM|LVDS_PRE_EMPHASIS|
+                MARK_DEBUG|MAX_FANOUT|ODT|OFFSET_CNTRL|PACKAGE_PIN|PATH_MODE|PBLOCK|
+                POST_CRC|POST_CRC_ACTION|POST_CRC_FREQ|POST_CRC_INIT_FLAG|
+                POST_CRC_SOURCE|PRE_EMPHASIS|PROHIBIT|PULLDOWN|PULLUP|REF_NAME|
+                REF_PIN_NAME|RLOC|RLC_ORIGIN|RLOCS|ROUTE_STATUS|RPM|RPM_GRID|SLEW|
+                U_SET|USE_DSP48|USED_IN|VCCAUX_IO)\b</string>
+            </dict>
+
+            <dict>
+                <key>match</key>
+                <string>(#).*$\n?</string>
+                <key>name</key>
+                <string>comment.line</string>
+            </dict>
+
+            <dict>
+                <key>match</key>
+                <string>(=)</string>
+                <key>name</key>
+                <string>keyword.other</string>
+            </dict>
+
+        </array>
+        <key>scopeName</key>
+        <string>source.xdcconstraints</string>
+        <key>uuid</key>
+        <string>13ae410f-19a5-4269-a50d-300e639a7b95</string>
+    </dict>
+</plist>
