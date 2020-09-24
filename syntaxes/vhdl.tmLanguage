@@ -393,6 +393,14 @@
 					<key>name</key>
 					<string>comment.line.double-dash.vhdl</string>
 				</dict>
+				<dict>
+					<key>begin</key>
+					<string>/\*</string>
+					<key>end</key>
+					<string>\*/</string>
+					<key>name</key>
+					<string>comment.block.c-style.vhdl</string>
+				</dict>
 			</array>
 		</dict>
 		<key>component_instantiation_pattern</key>
