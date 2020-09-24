@@ -51,6 +51,11 @@
 				"path": "./syntaxes/systemverilog.tmLanguage"
 			},
 			{
+				"language": "xdc",
+				"scopeName": "source.xdcconstraints",
+				"path": "./syntaxes/xdc.tmLanguage"
+			},
+			{
 				"language": "ucf",
 				"scopeName": "source.ucfconstraints",
 				"path": "./syntaxes/ucf.tmLanguage"
@@ -434,6 +439,18 @@
 				"configuration": "./configs/ucfconstraints.configuration.json"
 			},
 			{
+				"id": "xdc",
+				"aliases": [
+					"vivado xdc",
+					"xdc constraints"
+				],
+				"extensions": [
+					".xdc",
+					".sdc"
+				],
+				"configuration": "./configs/xdcconstraints.configuration.json"
+			},	
+			{
 				"id": "verilog",
 				"aliases": [
 					"Verilog",
@@ -471,7 +488,11 @@
 			{
 				"language": "systemverilog",
 				"path": "./snippets/systemverilog/systemverilog.json"
-			}
+			},
+			{
+				"language": "xdc",
+				"path": "./snippets/xdc/xdc.json"
+			}			
 		]
 	},
 	"scripts": {
