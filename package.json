@@ -54,7 +54,12 @@
 				"language": "xdc",
 				"scopeName": "source.xdcconstraints",
 				"path": "./syntaxes/xdc.tmLanguage"
-			},			
+			},		
+			{
+				"language": "tcl",
+				"scopeName": "source.tcl",
+				"path": "./syntaxes/tcl.tmLanguage"
+			},		
 			{
 				"language": "ucf",
 				"scopeName": "source.ucfconstraints",
@@ -449,7 +454,19 @@
 					".sdc"
 				],
 				"configuration": "./configs/xdcconstraints.configuration.json"
-			},			
+			},		
+			{
+				"id": "tcl",
+				"aliases": [
+					"tcl",
+					"Tcl"
+				],
+				"extensions": [
+					".tcl",
+					".test"
+				],
+				"configuration": "./configs/tcl.configuration.json"
+			},		
 			{
 				"id": "verilog",
 				"aliases": [
@@ -488,7 +505,11 @@
 			{
 				"language": "systemverilog",
 				"path": "./snippets/systemverilog/systemverilog.json"
-			}
+			},
+			{
+				"language": "tcl",
+				"path": "./snippets/tcl/tcl.json"
+			}			
 		]
 	},
 	"scripts": {
