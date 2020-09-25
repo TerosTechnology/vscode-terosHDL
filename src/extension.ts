@@ -57,6 +57,7 @@ import VerilogCompletionItemProvider from "./lib/language_providers/providers/Co
 import {CtagsManager} from "./lib/language_providers/ctags";
 import {Logger} from "./lib/language_providers/Logger";
 import { openStdin } from 'process';
+import { parse } from 'path';
 
 let logger: Logger = new Logger();
 export let ctagsManager: CtagsManager;
@@ -176,7 +177,13 @@ export function activate(context: vscode.ExtensionContext) {
                         return;
                     }
                     let x = parseInt(number[1], 16);
-                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)');
+
+                    let pow_hex =  Math.pow(16,number[1].length);
+                    let x1 = parseInt(number[1][0], 16);
+                    if (x > pow_hex >> 1) {
+                        x1 = x-pow_hex;
+                    }
+                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)  = ' + x1 + ' (signed)');
                 }
                 else if (/[0-1_]+"/g.test(leadingText)) {
                     const regex = /([0-1_]+)"/g;
