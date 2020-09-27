@@ -4,7 +4,7 @@
 // Carlos Alberto Ruiz Naranjo
 // Alfredo Saez
 //
-// This file is part of Colibri.
+// This file is part of vscode-terosHDL.
 //
 // Colibri is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -189,6 +189,16 @@ async function export_as(type: string) {
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
             if (fileInfos?.path !== undefined){
                 current_documenter.save_svg(normalize_path((fileInfos?.path)));
+            }
+        });
+    }
+    else if (type === "latex"){
+        let filter = {'LaTeX':['latex']};
+        let default_path = full_path + '.tex';
+        let uri = vscode.Uri.file(default_path);
+        vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
+            if (fileInfos?.path !== undefined){
+                current_documenter.save_latex(normalize_path((fileInfos?.path)));
             }
         });
     }
