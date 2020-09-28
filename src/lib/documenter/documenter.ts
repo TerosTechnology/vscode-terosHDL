@@ -193,7 +193,7 @@ async function export_as(type: string) {
         });
     }
     else if (type === "latex"){
-        let filter = {'LaTeX':['latex']};
+        let filter = {'latex':['latex']};
         let default_path = full_path + '.tex';
         let uri = vscode.Uri.file(default_path);
         vscode.window.showSaveDialog({filters : filter, defaultUri: uri}).then(fileInfos => {
