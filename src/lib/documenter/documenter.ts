@@ -48,7 +48,7 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     current_documenter = new jsteros.Documenter.Documenter(code,language_id,comment_symbol);
     if (true){
     // if (await current_documenter.check_correct_file() === true){
-        let path_html = path_lib.sep + "resources" + path_lib.sep + "preview_module_doc.html";
+        let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
         let previewHtml = await node_utilities.readFileAsync(
                 context.asAbsolutePath(path_html), "utf8");
         previewHtml += await current_documenter.get_html(true);
@@ -114,7 +114,7 @@ export async function update_documentation_module(document) {
         current_documenter = new jsteros.Documenter.Documenter(code,language_id,comment_symbol);
         if (true){
         // if (await current_documenter.check_correct_file() === true){
-            let path_html = path_lib.sep + "resources" + path_lib.sep + "preview_module_doc.html";
+            let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
             let previewHtml = await node_utilities.readFileAsync(
                 main_context.asAbsolutePath(path_html), "utf8");
             previewHtml += await current_documenter.get_html(true);
