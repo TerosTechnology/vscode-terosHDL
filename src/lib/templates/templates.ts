@@ -32,7 +32,7 @@ export async function get_template() {
     let document = vscode.window.activeTextEditor.document;
     let language_id : string = document.languageId;
 
-    const TYPES_VHDL_INFO : string[] = ["cocotb", "VUnit testbench", "VHDL testbench", "Copy as component", "Copy as signal", "Copy as instance","Copy as instance_2008"];
+    const TYPES_VHDL_INFO : string[] = ["cocotb", "VUnit testbench", "VHDL testbench", "Copy as component", "Copy as signal", "Copy as instance","Copy as instance_vhdl_>93"];
     const TYPES_VHDL      : string[] = ["cocotb", "tb", "tb", "component", "component", "component", "component"];
     const SUBTYPES_VHDL   : string[] = ["cocotb", "vunit", "normal", "component", "signals", "instance", "instance_vhdl_2008"];
 
