@@ -178,8 +178,12 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                     let x = parseInt(number[1], 16);
                     let x1 = eval_signed_hex(number[1],x);
-                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)  = ' + x1 + ' (signed)');
-                }
+                    if (x === x1 ) {
+                        return new vscode.Hover(leadingText + ' = ' + x );
+                    }else{
+                        return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)  || ' + x1 + ' (signed)');
+                    }
+                }   
                 else if (/[0-1_]+"/g.test(leadingText)) {
                     const regex = /([0-1_]+)"/g;
                     let number = regex.exec(leadingText.replace('_',''));
@@ -188,7 +192,11 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                     let x = parseInt(number[0], 2);
                     let x1 =eval_signed_bin(number[0],x);
-                    return new vscode.Hover('"' + leadingText + ' = ' + x + ' (unsigned) = ' + x1 + ' (signed)');
+                    if (x === x1 ) {
+                        return new vscode.Hover('"' + leadingText + ' = ' + x );
+                    }else{
+                        return new vscode.Hover('"' + leadingText + ' = ' + x + ' (unsigned) || ' + x1 + ' (signed)');
+                    }
                 }
             }
         }
@@ -207,7 +215,11 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                     let x = parseInt(number[1], 16);
                     let x1 = eval_signed_hex(number[1],x);
-                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) = ' + x1 + ' (signed)');
+                    if (x === x1 ) {
+                        return new vscode.Hover(leadingText + ' = ' + x );
+                    }else{
+                        return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) || ' + x1 + ' (signed)');
+                    }
                 }
                 else if (/b[0-1_]+/g.test(leadingText)) {
                     const regex = /b([0-1_]+)/g;
@@ -217,7 +229,11 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                     let x = parseInt(number[1], 2);
                     let x1 =eval_signed_bin(number[1],x);
-                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) = ' + x1 + ' (signed)');
+                    if (x === x1 ) {
+                        return new vscode.Hover(leadingText + ' = ' + x );
+                    }else{
+                        return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) || ' + x1 + ' (signed)');
+                    }
                 }
                 else if (/o[0-8_]+/g.test(leadingText)) {
                     const regex = /o([0-7_]+)/g;
@@ -227,7 +243,11 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                     let x = parseInt(number[1], 8);
                     let x1 =eval_signed_oct(number[1],x);
-                    return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) = ' + x1 + ' (signed)');
+                    if (x === x1 ) {
+                        return new vscode.Hover(leadingText + ' = ' + x );
+                    }else{
+                        return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) || ' + x1 + ' (signed)');
+                    }
                 }
             }
         }
