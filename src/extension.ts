@@ -31,6 +31,8 @@ import * as documentation from "./lib/documenter/documenter";
 import * as linter from "./lib/linter/linter";
 // Formatter
 import * as formatter from "./lib/formatter/formatter_manager";
+// Number hover
+import * as number_hover from "./lib/number_hover/number_hover";
 
 let linter_vhdl;
 let linter_verilog;
@@ -41,21 +43,21 @@ let formatter_vhdl;
 let formatter_verilog;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
-let dependencies_viewer_manager : dependencies_viewer.default;
+let dependencies_viewer_manager: dependencies_viewer.default;
 // Test Manager
 import { VUnitAdapter } from './lib/tester/controller';
 import { TestHub, testExplorerExtensionId } from 'vscode-test-adapter-api';
 import { Log, TestAdapterRegistrar } from 'vscode-test-adapter-util';
 
-let testHub   : TestHub | undefined;
+let testHub: TestHub | undefined;
 let controller: VUnitAdapter | undefined;
 // Language providers
 import VerilogDocumentSymbolProvider from "./lib/language_providers/providers/DocumentSymbolProvider";
 import VerilogHoverProvider from "./lib/language_providers/providers/HoverProvider";
 import VerilogDefinitionProvider from "./lib/language_providers/providers/DefinitionProvider";
 import VerilogCompletionItemProvider from "./lib/language_providers/providers/CompletionItemProvider";
-import {CtagsManager} from "./lib/language_providers/ctags";
-import {Logger} from "./lib/language_providers/Logger";
+import { CtagsManager } from "./lib/language_providers/ctags";
+import { Logger } from "./lib/language_providers/Logger";
 import { openStdin } from 'process';
 import { parse } from 'path';
 
@@ -66,13 +68,13 @@ let current_context;
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
+    // Use the console to output diagnostic information (console.log) and errors (console.error)
+    // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "teroshdl" is now active!');
     // Help message
     help_message();
-	//Context
-	current_context = context;
+    //Context
+    current_context = context;
     /**************************************************************************/
     // Templates
     /**************************************************************************/
@@ -84,8 +86,8 @@ export function activate(context: vscode.ExtensionContext) {
     formatter_verilog = new formatter.default("verilog");
     // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
     const disposable = vscode.languages.registerDocumentFormattingEditProvider(
-        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" }, 
-                { scheme: "file", language: "systemverilog" }],
+        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
+        { scheme: "file", language: "systemverilog" }],
         { provideDocumentFormattingEdits }
     );
     context.subscriptions.push(disposable);
@@ -93,9 +95,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(
             'teroshdl.format',
             async () => {
-				vscode.commands.executeCommand("editor.action.format");
+                vscode.commands.executeCommand("editor.action.format");
             }
-		)
+        )
     );
     /**************************************************************************/
     // Documenter
@@ -104,24 +106,23 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(
             'teroshdl.documentation.module',
             async () => {
-				await documentation.get_documentation_module(context);
+                await documentation.get_documentation_module(context);
             }
-		),
-        // vscode.workspace.onDidChangeTextDocument((e) => documentation.update_documentation_module(e.document)),
+        ),
         vscode.workspace.onDidOpenTextDocument((e) => documentation.update_documentation_module(e)),
         vscode.workspace.onDidSaveTextDocument((e) => documentation.update_documentation_module(e)),
     );
     /**************************************************************************/
     // Linter
     /**************************************************************************/
-	linter_vhdl = new linter.default("vhdl","linter",context);
-    linter_verilog = new linter.default("verilog","linter",context);
-    linter_systemverilog = new linter.default("systemverilog","linter",context);
+    linter_vhdl = new linter.default("vhdl", "linter", context);
+    linter_verilog = new linter.default("verilog", "linter", context);
+    linter_systemverilog = new linter.default("systemverilog", "linter", context);
     /**************************************************************************/
     // Check style
     /**************************************************************************/
-    linter_vhdl_style = new linter.default("vhdl","linter_style",context);
-    linter_verilog_style = new linter.default("verilog","linter_style",context);
+    linter_vhdl_style = new linter.default("vhdl", "linter_style", context);
+    linter_verilog_style = new linter.default("verilog", "linter_style", context);
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
@@ -130,21 +131,22 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(
             'teroshdl.dependencies.viewer',
             async () => {
-				await dependencies_viewer_manager.open_viewer();
+                await dependencies_viewer_manager.open_viewer();
             }
-		)
+        )
     );
     /**************************************************************************/
     // Language providers
     /**************************************************************************/
     // document selector
-    let verilogSelector : vscode.DocumentSelector = {scheme: 'file', language: 'verilog'};
-    let vhdlSelector : vscode.DocumentSelector = {scheme: 'file', language: 'vhdl'};
+    let verilogSelector: vscode.DocumentSelector = [{ scheme: 'file', language: 'verilog' }
+        , { scheme: 'file', language: 'systemverilog' }];
+    let vhdlSelector: vscode.DocumentSelector = { scheme: 'file', language: 'vhdl' };
     // Configure ctags
     ctagsManager = new CtagsManager(logger, context);
     ctagsManager.configure();
     // Configure Document Symbol Provider
-    let docProvider = new VerilogDocumentSymbolProvider(logger,context);
+    let docProvider = new VerilogDocumentSymbolProvider(logger, context);
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
     // Configure Completion Item Provider
@@ -160,100 +162,22 @@ export function activate(context: vscode.ExtensionContext) {
     let defProvider = new VerilogDefinitionProvider(logger);
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, defProvider));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
-    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc);}));
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc); }));
     /**************************************************************************/
     // Hover Hexa
     /**************************************************************************/
-    let hover_numbers_vhdl = vscode.languages.registerHoverProvider({scheme: 'file', language: 'vhdl'}, { 
+    let hover_numbers_vhdl = vscode.languages.registerHoverProvider(vhdlSelector, {
         provideHover(document, position, token) {
-            // const wordRange = document.getText(document.getWordRangeAtPosition(position,/\w[-\w\.\""]*/g));
-            let wordRange = document.getWordRangeAtPosition(position, /\w[-\w\.\"]*/g);
-            if (wordRange !== undefined){
-                let leadingText = document.getText(new vscode.Range(wordRange.start, wordRange.end));
-                if (/x"[0-9a-fA-F_]+"/g.test(leadingText)) {
-                    const regex = /x"([0-9a-fA-F_]+)"/g;
-                    let number = regex.exec(leadingText.replace('_',''));
-                    if (number === null || number[1] === null){
-                        return;
-                    }
-                    let x = parseInt(number[1], 16);
-                    let x1 = eval_signed_hex(number[1],x);
-                    if (x === x1 ) {
-                        return new vscode.Hover(leadingText + ' = ' + x );
-                    }else{
-                        return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned)  || ' + x1 + ' (signed)');
-                    }
-                }   
-                else if (/[0-1_]+"/g.test(leadingText)) {
-                    const regex = /([0-1_]+)"/g;
-                    let number = regex.exec(leadingText.replace('_',''));
-                    if (number === null || number[1] === null){
-                        return;
-                    }
-                    let x = parseInt(number[0], 2);
-                    let x1 =eval_signed_bin(number[0],x);
-                    if (x === x1 ) {
-                        return new vscode.Hover('"' + leadingText + ' = ' + x );
-                    }else{
-                        return new vscode.Hover('"' + leadingText + ' = ' + x + ' (unsigned) || ' + x1 + ' (signed)');
-                    }
-                }
-            }
+            return number_hover.vhdl_hover(document, position, token);
         }
     });
-    let hover_numbers_verilog = vscode.languages.registerHoverProvider({scheme: 'file', language: 'verilog'}, { 
+    let hover_numbers_verilog = vscode.languages.registerHoverProvider(verilogSelector, {
         provideHover(document, position, token) {
-            // const wordRange = document.getText(document.getWordRangeAtPosition(position,/\w[-\w\.\""]*/g));
-            let wordRange = document.getWordRangeAtPosition(position, /\w[-\w\.\']*/g);
-            if (wordRange !== undefined){
-                let leadingText = document.getText(new vscode.Range(wordRange.start, wordRange.end));
-                if (/h[0-9a-fA-F_]+/g.test(leadingText)) {
-                    const regex = /h([0-9a-fA-F_]+)/g;
-                    let number = regex.exec(leadingText.replace('_',''));
-                    if (number === null || number[1] === null){
-                        return;
-                    }
-                    let x = parseInt(number[1], 16);
-                    let x1 = eval_signed_hex(number[1],x);
-                    if (x === x1 ) {
-                        return new vscode.Hover(leadingText + ' = ' + x );
-                    }else{
-                        return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) || ' + x1 + ' (signed)');
-                    }
-                }
-                else if (/b[0-1_]+/g.test(leadingText)) {
-                    const regex = /b([0-1_]+)/g;
-                    let number = regex.exec(leadingText.replace('_',''));
-                    if (number === null || number[1] === null){
-                        return;
-                    }
-                    let x = parseInt(number[1], 2);
-                    let x1 =eval_signed_bin(number[1],x);
-                    if (x === x1 ) {
-                        return new vscode.Hover(leadingText + ' = ' + x );
-                    }else{
-                        return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) || ' + x1 + ' (signed)');
-                    }
-                }
-                else if (/o[0-8_]+/g.test(leadingText)) {
-                    const regex = /o([0-7_]+)/g;
-                    let number = regex.exec(leadingText.replace('_',''));
-                    if (number === null || number[1] === null){
-                        return;
-                    }
-                    let x = parseInt(number[1], 8);
-                    let x1 =eval_signed_oct(number[1],x);
-                    if (x === x1 ) {
-                        return new vscode.Hover(leadingText + ' = ' + x );
-                    }else{
-                        return new vscode.Hover(leadingText + ' = ' + x + ' (unsigned) || ' + x1 + ' (signed)');
-                    }
-                }
-            }
+            return number_hover.verilog_hover(document, position, token);
         }
     });
-    context.subscriptions.push(hover_numbers_vhdl); 
-    context.subscriptions.push(hover_numbers_verilog); 
+    context.subscriptions.push(hover_numbers_vhdl);
+    context.subscriptions.push(hover_numbers_verilog);
     /**************************************************************************/
     // Test manager
     /**************************************************************************/
@@ -293,25 +217,25 @@ export async function provideDocumentFormattingEdits(
     document: vscode.TextDocument,
     options: vscode.FormattingOptions,
     token: vscode.CancellationToken
-  ): Promise<vscode.TextEdit[]> {
+): Promise<vscode.TextEdit[]> {
     const edits: vscode.TextEdit[] = [];
 
-    let code : string = document.getText();
+    let code: string = document.getText();
     let opt = options;
-    let code_format : string;
-    if (document.languageId === "vhdl"){
+    let code_format: string;
+    if (document.languageId === "vhdl") {
         code_format = await formatter_vhdl.format(code);
     }
     else {
         code_format = await formatter_verilog.format(code);
     }
     //Error
-    if (code_format === null){
+    if (code_format === null) {
         // vscode.window.showErrorMessage('Select a valid file.!');
         console.log("Error format code.");
         return edits;
     }
-    else{
+    else {
         const replacement = vscode.TextEdit.replace(
             formatter.getDocumentRange(document),
             code_format
@@ -321,59 +245,34 @@ export async function provideDocumentFormattingEdits(
     }
 }
 
-function help_message(){
+function help_message() {
     const fs = require('fs');
     const path_lib = require('path');
     const path = __dirname + path_lib.sep + 'hello_teroshdl.txt';
     try {
-      if (fs.existsSync(path)) {
-        //file exists
-        return;
-      }
-      else{
-        fs.writeFileSync(path, "Hello TerosHDL");
-      }
-    } catch(err) {
-      console.error(err);
+        if (fs.existsSync(path)) {
+            //file exists
+            return;
+        }
+        else {
+            fs.writeFileSync(path, "Hello TerosHDL");
+        }
+    } catch (err) {
+        console.error(err);
     }
     vscode.window
-    .showInformationMessage('TerosHDL needs your help!  😊', ...['Know the project', 'Donate'])
-    .then(selection => {
-        if (selection === 'Know the project') {
-            vscode.env.openExternal(vscode.Uri.parse(
-                'https://www.terostech.com/#Team'));
-        }
-        else if(selection === 'Donate'){
-            vscode.env.openExternal(vscode.Uri.parse(
-                'https://www.terostech.com/#donate'));
-        }
-    });
+        .showInformationMessage('TerosHDL needs your help!  😊', ...['Know the project', 'Donate'])
+        .then(selection => {
+            if (selection === 'Know the project') {
+                vscode.env.openExternal(vscode.Uri.parse(
+                    'https://www.terostech.com/#Team'));
+            }
+            else if (selection === 'Donate') {
+                vscode.env.openExternal(vscode.Uri.parse(
+                    'https://www.terostech.com/#donate'));
+            }
+        });
 }
 
-function eval_signed_hex(number_s, int_number){
-    let pow_hex =  Math.pow(16,number_s.length);
-    let x1 = int_number;
-    if (int_number >= pow_hex >> 1) {
-        x1 = int_number-pow_hex;
-    }
-    return x1;
-}
 
-function eval_signed_bin(number_s, int_number){
-    let pow_bin =  1 << number_s.length-1;
-    let x1 = int_number;
-    if (int_number >= pow_bin >> 1) {
-        x1 = int_number-pow_bin;
-    }
-    return x1;
-}
-
-function eval_signed_oct(number_s, int_number){
-    let pow_oct =  Math.pow(8,number_s.length);
-    let x1 = int_number;
-    if (int_number >= pow_oct >> 1) {
-        x1 = int_number-pow_oct;
-    }
-    return x1;
-}
 
