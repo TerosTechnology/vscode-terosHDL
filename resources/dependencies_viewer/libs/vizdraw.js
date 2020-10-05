@@ -2,9 +2,10 @@
 // default
 const vscode = acquireVsCodeApi();
 
-document.getElementById("add-source").onclick = function() {send_command("add_source");};
-document.getElementById("clear-graph").onclick = function() {send_command("clear_graph");};
-document.getElementById("generate-documentation").onclick = function() {send_command("generate_documentation");};
+document.getElementById("add-source").onclick = function () { send_command("add_source"); };
+document.getElementById("clear-graph").onclick = function () { send_command("clear_graph"); };
+document.getElementById("generate-documentation-markdown").onclick = function () { send_command("generate_documentation_markdown"); };
+document.getElementById("generate-documentation-html").onclick = function () { send_command("generate_documentation_html"); };
 
 function send_command(command) {
     vscode.postMessage({
@@ -27,25 +28,25 @@ window.addEventListener('message', event => {
 });
 
 var graph = null;
-function update_graph(dot){
+function update_graph(dot) {
     let viz = new Viz();
     viz.renderSVGElement(dot)
         .then(function (element) {
-            if (graph !== null){
+            if (graph !== null) {
                 document.body.removeChild(graph);
             }
             document.body.appendChild(element);
             graph = element;
-            
-        panZoom = svgPanZoom(element, panConfig);
-        panZoom.zoom(0.8);
-        panZoom.center();
-        panZoom.resize();
-        trimZoomBtns();
-    });
+
+            panZoom = svgPanZoom(element, panConfig);
+            panZoom.zoom(0.8);
+            panZoom.center();
+            panZoom.resize();
+            trimZoomBtns();
+        });
 }
-function clear(){
-    if (graph !== null){
+function clear() {
+    if (graph !== null) {
         document.body.removeChild(graph);
         graph = null;
     }
