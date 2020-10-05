@@ -145,10 +145,10 @@ export default class Dependencies_viewer_manager {
     let project_manager = new jsteros.Project_manager.Manager("");
     project_manager.add_source_from_array(this.sources);
     if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, false);
+      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
     }
     else {
-      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, false);
+      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
     }
   }
 
