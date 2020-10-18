@@ -67,7 +67,7 @@ export async function get_template() {
     else {
         return;
     }
-
+    if (type === '' || subtype === '') { return; };
     let options = {
         "type": subtype
     };

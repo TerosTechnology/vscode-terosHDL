@@ -249,16 +249,18 @@ export async function provideDocumentFormattingEdits(
         code_selected_text = editor.document.getText(editor.selection);
     }
     //Code to format
-    let format_mode: boolean = false;
+    let format_mode_selection: boolean = false;
     let code_to_format: string = '';
     let selection_to_format;
     if (code_selected_text !== '') {
-        // let init: number = utils.line_index_to_character_index(selection_selected_text._start._line,
-        //     selection_selected_text._start._character, code_document);
-        // let end: number = utils.line_index_to_character_index(selection_selected_text._end._line,
-        //     selection_selected_text._end._character, code_document);
-        // let selection_add: string = "#$$#colibri#$$#" + code_selected_text + "%%!!teros!!%%";
-        // code_to_format = utils.replace_range(code_document, init, end, selection_add);
+        let init: number = utils.line_index_to_character_index(selection_selected_text._start._line,
+            selection_selected_text._start._character, code_document);
+        let end: number = utils.line_index_to_character_index(selection_selected_text._end._line,
+            selection_selected_text._end._character, code_document);
+        let selection_add: string = "#$$#colibri#$$#" + code_selected_text + "%%!!teros!!%%";
+        code_to_format = utils.replace_range(code_document, init, end, selection_add);
+        format_mode_selection = true;
+
         code_to_format = code_selected_text;
         selection_to_format = selection_selected_text;
     }
@@ -275,6 +277,13 @@ export async function provideDocumentFormattingEdits(
     else {
         code_format = await formatter_verilog.format(code_to_format);
     }
+    // if (format_mode_selection === true) {
+    //     let start_index = code_format.indexOf("#$$#colibri#$$#");
+    //     let end_index = code_format.indexOf("%%!!teros!!%%");
+    //     code_format = code_format.substring(start_index, end_index);
+    //     code_format = code_format.replace("#$$#colibri#$$#", "");
+    //     code_format = code_format.replace("%%!!teros!!%%", "");
+    // }
     //Error
     if (code_format === null) {
         // vscode.window.showErrorMessage('Select a valid file.!');

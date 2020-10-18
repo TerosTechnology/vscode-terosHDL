@@ -23,10 +23,10 @@
 export function line_index_to_character_index(line_number: number, character_number: number, txt: string): number {
     let txt_split = txt.split('\n');
     let character_index: number = 0;
-    for (let i = 0; i < line_number + 1; ++i) {
-        character_index += txt_split[i].length;
+    for (let i = 0; i < line_number; ++i) {
+        character_index += txt_split[i].length + 1;
     }
-    // character_index += character_number;
+    character_index += character_number;
     return character_index;
 }
 
