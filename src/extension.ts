@@ -220,23 +220,6 @@ export async function provideDocumentFormattingEdits(
     token: vscode.CancellationToken
 ): Promise<vscode.TextEdit[]> {
     const edits: vscode.TextEdit[] = [];
-
-    // let code: string = '';
-    // let selection_mode: boolean = true;
-    // let editor = vscode.window.activeTextEditor;
-    // let selection;
-    // if (editor !== undefined) {
-    //     selection = editor.selection;
-    //     code = editor.document.getText(editor.selection);
-    // }
-    // if (code === '') {
-    //     selection_mode = false;
-    //     code = document.getText();
-    //     selection = formatter.getDocumentRange(document);
-    // }
-    // else {
-
-    // }
     //Get document code
     let code_document: string = document.getText();
     let selection_document = formatter.getDocumentRange(document);
