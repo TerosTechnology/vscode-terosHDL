@@ -99,8 +99,8 @@ function get_istyle_extra_args() {
 function get_standalone_vhdl_config() {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl.formatter.vhdl.type.standalone');
     let settings = {
-        "RemoveComments": configuration.get('remove-comments'),
-        "RemoveAsserts": configuration.get('remove-asserts'),
+        "RemoveComments": false,
+        "RemoveAsserts": false,
         "CheckAlias": false,
         "SignAlignSettings": {
             "isRegional": true,
