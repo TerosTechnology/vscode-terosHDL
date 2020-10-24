@@ -290,10 +290,9 @@
 					"description": "Select verilog formatter",
 					"type": "string",
 					"enum": [
-						"VSG",
 						"Standalone"
 					],
-					"default": "VSG"
+					"default": "Standalone"
 				},
 				"teroshdl.formatter.vhdl.type.standalone.keyword-case": {
 					"description": "Keyword case",
@@ -304,6 +303,11 @@
 						"UpperCase"
 					]
 				},
+				"teroshdl.formatter.vhdl.type.standalone.align-comments": {
+					"description": "Align comments",
+					"type": "boolean",
+					"default": false
+				},
 				"teroshdl.formatter.vhdl.type.standalone.type-name-case": {
 					"description": "Type name case",
 					"type": "string",
@@ -313,29 +317,10 @@
 						"UpperCase"
 					]
 				},
-				"teroshdl.formatter.vhdl.type.standalone.remove-comments": {
-					"description": "Remove comments",
-					"type": "boolean",
-					"default": false
-				},
-				"teroshdl.formatter.vhdl.type.standalone.remove-asserts": {
-					"description": "Remove asserts",
-					"type": "boolean",
-					"default": false
-				},
 				"teroshdl.formatter.vhdl.type.standalone.indentation": {
 					"description": "Indentation",
 					"type": "string",
 					"default": "  "
-				},
-				"teroshdl.formatter.vhdl.type.standalone.mode": {
-					"description": "Align mode",
-					"type": "string",
-					"default": "local",
-					"enum": [
-						"local",
-						"global"
-					]
 				},
 				"teroshdl.formatter.vhdl.type.standalone.align-port": {
 					"description": "Align signs in port",

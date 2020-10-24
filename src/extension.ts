@@ -23,6 +23,7 @@ import * as vscode from 'vscode';
 // Common libraries
 import * as path from 'path';
 import * as fs from 'fs';
+import * as utils from "./lib/utils/utils";
 // Templates
 import * as templates from "./lib/templates/templates";
 // Documenter
@@ -219,16 +220,53 @@ export async function provideDocumentFormattingEdits(
     token: vscode.CancellationToken
 ): Promise<vscode.TextEdit[]> {
     const edits: vscode.TextEdit[] = [];
+    //Get document code
+    let code_document: string = document.getText();
+    let selection_document = formatter.getDocumentRange(document);
+    //Get selected text
+    let editor = vscode.window.activeTextEditor;
+    let selection_selected_text;
+    let code_selected_text: string = '';
+    if (editor !== undefined) {
+        selection_selected_text = editor.selection;
+        code_selected_text = editor.document.getText(editor.selection);
+    }
+    //Code to format
+    let format_mode_selection: boolean = false;
+    let code_to_format: string = '';
+    let selection_to_format;
+    if (code_selected_text !== '') {
+        let init: number = utils.line_index_to_character_index(selection_selected_text._start._line,
+            selection_selected_text._start._character, code_document);
+        let end: number = utils.line_index_to_character_index(selection_selected_text._end._line,
+            selection_selected_text._end._character, code_document);
+        let selection_add: string = "#$$#colibri#$$#" + code_selected_text + "%%!!teros!!%%";
+        code_to_format = utils.replace_range(code_document, init, end, selection_add);
+        format_mode_selection = true;
 
-    let code: string = document.getText();
+        code_to_format = code_selected_text;
+        selection_to_format = selection_selected_text;
+    }
+    else {
+        code_to_format = code_document;
+        selection_to_format = selection_document;
+    }
+
     let opt = options;
     let code_format: string;
     if (document.languageId === "vhdl") {
-        code_format = await formatter_vhdl.format(code);
+        code_format = await formatter_vhdl.format(code_to_format);
     }
     else {
-        code_format = await formatter_verilog.format(code);
+        code_format = await formatter_verilog.format(code_to_format);
     }
+    // if (format_mode_selection === true) {
+    //     let start_index = code_format.indexOf("#$$#colibri#$$#");
+    //     let end_index = code_format.indexOf("%%!!teros!!%%");
+    //     code_format = code_format.substring(start_index, end_index);
+    //     code_format = code_format.replace("#$$#colibri#$$#", "");
+    //     code_format = code_format.replace("%%!!teros!!%%", "");
+    // }
     //Error
     if (code_format === null) {
         // vscode.window.showErrorMessage('Select a valid file.!');
@@ -237,7 +275,7 @@ export async function provideDocumentFormattingEdits(
     }
     else {
         const replacement = vscode.TextEdit.replace(
-            formatter.getDocumentRange(document),
+            selection_to_format,
             code_format
         );
         edits.push(replacement);
