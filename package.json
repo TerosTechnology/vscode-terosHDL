@@ -303,6 +303,11 @@
 						"UpperCase"
 					]
 				},
+				"teroshdl.formatter.vhdl.type.standalone.align-comments": {
+					"description": "Align comments",
+					"type": "boolean",
+					"default": false
+				},
 				"teroshdl.formatter.vhdl.type.standalone.type-name-case": {
 					"description": "Type name case",
 					"type": "string",

@@ -102,6 +102,7 @@ function get_standalone_vhdl_config() {
         "RemoveComments": false,
         "RemoveAsserts": false,
         "CheckAlias": false,
+        "AlignComments": configuration.get('align-comments'),
         "SignAlignSettings": {
             "isRegional": true,
             "isAll": true,
