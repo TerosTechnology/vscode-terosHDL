@@ -182,6 +182,11 @@
 					],
 					"default": "Icarus"
 				},
+				"teroshdl.linter.verilog.linter.svlint.custom_config": {
+					"description": "Custom rules configuration. All rules are [here](https://github.com/dalance/svlint/blob/master/RULES.md).",
+					"type": "string",
+					"default": ""
+				},
 				"teroshdl.linter.verilog.linter.icarus.arguments": {
 					"description": "Icarus arguments",
 					"type": "string",
