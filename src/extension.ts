@@ -38,7 +38,6 @@ import * as number_hover from "./lib/number_hover/number_hover";
 let linter_vhdl;
 let linter_verilog;
 let linter_systemverilog;
-let linter_vhdl_style;
 let linter_verilog_style;
 let formatter_vhdl;
 let formatter_verilog;
@@ -59,8 +58,6 @@ import VerilogDefinitionProvider from "./lib/language_providers/providers/Defini
 import VerilogCompletionItemProvider from "./lib/language_providers/providers/CompletionItemProvider";
 import { CtagsManager } from "./lib/language_providers/ctags";
 import { Logger } from "./lib/language_providers/Logger";
-import { openStdin } from 'process';
-import { parse } from 'path';
 
 let logger: Logger = new Logger();
 export let ctagsManager: CtagsManager;
@@ -122,7 +119,6 @@ export function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Check style
     /**************************************************************************/
-    linter_vhdl_style = new linter.default("vhdl", "linter_style", context);
     linter_verilog_style = new linter.default("verilog", "linter_style", context);
     /**************************************************************************/
     // Dependencies viewer
@@ -260,13 +256,6 @@ export async function provideDocumentFormattingEdits(
     else {
         code_format = await formatter_verilog.format(code_to_format);
     }
-    // if (format_mode_selection === true) {
-    //     let start_index = code_format.indexOf("#$$#colibri#$$#");
-    //     let end_index = code_format.indexOf("%%!!teros!!%%");
-    //     code_format = code_format.substring(start_index, end_index);
-    //     code_format = code_format.replace("#$$#colibri#$$#", "");
-    //     code_format = code_format.replace("%%!!teros!!%%", "");
-    // }
     //Error
     if (code_format === null) {
         // vscode.window.showErrorMessage('Select a valid file.!');

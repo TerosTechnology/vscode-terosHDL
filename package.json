@@ -64,31 +64,14 @@
 		"configuration": {
 			"title": "teroshdl",
 			"properties": {
-				"teroshdl.linter_style.vhdl.linter.a": {
-					"description": "Select VHDL linter style",
-					"type": "string",
-					"enum": [
-						"vsg"
-					],
-					"default": "vsg"
-				},
-				"teroshdl.linter_style.vhdl.enable": {
-					"description": "Enable VHDL linter style",
-					"type": "boolean",
-					"default": true
-				},
-				"teroshdl.linter.vhdl.enable": {
-					"description": "Enable VHDL linter",
-					"type": "boolean",
-					"default": true
-				},
 				"teroshdl.linter.vhdl.linter.a": {
 					"description": "Select VHDL linter",
 					"type": "string",
 					"enum": [
 						"GHDL",
 						"ModelSim",
-						"xvhdl"
+						"xvhdl",
+						"None"
 					],
 					"default": "GHDL"
 				},
@@ -156,19 +139,10 @@
 					"description": "Select Verilog linter style",
 					"type": "string",
 					"enum": [
-						"verible"
+						"verible",
+						"None"
 					],
 					"default": "verible"
-				},
-				"teroshdl.linter_style.verilog.enable": {
-					"description": "Enable Verilog linter style",
-					"type": "boolean",
-					"default": true
-				},
-				"teroshdl.linter.verilog.enable": {
-					"description": "Enable verilog linter",
-					"type": "boolean",
-					"default": true
 				},
 				"teroshdl.linter.verilog.linter.a": {
 					"description": "Select verilog linter",
@@ -177,8 +151,8 @@
 						"Icarus",
 						"ModelSim",
 						"Verilator",
-						"svlint",
-						"xvlog"
+						"xvlog",
+						"None"
 					],
 					"default": "Icarus"
 				},
