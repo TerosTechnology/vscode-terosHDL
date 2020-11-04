@@ -37,9 +37,12 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     let language_id: string = document.languageId;
     let code: string = document.getText();
 
-    if (language_id !== "vhdl" && language_id !== "verilog") {
+    if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== "systemverilog") {
         vscode.window.showErrorMessage('Select a valid file.!');
         return;
+    }
+    if (language_id === 'systemverilog') {
+        language_id = 'verilog';
     }
     current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');

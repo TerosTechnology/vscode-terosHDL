@@ -157,10 +157,10 @@
             <input id="export-as-image" name="zoom-mode" type="radio" value="fit" />
             <div class="button">Export image</div>
         </label>
-        <label class="fancy-checkbox">
+<!--        <label class="fancy-checkbox">
             <input id="export-as-latex" name="zoom-mode" type="radio" value="fit" />
             <div class="button">Export LaTeX</div>
-        </label>
+        </label>-->
     </div>
 </div>
 
@@ -170,7 +170,7 @@ document.getElementById("export-as-markdown").onclick = function() {export_messa
 document.getElementById("export-as-pdf").onclick = function() {export_message("pdf")};
 document.getElementById("export-as-html").onclick = function() {export_message("html")};
 document.getElementById("export-as-image").onclick = function() {export_message("image")};
-document.getElementById("export-as-latex").onclick = function() {export_message("latex")};
+// document.getElementById("export-as-latex").onclick = function() {export_message("latex")};
 
 function export_message(message) {
     vscode.postMessage({
