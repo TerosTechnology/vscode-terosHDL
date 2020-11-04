@@ -12,7 +12,8 @@
 10. [Dependencies viewer](#id10)
 11. [Hover to evaluate binary, hexadecimal and octal values](#id11)
 12. [Code snippets and grammar](#id12)
-13. [Future work](#id12)
+13. [Future work](#id13)
+14. [Similar projects](#id14)
 
 # 1. Introduction <a name="id1"></a>
 
@@ -126,8 +127,8 @@ Configuration example for verilog:
 ## Supported linters
 
 | Verilog | VHDL |
-| ------: | ---- |
-| Verible | VSG  |
+| ------: | :--: |
+| Verible |  --  |
 
 ## Configuration
 
@@ -155,9 +156,8 @@ Configuration example for verilog:
    ![alt text](./resources/images/readme/sample_dependencies_clear.png "title")
 5. You can generate the indexed markdown/html documentation for all the files.
    ![alt text](./resources/images/readme/sample_dependencies_documentation.png "title")
-6. Result:
+6. Result in html format:
    ![alt text](./resources/images/readme/project_doc.gif "title")
-
 
 
 # 11. Hover to evaluate binary, hexadecimal and octal values <a name="id11"></a>
@@ -178,4 +178,7 @@ Configuration example for verilog:
 
 ![alt text](./resources/images/readme/code_snippets.gif "title")
 
-# 13. Future work
+# 13. Future work <a name="id13"></a>
+
+
+# 14.Similar projects <a name="id14"></a>
