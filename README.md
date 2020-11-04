@@ -108,6 +108,8 @@ https://observablehq.com/collection/@drom/bitfield
 
 ## Supported linters
 
+You need to install manually the simulators.
+
 |   Verilog | VHDL     |
 | --------: | -------- |
 |  ModelSim | ModelSim |
@@ -126,6 +128,8 @@ Configuration example for verilog:
 # 8. Style checking <a name="id8"></a>
 
 ## Supported linters
+
+This is an experimental feature. You need to install Verible (https://github.com/google/verible)
 
 | Verilog | VHDL |
 | ------: | :--: |
