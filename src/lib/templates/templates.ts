@@ -42,6 +42,9 @@ export async function get_template() {
 
     let type: string = "";
     let subtype: string = "";
+    if (language_id === 'systemverilog') {
+        language_id = 'verilog';
+    }
     if (language_id === "vhdl") {
         let picker_value = await vscode.window.showQuickPick(TYPES_VHDL_INFO,
             { placeHolder: 'Select the template type.' });

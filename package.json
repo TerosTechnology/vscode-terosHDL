@@ -226,11 +226,6 @@
 					"type": "string",
 					"default": "!"
 				},
-				"teroshdl.formatter.verilog.on-save": {
-					"description": "Enable on save mode.",
-					"type": "boolean",
-					"default": false
-				},
 				"teroshdl.formatter.verilog.type.a": {
 					"description": "Select verilog formatter",
 					"type": "string",
@@ -254,11 +249,6 @@
 					"description": "Indent using N spaces per indent.",
 					"type": "number",
 					"default": 2
-				},
-				"teroshdl.formatter.vhdl.on-save": {
-					"description": "Enable on save mode.",
-					"type": "boolean",
-					"default": false
 				},
 				"teroshdl.formatter.vhdl.type.a": {
 					"description": "Select verilog formatter",
@@ -408,7 +398,7 @@
 					".sdc"
 				],
 				"configuration": "./configs/xdcconstraints.configuration.json"
-			},	
+			},
 			{
 				"id": "verilog",
 				"aliases": [
@@ -451,7 +441,7 @@
 			{
 				"language": "xdc",
 				"path": "./snippets/xdc/xdc.json"
-			}			
+			}
 		]
 	},
 	"scripts": {
