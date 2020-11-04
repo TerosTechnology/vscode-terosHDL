@@ -180,5 +180,11 @@ Configuration example for verilog:
 
 # 13. Future work <a name="id13"></a>
 
+- Finite State Machine graph.
+- Project manager.
+- Integrate [triel](https://github.com/TerosTechnology/triel) backend
 
-# 14.Similar projects <a name="id14"></a>
+# 14. Similar projects <a name="id14"></a>
+
+- Hardware Integrated Development Environment ([hide](https://github.com/drom/atom-hide))
+- [APIO-ide](https://github.com/FPGAwars/apio-ide)
