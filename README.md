@@ -27,6 +27,7 @@ The goal of TerosHDL is make the FPGA development easier and reliable. It is a p
 - VUnit (https://vunit.github.io/)
 - VSG (https://github.com/jeremiah-c-leary/vhdl-style-guide)
 - Wavedrom (https://github.com/wavedrom/wavedrom)
+- VHDL formatter (https://github.com/g2384/VHDLFormatter)
 
 # 3. Go to definition <a name="id3"></a>
 
@@ -154,9 +155,11 @@ Configuration example for verilog:
    ![alt text](./resources/images/readme/sample_dependencies_viewer.png "title")
 4. You can reset your viewer:
    ![alt text](./resources/images/readme/sample_dependencies_clear.png "title")
-5. You can generate the indexed markdown/html documentation for all the files.
-   ![alt text](./resources/images/readme/sample_dependencies_documentation.png "title")
-6. Result in html format:
+5. You can generate the indexed Markdown documentation for all the files.
+   ![alt text](./resources/images/readme/sample_dependencies_documentation_md.png "title")
+6. And the indexed HTML documentation.
+   ![alt text](./resources/images/readme/sample_dependencies_documentation_html.png "title")
+7. Result in HTML format:
    ![alt text](./resources/images/readme/project_doc.gif "title")
 
 
