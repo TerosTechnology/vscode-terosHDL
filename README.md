@@ -119,7 +119,7 @@ You need to install manually the simulators.
 
 ## Configuration
 
-One of the above tools has to be installed to have linter functionalities in a languaje. If the tool can not be find in the system path it has to be configured in the plugin config:
+One of the above tools has to be installed to enable linter functionalities in a language. If the tool can not be find in the system path it has to be configured in the plugin config:
 
 Configuration example for verilog:
 
