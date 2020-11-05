@@ -2,8 +2,8 @@
 	"name": "teroshdl",
 	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
-	"description": "VHDL and Verilog IDE.",
-	"version": "0.0.5",
+	"description": "VHDL and Verilog/SV IDE.",
+	"version": "0.0.6",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
