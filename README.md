@@ -11,7 +11,9 @@
 9. [Formatting](#id9)
 10. [Dependencies viewer](#id10)
 11. [Hover to evaluate binary, hexadecimal and octal values](#id11)
-12. [Future work](#id12)
+12. [Code snippets and grammar](#id12)
+13. [Future work](#id13)
+14. [Similar projects](#id14)
 
 # 1. Introduction <a name="id1"></a>
 
@@ -25,6 +27,7 @@ The goal of TerosHDL is make the FPGA development easier and reliable. It is a p
 - VUnit (https://vunit.github.io/)
 - VSG (https://github.com/jeremiah-c-leary/vhdl-style-guide)
 - Wavedrom (https://github.com/wavedrom/wavedrom)
+- VHDL formatter (https://github.com/g2384/VHDLFormatter)
 
 # 3. Go to definition <a name="id3"></a>
 
@@ -105,6 +108,8 @@ https://observablehq.com/collection/@drom/bitfield
 
 ## Supported linters
 
+You need to install manually the simulators.
+
 |   Verilog | VHDL     |
 | --------: | -------- |
 |  ModelSim | ModelSim |
@@ -114,13 +119,21 @@ https://observablehq.com/collection/@drom/bitfield
 
 ## Configuration
 
+One of the above tools has to be installed to enable linter functionalities in a language. If the tool can not be find in the system path it has to be configured in the plugin config:
+
+Configuration example for verilog:
+
+![alt text](./resources/images/readme/linter_config.png "title")
+
 # 8. Style checking <a name="id8"></a>
 
 ## Supported linters
 
+This is an experimental feature. You need to install Verible (https://github.com/google/verible)
+
 | Verilog | VHDL |
-| ------: | ---- |
-| Verible | VSG  |
+| ------: | :--: |
+| Verible |  --  |
 
 ## Configuration
 
@@ -146,8 +159,12 @@ https://observablehq.com/collection/@drom/bitfield
    ![alt text](./resources/images/readme/sample_dependencies_viewer.png "title")
 4. You can reset your viewer:
    ![alt text](./resources/images/readme/sample_dependencies_clear.png "title")
-5. You can generate the indexed markdown documentation for all the files.
-   ![alt text](./resources/images/readme/sample_dependencies_documentation.png "title")
+5. You can generate the indexed Markdown documentation for all the files.
+   ![alt text](./resources/images/readme/sample_dependencies_documentation_md.png "title")
+6. And the indexed HTML documentation.
+   ![alt text](./resources/images/readme/sample_dependencies_documentation_html.png "title")
+7. Result in HTML format:
+   ![alt text](./resources/images/readme/project_doc.gif "title")
 
 
 # 11. Hover to evaluate binary, hexadecimal and octal values <a name="id11"></a>
@@ -156,5 +173,25 @@ https://observablehq.com/collection/@drom/bitfield
 
 ![alt text](./resources/images/readme/hover_hexadecimal_verilog.png "title")
 
+# 12. Code snippets and grammar <a name="id12"></a>
 
-# 12. Future work
+| Languaje        | Grammar       | Code snippets |
+| ------:         | ----------    | ------------- |
+|  Verilog        | &#x2714;      | &#x2714;      |
+|  System Verilog | &#x2714;      | &#x2714;      |
+|  VHDL           | &#x2714;      | &#x2714;      |
+|  XDC/SDC        | &#x2714;      | &#x2714;      |
+|  ucf            | &#x2714;      | &#x2718;      |
+
+![alt text](./resources/images/readme/code_snippets.gif "title")
+
+# 13. Future work <a name="id13"></a>
+
+- Finite State Machine graph.
+- Project manager.
+- Integrate [triel](https://github.com/TerosTechnology/triel) backend
+
+# 14. Similar projects <a name="id14"></a>
+
+- Hardware Integrated Development Environment ([hide](https://github.com/drom/atom-hide))
+- [APIO-ide](https://github.com/FPGAwars/apio-ide)
