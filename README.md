@@ -175,7 +175,7 @@ This is an experimental feature. You need to install Verible (https://github.com
 
 # 12. Code snippets and grammar <a name="id12"></a>
 
-| Languaje        | Grammar       | Code snippets |
+| Language        | Grammar       | Code snippets |
 | ------:         | ----------    | ------------- |
 |  Verilog        | &#x2714;      | &#x2714;      |
 |  System Verilog | &#x2714;      | &#x2714;      |
@@ -189,6 +189,7 @@ This is an experimental feature. You need to install Verible (https://github.com
 
 - Finite State Machine graph.
 - Project manager.
+- File tree view.
 - Integrate [triel](https://github.com/TerosTechnology/triel) backend
 
 # 14. Similar projects <a name="id14"></a>
