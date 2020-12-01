@@ -157,6 +157,7 @@ export default class Lint_manager {
         //Save the uri linted
         this.add_uri_to_collections(doc.uri);
 
+        console.log(`[terosHDL] Linting ${current_path}`);
         let errors = await this.linter.lint_from_file(current_path, this.get_config());
         let diagnostics: vscode.Diagnostic[] = [];
         for (var i = 0; i < errors.length; ++i) {
