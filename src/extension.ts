@@ -44,6 +44,9 @@ let formatter_verilog;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager: dependencies_viewer.default;
+// State machine viewer
+import * as state_machine_viewer from "./lib/state_machine_viewer/state_machine_viewer";
+let state_machine_viewer_manager: state_machine_viewer.default;
 // Test Manager
 import { VUnitAdapter } from './lib/tester/controller';
 import { TestHub, testExplorerExtensionId } from 'vscode-test-adapter-api';
@@ -129,6 +132,18 @@ export function activate(context: vscode.ExtensionContext) {
             'teroshdl.dependencies.viewer',
             async () => {
                 await dependencies_viewer_manager.open_viewer();
+            }
+        )
+    );
+    /**************************************************************************/
+    // State machine viewer
+    /**************************************************************************/
+    state_machine_viewer_manager = new state_machine_viewer.default(context);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.state_machine.viewer',
+            async () => {
+                await state_machine_viewer_manager.open_viewer();
             }
         )
     );

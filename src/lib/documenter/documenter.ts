@@ -54,7 +54,9 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
         let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
         let previewHtml = await node_utilities.readFileAsync(
             context.asAbsolutePath(path_html), "utf8");
-        previewHtml += await current_documenter.get_html(true);
+        let html_result = await current_documenter.get_html(true);
+        let html_error = html_result.error;
+        previewHtml += html_result.html;
 
         if (panel === undefined) {
             // Create and show panel
@@ -95,6 +97,7 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     else {
         vscode.window.showErrorMessage('Select a valid file.!');
     }
+    panel.webview.postMessage({ command: 'refactor' });
 }
 
 export async function update_documentation_module(document) {
@@ -107,7 +110,7 @@ export async function update_documentation_module(document) {
         let language_id: string = document.languageId;
         let code: string = document.getText();
 
-        if (language_id !== "vhdl" && language_id !== "verilog") {
+        if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== 'systemverilog') {
             return;
         }
         current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
@@ -120,13 +123,21 @@ export async function update_documentation_module(document) {
             let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
             let previewHtml = await node_utilities.readFileAsync(
                 main_context.asAbsolutePath(path_html), "utf8");
-            previewHtml += await current_documenter.get_html(true);
+
+            let html_result = await current_documenter.get_html(true);
+            let html_error = html_result.error;
+            previewHtml += html_result.html;
+
             panel.webview.html = previewHtml;
         }
         else {
             return;
         }
     }
+}
+
+function show_python3_error_message() {
+    vscode.window.showInformationMessage('Error: make sure Python3 is installed in your system and added to the system path.');
 }
 
 function normalize_path(path: string) {

@@ -28,6 +28,7 @@
 		"onCommand:teroshdl.format",
 		"onCommand:teroshdl.documentation.module",
 		"onCommand:teroshdl.dependencies.viewer",
+		"onCommand:teroshdl.state_machine.viewer",
 		"onLanguage:verilog",
 		"onLanguage:systemverilog",
 		"onLanguage:vhdl"
@@ -320,6 +321,11 @@
 					"group": "navigation"
 				},
 				{
+					"when": "resourceLangId == vhdl",
+					"command": "teroshdl.state_machine.viewer",
+					"group": "navigation"
+				},
+				{
 					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
 					"command": "teroshdl.format",
 					"group": "navigation"
@@ -342,6 +348,14 @@
 				"icon": {
 					"light": "resources/light/file-code.svg",
 					"dark": "resources/dark/file-code.svg"
+				}
+			},
+			{
+				"command": "teroshdl.state_machine.viewer",
+				"title": "State machine viewer",
+				"icon": {
+					"light": "resources/light/state-machine.svg",
+					"dark": "resources/dark/state-machine.svg"
 				}
 			},
 			{
