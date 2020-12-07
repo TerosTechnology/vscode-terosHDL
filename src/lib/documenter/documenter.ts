@@ -118,21 +118,15 @@ export async function update_documentation_module(document) {
         let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
         current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol);
-        if (true) {
-            // if (await current_documenter.check_correct_file() === true){
-            let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
-            let previewHtml = await node_utilities.readFileAsync(
-                main_context.asAbsolutePath(path_html), "utf8");
+        let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
+        let previewHtml = await node_utilities.readFileAsync(
+            main_context.asAbsolutePath(path_html), "utf8");
 
-            let html_result = await current_documenter.get_html(true);
-            let html_error = html_result.error;
-            previewHtml += html_result.html;
+        let html_result = await current_documenter.get_html(true);
+        let html_error = html_result.error;
+        previewHtml += html_result.html;
 
-            panel.webview.html = previewHtml;
-        }
-        else {
-            return;
-        }
+        panel.webview.html = previewHtml;
     }
 }
 

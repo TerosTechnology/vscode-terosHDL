@@ -41,7 +41,7 @@ export default class State_machine_viewer_manager {
     // Create panel
     this.panel = vscode.window.createWebviewPanel(
       'catCoding',
-      'Dependencies viewer',
+      'State machine viewer',
       vscode.ViewColumn.Two,
       {
         enableScripts: true
@@ -86,14 +86,12 @@ export default class State_machine_viewer_manager {
 
     let state_machines = await this.get_state_machines();
     this.send_state_machines(state_machines);
-    console.log('');
   }
+
 
   private async send_state_machines(state_machines) {
     await this.panel?.webview.postMessage({ command: "update", state_machines: state_machines });
   }
-
-
 
   private async get_state_machines() {
     let active_editor = vscode.window.activeTextEditor;
@@ -138,13 +136,10 @@ export default class State_machine_viewer_manager {
     return dependencies_dot;
   }
 
-  private async update_viewer() {
-    let dot = await this.get_dot();
-    if (dot === undefined) {
-      vscode.window.showInformationMessage("Please, install Python 3.");
-    }
-    else {
-      await this.panel?.webview.postMessage({ command: "update", message: dot });
+  async update_viewer() {
+    if (this.panel !== undefined) {
+      let state_machines = await this.get_state_machines();
+      this.send_state_machines(state_machines);
     }
   }
 

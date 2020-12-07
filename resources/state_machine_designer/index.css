@@ -1,0 +1,288 @@
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  height:100%;
+  border-collapse: collapse;
+  border-collapse:separate; 
+  border-spacing:5px;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+
+}
+body {color:black;}
+code {color:#545253;}
+h1{font-size:16px;}
+h2{font-size:13px;}
+h3{font-size:11px;}
+h4{font-size:11px;}
+h5{font-size:11px;}
+h6{font-size:11px;}
+
+p {
+    font-size: 10px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#menu_state, #menu_transition {
+  display: block;
+  background-color: white;
+  padding: 10px 0px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 30px lightgrey;
+  position: absolute;
+  transform-origin: center;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+#menu_state.show, #menu_transition.show {
+  opacity: 1;
+  transform: scale(1);
+  transform-origin: top left;
+}
+
+.menu-item {
+  display: block;
+  padding: 10px 30px;
+  transition: 0.1s;
+  color: #666;
+}
+
+.menu-item:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+h1,h2,h3,table {margin-left:5%;margin-right:5%;}
+td,th,h1,h2,h3 {color: black;}
+h1,h2 {font-weight:bold;}
+
+p {color:black;}
+p {margin:5%;}
+
+html,
+body {
+    background: white
+}
+
+.toolbar {
+    overflow: visible;
+    width: 100%;
+    top: 0;
+    position: absolute;
+    background: gray;
+    box-shadow: black 0 0 1em;
+    color: black;
+    display: flex;
+    font: 12px "Segoe UI", sans-serif;
+    padding: 0.25em;
+    white-space: nowrap;
+    z-index: 2;
+}
+.left-panel,
+.center-panel,
+.right-panel {
+    align-items: center;
+    display: flex;
+    flex: 1;
+}
+
+.center-panel {
+    justify-content: center;
+}
+
+.right-panel {
+    justify-content: flex-end;
+}
+
+.button, .a.button {
+    background: dimgray;
+    border: none;
+    box-sizing: border-box;
+    color: whitesmoke;
+    cursor: default;
+    font: inherit;
+    margin: 0.25em;
+    outline: none !important;
+    padding: 0.5em;
+    text-align: center;
+    text-decoration: none !important;
+    transition: background ease-out 125ms, color ease-out 125ms;
+    user-select: none;
+    width: 10em;
+}
+
+.button:hover {
+    background: darkgray;
+    box-shadow: inset rgba(255, 255, 255, 0.25) 0 0 1em;
+    color: black;
+}
+
+.fancy-checkbox>input:checked+div,
+.button:active {
+    background: silver;
+    box-shadow: inset rgba(0, 0, 0, 0.25) 0 0 1em;
+    color: black;
+}
+
+.fancy-checkbox>input {
+    display: none;
+}
+
+.separator {
+    width: 1em;
+}
+
+#zoom {
+    color: white;
+    margin: 0.5em;
+}
+
+#workspace {
+    cursor: crosshair;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+}
+
+#workspace:focus {
+    outline: none;
+}
+  
+* {
+  box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  background: white;
+  color: white;
+  float: left;
+  width: 48%;
+  padding: 10px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  background: white;
+  color: white;
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+.button_stm_insert {
+  width: 49%;
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.button_stm_cancel {
+  width: 50%;
+  background-color: #f44336; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+#i_state_name, #i_output_name, #i_tran_cond, #e_tran_cond, #e_output_output {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#out-click {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: none;
+}
+
+#container {
+  width: 100%; 
+  height: 720px;
+}
+
+
+#config {
+  margin-left: 3%;
+}
+
+#label_config_1 {
+  margin-left: 1%;
+}
+
+#config_0, #config_1 {
+  width:12%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#e_tran_dest, #i_tran_dest {
+  width:100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#label_exp {
+  color: black
+}
+
+
+#reset_signal, #reset_state {
+  width: 8%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#reset_enable {
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}

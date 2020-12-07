@@ -3,7 +3,7 @@
 	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
 	"description": "VHDL and Verilog/SV IDE.",
-	"version": "0.0.7",
+	"version": "0.0.9",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
@@ -28,6 +28,7 @@
 		"onCommand:teroshdl.format",
 		"onCommand:teroshdl.documentation.module",
 		"onCommand:teroshdl.dependencies.viewer",
+		"onCommand:teroshdl.state_machine.designer",
 		"onCommand:teroshdl.state_machine.viewer",
 		"onLanguage:verilog",
 		"onLanguage:systemverilog",
@@ -349,6 +350,10 @@
 					"light": "resources/light/file-code.svg",
 					"dark": "resources/dark/file-code.svg"
 				}
+			},
+			{
+				"command": "teroshdl.state_machine.designer",
+				"title": "State machine designer"
 			},
 			{
 				"command": "teroshdl.state_machine.viewer",

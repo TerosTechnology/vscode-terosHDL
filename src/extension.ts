@@ -47,6 +47,9 @@ let dependencies_viewer_manager: dependencies_viewer.default;
 // State machine viewer
 import * as state_machine_viewer from "./lib/state_machine_viewer/state_machine_viewer";
 let state_machine_viewer_manager: state_machine_viewer.default;
+// State machine designer
+import * as state_machine_designer from "./lib/state_machine_designer/state_machine_designer";
+let state_machine_designer_manager: state_machine_viewer.default;
 // Test Manager
 import { VUnitAdapter } from './lib/tester/controller';
 import { TestHub, testExplorerExtensionId } from 'vscode-test-adapter-api';
@@ -144,6 +147,20 @@ export function activate(context: vscode.ExtensionContext) {
             'teroshdl.state_machine.viewer',
             async () => {
                 await state_machine_viewer_manager.open_viewer();
+            }
+        ),
+        vscode.workspace.onDidOpenTextDocument((e) => state_machine_viewer_manager.update_viewer()),
+        vscode.workspace.onDidSaveTextDocument((e) => state_machine_viewer_manager.update_viewer()),
+    );
+    /**************************************************************************/
+    // State machine designer
+    /**************************************************************************/
+    state_machine_designer_manager = new state_machine_designer.default(context);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.state_machine.designer',
+            async () => {
+                await state_machine_designer_manager.open_viewer();
             }
         )
     );
