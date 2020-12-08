@@ -2,17 +2,17 @@
 // default
 const vscode = acquireVsCodeApi();
 
-document.getElementById("add-source").onclick = function () { send_command("add_source"); };
-document.getElementById("clear-graph").onclick = function () { send_command("clear_graph"); };
-document.getElementById("generate-documentation-markdown").onclick = function () { send_command("generate_documentation_markdown"); };
-document.getElementById("generate-documentation-html").onclick = function () { send_command("generate_documentation_html"); };
+// document.getElementById("add-source").onclick = function () { send_command("add_source"); };
+// document.getElementById("clear-graph").onclick = function () { send_command("clear_graph"); };
+// document.getElementById("generate-documentation-markdown").onclick = function () { send_command("generate_documentation_markdown"); };
+// document.getElementById("generate-documentation-html").onclick = function () { send_command("generate_documentation_html"); };
 
-document.body.onclick = function (event) {
-    console.log(event.target.textContent);
-    console.log(event.target.parentElement);
-    console.log(event.target.title);
+// document.body.onclick = function (event) {
+//     console.log(event.target.textContent);
+//     console.log(event.target.parentElement);
+//     console.log(event.target.title);
 
-};
+// };
 
 function send_command(command) {
     vscode.postMessage({
@@ -39,12 +39,16 @@ let div = [];
 
 function update_graph(state_machines) {
     delete_graph();
+    if (state_machines === undefined) {
+        return;
+    }
     for (let i = 0; i < state_machines.length; ++i) {
         create_graph(state_machines[i].svg, `svg_${i}`);
     }
 }
 
 function create_graph(svg, name) {
+    console.log("entraaa")
     let embed = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     embed.setAttribute('style', 'width: 100%; height: 720px;');
     embed.setAttribute('type', 'image/svg+xml');
@@ -71,6 +75,9 @@ function create_graph(svg, name) {
 }
 
 function delete_graph() {
+    if (graph === undefined) {
+        return;
+    }
     for (let i = 0; i < graph.length; ++i) {
         svgPanZoom(graph[i]).destroy();
         if (div[i].parentNode !== null) {

@@ -45,7 +45,7 @@ export default class State_machine_designer_manager {
       vscode.ViewColumn.Two,
       {
         enableScripts: true
-      }
+      },
     );
 
     this.panel.onDidDispose(

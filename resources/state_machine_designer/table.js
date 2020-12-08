@@ -50,12 +50,12 @@ export class Table {
       cell.style.backgroundColor = '#e5e5e5';
       cell.innerHTML = messages[i];
     }
-    let row = this.table.insertRow(-1);
-    let cell = row.insertCell(0);
-    let img = document.createElement('img');
-    img.style = "width:100%;heigth:100%";
-    img.src = "./sample.gif";
-    cell.appendChild(img);
+    // let row = this.table.insertRow(-1);
+    // let cell = row.insertCell(0);
+    // let img = document.createElement('img');
+    // img.style = "width:100%;heigth:100%";
+    // img.src = "../images/sample.gif";
+    // cell.appendChild(img);
 
     this.table.hidden = false;
   }

@@ -56,31 +56,31 @@ export default class State_machine_viewer_manager {
       null,
       this.context.subscriptions
     );
-    // Handle messages from the webview
-    this.panel.webview.onDidReceiveMessage(
-      message => {
-        switch (message.command) {
-          case 'add_source':
-            this.add_source();
-            console.log("Add source: " + message.text);
-            return;
-          case 'clear_graph':
-            this.clear_viewer();
-            console.log("Clear graph");
-            return;
-          case 'generate_documentation_markdown':
-            this.generate_documentation("markdown");
-            console.log("Generate documentation Markdown");
-            return;
-          case 'generate_documentation_html':
-            this.generate_documentation("html");
-            console.log("Generate documentation HTML");
-            return;
-        }
-      },
-      undefined,
-      this.context.subscriptions
-    );
+    // // Handle messages from the webview
+    // this.panel.webview.onDidReceiveMessage(
+    //   message => {
+    //     switch (message.command) {
+    //       case 'add_source':
+    //         this.add_source();
+    //         console.log("Add source: " + message.text);
+    //         return;
+    //       case 'clear_graph':
+    //         this.clear_viewer();
+    //         console.log("Clear graph");
+    //         return;
+    //       case 'generate_documentation_markdown':
+    //         this.generate_documentation("markdown");
+    //         console.log("Generate documentation Markdown");
+    //         return;
+    //       case 'generate_documentation_html':
+    //         this.generate_documentation("html");
+    //         console.log("Generate documentation HTML");
+    //         return;
+    //     }
+    //   },
+    //   undefined,
+    //   this.context.subscriptions
+    // );
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
 
@@ -113,21 +113,21 @@ export default class State_machine_viewer_manager {
   }
 
 
-  private async add_source() {
-    let files = await vscode.window.showOpenDialog({ canSelectMany: true });
-    if (files !== undefined) {
-      this.sources.push();
-      for (let i = 0; i < files.length; ++i) {
-        if (files[i]['path'][0] === '/' && require('os').platform() === 'win32') {
-          this.sources.push(files[i]['path'].substring(1));
-        }
-        else {
-          this.sources.push(files[i]['path']);
-        }
-      }
-      await this.update_viewer();
-    }
-  }
+  // private async add_source() {
+  //   let files = await vscode.window.showOpenDialog({ canSelectMany: true });
+  //   if (files !== undefined) {
+  //     this.sources.push();
+  //     for (let i = 0; i < files.length; ++i) {
+  //       if (files[i]['path'][0] === '/' && require('os').platform() === 'win32') {
+  //         this.sources.push(files[i]['path'].substring(1));
+  //       }
+  //       else {
+  //         this.sources.push(files[i]['path']);
+  //       }
+  //     }
+  //     await this.update_viewer();
+  //   }
+  // }
 
   private async get_dot() {
     let project_manager = new jsteros.Project_manager.Manager("");
@@ -143,38 +143,38 @@ export default class State_machine_viewer_manager {
     }
   }
 
-  //Clear
-  private async clear_viewer() {
-    this.clear_sources();
-    await this.panel?.webview.postMessage({ command: "clear" });
-  }
+  // //Clear
+  // private async clear_viewer() {
+  //   this.clear_sources();
+  //   await this.panel?.webview.postMessage({ command: "clear" });
+  // }
 
-  private clear_sources() {
-    this.sources = [];
-  }
+  // private clear_sources() {
+  //   this.sources = [];
+  // }
 
-  private generate_documentation(type: string) {
-    vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false }).then(file_uri => {
-      if (file_uri && file_uri[0]) {
-        this.generate_and_save_documentation(file_uri[0].fsPath, type);
-      }
-    });
-  }
+  // private generate_documentation(type: string) {
+  //   vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false }).then(file_uri => {
+  //     if (file_uri && file_uri[0]) {
+  //       this.generate_and_save_documentation(file_uri[0].fsPath, type);
+  //     }
+  //   });
+  // }
 
-  private generate_and_save_documentation(output_path, type: string) {
-    let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
-    let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
-    let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
+  // private generate_and_save_documentation(output_path, type: string) {
+  //   let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
+  //   let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
+  //   let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
 
-    let project_manager = new jsteros.Project_manager.Manager("");
-    project_manager.add_source_from_array(this.sources);
-    if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
-    }
-    else {
-      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
-    }
-  }
+  //   let project_manager = new jsteros.Project_manager.Manager("");
+  //   project_manager.add_source_from_array(this.sources);
+  //   if (type === "markdown") {
+  //     project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
+  //   }
+  //   else {
+  //     project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
+  //   }
+  // }
 
   private getWebviewContent(context: vscode.ExtensionContext) {
     let template_path = 'resources' + path_lib.sep + 'state_machine_viewer' + path_lib.sep + 'state_machine_viewer.html';
