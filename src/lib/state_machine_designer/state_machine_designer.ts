@@ -40,11 +40,12 @@ export default class State_machine_designer_manager {
   async create_viewer() {
     // Create panel
     this.panel = vscode.window.createWebviewPanel(
-      'catCoding',
+      'state_machine_viewer',
       'State machine designer',
-      vscode.ViewColumn.Two,
+      vscode.ViewColumn.One,
       {
-        enableScripts: true
+        enableScripts: true,
+        enableCommandUris: true,
       },
     );
 
