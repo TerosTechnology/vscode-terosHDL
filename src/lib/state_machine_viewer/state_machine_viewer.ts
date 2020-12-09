@@ -28,6 +28,7 @@ export default class State_machine_viewer_manager {
   private panel: vscode.WebviewPanel | undefined = undefined;
   private context: vscode.ExtensionContext;
   private sources: string[] = [];
+  private state_machines;
 
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
@@ -40,7 +41,7 @@ export default class State_machine_viewer_manager {
   async create_viewer() {
     // Create panel
     this.panel = vscode.window.createWebviewPanel(
-      'catCoding',
+      'state_machine_viewer',
       'State machine viewer',
       vscode.ViewColumn.Two,
       {
@@ -56,13 +57,56 @@ export default class State_machine_viewer_manager {
       null,
       this.context.subscriptions
     );
+    // Handle messages from the webview
+    this.panel.webview.onDidReceiveMessage(
+      message => {
+        switch (message.command) {
+          case 'export':
+            this.export_as(message.text);
+            console.log(message.text);
+            return;
+        }
+      },
+      undefined,
+      this.context.subscriptions
+    );
+
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
 
     let state_machines = await this.get_state_machines();
+    this.state_machines = state_machines;
     this.send_state_machines(state_machines);
   }
 
+  async export_as(type: string) {
+    if (type === "svg") {
+      let filter = { 'svg': ['svg'] };
+      vscode.window.showSaveDialog({ filters: filter }).then(fileInfos => {
+        if (fileInfos?.path !== undefined) {
+          let path_full = this.normalize_path(fileInfos?.path);
+          let dir_name = path_lib.dirname(path_full);
+          let file_name = path_lib.basename(path_full).split('.').slice(0, -1).join('.')
+          for (let i = 0; i < this.state_machines.length; ++i) {
+            let custom_path = `${dir_name}${path_lib.sep}${file_name}_${i}.svg`;
+            fs.writeFileSync(custom_path, this.state_machines[i].svg);
+          }
+        }
+      });
+    }
+    else {
+      console.log("Error export documentation.");
+    }
+  }
+
+  normalize_path(path: string) {
+    if (path[0] === '/' && require('os').platform() === 'win32') {
+      return path.substring(1);
+    }
+    else {
+      return path;
+    }
+  }
 
   private async send_state_machines(state_machines) {
     await this.panel?.webview.postMessage({ command: "update", state_machines: state_machines });
@@ -87,16 +131,10 @@ export default class State_machine_viewer_manager {
     return state_machines;
   }
 
-  private async get_dot() {
-    let project_manager = new jsteros.Project_manager.Manager("");
-    project_manager.add_source_from_array(this.sources);
-    let dependencies_dot = await project_manager.get_dependency_graph_dot();
-    return dependencies_dot;
-  }
-
   async update_viewer() {
     if (this.panel !== undefined) {
       let state_machines = await this.get_state_machines();
+      this.state_machines = state_machines;
       this.send_state_machines(state_machines);
     }
   }
@@ -112,5 +150,4 @@ export default class State_machine_viewer_manager {
     });
     return html;
   }
-
 }

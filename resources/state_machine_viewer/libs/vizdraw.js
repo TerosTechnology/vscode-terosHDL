@@ -1,25 +1,4 @@
 "use strict";
-// default
-const vscode = acquireVsCodeApi();
-
-// document.getElementById("add-source").onclick = function () { send_command("add_source"); };
-// document.getElementById("clear-graph").onclick = function () { send_command("clear_graph"); };
-// document.getElementById("generate-documentation-markdown").onclick = function () { send_command("generate_documentation_markdown"); };
-// document.getElementById("generate-documentation-html").onclick = function () { send_command("generate_documentation_html"); };
-
-// document.body.onclick = function (event) {
-//     console.log(event.target.textContent);
-//     console.log(event.target.parentElement);
-//     console.log(event.target.title);
-
-// };
-
-function send_command(command) {
-    vscode.postMessage({
-        command: command,
-        text: "message"
-    });
-}
 
 // Handle the message inside the webview
 window.addEventListener('message', event => {
@@ -92,3 +71,12 @@ let pan_config = {
     fit: true,
     center: true,
 };
+
+const vscode = acquireVsCodeApi();
+document.getElementById("export-as-svg").onclick = function () { export_message("svg"); };
+function export_message(message) {
+    vscode.postMessage({
+        command: 'export',
+        text: message
+    });
+}
