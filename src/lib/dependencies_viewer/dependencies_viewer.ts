@@ -112,11 +112,15 @@ export default class Dependencies_viewer_manager {
   private async update_viewer() {
     let dot = await this.get_dot();
     if (dot === undefined) {
-      vscode.window.showInformationMessage("Please, install Python 3.");
+      this.show_python3_error_message();
     }
     else {
       await this.panel?.webview.postMessage({ command: "update", message: dot });
     }
+  }
+
+  private show_python3_error_message() {
+    vscode.window.showInformationMessage('Error: make sure Python3 is the system path.');
   }
 
   //Clear
@@ -163,5 +167,4 @@ export default class Dependencies_viewer_manager {
     });
     return html;
   }
-
 }

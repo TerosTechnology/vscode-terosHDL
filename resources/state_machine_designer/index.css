@@ -268,7 +268,17 @@ body {
 }
 
 
-#reset_signal, #reset_state {
+#state_name, #reset_state, #clock_name {
+  width: 5%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#reset_signal{
   width: 8%;
   padding: 12px 20px;
   margin: 8px 0;

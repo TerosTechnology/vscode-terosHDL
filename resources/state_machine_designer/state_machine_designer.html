@@ -41,6 +41,9 @@
             <input id="clear" name="zoom-mode" type="radio" value="fit"/>
             <div class="button">Clear</div>
           </label>
+          <label class="fancy-checkbox">
+            <a href="https://github.com/qarlosalberto/magic-hdl-stm" class="button">Go to Github repo</a>
+          </label>
       </div>
   </div>
   <p></p>
@@ -101,16 +104,16 @@
       <option value="vhdl">VHDL</option>
       <option value="verilog">Verilog</option>
     </select>
-    <label id="label_config_1" for="config_1">Type:</label>
-    <select id="config_1">
-      <option value="one_process">One process</option>
-    </select>
+    <label id="label_config_1">Clock name:</label>
+    <input class="text_area" id="clock_name" type="text" value="clk">
+    <label id="label_config_1">State name:</label>
+    <input class="text_area" id="state_name" type="text" value="state">
     <label id="label_config_1">Enable reset:</label>
     <input class="text_area" id="reset_enable" type="checkbox" value="reset">
-    <label id="label_config_1">Reset signal:</label>
-    <input class="text_area" id="reset_signal" type="text" value="reset">
+    <label id="label_config_1">Reset condition:</label>
+    <input class="text_area" id="reset_signal" type="text" value="resetn = 0">
     <label id="label_config_1">Reset state:</label>
-    <input class="text_area" id="reset_state" type="text" value="">
+    <input class="text_area" id="reset_state" type="text" value="S0">
   </div>
 
   <!-- Context menu -->
