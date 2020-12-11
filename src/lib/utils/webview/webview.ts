@@ -41,18 +41,19 @@ export abstract class WebviewController<TBootstrap> extends Disposable {
       // Replace placeholders in html content for assets and adding configurations as `window.bootstrap`
       const fullHtml = this.replaceInPanel(html);
       this.panel.webview.html = fullHtml;
-      return this.panel.reveal(ViewColumn.Active);
+      return this.panel.reveal(ViewColumn.One);
     }
-
+    let image_path = path.join(this.context.extensionPath, 'resources');
     this.panel = window.createWebviewPanel(
       this.id,
       this.title,
-      ViewColumn.Active,
+      ViewColumn.One,
       {
         retainContextWhenHidden: true,
         enableFindWidget: true,
         enableCommandUris: true,
-        enableScripts: true
+        enableScripts: true,
+        localResourceRoots: [Uri.file(image_path)]
       }
     );
 
@@ -64,8 +65,14 @@ export abstract class WebviewController<TBootstrap> extends Disposable {
       this.panel.webview.onDidReceiveMessage(this.onMessageReceived, this)
     );
 
+    let mediaPath = Uri.file(path.join(this.context.extensionPath, 'resources', 'release_notes')).with({
+      scheme: "vscode-resource"
+    }).toString() + '/';
+
+    let fullHtml = `<base href="${mediaPath}">`;
+
     // Replace placeholders in html content for assets and adding configurations as `window.bootstrap`
-    const fullHtml = this.replaceInPanel(html);
+    fullHtml += this.replaceInPanel(html);
 
     this.panel.webview.html = fullHtml;
   }
@@ -87,6 +94,9 @@ export abstract class WebviewController<TBootstrap> extends Disposable {
   }
 
   private replaceInPanel(html: string): string {
+    if (this.panel === undefined) {
+      return '';
+    }
     // Replace placeholders in html content for assets and adding configurations as `window.bootstrap`
     const fullHtml = html
       .replace(/{{root}}/g, this.panel.webview.asWebviewUri(Uri.file(this.context.asAbsolutePath('./resources/release_notes'))).toString())

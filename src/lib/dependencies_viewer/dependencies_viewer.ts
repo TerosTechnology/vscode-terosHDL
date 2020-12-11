@@ -103,9 +103,10 @@ export default class Dependencies_viewer_manager {
   }
 
   private async get_dot() {
+    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
     let project_manager = new jsteros.Project_manager.Manager("");
     project_manager.add_source_from_array(this.sources);
-    let dependencies_dot = await project_manager.get_dependency_graph_dot();
+    let dependencies_dot = await project_manager.get_dependency_graph_dot(python3_path);
     return dependencies_dot;
   }
 
@@ -120,7 +121,7 @@ export default class Dependencies_viewer_manager {
   }
 
   private show_python3_error_message() {
-    vscode.window.showInformationMessage('Error: make sure Python3 is the system path.');
+    vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration.');
   }
 
   //Clear
@@ -145,14 +146,15 @@ export default class Dependencies_viewer_manager {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
+    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
 
     let project_manager = new jsteros.Project_manager.Manager("");
     project_manager.add_source_from_array(this.sources);
     if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
+      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path);
     }
     else {
-      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
+      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path);
     }
   }
 

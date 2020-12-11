@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/class-name-casing */
 import { extensions, workspace, window, Uri } from 'vscode';
 import { posix } from 'path';
 import { CONFIG_FILE_NAME, USER_CONFIG_FILE_NAME, TEROS_HDL_EXT_ID } from './envs';
@@ -31,19 +32,20 @@ export interface IExtensionManager {
 }
 
 class Extension_manager implements IExtensionManager {
-  installationType: InstallationType;
+  installationType!: InstallationType;
   private readonly configFileUri: Uri;
   private readonly userConfigFileUri: Uri;
-  private configJSON: teros_hdl_config;
+  private configJSON!: teros_hdl_config;
 
   constructor() {
-    const extensionFolderUri = Uri.file(extensions.getExtension(TEROS_HDL_EXT_ID).extensionPath);
+    let extension_path = <string>extensions.getExtension(TEROS_HDL_EXT_ID)?.extensionPath;
+    const extensionFolderUri = Uri.file(extension_path);
     this.configFileUri = extensionFolderUri.with({ path: posix.join(extensionFolderUri.path, CONFIG_FILE_NAME) });
     this.userConfigFileUri = extensionFolderUri.with({ path: posix.join(extensionFolderUri.path, USER_CONFIG_FILE_NAME) });
   }
 
   get_package_json(): PackageJSON {
-    return extensions.getExtension(TEROS_HDL_EXT_ID).packageJSON;
+    return extensions.getExtension(TEROS_HDL_EXT_ID)?.packageJSON;
   }
 
   get_config(): teros_hdl_config {
@@ -63,8 +65,9 @@ class Extension_manager implements IExtensionManager {
     try {
       const packageJSON = this.get_package_json();
       const userConfig = await this.get_user_config();
+      let update = userConfig && this.is_version_update(userConfig);
       this.installationType = {
-        update: userConfig && this.is_version_update(userConfig),
+        update: <boolean>update,
         firstInstall: !userConfig
       };
 
@@ -94,7 +97,8 @@ class Extension_manager implements IExtensionManager {
     const packageJSON = this.get_package_json();
 
     const versionCurrent = splitVersion(packageJSON.version);
-    const versionOld = splitVersion(userConfig.changelog.lastversion);
+    let version = <string>userConfig.changelog?.lastversion;
+    const versionOld = splitVersion(version);
 
     const update = (
       versionCurrent.major > versionOld.major ||

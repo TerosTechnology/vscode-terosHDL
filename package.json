@@ -3,7 +3,7 @@
 	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
 	"description": "VHDL and Verilog/SV IDE.",
-	"version": "0.0.9",
+	"version": "0.1.0",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
@@ -76,6 +76,11 @@
 						"None"
 					],
 					"default": "GHDL"
+				},
+				"teroshdl.global.python3-path": {
+					"description": "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path.",
+					"type": "string",
+					"default": ""
 				},
 				"teroshdl.linter.vhdl.linter.ghdl.arguments": {
 					"description": "GHDL arguments",

@@ -57,10 +57,26 @@ export default class State_machine_designer_manager {
       null,
       this.context.subscriptions
     );
+    // Handle messages from the webview
+    this.panel.webview.onDidReceiveMessage(
+      message => {
+        switch (message.command) {
+          case 'export':
+            this.show_export_message();
+            return;
+        }
+      },
+      undefined,
+      this.context.subscriptions
+    );
+
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
   }
 
+  private show_export_message() {
+    vscode.window.showInformationMessage('Code copied to clipboard 🖥️');
+  }
 
   private getWebviewContent(context: vscode.ExtensionContext) {
     let template_path = 'resources' + path_lib.sep + 'state_machine_designer' + path_lib.sep + 'state_machine_designer.html';
