@@ -70,11 +70,11 @@ export default class Dependencies_viewer_manager {
             console.log("Clear graph");
             return;
           case 'generate_documentation_markdown':
-            this.generate_documentation("markdown");
+            this.generate_documentation("markdown", message.enable_state_machines);
             console.log("Generate documentation Markdown");
             return;
           case 'generate_documentation_html':
-            this.generate_documentation("html");
+            this.generate_documentation("html", message.enable_state_machines);
             console.log("Generate documentation HTML");
             return;
         }
@@ -134,15 +134,15 @@ export default class Dependencies_viewer_manager {
     this.sources = [];
   }
 
-  private generate_documentation(type: string) {
+  private generate_documentation(type: string, enable_state_machines) {
     vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false }).then(file_uri => {
       if (file_uri && file_uri[0]) {
-        this.generate_and_save_documentation(file_uri[0].fsPath, type);
+        this.generate_and_save_documentation(file_uri[0].fsPath, type, enable_state_machines);
       }
     });
   }
 
-  private generate_and_save_documentation(output_path, type: string) {
+  private generate_and_save_documentation(output_path, type: string, enable_state_machines) {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
@@ -151,10 +151,10 @@ export default class Dependencies_viewer_manager {
     let project_manager = new jsteros.Project_manager.Manager("");
     project_manager.add_source_from_array(this.sources);
     if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path);
+      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, enable_state_machines);
     }
     else {
-      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path);
+      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, enable_state_machines);
     }
   }
 

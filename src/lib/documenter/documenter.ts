@@ -27,6 +27,8 @@ let panel;
 let main_context;
 let current_documenter;
 let current_path;
+let enable_state_machines = false;
+let last_document: vscode.TextDocument | undefined = undefined;
 export async function get_documentation_module(context: vscode.ExtensionContext) {
     main_context = context;
     let active_editor = vscode.window.activeTextEditor;
@@ -34,6 +36,7 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
         return; // no editor
     }
     let document = active_editor.document;
+    last_document = document;
     let language_id: string = document.languageId;
     let code: string = document.getText();
 
@@ -85,6 +88,9 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
                             export_as(message.text);
                             console.log(message.text);
                             return;
+                        case 'enable_state_machines':
+                            enable_state_machines_func(message.text);
+                            return;
                     }
                 },
                 undefined,
@@ -100,13 +106,26 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     panel.webview.postMessage({ command: 'refactor' });
 }
 
-export async function update_documentation_module(document) {
+
+function enable_state_machines_func(enable) {
+    enable_state_machines = <boolean>enable;
+    update_documentation_module(undefined, true);
+}
+
+export async function update_documentation_module(document, enable_stm) {
     if (panel !== undefined) {
         let active_editor = vscode.window.activeTextEditor;
-        if (!active_editor) {
+        if (active_editor === undefined && enable_stm !== true) {
             return; // no editor
         }
-        let document = active_editor.document;
+        let document: vscode.TextDocument | undefined = last_document;
+        if (enable_stm !== true && active_editor !== undefined) {
+            document = active_editor.document;
+        }
+        last_document = document;
+        if (document === undefined) {
+            return;
+        }
         let language_id: string = document.languageId;
         let code: string = document.getText();
 
@@ -117,7 +136,7 @@ export async function update_documentation_module(document) {
         let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
         let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
-        current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol);
+        current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol, enable_state_machines);
         let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
         let previewHtml = await node_utilities.readFileAsync(
             main_context.asAbsolutePath(path_html), "utf8");
@@ -127,6 +146,7 @@ export async function update_documentation_module(document) {
         previewHtml += html_result.html;
 
         panel.webview.html = previewHtml;
+        await panel?.webview.postMessage({ command: "check", message: enable_state_machines });
     }
 }
 

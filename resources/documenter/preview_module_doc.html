@@ -157,6 +157,8 @@
             <input id="export-as-image" name="zoom-mode" type="radio" value="fit" />
             <div class="button">Export image</div>
         </label>
+        <label id="fancy-checkbox">Include state machines</label>
+        <input id="enable-state-machines" type="checkbox">
 <!--        <label class="fancy-checkbox">
             <input id="export-as-latex" name="zoom-mode" type="radio" value="fit" />
             <div class="button">Export LaTeX</div>
@@ -170,7 +172,10 @@ document.getElementById("export-as-markdown").onclick = function() {export_messa
 document.getElementById("export-as-pdf").onclick = function() {export_message("pdf")};
 document.getElementById("export-as-html").onclick = function() {export_message("html")};
 document.getElementById("export-as-image").onclick = function() {export_message("image")};
-// document.getElementById("export-as-latex").onclick = function() {export_message("latex")};
+document.getElementById("enable-state-machines").onclick = function() {
+    let enable = document.getElementById('enable-state-machines').checked;
+    enable_state_machines(enable);
+};
 
 function export_message(message) {
     vscode.postMessage({
@@ -178,4 +183,23 @@ function export_message(message) {
         text: message
     })
 }
+function enable_state_machines(enable) {
+    vscode.postMessage({
+        command: 'enable_state_machines',
+        text: enable
+    })
+}
+
+// Handle the message inside the webview
+window.addEventListener('message', event => {
+    const message = event.data; // The JSON data our extension sen
+    switch (message.command) {
+        case 'check':
+            let check = message.message;
+            document.getElementById('enable-state-machines').checked = check;
+    }
+});
+
+
+
 </script>

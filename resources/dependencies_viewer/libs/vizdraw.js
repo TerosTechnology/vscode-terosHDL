@@ -10,7 +10,8 @@ document.getElementById("generate-documentation-html").onclick = function () { s
 function send_command(command) {
     vscode.postMessage({
         command: command,
-        text: "message"
+        text: "message",
+        enable_state_machines: document.getElementById('enable-state-machines').checked
     });
 }
 
