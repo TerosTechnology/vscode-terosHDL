@@ -327,7 +327,7 @@
 					"group": "navigation"
 				},
 				{
-					"when": "resourceLangId == vhdl",
+					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
 					"command": "teroshdl.state_machine.viewer",
 					"group": "navigation"
 				},
