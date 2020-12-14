@@ -124,8 +124,8 @@ export async function activate(context: vscode.ExtensionContext) {
                 await documentation.get_documentation_module(context);
             }
         ),
-        vscode.workspace.onDidOpenTextDocument((e) => documentation.update_documentation_module(e)),
-        vscode.workspace.onDidSaveTextDocument((e) => documentation.update_documentation_module(e)),
+        vscode.workspace.onDidOpenTextDocument((e) => documentation.update_documentation_module(e, undefined)),
+        vscode.workspace.onDidSaveTextDocument((e) => documentation.update_documentation_module(e, undefined)),
     );
     /**************************************************************************/
     // Linter

@@ -29,6 +29,7 @@ export default class State_machine_viewer_manager {
   private context: vscode.ExtensionContext;
   private sources: string[] = [];
   private state_machines;
+  private document;
 
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
@@ -63,7 +64,9 @@ export default class State_machine_viewer_manager {
         switch (message.command) {
           case 'export':
             this.export_as(message.text);
-            console.log(message.text);
+            return;
+          case 'go_to_state':
+            this.go_to_state(message.stm_index, message.state);
             return;
         }
       },
@@ -76,8 +79,41 @@ export default class State_machine_viewer_manager {
 
     let state_machines = await this.get_state_machines();
     this.state_machines = state_machines;
-    this.send_state_machines(state_machines);
+    this.send_state_machines(state_machines.svg);
   }
+
+
+  go_to_state(stm_index, state) {
+    if (this.state_machines === undefined) {
+      return;
+    }
+    let states = this.state_machines.stm[stm_index].states;
+    let state_stm;
+    for (let i = 0; i < states.length; ++i) {
+      if (states[i].name === state) {
+        state_stm = states[i];
+      }
+    }
+    if (state_stm !== undefined) {
+      let start_position = state_stm.start_position;
+      let end_position = state_stm.end_position;
+
+      let pos_1 = new vscode.Position(start_position[0], start_position[1]);
+      let pos_2 = new vscode.Position(end_position[0], end_position[1]);
+      var open_path = this.document.uri;
+      vscode.workspace.openTextDocument(open_path).then(doc => {
+        vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then(editor => {
+          // Line added - by having a selection at the same position twice, the cursor jumps there
+          editor.selections = [new vscode.Selection(pos_1, pos_2)];
+
+          // And the visible range jumps there too
+          var range = new vscode.Range(pos_1, pos_2);
+          editor.revealRange(range);
+        });
+      });
+    }
+  }
+
 
   async export_as(type: string) {
     if (type === "svg") {
@@ -118,6 +154,7 @@ export default class State_machine_viewer_manager {
       return; // no editor
     }
     let document = active_editor.document;
+    this.document = document;
     let language_id: string = document.languageId;
     let code: string = document.getText();
 
@@ -135,7 +172,7 @@ export default class State_machine_viewer_manager {
     if (this.panel !== undefined) {
       let state_machines = await this.get_state_machines();
       this.state_machines = state_machines;
-      this.send_state_machines(state_machines);
+      this.send_state_machines(state_machines.svg);
     }
   }
 
