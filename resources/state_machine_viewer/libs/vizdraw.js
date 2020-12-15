@@ -6,7 +6,7 @@ window.addEventListener('message', event => {
     const message = event.data; // The JSON data our extension sen
     switch (message.command) {
         case 'update':
-            update_graph(message.state_machines);
+            update_graph(message.svg, message.stms);
             break;
         case 'clear':
             clear();
@@ -16,19 +16,21 @@ window.addEventListener('message', event => {
 
 let graph = [];
 let div = [];
+let stms = [];
 
-function update_graph(state_machines) {
+function update_graph(svgs, stms_i) {
+    stms = stms_i;
     const el = document.querySelector('body');
     // get scroll position in px
     let last_scroll_left = el.scrollLeft;
     let last_scroll_top = el.scrollTop;
 
     delete_graph();
-    if (state_machines === undefined) {
+    if (svgs === undefined) {
         return;
     }
-    for (let i = 0; i < state_machines.length; ++i) {
-        create_graph(state_machines[i].svg, `svg_${i}`, i);
+    for (let i = 0; i < svgs.length; ++i) {
+        create_graph(svgs[i].svg, `svg_${i}`, i);
     }
 
     // set scroll position in px
@@ -60,7 +62,6 @@ function create_graph(svg, name, index) {
     pan_zoom.center();
     pan_zoom.resize();
 
-    console.log("pasa0");
     let countries = embed.childNodes;
     for (let i = 0; i < countries.length; i++) {
         countries[i].addEventListener('click', e => {
@@ -73,33 +74,94 @@ function create_graph(svg, name, index) {
                     let state_machine_index_i = index;
                     for (let j = 0; j < childs.length; ++j) {
                         let child_0 = childs[j];
-                        if (child_0.tagName === 'polygon') {
+                        if (child_0.tagName === 'polygon' && check_state(state_machine_index_i, state_name) === true) {
                             uncheck_all();
                             child_0.style = "fill:#d0fdf7";
+                            go_to_code_state(state_machine_index_i, state_name);
                         }
                     }
-                    go_to_code_state(state_machine_index_i, state_name);
                 }
             }
         });
+
+        countries[i].addEventListener('click', e => {
+            let state_machine_index_i = index;
+            let parent_target = e.target.parentNode;
+            let childs = parent_target.childNodes;
+            for (let i = 0; i < childs.length; ++i) {
+                let child = childs[i];
+                let transtion = child.textContent.split('->');
+
+                if (child.tagName === 'title' && transtion.length === 2) {
+                    let text_count = 0;
+                    let condition = '';
+                    let child_match;
+                    let child_match_0;
+                    for (let j = 0; j < childs.length; ++j) {
+                        let child_0 = childs[j];
+                        if (child_0.tagName === 'text') {
+                            if (text_count === 0) {
+                                condition = child_0.textContent;
+                            }
+                            else {
+                                condition += '\n' + child_0.textContent;
+                            }
+                            text_count += 1;
+                        }
+                        else if (child_0.tagName === 'polygon') {
+                            child_match = child_0;
+                        }
+                        else if (child_0.tagName === 'path') {
+                            child_match_0 = child_0;
+                        }
+                    }
+                    if (text_count >= 0) {
+                        uncheck_all();
+                        child_match.style = "fill:#0024b9;stroke:#0024b9";
+                        child_match_0.style = "stroke:#0024b9";
+                        go_to_condition(state_machine_index_i, transtion, condition);
+                    }
+                }
+            }
+        });
+
     }
     graph.push(embed);
+    document.body.contentEditable = false;
 }
 
 function uncheck_all() {
     for (let i = 0; i < graph.length; i++) {
         search_in_tree(graph[i], 'polygon');
+        search_in_tree(graph[i], 'path');
     }
 }
+
+function check_state(stm_index, state) {
+    let states = stms[stm_index].states;
+    for (let i = 0; i < states.length; ++i) {
+        if (states[i].name === state) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 function search_in_tree(element, matchingTitle) {
     let match = undefined;
     function recursive_searchTree(element, matchingTitle) {
         let type = element.tagName;
         if (type === matchingTitle) {
-            console.log(element.style.fill);
             if (element.style !== undefined && element.style.fill === 'rgb(208, 253, 247)') {
                 element.style = "fill:transparent";
+            }
+            else if (element.style !== undefined && element.style.fill === 'rgb(0, 36, 185)'
+                && element.style.stroke === 'rgb(0, 36, 185)') {
+                element.style = "fill:#000000;stroke:#000000";
+            }
+            else if (element.style !== undefined && element.style.stroke === 'rgb(0, 36, 185)') {
+                element.style = "fill:none;stroke:#000000";
             }
             match = element;
         } else if (element !== null) {
@@ -126,6 +188,16 @@ function go_to_code_state(stm_index, state) {
         command: 'go_to_state',
         stm_index: stm_index,
         state: state
+    });
+}
+
+
+function go_to_condition(stm_index, transition, condition) {
+    vscode.postMessage({
+        command: 'go_to_condition',
+        stm_index: stm_index,
+        transition: transition,
+        condition: condition
     });
 }
 

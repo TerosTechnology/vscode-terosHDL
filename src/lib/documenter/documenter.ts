@@ -47,7 +47,9 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     if (language_id === 'systemverilog') {
         language_id = 'verilog';
     }
-    current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+    if (vscode.window.activeTextEditor !== undefined) {
+        current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+    }
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
@@ -132,7 +134,9 @@ export async function update_documentation_module(document, enable_stm) {
         if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== 'systemverilog') {
             return;
         }
-        current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+        if (vscode.window.activeTextEditor !== undefined) {
+            current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+        }
         let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
         let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 

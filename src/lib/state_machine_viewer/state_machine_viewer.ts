@@ -68,6 +68,9 @@ export default class State_machine_viewer_manager {
           case 'go_to_state':
             this.go_to_state(message.stm_index, message.state);
             return;
+          case 'go_to_condition':
+            this.go_to_condition(message.stm_index, message.transition, message.condition);
+            return;
         }
       },
       undefined,
@@ -79,7 +82,7 @@ export default class State_machine_viewer_manager {
 
     let state_machines = await this.get_state_machines();
     this.state_machines = state_machines;
-    this.send_state_machines(state_machines.svg);
+    this.send_state_machines(state_machines);
   }
 
 
@@ -114,6 +117,58 @@ export default class State_machine_viewer_manager {
     }
   }
 
+  normalize_string(str) {
+    let n_string = str.replace(/[^ -~]+/g, '');
+    n_string = n_string.replace(/ /g, '');
+    n_string = n_string.replace(/\n/g, '');
+    return n_string;
+  }
+
+  go_to_condition(stm_index, transition, condition) {
+    let normalized_condition = this.normalize_string(condition);
+    let state_origen = transition[0];
+    let state_destination = transition[1];
+    if (this.state_machines === undefined) {
+      return;
+    }
+    let states = this.state_machines.stm[stm_index].states;
+    let transition_match;
+    //Search state
+    for (let i = 0; i < states.length; ++i) {
+      if (states[i].name === state_origen) {
+        let transitions = states[i].transitions;
+        //Search condition
+        for (let j = 0; j < transitions.length; ++j) {
+          let normalized_condition_state = this.normalize_string(transitions[j].condition);
+          if (transitions[j].destination === state_destination
+            && normalized_condition_state === normalized_condition) {
+            transition_match = transitions[j];
+          }
+        }
+      }
+    }
+    if (transition_match !== undefined) {
+      if (transition_match.start_position === undefined || transition_match.end_position === undefined) {
+        return;
+      }
+      let start_position = transition_match.start_position;
+      let end_position = transition_match.end_position;
+
+      let pos_1 = new vscode.Position(start_position[0], start_position[1]);
+      let pos_2 = new vscode.Position(end_position[0], end_position[1]);
+      var open_path = this.document.uri;
+      vscode.workspace.openTextDocument(open_path).then(doc => {
+        vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then(editor => {
+          // Line added - by having a selection at the same position twice, the cursor jumps there
+          editor.selections = [new vscode.Selection(pos_1, pos_2)];
+
+          // And the visible range jumps there too
+          var range = new vscode.Range(pos_1, pos_2);
+          editor.revealRange(range);
+        });
+      });
+    }
+  }
 
   async export_as(type: string) {
     if (type === "svg") {
@@ -145,7 +200,9 @@ export default class State_machine_viewer_manager {
   }
 
   private async send_state_machines(state_machines) {
-    await this.panel?.webview.postMessage({ command: "update", state_machines: state_machines });
+    if (state_machines !== undefined) {
+      await this.panel?.webview.postMessage({ command: "update", svg: state_machines.svg, stms: state_machines.stm });
+    }
   }
 
   private async get_state_machines() {
@@ -172,7 +229,7 @@ export default class State_machine_viewer_manager {
     if (this.panel !== undefined) {
       let state_machines = await this.get_state_machines();
       this.state_machines = state_machines;
-      this.send_state_machines(state_machines.svg);
+      this.send_state_machines(state_machines);
     }
   }
 
