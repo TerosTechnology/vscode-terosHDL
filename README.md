@@ -154,8 +154,6 @@ This is an experimental feature. You need to install Verible (https://github.com
 
 ## Usage Instructions
 
-**Only supported in VHDL.**
-
 1. Open the command palette: `Ctrl+Shift+P` and select **_State machine viewer_**
    ![alt text](./resources/images/readme/state_machine_viewer_select.png "title")
 2. Your state machines will show in the window.
