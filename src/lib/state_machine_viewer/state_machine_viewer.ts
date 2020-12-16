@@ -93,7 +93,7 @@ export default class State_machine_viewer_manager {
     let states = this.state_machines.stm[stm_index].states;
     let state_stm;
     for (let i = 0; i < states.length; ++i) {
-      if (states[i].name === state) {
+      if (states[i].name.replace(/\"/g, '').replace(/\'/g, '') === state) {
         state_stm = states[i];
       }
     }
@@ -135,12 +135,12 @@ export default class State_machine_viewer_manager {
     let transition_match;
     //Search state
     for (let i = 0; i < states.length; ++i) {
-      if (states[i].name === state_origen) {
+      if (states[i].name.replace(/\"/g, '').replace(/\'/g, '') === state_origen) {
         let transitions = states[i].transitions;
         //Search condition
         for (let j = 0; j < transitions.length; ++j) {
           let normalized_condition_state = this.normalize_string(transitions[j].condition);
-          if (transitions[j].destination === state_destination
+          if (transitions[j].destination.replace(/\"/g, '').replace(/\'/g, '') === state_destination
             && normalized_condition_state === normalized_condition) {
             transition_match = transitions[j];
           }

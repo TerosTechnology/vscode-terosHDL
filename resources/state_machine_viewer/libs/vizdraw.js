@@ -140,7 +140,7 @@ function uncheck_all() {
 function check_state(stm_index, state) {
     let states = stms[stm_index].states;
     for (let i = 0; i < states.length; ++i) {
-        if (states[i].name === state) {
+        if (states[i].name.replace(/\"/g, '').replace(/\'/g, '') === state) {
             return true;
         }
     }
@@ -200,31 +200,6 @@ function go_to_condition(stm_index, transition, condition) {
         condition: condition
     });
 }
-
-// function click_svg(e) {
-//     let pepe = e.target;
-
-//     let parent_target = pepe.parentNode;
-//     let childs = parent_target.childNodes;
-//     for (let i = 0; i < childs.length; ++i) {
-//         let child = childs[i];
-//         if (child.tagName === 'title') {
-//             console.log("pasa0");
-//             console.log(child.textContent);
-//             console.log(child);
-//             console.log(child.text);
-//             console.log("pasa1");
-//         }
-//     }
-
-//     // let parent_target = pepe.parentNode;
-//     // console.log("pasa2");
-//     // console.log(parent_target.title);
-//     // console.log("pasa3");
-
-//     alert("hola!");
-// }
-
 
 function delete_graph() {
     if (graph === undefined) {
