@@ -86,6 +86,32 @@
 		],
 		"description": "case statement"
 	},
+	"FSM example generate": {
+		"prefix": "fsm",
+		"body": [
+
+
+			"process (${1:clk})",
+			"begin",
+			"\tif ${2|rising_edge,falling_edge|}($1) then",
+			"\t\t$0",
+			"\t\tcase ${3:sel} is",
+			"\t\t\twhen ${4:sel} =>",
+			"\t\t\t\t$0",
+			"\t\t\t\t$3 <= $5;",
+			"",
+			"\t\t\twhen ${5:sel} =>",
+			"\t\t\t\t$0",
+			"\t\t\t\t$3 <= $4;",
+			"",
+			"\t\t\twhen others =>",
+			"\t\t\t\t$3 <= $4;",
+			"\t\tend case;",
+			"\tend if;",
+			"end process;"
+		],
+		"description": "case statement"
+	},
 	"Case Generate": {
 		"prefix": "casegen",
 		"body": [

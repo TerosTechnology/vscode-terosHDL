@@ -168,6 +168,24 @@
             display: none;
         }
 
+        .config {
+            background: rgba(255, 255, 255, 1);
+            top:4.7%;
+            padding-top: 10%;
+            overflow: visible;
+            width: 100%;
+            position: fixed;
+            color: black;
+            font: 12px "Segoe UI", sans-serif;
+            padding: 0.25em;
+            white-space: nowrap;
+            z-index: 4;
+        }
+
+        .config {
+            padding: 0.5em;
+        }
+
     </style>
 </head>
 
@@ -190,9 +208,34 @@
                 <input id="generate-documentation-html" name="zoom-mode" type="radio" value="fit"/>
                 <div class="button">Save as HTML</div>
             </label>
-            <label id="fancy-checkbox">Include state machines</label>
-            <input id="enable-state-machines" type="checkbox">
         </div>
+    </div>
+    <div class="config">
+
+        <label style="margin-left:2%;" >Include FSMs</label>
+        <input style="margin-right:2%;" id="enable-state-machines" type="checkbox">
+    
+        <label>Signals</label>
+        <select id="signals" style="margin-right:2%;" name="select">
+            <option value="all" selected>All</option>
+            <option value="commented">Only commented</option>
+            <option value="none">None</option>
+        </select>
+    
+        <label>Constants</label>
+        <select id="constants" style="margin-right:2%;" name="select">
+            <option value="all" selected>All</option>
+            <option value="commented">Only commented</option>
+            <option value="none">None</option>
+        </select>
+    
+        <label>Always/process</label>
+        <select id="process" style="margin-right:2%;" name="select">
+            <option value="all" selected>All</option>
+            <option value="commented">Only commented</option>
+            <option value="none">None</option>
+        </select>
+    
     </div>
     <div id="error-info" class="trontron"><div id="inner" class="fuck"></div></div>
 </body>
