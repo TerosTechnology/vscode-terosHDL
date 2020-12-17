@@ -25,6 +25,9 @@ function update_graph(svgs, stms_i) {
     let last_scroll_left = el.scrollLeft;
     let last_scroll_top = el.scrollTop;
 
+    let message = document.getElementById("message");
+    message.innerHTML = `State machines found: ${svgs.length}`;
+
     delete_graph();
     if (svgs === undefined) {
         return;
