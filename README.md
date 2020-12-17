@@ -9,11 +9,13 @@
 7. [Errors checking](#id7)
 8. [Style checking](#id8)
 9. [Formatting](#id9)
-10. [Dependencies viewer](#id10)
-11. [Hover to evaluate binary, hexadecimal and octal values](#id11)
-12. [Code snippets and grammar](#id12)
-13. [Future work](#id13)
-14. [Similar projects](#id14)
+10. [State machine viewer](#id10)
+11. [State machine designer](#id11)
+12. [Dependencies viewer](#id12)
+13. [Hover to evaluate binary, hexadecimal and octal values](#id13)
+14. [Code snippets and grammar](#id14)
+15. [Future work](#id15)
+16. [Similar projects](#id16)
 
 # 1. Introduction <a name="id1"></a>
 
@@ -147,7 +149,29 @@ This is an experimental feature. You need to install Verible (https://github.com
 
 ## Configuration
 
-# 10. Dependencies viewer <a name="id10"></a>
+
+# 10. State machine viewer <a name="id10"></a>
+
+## Usage Instructions
+
+1. Open the command palette: `Ctrl+Shift+P` and select **_State machine viewer_**
+   ![alt text](./resources/images/readme/state_machine_viewer_select.png "title")
+2. Your state machines will show in the window.
+   ![alt text](./resources/images/readme/state_machine_viewer_machine.png "title")
+
+# 11. State machine designer <a name="id11"></a>
+
+## Usage Instructions
+
+1. Open the command palette: `Ctrl+Shift+P` and select **_State machine designer_**
+   ![alt text](./resources/images/readme/state_machine_designer_select.png "title")
+2. Follow the instructions and design your state machine!
+   ![alt text](./resources/images/readme/state_machine_designer_machine.gif "title")
+
+# 12. Dependencies viewer <a name="id12"></a>
+
+1. Install Python3.
+2. Go go TerosHDL configuration and add the Python3 binary path.
 
 ## Usage Instructions
 
@@ -167,13 +191,13 @@ This is an experimental feature. You need to install Verible (https://github.com
    ![alt text](./resources/images/readme/project_doc.gif "title")
 
 
-# 11. Hover to evaluate binary, hexadecimal and octal values <a name="id11"></a>
+# 13. Hover to evaluate binary, hexadecimal and octal values <a name="id13"></a>
 
 ![alt text](./resources/images/readme/hover_binary_vhdl.png "title")
 
 ![alt text](./resources/images/readme/hover_hexadecimal_verilog.png "title")
 
-# 12. Code snippets and grammar <a name="id12"></a>
+# 14. Code snippets and grammar <a name="id14"></a>
 
 | Language        | Grammar       | Code snippets |
 | ------:         | ----------    | ------------- |
@@ -185,14 +209,14 @@ This is an experimental feature. You need to install Verible (https://github.com
 
 ![alt text](./resources/images/readme/code_snippets.gif "title")
 
-# 13. Future work <a name="id13"></a>
+# 15. Future work <a name="id15"></a>
 
 - Finite State Machine graph.
 - Project manager.
 - File tree view.
 - Integrate [triel](https://github.com/TerosTechnology/triel) backend
 
-# 14. Similar projects <a name="id14"></a>
+# 16. Similar projects <a name="id16"></a>
 
 - Hardware Integrated Development Environment ([hide](https://github.com/drom/atom-hide))
 - [APIO-ide](https://github.com/FPGAwars/apio-ide)

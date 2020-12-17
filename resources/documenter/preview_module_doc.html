@@ -43,6 +43,21 @@
       white-space: nowrap;
       z-index: 2;
   }
+
+  .config {
+      background: rgba(255, 255, 255, 1);
+      top:3.5%;
+      padding-top: 10%;
+      overflow: visible;
+      width: 100%;
+      position: fixed;
+      color: black;
+      font: 12px "Segoe UI", sans-serif;
+      padding: 0.25em;
+      white-space: nowrap;
+      z-index: 4;
+  }
+
   .left-panel,
   .center-panel,
   .right-panel {
@@ -74,6 +89,10 @@
       transition: background ease-out 125ms, color ease-out 125ms;
       user-select: none;
       width: 10em;
+  }
+
+  .config {
+    padding: 0.5em;
   }
 
   .button:hover {
@@ -139,6 +158,8 @@
       display: none;
   }
 </style>
+
+<div>
 <div class="toolbar">
     <div class="center-panel">
         <label class="fancy-checkbox">
@@ -157,6 +178,8 @@
             <input id="export-as-image" name="zoom-mode" type="radio" value="fit" />
             <div class="button">Export image</div>
         </label>
+        <!-- <label id="fancy-checkbox">Include state machines</label>
+        <input id="enable-state-machines" type="checkbox"> -->
 <!--        <label class="fancy-checkbox">
             <input id="export-as-latex" name="zoom-mode" type="radio" value="fit" />
             <div class="button">Export LaTeX</div>
@@ -164,18 +187,102 @@
     </div>
 </div>
 
-<script>
-const vscode = acquireVsCodeApi();
-document.getElementById("export-as-markdown").onclick = function() {export_message("markdown")};
-document.getElementById("export-as-pdf").onclick = function() {export_message("pdf")};
-document.getElementById("export-as-html").onclick = function() {export_message("html")};
-document.getElementById("export-as-image").onclick = function() {export_message("image")};
-// document.getElementById("export-as-latex").onclick = function() {export_message("latex")};
+<div class="config">
 
-function export_message(message) {
-    vscode.postMessage({
-        command: 'export',
-        text: message
-    })
-}
+    <label style="margin-left:2%;" >Include FSMs</label>
+    <input style="margin-right:2%;" id="enable-state-machines" type="checkbox">
+
+    <label>Signals</label>
+    <select id="signals" style="margin-right:2%;" name="select">
+        <option value="all" selected>All</option>
+        <option value="commented">Only commented</option>
+        <option value="none">None</option>
+    </select>
+
+    <label>Constants</label>
+    <select id="constants" style="margin-right:2%;" name="select">
+        <option value="all" selected>All</option>
+        <option value="commented">Only commented</option>
+        <option value="none">None</option>
+    </select>
+
+    <label>Always/process</label>
+    <select id="process" style="margin-right:2%;" name="select">
+        <option value="all" selected>All</option>
+        <option value="commented">Only commented</option>
+        <option value="none">None</option>
+    </select>
+
+</div>
+
+<script>
+    const vscode = acquireVsCodeApi();
+    document.getElementById("export-as-markdown").onclick = function() {export_message("markdown")};
+    document.getElementById("export-as-pdf").onclick = function() {export_message("pdf")};
+    document.getElementById("export-as-html").onclick = function() {export_message("html")};
+    document.getElementById("export-as-image").onclick = function() {export_message("image")};
+
+    let fsm = document.getElementById("enable-state-machines");
+    fsm.onclick = function() {
+        send_config();
+    };
+
+    let constants = document.getElementById("constants");
+    constants.onclick = function(e) {
+        send_config();
+    };
+
+    let signals = document.getElementById("signals");
+    signals.onclick = function(e) {
+        send_config();
+    };
+
+    let process = document.getElementById("process");
+    process.onclick = function(e) {
+        send_config();
+    };
+
+    function export_message(message) {
+        vscode.postMessage({
+            command: 'export',
+            text: message
+        })
+    }
+    function send_config() {
+        let config = get_config();
+        vscode.postMessage({
+            command: 'set_config',
+            config: config
+        })
+    }
+
+    // Handle the message inside the webview
+    window.addEventListener('message', event => {
+        const message = event.data; // The JSON data our extension sen
+        switch (message.command) {
+            case 'set_config':
+                let config = message.config;
+                set_config(config);
+        }
+    });
+
+    function get_config(){
+        let config = {
+            'fsm' :        fsm.checked,
+            'signals' :    signals.value,
+            'constants' :  constants.value,
+            'process' :    process.value,
+        }
+        return config;
+    }
+
+    function set_config(config){
+        if (config !== undefined){
+            fsm.checked = config.fsm;
+            signals.value = config.signals;
+            constants.value = config.constants;
+            process.value = config.process;
+        }
+    }
+
 </script>

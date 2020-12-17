@@ -3,7 +3,7 @@
 	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
 	"description": "VHDL and Verilog/SV IDE.",
-	"version": "0.0.7",
+	"version": "0.1.0",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
@@ -28,6 +28,8 @@
 		"onCommand:teroshdl.format",
 		"onCommand:teroshdl.documentation.module",
 		"onCommand:teroshdl.dependencies.viewer",
+		"onCommand:teroshdl.state_machine.designer",
+		"onCommand:teroshdl.state_machine.viewer",
 		"onLanguage:verilog",
 		"onLanguage:systemverilog",
 		"onLanguage:vhdl"
@@ -74,6 +76,11 @@
 						"None"
 					],
 					"default": "GHDL"
+				},
+				"teroshdl.global.python3-path": {
+					"description": "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path.",
+					"type": "string",
+					"default": ""
 				},
 				"teroshdl.linter.vhdl.linter.ghdl.arguments": {
 					"description": "GHDL arguments",
@@ -321,6 +328,11 @@
 				},
 				{
 					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
+					"command": "teroshdl.state_machine.viewer",
+					"group": "navigation"
+				},
+				{
+					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
 					"command": "teroshdl.format",
 					"group": "navigation"
 				},
@@ -342,6 +354,18 @@
 				"icon": {
 					"light": "resources/light/file-code.svg",
 					"dark": "resources/dark/file-code.svg"
+				}
+			},
+			{
+				"command": "teroshdl.state_machine.designer",
+				"title": "State machine designer"
+			},
+			{
+				"command": "teroshdl.state_machine.viewer",
+				"title": "State machine viewer",
+				"icon": {
+					"light": "resources/light/state-machine.svg",
+					"dark": "resources/dark/state-machine.svg"
 				}
 			},
 			{

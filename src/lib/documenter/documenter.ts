@@ -27,6 +27,13 @@ let panel;
 let main_context;
 let current_documenter;
 let current_path;
+let global_config = {
+    'fsm': true,
+    'signals': 'all',
+    'constants': 'all',
+    'process': 'all'
+};
+let last_document: vscode.TextDocument | undefined = undefined;
 export async function get_documentation_module(context: vscode.ExtensionContext) {
     main_context = context;
     let active_editor = vscode.window.activeTextEditor;
@@ -34,6 +41,7 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
         return; // no editor
     }
     let document = active_editor.document;
+    last_document = document;
     let language_id: string = document.languageId;
     let code: string = document.getText();
 
@@ -44,7 +52,9 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     if (language_id === 'systemverilog') {
         language_id = 'verilog';
     }
-    current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+    if (vscode.window.activeTextEditor !== undefined) {
+        current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+    }
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
@@ -54,7 +64,9 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
         let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
         let previewHtml = await node_utilities.readFileAsync(
             context.asAbsolutePath(path_html), "utf8");
-        previewHtml += await current_documenter.get_html(true);
+        let html_result = await current_documenter.get_html(true);
+        let html_error = html_result.error;
+        previewHtml += html_result.html;
 
         if (panel === undefined) {
             // Create and show panel
@@ -83,6 +95,9 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
                             export_as(message.text);
                             console.log(message.text);
                             return;
+                        case 'set_config':
+                            set_config(message.config);
+                            return;
                     }
                 },
                 undefined,
@@ -95,38 +110,79 @@ export async function get_documentation_module(context: vscode.ExtensionContext)
     else {
         vscode.window.showErrorMessage('Select a valid file.!');
     }
+    await panel?.webview.postMessage({ command: "set_config", config: global_config });
+}
+
+
+function set_config(config) {
+    global_config = config;
+    force_update_documentation_module();
+}
+
+export async function force_update_documentation_module() {
+    if (panel !== undefined && last_document !== undefined) {
+        let language_id: string = last_document.languageId;
+        let code: string = last_document.getText();
+
+        let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
+        let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
+
+        current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol, global_config);
+        let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
+        let previewHtml = await node_utilities.readFileAsync(
+            main_context.asAbsolutePath(path_html), "utf8");
+
+        let html_result = await current_documenter.get_html(true);
+        let html_error = html_result.error;
+        previewHtml += html_result.html;
+
+        panel.webview.html = previewHtml;
+        await panel?.webview.postMessage({ command: "set_config", config: global_config });
+    }
 }
 
 export async function update_documentation_module(document) {
     if (panel !== undefined) {
         let active_editor = vscode.window.activeTextEditor;
-        if (!active_editor) {
+        if (active_editor === undefined) {
             return; // no editor
         }
-        let document = active_editor.document;
+        let document: vscode.TextDocument | undefined = last_document;
+        if (active_editor !== undefined) {
+            document = active_editor.document;
+        }
+        last_document = document;
+        if (document === undefined) {
+            return;
+        }
         let language_id: string = document.languageId;
         let code: string = document.getText();
 
-        if (language_id !== "vhdl" && language_id !== "verilog") {
+        if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== 'systemverilog') {
             return;
         }
-        current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+        if (vscode.window.activeTextEditor !== undefined) {
+            current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+        }
         let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
         let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
-        current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol);
-        if (true) {
-            // if (await current_documenter.check_correct_file() === true){
-            let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
-            let previewHtml = await node_utilities.readFileAsync(
-                main_context.asAbsolutePath(path_html), "utf8");
-            previewHtml += await current_documenter.get_html(true);
-            panel.webview.html = previewHtml;
-        }
-        else {
-            return;
-        }
+        current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol, global_config);
+        let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
+        let previewHtml = await node_utilities.readFileAsync(
+            main_context.asAbsolutePath(path_html), "utf8");
+
+        let html_result = await current_documenter.get_html(true);
+        let html_error = html_result.error;
+        previewHtml += html_result.html;
+
+        panel.webview.html = previewHtml;
+        await panel?.webview.postMessage({ command: "set_config", config: global_config });
     }
+}
+
+function show_python3_error_message() {
+    vscode.window.showInformationMessage('Error: make sure Python3 is installed in your system and added to the system path.');
 }
 
 function normalize_path(path: string) {

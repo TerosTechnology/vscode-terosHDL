@@ -17,14 +17,6 @@
     <style type="text/css">
         body {
         }
-        svg{
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
         :root {
             --light-foreground-color: black;
             --dark-foreground-color: whitesmoke;
@@ -56,6 +48,7 @@
             flex-direction: column;
             margin: 0;
             padding: 0;
+            cursor: default;
         }
 
         .toolbar {
@@ -167,77 +160,23 @@
         #status:empty {
             display: none;
         }
-
-        .config {
-            background: rgba(255, 255, 255, 1);
-            top:4.7%;
-            padding-top: 10%;
-            overflow: visible;
-            width: 100%;
-            position: fixed;
-            color: black;
-            font: 12px "Segoe UI", sans-serif;
-            padding: 0.25em;
-            white-space: nowrap;
-            z-index: 4;
-        }
-
-        .config {
-            padding: 0.5em;
-        }
-
     </style>
 </head>
 
 <body>
+    <p>You can click nodes or conditions to navigate to the corresponding HDL code. If your state machine isn't showed put the comment (with your configured symbol) "fsm_extract" over your process/always. E.g. in VHDL: --! fsm_extract</p>
     <div class="toolbar">
         <div class="center-panel">
             <label class="fancy-checkbox">
-                <input id="add-source" name="zoom-mode" type="radio" value="fixed" />
-                <div class="button">Add source</div>
-            </label>
-            <label class="fancy-checkbox">
-                <input id="clear-graph" name="zoom-mode" type="radio" value="fit"/>
-                <div class="button">Clear graph</div>
-            </label>
-            <label class="fancy-checkbox">
-                <input id="generate-documentation-markdown" name="zoom-mode" type="radio" value="fit"/>
-                <div class="button">Save as Markdown</div>
-            </label>
-            <label class="fancy-checkbox">
-                <input id="generate-documentation-html" name="zoom-mode" type="radio" value="fit"/>
-                <div class="button">Save as HTML</div>
+                <input id="export-as-svg" name="zoom-mode" type="radio" value="fit"/>
+                <div class="button">Save as SVG</div>
             </label>
         </div>
     </div>
-    <div class="config">
-
-        <label style="margin-left:2%;" >Include FSMs</label>
-        <input style="margin-right:2%;" id="enable-state-machines" type="checkbox">
-    
-        <label>Signals</label>
-        <select id="signals" style="margin-right:2%;" name="select">
-            <option value="all" selected>All</option>
-            <option value="commented">Only commented</option>
-            <option value="none">None</option>
-        </select>
-    
-        <label>Constants</label>
-        <select id="constants" style="margin-right:2%;" name="select">
-            <option value="all" selected>All</option>
-            <option value="commented">Only commented</option>
-            <option value="none">None</option>
-        </select>
-    
-        <label>Always/process</label>
-        <select id="process" style="margin-right:2%;" name="select">
-            <option value="all" selected>All</option>
-            <option value="commented">Only commented</option>
-            <option value="none">None</option>
-        </select>
-    
-    </div>
     <div id="error-info" class="trontron"><div id="inner" class="fuck"></div></div>
+    <div class="column">
+        <div id="container"></div>
+      </div>
 </body>
 <script src="libs/vizdraw.js"></script>
 

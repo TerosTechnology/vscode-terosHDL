@@ -7,10 +7,27 @@ document.getElementById("clear-graph").onclick = function () { send_command("cle
 document.getElementById("generate-documentation-markdown").onclick = function () { send_command("generate_documentation_markdown"); };
 document.getElementById("generate-documentation-html").onclick = function () { send_command("generate_documentation_html"); };
 
+let fsm = document.getElementById("enable-state-machines");
+let constants = document.getElementById("constants");
+let signals = document.getElementById("signals");
+let process = document.getElementById("process");
+
+function get_config() {
+    let config = {
+        'fsm': fsm.checked,
+        'signals': signals.value,
+        'constants': constants.value,
+        'process': process.value,
+    };
+    return config;
+}
+
 function send_command(command) {
+    let config = get_config();
     vscode.postMessage({
         command: command,
-        text: "message"
+        text: "message",
+        config: config
     });
 }
 

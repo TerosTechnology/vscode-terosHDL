@@ -24,6 +24,9 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as utils from "./lib/utils/utils";
+//Extension manager
+import * as extension_manager from "./lib/utils/extension_manager";
+import * as release_notes_webview from "./lib/utils/webview/release_notes";
 // Templates
 import * as templates from "./lib/templates/templates";
 // Documenter
@@ -44,6 +47,12 @@ let formatter_verilog;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager: dependencies_viewer.default;
+// State machine viewer
+import * as state_machine_viewer from "./lib/state_machine_viewer/state_machine_viewer";
+let state_machine_viewer_manager: state_machine_viewer.default;
+// State machine designer
+import * as state_machine_designer_t from "./lib/state_machine_designer/state_machine_designer";
+let state_machine_designer_manager;
 // Test Manager
 import { VUnitAdapter } from './lib/tester/controller';
 import { TestHub, testExplorerExtensionId } from 'vscode-test-adapter-api';
@@ -65,12 +74,20 @@ export let ctagsManager: CtagsManager;
 let current_context;
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "teroshdl" is now active!');
-    // Help message
-    help_message();
+    //Check if update
+    await extension_manager.extensionManager.init();
+    const releaseNotesView = new release_notes_webview.ReleaseNotesWebview(context);
+    const installationType = extension_manager.extensionManager.get_installation_type();
+
+    if (installationType.firstInstall || installationType.update) {
+        await releaseNotesView.show();
+        help_message();
+    }
+
     //Context
     current_context = context;
     /**************************************************************************/
@@ -129,6 +146,33 @@ export function activate(context: vscode.ExtensionContext) {
             'teroshdl.dependencies.viewer',
             async () => {
                 await dependencies_viewer_manager.open_viewer();
+            }
+        )
+    );
+    /**************************************************************************/
+    // State machine viewer
+    /**************************************************************************/
+    state_machine_viewer_manager = new state_machine_viewer.default(context);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.state_machine.viewer',
+            async () => {
+                await state_machine_viewer_manager.open_viewer();
+            }
+        ),
+        vscode.workspace.onDidOpenTextDocument((e) => state_machine_viewer_manager.update_viewer()),
+        vscode.workspace.onDidSaveTextDocument((e) => state_machine_viewer_manager.update_viewer()),
+        vscode.workspace.onDidChangeTextDocument((e) => state_machine_viewer_manager.update_viewer()),
+    );
+    /**************************************************************************/
+    // State machine designer
+    /**************************************************************************/
+    state_machine_designer_manager = new state_machine_designer_t.default(context);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.state_machine.designer',
+            async () => {
+                await state_machine_designer_manager.open_viewer();
             }
         )
     );
@@ -273,20 +317,6 @@ export async function provideDocumentFormattingEdits(
 }
 
 function help_message() {
-    const fs = require('fs');
-    const path_lib = require('path');
-    const path = __dirname + path_lib.sep + 'hello_teroshdl.txt';
-    try {
-        if (fs.existsSync(path)) {
-            //file exists
-            return;
-        }
-        else {
-            fs.writeFileSync(path, "Hello TerosHDL");
-        }
-    } catch (err) {
-        console.error(err);
-    }
     vscode.window
         .showInformationMessage('TerosHDL needs your help!  😊', ...['Know the project', 'Donate'])
         .then(selection => {

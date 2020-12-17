@@ -70,11 +70,11 @@ export default class Dependencies_viewer_manager {
             console.log("Clear graph");
             return;
           case 'generate_documentation_markdown':
-            this.generate_documentation("markdown");
+            this.generate_documentation("markdown", message.config);
             console.log("Generate documentation Markdown");
             return;
           case 'generate_documentation_html':
-            this.generate_documentation("html");
+            this.generate_documentation("html", message.config);
             console.log("Generate documentation HTML");
             return;
         }
@@ -103,20 +103,25 @@ export default class Dependencies_viewer_manager {
   }
 
   private async get_dot() {
+    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
     let project_manager = new jsteros.Project_manager.Manager("");
     project_manager.add_source_from_array(this.sources);
-    let dependencies_dot = await project_manager.get_dependency_graph_dot();
+    let dependencies_dot = await project_manager.get_dependency_graph_dot(python3_path);
     return dependencies_dot;
   }
 
   private async update_viewer() {
     let dot = await this.get_dot();
     if (dot === undefined) {
-      vscode.window.showInformationMessage("Please, install Python 3.");
+      this.show_python3_error_message();
     }
     else {
       await this.panel?.webview.postMessage({ command: "update", message: dot });
     }
+  }
+
+  private show_python3_error_message() {
+    vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration.');
   }
 
   //Clear
@@ -129,26 +134,27 @@ export default class Dependencies_viewer_manager {
     this.sources = [];
   }
 
-  private generate_documentation(type: string) {
+  private generate_documentation(type: string, config) {
     vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false }).then(file_uri => {
       if (file_uri && file_uri[0]) {
-        this.generate_and_save_documentation(file_uri[0].fsPath, type);
+        this.generate_and_save_documentation(file_uri[0].fsPath, type, config);
       }
     });
   }
 
-  private generate_and_save_documentation(output_path, type: string) {
+  private generate_and_save_documentation(output_path, type: string, config) {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
+    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
 
     let project_manager = new jsteros.Project_manager.Manager("");
     project_manager.add_source_from_array(this.sources);
     if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
+      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
     }
     else {
-      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true);
+      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
     }
   }
 
@@ -163,5 +169,4 @@ export default class Dependencies_viewer_manager {
     });
     return html;
   }
-
 }
