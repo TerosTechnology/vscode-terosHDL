@@ -161,6 +161,9 @@ export async function update_documentation_module(document) {
         if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== 'systemverilog') {
             return;
         }
+        if (language_id === 'systemverilog') {
+            language_id = 'verilog';
+        }
         if (vscode.window.activeTextEditor !== undefined) {
             current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
         }

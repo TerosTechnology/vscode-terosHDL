@@ -15,6 +15,18 @@
     
     <!-- <link rel="stylesheet" href="dependencies_viewer.css" type="text/css" /> -->
     <style type="text/css">
+
+        body::-webkit-scrollbar {
+            width: 2em;
+        }
+        body::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        }
+        body::-webkit-scrollbar-thumb {
+            background-color: darkgrey;
+            outline: 1px solid slategrey;
+        }
+
         body {
         }
         :root {
@@ -40,6 +52,7 @@
             height: 100%;
             overflow: hidden;
             overflow-y:auto;
+            color: black;
         }
 
         body {
@@ -160,11 +173,17 @@
         #status:empty {
             display: none;
         }
+        #message {
+            font-weight: bold;
+            font: 20px;
+        }
+        #code {
+            color:#424242;
+        }
     </style>
 </head>
 
 <body>
-    <p>You can click nodes or conditions to navigate to the corresponding HDL code. If your state machine isn't showed put the comment (with your configured symbol) "fsm_extract" over your process/always. E.g. in VHDL: --! fsm_extract</p>
     <div class="toolbar">
         <div class="center-panel">
             <label class="fancy-checkbox">
@@ -174,6 +193,21 @@
         </div>
     </div>
     <div id="error-info" class="trontron"><div id="inner" class="fuck"></div></div>
+    <div class="config">
+        <p><br><br>You can click nodes or conditions to navigate to the corresponding HDL code. If your state machine isn't showed put the comment (with your configured symbol) "fsm_extract" over your process/always. E.g.: 
+            <code id="code">
+                <br>
+                <br>&nbsp;--! fsm_extract
+                <br>&nbsp;process(Clk) is
+                <br>&nbsp;&nbsp;....
+                <br>
+                <br>&nbsp;--! fsm_extract
+                <br>&nbsp;always @(posedge clk )
+                <br>&nbsp;&nbsp;....
+            </code>
+        </p>
+        <p id="message"></p>
+    </div>
     <div class="column">
         <div id="container"></div>
       </div>
