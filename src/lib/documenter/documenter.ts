@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/class-name-casing */
 // Copyright 2020 Teros Technology
 //
 // Ismael Perez Rojo
@@ -23,248 +24,322 @@ import * as jsteros from 'jsteros';
 import * as node_utilities from './node_utilities';
 import * as path_lib from 'path';
 
-let panel;
-let main_context;
-let current_documenter;
-let current_path;
-let global_config = {
+export default class Documenter {
+  private panel;
+  private context;
+  private vhdl_documenter;
+  private verilog_documenter;
+  private current_documenter;
+  private current_path;
+  private html_base: string = '';
+  private global_config = {
     'fsm': true,
     'signals': 'all',
     'constants': 'all',
     'process': 'all'
-};
-let last_document: vscode.TextDocument | undefined = undefined;
-export async function get_documentation_module(context: vscode.ExtensionContext) {
-    main_context = context;
-    let active_editor = vscode.window.activeTextEditor;
-    if (!active_editor) {
-        return; // no editor
-    }
-    let document = active_editor.document;
-    last_document = document;
-    let language_id: string = document.languageId;
-    let code: string = document.getText();
+  };
+  private last_document: vscode.TextDocument | undefined = undefined;
 
-    if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== "systemverilog") {
-        vscode.window.showErrorMessage('Select a valid file.!');
-        return;
+  constructor(context: vscode.ExtensionContext) {
+    this.context = context;
+  }
+
+  async init() {
+    let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
+    this.html_base = await node_utilities.readFileAsync(
+      this.context.asAbsolutePath(path_html), "utf8");
+    //Create VHDL documenter
+    this.vhdl_documenter = this.create_documenter('vhdl');
+    this.vhdl_documenter.init();
+    //Create Verilog documenter
+    this.verilog_documenter = this.create_documenter('verilog');
+    this.verilog_documenter.init();
+  }
+
+  get_documenter(language_id) {
+    if (language_id === 'vhdl') {
+      return this.vhdl_documenter;
     }
-    if (language_id === 'systemverilog') {
-        language_id = 'verilog';
+    else if (language_id === 'verilog') {
+      return this.verilog_documenter;
     }
-    if (vscode.window.activeTextEditor !== undefined) {
-        current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
+    else {
+      return undefined;
     }
+  }
+
+  get_symbol(language_id) {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
+    return comment_symbol;
+  }
 
-    current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol);
-    if (true) {
-        // if (await current_documenter.check_correct_file() === true){
-        let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
-        let previewHtml = await node_utilities.readFileAsync(
-            context.asAbsolutePath(path_html), "utf8");
-        let html_result = await current_documenter.get_html(true);
-        let html_error = html_result.error;
-        previewHtml += html_result.html;
+  create_documenter(language_id) {
+    let code: string = '';
+    let documenter = new jsteros.Documenter.Documenter(code, language_id, this.get_symbol(language_id));
+    return documenter;
+  }
 
-        if (panel === undefined) {
-            // Create and show panel
-            panel = vscode.window.createWebviewPanel(
-                'catCoding',
-                'Module documentation',
-                vscode.ViewColumn.Two,
-                {
-                    enableScripts: true
-                }
-            );
-            panel.onDidDispose(
-                () => {
-                    // When the panel is closed, cancel any future updates to the webview content
-                    panel = undefined;
-                    current_documenter = undefined;
-                },
-                null,
-                context.subscriptions
-            );
-            // Handle messages from the webview
-            panel.webview.onDidReceiveMessage(
-                message => {
-                    switch (message.command) {
-                        case 'export':
-                            export_as(message.text);
-                            console.log(message.text);
-                            return;
-                        case 'set_config':
-                            set_config(message.config);
-                            return;
-                    }
-                },
-                undefined,
-                context.subscriptions
-            );
-        }
-        // And set its HTML content
-        panel.webview.html = previewHtml;
+  get_language(document): string {
+    if (document === undefined) {
+      return '';
+    }
+    let language_id: string = document.languageId;
+    if (language_id === 'systemverilog') {
+      language_id = 'verilog';
+    }
+    else if (language_id === undefined) {
+      language_id = '';
+    }
+    return language_id;
+  }
+
+  check_document(document) {
+    let language_id = this.get_language(document);
+    if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== "systemverilog") {
+      return false;
     }
     else {
-        vscode.window.showErrorMessage('Select a valid file.!');
+      return true;
     }
-    await panel?.webview.postMessage({ command: "set_config", config: global_config });
-}
+  }
 
-
-function set_config(config) {
-    global_config = config;
-    force_update_documentation_module();
-}
-
-export async function force_update_documentation_module() {
-    if (panel !== undefined && last_document !== undefined) {
-        let language_id: string = last_document.languageId;
-        let code: string = last_document.getText();
-
-        let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
-        let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
-
-        current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol, global_config);
-        let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
-        let previewHtml = await node_utilities.readFileAsync(
-            main_context.asAbsolutePath(path_html), "utf8");
-
-        let html_result = await current_documenter.get_html(true);
-        let html_error = html_result.error;
-        previewHtml += html_result.html;
-
-        panel.webview.html = previewHtml;
-        await panel?.webview.postMessage({ command: "set_config", config: global_config });
+  get_active_document() {
+    let active_editor = vscode.window.activeTextEditor;
+    if (!active_editor) {
+      return undefined;
     }
-}
-
-export async function update_documentation_module(document) {
-    if (panel !== undefined) {
-        let active_editor = vscode.window.activeTextEditor;
-        if (active_editor === undefined) {
-            return; // no editor
-        }
-        let document: vscode.TextDocument | undefined = last_document;
-        if (active_editor !== undefined) {
-            document = active_editor.document;
-        }
-        last_document = document;
-        if (document === undefined) {
-            return;
-        }
-        let language_id: string = document.languageId;
-        let code: string = document.getText();
-
-        if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== 'systemverilog') {
-            return;
-        }
-        if (language_id === 'systemverilog') {
-            language_id = 'verilog';
-        }
-        if (vscode.window.activeTextEditor !== undefined) {
-            current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
-        }
-        let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
-        let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
-
-        current_documenter = new jsteros.Documenter.Documenter(code, language_id, comment_symbol, global_config);
-        let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
-        let previewHtml = await node_utilities.readFileAsync(
-            main_context.asAbsolutePath(path_html), "utf8");
-
-        let html_result = await current_documenter.get_html(true);
-        let html_error = html_result.error;
-        previewHtml += html_result.html;
-
-        panel.webview.html = previewHtml;
-        await panel?.webview.postMessage({ command: "set_config", config: global_config });
+    let document = active_editor.document;
+    let language_id = this.get_language(document);
+    if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== "systemverilog") {
+      return undefined;
     }
-}
+    else {
+      return document;
+    }
+  }
 
-function show_python3_error_message() {
+  get_document_code(document) {
+    let code: string = document.getText();
+    return code;
+  }
+
+  configure_documenter(documenter, document, config) {
+    let language_id = this.get_language(document);
+    let code = this.get_document_code(document);
+    let symbol = this.get_symbol(language_id);
+    documenter.set_symbol(symbol);
+    documenter.set_code(code);
+    documenter.set_config(config);
+  }
+
+  async get_documentation_module() {
+    let active_document = this.get_active_document();
+    if (active_document === undefined) {
+      vscode.window.showErrorMessage('Select a valid file.!');
+      return;
+    }
+    this.current_path = active_document.uri.fsPath;
+
+    if (this.panel === undefined) {
+      // Create and show panel
+      this.panel = vscode.window.createWebviewPanel(
+        'catCoding',
+        'Module documentation',
+        vscode.ViewColumn.Two,
+        {
+          enableScripts: true
+        }
+      );
+      this.panel.onDidDispose(
+        () => {
+          // When the panel is closed, cancel any future updates to the webview content
+          this.panel = undefined;
+          this.current_documenter = undefined;
+        },
+        null,
+        this.context.subscriptions
+      );
+      // Handle messages from the webview
+      this.panel.webview.onDidReceiveMessage(
+        message => {
+          switch (message.command) {
+            case 'export':
+              this.export_as(message.text);
+              console.log(message.text);
+              return;
+            case 'set_config':
+              this.set_config(message.config);
+              return;
+          }
+        },
+        undefined,
+        this.context.subscriptions
+      );
+    }
+    // And set its HTML content
+    this.update_doc(active_document);
+  }
+
+  set_config(config) {
+    this.global_config = config;
+    this.force_update_documentation_module();
+  }
+
+  async update_doc(document) {
+    let language_id: string = this.get_language(document);
+
+    let documenter = this.get_documenter(language_id);
+    this.configure_documenter(documenter, document, this.global_config);
+    this.current_documenter = documenter;
+    this.last_document = document;
+
+    let html_result = await documenter.get_html(true);
+    let preview_html = this.html_base;
+    preview_html += html_result.html;
+
+    this.panel.webview.html = preview_html;
+    await this.panel?.webview.postMessage({ command: "set_config", config: this.global_config });
+  }
+
+
+  async force_update_documentation_module() {
+    if (this.panel !== undefined && this.last_document !== undefined) {
+      await this.update_doc(this.last_document);
+    }
+  }
+
+  async update_visible_documentation_module(e) {
+    if (e.length !== 1) {
+      return;
+    }
+    let document = e[0].document;
+    if (this.panel === undefined) {
+      return;
+    }
+    let check_document = this.check_document(document);
+    if (check_document === false) {
+      return;
+    }
+    await this.update_doc(document);
+    this.current_path = document.uri.fsPath;
+  }
+
+  async update_open_documentation_module(document) {
+    if (this.panel === undefined) {
+      return;
+    }
+    let check_document = this.check_document(document);
+    if (check_document === false) {
+      return;
+    }
+    await this.update_doc(document);
+    this.current_path = document.uri.fsPath;
+  }
+
+  show_python3_error_message() {
     vscode.window.showInformationMessage('Error: make sure Python3 is installed in your system and added to the system path.');
-}
+  }
 
-function normalize_path(path: string) {
+  normalize_path(path: string) {
     if (path[0] === '/' && require('os').platform() === 'win32') {
-        return path.substring(1);
+      return path.substring(1);
     }
     else {
-        return path;
+      return path;
     }
-}
+  }
 
-async function export_as(type: string) {
+  async export_as(type: string) {
     const path_lib = require('path');
     // /one/two/five.h --> five.h
-    let basename = path_lib.basename(current_path);
+    let basename = path_lib.basename(this.current_path);
     // five.h --> .h
     let ext_name = path_lib.extname(basename);
     // /one/two/five.h --> five
-    let filename = path_lib.basename(current_path, ext_name);
+    let filename = path_lib.basename(this.current_path, ext_name);
     // /one/two/five
-    let full_path = path_lib.dirname(current_path) + path_lib.sep + filename;
+    let full_path = path_lib.dirname(this.current_path) + path_lib.sep + filename;
 
     if (type === "markdown") {
-        let filter = { 'markdown': ['md'] };
-        let default_path = full_path + '.md';
-        let uri = vscode.Uri.file(default_path);
-        vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
-            if (fileInfos?.path !== undefined) {
-                current_documenter.save_markdown(normalize_path(fileInfos?.path));
-            }
-        });
+      let filter = { 'markdown': ['md'] };
+      let default_path = full_path + '.md';
+      let uri = vscode.Uri.file(default_path);
+      vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
+        if (fileInfos?.path !== undefined) {
+          let path_norm = this.normalize_path(fileInfos?.path);
+          this.show_export_message(path_norm);
+          this.current_documenter.save_markdown(path_norm);
+        }
+      });
     }
     else if (type === "pdf") {
-        let platform = require('os').platform();
-        if (platform !== 'linux') {
-            vscode.window.showErrorMessage('Currently this feature is only supported for Linux.');
-            return;
-        }
+      let platform = require('os').platform();
+      if (platform !== 'linux') {
+        vscode.window.showErrorMessage('Currently this feature is stable in Linux. Report your problem.');
+      }
 
-        let filter = { 'PDF': ['pdf'] };
-        let default_path = full_path + '.pdf';
-        let uri = vscode.Uri.file(default_path);
-        vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
-            if (fileInfos?.path !== undefined) {
-                current_documenter.save_pdf(normalize_path(fileInfos?.path));
-            }
-        });
+      let filter = { 'PDF': ['pdf'] };
+      let default_path = full_path + '.pdf';
+      let uri = vscode.Uri.file(default_path);
+      vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
+        if (fileInfos?.path !== undefined) {
+          let path_norm = this.normalize_path(fileInfos?.path);
+          this.show_export_message(path_norm);
+          this.current_documenter.save_pdf(path_norm);
+        }
+      });
     }
     else if (type === "html") {
-        let filter = { 'HTML': ['html'] };
-        let default_path = full_path + '.html';
-        let uri = vscode.Uri.file(default_path);
-        vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
-            if (fileInfos?.path !== undefined) {
-                current_documenter.save_html(normalize_path(fileInfos?.path));
-            }
-        });
+      let filter = { 'HTML': ['html'] };
+      let default_path = full_path + '.html';
+      let uri = vscode.Uri.file(default_path);
+      vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
+        if (fileInfos?.path !== undefined) {
+          let path_norm = this.normalize_path(fileInfos?.path);
+          this.show_export_message(path_norm);
+          this.current_documenter.save_html(path_norm);
+        }
+      });
     }
     else if (type === "image") {
-        let filter = { 'SVG': ['svg'] };
-        let default_path = full_path + '.svg';
-        let uri = vscode.Uri.file(default_path);
-        vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
-            if (fileInfos?.path !== undefined) {
-                current_documenter.save_svg(normalize_path((fileInfos?.path)));
-            }
-        });
+      let filter = { 'SVG': ['svg'] };
+      let default_path = full_path + '.svg';
+      let uri = vscode.Uri.file(default_path);
+      vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
+        if (fileInfos?.path !== undefined) {
+          let path_norm = this.normalize_path(fileInfos?.path);
+          this.show_export_message(path_norm);
+          this.current_documenter.save_svg(path_norm);
+        }
+      });
     }
     else if (type === "latex") {
-        let filter = { 'latex': ['latex'] };
-        let default_path = full_path + '.tex';
-        let uri = vscode.Uri.file(default_path);
-        vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
-            if (fileInfos?.path !== undefined) {
-                current_documenter.save_latex(normalize_path((fileInfos?.path)));
-            }
-        });
+      let filter = { 'latex': ['latex'] };
+      let default_path = full_path + '.tex';
+      let uri = vscode.Uri.file(default_path);
+      vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
+        if (fileInfos?.path !== undefined) {
+          let path_norm = this.normalize_path(fileInfos?.path);
+          this.show_export_message(path_norm);
+          this.current_documenter.save_latex(path_norm);
+        }
+      });
     }
     else {
-        console.log("Error export documentation.");
+      console.log("Error export documentation.");
     }
+  }
+
+
+  private show_export_message(path_exp) {
+    vscode.window.showInformationMessage(`Documentation saved in ${path_exp} 😊`);
+  }
+
 }
+
+
+
+
+
+
