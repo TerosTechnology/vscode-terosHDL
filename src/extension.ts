@@ -44,6 +44,7 @@ let linter_systemverilog;
 let linter_verilog_style;
 let formatter_vhdl;
 let formatter_verilog;
+let documenter;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager: dependencies_viewer.default;
@@ -117,15 +118,18 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Documenter
     /**************************************************************************/
+    documenter = new documentation.default(context);
+    await documenter.init();
     context.subscriptions.push(
         vscode.commands.registerCommand(
             'teroshdl.documentation.module',
             async () => {
-                await documentation.get_documentation_module(context);
+                await documenter.get_documentation_module();
             }
         ),
-        vscode.workspace.onDidOpenTextDocument((e) => documentation.update_documentation_module(e)),
-        vscode.workspace.onDidSaveTextDocument((e) => documentation.update_documentation_module(e)),
+        vscode.workspace.onDidOpenTextDocument((e) => documenter.update_documentation_module(e)),
+        vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
+        vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
     );
     /**************************************************************************/
     // Linter
@@ -163,6 +167,7 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.workspace.onDidOpenTextDocument((e) => state_machine_viewer_manager.update_viewer()),
         vscode.workspace.onDidSaveTextDocument((e) => state_machine_viewer_manager.update_viewer()),
         vscode.workspace.onDidChangeTextDocument((e) => state_machine_viewer_manager.update_viewer()),
+        vscode.window.onDidChangeVisibleTextEditors((e) => state_machine_viewer_manager.update_visible_viewer(e)),
     );
     /**************************************************************************/
     // State machine designer

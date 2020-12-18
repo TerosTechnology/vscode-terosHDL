@@ -18,6 +18,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
+
 import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
@@ -80,7 +81,7 @@ export default class State_machine_viewer_manager {
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
 
-    let state_machines = await this.get_state_machines();
+    let state_machines = await this.get_state_machines(undefined);
     this.state_machines = state_machines;
     this.send_state_machines(state_machines);
   }
@@ -170,6 +171,10 @@ export default class State_machine_viewer_manager {
     }
   }
 
+  private show_export_message() {
+    vscode.window.showInformationMessage('Documentation saved 😊');
+  }
+
   async export_as(type: string) {
     if (type === "svg") {
       let filter = { 'svg': ['svg'] };
@@ -177,11 +182,13 @@ export default class State_machine_viewer_manager {
         if (fileInfos?.path !== undefined) {
           let path_full = this.normalize_path(fileInfos?.path);
           let dir_name = path_lib.dirname(path_full);
-          let file_name = path_lib.basename(path_full).split('.').slice(0, -1).join('.')
-          for (let i = 0; i < this.state_machines.length; ++i) {
+          let file_name = path_lib.basename(path_full).split('.')[0];
+
+          for (let i = 0; i < this.state_machines.svg.length; ++i) {
             let custom_path = `${dir_name}${path_lib.sep}${file_name}_${i}.svg`;
-            fs.writeFileSync(custom_path, this.state_machines[i].svg);
+            fs.writeFileSync(custom_path, this.state_machines.svg[i].svg);
           }
+          this.show_export_message();
         }
       });
     }
@@ -205,12 +212,15 @@ export default class State_machine_viewer_manager {
     }
   }
 
-  private async get_state_machines() {
-    let active_editor = vscode.window.activeTextEditor;
-    if (!active_editor) {
-      return; // no editor
+  private async get_state_machines(document_trigger) {
+    let document = document_trigger;
+    if (document_trigger === undefined) {
+      let active_editor = vscode.window.activeTextEditor;
+      if (!active_editor) {
+        return; // no editor
+      }
+      document = active_editor.document;
     }
-    let document = active_editor.document;
     this.document = document;
     let language_id: string = document.languageId;
     let code: string = document.getText();
@@ -227,7 +237,19 @@ export default class State_machine_viewer_manager {
 
   async update_viewer() {
     if (this.panel !== undefined) {
-      let state_machines = await this.get_state_machines();
+      let state_machines = await this.get_state_machines(undefined);
+      this.state_machines = state_machines;
+      this.send_state_machines(state_machines);
+    }
+  }
+
+  async update_visible_viewer(e) {
+    if (e.length !== 1) {
+      return;
+    }
+    let document = e[0].document;
+    if (this.panel !== undefined) {
+      let state_machines = await this.get_state_machines(document);
       this.state_machines = state_machines;
       this.send_state_machines(state_machines);
     }
