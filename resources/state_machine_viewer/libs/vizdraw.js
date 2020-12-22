@@ -61,7 +61,6 @@ function create_graph(svg, name, index) {
     elem.appendChild(embed);
 
     let pan_zoom = svgPanZoom(`#${name}`, pan_config);
-    // pan_zoom.zoom(0.5);
     pan_zoom.center();
     pan_zoom.resize();
 

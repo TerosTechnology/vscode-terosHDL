@@ -130,7 +130,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 await documenter.get_documentation_module();
             }
         ),
-        vscode.workspace.onDidOpenTextDocument((e) => documenter.update_documentation_module(e)),
+        vscode.workspace.onDidOpenTextDocument((e) => documenter.update_open_documentation_module(e)),
         vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
         vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
     );

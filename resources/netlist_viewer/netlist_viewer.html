@@ -1,14 +1,15 @@
 <html><head>
-    <title>YosysJS Example Application #02</title>
     <script type="text/javascript" src="libs/yosysjs.js"></script>
     <script type="text/javascript" src="libs/bundle.js"></script>
     <script type="text/javascript" src="libs/elk.bundled.js"></script>
     <script type="text/javascript" src="libs/netlistsvg.bundle.js"></script>
-    <script src="libs/jquery-2.2.4.min.js"></script>
-    <script src="libs/svg-pan-zoom.min.js"></script>
-    <script src="libs/full.render.js"></script>
-    <script src="http://wavedrom.com/skins/default.js" type="text/javascript"></script>
-    <script src="http://wavedrom.com/WaveDrom.js" type="text/javascript"></script>
+    <script type="text/javascript" src="libs/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="libs/svg-pan-zoom.min.js"></script>
+    <script type="text/javascript" src="libs/viz.js"></script>
+    <script type="text/javascript" src="libs/full.render.js"></script>
+    <script type="text/javascript" src="http://wavedrom.com/skins/default.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://wavedrom.com/WaveDrom.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="netlist_viewer.css" type="text/css" />
     <style type="text/css">
     .noedit { color: #666; }
     body {
@@ -16,143 +17,198 @@
         background-color: white;
     }
     </style>
-    </head><body>
+    </head><body id="body_element">
+        <div class="toolbar">
+            <div class="center-panel">
+                <label class="fancy-checkbox">
+                    <input id="export-as-svg" name="zoom-mode" type="radio" value="fit"/>
+                    <div class="button">Save as SVG</div>
+                </label>
+            </div>
+        </div>
         <div id="popup" style="position: fixed; left: 0; top: 0; width:100%; height:100%; text-align:center; z-index: 1000;
             background-color: rgba(100, 100, 100, 0.5);"><div style="width:300px; margin: 200px auto; background-color: #88f;
             border:3px dashed #000; padding:15px; text-align:center;"><span id="popupmsg">Loading...</span></div>
         </div>
-        <h1>YosysJS Example Application #03</h1>
-        <b>Your mission:</b> Create a behavioral Verilog model for the following circuit:
-        <div id="main" style="visibility: hidden">
-            <svg id="schem" width="800"></svg>
-                <img id=svgArea></img>
+        <p></p>
+        <b>&nbsp&nbsp&nbspBe careful with the includes. Only this file is analized, not externals.</b>
+        <div id="main">
+            <div id="netlist_container"></div>
             <p id="wave">&nbsp;</p>
         </div>
-        <script type="text/javascript">
-            function on_ys_ready() {
-                // ys.write_file('golden.v', document.getElementById('golden_verilog').textContent);
-                // ys.run('echo on; read_verilog golden.v; proc;;');
-                // ys.run('show -notitle -width -stretch');
-                // YosysJS.dot_into_svg(ys.read_file('show.dot'), 'schem');
-                document.getElementById('popup').style.visibility = 'hidden';
-                document.getElementById('popupmsg').textContent = 'Please wait..';
-                document.getElementById('main').style.visibility = 'visible';
-            }
-            function check_model(code) {
-                document.getElementById('popup').style.visibility = 'hidden';
-                let code_hdl = code.replace(/`include/g,"//`include");
-                // let code_hdl = code;
-                function work() {
-                    ys.remove_file('wave.json');
-                    if (code_hdl === undefined){
-                        ys.write_file('code.v', document.getElementById('code').textContent);
-
-                    }
-                    else{
-                        ys.write_file('code.v', code_hdl);
-                    }
-                    ys.errmsg = '';
-                    // ys.run('design -reset; read_verilog code.v; flatten; hierarchy -auto-top; show -stretch -width;  write_json output.json');
-                    ys.run('design -reset; read_verilog -sv code.v; flatten; hierarchy -auto-top; show -stretch -width;  write_json output.json');
-                    // YosysJS.dot_into_svg(ys.read_file('show.dot'), 'schem');
-
-                    w = document.getElementById('wave')
-                    if (ys.errmsg) {
-                        w.innerHTML = '<b><pre>ERROR: ' + ys.errmsg.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;') + '</pre></b>';
-                        document.getElementById('popup').style.visibility = 'hidden';
-                        document.getElementById('main').style.visibility = 'visible';
-                    } else {
-                        wdata = ys.read_file('wave.json');
-                        let netlist = ys.read_file('output.json');
-                        netlist = JSON.parse(netlist);
-                        netlist = normalize_netlist(netlist);
-                        netlistsvg.render(0, netlist, function (e, svg) {
-                            console.log(svg);
-                            let svgArea = document.getElementById('svgArea');
-                            svgArea.src = 'data:image/svg+xml,' + encodeURIComponent(svg);
-                                    
-                            wdata = ys.read_file('wave.json');
-                            if (wdata) {
-                                wdata = JSON.parse(wdata);
-                                function wsignal(signame, newname) {
-                                    for (i = 0; i < wdata["signal"].length; i++)
-                                        if (wdata["signal"][i].name == signame) {
-                                            if (newname)
-                                                wdata["signal"][i].name = newname;
-                                            return wdata["signal"][i];
-                                        }
-                                    return {};
-                                }
-                                wdata2 = {
-                                    "signal" : [
-                                        { name: 'clk', wave: 'P........' },
-                                        wsignal("trigger"),
-                                        {},
-                                        [ "Inputs", wsignal("in_reset", "reset"), wsignal("in_A", "A") ],
-                                        {},
-                                        [ "Y Output", wsignal("gold_Y", "Ref"), wsignal("gate_Y", "UUT") ],
-                                    ],
-                                    "config" : wdata["config"]
-                                };
-                                wdata2 = JSON.stringify(wdata2)
-                                w.innerHTML = '<b>The model did not pass verification:</b><p/>' +
-                                        '<script type="WaveDrom">' + wdata2 + '<\/script>';
-                                WaveDrom.ProcessAll();
-                            } else {
-                                w.innerHTML = '<b>Congratulations! The model did pass verification.</b><p/>';
-                            }
-                        });
-                    }
-                    document.getElementById('popup').style.visibility = 'hidden';
-                    document.getElementById('main').style.visibility = 'visible';
-                }
-                document.getElementById('popup').style.visibility = 'visible';
-                window.setTimeout(work, 100);
-            }
+    </body></html>
+    <script>
     
-            YosysJS.load_viz();
-            var ys = YosysJS.create('', on_ys_ready);
-            ys.logprint = true;
+    let pan_zoom;
+    let last_svg = '';
+    console.log("holalaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    console.log(document.body)
+    YosysJS.load_viz();
 
-            "use strict";
-            const vscode = acquireVsCodeApi();
+    var ys = YosysJS.create('', on_ys_ready);
+    ys.logprint = true;
 
-            // Handle the message inside the webview
-            window.addEventListener('message', event => {
-                const message = event.data; // The JSON data our extension sen
-                switch (message.command) {
-                    case 'update':
-                        check_model(message.code);
-                        break;
-                }
+    function on_ys_ready() {
+      html_loaded();
+    }
+    function check_model(code) {
+      let netlist_container = document.getElementById('netlist_container');
+      document.getElementById('popup').style.visibility = 'hidden';
+      let code_hdl = code.replace(/`include/g, "//`include");
+      let w = document.getElementById('wave');
+      w.innerHTML = '';
+      // let code_hdl = code;
+      function work() {
+        ys.remove_file('wave.json');
+        if (code_hdl === undefined) {
+          ys.write_file('code.v', document.getElementById('code').textContent);
+    
+        }
+        else {
+          ys.write_file('code.v', code_hdl);
+        }
+        ys.errmsg = '';
+        ys.run('design -reset; read_verilog -sv code.v; flatten; hierarchy -auto-top;  memory -nomap; dff2dffe; show -stretch -width;  write_json output.json');
+    
+        if (ys.errmsg) {
+          netlist_container.innerHTML = '';
+          w.innerHTML = '<b><pre>ERROR: ' + ys.errmsg.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;') + '</pre></b>';
+          document.getElementById('popup').style.visibility = 'hidden';
+          document.getElementById('main').style.visibility = 'visible';
+          let main = document.getElementById('main')
+          main.setAttribute('style', 'width: 100%; height: 10%');
+        } else {
+          let wdata = ys.read_file('wave.json');
+          let netlist = ys.read_file('output.json');
+          netlist = JSON.parse(netlist);
+          // netlist = normalize_netlist(netlist);
+          netlistsvg.render(0, netlist, function (e, svg) {
+            let main = document.getElementById('main')
+            main.setAttribute('style', 'width: 100%; height: 100%');
+
+            // //Create SVG element
+            // let embed_svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            // embed_svg.setAttribute('style', 'width: 100%; height: 100%');
+            // embed_svg.setAttribute('type', 'image/svg+xml');
+            // embed_svg.innerHTML = svg;
+            // last_svg = svg;
+            // //Add to container
+            // netlist_container = document.getElementById('netlist_container');
+            // netlist_container.innerHTML = '';
+            // netlist_container.appendChild(embed_svg);
+
+            // netlist_container.setAttribute('style', 'width: 100%; height: 100%');
+
+            // let pan_config = {
+            //   zoomEnabled: true,
+            //   controlIconsEnabled: true,
+            //   fit: true,
+            //   center: true
+            // };
+            // pan_zoom = svgPanZoom(embed_svg, pan_config);
+            // pan_zoom.center();
+            // pan_zoom.resize();
+
+            console.log("etra!")
+
+            let dot_out = ys.read_file('show.dot');
+
+
+            //Create SVG element
+            let embed_svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            embed_svg.setAttribute('style', 'width: 100%; height: 100%');
+            embed_svg.setAttribute('type', 'image/svg+xml');
+            embed_svg.id = "svg_yosys";            // embed_svg.innerHTML = svg;
+            last_svg = svg;
+            //Add to container
+            netlist_container = document.getElementById('netlist_container');
+            console.log(netlist_container)
+            netlist_container.innerHTML = '';
+            netlist_container.appendChild(embed_svg);
+            console.log("asdfoiasdjfoaisdjfaosd")
+            // YosysJS.dot_into_svg(dot_out, 'svg_yosys')
+
+            let viz = new Viz({ totalMemory: 32 * 1024 * 1024 });
+            console.log("pasaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            viz.renderSVGElement(dot_out)
+            .then(function (element) {
+              console.log(element)
             });
 
-            function normalize_netlist(netlist){
-                try{
-                    let norm_netlist = netlist;
-                    let modules = netlist.modules;
 
-                    // Obteniendo todas las claves del JSON
-                    for (let module in modules) {
-                        let cells_module = modules[module].cells;
-                        for (let cell in cells_module) {
-                            let cell_i = cells_module[cell];
-                            if (cell_i.port_directions === undefined) {
-                                let tt = cell_i.connections;
-                                cell_i.port_directions = {};
-                                for (let port in cell_i.connections) {
-                                    cell_i.port_directions[port] = 'input';
-                                }
-                            }
-                        }
-                    }
-                    norm_netlist.modules = modules;
-                    return norm_netlist;
-                }
-                catch(e){
-                    return netlist;
-                }
+
+            netlist_container.setAttribute('style', 'width: 100%; height: 100%');
+            let pan_config = {
+              zoomEnabled: true,
+              controlIconsEnabled: true,
+              fit: true,
+              center: true
+            };
+            pan_zoom = svgPanZoom(embed_svg, pan_config);
+            pan_zoom.center();
+            pan_zoom.resize();
+
+
+          });
+        }
+        document.getElementById('popup').style.visibility = 'hidden';
+        document.getElementById('main').style.visibility = 'visible';
+      }
+      document.getElementById('popup').style.visibility = 'visible';
+      window.setTimeout(work, 100);
+    }
+    // "use strict";
+    const vscode = acquireVsCodeApi();
+
+    // Handle the message inside the webview
+    window.addEventListener('message', event => {
+      const message = event.data;
+      switch (message.command) {
+        case 'update':
+          check_model(message.code);
+          break;
+      }
+    });
+    
+    function normalize_netlist(netlist) {
+      try {
+        let norm_netlist = netlist;
+        let modules = netlist.modules;
+    
+        // Obteniendo todas las claves del JSON
+        for (let module in modules) {
+          let cells_module = modules[module].cells;
+          for (let cell in cells_module) {
+            let cell_i = cells_module[cell];
+            if (cell_i.port_directions === undefined) {
+              let tt = cell_i.connections;
+              cell_i.port_directions = {};
+              for (let port in cell_i.connections) {
+                cell_i.port_directions[port] = 'input';
+              }
             }
-
-        </script>
-    </body></html>
+          }
+        }
+        norm_netlist.modules = modules;
+        return norm_netlist;
+      }
+      catch (e) {
+        return netlist;
+      }
+    }
+    
+    function html_loaded() {
+      vscode.postMessage({
+        command: 'html_loaded'
+      });
+    }
+    
+    document.getElementById("export-as-svg").onclick = function () { export_message("svg"); };
+    function export_message(type) {
+        vscode.postMessage({
+            command: 'export',
+            type: type,
+            svg: last_svg
+        });
+    }
+    </script>

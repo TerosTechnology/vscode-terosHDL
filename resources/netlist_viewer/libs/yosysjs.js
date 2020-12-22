@@ -1,17 +1,34 @@
-var YosysJS = new function() {
+var YosysJS = new function () {
 	this.script_element = document.currentScript;
 	this.viz_element = undefined;
 	this.viz_ready = true;
 
 	this.url_prefix = this.script_element.src.replace(/[^/]+$/, '')
 
-	this.load_viz = function() {
+	this.load_viz = function () {
+		if (document.body === undefined || document.body === null) {
+			return;
+		}
+		console.log("++++++++++++++++++++++++++++++++++++")
+		console.log(this.url_prefix)
+		console.log("++++++++++++++++++++++++++++++++++++")
 		if (this.viz_element)
 			return;
 
+		console.log("************************************************************** 1")
 		this.viz_element = document.createElement('iframe')
+		console.log(document.body)
+		console.log("************************************************************** 2")
+
 		this.viz_element.style.display = 'none'
+		console.log("************************************************************** 3")
+
 		document.body.appendChild(this.viz_element);
+		console.log("************************************************************** 4")
+
+		console.log("*************************")
+		console.log(this.url_prefix)
+		console.log("*************************")
 
 		this.viz_element.contentWindow.document.open();
 		this.viz_element.contentWindow.document.write('<script type="text/javascript" onload="viz_ready = true;" src="' + this.url_prefix + 'viz.js"></' + 'script>');
@@ -30,12 +47,12 @@ var YosysJS = new function() {
 		window.setTimeout(check_viz_ready, 100);
 	}
 
-	this.dot_to_svg = function(dot_text) {
+	this.dot_to_svg = function (dot_text) {
 		return this.viz_element.contentWindow.Viz(dot_text, "svg");
 	}
 
-	this.dot_into_svg = function(dot_text, svg_element) {
-		if (typeof(svg_element) == 'string' && svg_element != "")
+	this.dot_into_svg = function (dot_text, svg_element) {
+		if (typeof (svg_element) == 'string' && svg_element != "")
 			svg_element = document.getElementById(svg_element);
 		svg_element.innerHTML = this.dot_to_svg(dot_text);
 		c = svg_element.firstChild;
@@ -51,7 +68,7 @@ var YosysJS = new function() {
 		}
 	}
 
-	this.create = function(reference_element, on_ready) {
+	this.create = function (reference_element, on_ready) {
 		var ys = new Object();
 		ys.YosysJS = this;
 		ys.init_script = "";
@@ -61,7 +78,7 @@ var YosysJS = new function() {
 		ys.echo = false;
 		ys.errmsg = "";
 
-		if (typeof(reference_element) == 'string' && reference_element != "")
+		if (typeof (reference_element) == 'string' && reference_element != "")
 			reference_element = document.getElementById(reference_element);
 
 		if (reference_element) {
@@ -91,8 +108,8 @@ var YosysJS = new function() {
 
 		var doc = ys.window.document;
 		var mod = ys.window.Module = {
-			print: function(text) {
-				if (typeof(text) == 'number')
+			print: function (text) {
+				if (typeof (text) == 'number')
 					return;
 				ys.print_buffer += text + "\n";
 				ys.got_normal_log_message = true;
@@ -116,8 +133,8 @@ var YosysJS = new function() {
 				}
 				ys.ready = true;
 			},
-			printErr: function(text) {
-				if (typeof(text) == 'number')
+			printErr: function (text) {
+				if (typeof (text) == 'number')
 					return;
 				if (ys.logprint)
 					console.log(text);
@@ -139,12 +156,12 @@ var YosysJS = new function() {
 					else
 						ys.window.scrollBy(0, 100);
 				} else
-				if (!ys.logprint)
-					console.log(text);
+					if (!ys.logprint)
+						console.log(text);
 			},
 		};
 
-		ys.write = function(text) {
+		ys.write = function (text) {
 			ys.print_buffer += text + "\n";
 			ys.last_line_empty = text == "";
 			span = doc.createElement('span');
@@ -158,11 +175,11 @@ var YosysJS = new function() {
 				ys.window.scrollBy(0, 100);
 		}
 
-		ys.prompt = function() {
+		ys.prompt = function () {
 			return mod.ccall('prompt', 'string', [], [])
 		}
 
-		ys.run = function(cmd) {
+		ys.run = function (cmd) {
 			ys.print_buffer = "";
 			if (ys.echo) {
 				if (!ys.last_line_empty)
@@ -177,23 +194,23 @@ var YosysJS = new function() {
 			return ys.print_buffer;
 		}
 
-		ys.read_file = function(filename) {
+		ys.read_file = function (filename) {
 			try {
-				return ys.window.FS.readFile(filename, {encoding: 'utf8'});
+				return ys.window.FS.readFile(filename, { encoding: 'utf8' });
 			} catch (e) {
 				return "";
 			}
 		}
 
-		ys.write_file = function(filename, text) {
-			return ys.window.FS.writeFile(filename, text, {encoding: 'utf8'});
+		ys.write_file = function (filename, text) {
+			return ys.window.FS.writeFile(filename, text, { encoding: 'utf8' });
 		}
 
-		ys.read_dir = function(dirname) {
+		ys.read_dir = function (dirname) {
 			return ys.window.FS.readdir(dirname);
 		}
 
-		ys.remove_file = function(filename) {
+		ys.remove_file = function (filename) {
 			try {
 				ys.window.FS.unlink(filename);
 			} catch (e) { }
@@ -221,7 +238,7 @@ var YosysJS = new function() {
 		return ys;
 	}
 
-	this.create_worker = function(on_ready) {
+	this.create_worker = function (on_ready) {
 		var ys = new Object();
 		ys.YosysJS = this;
 		ys.worker = new Worker(this.url_prefix + 'yosyswrk.js');
@@ -232,7 +249,7 @@ var YosysJS = new function() {
 		ys.callback_cache[0] = on_ready;
 		on_ready = null;
 
-		ys.worker.onmessage = function(e) {
+		ys.worker.onmessage = function (e) {
 			var response = e.data[0];
 			var callback = ys.callback_cache[response.idx];
 			delete ys.callback_cache[response.idx];
@@ -240,7 +257,7 @@ var YosysJS = new function() {
 			if (callback) callback.apply(null, response.args);
 		}
 
-		ys.run = function(cmd, callback) {
+		ys.run = function (cmd, callback) {
 			var request = {
 				"idx": ys.callback_idx,
 				"mode": "run",
@@ -251,7 +268,7 @@ var YosysJS = new function() {
 			ys.worker.postMessage([request]);
 		}
 
-		ys.read_file = function(filename, callback) {
+		ys.read_file = function (filename, callback) {
 			var request = {
 				"idx": ys.callback_idx,
 				"mode": "read_file",
@@ -262,7 +279,7 @@ var YosysJS = new function() {
 			ys.worker.postMessage([request]);
 		}
 
-		ys.write_file = function(filename, text, callback) {
+		ys.write_file = function (filename, text, callback) {
 			var request = {
 				"idx": ys.callback_idx,
 				"mode": "write_file",
@@ -274,7 +291,7 @@ var YosysJS = new function() {
 			ys.worker.postMessage([request]);
 		}
 
-		ys.read_dir = function(dirname, callback) {
+		ys.read_dir = function (dirname, callback) {
 			var request = {
 				"idx": ys.callback_idx,
 				"mode": "read_dir",
@@ -285,7 +302,7 @@ var YosysJS = new function() {
 			ys.worker.postMessage([request]);
 		}
 
-		ys.remove_file = function(filename, callback) {
+		ys.remove_file = function (filename, callback) {
 			var request = {
 				"idx": ys.callback_idx,
 				"mode": "remove_file",
@@ -296,7 +313,7 @@ var YosysJS = new function() {
 			ys.worker.postMessage([request]);
 		}
 
-		ys.verbose = function(value, callback) {
+		ys.verbose = function (value, callback) {
 			var request = {
 				"idx": ys.callback_idx,
 				"mode": "verbose",
