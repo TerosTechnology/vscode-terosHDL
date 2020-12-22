@@ -30,6 +30,7 @@
 		"onCommand:teroshdl.dependencies.viewer",
 		"onCommand:teroshdl.state_machine.designer",
 		"onCommand:teroshdl.state_machine.viewer",
+		"onCommand:teroshdl.netlist.viewer",
 		"onLanguage:verilog",
 		"onLanguage:systemverilog",
 		"onLanguage:vhdl"
@@ -332,6 +333,11 @@
 					"group": "navigation"
 				},
 				{
+					"when": "resourceLangId == verilog || resourceLangId == systemverilog",
+					"command": "teroshdl.netlist.viewer",
+					"group": "navigation"
+				},
+				{
 					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
 					"command": "teroshdl.format",
 					"group": "navigation"
@@ -366,6 +372,14 @@
 				"icon": {
 					"light": "resources/light/state-machine.svg",
 					"dark": "resources/dark/state-machine.svg"
+				}
+			},
+			{
+				"command": "teroshdl.netlist.viewer",
+				"title": "Netlist viewer",
+				"icon": {
+					"light": "resources/light/list-tree.svg",
+					"dark": "resources/dark/list-tree.svg"
 				}
 			},
 			{

@@ -51,6 +51,9 @@ let dependencies_viewer_manager: dependencies_viewer.default;
 // State machine viewer
 import * as state_machine_viewer from "./lib/state_machine_viewer/state_machine_viewer";
 let state_machine_viewer_manager: state_machine_viewer.default;
+// Netlist viewer
+import * as netlist_viewer from "./lib/netlist_viewer/netlist_viewer";
+let netlist_viewer_manager: netlist_viewer.default;
 // State machine designer
 import * as state_machine_designer_t from "./lib/state_machine_designer/state_machine_designer";
 let state_machine_designer_manager;
@@ -168,6 +171,22 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.workspace.onDidSaveTextDocument((e) => state_machine_viewer_manager.update_viewer()),
         vscode.workspace.onDidChangeTextDocument((e) => state_machine_viewer_manager.update_viewer()),
         vscode.window.onDidChangeVisibleTextEditors((e) => state_machine_viewer_manager.update_visible_viewer(e)),
+    );
+    /**************************************************************************/
+    // Netlist viewer
+    /**************************************************************************/
+    netlist_viewer_manager = new netlist_viewer.default(context);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.netlist.viewer',
+            async () => {
+                await netlist_viewer_manager.open_viewer();
+            }
+        ),
+        vscode.workspace.onDidOpenTextDocument((e) => netlist_viewer_manager.update_viewer()),
+        vscode.workspace.onDidSaveTextDocument((e) => netlist_viewer_manager.update_viewer()),
+        vscode.workspace.onDidChangeTextDocument((e) => netlist_viewer_manager.update_viewer()),
+        vscode.window.onDidChangeVisibleTextEditors((e) => netlist_viewer_manager.update_visible_viewer(e)),
     );
     /**************************************************************************/
     // State machine designer
