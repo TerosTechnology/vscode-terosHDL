@@ -14,8 +14,9 @@
 12. [Dependencies viewer](#id12)
 13. [Hover to evaluate binary, hexadecimal and octal values](#id13)
 14. [Code snippets and grammar](#id14)
-15. [Future work](#id15)
-16. [Similar projects](#id16)
+15. [Beta Verilog/SV netlist viewer](#id15)
+16. [Future work](#id16)
+17. [Similar projects](#id17)
 
 # 1. Introduction <a name="id1"></a>
 
@@ -209,14 +210,20 @@ This is an experimental feature. You need to install Verible (https://github.com
 
 ![alt text](./resources/images/readme/code_snippets.gif "title")
 
-# 15. Future work <a name="id15"></a>
+
+# 15. Beta Verilog/SV netlist viewer <a name="id15"></a>
+
+![alt text](./resources/images/readme/netlist.gif "title")
+
+
+# 16. Future work <a name="id16"></a>
 
 - Finite State Machine graph.
 - Project manager.
 - File tree view.
 - Integrate [triel](https://github.com/TerosTechnology/triel) backend
 
-# 16. Similar projects <a name="id16"></a>
+# 17. Similar projects <a name="id17"></a>
 
 - Hardware Integrated Development Environment ([hide](https://github.com/drom/atom-hide))
 - [APIO-ide](https://github.com/FPGAwars/apio-ide)
