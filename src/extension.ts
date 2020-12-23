@@ -132,6 +132,7 @@ export async function activate(context: vscode.ExtensionContext) {
         ),
         vscode.workspace.onDidOpenTextDocument((e) => documenter.update_open_documentation_module(e)),
         vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
+        // vscode.workspace.onDidChangeTextDocument((e) => documenter.update_change_documentation_module(e)),
         vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
     );
     /**************************************************************************/
@@ -185,7 +186,6 @@ export async function activate(context: vscode.ExtensionContext) {
         ),
         vscode.workspace.onDidOpenTextDocument((e) => netlist_viewer_manager.update_viewer()),
         vscode.workspace.onDidSaveTextDocument((e) => netlist_viewer_manager.update_viewer()),
-        vscode.workspace.onDidChangeTextDocument((e) => netlist_viewer_manager.update_viewer()),
         vscode.window.onDidChangeVisibleTextEditors((e) => netlist_viewer_manager.update_visible_viewer(e)),
     );
     /**************************************************************************/

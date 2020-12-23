@@ -237,6 +237,19 @@ export default class Documenter {
     this.current_path = document.uri.fsPath;
   }
 
+  async update_change_documentation_module(e) {
+    let document = e.document;
+    if (this.panel === undefined) {
+      return;
+    }
+    let check_document = this.check_document(document);
+    if (check_document === false) {
+      return;
+    }
+    await this.update_doc(document);
+    this.current_path = document.uri.fsPath;
+  }
+
   show_python3_error_message() {
     vscode.window.showInformationMessage('Error: make sure Python3 is installed in your system and added to the system path.');
   }

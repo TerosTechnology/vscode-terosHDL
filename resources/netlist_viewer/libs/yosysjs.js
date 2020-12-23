@@ -9,26 +9,15 @@ var YosysJS = new function () {
 		if (document.body === undefined || document.body === null) {
 			return;
 		}
-		console.log("++++++++++++++++++++++++++++++++++++")
-		console.log(this.url_prefix)
-		console.log("++++++++++++++++++++++++++++++++++++")
 		if (this.viz_element)
 			return;
 
-		console.log("************************************************************** 1")
 		this.viz_element = document.createElement('iframe')
-		console.log(document.body)
-		console.log("************************************************************** 2")
 
 		this.viz_element.style.display = 'none'
-		console.log("************************************************************** 3")
 
 		document.body.appendChild(this.viz_element);
-		console.log("************************************************************** 4")
 
-		console.log("*************************")
-		console.log(this.url_prefix)
-		console.log("*************************")
 
 		this.viz_element.contentWindow.document.open();
 		this.viz_element.contentWindow.document.write('<script type="text/javascript" onload="viz_ready = true;" src="' + this.url_prefix + 'viz.js"></' + 'script>');

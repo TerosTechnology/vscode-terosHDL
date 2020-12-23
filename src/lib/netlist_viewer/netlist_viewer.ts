@@ -18,11 +18,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
-
-import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
+
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export default class netlist_viewer_manager {
@@ -30,6 +29,8 @@ export default class netlist_viewer_manager {
   private context: vscode.ExtensionContext;
   private code;
   private document;
+  private svg_element;
+  private document_element;
 
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
@@ -68,7 +69,6 @@ export default class netlist_viewer_manager {
           case 'html_loaded':
             this.update_viewer_last_code();
             return;
-
         }
       },
       undefined,
@@ -83,7 +83,6 @@ export default class netlist_viewer_manager {
       this.code = code;
     }
   }
-
 
   private show_export_message(path_full) {
     vscode.window.showInformationMessage(`Schematic saved in ${path_full} 😊`);
@@ -116,8 +115,9 @@ export default class netlist_viewer_manager {
   }
 
   private async send_code(code) {
+    let filename = this.document.fileName;
     if (code !== undefined) {
-      await this.panel?.webview.postMessage({ command: "update", code: code });
+      await this.panel?.webview.postMessage({ command: "update", code: code, filename: filename });
     }
   }
 
@@ -130,14 +130,13 @@ export default class netlist_viewer_manager {
       }
       document = active_editor.document;
     }
-    this.document = document;
     let language_id: string = document.languageId;
     let code: string = document.getText();
 
     if (language_id !== "verilog" && language_id !== 'systemverilog') {
       return;
     }
-
+    this.document = document;
     return code;
   }
 
