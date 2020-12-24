@@ -45,6 +45,7 @@
     </body></html>
     <script>
     
+    let last_embed_svg;
     let pan_zoom;
     let last_svg = '';
     YosysJS.load_viz();
@@ -108,6 +109,10 @@
             // let dot_out = ys.read_file('show.dot');
             // YosysJS.dot_into_svg(dot_out, 'svg_yosys');
             embed_svg.innerHTML = svg;
+            set_svg_click(embed_svg);
+
+            last_embed_svg = embed_svg;
+            set_line_width();
 
             netlist_container.setAttribute('style', 'width: 100%; height: 100%');
             let pan_config = {
@@ -144,6 +149,90 @@
       }
     });
     
+    function set_svg_click(svg){
+      let countries = svg.childNodes;
+      for (let i = 0; i < countries.length; i++) {
+          countries[i].addEventListener('click', e => {
+            let element = e.target;
+
+            if (element.tagName === 'line'){
+              let class_name = element.getAttribute("class");
+              select_net(class_name);
+            }
+          });
+        }
+    }
+
+    function select_net(class_name){
+      search_in_tree(last_embed_svg, 'line', class_name);
+    }
+
+    function search_in_tree(element, tag_name, class_name) {
+      let match = undefined;
+      function recursive_searchTree(element, tag_name) {
+          let type = element.tagName;
+          let class_name_i = undefined;
+          try{
+            class_name_i = element.getAttribute("class");
+          }
+          catch{
+            class_name_i = '';
+          }
+          
+          if (type === tag_name && class_name_i === class_name) {
+            element.style = "stroke:#84da00;stroke-width:3";
+            match = element;
+          }
+          else if(type === tag_name && class_name_i !== class_name){
+            element.style = "stroke:#000000;stroke-width:2";
+          }
+          else if (element !== null) {
+            let i;
+            let result = null;
+            let childs = element.childNodes;
+            for (i = 0; result === null && i < childs.length; i++) {
+                result = recursive_searchTree(childs[i], tag_name, class_name);
+                if (result !== null) {
+                    break;
+                }
+            }
+            return result;
+          }
+          return null;
+      }
+    recursive_searchTree(element, tag_name, class_name);
+    return match;
+  }
+
+  function set_line_width() {
+      let tag_name = 'line';
+      let element = last_embed_svg;
+      let width = 2;
+      let match = undefined;
+      function recursive_searchTree(element, tag_name) {
+          let type = element.tagName;          
+          if (type === tag_name) {
+            element.style = `stroke:#000000;stroke-width:${width}`;
+            match = element;
+          }
+          else if (element !== null) {
+            let i;
+            let result = null;
+            let childs = element.childNodes;
+            for (i = 0; result === null && i < childs.length; i++) {
+                result = recursive_searchTree(childs[i], tag_name);
+                if (result !== null) {
+                    break;
+                }
+            }
+            return result;
+          }
+          return null;
+      }
+    recursive_searchTree(element, tag_name);
+    return match;
+  }
+
     function normalize_netlist(netlist) {
       try {
         let norm_netlist = netlist;
@@ -154,8 +243,17 @@
           let cells_module = modules[module].cells;
           for (let cell in cells_module) {
             let cell_i = cells_module[cell];
-            if (cell_i.type === '$adff'){
-              cell_i.type = 'Flip Flop D';
+            if (cell_i.type === '$dff'){
+              cell_i.type = 'D-Flip Flop';
+            }
+            else if (cell_i.type === '$adff'){
+              cell_i.type = 'D-Flip Flop areset';
+            }
+            else if (cell_i.type === '$eq'){
+              cell_i.type = 'equal';
+            }
+            else{
+              cell_i.type = cell_i.type.replace('$','');
             }
             if (cell_i.port_directions === undefined) {
               let tt = cell_i.connections;
