@@ -47,8 +47,6 @@
     
     let pan_zoom;
     let last_svg = '';
-    console.log("holalaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-    console.log(document.body)
     YosysJS.load_viz();
 
     var ys = YosysJS.create('', on_ys_ready);
@@ -156,6 +154,9 @@
           let cells_module = modules[module].cells;
           for (let cell in cells_module) {
             let cell_i = cells_module[cell];
+            if (cell_i.type === '$adff'){
+              cell_i.type = 'Flip Flop D';
+            }
             if (cell_i.port_directions === undefined) {
               let tt = cell_i.connections;
               cell_i.port_directions = {};
