@@ -37,6 +37,23 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "teroshdl_tree_view",
+					"title": "TerosHDL",
+					"icon": "resources/images/teros_logo.svg"
+				}
+			]
+		},
+		"views": {
+			"teroshdl_tree_view": [
+					{
+							"id": "teroshdl_tree_view",
+							"name": "teroshdl_tree_view"
+					}
+			]
+		},
 		"grammars": [
 			{
 				"language": "vhdl",
@@ -321,6 +338,47 @@
 			}
 		},
 		"menus": {
+			"view/title": [
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem != title)"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_library",
+					"when": "view == teroshdl_tree_view && viewItem != title"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_library",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_library",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
+					"group": "inline"
+				}
+			],
+
 			"editor/title": [
 				{
 					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
@@ -350,6 +408,42 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl_tree_view.add_file",
+				"title": "Add HDL file",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.delete_file",
+				"title": "Delete HDL file",
+				"icon": {
+					"light": "resources/light/remove.svg",
+					"dark": "resources/dark/remove.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.add_library",
+				"title": "Add library",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.delete_library",
+				"title": "Delete library",
+				"icon": {
+					"light": "resources/light/remove.svg",
+					"dark": "resources/dark/remove.svg"
+				}
+			},
+
+
+
+
 			{
 				"command": "teroshdl.dependencies.viewer",
 				"title": "Open dependencies viewer"

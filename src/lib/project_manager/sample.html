@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {box-sizing: border-box}
+body {font-family: "Lato", sans-serif;}
+
+/* Style the tab */
+.tab {
+  float: left;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 30%;
+  height: 100%;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: black;
+  padding: 22px 16px;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  float: left;
+  padding: 0px 12px;
+  border: 1px solid #ccc;
+  width: 70%;
+  border-left: none;
+  height: 100%;
+}
+
+.input {
+  width: 100%
+}
+.button {
+  width: 10%;
+  float: right
+}
+</style>
+</head>
+<body>
+
+<h2>Tools configuration</h2>
+<p>Configure your tools.</p>
+
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'ghdl')" id="defaultOpen">GHDL</button>
+  <button class="tablinks" onclick="openCity(event, 'icarus')">Icarus</button>
+  <button class="tablinks" onclick="openCity(event, 'modelsim')">ModelSim</button>
+  <button class="tablinks" onclick="openCity(event, 'xsim')">Xsim</button>
+  <button class="tablinks" onclick="openCity(event, 'vunit')">VUnit</button>
+  <button class="tablinks" onclick="openCity(event, 'vivado')">Vivado</button>
+  <button class="tablinks" onclick="openCity(event, 'riviera_pro')">Riviera-PRO</button>
+  <button class="tablinks" onclick="openCity(event, 'verilator')">Verilator</button>
+</div>
+
+<div id="ghdl" class="tabcontent">
+  <h3>GHDL</h3>
+  
+  <label>GHDL installation path.</label><br><br>
+  <input class="input" id="ghdl_installation_path" type="text"><br><br>
+  
+  <label>Analize options. Extra options used for the GHDL analyze stage (ghdl -a).</label><br><br>
+  <input class="input" id="ghdl_analize" type="text"><br><br>
+  
+  <label>Run options. Extra options used when running GHDL simulations (ghdl -r).</label><br><br>
+  <input class="input" id="ghdl_run" type="text"><br><br>
+</div>
+
+<div id="icarus" class="tabcontent">
+  <h3>Icarus</h3>
+  <label>Icarus installation path.</label><br><br>
+  <input class="input" id="icarus_installation_path" type="text"><br><br>
+  
+  <label>Icarus options. Extra options for compilation with iverilog.</label><br><br>
+  <input class="input" id="icarus_options" type="text"><br><br>
+  
+  <label>Timescale. Default (Verilog) timescale to use before user sets one explicitly.</label><br><br>
+  <input class="input" id="icarus_timescale" type="text"><br><br>
+</div>
+
+<div id="modelsim" class="tabcontent">
+  <h3>ModelSim</h3>
+  <label>ModelSim installation path.</label><br><br>
+  <input id="modelsim_installation_path" type="text"><br><br>
+  
+  <label>VLOG. Extra options for each Verilog file compiled with vlog.</label><br><br>
+  <input id="modelsim_vlog_options" type="text"><br><br>
+  
+  <label>VSIM options. Extra options for running the simulation with vsim.</label><br><br>
+  <input id="modelsim_vsim_options" type="text"><br><br>
+</div>
+
+<div id="xsim" class="tabcontent">
+  <h3>Xsim</h3>
+  <label>Xsim installation path.</label><br><br>
+  <input class="input" id="xsim_installation_path" type="text"><br><br>
+  
+  <label>xelab options. Extra options for compilation with xelab.</label><br><br>
+  <input class="input" id="xsim_xelab_options" type="text"><br><br>
+  
+  <label>Xsim options. Extra options for running simulation with with xsim.</label><br><br>
+  <input class="input" id="xsim_xsim_options" type="text"><br><br>
+</div>
+
+<div id="vunit" class="tabcontent">
+  <h3>VUnit</h3>
+  <label>VUnit installation path.</label><br><br>
+  <input class="input" id="vunit_installation_path" type="text"><br><br>
+  
+  <label>VUnit options. Extra options for the VUnit test runner.</label><br><br>
+  <input class="input" id="vunit_vunit_options" type="text"><br><br>
+  
+  <label>Add libraries. A list of framework libraries to add. Allowed values include “array_util”, “com”, “json4hdl”, “osvvm”, “random”, “verification_components”.</label><br><br>
+  <input class="input" id="vunit_add_libraries" type="text"><br><br>
+  
+  <label>VUnit runner. Name of the Python file exporting a VUnitRunner class (must derive from edalize.vunit_hooks.VUnitHooks) that is used to configure and execute test. This allows very customized test control via VUnit’s Python-interfaces.</label><br><br>
+  <input class="input" id="vunit_runner" type="text"><br><br>
+</div>
+
+<div id="vivado" class="tabcontent">
+  <h3>Vivado</h3>
+  <label>Vivado installation path.</label><br><br>
+  <input class="input" id="vivado_installation_path" type="text"><br><br>
+  
+  <label>Part. Device identifier. e.g. xc7a35tcsg324-1.</label><br><br>
+  <input class="input" id="vivado_part" type="text"><br><br>
+</div>
+
+<div id="riviera_pro" class="tabcontent">
+  <h3>Riviera-PRO</h3>
+  <label>Riviera-PRO installation path.</label><br><br>
+  <input class="input" id="riviera_pro_installation_path" type="text"><br><br>
+  
+  <label>VLOG options. Extra options for each Verilog file compiled with vlog.</label><br><br>
+  <input class="input" id="riviera_pro_vlog_options" type="text"><br><br>
+  
+  <label>VSIM options. Extra options for running the simulation with vsim.</label><br><br>
+  <input class="input" id="riviera_pro_vsim_options" type="text"><br><br>
+</div>
+
+<div id="verilator" class="tabcontent">
+  <h3>Verilator</h3>
+  <label>Riviera-PRO installation path.</label><br><br>
+  <input class="input" id="verilator_installation_path" type="text"><br><br>
+  
+  <label>CLI parser. If cli_parser is set to managed, Edalize will parse all command-line options. Otherwise, they are sent directly to the compiled simulation model..</label><br><br>
+  <input class="input" id="verilator_cli_parser" type="text"><br><br>
+  
+  <label>Libs. Extra options to be passed as -LDFLAGS when linking the C++ testbench.</label><br><br>
+  <input class="input" id="verilator_libs" type="text"><br><br>
+  
+  <label>Mode. cc runs Verilator in regular C++ mode. sc runs in SystemC mode. lint-only only performs linting on the Verilog code.</label><br><br>
+  <input class="input" id="verilator_mode" type="text"><br><br>
+  
+  <label>Verilator options. Extra options to be passed when verilating model.</label><br><br>
+  <input class="input" id="verilator_verilator_options" type="text"><br><br>
+</div>
+
+ <button class="button" type="button">Cancel</button> 
+ <button class="button" type="button">Apply and close</button> 
+
+
+<script>
+  function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  // Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+
+  function get_config(){
+    let config = {
+      'ghdl' : get_ghdl_options(),
+      'icarus' : get_icarus_options(),
+      'modelsim' : get_modelsim_options(),
+      'xsim' : get_xsim_options(),
+      'vunit' : get_vunit_options(),
+      'vivado' : get_vivado_options(),
+      'riviera_pro' : get_riviera_pro_options(),
+      'verilator' : get_verilator_options()
+    }
+    return config;
+  }
+
+
+  function get_ghdl_options(){
+    let options = {
+      'installation_path': document.getElementById("ghdl_installation_path").value,
+      'analize': document.getElementById("ghdl_analize").value,
+      'run': document.getElementById("ghdl_run").value,
+    };
+    return options;
+  }
+
+  function get_icarus_options(){
+    let options = {
+      'installation_path': document.getElementById("icarus_installation_path").value,
+      'options': document.getElementById("icarus_options").value,
+      'timescale': document.getElementById("icarus_timescale").value,
+    };
+    return options;
+  }
+
+  function get_modelsim_options(){
+    let options = {
+      'installation_path': document.getElementById("modelsim_installation_path").value,
+      'vlog_options': document.getElementById("modelsim_vlog_options").value,
+      'vsim_options': document.getElementById("modelsim_vsim_options").value,
+    };
+    return options;
+  }
+
+  function get_xsim_options(){
+    let options = {
+      'installation_path': document.getElementById("xsim_installation_path").value,
+      'xelab_options': document.getElementById("xsim_xelab_options").value,
+      'xsim_options': document.getElementById("xsim_xelab_options").value,
+    };
+    return options;
+  }
+
+  function get_vunit_options(){
+    let options = {
+      'installation_path': document.getElementById("vunit_installation_path").value,
+      'options': document.getElementById("vunit_vunit_options").value,
+      'add_libraries': document.getElementById("vunit_add_libraries").value,
+      'runner': document.getElementById("vunit_runner").value
+    };
+    return options;
+  }
+
+  function get_vivado_options(){
+    let options = {
+      'installation_path': document.getElementById("vivado_installation_path").value,
+      'part': document.getElementById("vivado_part").value
+    };
+    return options;
+  }
+
+  function get_riviera_pro_options(){
+    let options = {
+      'installation_path': document.getElementById("riviera_pro_installation_path").value,
+      'vlog_options': document.getElementById("riviera_pro_vlog_options").value,
+      'vsim_options': document.getElementById("riviera_pro_vsim_options").value
+    };
+    return options;
+  }
+
+  function get_verilator_options(){
+    let options = {
+      'installation_path': document.getElementById("verilator_installation_path").value,
+      'cli_parser': document.getElementById("verilator_cli_parser").value,
+      'libs': document.getElementById("verilator_libs").value,
+      'mode': document.getElementById("verilator_mode").value,
+      'options': document.getElementById("verilator_verilator_options").value
+    };
+    return options;
+  }
+
+</script>
+   
+</body>
+</html> 
