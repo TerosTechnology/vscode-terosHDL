@@ -179,7 +179,7 @@ body {font-family: "Lato", sans-serif;}
 </div>
 
  <button class="button" type="button">Cancel</button> 
- <button class="button" type="button">Apply and close</button> 
+ <button class="button" type="button" onclick="send_config_and_close(event)">Apply and close</button> 
 
 
 <script>
@@ -200,6 +200,12 @@ body {font-family: "Lato", sans-serif;}
   // Get the element with id="defaultOpen" and click on it
   document.getElementById("defaultOpen").click();
 
+  
+  function send_config_and_close(){
+    let config = get_config();
+    console.log(config);
+  }
+
   function get_config(){
     let config = {
       'ghdl' : get_ghdl_options(),
@@ -213,7 +219,6 @@ body {font-family: "Lato", sans-serif;}
     }
     return config;
   }
-
 
   function get_ghdl_options(){
     let options = {
