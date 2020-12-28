@@ -340,7 +340,12 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "teroshdl_tree_view.add_file",
+					"command": "teroshdl_tree_view.simulate",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				},
+				{
+					"command": "teroshdl_tree_view.add_project",
 					"when": "view == teroshdl_tree_view",
 					"group": "navigation"
 				},
@@ -352,13 +357,13 @@
 			],
 			"view/item/context": [
 				{
-					"command": "teroshdl_tree_view.add_file",
-					"when": "view == teroshdl_tree_view && viewItem != title)"
+					"command": "teroshdl_tree_view.select_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
 				},
 				{
 					"command": "teroshdl_tree_view.add_file",
-					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
-					"group": "inline"
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source"
 				},
 				{
 					"command": "teroshdl_tree_view.delete_file",
@@ -370,8 +375,22 @@
 					"group": "inline"
 				},
 				{
-					"command": "teroshdl_tree_view.add_library",
-					"when": "view == teroshdl_tree_view && viewItem != title"
+					"command": "teroshdl_tree_view.delete_project",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
+					"group": "inline"
 				},
 				{
 					"command": "teroshdl_tree_view.delete_library",
@@ -380,6 +399,24 @@
 				{
 					"command": "teroshdl_tree_view.delete_library",
 					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_library",
+					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources"
+				},
+				{
+					"command": "teroshdl_tree_view.add_library",
+					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources",
 					"group": "inline"
 				}
 			],
@@ -414,11 +451,43 @@
 		},
 		"commands": [
 			{
+				"command": "teroshdl_tree_view.add_library",
+				"title": "Add library",
+				"icon": {
+					"light": "resources/light/library.svg",
+					"dark": "resources/dark/library.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.select_project",
+				"title": "Select project",
+				"icon": {
+					"light": "resources/light/check.svg",
+					"dark": "resources/dark/check.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.simulate",
+				"title": "Start simulation",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
 				"command": "teroshdl_tree_view.config",
 				"title": "Tools configuration",
 				"icon": {
 					"light": "resources/light/settings-gear.svg",
 					"dark": "resources/dark/settings-gear.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.add_project",
+				"title": "Add/load project",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
 				}
 			},
 			{
@@ -430,19 +499,19 @@
 				}
 			},
 			{
-				"command": "teroshdl_tree_view.delete_file",
-				"title": "Delete HDL file",
+				"command": "teroshdl_tree_view.delete_project",
+				"title": "Delete project",
 				"icon": {
 					"light": "resources/light/remove.svg",
 					"dark": "resources/dark/remove.svg"
 				}
 			},
 			{
-				"command": "teroshdl_tree_view.add_library",
-				"title": "Add library",
+				"command": "teroshdl_tree_view.delete_file",
+				"title": "Delete HDL file",
 				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
+					"light": "resources/light/remove.svg",
+					"dark": "resources/dark/remove.svg"
 				}
 			},
 			{
