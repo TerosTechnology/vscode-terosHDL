@@ -357,6 +357,28 @@
 			],
 			"view/item/context": [
 				{
+					"command": "teroshdl_tree_view.rename_project",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.rename_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.rename_library",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library"
+				},
+				{
+					"command": "teroshdl_tree_view.rename_library",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.select_project",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
 					"command": "teroshdl_tree_view.select_project",
 					"when": "view == teroshdl_tree_view && viewItem == project",
 					"group": "inline"
@@ -450,6 +472,22 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl_tree_view.rename_project",
+				"title": "Rename project",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.rename_library",
+				"title": "Rename library",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
 			{
 				"command": "teroshdl_tree_view.add_library",
 				"title": "Add library",
