@@ -403,11 +403,11 @@
 				},
 				{
 					"command": "teroshdl_tree_view.add_library",
-					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources"
+					"when": "view == teroshdl_tree_view && viewItem == project"
 				},
 				{
 					"command": "teroshdl_tree_view.add_library",
-					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources",
+					"when": "view == teroshdl_tree_view && viewItem == project",
 					"group": "inline"
 				},
 				{
