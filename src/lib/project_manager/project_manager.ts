@@ -3,7 +3,10 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 
 // {
-//   "hdl_sources": [
+//   "general_config": {
+//     "top" : "top_entity"
+//   },
+//   "sources": [
 //     {
 //       "name": "library_0",
 //       "sources": [
@@ -37,17 +40,21 @@ import * as path from 'path';
 
 
 
-// - add_file -> (name, library)
-// - delete_file -> (name, library)
-// - add_library -> (name)
-// - delete_library -> (name)
-// - get_tree()
-// - set_simulator_configuration()
-// - get_simulator_configuration()
+// - add_file -> (name, library) : añade un fichero en la librería L
+// - delete_file -> (name, library) : borra un fichero de la libería L
+// - add_library -> (name) : crea una librería nueva L
+// - delete_library -> (name) : borra la librería L
+// - get_tree(id) : devuelve el json de un proyecto ID
+// - set_simulator_configuration() : envía la configuración de los tools
+// - get_simulator_configuration() : pide la configuración de los tools
 
 
 let example_json = {
-  "hdl_sources": [
+  "general_config": {
+    "top": "top_entity",
+    "project_directory": "/project/directory"
+  },
+  "libraries": [
     {
       "name": "library_0",
       "sources": [
@@ -70,7 +77,7 @@ let example_json = {
       ]
     },
     {
-      "name": "teros_hdl_default",
+      "name": "teroshdl_no_library",
       "sources": [
         "/path/to/source/source_5.vhd",
         "/path/to/source/source_6.vhd"
@@ -145,7 +152,7 @@ export class Project_manager {
 
     }
     else if (picker_value === project_add_types[2]) {
-      this.tree.add_project('VHDL_tutorial', example_json.hdl_sources);
+      this.tree.add_project('VHDL_tutorial', example_json.libraries);
     }
   }
 }
@@ -162,8 +169,8 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.data = [new TreeItem('TerosHDL Projects', [])];
   }
 
-  add_project(name: string, hdl_sources) {
-    let prj = new Project(name, hdl_sources);
+  add_project(name: string, sources) {
+    let prj = new Project(name, sources);
     let prj_data = prj.get_prj();
     this.projects.push(prj_data);
     this.update_tree();
@@ -198,6 +205,15 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   delete_file(project_name, library_name, file) {
+    if (library_name !== 'teroshdl_no_library') {
+      this.delete_file_with_library(project_name, library_name, file);
+    }
+    else {
+      this.delete_file_no_library(project_name, file);
+    }
+  }
+
+  delete_file_with_library(project_name, library_name, file) {
     let project = this.search_project_in_tree(project_name);
     let library = this.search_library_in_project(project, library_name);
     let files_lib = this.get_files_from_library(library);
@@ -207,20 +223,25 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.update_tree();
   }
 
+  delete_file_no_library(project_name, file) {
+    let project = this.search_project_in_tree(project_name);
+    let libraries = this.search_no_library_in_project(project, file);
+    for (let i = 0; i < this.projects.length; ++i) {
+      if (this.projects[i].project_name === project_name) {
+        this.projects[i] = new Project_item(project_name, libraries);
+      }
+    }
+    this.update_tree();
+  }
+
   insert_library(project_name, library_name, library) {
     //Search project
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].project_name === project_name) {
         let project = this.projects[i];
-        //Search hdl_sources
-        let prj_titles = project.children;
-        let libraries;
-        for (let j = 0; prj_titles !== undefined && j < prj_titles.length; ++j) {
-          if (prj_titles[j].title === 'HDL sources') {
-            libraries = prj_titles[j].children;
-          }
-        }
-        for (let m = 0; m < libraries.length; ++m) {
+        //Search sources
+        let libraries = project.children;
+        for (let m = 0; libraries !== undefined && m < libraries.length; ++m) {
           if (libraries[m].library_name === library_name) {
             libraries[m] = library;
           }
@@ -249,13 +270,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   search_library_in_project(project, library_name) {
-    let prj_titles = project.children;
-    let libraries;
-    for (let i = 0; i < prj_titles.length; ++i) {
-      if (prj_titles[i].title === 'HDL sources') {
-        libraries = prj_titles[i].children;
-      }
-    }
+    let libraries = project.children;
     if (libraries === undefined) {
       return undefined;
     }
@@ -267,6 +282,23 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     return undefined;
   }
 
+  search_no_library_in_project(project, file) {
+    let files_no_libraries: (Library_item | Hdl_item)[] = [];
+    let no_libraries = project.children;
+    if (no_libraries === undefined) {
+      return undefined;
+    }
+    for (let i = 0; i < no_libraries.length; ++i) {
+      if (no_libraries[i].contextValue === 'hdl_library') {
+        files_no_libraries.push(no_libraries[i]);
+      }
+      else if (no_libraries[i].library_name === 'teroshdl_no_library' && no_libraries[i].path !== file) {
+        files_no_libraries.push(no_libraries[i]);
+      }
+    }
+    return files_no_libraries;
+  }
+
   get_files_from_library(library) {
     let files: string[] = [];
     let childrens = library.children;
@@ -275,7 +307,6 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     }
     return files;
   }
-
 
   update_tree() {
     this.data = [new TreeItem('TerosHDL Projects', this.projects)];
@@ -302,20 +333,14 @@ class Project {
   private name: string = '';
   data: TreeItem;
 
-  constructor(name: string, hdl_sources) {
+  constructor(name: string, sources) {
     this.name = name;
-    if (hdl_sources !== undefined) {
-      let hdl_sources_items = this.get_hdl_sources(hdl_sources);
-      this.data = new TreeItem(name, [
-        new Title_item(
-          'HDL sources', hdl_sources_items)
-      ]);
+    if (sources !== undefined) {
+      let sources_items = this.get_sources(sources);
+      this.data = new Project_item(name, sources_items);
     }
     else {
-      this.data = new TreeItem(name, [
-        new Title_item(
-          'HDL sources', [])
-      ]);
+      this.data = new Project_item(name, []);
     }
   }
 
@@ -323,16 +348,24 @@ class Project {
     return this.data;
   }
 
-  get_hdl_sources(hdl_sources) {
-    let libraries: Library_item[] = [];
-    for (let i = 0; i < hdl_sources.length; ++i) {
-      let library = this.get_library(hdl_sources[i].name, hdl_sources[i].sources);
-      libraries.push(library);
+  get_sources(sources) {
+    let libraries: (Library_item | Hdl_item)[] = [];
+    for (let i = 0; i < sources.length; ++i) {
+      if (sources[i].name === 'teroshdl_no_library') {
+        let sources_no_lib = this.get_no_library(sources[i].name, sources[i].sources);
+        for (let i = 0; i < sources_no_lib.length; ++i) {
+          libraries.push(sources_no_lib[i]);
+        }
+      }
+      else {
+        let library = this.get_library(sources[i].name, sources[i].sources);
+        libraries.push(library);
+      }
     }
     return libraries;
   }
 
-  get_library(library_name, sources) {
+  get_library(library_name, sources): Library_item {
     let tree: Hdl_item[] = [];
     for (let i = 0; i < sources.length; ++i) {
       let item_tree = new Hdl_item(sources[i], library_name, this.name);
@@ -341,12 +374,41 @@ class Project {
     let library = new Library_item(library_name, this.name, tree);
     return library;
   }
+
+
+  get_no_library(library_name, sources): Hdl_item[] {
+    let tree: Hdl_item[] = [];
+    for (let i = 0; i < sources.length; ++i) {
+      let item_tree = new Hdl_item(sources[i], library_name, this.name);
+      tree.push(item_tree);
+    }
+    return tree;
+  }
 }
 
 class TreeItem extends vscode.TreeItem {
   children: TreeItem[] | undefined;
   project_name: string;
   title: string = '';
+  library_name: string;
+
+  constructor(label: string, children?: TreeItem[]) {
+    super(
+      label,
+      children === undefined ? vscode.TreeItemCollapsibleState.None :
+        vscode.TreeItemCollapsibleState.Expanded);
+    this.project_name = label;
+    this.children = children;
+    this.contextValue = 'teroshdl';
+    this.library_name = '';
+  }
+}
+
+class Project_item extends vscode.TreeItem {
+  children: TreeItem[] | undefined;
+  project_name: string;
+  title: string = '';
+  library_name: string;
 
   constructor(label: string, children?: TreeItem[]) {
     super(
@@ -356,23 +418,7 @@ class TreeItem extends vscode.TreeItem {
     this.project_name = label;
     this.children = children;
     this.contextValue = 'project';
-  }
-}
-
-class Title_item extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  project_name: string;
-  title: string;
-
-  constructor(label: string, children?: TreeItem[]) {
-    super(
-      label,
-      children === undefined ? vscode.TreeItemCollapsibleState.None :
-        vscode.TreeItemCollapsibleState.Expanded);
-    this.title = label;
-    this.project_name = '';
-    this.children = children;
-    this.contextValue = 'title_vhdl_sources';
+    this.library_name = '';
   }
 }
 
