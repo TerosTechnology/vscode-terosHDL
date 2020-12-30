@@ -1,3 +1,7 @@
+[![Current Version](https://img.shields.io/visual-studio-marketplace/v/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
+[![Install Count](https://img.shields.io/visual-studio-marketplace/i/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
+[![Download Count](https://img.shields.io/visual-studio-marketplace/d/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
+
 **Index**
 
 1. [Introduction](#id1)
