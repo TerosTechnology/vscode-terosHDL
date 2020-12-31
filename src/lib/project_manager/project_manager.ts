@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as Config_view from './config_view';
 
 // {
 //   "general_config": {
@@ -87,11 +88,15 @@ let example_json = {
 };
 
 export class Project_manager {
+
   tree!: TreeDataProvider;
   projects: TreeItem[] = [];
   selected_project: string = '';
+  config_view;
 
-  constructor() {
+  constructor(context: vscode.ExtensionContext) {
+    this.config_view = new Config_view.default(context);
+
     this.tree = new TreeDataProvider();
     vscode.window.registerTreeDataProvider('teroshdl_tree_view', this.tree);
     vscode.commands.registerCommand('teroshdl_tree_view.add_project', () =>
@@ -121,9 +126,21 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.rename_library', (item) =>
       this.rename_library(item)
     );
+    vscode.commands.registerCommand('teroshdl_tree_view.config', () =>
+      this.config()
+    );
   }
+
+  async config() {
+    this.config_view.open();
+  }
+
   async add_file(item) {
     let library_name = item.library_name;
+    if (library_name === '') {
+      library_name = 'teroshdl_no_library';
+    }
+
     let project_name = item.project_name;
     vscode.window.showOpenDialog({ canSelectMany: true }).then(value => {
       if (value !== undefined) {
@@ -406,7 +423,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     let project = this.search_project_in_tree(project_name);
 
     let libraries = project?.children;
-    libraries?.push(new Library_item(library_name, project_name, []));
+    libraries?.unshift(new Library_item(library_name, project_name, []));
 
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].project_name === project_name) {
@@ -491,7 +508,9 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   update_tree() {
+    // this.data = [new TreeItem('TerosHDL Projects', this.projects)];
     this.data = [new TreeItem('TerosHDL Projects', this.projects)];
+
     this.refresh();
   }
 
@@ -583,12 +602,12 @@ class TreeItem extends vscode.TreeItem {
     this.children = children;
     this.contextValue = 'teroshdl';
     this.library_name = '';
-    let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'teros_logo.svg');
-    let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'teros_logo.svg');
-    this.iconPath = {
-      light: path_icon_light,
-      dark: path_icon_dark
-    };
+    // let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'teros_logo.svg');
+    // let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'teros_logo.svg');
+    // this.iconPath = {
+    //   light: path_icon_light,
+    //   dark: path_icon_dark
+    // };
   }
 }
 
@@ -607,6 +626,12 @@ class Project_item extends vscode.TreeItem {
     this.children = children;
     this.contextValue = 'project';
     this.library_name = '';
+    let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'project.svg');
+    let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'project.svg');
+    this.iconPath = {
+      light: path_icon_light,
+      dark: path_icon_dark
+    };
   }
 }
 

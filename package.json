@@ -340,6 +340,11 @@
 		"menus": {
 			"view/title": [
 				{
+					"command": "teroshdl_tree_view.save_project_sel",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				},
+				{
 					"command": "teroshdl_tree_view.simulate",
 					"when": "view == teroshdl_tree_view",
 					"group": "navigation"
@@ -356,6 +361,15 @@
 				}
 			],
 			"view/item/context": [
+				{
+					"command": "teroshdl_tree_view.save_project",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.save_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
 				{
 					"command": "teroshdl_tree_view.rename_project",
 					"when": "view == teroshdl_tree_view && viewItem == project"
@@ -385,11 +399,25 @@
 				},
 				{
 					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
 					"when": "view == teroshdl_tree_view && viewItem == hdl_source"
 				},
 				{
 					"command": "teroshdl_tree_view.delete_file",
 					"when": "view == teroshdl_tree_view && viewItem == hdl_source"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
 				},
 				{
 					"command": "teroshdl_tree_view.delete_file",
@@ -472,6 +500,22 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl_tree_view.save_project_sel",
+				"title": "Save selected project",
+				"icon": {
+					"light": "resources/light/save.svg",
+					"dark": "resources/dark/save.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.save_project",
+				"title": "Save project",
+				"icon": {
+					"light": "resources/light/save.svg",
+					"dark": "resources/dark/save.svg"
+				}
+			},
 			{
 				"command": "teroshdl_tree_view.rename_project",
 				"title": "Rename project",

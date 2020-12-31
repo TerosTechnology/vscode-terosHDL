@@ -249,7 +249,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Tree view
     /**************************************************************************/
-    project_manager = new project_manager_lib.Project_manager();
+    project_manager = new project_manager_lib.Project_manager(context);
 
 
     /**************************************************************************/
