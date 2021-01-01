@@ -2,6 +2,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as Config_view from './config_view';
+import * as Edam from './edam_project';
 
 // {
 //   "general_config": {
@@ -51,6 +52,7 @@ import * as Config_view from './config_view';
 
 
 let example_json = {
+  "name": "sample",
   "general_config": {
     "top": "top_entity",
     "project_directory": "/project/directory"
@@ -58,7 +60,7 @@ let example_json = {
   "libraries": [
     {
       "name": "library_0",
-      "sources": [
+      "files": [
         "/path/to/source/source_0.vhd",
         "/path/to/source/source_1.vhd",
         "/path/to/source/source_2.vhd"
@@ -66,20 +68,20 @@ let example_json = {
     },
     {
       "name": "library_1",
-      "sources": [
+      "files": [
         "/path/to/source/source_1.vhd"
       ]
     },
     {
       "name": "library_2",
-      "sources": [
+      "files": [
         "/path/to/source/source_0.vhd",
         "/path/to/source/source_3.vhd"
       ]
     },
     {
       "name": "teroshdl_no_library",
-      "sources": [
+      "files": [
         "/path/to/source/source_5.vhd",
         "/path/to/source/source_6.vhd"
       ]
@@ -93,8 +95,11 @@ export class Project_manager {
   projects: TreeItem[] = [];
   selected_project: string = '';
   config_view;
+  edam_project_manager;
 
   constructor(context: vscode.ExtensionContext) {
+    this.edam_project_manager = new Edam.Edam_project_manager();
+
     this.config_view = new Config_view.default(context);
 
     this.tree = new TreeDataProvider();
@@ -135,6 +140,13 @@ export class Project_manager {
     this.config_view.open();
   }
 
+
+  async update_tree() {
+    let normalized_prjs = this.edam_project_manager.get_normalized_projects();
+    this.tree.update_super_tree(normalized_prjs);
+  }
+
+
   async add_file(item) {
     let library_name = item.library_name;
     if (library_name === '') {
@@ -145,18 +157,17 @@ export class Project_manager {
     vscode.window.showOpenDialog({ canSelectMany: true }).then(value => {
       if (value !== undefined) {
         // let file_path = value.path;
-        let paths: string[] = [];
         for (let i = 0; i < value.length; ++i) {
-          paths.push(value[i].fsPath);
+          this.edam_project_manager.add_file(project_name, value[i].fsPath, false, '', library_name);
+          this.update_tree();
         }
-        this.tree.add_file(project_name, library_name, paths);
       }
     });
   }
 
   async select_project(item) {
     let project_name = item.project_name;
-    this.selected_project = project_name;
+    this.edam_project_manager.select_project(project_name);
     this.tree.select_project(project_name);
   }
 
@@ -165,8 +176,8 @@ export class Project_manager {
     this.selected_project = project_name;
     vscode.window.showInputBox({ prompt: 'Set the project name', value: project_name }).then(value => {
       if (value !== undefined) {
-        this.tree.rename_project(project_name, value);
-        this.tree.select_project(project_name);
+        this.edam_project_manager.rename_project(project_name, value);
+        this.update_tree();
       }
     });
   }
@@ -176,7 +187,8 @@ export class Project_manager {
     let library_name = item.library_name;
     vscode.window.showInputBox({ prompt: 'Set the library name', value: library_name }).then(value => {
       if (value !== undefined) {
-        this.tree.rename_library(project_name, library_name, value);
+        this.edam_project_manager(project_name, library_name, value);
+        this.update_tree();
       }
     });
   }
@@ -186,27 +198,32 @@ export class Project_manager {
     if (this.selected_project === project_name) {
       this.selected_project = '';
     }
-    this.tree.delete_project(project_name);
+    this.edam_project_manager.delete_project(project_name);
+    this.update_tree();
   }
 
   async delete_file(item) {
     let library_name = item.library_name;
     let project_name = item.project_name;
     let path = item.path;
-    this.tree.delete_file(project_name, library_name, path);
+
+    this.edam_project_manager.delete_file(project_name, path, library_name);
+    this.update_tree();
   }
 
   async delete_library(item) {
     let library_name = item.library_name;
     let project_name = item.project_name;
-    this.tree.delete_library(project_name, library_name);
+    this.edam_project_manager.delete_logical_name(project_name, library_name);
+    this.update_tree();
   }
 
   async add_library(item) {
     let project_name = item.project_name;
     vscode.window.showInputBox({ prompt: 'Set library name', placeHolder: 'Library name' }).then(value => {
       if (value !== undefined) {
-        this.tree.add_library(project_name, value);
+        this.edam_project_manager.add_file(project_name, 'teroshdl_phantom_file', false, '', value);
+        this.update_tree();
       }
     });
   }
@@ -220,7 +237,8 @@ export class Project_manager {
     if (picker_value === project_add_types[0]) {
       vscode.window.showInputBox({ prompt: 'Set the project name', placeHolder: 'Project name' }).then(value => {
         if (value !== undefined) {
-          this.tree.add_project(value, undefined);
+          this.edam_project_manager.create_project(value);
+          this.update_tree();
         }
       });
     }
@@ -245,6 +263,19 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.data = [new TreeItem('TerosHDL Projects', [])];
   }
 
+
+  update_super_tree(projects) {
+    this.projects = [];
+    for (let i = 0; i < projects.length; i++) {
+      const element = projects[i];
+      let prj = new Project(element.name, element.libraries);
+      let prj_data = prj.get_prj();
+      this.projects.push(prj_data);
+    }
+    this.update_tree();
+  }
+
+
   add_project(name: string, sources) {
     let prj = new Project(name, sources);
     let prj_data = prj.get_prj();
@@ -268,243 +299,6 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       }
     }
     this.update_tree();
-  }
-
-  delete_project(project_name) {
-    //Search project
-    let projects: TreeItem[] = [];
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name !== project_name) {
-        projects.push(this.projects[i]);
-      }
-    }
-    this.projects = projects;
-    this.update_tree();
-  }
-
-  add_file(project_name, library_name, files) {
-    if (library_name === 'teroshdl_no_library') {
-      this.add_file_no_library(project_name, library_name, files);
-    }
-    else {
-      this.add_file_library(project_name, library_name, files);
-    }
-  }
-
-  add_file_no_library(project_name, library_name, files) {
-    let project = this.search_project_in_tree(project_name);
-    let libraries = project?.children;
-    for (let i = 0; i < files.length; ++i) {
-      libraries?.push(new Hdl_item(files[i], library_name, project_name));
-    }
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name === project_name) {
-        this.projects[i] = new Project_item(project_name, libraries);
-      }
-    }
-    this.update_tree();
-  }
-
-  add_file_library(project_name, library_name, files) {
-    let project = this.search_project_in_tree(project_name);
-    let library = this.search_library_in_project(project, library_name);
-    let files_lib = this.get_files_from_library(library);
-    files_lib = files_lib.concat(files);
-    library = this.get_library(project_name, library_name, files_lib);
-    this.insert_library(project_name, library_name, library);
-    this.update_tree();
-  }
-
-  rename_project(project_name, new_project_name) {
-    let project = this.search_project_in_tree(project_name);
-    let libraries = project?.children;
-    for (let i = 0; libraries !== undefined && i < libraries?.length; ++i) {
-      libraries[i].project_name = new_project_name;
-      if (libraries[i].contextValue === 'hdl_library') {
-        let sources = libraries[i].children;
-        for (let j = 0; sources !== undefined && j < sources?.length; ++j) {
-          sources[j].project_name = new_project_name;
-        }
-      }
-    }
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name === project_name) {
-        this.projects[i] = new Project_item(new_project_name, libraries);
-      }
-    }
-    this.update_tree();
-  }
-
-  rename_library(project_name, library_name, new_library_name) {
-    let libraries_ok: TreeItem[] = [];
-    let project = this.search_project_in_tree(project_name);
-    let libraries = project?.children;
-    for (let i = 0; libraries !== undefined && i < libraries?.length; ++i) {
-      if (libraries[i].contextValue !== 'hdl_library') {
-        libraries_ok.push(libraries[i]);
-      }
-      else if (libraries[i].contextValue === 'hdl_library' && libraries[i].library_name !== library_name) {
-        libraries_ok.push(libraries[i]);
-      }
-      else {
-        let sources_in_lib: TreeItem[] = [];
-        let sources = libraries[i].children;
-        for (let j = 0; sources !== undefined && j < sources?.length; ++j) {
-          sources[j].library_name = new_library_name;
-          sources_in_lib.push(sources[j]);
-        }
-        libraries_ok.push(new Library_item(new_library_name, project_name, sources_in_lib));
-      }
-    }
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name === project_name) {
-        this.projects[i] = new Project_item(project_name, libraries_ok);
-      }
-    }
-    this.update_tree();
-  }
-
-  delete_file(project_name, library_name, file) {
-    if (library_name !== 'teroshdl_no_library') {
-      this.delete_file_with_library(project_name, library_name, file);
-    }
-    else {
-      this.delete_file_no_library(project_name, file);
-    }
-  }
-
-  delete_file_with_library(project_name, library_name, file) {
-    let project = this.search_project_in_tree(project_name);
-    let library = this.search_library_in_project(project, library_name);
-    let files_lib = this.get_files_from_library(library);
-    files_lib = files_lib.filter(e => e !== file);
-    library = this.get_library(project_name, library_name, files_lib);
-    this.insert_library(project_name, library_name, library);
-    this.update_tree();
-  }
-
-  delete_file_no_library(project_name, file) {
-    let project = this.search_project_in_tree(project_name);
-    let libraries = this.search_no_library_in_project(project, file);
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name === project_name) {
-        this.projects[i] = new Project_item(project_name, libraries);
-      }
-    }
-    this.update_tree();
-  }
-
-  delete_library(project_name, library_name) {
-    let project = this.search_project_in_tree(project_name);
-
-    let libraries_ok: (Library_item | Hdl_item)[] = [];
-    let libraries = project?.children;
-    if (libraries === undefined) {
-      return undefined;
-    }
-    for (let i = 0; i < libraries.length; ++i) {
-      if (libraries[i].contextValue === 'hdl_source') {
-        libraries_ok.push(libraries[i]);
-      }
-      else if (libraries[i].library_name !== library_name) {
-        libraries_ok.push(libraries[i]);
-      }
-    }
-
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name === project_name) {
-        this.projects[i] = new Project_item(project_name, libraries_ok);
-      }
-    }
-    this.update_tree();
-  }
-
-  add_library(project_name, library_name) {
-    let project = this.search_project_in_tree(project_name);
-
-    let libraries = project?.children;
-    libraries?.unshift(new Library_item(library_name, project_name, []));
-
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name === project_name) {
-        this.projects[i] = new Project_item(project_name, libraries);
-      }
-    }
-    this.update_tree();
-  }
-
-  insert_library(project_name, library_name, library) {
-    //Search project
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name === project_name) {
-        let project = this.projects[i];
-        //Search sources
-        let libraries = project.children;
-        for (let m = 0; libraries !== undefined && m < libraries.length; ++m) {
-          if (libraries[m].library_name === library_name) {
-            libraries[m] = library;
-          }
-        }
-      }
-    }
-  }
-
-  get_library(project_name, library_name, sources) {
-    let tree: Hdl_item[] = [];
-    for (let i = 0; i < sources.length; ++i) {
-      let item_tree = new Hdl_item(sources[i], library_name, project_name);
-      tree.push(item_tree);
-    }
-    let library = new Library_item(library_name, project_name, tree);
-    return library;
-  }
-
-  search_project_in_tree(project_name) {
-    for (let i = 0; i < this.projects.length; ++i) {
-      if (this.projects[i].project_name === project_name) {
-        return this.projects[i];
-      }
-    }
-    return undefined;
-  }
-
-  search_library_in_project(project, library_name) {
-    let libraries = project.children;
-    if (libraries === undefined) {
-      return undefined;
-    }
-    for (let i = 0; i < libraries.length; ++i) {
-      if (libraries[i].library_name === library_name) {
-        return libraries[i];
-      }
-    }
-    return undefined;
-  }
-
-  search_no_library_in_project(project, file) {
-    let files_no_libraries: (Library_item | Hdl_item)[] = [];
-    let no_libraries = project.children;
-    if (no_libraries === undefined) {
-      return undefined;
-    }
-    for (let i = 0; i < no_libraries.length; ++i) {
-      if (no_libraries[i].contextValue === 'hdl_library') {
-        files_no_libraries.push(no_libraries[i]);
-      }
-      else if (no_libraries[i].library_name === 'teroshdl_no_library' && no_libraries[i].path !== file) {
-        files_no_libraries.push(no_libraries[i]);
-      }
-    }
-    return files_no_libraries;
-  }
-
-  get_files_from_library(library) {
-    let files: string[] = [];
-    let childrens = library.children;
-    for (let i = 0; i < childrens.length; ++i) {
-      files.push(childrens[i].path);
-    }
-    return files;
   }
 
   update_tree() {
@@ -534,10 +328,10 @@ class Project {
   private name: string = '';
   data: TreeItem;
 
-  constructor(name: string, sources) {
+  constructor(name: string, libraries) {
     this.name = name;
-    if (sources !== undefined) {
-      let sources_items = this.get_sources(sources);
+    if (libraries !== undefined) {
+      let sources_items = this.get_sources(libraries);
       this.data = new Project_item(name, sources_items);
     }
     else {
@@ -553,13 +347,13 @@ class Project {
     let libraries: (Library_item | Hdl_item)[] = [];
     for (let i = 0; i < sources.length; ++i) {
       if (sources[i].name === 'teroshdl_no_library') {
-        let sources_no_lib = this.get_no_library(sources[i].name, sources[i].sources);
+        let sources_no_lib = this.get_no_library(sources[i].name, sources[i].files);
         for (let i = 0; i < sources_no_lib.length; ++i) {
           libraries.push(sources_no_lib[i]);
         }
       }
       else {
-        let library = this.get_library(sources[i].name, sources[i].sources);
+        let library = this.get_library(sources[i].name, sources[i].files);
         libraries.push(library);
       }
     }
