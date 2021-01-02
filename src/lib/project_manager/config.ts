@@ -82,7 +82,7 @@ export class Config {
       return { config: {}, projects: [] };
     }
   }
-
+  ls
   get_config_tool() {
     return this.config['config_tool'];
   }

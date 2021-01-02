@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as Config_view from './config_view';
 import * as Edam from './edam_project';
 import * as Config from './config';
+import * as Terminal from './terminal';
 
 let example_json = {
   name: "sample",
@@ -48,8 +49,11 @@ export class Project_manager {
   edam_project_manager;
   config_file;
   workspace_folder;
+  private terminal: Terminal.Terminal;
 
   constructor(context: vscode.ExtensionContext) {
+    this.terminal = new Terminal.Terminal(context);
+
     this.edam_project_manager = new Edam.Edam_project_manager();
 
     this.config_file = new Config.Config(context.extensionPath);
