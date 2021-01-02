@@ -50,6 +50,7 @@ export class Project_manager {
   config_file;
   workspace_folder;
   private terminal: Terminal.Terminal;
+  private vunit_test_list: string[] = [];
 
   constructor(context: vscode.ExtensionContext) {
     this.terminal = new Terminal.Terminal(context);
@@ -129,6 +130,18 @@ export class Project_manager {
     }
     let prj = this.edam_project_manager.get_project(selected_project);
     let tool_configuration = this.config_file.get_config_of_selected_tool();
+
+    let edam = {
+      work_path: '',
+      top_level: 'top_level',
+      name: prj.name,
+      files: prj.files,
+      tool_installation_path: tool_configuration.installation_path,
+      tool_name: tool_configuration.name,
+      tool_options: tool_configuration.options
+    };
+
+
     console.log('simulate');
   }
 
@@ -153,8 +166,9 @@ export class Project_manager {
   }
 
   async update_tree() {
+    let vunit_test_list = this.get_vunit_test_list();
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
-    this.tree.update_super_tree(normalized_prjs);
+    this.tree.update_super_tree(normalized_prjs, vunit_test_list);
     let edam_projects = this.edam_project_manager.get_edam_projects();
     this.config_file.set_projects(edam_projects);
 
@@ -237,6 +251,12 @@ export class Project_manager {
     });
   }
 
+  get_vunit_test_list() {
+    let sample = ['all', 'test_0', 'test_1', 'test_2'];
+    this.vunit_test_list = sample;
+    return sample;
+  }
+
   async add_project() {
     const project_add_types = ['Empty project', 'Load project', 'VHDL tutorial'];
 
@@ -276,13 +296,15 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
   data: TreeItem[] = [];
   projects: TreeItem[] = [];
+  vunit_test_list_items: Test_item[] = [];
 
   init_tree() {
-    this.data = [new TreeItem('TerosHDL Projects', [])];
+    this.data = [new TreeItem('TerosHDL Projects', []), new TreeItem('VUnit test list', [])];
     this.refresh();
   }
 
-  update_super_tree(projects) {
+  update_super_tree(projects, vunit_test_list) {
+    this.get_vunit_test_list_items(vunit_test_list);
     this.projects = [];
     for (let i = 0; i < projects.length; i++) {
       const element = projects[i];
@@ -293,6 +315,15 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.update_tree();
   }
 
+  get_vunit_test_list_items(vunit_test_list) {
+    let vunit_test_list_items: Test_item[] = [];
+    for (let i = 0; i < vunit_test_list.length; i++) {
+      const element = vunit_test_list[i];
+      let item = new Test_item(element);
+      vunit_test_list_items.push(item);
+    }
+    this.vunit_test_list_items = vunit_test_list_items;
+  }
 
   add_project(name: string, sources) {
     let prj = new Project(name, sources);
@@ -325,9 +356,10 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   update_tree() {
-    this.data = [new TreeItem('TerosHDL Projects', this.projects)];
+    this.data = [new TreeItem('TerosHDL Projects', this.projects), new TreeItem('VUnit test list', this.vunit_test_list_items)];
     this.refresh();
   }
+
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
@@ -489,6 +521,39 @@ class Hdl_item extends vscode.TreeItem {
     this.title = '';
     this.project_name = project_name;
     this.library_name = library_name;
+    this.tooltip = label;
+    this.description = dirname;
+    this.children = children;
+    this.contextValue = 'hdl_source';
+    let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'verilog.svg');
+    let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'verilog.svg');
+    this.iconPath = {
+      light: path_icon_light,
+      dark: path_icon_dark
+    };
+  }
+}
+
+class Test_item extends vscode.TreeItem {
+  children: TreeItem[] | undefined;
+  library_name: string;
+  project_name: string;
+  title: string;
+  path: string;
+
+  constructor(label: string, children?: TreeItem[]) {
+    const path = require('path');
+    let dirname = path.dirname(label);
+    let basename = path.basename(label);
+    super(
+      basename,
+      children === undefined ? vscode.TreeItemCollapsibleState.None :
+        vscode.TreeItemCollapsibleState.Expanded);
+
+    this.path = label;
+    this.title = '';
+    this.project_name = '';
+    this.library_name = '';
     this.tooltip = label;
     this.description = dirname;
     this.children = children;

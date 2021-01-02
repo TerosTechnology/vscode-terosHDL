@@ -346,6 +346,11 @@
 		"menus": {
 			"view/title": [
 				{
+					"command": "teroshdl_tree_view.list_tests",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				},
+				{
 					"command": "teroshdl_tree_view.save_project_sel",
 					"when": "view == teroshdl_tree_view",
 					"group": "navigation"
@@ -506,6 +511,14 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl_tree_view.list_tests",
+				"title": "Show VUnit tests",
+				"icon": {
+					"light": "resources/light/list-ordered.svg",
+					"dark": "resources/dark/list-ordered.svg"
+				}
+			},
 			{
 				"command": "teroshdl_tree_view.save_project_sel",
 				"title": "Save selected project",
