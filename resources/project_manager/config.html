@@ -138,7 +138,7 @@
 <div id="general" class="tabcontent">
   <h3>Select tool</h3>
   
-  <input type='radio' tool="ghdl" class='radio-button' name='re'>
+  <input type='radio' tool="ghdl" class='radio-button' name='re' checked>
   <label class="container">GHDL</label>
   <br><br>
 
@@ -170,8 +170,6 @@
   <label class="container">Verilator</label>
   <br><br>
 </div>
-
-
 
 <div id="ghdl" class="tabcontent">
   <h3>GHDL</h3>
@@ -437,6 +435,103 @@
     };
     return options;
   }
+
+  window.addEventListener('message', event => {
+      const message = event.data; 
+      switch (message.command) {
+          case 'set_config':
+            set_config(message.config);
+            break;
+      }
+  });
+
+  function set_config(config_total){
+    let config = config_total.config;
+
+    console.log(config)
+
+
+    for (let i = 0; i < config.length; i++) {
+      const config_tool = config[i];
+      const installation_path = config_tool.installation_path;
+      if (config_tool.name === 'ghdl'){
+        set_ghdl_options(config_tool.options, installation_path);
+      }
+      else if (config_tool.name === 'icarus'){
+        set_icarus_options(config_tool.options, installation_path);
+      }
+      else if (config_tool.name === 'modelsim'){
+        set_modelsim_options(config_tool.options, installation_path);
+      }
+      else if (config_tool.name === 'xsim'){
+        set_xsim_options(config_tool.options, installation_path);
+      }
+      else if (config_tool.name === 'vunit'){
+        set_vunit_options(config_tool.options, installation_path);
+      }
+      else if (config_tool.name === 'vivado'){
+        set_vivado_options(config_tool.options, installation_path);
+      }
+      else if (config_tool.name === 'riviera_pro'){
+        set_riviera_pro_options(config_tool.options, installation_path);
+      }
+      else if (config_tool.name === 'verilator'){
+        set_verilator_options(config_tool.options, installation_path);
+      }
+    }
+  }
+
+  function set_ghdl_options(options, installation_path){
+    document.getElementById("ghdl_installation_path").value = installation_path;
+    document.getElementById("ghdl_analize").value = options.analize;
+    document.getElementById("ghdl_run").value = options.run;
+  }
+
+  function set_icarus_options(options, installation_path){
+    document.getElementById("icarus_installation_path").value = installation_path;
+    document.getElementById("icarus_options").value = options.options;
+    document.getElementById("icarus_timescale").value = options.timescale;
+  }
+
+  function set_modelsim_options(options, installation_path){
+    document.getElementById("modelsim_installation_path").value = installation_path;
+    document.getElementById("modelsim_vlog_options").value = options.vlog_options;
+    document.getElementById("modelsim_vsim_options").value = options.vsim_options;
+  }
+
+  function set_xsim_options(options, installation_path){
+    document.getElementById("xsim_installation_path").value = installation_path;
+    document.getElementById("xsim_xelab_options").value = options.xelab_options;
+    document.getElementById("xsim_xelab_options").value = options.xsim_options;
+  }
+
+  function set_vunit_options(options, installation_path){
+      document.getElementById("vunit_installation_path").value = installation_path;
+      document.getElementById("vunit_vunit_options").value = options.options;
+      document.getElementById("vunit_add_libraries").value = options.add_libraries;
+      document.getElementById("vunit_runner").valu = options.runner;
+  }
+
+  function set_vivado_options(options, installation_path){
+    document.getElementById("vivado_installation_path").value = installation_path;
+    document.getElementById("vivado_part").value = options.part;
+
+  }
+
+  function set_riviera_pro_options(options, installation_path){
+    document.getElementById("riviera_pro_installation_path").value = installation_path;
+    document.getElementById("riviera_pro_vlog_options").value = options.vlog_options;
+    document.getElementById("riviera_pro_vsim_options").value = options.vsim_options;
+  }
+
+  function set_verilator_options(options, installation_path){
+    document.getElementById("verilator_installation_path").value = installation_path;
+    document.getElementById("verilator_cli_parser").value = options.cli_parser;
+    document.getElementById("verilator_libs").value = options.libs;
+    document.getElementById("verilator_mode").value = options.mode;
+    document.getElementById("verilator_verilator_options").value = options.options;
+  }
+
 
 </script>
    

@@ -53,6 +53,7 @@ export class Project_manager {
     this.edam_project_manager = new Edam.Edam_project_manager();
 
     this.config_file = new Config.Config(context.extensionPath);
+    let tool_config = this.config_file.config;
 
     this.workspace_folder = this.config_file.get_workspace_folder();
     this.config_view = new Config_view.default(context, this.config_file);
@@ -308,7 +309,12 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
         };
       }
       else {
-        this.projects[i].iconPath = undefined;
+        let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'project.svg');
+        let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'project.svg');
+        this.projects[i].iconPath = {
+          light: path_icon_light,
+          dark: path_icon_dark
+        };
       }
     }
     this.update_tree();
@@ -382,7 +388,6 @@ class Project {
     let library = new Library_item(library_name, this.name, tree);
     return library;
   }
-
 
   get_no_library(library_name, sources): Hdl_item[] {
     let tree: Hdl_item[] = [];

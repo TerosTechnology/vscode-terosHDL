@@ -71,6 +71,15 @@ export default class config_view {
 
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
+
+    try {
+      if (this.config !== undefined) {
+        let tool_config = this.config.get_config_tool();
+        await this.panel?.webview.postMessage({ command: "set_config", config: tool_config });
+      }
+    }
+    catch (e) {
+    }
   }
 
   set_config(config) {
@@ -92,6 +101,10 @@ export default class config_view {
 
   private show_export_message(path_full) {
     vscode.window.showInformationMessage(`Schematic saved in ${path_full} 😊`);
+  }
+
+  public set_config_to_view(config) {
+    this.config = config;
   }
 
   private getWebviewContent(context: vscode.ExtensionContext) {

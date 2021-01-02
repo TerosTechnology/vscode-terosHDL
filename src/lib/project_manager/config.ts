@@ -83,6 +83,10 @@ export class Config {
     }
   }
 
+  get_config_tool() {
+    return this.config['config_tool'];
+  }
+
   get_config_of_selected_tool() {
     try {
       let selected_tool = this.config['config_tool'].selected_tool;
