@@ -3,6 +3,46 @@ export class Edam_project_manager {
   public projects: Edam_project[] = [];
   public selected_project: string = '';
 
+  check_if_project_exists(name) {
+    for (let i = 0; i < this.projects.length; i++) {
+      const prj = this.projects[i];
+      if (prj.name === name) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  get_project(name) {
+    for (let i = 0; i < this.projects.length; ++i) {
+      if (this.projects[i].name === name) {
+        return this.projects[i];
+      }
+    }
+  }
+
+  create_projects_from_edam(projects) {
+    for (let i = 0; i < projects.length; i++) {
+      const prj = projects[i];
+      this.create_project_from_edam(prj);
+    }
+  }
+
+
+  create_project_from_edam(edam) {
+    if (this.check_if_project_exists(edam.name) === true) {
+      return `The project with name [${edam.name}] already exists in the workspace.`;
+    }
+
+    this.create_project(edam.name);
+    let files = edam.files;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      this.add_file(edam.name, file.name, file.is_include_file, file.include_path, file.logical_name);
+    }
+    return 0;
+  }
 
   rename_project(name, new_name) {
     for (let i = 0; i < this.projects.length; ++i) {
@@ -26,15 +66,23 @@ export class Edam_project_manager {
   }
 
   select_project(name) {
-    this.select_project = name;
+    this.selected_project = name;
   }
 
   create_project(name) {
+    if (this.check_if_project_exists(name) === true) {
+      return `The project with name [${name}] already exists in the workspace.`;
+    }
+
     let prj = new Edam_project(name);
     this.projects.push(prj);
+    return 0;
   }
 
   delete_project(name) {
+    if (this.selected_project === name) {
+      this.selected_project = '';
+    }
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].name === name) {
         this.projects.splice(i, 1);
@@ -45,6 +93,19 @@ export class Edam_project_manager {
 
   add_file(prj_name: string, name: string, is_include_file: boolean = false,
     include_path: string = '', logic_name: string = '') {
+
+    if (is_include_file === undefined) {
+      is_include_file = false;
+    }
+
+    if (include_path === undefined) {
+      include_path = '';
+    }
+
+    if (logic_name === undefined) {
+      logic_name = '';
+    }
+
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].name === prj_name) {
         this.projects[i].add_file(name, is_include_file, include_path, logic_name);
@@ -78,6 +139,15 @@ export class Edam_project_manager {
       normalized_prjs.push(element.get_normalized_project());
     }
     return normalized_prjs;
+  }
+
+  get_edam_projects() {
+    let projects: {}[] = [];
+    for (let i = 0; i < this.projects.length; i++) {
+      const prj = this.projects[i];
+      projects.push(prj.export_edam_file());
+    }
+    return projects;
   }
 }
 

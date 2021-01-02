@@ -276,11 +276,13 @@
   <input class="input" id="verilator_verilator_options" type="text"><br><br>
 </div>
 
- <button id="button_cancel" class="button" type="button">Cancel</button> 
+ <button id="button_cancel" class="button" type="button" onclick="close_panel(event)">Cancel</button> 
  <button id="button_apply" class="button" type="button" onclick="send_config_and_close(event)">Apply and close</button> 
 
 
 <script>
+  const vscode = acquireVsCodeApi();
+
   function openCity(evt, cityName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -301,7 +303,17 @@
   
   function send_config_and_close(){
     let config = get_config();
-    console.log(config);
+
+    vscode.postMessage({
+        command: 'set_config',
+        config : config
+    });
+  }
+
+  function close_panel(){
+    vscode.postMessage({
+        command: 'close'
+    });
   }
 
   function get_config(){
@@ -315,90 +327,113 @@
 
     let config = {
       'selected_tool':selected_tool,
-      'config': {
-        'ghdl' : get_ghdl_options(),
-        'icarus' : get_icarus_options(),
-        'modelsim' : get_modelsim_options(),
-        'xsim' : get_xsim_options(),
-        'vunit' : get_vunit_options(),
-        'vivado' : get_vivado_options(),
-        'riviera_pro' : get_riviera_pro_options(),
-        'verilator' : get_verilator_options()
-      }
+      'config': 
+        [get_ghdl_options(),
+        get_icarus_options(),
+        get_modelsim_options(),
+        get_xsim_options(),
+        get_vunit_options(),
+        get_vivado_options(),
+        get_riviera_pro_options(),
+        get_verilator_options()]
     }
     return config;
   }
 
   function get_ghdl_options(){
     let options = {
+      'name': 'ghdl',
       'installation_path': document.getElementById("ghdl_installation_path").value,
-      'analize': document.getElementById("ghdl_analize").value,
-      'run': document.getElementById("ghdl_run").value,
+      'options': {
+        'analize': document.getElementById("ghdl_analize").value,
+        'run': document.getElementById("ghdl_run").value
+      }
     };
     return options;
   }
 
   function get_icarus_options(){
     let options = {
+      'name': 'icarus',
       'installation_path': document.getElementById("icarus_installation_path").value,
-      'options': document.getElementById("icarus_options").value,
-      'timescale': document.getElementById("icarus_timescale").value,
+      'options': {
+        'options': document.getElementById("icarus_options").value,
+        'timescale': document.getElementById("icarus_timescale").value
+      }
     };
     return options;
   }
 
   function get_modelsim_options(){
     let options = {
+      'name': 'modelsim',
       'installation_path': document.getElementById("modelsim_installation_path").value,
-      'vlog_options': document.getElementById("modelsim_vlog_options").value,
-      'vsim_options': document.getElementById("modelsim_vsim_options").value,
+      'options': {
+        'vlog_options': document.getElementById("modelsim_vlog_options").value,
+        'vsim_options': document.getElementById("modelsim_vsim_options").value
+      }
     };
     return options;
   }
 
   function get_xsim_options(){
     let options = {
+      'name': 'xsim',
       'installation_path': document.getElementById("xsim_installation_path").value,
-      'xelab_options': document.getElementById("xsim_xelab_options").value,
-      'xsim_options': document.getElementById("xsim_xelab_options").value,
+      'options': {
+        'xelab_options': document.getElementById("xsim_xelab_options").value,
+        'xsim_options': document.getElementById("xsim_xelab_options").value
+      }
     };
     return options;
   }
 
   function get_vunit_options(){
     let options = {
+      'name': 'vunit',
       'installation_path': document.getElementById("vunit_installation_path").value,
-      'options': document.getElementById("vunit_vunit_options").value,
-      'add_libraries': document.getElementById("vunit_add_libraries").value,
-      'runner': document.getElementById("vunit_runner").value
+      'options': {
+        'options': document.getElementById("vunit_vunit_options").value,
+        'add_libraries': document.getElementById("vunit_add_libraries").value,
+        'runner': document.getElementById("vunit_runner").value
+      }
     };
     return options;
   }
 
   function get_vivado_options(){
     let options = {
+      'name': 'vivado',
       'installation_path': document.getElementById("vivado_installation_path").value,
-      'part': document.getElementById("vivado_part").value
+      'options': {
+        'part': document.getElementById("vivado_part").value
+      }
     };
     return options;
   }
 
   function get_riviera_pro_options(){
     let options = {
+      'name': 'riviera_pro',
       'installation_path': document.getElementById("riviera_pro_installation_path").value,
-      'vlog_options': document.getElementById("riviera_pro_vlog_options").value,
-      'vsim_options': document.getElementById("riviera_pro_vsim_options").value
+      'options': {
+        'vlog_options': document.getElementById("riviera_pro_vlog_options").value,
+        'vsim_options': document.getElementById("riviera_pro_vsim_options").value
+      }
     };
     return options;
   }
 
   function get_verilator_options(){
     let options = {
+      'name': 'verilator',
       'installation_path': document.getElementById("verilator_installation_path").value,
-      'cli_parser': document.getElementById("verilator_cli_parser").value,
-      'libs': document.getElementById("verilator_libs").value,
-      'mode': document.getElementById("verilator_mode").value,
-      'options': document.getElementById("verilator_verilator_options").value
+      'options': {
+        'cli_parser': document.getElementById("verilator_cli_parser").value,
+        'libs': document.getElementById("verilator_libs").value,
+        'mode': document.getElementById("verilator_mode").value,
+        'options': document.getElementById("verilator_verilator_options").value
+      }
     };
     return options;
   }

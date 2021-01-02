@@ -21,14 +21,17 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
+import * as Config from './config';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export default class config_view {
   private panel: vscode.WebviewPanel | undefined = undefined;
   private context: vscode.ExtensionContext;
+  private config;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, config: Config.Config) {
     this.context = context;
+    this.config = config;
   }
 
   async create_viewer() {
@@ -50,9 +53,37 @@ export default class config_view {
       null,
       this.context.subscriptions
     );
+    // Handle messages from the webview
+    this.panel.webview.onDidReceiveMessage(
+      message => {
+        switch (message.command) {
+          case 'set_config':
+            this.set_config(message.config);
+            return;
+          case 'close':
+            this.close_panel();
+            return;
+        }
+      },
+      undefined,
+      this.context.subscriptions
+    );
 
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
+  }
+
+  set_config(config) {
+    this.config.set_config_tool(config);
+    this.close_panel();
+  }
+
+  close_panel() {
+    this.panel?.dispose();
+  }
+
+  get_config() {
+    return this.config;
   }
 
   open() {

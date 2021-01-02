@@ -3,106 +3,65 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as Config_view from './config_view';
 import * as Edam from './edam_project';
-
-// {
-//   "general_config": {
-//     "top" : "top_entity"
-//   },
-//   "sources": [
-//     {
-//       "name": "library_0",
-//       "sources": [
-//         "source_0.vhd",
-//         "source_1.vhd",
-//         "source_2.vhd"
-//       ]
-//     },
-//     {
-//       "name": "library_1",
-//       "sources": [
-//         "source_1.vhd"
-//       ]
-//     },
-//     {
-//       "name": "library_2",
-//       "sources": [
-//         "source_0.vhd",
-//         "source_3.vhd"
-//       ]
-//     },
-//     {
-//       "name": "teros_hdl_default",
-//       "sources": [
-//         "source_5.vhd",
-//         "source_6.vhd"
-//       ]
-//     }
-//   ]
-// }
-
-
-
-// - add_file -> (name, library) : añade un fichero en la librería L
-// - delete_file -> (name, library) : borra un fichero de la libería L
-// - add_library -> (name) : crea una librería nueva L
-// - delete_library -> (name) : borra la librería L
-// - get_tree(id) : devuelve el json de un proyecto ID
-// - set_simulator_configuration() : envía la configuración de los tools
-// - get_simulator_configuration() : pide la configuración de los tools
-
+import * as Config from './config';
 
 let example_json = {
-  "name": "sample",
-  "general_config": {
-    "top": "top_entity",
-    "project_directory": "/project/directory"
-  },
-  "libraries": [
-    {
-      "name": "library_0",
-      "files": [
-        "/path/to/source/source_0.vhd",
-        "/path/to/source/source_1.vhd",
-        "/path/to/source/source_2.vhd"
-      ]
-    },
-    {
-      "name": "library_1",
-      "files": [
-        "/path/to/source/source_1.vhd"
-      ]
-    },
-    {
-      "name": "library_2",
-      "files": [
-        "/path/to/source/source_0.vhd",
-        "/path/to/source/source_3.vhd"
-      ]
-    },
-    {
-      "name": "teroshdl_no_library",
-      "files": [
-        "/path/to/source/source_5.vhd",
-        "/path/to/source/source_6.vhd"
-      ]
-    }
-  ]
+  name: "sample",
+  files:
+    [
+      {
+        name: '/path/to/source/source_0.vhd',
+        logical_name: 'lib_0'
+      },
+      {
+        name: '/path/to/source/source_1.vhd',
+        logical_name: 'lib_0'
+      },
+      {
+        name: '/path/to/source/source_2.vhd',
+        logical_name: 'lib_1'
+      },
+      {
+        name: '/path/to/source/source_3.vhd',
+        logical_name: 'lib_2'
+      },
+      {
+        name: '/path/to/source/source_4.vhd',
+        logical_name: 'lib_2'
+      },
+      {
+        name: '/path/to/source/source_5.vhd',
+        logical_name: 'lib_2'
+      },
+      {
+        name: '/path/to/source/source_6.vhd',
+        logical_name: 'lib_3'
+      },
+    ]
 };
 
 export class Project_manager {
 
   tree!: TreeDataProvider;
   projects: TreeItem[] = [];
-  selected_project: string = '';
   config_view;
   edam_project_manager;
+  config_file;
+  workspace_folder;
 
   constructor(context: vscode.ExtensionContext) {
     this.edam_project_manager = new Edam.Edam_project_manager();
 
-    this.config_view = new Config_view.default(context);
+    this.config_file = new Config.Config(context.extensionPath);
+
+    this.workspace_folder = this.config_file.get_workspace_folder();
+    this.config_view = new Config_view.default(context, this.config_file);
 
     this.tree = new TreeDataProvider();
+    if (this.workspace_folder !== '') {
+      this.set_default_projects();
+    }
+
     vscode.window.registerTreeDataProvider('teroshdl_tree_view', this.tree);
     vscode.commands.registerCommand('teroshdl_tree_view.add_project', () =>
       this.add_project()
@@ -134,29 +93,77 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.config', () =>
       this.config()
     );
+    vscode.commands.registerCommand('teroshdl_tree_view.simulate', (item) =>
+      this.simulate(item)
+    );
+    vscode.commands.registerCommand('teroshdl_tree_view.add_workspace', () =>
+      this.add_workspace()
+    );
+  }
+
+  async set_default_projects() {
+    this.edam_project_manager.create_projects_from_edam(this.config_file.projects);
+    await this.update_tree();
+    let selected_project = this.config_file.selected_project;
+    if (selected_project !== '' && selected_project !== undefined) {
+      this.edam_project_manager.selected_project = selected_project;
+    }
+    this.update_tree();
+  }
+
+  private show_export_message(msg) {
+    vscode.window.showInformationMessage(msg);
+  }
+
+  async simulate(item) {
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === '') {
+      let msg = 'Mark a project to simulate';
+      this.show_export_message(msg);
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    let tool_configuration = this.config_file.get_config_of_selected_tool();
+    console.log('simulate');
   }
 
   async config() {
     this.config_view.open();
   }
 
+  async add_workspace() {
+    const options: vscode.OpenDialogOptions = {
+      canSelectMany: false,
+      openLabel: 'Select workspace folder',
+      canSelectFiles: false,
+      canSelectFolders: true
+    };
+    vscode.window.showOpenDialog(options).then(value => {
+      if (value !== undefined) {
+        this.config_file.set_workspace_folder(value[0].fsPath);
+        this.workspace_folder = value[0].fsPath;
+        this.tree.init_tree();
+      }
+    });
+  }
 
   async update_tree() {
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
     this.tree.update_super_tree(normalized_prjs);
-  }
+    let edam_projects = this.edam_project_manager.get_edam_projects();
+    this.config_file.set_projects(edam_projects);
 
+    let selected_project = this.config_file.selected_project;
+    if (selected_project !== '') {
+      this.tree.select_project(selected_project);
+    }
+  }
 
   async add_file(item) {
     let library_name = item.library_name;
-    if (library_name === '') {
-      library_name = 'teroshdl_no_library';
-    }
-
     let project_name = item.project_name;
     vscode.window.showOpenDialog({ canSelectMany: true }).then(value => {
       if (value !== undefined) {
-        // let file_path = value.path;
         for (let i = 0; i < value.length; ++i) {
           this.edam_project_manager.add_file(project_name, value[i].fsPath, false, '', library_name);
           this.update_tree();
@@ -167,13 +174,13 @@ export class Project_manager {
 
   async select_project(item) {
     let project_name = item.project_name;
+    this.config_file.set_selected_project(project_name);
     this.edam_project_manager.select_project(project_name);
     this.tree.select_project(project_name);
   }
 
   async rename_project(item) {
     let project_name = item.project_name;
-    this.selected_project = project_name;
     vscode.window.showInputBox({ prompt: 'Set the project name', value: project_name }).then(value => {
       if (value !== undefined) {
         this.edam_project_manager.rename_project(project_name, value);
@@ -195,9 +202,6 @@ export class Project_manager {
 
   async delete_project(item) {
     let project_name = item.project_name;
-    if (this.selected_project === project_name) {
-      this.selected_project = '';
-    }
     this.edam_project_manager.delete_project(project_name);
     this.update_tree();
   }
@@ -237,7 +241,11 @@ export class Project_manager {
     if (picker_value === project_add_types[0]) {
       vscode.window.showInputBox({ prompt: 'Set the project name', placeHolder: 'Project name' }).then(value => {
         if (value !== undefined) {
-          this.edam_project_manager.create_project(value);
+          let result = this.edam_project_manager.create_project(value);
+          if (result !== 0) {
+            this.show_export_message(result);
+            return;
+          }
           this.update_tree();
         }
       });
@@ -246,7 +254,12 @@ export class Project_manager {
 
     }
     else if (picker_value === project_add_types[2]) {
-      this.tree.add_project('VHDL_tutorial', example_json.libraries);
+      let result = this.edam_project_manager.create_project_from_edam(example_json);
+      if (result !== 0) {
+        this.show_export_message(result);
+        return;
+      }
+      this.update_tree();
     }
   }
 }
@@ -259,10 +272,10 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   data: TreeItem[] = [];
   projects: TreeItem[] = [];
 
-  constructor() {
+  init_tree() {
     this.data = [new TreeItem('TerosHDL Projects', [])];
+    this.refresh();
   }
-
 
   update_super_tree(projects) {
     this.projects = [];
@@ -302,9 +315,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   update_tree() {
-    // this.data = [new TreeItem('TerosHDL Projects', this.projects)];
     this.data = [new TreeItem('TerosHDL Projects', this.projects)];
-
     this.refresh();
   }
 
@@ -345,11 +356,12 @@ class Project {
 
   get_sources(sources) {
     let libraries: (Library_item | Hdl_item)[] = [];
+    let files_no_lib: (Library_item | Hdl_item)[] = [];
     for (let i = 0; i < sources.length; ++i) {
-      if (sources[i].name === 'teroshdl_no_library') {
+      if (sources[i].name === '') {
         let sources_no_lib = this.get_no_library(sources[i].name, sources[i].files);
         for (let i = 0; i < sources_no_lib.length; ++i) {
-          libraries.push(sources_no_lib[i]);
+          files_no_lib.push(sources_no_lib[i]);
         }
       }
       else {
@@ -357,6 +369,7 @@ class Project {
         libraries.push(library);
       }
     }
+    libraries = libraries.concat(files_no_lib);
     return libraries;
   }
 
@@ -396,12 +409,6 @@ class TreeItem extends vscode.TreeItem {
     this.children = children;
     this.contextValue = 'teroshdl';
     this.library_name = '';
-    // let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'teros_logo.svg');
-    // let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'teros_logo.svg');
-    // this.iconPath = {
-    //   light: path_icon_light,
-    //   dark: path_icon_dark
-    // };
   }
 }
 
