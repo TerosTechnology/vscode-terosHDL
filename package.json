@@ -494,6 +494,11 @@
 					"command": "teroshdl_tree_view.run_vunit_test_gui",
 					"when": "view == teroshdl_tree_view && viewItem == test",
 					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.go_to_code",
+					"when": "view == teroshdl_tree_view && viewItem == test",
+					"group": "inline"
 				}
 			],
 			"editor/title": [
@@ -525,6 +530,14 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl_tree_view.go_to_code",
+				"title": "Go to code",
+				"icon": {
+					"light": "resources/light/open-file.svg",
+					"dark": "resources/dark/open-file.svg"
+				}
+			},
 			{
 				"command": "teroshdl_tree_view.run_vunit_test",
 				"title": "Run VUnit test",
@@ -631,7 +644,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.add_file",
-				"title": "Add HDL file",
+				"title": "Add file",
 				"icon": {
 					"light": "resources/light/add.svg",
 					"dark": "resources/dark/add.svg"
@@ -647,7 +660,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.delete_file",
-				"title": "Delete HDL file",
+				"title": "Delete file",
 				"icon": {
 					"light": "resources/light/remove.svg",
 					"dark": "resources/dark/remove.svg"

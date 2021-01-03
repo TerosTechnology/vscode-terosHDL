@@ -37,8 +37,13 @@ export class Vunit {
   get_command(runpy_dirname, runpy_filename, simulator, simulator_install_path, gui, list = false, tests: string[] = []) {
     let tests_cmd = ' ';
     for (let i = 0; i < tests.length; i++) {
+      if (i === 0) {
+        tests_cmd += '"';
+      }
       const element = tests[i];
-      tests_cmd += `${element} `;
+      if (i === tests.length - 1) {
+        tests_cmd += `${element}"`;
+      }
     }
 
     let list_cmd = '';
