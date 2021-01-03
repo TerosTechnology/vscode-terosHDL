@@ -54,10 +54,10 @@
 		},
 		"views": {
 			"teroshdl_tree_view": [
-					{
-							"id": "teroshdl_tree_view",
-							"name": "teroshdl_tree_view"
-					}
+				{
+					"id": "teroshdl_tree_view",
+					"name": "teroshdl_tree_view"
+				}
 			]
 		},
 		"grammars": [
@@ -479,9 +479,23 @@
 					"command": "teroshdl_tree_view.add_file",
 					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources",
 					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.set_top",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.run_vunit_test",
+					"when": "view == teroshdl_tree_view && viewItem == test",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.run_vunit_test_gui",
+					"when": "view == teroshdl_tree_view && viewItem == test",
+					"group": "inline"
 				}
 			],
-
 			"editor/title": [
 				{
 					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
@@ -512,6 +526,22 @@
 		},
 		"commands": [
 			{
+				"command": "teroshdl_tree_view.run_vunit_test",
+				"title": "Run VUnit test",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.run_vunit_test_gui",
+				"title": "Run VUnit test in gui",
+				"icon": {
+					"light": "resources/light/debug.svg",
+					"dark": "resources/dark/debug.svg"
+				}
+			},
+			{
 				"command": "teroshdl_tree_view.list_tests",
 				"title": "Show VUnit tests",
 				"icon": {
@@ -525,6 +555,14 @@
 				"icon": {
 					"light": "resources/light/save.svg",
 					"dark": "resources/dark/save.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.set_top",
+				"title": "Set as top",
+				"icon": {
+					"light": "resources/light/check.svg",
+					"dark": "resources/dark/check.svg"
 				}
 			},
 			{
@@ -623,10 +661,6 @@
 					"dark": "resources/dark/remove.svg"
 				}
 			},
-
-
-
-
 			{
 				"command": "teroshdl.dependencies.viewer",
 				"title": "Open dependencies viewer"
@@ -768,6 +802,8 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
+		"xml2js": "0.4.23",
+		"shelljs": "^0.8.3",
 		"temp": "^0.9.0",
 		"jsteros": "file:../colibri",
 		"vscode-test-adapter-api": "^1.7.0",

@@ -1,7 +1,19 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
+import * as Config from './config';
+
 export class Edam_project_manager {
   public projects: Edam_project[] = [];
   public selected_project: string = '';
+
+  get_top_from_selected_project() {
+    for (let i = 0; i < this.projects.length; i++) {
+      const prj = this.projects[i];
+      if (prj.name === this.selected_project) {
+        return prj.toplevel_path;
+      }
+    }
+    return undefined;
+  }
 
   check_if_project_exists(name) {
     for (let i = 0; i < this.projects.length; i++) {
@@ -28,20 +40,51 @@ export class Edam_project_manager {
     }
   }
 
+  set_top(project_name, library, path) {
+    for (let i = 0; i < this.projects.length; ++i) {
+      if (this.projects[i].name === project_name) {
+        const prj = this.projects[i];
+        prj.toplevel_path = path;
+        prj.toplevel_library = library;
+        break;
+      }
+    }
+  }
 
   create_project_from_edam(edam) {
-    if (this.check_if_project_exists(edam.name) === true) {
-      return `The project with name [${edam.name}] already exists in the workspace.`;
+    let project_name = edam.name;
+    let toplevel_library = edam.toplevel_library;
+    let toplevel_path = edam.toplevel_path;
+
+    if (this.check_if_project_exists(project_name) === true) {
+      return `The project with name [${project_name}] already exists in the workspace.`;
     }
 
-    this.create_project(edam.name);
+    this.create_project(project_name);
     let files = edam.files;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      this.add_file(edam.name, file.name, file.is_include_file, file.include_path, file.logical_name);
+      this.add_file(project_name, file.name, file.is_include_file, file.include_path, file.logical_name);
     }
+
+    this.set_top(project_name, toplevel_library, toplevel_path);
+
     return 0;
+  }
+
+  get_tops() {
+    let tops: {}[] = [];
+    for (let i = 0; i < this.projects.length; i++) {
+      const prj = this.projects[i];
+      let top = {
+        project_name: prj.name,
+        toplevel_library: prj.toplevel_library,
+        toplevel_path: prj.toplevel_path
+      };
+      tops.push(top);
+    }
+    return tops;
   }
 
   rename_project(name, new_name) {
@@ -156,7 +199,9 @@ class Edam_project {
   //Required Name of the project
   public name: string = '';
   //Toplevel module(s) for the project.
-  public top_level: string = '';
+  public toplevel: string = '';
+  public toplevel_path: string = '';
+  public toplevel_library: string = '';
   //A dictionary of tool-specific options.
   public tool_options;
 
@@ -173,7 +218,9 @@ class Edam_project {
     let edam_file = {
       name: this.name,
       tool_options: {},
-      toplevel: ''
+      toplevel: '',
+      toplevel_path: this.toplevel_path,
+      toplevel_library: this.toplevel_library
     };
     let edam_files: {}[] = [];
     for (let i = 0; i < this.files.length; i++) {

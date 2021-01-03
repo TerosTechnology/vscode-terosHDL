@@ -5,41 +5,9 @@ import * as Config_view from './config_view';
 import * as Edam from './edam_project';
 import * as Config from './config';
 import * as Terminal from './terminal';
-
-let example_json = {
-  name: "sample",
-  files:
-    [
-      {
-        name: '/path/to/source/source_0.vhd',
-        logical_name: 'lib_0'
-      },
-      {
-        name: '/path/to/source/source_1.vhd',
-        logical_name: 'lib_0'
-      },
-      {
-        name: '/path/to/source/source_2.vhd',
-        logical_name: 'lib_1'
-      },
-      {
-        name: '/path/to/source/source_3.vhd',
-        logical_name: 'lib_2'
-      },
-      {
-        name: '/path/to/source/source_4.vhd',
-        logical_name: 'lib_2'
-      },
-      {
-        name: '/path/to/source/source_5.vhd',
-        logical_name: 'lib_2'
-      },
-      {
-        name: '/path/to/source/source_6.vhd',
-        logical_name: 'lib_3'
-      },
-    ]
-};
+import * as Sample_projects from './sample_projects';
+import * as Vunit from './vunit';
+const path_lib = require('path');
 
 export class Project_manager {
 
@@ -51,15 +19,12 @@ export class Project_manager {
   workspace_folder;
   private terminal: Terminal.Terminal;
   private vunit_test_list: string[] = [];
+  private vunit: Vunit.Vunit = new Vunit.Vunit();
 
   constructor(context: vscode.ExtensionContext) {
     this.terminal = new Terminal.Terminal(context);
-
     this.edam_project_manager = new Edam.Edam_project_manager();
-
     this.config_file = new Config.Config(context.extensionPath);
-    let tool_config = this.config_file.config;
-
     this.workspace_folder = this.config_file.get_workspace_folder();
     this.config_view = new Config_view.default(context, this.config_file);
 
@@ -99,11 +64,20 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.config', () =>
       this.config()
     );
-    vscode.commands.registerCommand('teroshdl_tree_view.simulate', (item) =>
-      this.simulate(item)
+    vscode.commands.registerCommand('teroshdl_tree_view.simulate', () =>
+      this.simulate()
     );
     vscode.commands.registerCommand('teroshdl_tree_view.add_workspace', () =>
       this.add_workspace()
+    );
+    vscode.commands.registerCommand('teroshdl_tree_view.set_top', (item) =>
+      this.set_top(item)
+    );
+    vscode.commands.registerCommand('teroshdl_tree_view.run_vunit_test', (item) =>
+      this.run_vunit_test(item)
+    );
+    vscode.commands.registerCommand('teroshdl_tree_view.run_vunit_test_gui', (item) =>
+      this.run_vunit_test_gui(item)
     );
   }
 
@@ -117,11 +91,42 @@ export class Project_manager {
     this.update_tree();
   }
 
+  run_vunit_test(item) {
+    let test: string[] = [item.label];
+    let gui = false;
+    let selected_project = this.edam_project_manager.selected_project;
+    let prj = this.edam_project_manager.get_project(selected_project);
+    this.vunit.run_simulation(prj.toplevel_path, test, gui);
+  }
+
+  run_vunit_test_gui(item) {
+    let test: string[] = [item.label];
+    let gui = true;
+    let selected_project = this.edam_project_manager.selected_project;
+    let prj = this.edam_project_manager.get_project(selected_project);
+    this.vunit.run_simulation(prj.toplevel_path, test, gui);
+  }
+
+  set_top_from_project(project_name, library_name, path) {
+    this.edam_project_manager.set_top(project_name, library_name, path);
+    this.tree.select_top(project_name, library_name, path);
+    this.save_project();
+  }
+
+  set_top(item) {
+    let project_name = item.project_name;
+    let library_name = item.library_name;
+    let path = item.path;
+    this.edam_project_manager.set_top(project_name, library_name, path);
+    this.tree.select_top(project_name, library_name, path);
+    this.save_project();
+  }
+
   private show_export_message(msg) {
     vscode.window.showInformationMessage(msg);
   }
 
-  async simulate(item) {
+  async simulate() {
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === '') {
       let msg = 'Mark a project to simulate';
@@ -142,6 +147,11 @@ export class Project_manager {
     };
 
 
+    // let runpy_path = '/home/carlos/repo/vunit_/examples/vhdl/check/run.py';
+
+    this.vunit.run_simulation(prj.toplevel_path, [], false);
+
+    // let tests = await this.vunit.get_test_list(runpy_path);
     console.log('simulate');
   }
 
@@ -166,7 +176,7 @@ export class Project_manager {
   }
 
   async update_tree() {
-    let vunit_test_list = this.get_vunit_test_list();
+    let vunit_test_list = ['Loading tests...'];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
     this.tree.update_super_tree(normalized_prjs, vunit_test_list);
     let edam_projects = this.edam_project_manager.get_edam_projects();
@@ -176,6 +186,26 @@ export class Project_manager {
     if (selected_project !== '') {
       this.tree.select_project(selected_project);
     }
+
+    this.set_default_tops();
+
+    vunit_test_list = await this.get_vunit_test_list();
+    this.tree.update_super_tree(normalized_prjs, vunit_test_list);
+
+    this.set_default_tops();
+  }
+
+  set_default_tops() {
+    let tops = this.edam_project_manager.get_tops();
+    for (let i = 0; i < tops.length; i++) {
+      const top = tops[i];
+      this.set_top_from_project(top.project_name, top.toplevel_library, top.toplevel_path);
+    }
+  }
+
+  save_project() {
+    let edam_projects = this.edam_project_manager.get_edam_projects();
+    this.config_file.set_projects(edam_projects);
   }
 
   async add_file(item) {
@@ -195,6 +225,7 @@ export class Project_manager {
     let project_name = item.project_name;
     this.config_file.set_selected_project(project_name);
     this.edam_project_manager.select_project(project_name);
+    this.update_tree();
     this.tree.select_project(project_name);
   }
 
@@ -251,10 +282,36 @@ export class Project_manager {
     });
   }
 
-  get_vunit_test_list() {
-    let sample = ['all', 'test_0', 'test_1', 'test_2'];
-    this.vunit_test_list = sample;
-    return sample;
+  async get_vunit_test_list() {
+    let runpy = this.edam_project_manager.get_top_from_selected_project();
+    let tests;
+    try {
+      let runpy_ext = path_lib.extname(runpy);
+
+      if (runpy !== undefined) {
+        tests = await this.vunit.get_test_list(runpy);
+      }
+      else {
+        this.vunit_test_list = [];
+        return [];
+      }
+      let tests_vunit: string[] = [];
+      for (let i = 0; i < tests.length; i++) {
+        const element = tests[i];
+        tests_vunit.push(element.name);
+      }
+
+      if (tests_vunit.length === 0) {
+        tests_vunit = ['Not found.'];
+      }
+
+      this.vunit_test_list = tests_vunit;
+      return tests_vunit;
+    }
+    catch (e) {
+      this.vunit_test_list = ['Not found.'];
+      return ['Not found.'];
+    }
   }
 
   async add_project() {
@@ -279,7 +336,7 @@ export class Project_manager {
 
     }
     else if (picker_value === project_add_types[2]) {
-      let result = this.edam_project_manager.create_project_from_edam(example_json);
+      let result = this.edam_project_manager.create_project_from_edam(Sample_projects.sample_vhdl);
       if (result !== 0) {
         this.show_export_message(result);
         return;
@@ -350,6 +407,59 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
           light: path_icon_light,
           dark: path_icon_dark
         };
+      }
+    }
+    this.update_tree();
+  }
+
+  set_icon_select_file(item) {
+    let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'star-full.svg');
+    let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'star-full.svg');
+    item.iconPath = {
+      light: path_icon_light,
+      dark: path_icon_dark
+    };
+  }
+
+  set_icon_no_select_file(item) {
+    let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'verilog.svg');
+    let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'verilog.svg');
+    item.iconPath = {
+      light: path_icon_light,
+      dark: path_icon_dark
+    };
+  }
+
+  select_top(project_name, library, path) {
+    for (let i = 0; i < this.projects.length; ++i) {
+      if (this.projects[i].project_name === project_name) {
+        let libraries_and_files = this.projects[i].children;
+        for (let j = 0; libraries_and_files !== undefined && j < libraries_and_files.length; j++) {
+          const lib_or_file = libraries_and_files[j];
+          if (lib_or_file.contextValue === 'hdl_source' && lib_or_file.library_name === library && lib_or_file.path === path) {
+            this.set_icon_select_file(lib_or_file);
+          }
+          else if (lib_or_file.contextValue === 'hdl_source') {
+            this.set_icon_no_select_file(lib_or_file);
+          }
+          else {
+            let lib_files = lib_or_file.children;
+            for (let m = 0; lib_files !== undefined && m < lib_files.length; m++) {
+              let file = lib_files[m];
+              if (file.contextValue === 'hdl_source' && file.library_name === library && file.path === path) {
+                this.set_icon_select_file(file);
+              }
+              else if (file.contextValue === 'hdl_source') {
+                this.set_icon_no_select_file(file);
+              }
+            }
+          }
+        }
+
+
+        console.log('hola');
+
+
       }
     }
     this.update_tree();
@@ -440,6 +550,7 @@ class TreeItem extends vscode.TreeItem {
   project_name: string;
   title: string = '';
   library_name: string;
+  path: string = '';
 
   constructor(label: string, children?: TreeItem[]) {
     super(
@@ -458,6 +569,7 @@ class Project_item extends vscode.TreeItem {
   project_name: string;
   title: string = '';
   library_name: string;
+  path: string = '';
 
   constructor(label: string, children?: TreeItem[]) {
     super(
@@ -482,6 +594,7 @@ class Library_item extends vscode.TreeItem {
   library_name: string = '';
   project_name: string;
   title: string = '';
+  path: string = '';
 
   constructor(label: string, project_name: string, children?: TreeItem[]) {
     super(
@@ -555,14 +668,14 @@ class Test_item extends vscode.TreeItem {
     this.project_name = '';
     this.library_name = '';
     this.tooltip = label;
-    this.description = dirname;
+    this.description = '';
     this.children = children;
-    this.contextValue = 'hdl_source';
-    let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'verilog.svg');
-    let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'verilog.svg');
-    this.iconPath = {
-      light: path_icon_light,
-      dark: path_icon_dark
-    };
+    this.contextValue = 'test';
+    // let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'verilog.svg');
+    // let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'verilog.svg');
+    // this.iconPath = {
+    //   light: path_icon_light,
+    //   dark: path_icon_dark
+    // };
   }
 }
