@@ -509,6 +509,11 @@
 					"command": "teroshdl_tree_view.simulate",
 					"when": "view == teroshdl_tree_view && viewItem == test_title",
 					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_project",
+					"when": "view == teroshdl_tree_view && viewItem == teroshdl",
+					"group": "inline"
 				}
 			],
 			"editor/title": [
@@ -566,7 +571,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.run_vunit_test_gui",
-				"title": "Run VUnit test in gui",
+				"title": "Run VUnit test in GUI",
 				"icon": {
 					"light": "resources/light/debug.svg",
 					"dark": "resources/dark/debug.svg"

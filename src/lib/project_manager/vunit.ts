@@ -24,17 +24,27 @@ export class Vunit {
     }
   }
 
-  async run_simulation(runpy_path, tests: string[] = [], gui = false) {
-    let simulator = 'ghdl';
+  async run_simulation(python3_path, selected_tool_configuration, all_tool_configuration, runpy_path, tests: string[] = [], gui = false) {
+    let simulator = selected_tool_configuration.options.simulator;
     let simulator_install_path = '';
+    for (let i = 0; i < all_tool_configuration.length; i++) {
+      const tool = all_tool_configuration[i];
+      if (tool.name === simulator) {
+        simulator_install_path = tool.installation_path;
+        break;
+      }
+    }
+
     let runpy_dirname = path_lib.dirname(runpy_path);
     let runpy_filename = path_lib.basename(runpy_path);
-    let command = this.get_command(runpy_dirname, runpy_filename, simulator, simulator_install_path, gui, false, tests);
+    let command = this.get_command(python3_path, runpy_dirname,
+      runpy_filename, simulator, simulator_install_path, gui, false, tests);
     let result = await this.run_command(command, runpy_dirname);
     return result;
   }
 
-  get_command(runpy_dirname, runpy_filename, simulator, simulator_install_path, gui, list = false, tests: string[] = []) {
+  get_command(python3_path, runpy_dirname, runpy_filename, simulator,
+    simulator_install_path, gui, list = false, tests: string[] = []) {
     let tests_cmd = ' ';
     for (let i = 0; i < tests.length; i++) {
       if (i === 0) {
@@ -55,37 +65,29 @@ export class Vunit {
     if (gui === true) {
       gui_cmd = '--gui';
     }
+
     let simulator_config = this.get_simulator_config(simulator, simulator_install_path);
     let go_to_dir = `cd ${runpy_dirname}${this.more}`;
     let vunit_default_options = `--no-color -x teroshdl_out.xml --exit-0 --verbose ${gui_cmd} ${list_cmd}`;
-    let command = `${simulator_config}${go_to_dir}python3 ${runpy_filename} ${tests_cmd} ${vunit_default_options}`;
+    let command = `${simulator_config}${go_to_dir}${python3_path} ${runpy_filename} ${tests_cmd} ${vunit_default_options}`;
 
     return command;
   }
 
   get_simulator_config(simulator_name, simulator_install_path) {
-    simulator_name = simulator_name.toLowerCase();
+    let simulator_name_up = simulator_name.toUpperCase();
+    let simulator_name_low = simulator_name.toLowerCase();
 
-    let ghdl_path = `${this.exp} VUNIT_GHDL_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name}${this.more}`;
-    let modelsim_path = `${this.exp} VUNIT_MODELSIM_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name}${this.more}`;
-    let xsim_Path = `${this.exp} VUNIT_XSIM_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name}${this.more}`;
+    let simulator_cmd = `${this.exp} VUNIT_${simulator_name_up}_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more}`;
 
-    if (simulator_name === 'ghdl') {
-      return ghdl_path;
-    }
-    else if (simulator_name === 'modelsim') {
-      return modelsim_path;
-    }
-    else if (simulator_name === 'xsim') {
-      return xsim_Path;
-    }
-    else {
-      '';
-    }
+    return simulator_cmd;
   }
 
   async run_command(command, runpy_dirname) {
     let element = this;
+
+    element.output_channel.append(command);
+    element.output_channel.show();
 
     return new Promise(resolve => {
       let childp = shell.exec(command, { async: true }, async function (code, stdout, stderr) {
@@ -138,7 +140,7 @@ export class Vunit {
     });
   }
 
-  async get_test_list(runpy_path) {
+  async get_test_list(python3_path, runpy_path) {
     let runpy_dirname = path_lib.dirname(runpy_path);
     let runpy_filename = path_lib.basename(runpy_path);
     let json_path = `${runpy_dirname}${this.folder_sep}teroshdl_export.json`;
@@ -147,7 +149,7 @@ export class Vunit {
     let gui = false;
     let list = true;
 
-    let command = this.get_command(runpy_dirname, runpy_filename, simulator, simulator_install_path, gui, list);
+    let command = this.get_command(python3_path, runpy_dirname, runpy_filename, simulator, simulator_install_path, gui, list);
 
     return new Promise(resolve => {
 

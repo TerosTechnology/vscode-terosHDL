@@ -5,6 +5,20 @@ export class Edam_project_manager {
   public projects: Edam_project[] = [];
   public selected_project: string = '';
 
+  get_number_of_projects() {
+    return this.projects.length;
+  }
+
+  get_number_of_files_of_project(project_name) {
+    for (let i = 0; i < this.projects.length; i++) {
+      const prj = this.projects[i];
+      if (prj.name === project_name) {
+        return prj.get_number_of_files();
+      }
+    }
+
+  }
+
   get_top_from_selected_project() {
     for (let i = 0; i < this.projects.length; i++) {
       const prj = this.projects[i];
@@ -208,6 +222,10 @@ class Edam_project {
   constructor(name: string, tool_options = {}) {
     this.name = name;
     this.tool_options = tool_options;
+  }
+
+  get_number_of_files() {
+    return this.files.length;
   }
 
   set_name(name) {

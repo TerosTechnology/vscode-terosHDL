@@ -131,6 +131,7 @@
   <button class="tablinks" onclick="openCity(event, 'vunit')">VUnit</button>
   <button class="tablinks" onclick="openCity(event, 'vivado')">Vivado</button>
   <button class="tablinks" onclick="openCity(event, 'riviera_pro')">Riviera-PRO</button>
+  <button class="tablinks" onclick="openCity(event, 'active_hdl')">Active-HDL</button>
   <button class="tablinks" onclick="openCity(event, 'verilator')">Verilator</button>
 </div>
 
@@ -138,7 +139,7 @@
 <div id="general" class="tabcontent">
   <h3>Select tool</h3>
   
-  <input type='radio' tool="ghdl" class='radio-button' name='re' checked>
+  <!-- <input type='radio' tool="ghdl" class='radio-button' name='re' checked>
   <label class="container">GHDL</label>
   <br><br>
 
@@ -152,13 +153,13 @@
 
   <input type='radio' tool="xsim" class='radio-button' name='re'>
   <label class="container">Xsim</label>
-  <br><br>
+  <br><br> -->
 
-  <input type='radio' tool="vunit" class='radio-button' name='re'>
+  <input type='radio' tool="vunit" class='radio-button' name='re' checked>
   <label class="container">VUnit</label>
   <br><br>
 
-  <input type='radio' tool="vivado" class='radio-button' name='re'>
+  <!-- <input type='radio' tool="vivado" class='radio-button' name='re'>
   <label class="container">Vivado</label>
   <br><br>
 
@@ -168,7 +169,7 @@
 
   <input type='radio' tool="verilator" class='radio-button' name='re'>
   <label class="container">Verilator</label>
-  <br><br>
+  <br><br> -->
 </div>
 
 <div id="ghdl" class="tabcontent">
@@ -222,9 +223,18 @@
 
 <div id="vunit" class="tabcontent">
   <h3>VUnit</h3>
-  <label>VUnit installation path.</label><br><br>
-  <input class="input" id="vunit_installation_path" type="text"><br><br>
+  <label>Configure your Python3 installation path in the extension configuration.</label><br><br>
+  <!-- <input class="input" id="vunit_installation_path" type="text"><br><br> -->
   
+  <label>VUnit simulator:</label><br><br>
+  <select id="vunit_simulator" name="select">
+    <option value="rivierapro">Aldec Riviera-PRO</option>
+    <option value="activehdl">Aldec Active-HDL</option>
+    <option value="ghdl" selected>GHDL</option>
+    <option value="modelsim">Mentor Graphics ModelSim/Questa</option>
+    <option value="xsim">XSIM (Not supported in official VUnit)</option>
+  </select><br><br>
+
   <label>VUnit options. Extra options for the VUnit test runner.</label><br><br>
   <input class="input" id="vunit_vunit_options" type="text"><br><br>
   
@@ -254,6 +264,12 @@
   
   <label>VSIM options. Extra options for running the simulation with vsim.</label><br><br>
   <input class="input" id="riviera_pro_vsim_options" type="text"><br><br>
+</div>
+
+<div id="active_hdl" class="tabcontent">
+  <h3>Active-HDL</h3>
+  <label>Active-HDL installation path.</label><br><br>
+  <input class="input" id="active_hdl_installation_path" type="text"><br><br>
 </div>
 
 <div id="verilator" class="tabcontent">
@@ -333,10 +349,22 @@
         get_vunit_options(),
         get_vivado_options(),
         get_riviera_pro_options(),
-        get_verilator_options()]
+        get_verilator_options(),
+        get_active_hdl_options()]
     }
     return config;
   }
+
+  function get_active_hdl_options(){
+    let options = {
+      'name': 'activehdl',
+      'installation_path': document.getElementById("active_hdl_installation_path").value,
+      'options': {
+      }
+    };
+    return options;
+  }
+
 
   function get_ghdl_options(){
     let options = {
@@ -389,8 +417,9 @@
   function get_vunit_options(){
     let options = {
       'name': 'vunit',
-      'installation_path': document.getElementById("vunit_installation_path").value,
+      'installation_path': '',
       'options': {
+        'simulator': document.getElementById("vunit_simulator").value,
         'options': document.getElementById("vunit_vunit_options").value,
         'add_libraries': document.getElementById("vunit_add_libraries").value,
         'runner': document.getElementById("vunit_runner").value
@@ -412,7 +441,7 @@
 
   function get_riviera_pro_options(){
     let options = {
-      'name': 'riviera_pro',
+      'name': 'rivierapro',
       'installation_path': document.getElementById("riviera_pro_installation_path").value,
       'options': {
         'vlog_options': document.getElementById("riviera_pro_vlog_options").value,
@@ -445,9 +474,7 @@
       }
   });
 
-  function set_config(config_total){
-    let config = config_total.config;
-
+  function set_config(config){
     console.log(config)
 
 
@@ -472,11 +499,14 @@
       else if (config_tool.name === 'vivado'){
         set_vivado_options(config_tool.options, installation_path);
       }
-      else if (config_tool.name === 'riviera_pro'){
+      else if (config_tool.name === 'rivierapro'){
         set_riviera_pro_options(config_tool.options, installation_path);
       }
       else if (config_tool.name === 'verilator'){
         set_verilator_options(config_tool.options, installation_path);
+      }
+      else if (config_tool.name === 'activehdl'){
+        set_active_hdl_options(config_tool.options, installation_path);
       }
     }
   }
@@ -506,7 +536,8 @@
   }
 
   function set_vunit_options(options, installation_path){
-      document.getElementById("vunit_installation_path").value = installation_path;
+      console.log("entra")
+      document.getElementById("vunit_simulator").value = options.simulator;
       document.getElementById("vunit_vunit_options").value = options.options;
       document.getElementById("vunit_add_libraries").value = options.add_libraries;
       document.getElementById("vunit_runner").valu = options.runner;

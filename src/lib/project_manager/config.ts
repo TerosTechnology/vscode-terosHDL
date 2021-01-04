@@ -84,7 +84,7 @@ export class Config {
   }
 
   get_config_tool() {
-    return this.config['config_tool'];
+    return this.config['config_tool'].config;
   }
 
   get_config_of_selected_tool() {

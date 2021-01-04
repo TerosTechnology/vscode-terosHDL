@@ -84,12 +84,13 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.go_to_code', (item) =>
       this.go_to_code(item)
     );
-    vscode.commands.registerCommand('teroshdl_tree_view.refresh_tests', (item) =>
-      this.refresh_tests(item)
+    vscode.commands.registerCommand('teroshdl_tree_view.refresh_tests', () =>
+      this.refresh_tests()
     );
   }
 
   async refresh_tests() {
+    this.last_vunit_results = [];
     this.update_tree();
   }
 
@@ -104,21 +105,48 @@ export class Project_manager {
   }
 
   async run_vunit_test(item) {
-    let test: string[] = [item.label];
+    let tests: string[] = [item.label];
     let gui = false;
-    let selected_project = this.edam_project_manager.selected_project;
-    let prj = this.edam_project_manager.get_project(selected_project);
-    let results = await this.vunit.run_simulation(prj.toplevel_path, test, gui);
-    this.last_vunit_results = results;
-    this.set_results();
+    this.run_vunit_tests(tests, gui);
   }
 
   async run_vunit_test_gui(item) {
-    let test: string[] = [item.label];
+    let tests: string[] = [item.label];
     let gui = true;
+    this.run_vunit_tests(tests, gui);
+  }
+
+  async simulate() {
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === '') {
+      let msg = 'Mark a project to simulate';
+      this.show_export_message(msg);
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    let tool_configuration = this.config_file.get_config_of_selected_tool();
+
+    let edam = {
+      work_path: '',
+      top_level: 'top_level',
+      name: prj.name,
+      files: prj.files,
+      tool_installation_path: tool_configuration.installation_path,
+      tool_name: tool_configuration.name,
+      tool_options: tool_configuration.options
+    };
+
+    this.run_vunit_tests([], false);
+  }
+
+  async run_vunit_tests(tests, gui) {
+    let selected_tool_configuration = this.config_file.get_config_of_selected_tool();
+    let all_tool_configuration = this.config_file.get_config_tool();
+
+    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
     let selected_project = this.edam_project_manager.selected_project;
     let prj = this.edam_project_manager.get_project(selected_project);
-    let results = this.vunit.run_simulation(prj.toplevel_path, test, gui);
+    let results = await this.vunit.run_simulation(python3_path, selected_tool_configuration, all_tool_configuration, prj.toplevel_path, tests, gui);
     this.last_vunit_results = results;
     this.set_results();
   }
@@ -174,6 +202,10 @@ export class Project_manager {
     let project_name = item.project_name;
     let library_name = item.library_name;
     let path = item.path;
+    this.set_top_from_name(project_name, library_name, path);
+  }
+
+  set_top_from_name(project_name, library_name, path) {
     this.edam_project_manager.set_top(project_name, library_name, path);
     this.tree.select_top(project_name, library_name, path);
     this.save_project();
@@ -181,31 +213,6 @@ export class Project_manager {
 
   private show_export_message(msg) {
     vscode.window.showInformationMessage(msg);
-  }
-
-  async simulate() {
-    let selected_project = this.edam_project_manager.selected_project;
-    if (selected_project === '') {
-      let msg = 'Mark a project to simulate';
-      this.show_export_message(msg);
-      return;
-    }
-    let prj = this.edam_project_manager.get_project(selected_project);
-    let tool_configuration = this.config_file.get_config_of_selected_tool();
-
-    let edam = {
-      work_path: '',
-      top_level: 'top_level',
-      name: prj.name,
-      files: prj.files,
-      tool_installation_path: tool_configuration.installation_path,
-      tool_name: tool_configuration.name,
-      tool_options: tool_configuration.options
-    };
-
-    let results = await this.vunit.run_simulation(prj.toplevel_path, [], false);
-    this.last_vunit_results = results;
-    this.set_results();
   }
 
   async config() {
@@ -274,6 +281,9 @@ export class Project_manager {
         for (let i = 0; i < value.length; ++i) {
           this.edam_project_manager.add_file(project_name, value[i].fsPath, false, '', library_name);
           this.update_tree();
+          if (this.edam_project_manager.get_number_of_files_of_project(project_name) === 1) {
+            this.set_top_from_name(project_name, library_name, value[i].fsPath);
+          }
         }
       }
     });
@@ -281,6 +291,10 @@ export class Project_manager {
 
   async select_project(item) {
     let project_name = item.project_name;
+    this.select_project_from_name(project_name);
+  }
+
+  async select_project_from_name(project_name) {
     this.config_file.set_selected_project(project_name);
     this.edam_project_manager.select_project(project_name);
     this.update_tree();
@@ -341,13 +355,15 @@ export class Project_manager {
   }
 
   async get_vunit_test_list() {
+    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+
     let runpy = this.edam_project_manager.get_top_from_selected_project();
     let tests;
     try {
       let runpy_ext = path_lib.extname(runpy);
 
       if (runpy !== undefined) {
-        tests = await this.vunit.get_test_list(runpy);
+        tests = await this.vunit.get_test_list(python3_path, runpy);
       }
       else {
         this.vunit_test_list = [];
@@ -394,6 +410,9 @@ export class Project_manager {
             return;
           }
           this.update_tree();
+          if (this.edam_project_manager.get_number_of_projects() === 1) {
+            this.select_project_from_name(value);
+          }
         }
       });
     }
@@ -407,6 +426,9 @@ export class Project_manager {
         return;
       }
       this.update_tree();
+      if (this.edam_project_manager.get_number_of_projects() === 1) {
+        this.select_project_from_name(Sample_projects.sample_vhdl.name);
+      }
     }
   }
 }
