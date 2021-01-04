@@ -8,6 +8,7 @@ import * as Terminal from './terminal';
 import * as Sample_projects from './sample_projects';
 import * as Vunit from './vunit';
 const path_lib = require('path');
+const fs = require('fs');
 
 export class Project_manager {
 
@@ -18,7 +19,7 @@ export class Project_manager {
   config_file;
   workspace_folder;
   private terminal: Terminal.Terminal;
-  private vunit_test_list: string[] = [];
+  private vunit_test_list: {}[] = [];
   private vunit: Vunit.Vunit = new Vunit.Vunit();
   private last_vunit_results;
 
@@ -83,6 +84,13 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.go_to_code', (item) =>
       this.go_to_code(item)
     );
+    vscode.commands.registerCommand('teroshdl_tree_view.refresh_tests', (item) =>
+      this.refresh_tests(item)
+    );
+  }
+
+  async refresh_tests() {
+    this.update_tree();
   }
 
   async set_default_projects() {
@@ -115,14 +123,41 @@ export class Project_manager {
     this.set_results();
   }
 
+  getline_numberof_char(path, index) {
+    let data = fs.readFileSync(path, "utf8");
+    const lines = data.split('\n');
+    let charsToGo = index;
+    let lineIndex = 0;
+    while (lineIndex < lines.length) {
+      const line = lines[lineIndex];
+      const char = line[charsToGo];
+      if (char) {
+        return { row: lineIndex, col: charsToGo };
+      }
+      charsToGo -= line.length;
+      lineIndex++;
+    }
+    return 'None';
+  }
+
   async go_to_code(item) {
-    let test: string[] = [item.label];
-    let gui = true;
-    let selected_project = this.edam_project_manager.selected_project;
-    let prj = this.edam_project_manager.get_project(selected_project);
-    let results = this.vunit.run_simulation(prj.toplevel_path, test, gui);
-    this.last_vunit_results = results;
-    this.set_results();
+    let location = item.location;
+    let open_path = location.file_name;
+    let position = <{}>this.getline_numberof_char(open_path, location.offset);
+
+    let pos_1 = new vscode.Position(position['row'] - 1, position['col'] - 2 - location.length);
+    let pos_2 = new vscode.Position(position['row'] - 1, position['col'] - 2);
+
+    vscode.workspace.openTextDocument(open_path).then(doc => {
+      vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then(editor => {
+        // Line added - by having a selection at the same position twice, the cursor jumps there
+        editor.selections = [new vscode.Selection(pos_1, pos_2)];
+
+        // And the visible range jumps there too
+        var range = new vscode.Range(pos_1, pos_2);
+        editor.revealRange(range);
+      });
+    });
   }
 
   set_results() {
@@ -194,7 +229,7 @@ export class Project_manager {
   }
 
   async update_tree() {
-    let vunit_test_list = ['Loading tests...'];
+    let vunit_test_list = [{ name: 'Loading tests...', location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
     this.tree.update_super_tree(normalized_prjs, vunit_test_list);
     let edam_projects = this.edam_project_manager.get_edam_projects();
@@ -208,8 +243,8 @@ export class Project_manager {
     this.set_default_tops();
     this.set_results();
 
-    vunit_test_list = await this.get_vunit_test_list();
-    this.tree.update_super_tree(normalized_prjs, vunit_test_list);
+    let vunit_test_list_result = await this.get_vunit_test_list();
+    this.tree.update_super_tree(normalized_prjs, vunit_test_list_result);
 
     if (selected_project !== '') {
       this.tree.select_project(selected_project);
@@ -318,22 +353,29 @@ export class Project_manager {
         this.vunit_test_list = [];
         return [];
       }
-      let tests_vunit: string[] = [];
+      let tests_vunit: {}[] = [];
       for (let i = 0; i < tests.length; i++) {
         const element = tests[i];
-        tests_vunit.push(element.name);
+        tests_vunit.push(element);
       }
 
       if (tests_vunit.length === 0) {
-        tests_vunit = ['Not found.'];
+        let single_test = {
+          name: 'Not found.',
+          location: undefined
+        };
+        tests_vunit = [single_test];
       }
 
       this.vunit_test_list = tests_vunit;
       return tests_vunit;
     }
     catch (e) {
-      this.vunit_test_list = ['Not found.'];
-      return ['Not found.'];
+      let single_test = {
+        name: 'Not found.',
+        location: undefined
+      };
+      return [single_test];
     }
   }
 
@@ -431,7 +473,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     let vunit_test_list_items: Test_item[] = [];
     for (let i = 0; i < vunit_test_list.length; i++) {
       const element = vunit_test_list[i];
-      let item = new Test_item(element);
+      let item = new Test_item(element.name, element.location);
       vunit_test_list_items.push(item);
     }
     this.vunit_test_list_items = vunit_test_list_items;
@@ -516,7 +558,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   update_tree() {
-    this.data = [new TreeItem('TerosHDL Projects', this.projects), new TreeItem('VUnit test list', this.vunit_test_list_items)];
+    this.data = [new TreeItem('TerosHDL Projects', this.projects), new Test_title_item('VUnit test list', this.vunit_test_list_items)];
     this.refresh();
   }
 
@@ -614,6 +656,25 @@ class TreeItem extends vscode.TreeItem {
   }
 }
 
+class Test_title_item extends vscode.TreeItem {
+  children: TreeItem[] | undefined;
+  project_name: string;
+  title: string = '';
+  library_name: string;
+  path: string = '';
+
+  constructor(label: string, children?: TreeItem[]) {
+    super(
+      label,
+      children === undefined ? vscode.TreeItemCollapsibleState.None :
+        vscode.TreeItemCollapsibleState.Expanded);
+    this.project_name = label;
+    this.children = children;
+    this.contextValue = 'test_title';
+    this.library_name = '';
+  }
+}
+
 class Project_item extends vscode.TreeItem {
   children: TreeItem[] | undefined;
   project_name: string;
@@ -703,8 +764,9 @@ class Test_item extends vscode.TreeItem {
   project_name: string;
   title: string;
   path: string;
+  location;
 
-  constructor(label: string, children?: TreeItem[]) {
+  constructor(label: string, location, children?: TreeItem[]) {
     const path = require('path');
     let dirname = path.dirname(label);
     let basename = path.basename(label);
@@ -721,6 +783,7 @@ class Test_item extends vscode.TreeItem {
     this.description = '';
     this.children = children;
     this.contextValue = 'test';
+    this.location = location;
     // let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'verilog.svg');
     // let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'verilog.svg');
     // this.iconPath = {

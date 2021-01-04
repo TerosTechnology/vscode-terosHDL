@@ -499,6 +499,16 @@
 					"command": "teroshdl_tree_view.go_to_code",
 					"when": "view == teroshdl_tree_view && viewItem == test",
 					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.refresh_tests",
+					"when": "view == teroshdl_tree_view && viewItem == test_title",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.simulate",
+					"when": "view == teroshdl_tree_view && viewItem == test_title",
+					"group": "inline"
 				}
 			],
 			"editor/title": [
@@ -536,6 +546,14 @@
 				"icon": {
 					"light": "resources/light/open-file.svg",
 					"dark": "resources/dark/open-file.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.refresh_tests",
+				"title": "Refresh tests",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
 				}
 			},
 			{
