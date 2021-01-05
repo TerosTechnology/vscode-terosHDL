@@ -94,7 +94,12 @@ export class Config {
       let config_selected_tool;
       for (let i = 0; i < all_configs.length; i++) {
         const element = all_configs[i];
-        if (element.name === selected_tool) {
+        let tool_name = '';
+        for (var attributename in element) {
+          tool_name = attributename;
+        }
+
+        if (tool_name === selected_tool) {
           config_selected_tool = element;
         }
       }

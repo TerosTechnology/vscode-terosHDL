@@ -127,13 +127,11 @@ export class Project_manager {
     let tool_configuration = this.config_file.get_config_of_selected_tool();
 
     let edam = {
-      work_path: '',
+      work_directory: '',
       top_level: 'top_level',
       name: prj.name,
       files: prj.files,
-      tool_installation_path: tool_configuration.installation_path,
-      tool_name: tool_configuration.name,
-      tool_options: tool_configuration.options
+      tool_options: tool_configuration
     };
 
     this.run_vunit_tests([], false);
@@ -146,9 +144,13 @@ export class Project_manager {
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
     let selected_project = this.edam_project_manager.selected_project;
     let prj = this.edam_project_manager.get_project(selected_project);
-    let results = await this.vunit.run_simulation(python3_path, selected_tool_configuration, all_tool_configuration, prj.toplevel_path, tests, gui);
+    let results = <[]>await this.vunit.run_simulation(python3_path, selected_tool_configuration, all_tool_configuration, prj.toplevel_path, tests, gui);
     this.last_vunit_results = results;
-    this.set_results();
+    let force_fail_all = false;
+    if (results.length === 0) {
+      force_fail_all = true;
+    }
+    this.set_results(force_fail_all);
   }
 
   getline_numberof_char(path, index) {
@@ -188,8 +190,8 @@ export class Project_manager {
     });
   }
 
-  set_results() {
-    this.tree.set_results(this.last_vunit_results);
+  set_results(force_fail_all) {
+    this.tree.set_results(this.last_vunit_results, force_fail_all);
   }
 
   set_top_from_project(project_name, library_name, path) {
@@ -395,8 +397,14 @@ export class Project_manager {
     }
   }
 
+
+  load_project_from_edam() {
+
+  }
+
+
   async add_project() {
-    const project_add_types = ['Empty project', 'Load project', 'VHDL tutorial'];
+    const project_add_types = ['Empty project', 'Load project from edam', 'VHDL tutorial'];
 
     let picker_value = await vscode.window.showQuickPick(project_add_types,
       { placeHolder: 'Add/load a project.' });
@@ -459,8 +467,12 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.update_tree();
   }
 
-  set_results(results) {
+  set_results(results, force_fail_all) {
     if (results === undefined) {
+      return;
+    }
+    if (force_fail_all === true) {
+      this.set_fail_all_tests();
       return;
     }
     for (let i = 0; i < this.vunit_test_list_items.length; ++i) {
@@ -487,6 +499,19 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
           }
         }
       }
+    }
+    this.update_tree();
+  }
+
+  set_fail_all_tests() {
+    for (let i = 0; i < this.vunit_test_list_items.length; ++i) {
+      const test = this.vunit_test_list_items[i];
+      let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'failed.svg');
+      let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'failed.svg');
+      test.iconPath = {
+        light: path_icon_light,
+        dark: path_icon_dark
+      };
     }
     this.update_tree();
   }

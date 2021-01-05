@@ -357,9 +357,8 @@
 
   function get_active_hdl_options(){
     let options = {
-      'name': 'activehdl',
-      'installation_path': document.getElementById("active_hdl_installation_path").value,
-      'options': {
+      'activehdl': {
+        'installation_path': document.getElementById("active_hdl_installation_path").value
       }
     };
     return options;
@@ -368,9 +367,8 @@
 
   function get_ghdl_options(){
     let options = {
-      'name': 'ghdl',
-      'installation_path': document.getElementById("ghdl_installation_path").value,
-      'options': {
+      'ghdl':{
+        'installation_path': document.getElementById("ghdl_installation_path").value,
         'analize': document.getElementById("ghdl_analize").value,
         'run': document.getElementById("ghdl_run").value
       }
@@ -380,9 +378,8 @@
 
   function get_icarus_options(){
     let options = {
-      'name': 'icarus',
-      'installation_path': document.getElementById("icarus_installation_path").value,
-      'options': {
+      'icarus':{
+        'installation_path': document.getElementById("icarus_installation_path").value,
         'options': document.getElementById("icarus_options").value,
         'timescale': document.getElementById("icarus_timescale").value
       }
@@ -392,9 +389,8 @@
 
   function get_modelsim_options(){
     let options = {
-      'name': 'modelsim',
-      'installation_path': document.getElementById("modelsim_installation_path").value,
-      'options': {
+      'modelsim': {
+        'installation_path': document.getElementById("modelsim_installation_path").value,
         'vlog_options': document.getElementById("modelsim_vlog_options").value,
         'vsim_options': document.getElementById("modelsim_vsim_options").value
       }
@@ -404,9 +400,8 @@
 
   function get_xsim_options(){
     let options = {
-      'name': 'xsim',
-      'installation_path': document.getElementById("xsim_installation_path").value,
-      'options': {
+      'xsim':{
+        'installation_path': document.getElementById("xsim_installation_path").value,
         'xelab_options': document.getElementById("xsim_xelab_options").value,
         'xsim_options': document.getElementById("xsim_xelab_options").value
       }
@@ -416,9 +411,8 @@
 
   function get_vunit_options(){
     let options = {
-      'name': 'vunit',
-      'installation_path': '',
-      'options': {
+      'vunit':{
+        'installation_path': '',
         'simulator': document.getElementById("vunit_simulator").value,
         'options': document.getElementById("vunit_vunit_options").value,
         'add_libraries': document.getElementById("vunit_add_libraries").value,
@@ -430,9 +424,8 @@
 
   function get_vivado_options(){
     let options = {
-      'name': 'vivado',
-      'installation_path': document.getElementById("vivado_installation_path").value,
-      'options': {
+      'vivado':{
+        'installation_path': document.getElementById("vivado_installation_path").value,
         'part': document.getElementById("vivado_part").value
       }
     };
@@ -441,9 +434,8 @@
 
   function get_riviera_pro_options(){
     let options = {
-      'name': 'rivierapro',
-      'installation_path': document.getElementById("riviera_pro_installation_path").value,
-      'options': {
+      'rivierapro':{
+        'installation_path': document.getElementById("riviera_pro_installation_path").value,
         'vlog_options': document.getElementById("riviera_pro_vlog_options").value,
         'vsim_options': document.getElementById("riviera_pro_vsim_options").value
       }
@@ -453,9 +445,8 @@
 
   function get_verilator_options(){
     let options = {
-      'name': 'verilator',
-      'installation_path': document.getElementById("verilator_installation_path").value,
-      'options': {
+      'verilator':{
+        'installation_path': document.getElementById("verilator_installation_path").value,
         'cli_parser': document.getElementById("verilator_cli_parser").value,
         'libs': document.getElementById("verilator_libs").value,
         'mode': document.getElementById("verilator_mode").value,
@@ -475,38 +466,44 @@
   });
 
   function set_config(config){
-    console.log(config)
-
 
     for (let i = 0; i < config.length; i++) {
-      const config_tool = config[i];
-      const installation_path = config_tool.installation_path;
-      if (config_tool.name === 'ghdl'){
-        set_ghdl_options(config_tool.options, installation_path);
+      let element = config[i];
+      let config_tool = '';
+      let options;
+      let installation_path = '';
+      for(var attributename in element){
+        config_tool = attributename;
+        options = element[attributename];
+        installation_path = element[attributename].installation_path;
       }
-      else if (config_tool.name === 'icarus'){
-        set_icarus_options(config_tool.options, installation_path);
+
+      if (config_tool === 'ghdl'){
+        set_ghdl_options(options, installation_path);
       }
-      else if (config_tool.name === 'modelsim'){
-        set_modelsim_options(config_tool.options, installation_path);
+      else if (config_tool === 'icarus'){
+        set_icarus_options(options, installation_path);
       }
-      else if (config_tool.name === 'xsim'){
-        set_xsim_options(config_tool.options, installation_path);
+      else if (config_tool === 'modelsim'){
+        set_modelsim_options(options, installation_path);
       }
-      else if (config_tool.name === 'vunit'){
-        set_vunit_options(config_tool.options, installation_path);
+      else if (config_tool === 'xsim'){
+        set_xsim_options(options, installation_path);
       }
-      else if (config_tool.name === 'vivado'){
-        set_vivado_options(config_tool.options, installation_path);
+      else if (config_tool === 'vunit'){
+        set_vunit_options(options, installation_path);
       }
-      else if (config_tool.name === 'rivierapro'){
-        set_riviera_pro_options(config_tool.options, installation_path);
+      else if (config_tool === 'vivado'){
+        set_vivado_options(options, installation_path);
       }
-      else if (config_tool.name === 'verilator'){
-        set_verilator_options(config_tool.options, installation_path);
+      else if (config_tool === 'rivierapro'){
+        set_riviera_pro_options(options, installation_path);
       }
-      else if (config_tool.name === 'activehdl'){
-        set_active_hdl_options(config_tool.options, installation_path);
+      else if (config_tool === 'verilator'){
+        set_verilator_options(options, installation_path);
+      }
+      else if (config_tool === 'activehdl'){
+        set_active_hdl_options(options, installation_path);
       }
     }
   }
@@ -562,7 +559,6 @@
     document.getElementById("verilator_mode").value = options.mode;
     document.getElementById("verilator_verilator_options").value = options.options;
   }
-
 
 </script>
    
