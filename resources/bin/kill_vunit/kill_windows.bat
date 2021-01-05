@@ -1,0 +1,1 @@
+wssystem("TASKKILL /F /T /PID $args[0]");

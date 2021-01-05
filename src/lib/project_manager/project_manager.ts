@@ -20,10 +20,11 @@ export class Project_manager {
   workspace_folder;
   private terminal: Terminal.Terminal;
   private vunit_test_list: {}[] = [];
-  private vunit: Vunit.Vunit = new Vunit.Vunit();
+  private vunit: Vunit.Vunit;
   private last_vunit_results;
 
   constructor(context: vscode.ExtensionContext) {
+    this.vunit = new Vunit.Vunit(context);
     this.terminal = new Terminal.Terminal(context);
     this.edam_project_manager = new Edam.Edam_project_manager();
     this.config_file = new Config.Config(context.extensionPath);
@@ -87,11 +88,37 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.refresh_tests', () =>
       this.refresh_tests()
     );
+    vscode.commands.registerCommand('teroshdl_tree_view.save_project', (item) =>
+      this.save_project_to_file(item)
+    );
+    vscode.commands.registerCommand('teroshdl_tree_view.stop', () =>
+      this.stop()
+    );
   }
 
   async refresh_tests() {
     this.last_vunit_results = [];
     this.update_tree();
+  }
+
+  async save_project_to_file(item) {
+    let project_name = item.project_name;
+    vscode.window.showSaveDialog({ saveLabel: 'Save project' }).then(value => {
+      if (value !== undefined) {
+        let path = value.fsPath;
+        let prj = this.edam_project_manager.get_project(project_name);
+        let tool_configuration = this.config_file.get_config_of_selected_tool();
+        let edam = {
+          work_directory: '',
+          top_level: 'top_level',
+          name: prj.name,
+          files: prj.files,
+          tool_options: tool_configuration
+        };
+        let edam_str = JSON.stringify(edam);
+        fs.writeFileSync(path, edam_str, 'utf8');
+      }
+    });
   }
 
   async set_default_projects() {
@@ -213,6 +240,10 @@ export class Project_manager {
     this.save_project();
   }
 
+  stop() {
+    this.vunit.stop_test();
+  }
+
   private show_export_message(msg) {
     vscode.window.showInformationMessage(msg);
   }
@@ -250,7 +281,7 @@ export class Project_manager {
     }
 
     this.set_default_tops();
-    this.set_results();
+    this.set_results(false);
 
     let vunit_test_list_result = await this.get_vunit_test_list();
     this.tree.update_super_tree(normalized_prjs, vunit_test_list_result);
@@ -259,7 +290,7 @@ export class Project_manager {
       this.tree.select_project(selected_project);
     }
     this.set_default_tops();
-    this.set_results();
+    this.set_results(false);
   }
 
   set_default_tops() {
@@ -402,9 +433,8 @@ export class Project_manager {
 
   }
 
-
   async add_project() {
-    const project_add_types = ['Empty project', 'Load project from edam', 'VHDL tutorial'];
+    const project_add_types = ['Empty project', 'Load project (EDAM format is supported)', 'VHDL tutorial'];
 
     let picker_value = await vscode.window.showQuickPick(project_add_types,
       { placeHolder: 'Add/load a project.' });
@@ -425,7 +455,16 @@ export class Project_manager {
       });
     }
     else if (picker_value === project_add_types[1]) {
-
+      vscode.window.showOpenDialog({ canSelectMany: true }).then(value => {
+        if (value !== undefined) {
+          for (let i = 0; i < value.length; ++i) {
+            let rawdata = fs.readFileSync(value[i].fsPath);
+            let prj_json = JSON.parse(rawdata);
+            this.edam_project_manager.create_project_from_edam(prj_json);
+          }
+        }
+        this.update_tree();
+      });
     }
     else if (picker_value === project_add_types[2]) {
       let result = this.edam_project_manager.create_project_from_edam(Sample_projects.sample_vhdl);

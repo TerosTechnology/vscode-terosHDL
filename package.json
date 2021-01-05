@@ -40,7 +40,7 @@
 		"viewsWelcome": [
 			{
 				"view": "teroshdl_tree_view",
-				"contents": "No TerosHDL workspace found. After to add the workspace folder you can change it in the tools configuration.\n[Add workspace folder](command:teroshdl_tree_view.add_workspace)"
+				"contents": "No TerosHDL workspace found.\n[Add workspace folder](command:teroshdl_tree_view.add_workspace)"
 			}
 		],
 		"viewsContainers": {
@@ -351,12 +351,12 @@
 					"group": "navigation"
 				},
 				{
-					"command": "teroshdl_tree_view.save_project_sel",
+					"command": "teroshdl_tree_view.simulate",
 					"when": "view == teroshdl_tree_view",
 					"group": "navigation"
 				},
 				{
-					"command": "teroshdl_tree_view.simulate",
+					"command": "teroshdl_tree_view.stop",
 					"when": "view == teroshdl_tree_view",
 					"group": "navigation"
 				},
@@ -545,6 +545,14 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl_tree_view.stop",
+				"title": "Stop tests",
+				"icon": {
+					"light": "resources/light/stop.svg",
+					"dark": "resources/dark/stop.svg"
+				}
+			},
 			{
 				"command": "teroshdl_tree_view.go_to_code",
 				"title": "Go to code",

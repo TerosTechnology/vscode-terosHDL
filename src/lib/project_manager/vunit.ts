@@ -9,8 +9,11 @@ export class Vunit {
   private exp: string = '';
   private more: string = '';
   private folder_sep: string = '';
+  private childp;
+  private context;
 
-  constructor() {
+  constructor(context) {
+    this.context = context;
     this.output_channel = vscode.window.createOutputChannel('TerosHDL');
 
     this.exp = "export ";
@@ -105,7 +108,7 @@ export class Vunit {
     element.output_channel.show();
 
     return new Promise(resolve => {
-      let childp = shell.exec(command, { async: true }, async function (code, stdout, stderr) {
+      this.childp = shell.exec(command, { async: true }, async function (code, stdout, stderr) {
         if (code === 0) {
           let results = await element.get_result(runpy_dirname, tests);
           resolve(results);
@@ -116,11 +119,11 @@ export class Vunit {
         }
       });
 
-      childp.stdout.on('data', function (data) {
+      this.childp.stdout.on('data', function (data) {
         element.output_channel.append(data);
         element.output_channel.show();
       });
-      childp.stderr.on('data', function (data) {
+      this.childp.stderr.on('data', function (data) {
         element.output_channel.append(data);
         element.output_channel.show();
       });
@@ -201,6 +204,27 @@ export class Vunit {
         }
       });
     });
-
   }
+
+  async stop_test() {
+    let path_bin = `${path_lib.sep}resources${path_lib.sep}bin${path_lib.sep}kill_vunit${path_lib.sep}kill.sh`;
+
+    if (this.childp === undefined) {
+      return;
+    }
+    try {
+      var os = require('os');
+      if (os.platform === "win32") {
+        var cmd = "TASKKILL /F /T /PID  " + (this.childp.pid);
+      }
+      else {
+        var path_kill = this.context.asAbsolutePath(path_bin);
+        var cmd = "bash " + path_kill + " " + (this.childp.pid);
+      }
+      shell.exec(cmd, { async: true }, function (error, stdout, stderr) {
+      });
+    }
+    catch (e) { }
+  }
+
 }
