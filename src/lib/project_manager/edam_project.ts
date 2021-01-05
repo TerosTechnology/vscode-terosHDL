@@ -1,9 +1,21 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as Config from './config';
 
+const path_lib = require('path');
+
 export class Edam_project_manager {
   public projects: Edam_project[] = [];
   public selected_project: string = '';
+
+  absolute_project_paths_to_realtive(project_name, path_base) {
+    for (let i = 0; i < this.projects.length; i++) {
+      const prj = this.projects[i];
+      if (prj.name === project_name) {
+        prj.absolute_project_paths_to_relative(path_base);
+        break;
+      }
+    }
+  }
 
   get_number_of_projects() {
     return this.projects.length;
@@ -16,7 +28,6 @@ export class Edam_project_manager {
         return prj.get_number_of_files();
       }
     }
-
   }
 
   get_top_from_selected_project() {
@@ -69,12 +80,13 @@ export class Edam_project_manager {
     let project_name = edam.name;
     let toplevel_library = edam.toplevel_library;
     let toplevel_path = edam.toplevel_path;
+    let relative_path = edam.relative_path;
 
     if (this.check_if_project_exists(project_name) === true) {
       return `The project with name [${project_name}] already exists in the workspace.`;
     }
 
-    this.create_project(project_name);
+    this.create_project(project_name, relative_path);
     let files = edam.files;
 
     for (let i = 0; i < files.length; i++) {
@@ -126,12 +138,12 @@ export class Edam_project_manager {
     this.selected_project = name;
   }
 
-  create_project(name) {
+  create_project(name, relative_path = '') {
     if (this.check_if_project_exists(name) === true) {
       return `The project with name [${name}] already exists in the workspace.`;
     }
 
-    let prj = new Edam_project(name);
+    let prj = new Edam_project(name, relative_path);
     this.projects.push(prj);
     return 0;
   }
@@ -218,10 +230,34 @@ class Edam_project {
   public toplevel_library: string = '';
   //A dictionary of tool-specific options.
   public tool_options;
+  public relative_path: string = '';
 
-  constructor(name: string, tool_options = {}) {
+
+  constructor(name: string, relative_path, tool_options = {}) {
     this.name = name;
     this.tool_options = tool_options;
+    this.relative_path = relative_path;
+  }
+
+  absolute_project_paths_to_relative(base_path) {
+    let base_path_current = '';
+    if (this.relative_path !== '') {
+      base_path_current = `${this.relative_path}${path_lib.sep}`;
+    }
+
+    for (let i = 0; i < this.files.length; i++) {
+      const file = this.files[i];
+      let relative_path = path_lib.relative(base_path, base_path_current + file.name);
+      file.name = relative_path;
+    }
+    this.toplevel_path = path_lib.relative(base_path, base_path_current + this.toplevel_path);
+    this.relative_path = base_path;
+  }
+
+  check_relative_paths() {
+    if (this.relative_path !== '' && this.relative_path !== undefined) {
+      this.absolute_project_paths_to_relative(this.relative_path);
+    }
   }
 
   get_number_of_files() {
@@ -238,7 +274,8 @@ class Edam_project {
       tool_options: {},
       toplevel: '',
       toplevel_path: this.toplevel_path,
-      toplevel_library: this.toplevel_library
+      toplevel_library: this.toplevel_library,
+      relative_path: this.relative_path
     };
     let edam_files: {}[] = [];
     for (let i = 0; i < this.files.length; i++) {
@@ -273,6 +310,7 @@ class Edam_project {
 
       this.add_file(element.name, is_include_file, include_path, logic_name);
     }
+    this.check_relative_paths();
   }
 
   rename_logical_name(name, new_name) {
@@ -284,8 +322,13 @@ class Edam_project {
   }
 
   add_file(name: string, is_include_file: boolean = false, include_path: string = '', logic_name: string = '') {
+    if (this.relative_path !== '' && this.relative_path !== undefined) {
+      name = path_lib.relative(this.relative_path, name);
+    }
+
     let edam_file = new Edam_file(name, is_include_file, include_path, logic_name);
     this.files.push(edam_file);
+    this.check_relative_paths();
   }
 
   delete_file(name: string, logic_name: string) {

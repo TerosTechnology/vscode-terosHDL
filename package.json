@@ -346,11 +346,6 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "teroshdl_tree_view.list_tests",
-					"when": "view == teroshdl_tree_view",
-					"group": "navigation"
-				},
-				{
 					"command": "teroshdl_tree_view.simulate",
 					"when": "view == teroshdl_tree_view",
 					"group": "navigation"

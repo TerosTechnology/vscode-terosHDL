@@ -7,6 +7,7 @@ import * as Config from './config';
 import * as Terminal from './terminal';
 import * as Sample_projects from './sample_projects';
 import * as Vunit from './vunit';
+import { dirname } from 'path';
 const path_lib = require('path');
 const fs = require('fs');
 
@@ -106,9 +107,11 @@ export class Project_manager {
     vscode.window.showSaveDialog({ saveLabel: 'Save project' }).then(value => {
       if (value !== undefined) {
         let path = value.fsPath;
+        this.edam_project_manager.absolute_project_paths_to_realtive(project_name, path_lib.dirname(path));
         let prj = this.edam_project_manager.get_project(project_name);
         let tool_configuration = this.config_file.get_config_of_selected_tool();
         let edam = {
+          relative_path: path_lib.dirname(path),
           work_directory: '',
           top_level: 'top_level',
           name: prj.name,
@@ -117,6 +120,7 @@ export class Project_manager {
         };
         let edam_str = JSON.stringify(edam);
         fs.writeFileSync(path, edam_str, 'utf8');
+        this.update_tree();
       }
     });
   }
@@ -171,7 +175,17 @@ export class Project_manager {
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
     let selected_project = this.edam_project_manager.selected_project;
     let prj = this.edam_project_manager.get_project(selected_project);
-    let results = <[]>await this.vunit.run_simulation(python3_path, selected_tool_configuration, all_tool_configuration, prj.toplevel_path, tests, gui);
+
+    let runpy_path = '';
+    if (prj.relative_path !== '' && prj.relative_path !== undefined) {
+      runpy_path = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
+    }
+    else {
+      runpy_path = prj.toplevel_path;
+    }
+
+    let results = <[]>await this.vunit.run_simulation(python3_path, selected_tool_configuration, all_tool_configuration,
+      runpy_path, tests, gui);
     this.last_vunit_results = results;
     let force_fail_all = false;
     if (results.length === 0) {
@@ -390,9 +404,18 @@ export class Project_manager {
   async get_vunit_test_list() {
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
 
-    let runpy = this.edam_project_manager.get_top_from_selected_project();
     let tests;
     try {
+      let selected_project = this.edam_project_manager.selected_project;
+      let prj = this.edam_project_manager.get_project(selected_project);
+      let runpy = '';
+      if (prj.relative_path !== '' && prj.relative_path !== undefined) {
+        runpy = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
+      }
+      else {
+        runpy = prj.toplevel_path;
+      }
+
       let runpy_ext = path_lib.extname(runpy);
 
       if (runpy !== undefined) {
@@ -490,7 +513,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   vunit_test_list_items: Test_item[] = [];
 
   init_tree() {
-    this.data = [new TreeItem('TerosHDL Projects', []), new TreeItem('VUnit test list', [])];
+    this.data = [new TreeItem('TerosHDL Projects', []), new TreeItem('Test list', [])];
     this.refresh();
   }
 
@@ -644,7 +667,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   update_tree() {
-    this.data = [new TreeItem('TerosHDL Projects', this.projects), new Test_title_item('VUnit test list', this.vunit_test_list_items)];
+    this.data = [new TreeItem('TerosHDL Projects', this.projects), new Test_title_item('Test list', this.vunit_test_list_items)];
     this.refresh();
   }
 

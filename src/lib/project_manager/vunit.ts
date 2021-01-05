@@ -3,6 +3,7 @@ const path_lib = require('path');
 const os = require('os');
 const shell = require('shelljs');
 const fs = require('fs');
+const colibri = require('jsteros');
 
 export class Vunit {
   private output_channel;
@@ -27,7 +28,25 @@ export class Vunit {
     }
   }
 
-  async run_simulation(python3_path, selected_tool_configuration, all_tool_configuration, runpy_path, tests: string[] = [], gui = false) {
+  async get_python3_path(python3_path) {
+    let python_path = '';
+    if (python3_path === '') {
+      python_path = await colibri.Nopy.get_python_exec();
+    }
+    else {
+      python_path = python3_path;
+    }
+
+    if (python_path === undefined || python_path === '') {
+      this.output_channel.append('[Error] Install and configure Python3 in the extension configuration.');
+      this.output_channel.show();
+      return undefined;
+    }
+    return python_path;
+  }
+
+  async run_simulation(python3_path, selected_tool_configuration, all_tool_configuration, runpy_path,
+    tests: string[] = [], gui = false) {
     this.output_channel.clear();
     let options_vunit = selected_tool_configuration['vunit'];
     if (options_vunit === undefined) {
@@ -55,14 +74,25 @@ export class Vunit {
 
     let runpy_dirname = path_lib.dirname(runpy_path);
     let runpy_filename = path_lib.basename(runpy_path);
-    let command = this.get_command(python3_path, runpy_dirname,
+    let command = await this.get_command(python3_path, runpy_dirname,
       runpy_filename, simulator, simulator_install_path, extra_options, gui, false, tests);
+
+    if (command === undefined) {
+      return [];
+    }
+
     let result = await this.run_command(command, runpy_dirname, tests);
     return result;
   }
 
-  get_command(python3_path, runpy_dirname, runpy_filename, simulator,
+  async get_command(python3_path, runpy_dirname, runpy_filename, simulator,
     simulator_install_path, extra_options, gui, list = false, tests: string[] = []) {
+
+    let python3_path_exec = await this.get_python3_path(python3_path);
+    if (python3_path_exec === undefined) {
+      return undefined;
+    }
+
     let tests_cmd = ' ';
     for (let i = 0; i < tests.length; i++) {
       if (i === 0) {
@@ -81,13 +111,14 @@ export class Vunit {
 
     let gui_cmd = '';
     if (gui === true) {
+      extra_options = '';
       gui_cmd = '--gui';
     }
 
     let simulator_config = this.get_simulator_config(simulator, simulator_install_path);
     let go_to_dir = `cd ${runpy_dirname}${this.more}`;
     let vunit_default_options = `--no-color -x teroshdl_out.xml --exit-0 ${gui_cmd} ${list_cmd}`;
-    let command = `${simulator_config}${go_to_dir}${python3_path} ${runpy_filename} ${tests_cmd} ${vunit_default_options}${extra_options}`;
+    let command = `${simulator_config}${go_to_dir}${python3_path_exec} ${runpy_filename} ${tests_cmd} ${vunit_default_options}${extra_options}`;
 
     return command;
   }
@@ -190,7 +221,10 @@ export class Vunit {
     let gui = false;
     let list = true;
 
-    let command = this.get_command(python3_path, runpy_dirname, runpy_filename, simulator, simulator_install_path, extra_options, gui, list);
+    let command = await this.get_command(python3_path, runpy_dirname, runpy_filename, simulator, simulator_install_path, extra_options, gui, list);
+    if (command === undefined) {
+      return [];
+    }
 
     return new Promise(resolve => {
 
