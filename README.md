@@ -159,10 +159,8 @@ This is an experimental feature. You need to install Verible (https://github.com
 
 ## Usage Instructions
 
-1. Open the command palette: `Ctrl+Shift+P` and select **_State machine viewer_**
-   ![alt text](./resources/images/readme/state_machine_viewer_select.png "title")
-2. Your state machines will show in the window.
-   ![alt text](./resources/images/readme/state_machine_viewer_machine.png "title")
+![alt text](./resources/images/readme/state_machine_viewer_machine.gif "title")
+
 
 # 11. State machine designer <a name="id11"></a>
 
