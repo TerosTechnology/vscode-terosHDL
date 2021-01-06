@@ -14,7 +14,7 @@
 12. [Dependencies viewer](#id12)
 13. [Hover to evaluate binary, hexadecimal and octal values](#id13)
 14. [Code snippets and grammar](#id14)
-15. [Beta Verilog/SV netlist viewer](#id15)
+15. [Beta Verilog/SV schematic viewer](#id15)
 16. [Project manager (currently only VUnit supported](#id16)
 16. [Future work](#id17)
 17. [Similar projects](#id18)
@@ -213,9 +213,9 @@ This is an experimental feature. You need to install Verible (https://github.com
 ![alt text](./resources/images/readme/code_snippets.gif "title")
 
 
-# 15. Beta Verilog/SV netlist viewer <a name="id15"></a>
+# 15. Beta Verilog/SV schematic viewer <a name="id15"></a>
 
-![alt text](./resources/images/readme/netlist.gif "title")
+![alt text](./resources/images/readme/schematic_viewer.gif "title")
 
 
 # 16. Project manager (currently only VUnit supported <a name="id16"></a>
