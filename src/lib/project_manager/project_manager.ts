@@ -712,12 +712,10 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   getTreeItem(element: TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
-    console.log("entra");
     return element;
   }
 
   getChildren(element?: TreeItem | undefined): vscode.ProviderResult<TreeItem[]> {
-    console.log("entra2");
     if (element === undefined) {
       return this.data;
     }
