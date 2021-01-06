@@ -368,6 +368,10 @@
 			],
 			"view/item/context": [
 				{
+					"command": "teroshdl_tree_view.open_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source"
+				},
+				{
 					"command": "teroshdl_tree_view.save_project",
 					"when": "view == teroshdl_tree_view && viewItem == project"
 				},
@@ -540,6 +544,10 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl_tree_view.open_file",
+				"title": "Open file"
+			},
 			{
 				"command": "teroshdl_tree_view.stop",
 				"title": "Stop tests",

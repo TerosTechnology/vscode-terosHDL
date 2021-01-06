@@ -69,18 +69,21 @@ export class Edam_project_manager {
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].name === project_name) {
         const prj = this.projects[i];
-        prj.toplevel_path = path;
-        prj.toplevel_library = library;
+        prj.set_top(path, library);
         break;
       }
     }
   }
 
-  create_project_from_edam(edam) {
+  create_project_from_edam(edam, file_path = '') {
     let project_name = edam.name;
     let toplevel_library = edam.toplevel_library;
     let toplevel_path = edam.toplevel_path;
     let relative_path = edam.relative_path;
+    let enable_relative_path = edam.enable_relative_path;
+    if (file_path !== '' && enable_relative_path === true) {
+      relative_path = file_path;
+    }
 
     if (this.check_if_project_exists(project_name) === true) {
       return `The project with name [${project_name}] already exists in the workspace.`;
@@ -91,10 +94,13 @@ export class Edam_project_manager {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      this.add_file(project_name, file.name, file.is_include_file, file.include_path, file.logical_name);
+      this.add_file(project_name, file.name, file.is_include_file, file.include_path, file.logical_name, true);
+      this.set_top(project_name, file.logical_name, file.name);
     }
 
-    this.set_top(project_name, toplevel_library, toplevel_path);
+    if ((toplevel_path !== '' && toplevel_path !== undefined) || (toplevel_library !== '' && toplevel_library !== undefined)) {
+      this.set_top(project_name, toplevel_library, toplevel_path);
+    }
 
     return 0;
   }
@@ -161,7 +167,7 @@ export class Edam_project_manager {
   }
 
   add_file(prj_name: string, name: string, is_include_file: boolean = false,
-    include_path: string = '', logic_name: string = '') {
+    include_path: string = '', logic_name: string = '', force_no_relative = false) {
 
     if (is_include_file === undefined) {
       is_include_file = false;
@@ -177,7 +183,7 @@ export class Edam_project_manager {
 
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].name === prj_name) {
-        this.projects[i].add_file(name, is_include_file, include_path, logic_name);
+        this.projects[i].add_file(name, is_include_file, include_path, logic_name, force_no_relative);
         break;
       }
     }
@@ -231,15 +237,24 @@ class Edam_project {
   //A dictionary of tool-specific options.
   public tool_options;
   public relative_path: string = '';
-
+  public enable_relative_path: boolean = false;
 
   constructor(name: string, relative_path, tool_options = {}) {
     this.name = name;
     this.tool_options = tool_options;
     this.relative_path = relative_path;
+    if (relative_path !== '') {
+      this.enable_relative_path = true;
+    }
+  }
+
+  set_top(path, library) {
+    this.toplevel_path = path;
+    this.toplevel_library = library;
   }
 
   absolute_project_paths_to_relative(base_path) {
+    this.enable_relative_path = true;
     let base_path_current = '';
     if (this.relative_path !== '') {
       base_path_current = `${this.relative_path}${path_lib.sep}`;
@@ -252,6 +267,15 @@ class Edam_project {
     }
     this.toplevel_path = path_lib.relative(base_path, base_path_current + this.toplevel_path);
     this.relative_path = base_path;
+  }
+
+  get_relative_path(path, base_path) {
+    let base_path_current = '';
+    if (this.relative_path !== '') {
+      base_path_current = `${this.relative_path}${path_lib.sep}`;
+    }
+    let relative_path = path_lib.relative(base_path, base_path_current + path);
+    return relative_path;
   }
 
   check_relative_paths() {
@@ -275,6 +299,7 @@ class Edam_project {
       toplevel: '',
       toplevel_path: this.toplevel_path,
       toplevel_library: this.toplevel_library,
+      enable_relative_path: this.enable_relative_path,
       relative_path: this.relative_path
     };
     let edam_files: {}[] = [];
@@ -321,14 +346,13 @@ class Edam_project {
     }
   }
 
-  add_file(name: string, is_include_file: boolean = false, include_path: string = '', logic_name: string = '') {
-    if (this.relative_path !== '' && this.relative_path !== undefined) {
+  add_file(name: string, is_include_file: boolean = false, include_path: string = '', logic_name: string = '', force_no_relative = false) {
+    if (this.relative_path !== '' && this.relative_path !== undefined && force_no_relative === false) {
       name = path_lib.relative(this.relative_path, name);
     }
 
     let edam_file = new Edam_file(name, is_include_file, include_path, logic_name);
     this.files.push(edam_file);
-    this.check_relative_paths();
   }
 
   delete_file(name: string, logic_name: string) {

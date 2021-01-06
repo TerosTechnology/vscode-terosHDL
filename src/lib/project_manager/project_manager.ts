@@ -95,6 +95,35 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.stop', () =>
       this.stop()
     );
+    vscode.commands.registerCommand('teroshdl_tree_view.open_file', (item) =>
+      this.open_file(item)
+    );
+  }
+
+  open_file(item) {
+    let project_name = item.project_name;
+    let path = item.path;
+
+    let prj = this.edam_project_manager.get_project(project_name);
+    let relative_path = prj.relative_path;
+    if (relative_path !== '' && relative_path !== undefined) {
+      path = `${relative_path}${path_lib.sep}${path}`;
+    }
+    try {
+      let pos_1 = new vscode.Position(0, 0);
+      let pos_2 = new vscode.Position(0, 0);
+      vscode.workspace.openTextDocument(path).then(doc => {
+        vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then(editor => {
+          // Line added - by having a selection at the same position twice, the cursor jumps there
+          editor.selections = [new vscode.Selection(pos_1, pos_2)];
+
+          // And the visible range jumps there too
+          var range = new vscode.Range(pos_1, pos_2);
+          editor.revealRange(range);
+        });
+      });
+    }
+    catch (e) { }
   }
 
   async refresh_tests() {
@@ -111,7 +140,7 @@ export class Project_manager {
         let prj = this.edam_project_manager.get_project(project_name);
         let tool_configuration = this.config_file.get_config_of_selected_tool();
         let edam = {
-          relative_path: path_lib.dirname(path),
+          enable_relative_path: true,
           work_directory: '',
           top_level: 'top_level',
           name: prj.name,
@@ -252,6 +281,7 @@ export class Project_manager {
     this.edam_project_manager.set_top(project_name, library_name, path);
     this.tree.select_top(project_name, library_name, path);
     this.save_project();
+    this.update_tree();
   }
 
   stop() {
@@ -470,10 +500,11 @@ export class Project_manager {
             this.show_export_message(result);
             return;
           }
-          this.update_tree();
           if (this.edam_project_manager.get_number_of_projects() === 1) {
             this.select_project_from_name(value);
           }
+          this.update_tree();
+          this.refresh_tests();
         }
       });
     }
@@ -483,7 +514,11 @@ export class Project_manager {
           for (let i = 0; i < value.length; ++i) {
             let rawdata = fs.readFileSync(value[i].fsPath);
             let prj_json = JSON.parse(rawdata);
-            this.edam_project_manager.create_project_from_edam(prj_json);
+            this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(value[i].fsPath));
+            if (this.edam_project_manager.get_number_of_projects() === 1) {
+              let prj_name = this.edam_project_manager.projects[0].name;
+              this.select_project_from_name(prj_name);
+            }
           }
         }
         this.update_tree();
@@ -677,10 +712,12 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   getTreeItem(element: TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+    console.log("entra");
     return element;
   }
 
   getChildren(element?: TreeItem | undefined): vscode.ProviderResult<TreeItem[]> {
+    console.log("entra2");
     if (element === undefined) {
       return this.data;
     }
@@ -863,6 +900,13 @@ class Hdl_item extends vscode.TreeItem {
     this.iconPath = {
       light: path_icon_light,
       dark: path_icon_dark
+    };
+
+    let uri = vscode.Uri.file(label);
+    this.command = {
+      command: "teroshdl_tree_view.open_file",
+      title: "Select Node",
+      arguments: [this]
     };
   }
 }
