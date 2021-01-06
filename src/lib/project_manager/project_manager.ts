@@ -225,7 +225,7 @@ export class Project_manager {
 
   getline_numberof_char(path, index) {
     let data = fs.readFileSync(path, "utf8");
-    const lines = data.split('\n');
+    const lines = data.split(/\r?\n/);
     let charsToGo = index;
     let lineIndex = 0;
     while (lineIndex < lines.length) {
@@ -245,8 +245,28 @@ export class Project_manager {
     let open_path = location.file_name;
     let position = <{}>this.getline_numberof_char(open_path, location.offset);
 
-    let pos_1 = new vscode.Position(position['row'] - 1, position['col'] - 2 - location.length);
-    let pos_2 = new vscode.Position(position['row'] - 1, position['col'] - 2);
+    let data = fs.readFileSync(open_path, "utf8");
+    let row = data.substr(0, location.offset).split(/\r?\n/).length - 1;
+
+    let arr = data.substr(0, location.offset).split(/\r?\n/);
+    let element_arr = arr[arr.length - 1];
+    let col = element_arr.length;
+
+    let col_0 = col;
+    let col_1 = col + location.length;
+
+    if (row < 0) {
+      row = 0;
+    }
+    if (col_0 < 0) {
+      col_0 = 0;
+    }
+    if (col_1 < 0) {
+      col_1 = 0;
+    }
+
+    let pos_1 = new vscode.Position(row, col_0);
+    let pos_2 = new vscode.Position(row, col_1);
 
     vscode.workspace.openTextDocument(open_path).then(doc => {
       vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then(editor => {
@@ -487,7 +507,7 @@ export class Project_manager {
   }
 
   async add_project() {
-    const project_add_types = ['Empty project', 'Load project (EDAM format is supported)', 'VHDL tutorial'];
+    const project_add_types = ['Empty project', 'Load project (EDAM format is supported)'];
 
     let picker_value = await vscode.window.showQuickPick(project_add_types,
       { placeHolder: 'Add/load a project.' });
@@ -524,17 +544,17 @@ export class Project_manager {
         this.update_tree();
       });
     }
-    else if (picker_value === project_add_types[2]) {
-      let result = this.edam_project_manager.create_project_from_edam(Sample_projects.sample_vhdl);
-      if (result !== 0) {
-        this.show_export_message(result);
-        return;
-      }
-      this.update_tree();
-      if (this.edam_project_manager.get_number_of_projects() === 1) {
-        this.select_project_from_name(Sample_projects.sample_vhdl.name);
-      }
-    }
+    // else if (picker_value === project_add_types[2]) {
+    //   let result = this.edam_project_manager.create_project_from_edam(Sample_projects.sample_vhdl);
+    //   if (result !== 0) {
+    //     this.show_export_message(result);
+    //     return;
+    //   }
+    //   this.update_tree();
+    //   if (this.edam_project_manager.get_number_of_projects() === 1) {
+    //     this.select_project_from_name(Sample_projects.sample_vhdl.name);
+    //   }
+    // }
   }
 }
 
@@ -900,7 +920,6 @@ class Hdl_item extends vscode.TreeItem {
       dark: path_icon_dark
     };
 
-    let uri = vscode.Uri.file(label);
     this.command = {
       command: "teroshdl_tree_view.open_file",
       title: "Select Node",
@@ -935,11 +954,10 @@ class Test_item extends vscode.TreeItem {
     this.children = children;
     this.contextValue = 'test';
     this.location = location;
-    // let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'verilog.svg');
-    // let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'verilog.svg');
-    // this.iconPath = {
-    //   light: path_icon_light,
-    //   dark: path_icon_dark
-    // };
+    this.command = {
+      command: "teroshdl_tree_view.go_to_code",
+      title: "Go to test code",
+      arguments: [this]
+    };
   }
 }

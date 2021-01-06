@@ -13,11 +13,9 @@ export class Terminal {
       handleInput: data => writeEmitter.fire(data === '\r' ? '\r\n' : data)
     };
     let terminal = vscode.window.createTerminal({ name: 'TerosHDL console', pty });
-    terminal.sendText("hola");
-    terminal.show(true);
   }
 
   open() {
-    this.terminal.show();
+    // this.terminal.show();
   }
 }

@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const teroshdl_config_filename = 'prj_config.teros';
+const teroshdl_config_filename_default = 'prj_config_default.teros';
 
 export class Config {
   private config_filepath: string = '';
@@ -21,7 +22,11 @@ export class Config {
       this.selected_project = result.selected_project;
     }
     else {
-      this.create_new_file_config(this.config_filepath);
+      let default_confi_path = folder_path + path.sep + teroshdl_config_filename_default;
+      let result = this.read_file_config(default_confi_path);
+      this.config = result.config;
+      this.projects = result.projects;
+      this.selected_project = result.selected_project;
     }
   }
 
