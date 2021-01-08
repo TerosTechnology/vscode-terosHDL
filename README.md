@@ -218,7 +218,7 @@ This is an experimental feature. You need to install Verible (https://github.com
 ![alt text](./resources/images/readme/schematic_viewer.gif "title")
 
 
-# 16. Project manager (currently only VUnit supported <a name="id16"></a>
+# 16. Project manager (currently only VUnit supported) <a name="id16"></a>
 
 For a full description visit the documentation web.
 
@@ -227,8 +227,7 @@ For a full description visit the documentation web.
 
 # 17. Future work <a name="id17"></a>
 
-- Finite State Machine graph.
-- Project manager.
+- Project manager improvements.
 - File tree view.
 - Integrate [triel](https://github.com/TerosTechnology/triel) backend
 
