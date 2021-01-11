@@ -45,6 +45,7 @@ let linter_vhdl;
 let linter_verilog;
 let linter_systemverilog;
 let linter_verilog_style;
+let linter_systemverilog_style;
 let formatter_vhdl;
 let formatter_verilog;
 let documenter;
@@ -148,6 +149,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Check style
     /**************************************************************************/
     linter_verilog_style = new linter.default("verilog", "linter_style", context);
+    linter_systemverilog_style = new linter.default("systemverilog", "linter_style", context);
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/

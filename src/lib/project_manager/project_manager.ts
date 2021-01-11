@@ -133,7 +133,7 @@ export class Project_manager {
 
   async save_project_to_file(item) {
     let project_name = item.project_name;
-    vscode.window.showSaveDialog({ saveLabel: 'Save project' }).then(value => {
+    vscode.window.showSaveDialog({ saveLabel: 'Save project', filters: { 'Edam (.edam)': ['edam'], 'TerosHDL (.trs)': ['trs'] } }).then(value => {
       if (value !== undefined) {
         let path = value.fsPath;
         this.edam_project_manager.absolute_project_paths_to_realtive(project_name, path_lib.dirname(path));
@@ -529,7 +529,12 @@ export class Project_manager {
       });
     }
     else if (picker_value === project_add_types[1]) {
-      vscode.window.showOpenDialog({ canSelectMany: true }).then(value => {
+      vscode.window.showOpenDialog({
+        canSelectMany: true, filters: {
+          'Edam (.edam)': ['edam'],
+          'TerosHDL (.trs)': ['trs']
+        }
+      }).then(value => {
         if (value !== undefined) {
           for (let i = 0; i < value.length; ++i) {
             let rawdata = fs.readFileSync(value[i].fsPath);
