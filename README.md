@@ -16,8 +16,8 @@
 14. [Code snippets and grammar](#id14)
 15. [Beta Verilog/SV schematic viewer](#id15)
 16. [Project manager (currently only VUnit supported](#id16)
-16. [Future work](#id17)
-17. [Similar projects](#id18)
+17. [Future work](#id17)
+18. [Similar projects](#id18)
 
 # 1. Introduction <a name="id1"></a>
 
@@ -229,7 +229,7 @@ For a full description visit the documentation web.
 
 - Project manager improvements.
 - File tree view.
-- Integrate [triel](https://github.com/TerosTechnology/triel) backend
+- Integrate [triel](https://github.com/TerosTechnology/triel)
 
 # 18. Similar projects <a name="id18"></a>
 
