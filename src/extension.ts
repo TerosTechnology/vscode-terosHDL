@@ -24,6 +24,9 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as utils from "./lib/utils/utils";
+//Project manager
+import * as project_manager_lib from "./lib/project_manager/project_manager";
+let project_manager;
 //Extension manager
 import * as extension_manager from "./lib/utils/extension_manager";
 import * as release_notes_webview from "./lib/utils/webview/release_notes";
@@ -42,6 +45,7 @@ let linter_vhdl;
 let linter_verilog;
 let linter_systemverilog;
 let linter_verilog_style;
+let linter_systemverilog_style;
 let formatter_vhdl;
 let formatter_verilog;
 let documenter;
@@ -145,6 +149,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Check style
     /**************************************************************************/
     linter_verilog_style = new linter.default("verilog", "linter_style", context);
+    linter_systemverilog_style = new linter.default("systemverilog", "linter_style", context);
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
@@ -243,6 +248,12 @@ export async function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(hover_numbers_vhdl);
     context.subscriptions.push(hover_numbers_verilog);
+    /**************************************************************************/
+    // Tree view
+    /**************************************************************************/
+    project_manager = new project_manager_lib.Project_manager(context);
+
+
     /**************************************************************************/
     // Test manager
     /**************************************************************************/
@@ -354,6 +365,5 @@ function help_message() {
             }
         });
 }
-
 
 

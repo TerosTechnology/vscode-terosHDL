@@ -18,15 +18,18 @@
 12. [Dependencies viewer](#id12)
 13. [Hover to evaluate binary, hexadecimal and octal values](#id13)
 14. [Code snippets and grammar](#id14)
-15. [Beta Verilog/SV netlist viewer](#id15)
-16. [Future work](#id16)
-17. [Similar projects](#id17)
+15. [Beta Verilog/SV schematic viewer](#id15)
+16. [Project manager (currently only VUnit supported](#id16)
+17. [Future work](#id17)
+18. [Similar projects](#id18)
 
 # 1. Introduction <a name="id1"></a>
 
 Our philosophy is: think in hardware, develop hardware, take advantage of software tools.
 
 The goal of TerosHDL is make the FPGA development easier and reliable. It is a powerful open source IDE.
+
+**Please, visit the documentation web for a full IDE description**: (https://terostechnology.github.io/terosHDLdoc/)
 
 # 2. Thanks <a name="id2"></a>
 
@@ -35,6 +38,7 @@ The goal of TerosHDL is make the FPGA development easier and reliable. It is a p
 - VSG (https://github.com/jeremiah-c-leary/vhdl-style-guide)
 - Wavedrom (https://github.com/wavedrom/wavedrom)
 - VHDL formatter (https://github.com/g2384/VHDLFormatter)
+- Yosys (http://www.clifford.at/yosys/)
 
 # 3. Go to definition <a name="id3"></a>
 
@@ -159,10 +163,8 @@ This is an experimental feature. You need to install Verible (https://github.com
 
 ## Usage Instructions
 
-1. Open the command palette: `Ctrl+Shift+P` and select **_State machine viewer_**
-   ![alt text](./resources/images/readme/state_machine_viewer_select.png "title")
-2. Your state machines will show in the window.
-   ![alt text](./resources/images/readme/state_machine_viewer_machine.png "title")
+![alt text](./resources/images/readme/state_machine_viewer_machine.gif "title")
+
 
 # 11. State machine designer <a name="id11"></a>
 
@@ -215,19 +217,25 @@ This is an experimental feature. You need to install Verible (https://github.com
 ![alt text](./resources/images/readme/code_snippets.gif "title")
 
 
-# 15. Beta Verilog/SV netlist viewer <a name="id15"></a>
+# 15. Beta Verilog/SV schematic viewer <a name="id15"></a>
 
-![alt text](./resources/images/readme/netlist.gif "title")
+![alt text](./resources/images/readme/schematic_viewer.gif "title")
 
 
-# 16. Future work <a name="id16"></a>
+# 16. Project manager (currently only VUnit supported) <a name="id16"></a>
 
-- Finite State Machine graph.
-- Project manager.
+For a full description visit the documentation web.
+
+![alt text](./resources/images/readme/project_manager.gif "title")
+
+
+# 17. Future work <a name="id17"></a>
+
+- Project manager improvements.
 - File tree view.
-- Integrate [triel](https://github.com/TerosTechnology/triel) backend
+- Integrate [triel](https://github.com/TerosTechnology/triel)
 
-# 17. Similar projects <a name="id17"></a>
+# 18. Similar projects <a name="id18"></a>
 
 - Hardware Integrated Development Environment ([hide](https://github.com/drom/atom-hide))
 - [APIO-ide](https://github.com/FPGAwars/apio-ide)

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * {box-sizing: border-box}
+
+  body {
+    font-family: "Lato", sans-serif;
+    background-color: white;
+    color: black;  
+    font-size: 17px;
+  }
+
+  input[type='radio'] {
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    outline:none;
+    box-shadow:0 0 5px 0px gray inset;
+  }
+
+  input[type='radio']:hover {
+    box-shadow:0 0 5px 0px red inset;
+  }
+
+  input[type='radio']:before {
+    content:'';
+    display:block;
+    width:60%;
+    height:60%;
+    margin: 20% auto;    
+    border-radius:50%;    
+  }
+  input[type='radio']:checked:before {
+    background:red;
+  }
+
+  /* Style the tab */
+  .tab {
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 30%;
+    height: 100%;
+  }
+
+  /* Style the buttons inside the tab */
+  .tab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 17px;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    background-color: #ddd;
+  }
+
+  /* Create an active/current "tab button" class */
+  .tab button.active {
+    background-color: #ccc;
+  }
+
+  /* Style the tab content */
+  .tabcontent {
+    float: left;
+    padding: 0px 12px;
+    border: 1px solid #ccc;
+    width: 70%;
+    border-left: none;
+    height: 100%;
+  }
+
+  .input {
+    width: 100%
+  }
+  .button {
+    float: right
+  }
+
+  #button_apply {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+  #button_cancel {
+    outline:none;
+    background-color: #ff5a31; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+</style>
+</head>
+<body>
+
+<h2>Tools configuration</h2>
+<p>Configure your tools.</p>
+
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'general')" id="defaultOpen">General</button>
+  <button class="tablinks" onclick="openCity(event, 'ghdl')">GHDL</button>
+  <button class="tablinks" onclick="openCity(event, 'icarus')">Icarus</button>
+  <button class="tablinks" onclick="openCity(event, 'modelsim')">ModelSim</button>
+  <button class="tablinks" onclick="openCity(event, 'xsim')">Xsim</button>
+  <button class="tablinks" onclick="openCity(event, 'vunit')">VUnit</button>
+  <button class="tablinks" onclick="openCity(event, 'vivado')">Vivado</button>
+  <button class="tablinks" onclick="openCity(event, 'riviera_pro')">Riviera-PRO</button>
+  <button class="tablinks" onclick="openCity(event, 'active_hdl')">Active-HDL</button>
+  <button class="tablinks" onclick="openCity(event, 'verilator')">Verilator</button>
+</div>
+
+
+<div id="general" class="tabcontent">
+  <h3>Select tool</h3>
+  
+  <!-- <input type='radio' tool="ghdl" class='radio-button' name='re' checked>
+  <label class="container">GHDL</label>
+  <br><br>
+
+  <input type='radio' tool="icarus" class='radio-button' name='re'>
+  <label class="container">Icarus</label>
+  <br><br>
+
+  <input type='radio' tool="modelsim" class='radio-button' name='re'>
+  <label class="container">ModelSim</label>
+  <br><br>
+
+  <input type='radio' tool="xsim" class='radio-button' name='re'>
+  <label class="container">Xsim</label>
+  <br><br> -->
+
+  <input type='radio' tool="vunit" class='radio-button' name='re' checked>
+  <label class="container">VUnit</label>
+  <br><br>
+
+  <!-- <input type='radio' tool="vivado" class='radio-button' name='re'>
+  <label class="container">Vivado</label>
+  <br><br>
+
+  <input type='radio' tool="riviera_pro" class='radio-button' name='re'>
+  <label class="container">Riviera-PRO</label>
+  <br><br>
+
+  <input type='radio' tool="verilator" class='radio-button' name='re'>
+  <label class="container">Verilator</label>
+  <br><br> -->
+</div>
+
+<div id="ghdl" class="tabcontent">
+  <h3>GHDL</h3>
+  
+  <label>GHDL installation path.</label><br><br>
+  <input class="input" id="ghdl_installation_path" type="text"><br><br>
+  
+  <label>Analize options. Extra options used for the GHDL analyze stage (ghdl -a).</label><br><br>
+  <input class="input" id="ghdl_analize" type="text"><br><br>
+  
+  <label>Run options. Extra options used when running GHDL simulations (ghdl -r).</label><br><br>
+  <input class="input" id="ghdl_run" type="text"><br><br>
+</div>
+
+<div id="icarus" class="tabcontent">
+  <h3>Icarus</h3>
+  <label>Icarus installation path.</label><br><br>
+  <input class="input" id="icarus_installation_path" type="text"><br><br>
+  
+  <label>Icarus options. Extra options for compilation with iverilog.</label><br><br>
+  <input class="input" id="icarus_options" type="text"><br><br>
+  
+  <label>Timescale. Default (Verilog) timescale to use before user sets one explicitly.</label><br><br>
+  <input class="input" id="icarus_timescale" type="text"><br><br>
+</div>
+
+<div id="modelsim" class="tabcontent">
+  <h3>ModelSim</h3>
+  <label>ModelSim installation path.</label><br><br>
+  <input id="modelsim_installation_path" type="text"><br><br>
+  
+  <label>VLOG. Extra options for each Verilog file compiled with vlog.</label><br><br>
+  <input id="modelsim_vlog_options" type="text"><br><br>
+  
+  <label>VSIM options. Extra options for running the simulation with vsim.</label><br><br>
+  <input id="modelsim_vsim_options" type="text"><br><br>
+</div>
+
+<div id="xsim" class="tabcontent">
+  <h3>Xsim</h3>
+  <label>Xsim installation path.</label><br><br>
+  <input class="input" id="xsim_installation_path" type="text"><br><br>
+  
+  <label>xelab options. Extra options for compilation with xelab.</label><br><br>
+  <input class="input" id="xsim_xelab_options" type="text"><br><br>
+  
+  <label>Xsim options. Extra options for running simulation with with xsim.</label><br><br>
+  <input class="input" id="xsim_xsim_options" type="text"><br><br>
+</div>
+
+<div id="vunit" class="tabcontent">
+  <h3>VUnit</h3>
+  <label>Configure your Python3 installation path in the extension configuration.</label><br><br>
+  <!-- <input class="input" id="vunit_installation_path" type="text"><br><br> -->
+  
+  <label>VUnit simulator:</label><br><br>
+  <select id="vunit_simulator" name="select">
+    <option value="rivierapro">Aldec Riviera-PRO</option>
+    <option value="activehdl">Aldec Active-HDL</option>
+    <option value="ghdl" selected>GHDL</option>
+    <option value="modelsim">Mentor Graphics ModelSim/Questa</option>
+    <option value="xsim">XSIM (Not supported in official VUnit)</option>
+  </select><br><br>
+
+  <label>VUnit options. Extra options for the VUnit test runner.</label><br><br>
+  <input class="input" id="vunit_vunit_options" type="text"><br><br>
+  
+  <label>Add libraries. A list of framework libraries to add. Allowed values include “array_util”, “com”, “json4hdl”, “osvvm”, “random”, “verification_components”.</label><br><br>
+  <input class="input" id="vunit_add_libraries" type="text"><br><br>
+  
+  <label>VUnit runner. Name of the Python file exporting a VUnitRunner class (must derive from edalize.vunit_hooks.VUnitHooks) that is used to configure and execute test. This allows very customized test control via VUnit’s Python-interfaces.</label><br><br>
+  <input class="input" id="vunit_runner" type="text"><br><br>
+</div>
+
+<div id="vivado" class="tabcontent">
+  <h3>Vivado</h3>
+  <label>Vivado installation path.</label><br><br>
+  <input class="input" id="vivado_installation_path" type="text"><br><br>
+  
+  <label>Part. Device identifier. e.g. xc7a35tcsg324-1.</label><br><br>
+  <input class="input" id="vivado_part" type="text"><br><br>
+</div>
+
+<div id="riviera_pro" class="tabcontent">
+  <h3>Riviera-PRO</h3>
+  <label>Riviera-PRO installation path.</label><br><br>
+  <input class="input" id="riviera_pro_installation_path" type="text"><br><br>
+  
+  <label>VLOG options. Extra options for each Verilog file compiled with vlog.</label><br><br>
+  <input class="input" id="riviera_pro_vlog_options" type="text"><br><br>
+  
+  <label>VSIM options. Extra options for running the simulation with vsim.</label><br><br>
+  <input class="input" id="riviera_pro_vsim_options" type="text"><br><br>
+</div>
+
+<div id="active_hdl" class="tabcontent">
+  <h3>Active-HDL</h3>
+  <label>Active-HDL installation path.</label><br><br>
+  <input class="input" id="active_hdl_installation_path" type="text"><br><br>
+</div>
+
+<div id="verilator" class="tabcontent">
+  <h3>Verilator</h3>
+  <label>Riviera-PRO installation path.</label><br><br>
+  <input class="input" id="verilator_installation_path" type="text"><br><br>
+  
+  <label>CLI parser. If cli_parser is set to managed, Edalize will parse all command-line options. Otherwise, they are sent directly to the compiled simulation model..</label><br><br>
+  <input class="input" id="verilator_cli_parser" type="text"><br><br>
+  
+  <label>Libs. Extra options to be passed as -LDFLAGS when linking the C++ testbench.</label><br><br>
+  <input class="input" id="verilator_libs" type="text"><br><br>
+  
+  <label>Mode. cc runs Verilator in regular C++ mode. sc runs in SystemC mode. lint-only only performs linting on the Verilog code.</label><br><br>
+  <input class="input" id="verilator_mode" type="text"><br><br>
+  
+  <label>Verilator options. Extra options to be passed when verilating model.</label><br><br>
+  <input class="input" id="verilator_verilator_options" type="text"><br><br>
+</div>
+
+ <button id="button_cancel" class="button" type="button" onclick="close_panel(event)">Cancel</button> 
+ <button id="button_apply" class="button" type="button" onclick="send_config_and_close(event)">Apply and close</button> 
+
+
+<script>
+  const vscode = acquireVsCodeApi();
+
+  function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  // Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+
+  
+  function send_config_and_close(){
+    let config = get_config();
+
+    vscode.postMessage({
+        command: 'set_config',
+        config : config
+    });
+  }
+
+  function close_panel(){
+    vscode.postMessage({
+        command: 'close'
+    });
+  }
+
+  function get_config(){
+    let all_radios = document.getElementsByName('re');
+    let selected_tool = '';
+    for(i = 0; i < all_radios.length; i++){
+      if(all_radios[i].checked === true){
+        selected_tool = all_radios[i].getAttribute('tool');
+      }
+    }
+
+    let config = {
+      'selected_tool':selected_tool,
+      'config': 
+        [get_ghdl_options(),
+        get_icarus_options(),
+        get_modelsim_options(),
+        get_xsim_options(),
+        get_vunit_options(),
+        get_vivado_options(),
+        get_riviera_pro_options(),
+        get_verilator_options(),
+        get_active_hdl_options()]
+    }
+    return config;
+  }
+
+  function get_active_hdl_options(){
+    let options = {
+      'activehdl': {
+        'installation_path': document.getElementById("active_hdl_installation_path").value
+      }
+    };
+    return options;
+  }
+
+
+  function get_ghdl_options(){
+    let options = {
+      'ghdl':{
+        'installation_path': document.getElementById("ghdl_installation_path").value,
+        'analize': document.getElementById("ghdl_analize").value,
+        'run': document.getElementById("ghdl_run").value
+      }
+    };
+    return options;
+  }
+
+  function get_icarus_options(){
+    let options = {
+      'icarus':{
+        'installation_path': document.getElementById("icarus_installation_path").value,
+        'options': document.getElementById("icarus_options").value,
+        'timescale': document.getElementById("icarus_timescale").value
+      }
+    };
+    return options;
+  }
+
+  function get_modelsim_options(){
+    let options = {
+      'modelsim': {
+        'installation_path': document.getElementById("modelsim_installation_path").value,
+        'vlog_options': document.getElementById("modelsim_vlog_options").value,
+        'vsim_options': document.getElementById("modelsim_vsim_options").value
+      }
+    };
+    return options;
+  }
+
+  function get_xsim_options(){
+    let options = {
+      'xsim':{
+        'installation_path': document.getElementById("xsim_installation_path").value,
+        'xelab_options': document.getElementById("xsim_xelab_options").value,
+        'xsim_options': document.getElementById("xsim_xelab_options").value
+      }
+    };
+    return options;
+  }
+
+  function get_vunit_options(){
+    let options = {
+      'vunit':{
+        'installation_path': '',
+        'simulator': document.getElementById("vunit_simulator").value,
+        'options': document.getElementById("vunit_vunit_options").value,
+        'add_libraries': document.getElementById("vunit_add_libraries").value,
+        'runner': document.getElementById("vunit_runner").value
+      }
+    };
+    return options;
+  }
+
+  function get_vivado_options(){
+    let options = {
+      'vivado':{
+        'installation_path': document.getElementById("vivado_installation_path").value,
+        'part': document.getElementById("vivado_part").value
+      }
+    };
+    return options;
+  }
+
+  function get_riviera_pro_options(){
+    let options = {
+      'rivierapro':{
+        'installation_path': document.getElementById("riviera_pro_installation_path").value,
+        'vlog_options': document.getElementById("riviera_pro_vlog_options").value,
+        'vsim_options': document.getElementById("riviera_pro_vsim_options").value
+      }
+    };
+    return options;
+  }
+
+  function get_verilator_options(){
+    let options = {
+      'verilator':{
+        'installation_path': document.getElementById("verilator_installation_path").value,
+        'cli_parser': document.getElementById("verilator_cli_parser").value,
+        'libs': document.getElementById("verilator_libs").value,
+        'mode': document.getElementById("verilator_mode").value,
+        'options': document.getElementById("verilator_verilator_options").value
+      }
+    };
+    return options;
+  }
+
+  window.addEventListener('message', event => {
+      const message = event.data; 
+      switch (message.command) {
+          case 'set_config':
+            set_config(message.config);
+            break;
+      }
+  });
+
+  function set_config(config){
+
+    for (let i = 0; i < config.length; i++) {
+      let element = config[i];
+      let config_tool = '';
+      let options;
+      let installation_path = '';
+      for(var attributename in element){
+        config_tool = attributename;
+        options = element[attributename];
+        installation_path = element[attributename].installation_path;
+      }
+
+      if (config_tool === 'ghdl'){
+        set_ghdl_options(options, installation_path);
+      }
+      else if (config_tool === 'icarus'){
+        set_icarus_options(options, installation_path);
+      }
+      else if (config_tool === 'modelsim'){
+        set_modelsim_options(options, installation_path);
+      }
+      else if (config_tool === 'xsim'){
+        set_xsim_options(options, installation_path);
+      }
+      else if (config_tool === 'vunit'){
+        set_vunit_options(options, installation_path);
+      }
+      else if (config_tool === 'vivado'){
+        set_vivado_options(options, installation_path);
+      }
+      else if (config_tool === 'rivierapro'){
+        set_riviera_pro_options(options, installation_path);
+      }
+      else if (config_tool === 'verilator'){
+        set_verilator_options(options, installation_path);
+      }
+      else if (config_tool === 'activehdl'){
+        set_active_hdl_options(options, installation_path);
+      }
+    }
+  }
+
+  function set_ghdl_options(options, installation_path){
+    document.getElementById("ghdl_installation_path").value = installation_path;
+    document.getElementById("ghdl_analize").value = options.analize;
+    document.getElementById("ghdl_run").value = options.run;
+  }
+
+  function set_icarus_options(options, installation_path){
+    document.getElementById("icarus_installation_path").value = installation_path;
+    document.getElementById("icarus_options").value = options.options;
+    document.getElementById("icarus_timescale").value = options.timescale;
+  }
+
+  function set_modelsim_options(options, installation_path){
+    document.getElementById("modelsim_installation_path").value = installation_path;
+    document.getElementById("modelsim_vlog_options").value = options.vlog_options;
+    document.getElementById("modelsim_vsim_options").value = options.vsim_options;
+  }
+
+  function set_xsim_options(options, installation_path){
+    document.getElementById("xsim_installation_path").value = installation_path;
+    document.getElementById("xsim_xelab_options").value = options.xelab_options;
+    document.getElementById("xsim_xelab_options").value = options.xsim_options;
+  }
+
+  function set_vunit_options(options, installation_path){
+      console.log("entra")
+      document.getElementById("vunit_simulator").value = options.simulator;
+      document.getElementById("vunit_vunit_options").value = options.options;
+      document.getElementById("vunit_add_libraries").value = options.add_libraries;
+      document.getElementById("vunit_runner").valu = options.runner;
+  }
+
+  function set_vivado_options(options, installation_path){
+    document.getElementById("vivado_installation_path").value = installation_path;
+    document.getElementById("vivado_part").value = options.part;
+
+  }
+
+  function set_riviera_pro_options(options, installation_path){
+    document.getElementById("riviera_pro_installation_path").value = installation_path;
+    document.getElementById("riviera_pro_vlog_options").value = options.vlog_options;
+    document.getElementById("riviera_pro_vsim_options").value = options.vsim_options;
+  }
+
+  function set_verilator_options(options, installation_path){
+    document.getElementById("verilator_installation_path").value = installation_path;
+    document.getElementById("verilator_cli_parser").value = options.cli_parser;
+    document.getElementById("verilator_libs").value = options.libs;
+    document.getElementById("verilator_mode").value = options.mode;
+    document.getElementById("verilator_verilator_options").value = options.options;
+  }
+
+</script>
+   
+</body>
+</html> 

@@ -3,7 +3,7 @@
 	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
 	"description": "VHDL and Verilog/SV IDE.",
-	"version": "0.1.0",
+	"version": "0.1.2",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
@@ -37,6 +37,29 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"viewsWelcome": [
+			{
+				"view": "teroshdl_tree_view",
+				"contents": "No TerosHDL workspace found.\n[Add workspace folder](command:teroshdl_tree_view.add_workspace)"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "teroshdl_tree_view",
+					"title": "TerosHDL",
+					"icon": "resources/images/teros_logo.svg"
+				}
+			]
+		},
+		"views": {
+			"teroshdl_tree_view": [
+				{
+					"id": "teroshdl_tree_view",
+					"name": "teroshdl_tree_view"
+				}
+			]
+		},
 		"grammars": [
 			{
 				"language": "vhdl",
@@ -321,6 +344,177 @@
 			}
 		},
 		"menus": {
+			"view/title": [
+				{
+					"command": "teroshdl_tree_view.simulate",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				},
+				{
+					"command": "teroshdl_tree_view.stop",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				},
+				{
+					"command": "teroshdl_tree_view.add_project",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				},
+				{
+					"command": "teroshdl_tree_view.config",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "teroshdl_tree_view.open_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source"
+				},
+				{
+					"command": "teroshdl_tree_view.save_project",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.save_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.rename_project",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.rename_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.rename_library",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library"
+				},
+				{
+					"command": "teroshdl_tree_view.rename_library",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.select_project",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.select_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_project",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_library",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library"
+				},
+				{
+					"command": "teroshdl_tree_view.delete_library",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_library",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_library",
+					"when": "view == teroshdl_tree_view && viewItem == project"
+				},
+				{
+					"command": "teroshdl_tree_view.add_library",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources"
+				},
+				{
+					"command": "teroshdl_tree_view.add_file",
+					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.set_top",
+					"when": "view == teroshdl_tree_view && viewItem == hdl_source",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.run_vunit_test",
+					"when": "view == teroshdl_tree_view && viewItem == test",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.run_vunit_test_gui",
+					"when": "view == teroshdl_tree_view && viewItem == test",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.go_to_code",
+					"when": "view == teroshdl_tree_view && viewItem == test",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.refresh_tests",
+					"when": "view == teroshdl_tree_view && viewItem == test_title",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.simulate",
+					"when": "view == teroshdl_tree_view && viewItem == test_title",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.add_project",
+					"when": "view == teroshdl_tree_view && viewItem == teroshdl",
+					"group": "inline"
+				}
+			],
 			"editor/title": [
 				{
 					"when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
@@ -350,6 +544,170 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "teroshdl_tree_view.open_file",
+				"title": "Open file"
+			},
+			{
+				"command": "teroshdl_tree_view.stop",
+				"title": "Stop tests",
+				"icon": {
+					"light": "resources/light/stop.svg",
+					"dark": "resources/dark/stop.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.go_to_code",
+				"title": "Go to code",
+				"icon": {
+					"light": "resources/light/open-file.svg",
+					"dark": "resources/dark/open-file.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.refresh_tests",
+				"title": "Refresh tests",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.run_vunit_test",
+				"title": "Run VUnit test",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.run_vunit_test_gui",
+				"title": "Run VUnit test in GUI",
+				"icon": {
+					"light": "resources/light/debug.svg",
+					"dark": "resources/dark/debug.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.list_tests",
+				"title": "Show VUnit tests",
+				"icon": {
+					"light": "resources/light/list-ordered.svg",
+					"dark": "resources/dark/list-ordered.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.save_project_sel",
+				"title": "Save selected project",
+				"icon": {
+					"light": "resources/light/save.svg",
+					"dark": "resources/dark/save.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.set_top",
+				"title": "Set as top",
+				"icon": {
+					"light": "resources/light/check.svg",
+					"dark": "resources/dark/check.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.save_project",
+				"title": "Save project",
+				"icon": {
+					"light": "resources/light/save.svg",
+					"dark": "resources/dark/save.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.rename_project",
+				"title": "Rename project",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.rename_library",
+				"title": "Rename library",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.add_library",
+				"title": "Add library",
+				"icon": {
+					"light": "resources/light/library.svg",
+					"dark": "resources/dark/library.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.select_project",
+				"title": "Select project",
+				"icon": {
+					"light": "resources/light/check.svg",
+					"dark": "resources/dark/check.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.simulate",
+				"title": "Start simulation",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.config",
+				"title": "Tools configuration",
+				"icon": {
+					"light": "resources/light/settings-gear.svg",
+					"dark": "resources/dark/settings-gear.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.add_project",
+				"title": "Add/load project",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.add_file",
+				"title": "Add file",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.delete_project",
+				"title": "Delete project",
+				"icon": {
+					"light": "resources/light/remove.svg",
+					"dark": "resources/dark/remove.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.delete_file",
+				"title": "Delete file",
+				"icon": {
+					"light": "resources/light/remove.svg",
+					"dark": "resources/dark/remove.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.delete_library",
+				"title": "Delete library",
+				"icon": {
+					"light": "resources/light/remove.svg",
+					"dark": "resources/dark/remove.svg"
+				}
+			},
 			{
 				"command": "teroshdl.dependencies.viewer",
 				"title": "Open dependencies viewer"
@@ -491,6 +849,8 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
+		"xml2js": "0.4.23",
+		"shelljs": "^0.8.3",
 		"temp": "^0.9.0",
 		"jsteros": "file:../colibri",
 		"vscode-test-adapter-api": "^1.7.0",

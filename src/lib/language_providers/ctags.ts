@@ -186,13 +186,13 @@ export class Ctags {
         });
     }
 
-    parseTagLine(line: string): Symbol | undefined {
+    parseTagLine(line: string): Symbol[] | undefined {
         try {
             let name, type, pattern, lineNoStr, parentScope, parentType: string;
             let scope: string[];
             let lineNo: number;
             let parts: string[] = line.split('\t');
-            name = parts[0];
+            let names = parts[0].split(',');
             // pattern = parts[2];
             type = parts[3];
             if (parts.length === 5) {
@@ -206,7 +206,16 @@ export class Ctags {
             }
             lineNoStr = parts[2];
             lineNo = Number(lineNoStr.slice(0, -2)) - 1;
-            return new Symbol(name, type, pattern, lineNo, parentScope, parentType, lineNo, false);
+
+            let symbols: Symbol[] = [];
+            for (let i = 0; i < names.length; i++) {
+                const name_i = names[i].trim();
+                if (name_i !== '') {
+                    let symbol = new Symbol(name_i, type, pattern, lineNo, parentScope, parentType, lineNo, false);
+                    symbols.push(symbol);
+                }
+            }
+            return symbols;
         }
         catch (e) {
             // console.log(e);
@@ -229,7 +238,8 @@ export class Ctags {
                 if (line !== '') {
                     let symbol = this.parseTagLine(line);
                     if (symbol !== undefined) {
-                        this.symbols.push(<Symbol>symbol);
+                        this.symbols = this.symbols.concat(<Symbol[]>symbol);
+                        // this.symbols.push(<Symbol>symbol);
                     }
                 }
             });
