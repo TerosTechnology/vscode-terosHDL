@@ -21,7 +21,7 @@ export class Vunit {
     this.more = ";";
     this.folder_sep = "/";
 
-    if (os.platform === "win32") {
+    if (os.platform() === "win32") {
       this.exp = "SET ";
       this.more = "&&";
       this.folder_sep = "\\";
