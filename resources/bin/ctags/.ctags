@@ -4,7 +4,9 @@
 --regex-vhdl=/^[ \t]*entity[ \t]+([^ ]+) is/\1/e,entity/
 --regex-vhdl=/^[ \t]*signal[ \t]*([^:]+)/\1/s,signal/
 --regex-vhdl=/^[ \t]*type[ \t]*([^:]+)/\1/t,typedef/
+--regex-vhdl=/^[ \t]*alias[ \t]*([^:]+)/\1/a,alias/
 --regex-vhdl=/^[ \t]*constant[ \t]*([^:]+)/\1/c,constant/
+--regex-vhdl=/^[ \t]*variable[ \t]*([^:]+)/\1/v,variable/
 --regex-vhdl=/^[ \t]*([^ \t:]+)[ \t]*:[ \t]*process[ \t]*\(/\1/p,process/
 --regex-vhdl=/^[ \t]*([^ ]+)[ \t]*:[ \t]*(in|out|inout)/\1/o,port/i
 --regex-vhdl=/^[ \t]*function[ \t]+([a-z0-9_]+)/\1/f,function/i

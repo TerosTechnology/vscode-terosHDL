@@ -99,6 +99,7 @@ export class Symbol {
             case 'port': return SymbolKind.Boolean;
             case 'register': return SymbolKind.Variable;
             case 'signal': return SymbolKind.Variable; //VHDL
+            case 'variable': return SymbolKind.Variable; //VHDL
             case 'function': return SymbolKind.Function; //VHDL
             case 'task': return SymbolKind.Function;
             case 'block': return SymbolKind.Module;
@@ -114,6 +115,7 @@ export class Symbol {
             case 'prototype': return SymbolKind.Function;
             case 'property': return SymbolKind.Property;
             case 'struct': return SymbolKind.Struct;
+            case 'alias': return SymbolKind.TypeParameter; //VHDL
             case 'typedef': return SymbolKind.TypeParameter;
             default: return SymbolKind.Variable;
         }

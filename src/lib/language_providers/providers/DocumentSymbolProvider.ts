@@ -25,7 +25,7 @@ import {
     DocumentSymbol, window, commands, workspace, ExtensionContext
 } from 'vscode';
 import { Ctags, CtagsManager, Symbol } from '../ctags';
-import { Logger, Log_Severity } from '../Logger'
+import { Logger, Log_Severity } from '../Logger';
 
 export default class VerilogDocumentSymbolProvider implements DocumentSymbolProvider {
 
@@ -139,14 +139,35 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
     // Build heiarchial DocumentSymbol[] from linear symbolsList[] using start and end position
     // TODO: Use parentscope/parenttype of symbol to construct heirarchial DocumentSymbol []
     buildDocumentSymbolList(symbolsList: Symbol[]): DocumentSymbol[] {
+
+        function is_in_list(list, value) {
+            for (let i = 0; i < list.length; i++) {
+                const element = list[i];
+                if (element.name === value.name && element.type === value.type
+                    && element.startPosition.line === value.startPosition.line && element.endPosition.line === value.endPosition.line) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        let symbols_list_unique: Symbol[] = [];
+
+        for (let i = 0; i < symbolsList.length; i++) {
+            const element = symbolsList[i];
+            let is_here = is_in_list(symbols_list_unique, element);
+            if (is_here === false) {
+                symbols_list_unique.push(element);
+            }
+        }
+
         let list: DocumentSymbol[] = [];
-        symbolsList = symbolsList.sort((a, b): number => {
+        symbols_list_unique = symbols_list_unique.sort((a, b): number => {
             if (a.startPosition.isBefore(b.startPosition)) { return -1; };
             if (a.startPosition.isAfter(b.startPosition)) { return 1; };
             return 0;
         });
         // Add each of the symbols in order
-        for (let i of symbolsList) {
+        for (let i of symbols_list_unique) {
             if (i === undefined) {
                 break;
             }

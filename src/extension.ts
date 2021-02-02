@@ -61,13 +61,7 @@ let netlist_viewer_manager: netlist_viewer.default;
 // State machine designer
 import * as state_machine_designer_t from "./lib/state_machine_designer/state_machine_designer";
 let state_machine_designer_manager;
-// Test Manager
-import { VUnitAdapter } from './lib/tester/controller';
-import { TestHub, testExplorerExtensionId } from 'vscode-test-adapter-api';
-import { Log, TestAdapterRegistrar } from 'vscode-test-adapter-util';
 
-let testHub: TestHub | undefined;
-let controller: VUnitAdapter | undefined;
 // Language providers
 import VerilogDocumentSymbolProvider from "./lib/language_providers/providers/DocumentSymbolProvider";
 import VerilogHoverProvider from "./lib/language_providers/providers/HoverProvider";
@@ -252,36 +246,6 @@ export async function activate(context: vscode.ExtensionContext) {
     // Tree view
     /**************************************************************************/
     project_manager = new project_manager_lib.Project_manager(context);
-
-
-    /**************************************************************************/
-    // Test manager
-    /**************************************************************************/
-    // get the Test Explorer extension
-    const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
-    const workDir = path.join(context.globalStoragePath, 'workdir');
-    fs.mkdirSync(workDir, { recursive: true });
-    const log = new Log('vunit', workspaceFolder, 'VUnit Explorer Log');
-    context.subscriptions.push(log);
-    // get the Test Explorer extension
-    const testExplorerExtension = vscode.extensions.getExtension<TestHub>(
-        testExplorerExtensionId
-    );
-    if (log.enabled) {
-        log.info(`Test Explorer ${testExplorerExtension ? '' : 'not '}found`);
-    }
-    if (testExplorerExtension) {
-        const testHub = testExplorerExtension.exports;
-
-        context.subscriptions.push(
-            new TestAdapterRegistrar(
-                testHub,
-                (workspaceFolder) =>
-                    new VUnitAdapter(workspaceFolder, workDir, log),
-                log
-            )
-        );
-    }
 }
 
 // this method is called when your extension is deactivated

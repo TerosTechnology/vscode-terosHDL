@@ -852,13 +852,8 @@
 		"xml2js": "0.4.23",
 		"shelljs": "^0.8.3",
 		"temp": "^0.9.0",
-		"jsteros": "file:../colibri",
-		"vscode-test-adapter-api": "^1.7.0",
-		"vscode-test-adapter-util": "^0.7.0"
+		"jsteros": "file:../colibri"
 	},
-	"extensionDependencies": [
-		"hbenl.vscode-test-explorer"
-	],
 	"devDependencies": {
 		"@types/vscode": "^1.45.0",
 		"@types/glob": "^7.1.1",
