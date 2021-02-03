@@ -21,11 +21,12 @@ jobs:
           cd vscode-terosHDL
           npm install
           cd node_modules/jsteros/python_modules
-          cp Python33 Python34 -r
-          cp Python33 Python35 -r
-          cp Python33 Python36 -r
-          cp Python33 Python37 -r
-          cp Python33 Python38 -r
+          mkdir Python33 -p
+          mkdir Python34 -p
+          mkdir Python35 -p
+          mkdir Python36 -p
+          mkdir Python37 -p
+          mkdir Python38 -p
           cd ../../../
           vsce package
       # - name: Create Release
