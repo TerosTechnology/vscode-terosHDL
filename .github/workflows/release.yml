@@ -1,0 +1,51 @@
+name: Upload Release
+
+on:
+  push:
+    # branches:
+    #   - master
+
+jobs:
+  build:
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build 
+        run: |
+          cd ..
+          wget https://github.com/TerosTechnology/colibri/archive/master.zip
+          unzip master.zip
+          cp colibri-master colibri -r
+          cd vscode-terosHDL
+          npm install
+          cd node_modules/jsteros/python_modules
+          cp Python33 Python34 -r
+          cp Python33 Python35 -r
+          cp Python33 Python36 -r
+          cp Python33 Python37 -r
+          cp Python33 Python38 -r
+          cd ../../../
+          vsce package
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: true
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID
+          asset_path: ./*.vsix
+          asset_name: vscode-teroshdl
+          asset_content_type: application/vsix
+
