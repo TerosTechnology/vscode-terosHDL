@@ -1,0 +1,31 @@
+name: Upload Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build 
+        id: build
+        run: |
+          sudo npm install -g vsce
+          cd ..
+          git clone https://github.com/TerosTechnology/colibri.git
+          cd vscode-terosHDL
+          npm install
+          vsce package
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          draft: false
+          automatic_release_tag: latest
+          files: |
+            *.vsix
