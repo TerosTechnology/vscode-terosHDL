@@ -20,14 +20,6 @@ jobs:
           git clone https://github.com/TerosTechnology/colibri.git
           cd vscode-terosHDL
           npm install
-          cd node_modules/jsteros/python_modules
-          mkdir Python33 -p
-          mkdir Python34 -p
-          mkdir Python35 -p
-          mkdir Python36 -p
-          mkdir Python37 -p
-          mkdir Python38 -p
-          cd ../../../
           vsce package
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
