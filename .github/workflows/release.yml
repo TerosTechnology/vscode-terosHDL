@@ -17,9 +17,7 @@ jobs:
         run: |
           sudo npm install -g vsce
           cd ..
-          wget https://github.com/TerosTechnology/colibri/archive/master.zip
-          unzip master.zip
-          cp colibri-master colibri -r
+          git clone https://github.com/TerosTechnology/colibri.git
           cd vscode-terosHDL
           npm install
           cd node_modules/jsteros/python_modules
