@@ -35,7 +35,7 @@ jobs:
         id: version
         run: |
           version=`echo $(node -p "require('./package').version")`
-          echo "::set-output version=$version"
+          echo ::set-output version="$version"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
