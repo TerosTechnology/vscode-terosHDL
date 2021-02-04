@@ -53,6 +53,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID
-          asset_path: ./teroshdl-${{ steps.version.outputs.version }}.vsix
+          asset_path: ./teroshdl-"${{ steps.version.outputs.version }}".vsix
           asset_name: teroshdl-master.vsix
           asset_content_type: application/vsix
