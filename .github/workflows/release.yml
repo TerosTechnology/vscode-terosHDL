@@ -13,6 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build 
+        id: build
         run: |
           sudo npm install -g vsce
           cd ..
@@ -30,6 +31,10 @@ jobs:
           mkdir Python38 -p
           cd ../../../
           vsce package
+      - name: get_version
+        id: version
+        run: |
+          node -p "require('./package').version"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -47,7 +52,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID
-          asset_path: ./*.vsix
-          asset_name: vscode-teroshdl-master.vsix
+          asset_path: ./teroshdl-${{ steps.version.outputs }}.vsix
+          asset_name: teroshdl-master.vsix
           asset_content_type: application/vsix
-
