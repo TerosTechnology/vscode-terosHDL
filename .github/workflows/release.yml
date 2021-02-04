@@ -34,7 +34,8 @@ jobs:
       - name: get_version
         id: version
         run: |
-          node -p "require('./package').version"
+          version=`echo $(node -p "require('./package').version")`
+          echo "::set-output version=$version"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -52,6 +53,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID
-          asset_path: ./teroshdl-${{ steps.version.outputs }}.vsix
+          asset_path: ./teroshdl-${{ steps.version.outputs.version }}.vsix
           asset_name: teroshdl-master.vsix
           asset_content_type: application/vsix
