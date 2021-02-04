@@ -2,8 +2,8 @@ name: Upload Release
 
 on:
   push:
-    # branches:
-    #   - master
+    branches:
+      - master
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: true
-          draft: true
+          draft: false
           automatic_release_tag: latest
           files: |
             *.vsix
