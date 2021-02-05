@@ -80,14 +80,19 @@ export async function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "teroshdl" is now active!');
-    //Check if update
-    await extension_manager.extensionManager.init();
-    const releaseNotesView = new release_notes_webview.ReleaseNotesWebview(context);
-    const installationType = extension_manager.extensionManager.get_installation_type();
+    try {
+        //Check if update
+        await extension_manager.extensionManager.init();
+        const releaseNotesView = new release_notes_webview.ReleaseNotesWebview(context);
+        const installationType = extension_manager.extensionManager.get_installation_type();
 
-    if (installationType.firstInstall || installationType.update) {
-        await releaseNotesView.show();
-        help_message();
+        if (installationType.firstInstall || installationType.update) {
+            await releaseNotesView.show();
+            help_message();
+        }
+    }
+    catch (e) {
+        console.log(e);
     }
 
     //Context

@@ -1,3 +1,10 @@
+/*
+ * Version      : 1.0
+ * Created on   : 2020-11-05 10:15:39
+ * Last Modified: 2021-02-05 20:47:01
+ * FilePath     : /srsLTE_FPGA/home/carlos/repo/vscode-terosHDL/src/lib/templates/templates.ts
+ * Description  : 
+ */
 // Copyright 2020 Teros Technology
 //
 // Ismael Perez Rojo
@@ -70,9 +77,81 @@ export async function get_template() {
     else {
         return;
     }
+
     if (type === '' || subtype === '') { return; };
+
+    let header_file_path = vscode.workspace.getConfiguration('teroshdl.documenter.vhdl').get('header_file_path');
+
+    //Get tabsize
+    let general_tabsize = <number>vscode.workspace.getConfiguration('editor').get('tabSize');
+    let general_insert_spaces = <boolean>vscode.workspace.getConfiguration('editor').get('insertSpaces');
+
+    let tabsize = general_tabsize;
+    let insert_spaces = general_insert_spaces;
+    try {
+        let python_tabsize = vscode.workspace.getConfiguration('[python]')['editor.tabSize'];
+        let python_insert_spaces = vscode.workspace.getConfiguration('[python]')['editor.insertSpaces'];
+
+        let vhdl_tabsize = vscode.workspace.getConfiguration('[vhdl]')['editor.tabSize'];
+        let vhdl_insert_spaces = vscode.workspace.getConfiguration('[vhdl]')['editor.insertSpaces'];
+
+        let verilog_tabsize = vscode.workspace.getConfiguration('[verilog]')['editor.tabSize'];
+        let verilog_insert_spaces = vscode.workspace.getConfiguration('[verilog]')['editor.insertSpaces'];
+
+        let cpp_tabsize = vscode.workspace.getConfiguration('[C_Cpp]')['editor.tabSize'];
+        let cpp_insert_spaces = vscode.workspace.getConfiguration('[C_Cpp]')['editor.insertSpaces'];
+
+
+        if (type === 'cocotb') {
+            tabsize = python_tabsize;
+            insert_spaces = python_insert_spaces;
+        }
+        else if (type === 'verilator') {
+            tabsize = cpp_tabsize;
+            insert_spaces = vhdl_insert_spaces;
+        }
+        else if (language_id === 'vhdl') {
+            tabsize = vhdl_tabsize;
+            insert_spaces = verilog_insert_spaces;
+        }
+        else if (language_id === 'verilog') {
+            tabsize = verilog_tabsize;
+            insert_spaces = cpp_insert_spaces;
+        }
+        else {
+            tabsize = general_tabsize;
+            insert_spaces = general_insert_spaces;
+        }
+    }
+    catch (e) {
+        console.log(e);
+        tabsize = general_tabsize;
+        insert_spaces = general_insert_spaces;
+    }
+
+    if (tabsize === undefined) {
+        tabsize = 2;
+    }
+    if (insert_spaces === undefined) {
+        insert_spaces = true;
+    }
+    tabsize = <number>tabsize;
+    insert_spaces = <boolean>insert_spaces;
+
+    let indent_char = '';
+    if (insert_spaces === true) {
+        indent_char = ' ';
+        indent_char = indent_char.repeat(tabsize);
+    }
+    else {
+        indent_char = '\t';
+        indent_char = indent_char.repeat(tabsize);
+    }
+
     let options = {
-        "type": subtype
+        "type": subtype,
+        "indent_char": indent_char,
+        "header_file_path": header_file_path
     };
     let code: string = document.getText();
 
