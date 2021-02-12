@@ -3,8 +3,11 @@
 import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 import * as vsg_action_provider from './vsg_action_provider';
+import * as project_manager_lib from '../project_manager/project_manager';
 
 export default class Lint_manager {
+    private init: boolean = false;
+    private project_manager: project_manager_lib.Project_manager;
     private subscriptions: vscode.Disposable[] | undefined;
     private uri_collections: vscode.Uri[] = [];
     private linter;
@@ -23,7 +26,14 @@ export default class Lint_manager {
     private lang: string;
     protected diagnostic_collection: vscode.DiagnosticCollection;
 
-    constructor(language: string, linter_type: string, context: vscode.ExtensionContext) {
+    constructor(language: string, linter_type: string, context: vscode.ExtensionContext,
+        project_manager: project_manager_lib.Project_manager) {
+
+        vscode.commands.registerCommand(`teroshdl.refresh_lint_${language}_${linter_type}`, () =>
+            this.refresh_lint_cmd(this.uri_collections)
+        );
+
+        this.project_manager = project_manager;
         this.lang = language;
         this.linter_type = linter_type;
         this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
@@ -42,6 +52,7 @@ export default class Lint_manager {
                 })
             );
         }
+        this.init = true;
     }
 
     config_linter() {
@@ -112,11 +123,24 @@ export default class Lint_manager {
         }
     }
 
+    refresh_lint_cmd(uri_collections: vscode.Uri[]) {
+        // try {
+        //     for (let i = 0; i < uri_collections.length; ++i) {
+        //         // this.remove_file_diagnostics();
+        //         this.lint_from_uri(uri_collections[i]);
+        //     }
+        // }
+        // catch (e) { console.log(e); }
+    }
+
     refresh_lint() {
-        for (let i = 0; i < this.uri_collections.length; ++i) {
-            // this.remove_file_diagnostics();
-            this.lint_from_uri(this.uri_collections[i]);
+        try {
+            for (let i = 0; i < this.uri_collections.length; ++i) {
+                // this.remove_file_diagnostics();
+                this.lint_from_uri(this.uri_collections[i]);
+            }
         }
+        catch (e) { console.log(e); }
     }
 
     get_config() {
@@ -158,7 +182,9 @@ export default class Lint_manager {
         this.add_uri_to_collections(doc.uri);
 
         console.log(`[terosHDL] Linting ${current_path}`);
-        let errors = await this.linter.lint_from_file(current_path, this.get_config());
+        // let errors = await this.linter.lint_from_file(current_path, this.get_config());
+        let errors = await this.get_errors(current_path);
+
         let diagnostics: vscode.Diagnostic[] = [];
         for (var i = 0; i < errors.length; ++i) {
             const line = errors[i]['location']['position'][0];
@@ -196,7 +222,8 @@ export default class Lint_manager {
     async lint_from_uri(uri: vscode.Uri, empty: boolean = false) {
         let current_path = uri.fsPath;
 
-        let errors = await this.linter.lint_from_file(current_path, this.get_config());
+        // let errors = await this.linter.lint_from_file(current_path, this.get_config());
+        let errors = await this.get_errors(current_path);
         let diagnostics: vscode.Diagnostic[] = [];
         if (empty === true) {
             this.diagnostic_collection.set(uri, diagnostics);
@@ -222,6 +249,13 @@ export default class Lint_manager {
             });
         }
         this.diagnostic_collection.set(uri, diagnostics);
+    }
+
+    async get_errors(current_path) {
+        let prj_files = this.project_manager.get_active_project_libraries();
+        // let errors = await this.linter.lint_from_file(current_path, this.get_config(), prj_files);
+        let errors = await this.linter.lint_from_file(current_path, this.get_config(), undefined);
+        return errors;
     }
 
 }

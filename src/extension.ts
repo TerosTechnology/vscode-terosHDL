@@ -139,17 +139,6 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
     );
     /**************************************************************************/
-    // Linter
-    /**************************************************************************/
-    linter_vhdl = new linter.default("vhdl", "linter", context);
-    linter_verilog = new linter.default("verilog", "linter", context);
-    linter_systemverilog = new linter.default("systemverilog", "linter", context);
-    /**************************************************************************/
-    // Check style
-    /**************************************************************************/
-    linter_verilog_style = new linter.default("verilog", "linter_style", context);
-    linter_systemverilog_style = new linter.default("systemverilog", "linter_style", context);
-    /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
     dependencies_viewer_manager = new dependencies_viewer.default(context);
@@ -251,6 +240,17 @@ export async function activate(context: vscode.ExtensionContext) {
     // Tree view
     /**************************************************************************/
     project_manager = new project_manager_lib.Project_manager(context);
+    /**************************************************************************/
+    // Linter
+    /**************************************************************************/
+    linter_vhdl = new linter.default("vhdl", "linter", context, project_manager);
+    linter_verilog = new linter.default("verilog", "linter", context, project_manager);
+    linter_systemverilog = new linter.default("systemverilog", "linter", context, project_manager);
+    /**************************************************************************/
+    // Check style
+    /**************************************************************************/
+    linter_verilog_style = new linter.default("verilog", "linter_style", context, project_manager);
+    linter_systemverilog_style = new linter.default("systemverilog", "linter_style", context, project_manager);
 }
 
 // this method is called when your extension is deactivated
