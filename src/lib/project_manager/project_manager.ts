@@ -23,6 +23,7 @@ export class Project_manager {
   private vunit_test_list: {}[] = [];
   private vunit: Vunit.Vunit;
   private last_vunit_results;
+  private init: boolean = false;
 
   constructor(context: vscode.ExtensionContext) {
     this.vunit = new Vunit.Vunit(context);
@@ -98,6 +99,17 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.open_file', (item) =>
       this.open_file(item)
     );
+    this.init = true;
+  }
+
+  refresh_lint() {
+    if (this.init === true) {
+      // vscode.commands.executeCommand("teroshdl.refresh_lint_vhdl_linter");
+      // vscode.commands.executeCommand("teroshdl.refresh_lint_verilog_linter");
+      // vscode.commands.executeCommand("teroshdl.refresh_lint_systemverilog_linter");
+      // vscode.commands.executeCommand("teroshdl.refresh_lint_verilog_linter_style");
+      // vscode.commands.executeCommand("teroshdl.refresh_lint_systemverilog_linter_style");
+    }
   }
 
   open_file(item) {
@@ -124,6 +136,16 @@ export class Project_manager {
       });
     }
     catch (e) { }
+  }
+
+  get_active_project_libraries() {
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === '') {
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    let files = prj.get_normalized_project().libraries;
+    return files;
   }
 
   async refresh_tests() {
@@ -162,6 +184,7 @@ export class Project_manager {
       this.edam_project_manager.selected_project = selected_project;
     }
     this.update_tree();
+    this.refresh_lint();
   }
 
   async run_vunit_test(item) {
@@ -382,6 +405,7 @@ export class Project_manager {
             this.set_top_from_name(project_name, library_name, value[i].fsPath);
           }
         }
+        this.refresh_lint();
       }
     });
   }
@@ -389,6 +413,7 @@ export class Project_manager {
   async select_project(item) {
     let project_name = item.project_name;
     this.select_project_from_name(project_name);
+    this.refresh_lint();
   }
 
   async select_project_from_name(project_name) {
@@ -413,8 +438,9 @@ export class Project_manager {
     let library_name = item.library_name;
     vscode.window.showInputBox({ prompt: 'Set the library name', value: library_name }).then(value => {
       if (value !== undefined) {
-        this.edam_project_manager(project_name, library_name, value);
+        this.edam_project_manager.rename_library(project_name, library_name, value);
         this.update_tree();
+        this.refresh_lint();
       }
     });
   }
@@ -423,6 +449,7 @@ export class Project_manager {
     let project_name = item.project_name;
     this.edam_project_manager.delete_project(project_name);
     this.update_tree();
+    this.refresh_lint();
   }
 
   async delete_file(item) {
@@ -432,6 +459,7 @@ export class Project_manager {
 
     this.edam_project_manager.delete_file(project_name, path, library_name);
     this.update_tree();
+    this.refresh_lint();
   }
 
   async delete_library(item) {
@@ -447,6 +475,7 @@ export class Project_manager {
       if (value !== undefined) {
         this.edam_project_manager.add_file(project_name, 'teroshdl_phantom_file', false, '', value);
         this.update_tree();
+        this.refresh_lint();
       }
     });
   }
@@ -560,6 +589,7 @@ export class Project_manager {
     //     this.select_project_from_name(Sample_projects.sample_vhdl.name);
     //   }
     // }
+    this.refresh_lint();
   }
 }
 

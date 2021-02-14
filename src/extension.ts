@@ -61,13 +61,7 @@ let netlist_viewer_manager: netlist_viewer.default;
 // State machine designer
 import * as state_machine_designer_t from "./lib/state_machine_designer/state_machine_designer";
 let state_machine_designer_manager;
-// Test Manager
-import { VUnitAdapter } from './lib/tester/controller';
-import { TestHub, testExplorerExtensionId } from 'vscode-test-adapter-api';
-import { Log, TestAdapterRegistrar } from 'vscode-test-adapter-util';
 
-let testHub: TestHub | undefined;
-let controller: VUnitAdapter | undefined;
 // Language providers
 import VerilogDocumentSymbolProvider from "./lib/language_providers/providers/DocumentSymbolProvider";
 import VerilogHoverProvider from "./lib/language_providers/providers/HoverProvider";
@@ -86,14 +80,19 @@ export async function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "teroshdl" is now active!');
-    //Check if update
-    await extension_manager.extensionManager.init();
-    const releaseNotesView = new release_notes_webview.ReleaseNotesWebview(context);
-    const installationType = extension_manager.extensionManager.get_installation_type();
+    try {
+        //Check if update
+        await extension_manager.extensionManager.init();
+        const releaseNotesView = new release_notes_webview.ReleaseNotesWebview(context);
+        const installationType = extension_manager.extensionManager.get_installation_type();
 
-    if (installationType.firstInstall || installationType.update) {
-        await releaseNotesView.show();
-        help_message();
+        if (installationType.firstInstall || installationType.update) {
+            await releaseNotesView.show();
+            help_message();
+        }
+    }
+    catch (e) {
+        console.log(e);
     }
 
     //Context
@@ -139,17 +138,6 @@ export async function activate(context: vscode.ExtensionContext) {
         // vscode.workspace.onDidChangeTextDocument((e) => documenter.update_change_documentation_module(e)),
         vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
     );
-    /**************************************************************************/
-    // Linter
-    /**************************************************************************/
-    linter_vhdl = new linter.default("vhdl", "linter", context);
-    linter_verilog = new linter.default("verilog", "linter", context);
-    linter_systemverilog = new linter.default("systemverilog", "linter", context);
-    /**************************************************************************/
-    // Check style
-    /**************************************************************************/
-    linter_verilog_style = new linter.default("verilog", "linter_style", context);
-    linter_systemverilog_style = new linter.default("systemverilog", "linter_style", context);
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
@@ -252,36 +240,17 @@ export async function activate(context: vscode.ExtensionContext) {
     // Tree view
     /**************************************************************************/
     project_manager = new project_manager_lib.Project_manager(context);
-
-
     /**************************************************************************/
-    // Test manager
+    // Linter
     /**************************************************************************/
-    // get the Test Explorer extension
-    const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
-    const workDir = path.join(context.globalStoragePath, 'workdir');
-    fs.mkdirSync(workDir, { recursive: true });
-    const log = new Log('vunit', workspaceFolder, 'VUnit Explorer Log');
-    context.subscriptions.push(log);
-    // get the Test Explorer extension
-    const testExplorerExtension = vscode.extensions.getExtension<TestHub>(
-        testExplorerExtensionId
-    );
-    if (log.enabled) {
-        log.info(`Test Explorer ${testExplorerExtension ? '' : 'not '}found`);
-    }
-    if (testExplorerExtension) {
-        const testHub = testExplorerExtension.exports;
-
-        context.subscriptions.push(
-            new TestAdapterRegistrar(
-                testHub,
-                (workspaceFolder) =>
-                    new VUnitAdapter(workspaceFolder, workDir, log),
-                log
-            )
-        );
-    }
+    linter_vhdl = new linter.default("vhdl", "linter", context, project_manager);
+    linter_verilog = new linter.default("verilog", "linter", context, project_manager);
+    linter_systemverilog = new linter.default("systemverilog", "linter", context, project_manager);
+    /**************************************************************************/
+    // Check style
+    /**************************************************************************/
+    linter_verilog_style = new linter.default("verilog", "linter_style", context, project_manager);
+    linter_systemverilog_style = new linter.default("systemverilog", "linter_style", context, project_manager);
 }
 
 // this method is called when your extension is deactivated

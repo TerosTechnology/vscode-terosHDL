@@ -161,6 +161,14 @@
 		],
 		"description": "constant declaration"
 	},
+	"Signal": {
+		"prefix": "signal",
+		"body": [
+			"signal ${1:<name>} : ${2:<type>} := ${3:<default_value>};",
+			"$0"
+		],
+		"description": "signal declaration"
+	},
 	"Configuration": {
 		"prefix": "configuration",
 		"body": [

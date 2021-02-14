@@ -2,8 +2,8 @@
 	"name": "teroshdl",
 	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
-	"description": "VHDL and Verilog/SV IDE.",
-	"version": "0.1.3",
+	"description": "VHDL and Verilog/SV IDE: state machine viewer, linter, documentation, snippets... and more! ",
+	"version": "0.1.4",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
@@ -246,6 +246,11 @@
 					"description": "Enable xvlog custom call",
 					"type": "boolean",
 					"default": false
+				},
+				"teroshdl.documenter.vhdl.header_file_path": {
+					"markdownDescription": "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template",
+					"type": "string",
+					"default": ""
 				},
 				"teroshdl.documenter.vhdl.symbol": {
 					"markdownDescription": "Special symbol at the begin of the comment symbol to extract documentation. Example: ```--! Code comment```",
@@ -714,7 +719,7 @@
 			},
 			{
 				"command": "teroshdl.generate_template",
-				"title": "Generate template",
+				"title": "TerosHDL: Generate template",
 				"icon": {
 					"light": "resources/light/file-code.svg",
 					"dark": "resources/dark/file-code.svg"
@@ -852,13 +857,8 @@
 		"xml2js": "0.4.23",
 		"shelljs": "^0.8.3",
 		"temp": "^0.9.0",
-		"jsteros": "file:../colibri",
-		"vscode-test-adapter-api": "^1.7.0",
-		"vscode-test-adapter-util": "^0.7.0"
+		"jsteros": "file:../colibri"
 	},
-	"extensionDependencies": [
-		"hbenl.vscode-test-explorer"
-	],
 	"devDependencies": {
 		"@types/vscode": "^1.45.0",
 		"@types/glob": "^7.1.1",

@@ -224,6 +224,7 @@ export class Edam_project_manager {
     }
     return projects;
   }
+
 }
 
 class Edam_project {
@@ -340,7 +341,7 @@ class Edam_project {
 
   rename_logical_name(name, new_name) {
     for (let i = 0; i < this.files.length; ++i) {
-      if (this.files[i].logical_name !== name) {
+      if (this.files[i].logical_name === name) {
         this.files[i].logical_name = new_name;
       }
     }

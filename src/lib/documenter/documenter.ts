@@ -289,7 +289,8 @@ export default class Documenter {
     else if (type === "pdf") {
       let platform = require('os').platform();
       if (platform !== 'linux') {
-        vscode.window.showErrorMessage('Currently this feature is stable in Linux. Report your problem.');
+        vscode.window.showErrorMessage('Currently this feature is only supported in Linux.');
+        return;
       }
 
       let filter = { 'PDF': ['pdf'] };
