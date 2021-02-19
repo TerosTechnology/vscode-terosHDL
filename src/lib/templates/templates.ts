@@ -26,13 +26,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 import * as vscode from 'vscode';
-import * as jsteros from 'jsteros';
 
-const LANGUAGES = {
-    "source.verilog": jsteros.General.LANGUAGES.VERILOG,
-    "source.vhdl": jsteros.General.LANGUAGES.VHDL
-};
 export async function get_template() {
+    const jsteros = require('jsteros');
+
+    const LANGUAGES = {
+        "source.verilog": jsteros.General.LANGUAGES.VERILOG,
+        "source.vhdl": jsteros.General.LANGUAGES.VHDL
+    };
+
     if (!vscode.window.activeTextEditor) {
         return; // no editor
     }

@@ -19,7 +19,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 
-import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
@@ -231,6 +230,7 @@ export default class State_machine_viewer_manager {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
 
+    const jsteros = require('jsteros');
     let state_machines = jsteros.State_machine.get_svg_sm(language_id, code, comment_symbol);
     return state_machines;
   }

@@ -20,9 +20,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 import * as vscode from 'vscode';
-import * as jsteros from 'jsteros';
-import * as node_utilities from './node_utilities';
 import * as path_lib from 'path';
+import * as util from "util";
 
 export default class Documenter {
   private panel;
@@ -45,22 +44,34 @@ export default class Documenter {
   }
 
   async init() {
+    const fs = require('fs');
     let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
-    this.html_base = await node_utilities.readFileAsync(
+    const readFileAsync = util.promisify(fs.readFile);
+    this.html_base = await readFileAsync(
       this.context.asAbsolutePath(path_html), "utf8");
-    //Create VHDL documenter
-    this.vhdl_documenter = this.create_documenter('vhdl');
-    this.vhdl_documenter.init();
-    //Create Verilog documenter
-    this.verilog_documenter = this.create_documenter('verilog');
-    this.verilog_documenter.init();
+    // //Create VHDL documenter
+    // this.vhdl_documenter = this.create_documenter('vhdl');
+    // this.vhdl_documenter.init();
+    // //Create Verilog documenter
+    // this.verilog_documenter = this.create_documenter('verilog');
+    // this.verilog_documenter.init();
   }
 
   get_documenter(language_id) {
     if (language_id === 'vhdl') {
+      if (this.vhdl_documenter === undefined){
+        //Create VHDL documenter
+        this.vhdl_documenter = this.create_documenter('vhdl');
+        this.vhdl_documenter.init();
+      }
       return this.vhdl_documenter;
     }
     else if (language_id === 'verilog') {
+      if (this.verilog_documenter === undefined){
+        //Create VHDL documenter
+        this.verilog_documenter = this.create_documenter('verilog');
+        this.verilog_documenter.init();
+      }
       return this.verilog_documenter;
     }
     else {
@@ -76,6 +87,7 @@ export default class Documenter {
 
   create_documenter(language_id) {
     let code: string = '';
+    const jsteros = require('jsteros');
     let documenter = new jsteros.Documenter.Documenter(code, language_id, this.get_symbol(language_id));
     return documenter;
   }

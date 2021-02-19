@@ -18,7 +18,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
-import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';

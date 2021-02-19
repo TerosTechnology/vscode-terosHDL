@@ -1,9 +1,29 @@
+// Copyright 2020 Teros Technology
+//
+// Ismael Perez Rojo
+// Carlos Alberto Ruiz Naranjo
+// Alfredo Saez
+//
+// This file is part of Colibri.
+//
+// Colibri is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Colibri is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
+
 import * as vscode from 'vscode';
 const path_lib = require('path');
 const os = require('os');
 const shell = require('shelljs');
 const fs = require('fs');
-const colibri = require('jsteros');
 
 export class Vunit {
   private output_channel;
@@ -31,6 +51,7 @@ export class Vunit {
   async get_python3_path(python3_path) {
     let python_path = '';
     if (python3_path === '') {
+      const colibri = require('jsteros');
       python_path = await colibri.Nopy.get_python_exec();
     }
     else {
