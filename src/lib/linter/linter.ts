@@ -9,7 +9,6 @@ export default class Lint_manager {
     private project_manager: project_manager_lib.Project_manager;
     private subscriptions: vscode.Disposable[] | undefined;
     private uri_collections: vscode.Uri[] = [];
-    private linter;
     private linter_type: string = "";
     private linter_name: string | undefined;
     private linter_enable;
@@ -93,7 +92,6 @@ export default class Lint_manager {
             this.refresh_lint();
         }
         else {
-            this.linter = undefined;
             return;
         }
     }
@@ -254,13 +252,13 @@ export default class Lint_manager {
     async get_errors(current_path) {
         try {
             const jsteros = require('jsteros');
-            this.linter = new jsteros.Linter.Linter(this.linter_name, this.lang);
+            let linter = new jsteros.Linter.Linter(this.linter_name, this.lang);
             let prj_files = this.project_manager.get_active_project_libraries();
             // let errors = await this.linter.lint_from_file(current_path, this.get_config(), prj_files);
-            if (this.linter === undefined){
+            if (linter === undefined){
                 this.config_linter();
             }
-            let errors = await this.linter.lint_from_file(current_path, this.get_config(), undefined);
+            let errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
             return errors;
         } catch (error) {            
             return [];

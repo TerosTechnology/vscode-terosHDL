@@ -26,7 +26,6 @@ import * as vscode from 'vscode';
 export default class Formatter_manager {
     private lang: string = "";
     private formatter_name: string = "";
-    private formatter;
     private subscriptions: vscode.Disposable[] | undefined;
 
     constructor(language: string) {
@@ -37,10 +36,10 @@ export default class Formatter_manager {
     public async format(code) {
         this.config_formatter();
         const jsteros = require('jsteros');
-        this.formatter = new jsteros.Formatter.Formatter(this.formatter_name);
-        if (this.formatter !== undefined) {
+        let formatter = new jsteros.Formatter.Formatter(this.formatter_name);
+        if (formatter !== undefined) {
             let options = this.get_options();
-            let formatted_code = await this.formatter.format_from_code(code, options);
+            let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
         }
         else {

@@ -26,9 +26,7 @@ import * as util from "util";
 export default class Documenter {
   private panel;
   private context;
-  private vhdl_documenter;
-  private verilog_documenter;
-  private current_documenter;
+  private current_document;
   private current_path;
   private html_base: string = '';
   private global_config = {
@@ -59,20 +57,16 @@ export default class Documenter {
 
   get_documenter(language_id) {
     if (language_id === 'vhdl') {
-      if (this.vhdl_documenter === undefined){
-        //Create VHDL documenter
-        this.vhdl_documenter = this.create_documenter('vhdl');
-        this.vhdl_documenter.init();
-      }
-      return this.vhdl_documenter;
+      //Create VHDL documenter
+      let documenter = this.create_documenter('vhdl');
+      documenter.init();
+      return documenter;
     }
     else if (language_id === 'verilog') {
-      if (this.verilog_documenter === undefined){
-        //Create VHDL documenter
-        this.verilog_documenter = this.create_documenter('verilog');
-        this.verilog_documenter.init();
-      }
-      return this.verilog_documenter;
+      //Create VHDL documenter
+      let documenter = this.create_documenter('verilog');
+      documenter.init();
+      return documenter;
     }
     else {
       return undefined;
@@ -167,7 +161,6 @@ export default class Documenter {
         () => {
           // When the panel is closed, cancel any future updates to the webview content
           this.panel = undefined;
-          this.current_documenter = undefined;
         },
         null,
         this.context.subscriptions
@@ -203,7 +196,7 @@ export default class Documenter {
 
     let documenter = this.get_documenter(language_id);
     this.configure_documenter(documenter, document, this.global_config);
-    this.current_documenter = documenter;
+    this.current_document = document;
     this.last_document = document;
 
     let html_result = await documenter.get_html(true);
@@ -286,6 +279,10 @@ export default class Documenter {
     // /one/two/five
     let full_path = path_lib.dirname(this.current_path) + path_lib.sep + filename;
 
+    let language_id: string = this.get_language(this.current_document);
+    let documenter = this.get_documenter(language_id);
+    this.configure_documenter(documenter, this.current_document, this.global_config);
+
     if (type === "markdown") {
       let filter = { 'markdown': ['md'] };
       let default_path = full_path + '.md';
@@ -294,7 +291,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_markdown(path_norm);
+          documenter.save_markdown(path_norm);
         }
       });
     }
@@ -312,7 +309,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_pdf(path_norm);
+          documenter.save_pdf(path_norm);
         }
       });
     }
@@ -324,7 +321,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_html(path_norm);
+          documenter.save_html(path_norm);
         }
       });
     }
@@ -336,7 +333,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_svg(path_norm);
+          documenter.save_svg(path_norm);
         }
       });
     }
@@ -348,7 +345,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_latex(path_norm);
+          documenter.save_latex(path_norm);
         }
       });
     }
