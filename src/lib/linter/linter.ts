@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 // import { Disposable, workspace, TextDocument, window, QuickPickItem, ProgressLocation} from "vscode";
-import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 import * as vsg_action_provider from './vsg_action_provider';
 import * as project_manager_lib from '../project_manager/project_manager';
@@ -10,7 +9,6 @@ export default class Lint_manager {
     private project_manager: project_manager_lib.Project_manager;
     private subscriptions: vscode.Disposable[] | undefined;
     private uri_collections: vscode.Uri[] = [];
-    private linter;
     private linter_type: string = "";
     private linter_name: string | undefined;
     private linter_enable;
@@ -29,9 +27,9 @@ export default class Lint_manager {
     constructor(language: string, linter_type: string, context: vscode.ExtensionContext,
         project_manager: project_manager_lib.Project_manager) {
 
-        vscode.commands.registerCommand(`teroshdl.refresh_lint_${language}_${linter_type}`, () =>
-            this.refresh_lint_cmd(this.uri_collections)
-        );
+        // vscode.commands.registerCommand(`teroshdl.refresh_lint_${language}_${linter_type}`, () =>
+        //     this.refresh_lint_cmd(this.uri_collections)
+        // );
 
         this.project_manager = project_manager;
         this.lang = language;
@@ -42,7 +40,6 @@ export default class Lint_manager {
         vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
 
         vscode.workspace.onDidChangeConfiguration(this.config_linter, this, this.subscriptions);
-        this.config_linter();
         this.lint(<vscode.TextDocument>vscode.window.activeTextEditor?.document);
 
         if (language === "vhdl" && linter_type === "linter_style") {
@@ -52,6 +49,7 @@ export default class Lint_manager {
                 })
             );
         }
+        this.config_linter();
         this.init = true;
     }
 
@@ -89,11 +87,11 @@ export default class Lint_manager {
             this.remove_all();
         }
         if (this.linter_enable === true) {
-            this.linter = new jsteros.Linter.Linter(linter_name, this.lang);
+            // const jsteros = require('jsteros');
+            // this.linter = new jsteros.Linter.Linter(linter_name, this.lang);
             this.refresh_lint();
         }
         else {
-            this.linter = undefined;
             return;
         }
     }
@@ -173,7 +171,7 @@ export default class Lint_manager {
             return;
         }
         let language_id: string = doc.languageId;
-        if (this.linter === undefined || (language_id !== this.lang)) {
+        if (language_id !== this.lang) {
             return;
         }
         // let current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
@@ -252,10 +250,19 @@ export default class Lint_manager {
     }
 
     async get_errors(current_path) {
-        let prj_files = this.project_manager.get_active_project_libraries();
-        // let errors = await this.linter.lint_from_file(current_path, this.get_config(), prj_files);
-        let errors = await this.linter.lint_from_file(current_path, this.get_config(), undefined);
-        return errors;
+        try {
+            const jsteros = require('jsteros');
+            let linter = new jsteros.Linter.Linter(this.linter_name, this.lang);
+            let prj_files = this.project_manager.get_active_project_libraries();
+            // let errors = await this.linter.lint_from_file(current_path, this.get_config(), prj_files);
+            if (linter === undefined){
+                this.config_linter();
+            }
+            let errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
+            return errors;
+        } catch (error) {            
+            return [];
+        }
     }
 
 }

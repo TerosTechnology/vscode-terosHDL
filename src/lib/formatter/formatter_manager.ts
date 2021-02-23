@@ -21,25 +21,25 @@
 
 
 /* eslint-disable @typescript-eslint/class-name-casing */
-import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 
 export default class Formatter_manager {
     private lang: string = "";
     private formatter_name: string = "";
-    private formatter;
     private subscriptions: vscode.Disposable[] | undefined;
 
     constructor(language: string) {
         this.lang = language;
-        this.config_formatter();
         vscode.workspace.onDidChangeConfiguration(this.config_formatter, this, this.subscriptions);
     }
 
     public async format(code) {
-        if (this.formatter !== undefined) {
+        this.config_formatter();
+        const jsteros = require('jsteros');
+        let formatter = new jsteros.Formatter.Formatter(this.formatter_name);
+        if (formatter !== undefined) {
             let options = this.get_options();
-            let formatted_code = await this.formatter.format_from_code(code, options);
+            let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
         }
         else {
@@ -52,7 +52,6 @@ export default class Formatter_manager {
         formatter_name = <string>vscode.workspace.getConfiguration(`teroshdl.formatter.${this.lang}`).get("type.a");
         formatter_name = formatter_name.toLowerCase();
         this.formatter_name = formatter_name;
-        this.formatter = new jsteros.Formatter.Formatter(formatter_name);
     }
 
     get_options() {

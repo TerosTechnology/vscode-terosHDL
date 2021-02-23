@@ -20,16 +20,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 import * as vscode from 'vscode';
-import * as jsteros from 'jsteros';
-import * as node_utilities from './node_utilities';
 import * as path_lib from 'path';
+import * as util from "util";
 
 export default class Documenter {
   private panel;
   private context;
-  private vhdl_documenter;
-  private verilog_documenter;
-  private current_documenter;
+  private current_document;
   private current_path;
   private html_base: string = '';
   private global_config = {
@@ -45,23 +42,31 @@ export default class Documenter {
   }
 
   async init() {
+    const fs = require('fs');
     let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
-    this.html_base = await node_utilities.readFileAsync(
+    const readFileAsync = util.promisify(fs.readFile);
+    this.html_base = await readFileAsync(
       this.context.asAbsolutePath(path_html), "utf8");
-    //Create VHDL documenter
-    this.vhdl_documenter = this.create_documenter('vhdl');
-    this.vhdl_documenter.init();
-    //Create Verilog documenter
-    this.verilog_documenter = this.create_documenter('verilog');
-    this.verilog_documenter.init();
+    // //Create VHDL documenter
+    // this.vhdl_documenter = this.create_documenter('vhdl');
+    // this.vhdl_documenter.init();
+    // //Create Verilog documenter
+    // this.verilog_documenter = this.create_documenter('verilog');
+    // this.verilog_documenter.init();
   }
 
   get_documenter(language_id) {
     if (language_id === 'vhdl') {
-      return this.vhdl_documenter;
+      //Create VHDL documenter
+      let documenter = this.create_documenter('vhdl');
+      documenter.init();
+      return documenter;
     }
     else if (language_id === 'verilog') {
-      return this.verilog_documenter;
+      //Create VHDL documenter
+      let documenter = this.create_documenter('verilog');
+      documenter.init();
+      return documenter;
     }
     else {
       return undefined;
@@ -76,6 +81,7 @@ export default class Documenter {
 
   create_documenter(language_id) {
     let code: string = '';
+    const jsteros = require('jsteros');
     let documenter = new jsteros.Documenter.Documenter(code, language_id, this.get_symbol(language_id));
     return documenter;
   }
@@ -155,7 +161,6 @@ export default class Documenter {
         () => {
           // When the panel is closed, cancel any future updates to the webview content
           this.panel = undefined;
-          this.current_documenter = undefined;
         },
         null,
         this.context.subscriptions
@@ -191,7 +196,7 @@ export default class Documenter {
 
     let documenter = this.get_documenter(language_id);
     this.configure_documenter(documenter, document, this.global_config);
-    this.current_documenter = documenter;
+    this.current_document = document;
     this.last_document = document;
 
     let html_result = await documenter.get_html(true);
@@ -274,6 +279,10 @@ export default class Documenter {
     // /one/two/five
     let full_path = path_lib.dirname(this.current_path) + path_lib.sep + filename;
 
+    let language_id: string = this.get_language(this.current_document);
+    let documenter = this.get_documenter(language_id);
+    this.configure_documenter(documenter, this.current_document, this.global_config);
+
     if (type === "markdown") {
       let filter = { 'markdown': ['md'] };
       let default_path = full_path + '.md';
@@ -282,7 +291,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_markdown(path_norm);
+          documenter.save_markdown(path_norm);
         }
       });
     }
@@ -300,7 +309,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_pdf(path_norm);
+          documenter.save_pdf(path_norm);
         }
       });
     }
@@ -312,7 +321,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_html(path_norm);
+          documenter.save_html(path_norm);
         }
       });
     }
@@ -324,7 +333,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_svg(path_norm);
+          documenter.save_svg(path_norm);
         }
       });
     }
@@ -336,7 +345,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          this.current_documenter.save_latex(path_norm);
+          documenter.save_latex(path_norm);
         }
       });
     }

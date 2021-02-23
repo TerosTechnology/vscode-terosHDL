@@ -18,10 +18,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
-import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
-import * as node_utilities from './node_utilities';
 import * as fs from 'fs';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
@@ -104,6 +102,7 @@ export default class Dependencies_viewer_manager {
 
   private async get_dot() {
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+    const jsteros = require('jsteros');
     let project_manager = new jsteros.Project_manager.Manager("");
     project_manager.add_source_from_array(this.sources);
     let dependencies_dot = await project_manager.get_dependency_graph_dot(python3_path);
@@ -148,6 +147,7 @@ export default class Dependencies_viewer_manager {
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
 
+    const jsteros = require('jsteros');
     let project_manager = new jsteros.Project_manager.Manager("");
     project_manager.add_source_from_array(this.sources);
     if (type === "markdown") {

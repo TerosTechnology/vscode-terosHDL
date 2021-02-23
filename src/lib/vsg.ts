@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 // import { Disposable, workspace, TextDocument, window, QuickPickItem, ProgressLocation} from "vscode";
-import * as jsteros from 'jsteros';
 import * as vscode from 'vscode';
 
 export default class Vsg_manager {
@@ -31,6 +30,7 @@ export default class Vsg_manager {
     }
 
     config_linter() {
+        const jsteros = require('jsteros');
         this.linter = new jsteros.Vsg.Vsg();
     }
 

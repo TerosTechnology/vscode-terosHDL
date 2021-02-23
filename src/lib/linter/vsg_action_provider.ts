@@ -45,7 +45,6 @@ export class Vsg_action_provider implements vscode.CodeActionProvider {
 		};
 		action.diagnostics = [diagnostic];
 		action.isPreferred = true;
-		let pepe = range.start;
 		action.edit = new vscode.WorkspaceEdit();
 		let spaces = document.getText(new vscode.Range(range.start.line,0,range.start.line,range.start.character));
 		action.edit.insert( document.uri, new vscode.Position(range.start.line, range.start.character), `-- vsg-disable-next-line ${diagnostic.code}\n${spaces}` );
