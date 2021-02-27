@@ -28,6 +28,7 @@ import * as Config from './config';
 import * as Terminal from './terminal';
 import * as Sample_projects from './sample_projects';
 import * as Vunit from './vunit';
+import * as Cocotb from './cocotb';
 import { dirname } from 'path';
 const path_lib = require('path');
 const fs = require('fs');
@@ -42,12 +43,16 @@ export class Project_manager {
   workspace_folder;
   private terminal: Terminal.Terminal;
   private vunit_test_list: {}[] = [];
+  private cocotb_test_list: Cocotb.TestItem[] = [];
   private vunit: Vunit.Vunit;
+  private cocotb: Cocotb.Cocotb;
   private last_vunit_results;
+  private last_cocotb_results;
   private init: boolean = false;
 
   constructor(context: vscode.ExtensionContext) {
     this.vunit = new Vunit.Vunit(context);
+    this.cocotb = new Cocotb.Cocotb(context);
     this.terminal = new Terminal.Terminal(context);
     this.edam_project_manager = new Edam.Edam_project_manager();
     this.config_file = new Config.Config(context.extensionPath);
@@ -101,6 +106,9 @@ export class Project_manager {
     );
     vscode.commands.registerCommand('teroshdl_tree_view.run_vunit_test', (item) =>
       this.run_vunit_test(item)
+    );
+    vscode.commands.registerCommand('teroshdl_tree_view.run_cocotb_test', (item) =>
+      this.run_cocotb_test(item)
     );
     vscode.commands.registerCommand('teroshdl_tree_view.run_vunit_test_gui', (item) =>
       this.run_vunit_test_gui(item)
@@ -171,6 +179,7 @@ export class Project_manager {
 
   async refresh_tests() {
     this.last_vunit_results = [];
+    this.last_cocotb_results = [];
     this.update_tree();
   }
 
@@ -214,6 +223,12 @@ export class Project_manager {
     this.run_vunit_tests(tests, gui);
   }
 
+  async run_cocotb_test(item) {
+    let tests: string[] = [item.label];
+    let gui = false;
+    this.run_cocotb_tests(tests, gui);
+  }
+
   async run_vunit_test_gui(item) {
     let tests: string[] = [item.label];
     let gui = true;
@@ -239,6 +254,7 @@ export class Project_manager {
     };
 
     this.run_vunit_tests([], false);
+    this.run_cocotb_tests([], false);
   }
 
   async run_vunit_tests(tests, gui) {
@@ -264,7 +280,44 @@ export class Project_manager {
     if (results.length === 0) {
       force_fail_all = true;
     }
-    this.set_results(force_fail_all);
+    this.set_vunit_results(force_fail_all);
+  }
+
+  async run_cocotb_tests(tests, gui) {
+    // let selected_tool_configuration = this.config_file.get_config_of_selected_tool();
+    // let all_tool_configuration = this.config_file.get_config_tool();
+
+    // let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+    // let selected_project = this.edam_project_manager.selected_project;
+    // let prj = this.edam_project_manager.get_project(selected_project);
+
+    // let runpy_path = '';
+    // if (prj.relative_path !== '' && prj.relative_path !== undefined) {
+    //   runpy_path = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
+    // }
+    // else {
+    //   runpy_path = prj.toplevel_path;
+    // }
+
+    // let results = <[]>await this.cocotb.run_simulation(python3_path, selected_tool_configuration, all_tool_configuration,
+    //   runpy_path, tests, gui);
+      
+    // this.last_cocotb_results = results;
+    // let force_fail_all = false;
+    // if (results.length === 0) {
+    //   force_fail_all = true;
+    // }
+    // this.set_results(force_fail_all);
+
+    
+    let results = <[]>await this.cocotb.run_simulation(tests, this.cocotb_test_list);
+
+    this.last_cocotb_results = results;
+    let force_fail_all = false;
+    if (results.length === 0) {
+      force_fail_all = true;
+    }
+    this.set_cocotb_results(force_fail_all);
   }
 
   getline_numberof_char(path, index) {
@@ -324,8 +377,12 @@ export class Project_manager {
     });
   }
 
-  set_results(force_fail_all) {
-    this.tree.set_results(this.last_vunit_results, force_fail_all);
+  set_vunit_results(force_fail_all) {
+    this.tree.set_vunit_results(this.last_vunit_results, force_fail_all);
+  }
+
+  set_cocotb_results(force_fail_all) {
+    this.tree.set_cocotb_results(this.last_cocotb_results, force_fail_all);
   }
 
   set_top_from_project(project_name, library_name, path) {
@@ -378,8 +435,10 @@ export class Project_manager {
 
   async update_tree() {
     let vunit_test_list = [{ name: 'Loading tests...', location: undefined }];
+    let cocotb_test_list = [{ name: 'Loading cocotb tests...', location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
-    this.tree.update_super_tree(normalized_prjs, vunit_test_list);
+    this.tree.update_super_tree_vunit(normalized_prjs, vunit_test_list);
+    this.tree.update_super_tree_cocotb(normalized_prjs, cocotb_test_list);
     let edam_projects = this.edam_project_manager.get_edam_projects();
     this.config_file.set_projects(edam_projects);
 
@@ -389,16 +448,18 @@ export class Project_manager {
     }
 
     this.set_default_tops();
-    this.set_results(false);
+    this.set_vunit_results(false);
 
     let vunit_test_list_result = await this.get_vunit_test_list();
-    this.tree.update_super_tree(normalized_prjs, vunit_test_list_result);
+    let cocotb_test_list_result = await this.get_cocotb_test_list();
+    this.tree.update_super_tree_vunit(normalized_prjs, vunit_test_list_result);
+    this.tree.update_super_tree_cocotb(normalized_prjs, cocotb_test_list_result);
 
     if (selected_project !== '') {
       this.tree.select_project(selected_project);
     }
     this.set_default_tops();
-    this.set_results(false);
+    this.set_vunit_results(false);
   }
 
   set_default_tops() {
@@ -551,6 +612,57 @@ export class Project_manager {
     }
   }
 
+  async get_cocotb_test_list() {
+    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+
+    let tests;
+    try {
+      let selected_project = this.edam_project_manager.selected_project;
+      let prj = this.edam_project_manager.get_project(selected_project);
+      let runpy = '';
+      if (prj.relative_path !== '' && prj.relative_path !== undefined) {
+        runpy = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
+      }
+      else {
+        runpy = prj.toplevel_path;
+      }
+
+      let runpy_ext = path_lib.extname(runpy);
+
+      if (runpy !== undefined) {
+        tests = await this.cocotb.get_test_list(python3_path, runpy);
+      }
+      else {
+        this.cocotb_test_list = [];
+        return [];
+      }
+      let tests_cocotb: Cocotb.TestItem[] = [];
+      for (let i = 0; i < tests.length; i++) {
+        const element = tests[i];
+        tests_cocotb.push(element);
+      }
+
+      if (tests_cocotb.length === 0) {
+        let single_test: Cocotb.TestItem = {
+          attributes: undefined,
+          name: 'Cocotb tests not found.',
+          location: undefined
+        };
+        tests_cocotb = [single_test];
+      }
+
+      this.cocotb_test_list = tests_cocotb;
+      return tests_cocotb;
+    }
+    catch (e) {
+      let single_test = {
+        name: 'Cocotb tests not found.',
+        location: undefined
+      };
+      return [single_test];
+    }
+  }
+
 
   load_project_from_edam() {
 
@@ -622,13 +734,14 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   data: TreeItem[] = [];
   projects: TreeItem[] = [];
   vunit_test_list_items: Test_item[] = [];
+  cocotb_test_list_items: Test_item[] = [];
 
   init_tree() {
     this.data = [new TreeItem('TerosHDL Projects', []), new TreeItem('Test list', [])];
     this.refresh();
   }
 
-  update_super_tree(projects, vunit_test_list) {
+  update_super_tree_vunit(projects, vunit_test_list) {
     this.get_vunit_test_list_items(vunit_test_list);
     this.projects = [];
     for (let i = 0; i < projects.length; i++) {
@@ -640,7 +753,19 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.update_tree();
   }
 
-  set_results(results, force_fail_all) {
+  update_super_tree_cocotb(projects, cocotb_test_list) {
+    this.get_cocotb_test_list_items(cocotb_test_list);
+    this.projects = [];
+    for (let i = 0; i < projects.length; i++) {
+      const element = projects[i];
+      let prj = new Project(element.name, element.libraries);
+      let prj_data = prj.get_prj();
+      this.projects.push(prj_data);
+    }
+    this.update_tree();
+  }
+
+  set_vunit_results(results, force_fail_all) {
     if (results === undefined) {
       return;
     }
@@ -650,6 +775,42 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     }
     for (let i = 0; i < this.vunit_test_list_items.length; ++i) {
       const test = this.vunit_test_list_items[i];
+      for (let j = 0; j < results.length; j++) {
+        const result = results[j];
+        if (test.label === result.name) {
+
+          if (result.pass === false) {
+            let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'failed.svg');
+            let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'failed.svg');
+            test.iconPath = {
+              light: path_icon_light,
+              dark: path_icon_dark
+            };
+          }
+          else {
+            let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'passed.svg');
+            let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'passed.svg');
+            test.iconPath = {
+              light: path_icon_light,
+              dark: path_icon_dark
+            };
+          }
+        }
+      }
+    }
+    this.update_tree();
+  }
+
+  set_cocotb_results(results, force_fail_all) {
+    if (results === undefined) {
+      return;
+    }
+    if (force_fail_all === true) {
+      this.set_fail_all_tests();
+      return;
+    }
+    for (let i = 0; i < this.cocotb_test_list_items.length; ++i) {
+      const test = this.cocotb_test_list_items[i];
       for (let j = 0; j < results.length; j++) {
         const result = results[j];
         if (test.label === result.name) {
@@ -694,9 +855,21 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     for (let i = 0; i < vunit_test_list.length; i++) {
       const element = vunit_test_list[i];
       let item = new Test_item(element.name, element.location);
+      item.contextValue = 'test_vunit';
       vunit_test_list_items.push(item);
     }
     this.vunit_test_list_items = vunit_test_list_items;
+  }
+
+  get_cocotb_test_list_items(cocotb_test_list) {
+    let cocotb_test_list_items: Test_item[] = [];
+    for (let i = 0; i < cocotb_test_list.length; i++) {
+      const element = cocotb_test_list[i];
+      let item = new Test_item(element.name, element.location);
+      item.contextValue = 'test_cocotb';
+      cocotb_test_list_items.push(item);
+    }
+    this.cocotb_test_list_items = cocotb_test_list_items;
   }
 
   add_project(name: string, sources) {
@@ -778,7 +951,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   update_tree() {
-    this.data = [new TreeItem('TerosHDL Projects', this.projects), new Test_title_item('Test list', this.vunit_test_list_items)];
+    this.data = [new TreeItem('TerosHDL Projects', this.projects), new Test_title_item('Test list', this.vunit_test_list_items), new Test_title_item('Cocotb Test list', this.cocotb_test_list_items)];
     this.refresh();
   }
 

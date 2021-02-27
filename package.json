@@ -491,17 +491,22 @@
 				},
 				{
 					"command": "teroshdl_tree_view.run_vunit_test",
-					"when": "view == teroshdl_tree_view && viewItem == test",
+					"when": "view == teroshdl_tree_view && viewItem == test_vunit",
 					"group": "inline"
 				},
 				{
 					"command": "teroshdl_tree_view.run_vunit_test_gui",
-					"when": "view == teroshdl_tree_view && viewItem == test",
+					"when": "view == teroshdl_tree_view && viewItem == test_vunit",
 					"group": "inline"
 				},
 				{
 					"command": "teroshdl_tree_view.go_to_code",
-					"when": "view == teroshdl_tree_view && viewItem == test",
+					"when": "viewItem == test_cocotb || viewItem == test_vunit && view == teroshdl_tree_view",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.run_cocotb_test",
+					"when": "view == teroshdl_tree_view && viewItem == test_cocotb",
 					"group": "inline"
 				},
 				{
@@ -580,6 +585,14 @@
 			{
 				"command": "teroshdl_tree_view.run_vunit_test",
 				"title": "Run VUnit test",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.run_cocotb_test",
+				"title": "Run Cocotb test",
 				"icon": {
 					"light": "resources/light/run.svg",
 					"dark": "resources/dark/run.svg"
