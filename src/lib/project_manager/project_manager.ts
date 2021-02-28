@@ -449,6 +449,7 @@ export class Project_manager {
 
     this.set_default_tops();
     this.set_vunit_results(false);
+    this.set_cocotb_results(false);
 
     let vunit_test_list_result = await this.get_vunit_test_list();
     let cocotb_test_list_result = await this.get_cocotb_test_list();
@@ -460,6 +461,7 @@ export class Project_manager {
     }
     this.set_default_tops();
     this.set_vunit_results(false);
+    this.set_cocotb_results(false);
   }
 
   set_default_tops() {

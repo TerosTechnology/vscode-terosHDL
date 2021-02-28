@@ -10,6 +10,7 @@ const glob = require( 'glob' );
 const tmp = require('tmp');
 const child_process = require("child_process");
 
+
 export interface TestItem {
   attributes: string | undefined;
   location: {
@@ -105,11 +106,10 @@ export class Cocotb {
       let index_of_test = tests_names.indexOf(cocotb_test_item.name);
       if (index_of_test > -1)
       {
-        let test_name = tests_names[index_of_test];
-        console.log(test_name);
-        console.log(cocotb_test_item.location?.parent_makefile);
-        let command = `make -f ${cocotb_test_item.location?.parent_makefile}`;
-        let result = await this.run_command(command, tests_names);
+        let path_of_makefile = cocotb_test_item.location?.parent_makefile;
+        let dir_of_makefile = path_lib.dirname(path_of_makefile);
+        let name_of_makefile = path_lib.basename(path_of_makefile);
+        let result = await this.run_makefile(dir_of_makefile, name_of_makefile, tests_names);
         return result;
       }
     }
@@ -163,17 +163,19 @@ export class Cocotb {
     return simulator_cmd;
   }
 
-  async run_command(command, tests) {
+  async run_makefile(dir, filename, tests) {
     let element = this;
 
-    element.output_channel.append(command);
+    element.output_channel.append(`Run makefile '${filename}' from directory '${dir}'\r\n`);
     element.output_channel.show();
 
     return new Promise(resolve => {
-      this.childp = shell.exec(command, { async: true }, async function (code, stdout, stderr) {
+      //@chcp 65001 >nul & cmd /d/s/c 
+      shell.cd(dir);
+      this.childp = shell.exec(`make -f ${filename}`, { async: true, encoding: "UTF-8" }, async function (code, stdout, stderr) {
         if (code === 0) {
-          // let results = await element.get_result("", tests);
-          resolve([]);
+          let results = await element.get_result(dir, tests);
+          resolve(results);
         }
         else {
           let results = element.get_all_test_fail(tests);
@@ -193,64 +195,36 @@ export class Cocotb {
   }
 
   async get_result(folder, tests) {
-    // const result_file = `${folder}${this.folder_sep}teroshdl_out.xml`;
-    // const xml2js = require('xml2js');
-    // const parser = new xml2js.Parser({ attrkey: "atrr" });
-
-    // // this example reads the file synchronously
-    // // you can read it asynchronously also
-    // let xml_string = fs.readFileSync(result_file, "utf8");
-
-    // return new Promise(resolve => {
-    //   try {
-    //     parser.parseString(xml_string, function (error, result) {
-    //       let testsuites = result.testsuite;
-    //       let testcase = testsuites.testcase;
-    //       let results: {}[] = [];
-    //       for (let i = 0; i < testcase.length; i++) {
-    //         const test = testcase[i];
-    //         let test_name = `${test.atrr.classname}.${test.atrr.name}`;
-    //         let pass = true;
-    //         if (test.failure !== undefined) {
-    //           pass = false;
-    //         }
-    //         let test_info = {
-    //           name: test_name,
-    //           pass: pass
-    //         };
-    //         results.push(test_info);
-    //       }
-    //       resolve(results);
-    //     });
-    //   } catch (e) {
-    //     let results = this.get_all_test_fail(tests);
-    //     resolve(results);
-    //   }
+    const result_file = path_lib.join(folder, 'results.xml');
+    const xml2js = require('xml2js');
+    const parser = new xml2js.Parser({ attrkey: "atrr" });
+    let xml_string = fs.readFileSync(result_file, "utf8");
 
     return new Promise(resolve => {
-      let results: {}[] = [];
-
-      let result = {testsuite: {testcase: {atrr: {classname: '', name: ''}, failure: false}}};
-
-      let testsuites = result.testsuite;
-      let testcase = [testsuites.testcase];
-      const test = testcase[0];
-
-      let test_name = `${test.atrr.classname}.${test.atrr.name}`;
-      let pass = true;
-  
-      if (test.failure !== undefined) {
-        pass = false;
+      try {
+        parser.parseString(xml_string, function (error, result) {
+          let testsuites = result.testsuites.testsuite;
+          let testcase = testsuites[0].testcase;
+          let results: {}[] = [];
+          for (let i = 0; i < testcase.length; i++) {
+            const test = testcase[i];
+            let test_name = `${test.atrr.classname}.${test.atrr.name}`;
+            let pass = true;
+            if (test.failure !== undefined) {
+              pass = false;
+            }
+            let test_info = {
+              name: test_name,
+              pass: pass
+            };
+            results.push(test_info);
+          }
+          resolve(results);
+        });
+      } catch (e) {
+        let results = this.get_all_test_fail(tests);
+        resolve(results);
       }
-  
-      let test_info = {
-        name: test_name,
-        pass: pass
-      };
-  
-      results.push(test_info);
-  
-      resolve(results);
     });
   };
 
@@ -305,18 +279,43 @@ export class Cocotb {
         const module_path = path_lib.dirname(makefile.makefile);
         const filename = path_lib.join(module_path, test_name);
 
-        const test_item: TestItem = {
-          attributes: "",
-          location: {
-            file_name: `${filename}.py`,
-            length: 1,
-            offset: 1,
-            parent_makefile: path_lib.resolve(makefile.makefile)
-          },
-          name: test_name
-        };
+        let python_cocotb_data = fs.readFileSync(`${filename}.py`);
 
-        test_array.push(test_item);
+        let input = python_cocotb_data.toString();
+        let regex = /(^[^#\r\n]* *@cocotb\.test\(\)(\r\n|\n|\r))([^#\r\n]* *(async )?def ([\w_]+)\([\w_]+\):$)/gm;
+        
+        let cocotb_test_matches: RegExpExecArray | null;
+        let cocotb_tests: {name: string, offset: number, length: number}[] = [];
+        while (cocotb_test_matches = regex.exec(input))
+        {
+          const match_group_name = 5;
+          const match_group_function_line = 3;
+          const match_group_decorator = 1;
+
+          cocotb_tests.push(
+            {
+              name: cocotb_test_matches[match_group_name],
+              // line: lineNumber,
+              offset: cocotb_test_matches.index + cocotb_test_matches[match_group_decorator].length,
+              length: cocotb_test_matches[match_group_function_line].length
+            }
+          );
+        }
+
+        for (let cocotb_test of cocotb_tests) {
+          const test_item: TestItem = {
+            attributes: "",
+            location: {
+              file_name: `${filename}.py`,
+              length: cocotb_test.length,
+              offset: cocotb_test.offset,
+              parent_makefile: path_lib.resolve(makefile.makefile)
+            },
+            name: `${test_name}.${cocotb_test.name}`
+          };
+
+          test_array.push(test_item);
+        }
      }
     }
 
