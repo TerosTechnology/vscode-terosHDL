@@ -52,7 +52,6 @@ export default class Lint_manager {
                 })
             );
         }
-        this.init = true;
     }
 
     config_linter_init() {
@@ -204,7 +203,10 @@ export default class Lint_manager {
         }
         // let current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
         let current_path = doc.uri.fsPath;
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        if (this.init === false){
+            this.init = true;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
         //Save the uri linted
         this.add_uri_to_collections(doc.uri);
 
@@ -280,8 +282,8 @@ export default class Lint_manager {
 
     async get_errors(current_path) {
         try {
-            const jsteros = require('jsteros');
-            let linter = new jsteros.Linter.Linter(this.linter_name, this.lang);
+            const jsteros = await require('jsteros');
+            let linter = await new jsteros.Linter.Linter(this.linter_name, this.lang);
             // let prj_files = this.project_manager.get_active_project_libraries();
             // let errors = await this.linter.lint_from_file(current_path, this.get_config(), prj_files);
             let errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
