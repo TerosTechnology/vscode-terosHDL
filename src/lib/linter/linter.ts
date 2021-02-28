@@ -204,6 +204,7 @@ export default class Lint_manager {
         }
         // let current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
         let current_path = doc.uri.fsPath;
+        await new Promise(resolve => setTimeout(resolve, 1000));
         //Save the uri linted
         this.add_uri_to_collections(doc.uri);
 
