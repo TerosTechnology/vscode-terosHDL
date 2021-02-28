@@ -35,9 +35,12 @@ export default class Lint_manager {
         this.lang = language;
         this.linter_type = linter_type;
         this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
-        vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
-        vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
-        vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
+
+        this.config_linter_init();
+
+        // vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
+        // vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
+        // vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
 
         vscode.workspace.onDidChangeConfiguration(this.config_linter, this, this.subscriptions);
         this.lint(<vscode.TextDocument>vscode.window.activeTextEditor?.document);
@@ -49,7 +52,6 @@ export default class Lint_manager {
                 })
             );
         }
-        this.config_linter_init();
         this.init = true;
     }
 
@@ -283,7 +285,8 @@ export default class Lint_manager {
             // let errors = await this.linter.lint_from_file(current_path, this.get_config(), prj_files);
             let errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
             return errors;
-        } catch (error) {            
+        } catch (error) {       
+            console.log(error);     
             return [];
         }
     }

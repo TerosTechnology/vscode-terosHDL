@@ -244,8 +244,19 @@ export async function activate(context: vscode.ExtensionContext) {
     // Linter
     /**************************************************************************/
     linter_vhdl = new linter.default("vhdl", "linter", context, project_manager);
+    vscode.workspace.onDidOpenTextDocument((e) => linter_vhdl.lint(e));
+    vscode.workspace.onDidSaveTextDocument((e) => linter_vhdl.lint(e));
+    vscode.workspace.onDidCloseTextDocument((e) => linter_vhdl.remove_file_diagnostics(e));
+
     linter_verilog = new linter.default("verilog", "linter", context, project_manager);
+    vscode.workspace.onDidOpenTextDocument((e) => linter_verilog.lint(e));
+    vscode.workspace.onDidSaveTextDocument((e) => linter_verilog.lint(e));
+    vscode.workspace.onDidCloseTextDocument((e) => linter_verilog.remove_file_diagnostics(e));
+
     linter_systemverilog = new linter.default("systemverilog", "linter", context, project_manager);
+    vscode.workspace.onDidOpenTextDocument((e) => linter_systemverilog.lint(e));
+    vscode.workspace.onDidSaveTextDocument((e) => linter_systemverilog.lint(e));
+    vscode.workspace.onDidCloseTextDocument((e) => linter_systemverilog.remove_file_diagnostics(e));
     /**************************************************************************/
     // Check style
     /**************************************************************************/
