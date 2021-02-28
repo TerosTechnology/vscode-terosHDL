@@ -110,17 +110,24 @@ export default class Dependencies_viewer_manager {
   }
 
   private async update_viewer() {
-    let dot = await this.get_dot();
-    if (dot === undefined) {
-      this.show_python3_error_message();
+    try{
+      let dot = await this.get_dot();
+      if (dot === undefined) {
+        this.show_python3_error_message();
+      }
+      else {
+        await this.panel?.webview.postMessage({ command: "update", message: dot });
+      }
     }
-    else {
-      await this.panel?.webview.postMessage({ command: "update", message: dot });
+    catch(e){
+      this.show_python3_error_message();
+      console.log("[TerosHDL][dependencies-viewer]");
+      console.log(e);
     }
   }
 
   private show_python3_error_message() {
-    vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration.');
+    vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration. Install VUnit: sudo pip3 install vunit_hdl');
   }
 
   //Clear
