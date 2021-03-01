@@ -252,8 +252,11 @@ export class Project_manager {
       tool_options: tool_configuration
     };
 
-    this.run_vunit_tests([], false);
-    this.run_cocotb_tests([], false);
+    if (tool_configuration !== undefined)
+    {
+      this.run_vunit_tests([], false);
+    }
+    this.run_cocotb_tests([]);
   }
 
   async run_vunit_tests(tests, gui) {
@@ -380,6 +383,7 @@ export class Project_manager {
 
   stop() {
     this.vunit.stop_test();
+    this.cocotb.stop_test();
   }
 
   private show_export_message(msg) {
