@@ -46,23 +46,6 @@ export class Cocotb {
     }
   }
 
-  async get_python3_path(python3_path) {
-    let python_path = '';
-    if (python3_path === '') {
-      python_path = await colibri.Nopy.get_python_exec();
-    }
-    else {
-      python_path = python3_path;
-    }
-
-    if (python_path === undefined || python_path === '') {
-      this.output_channel.append('[Error] Install and configure Python3 in the extension configuration.');
-      this.output_channel.show();
-      return undefined;
-    }
-    return python_path;
-  }
-
   async run_simulation(tests_names: string[] = [], cocotb_test_list: TestItem[] = []) {
     let makefiles_to_run = new Map<string, string[]>();
 
@@ -103,53 +86,6 @@ export class Cocotb {
     }
 
     return results;
-  }
-
-  async get_command(python3_path, runpy_dirname, runpy_filename, simulator,
-    simulator_install_path, extra_options, gui, list = false, tests: string[] = []) {
-
-    let python3_path_exec = await this.get_python3_path(python3_path);
-    if (python3_path_exec === undefined) {
-      return undefined;
-    }
-
-    let tests_cmd = ' ';
-    for (let i = 0; i < tests.length; i++) {
-      if (i === 0) {
-        tests_cmd += '"';
-      }
-      const element = tests[i];
-      if (i === tests.length - 1) {
-        tests_cmd += `${element}"`;
-      }
-    }
-
-    let list_cmd = '';
-    if (list === true) {
-      list_cmd = '--export-json teroshdl_export.json';
-    }
-
-    let gui_cmd = '';
-    if (gui === true) {
-      extra_options = '';
-      gui_cmd = '--gui';
-    }
-
-    let simulator_config = this.get_simulator_config(simulator, simulator_install_path);
-    let go_to_dir = `cd ${runpy_dirname}${this.more}`;
-    let vunit_default_options = `--no-color -x teroshdl_out.xml --exit-0 ${gui_cmd} ${list_cmd}`;
-    let command = `${simulator_config}${go_to_dir}${python3_path_exec} ${runpy_filename} ${tests_cmd} ${vunit_default_options}${extra_options}`;
-
-    return command;
-  }
-
-  get_simulator_config(simulator_name, simulator_install_path) {
-    let simulator_name_up = simulator_name.toUpperCase();
-    let simulator_name_low = simulator_name.toLowerCase();
-
-    let simulator_cmd = `${this.exp} VUNIT_${simulator_name_up}_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more}`;
-
-    return simulator_cmd;
   }
 
   async run_makefile(dir, filename, tests) {
