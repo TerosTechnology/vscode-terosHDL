@@ -1,3 +1,4 @@
+import { assert } from 'console';
 import * as vscode from 'vscode';
 import { resourceLimits } from 'worker_threads';
 
@@ -63,57 +64,45 @@ export class Cocotb {
   }
 
   async run_simulation(tests_names: string[] = [], cocotb_test_list: TestItem[] = []) {
-    // this.output_channel.clear();
-    // let options_vunit = selected_tool_configuration['vunit'];
-    // if (options_vunit === undefined) {
-    //   let results = this.get_all_test_fail(tests);
-    //   this.output_channel.append('[Error] Select VUnit as you tool.');
-    //   this.output_channel.show();
-    //   return results;
-    // }
+    let makefiles_to_run = new Map<string, string[]>();
 
-    // let simulator = options_vunit.simulator;
-    // let simulator_install_path = '';
-    // let extra_options = ` ${options_vunit.options} `;
-    // for (let i = 0; i < all_tool_configuration.length; i++) {
-    //   const tool = all_tool_configuration[i];
-    //   let tool_name = '';
-    //   for (var attributename in tool) {
-    //     tool_name = attributename;
-    //   }
+    let push_makefile_if_not_exist = (test_item: TestItem) => {
+      let makefile = test_item.location?.parent_makefile;
+      if (!makefile) return;
 
-    //   if (tool_name === simulator) {
-    //     simulator_install_path = tool[tool_name].installation_path;
-    //     break;
-    //   }
-    // }
+      let makefile_to_run = makefiles_to_run.get(makefile);
+      makefiles_to_run.set(
+        makefile, 
+        makefile_to_run ? [...makefile_to_run, test_item.name] : [test_item.name]
+      );
+    };
 
-    // let runpy_dirname = path_lib.dirname(runpy_path);
-    // let runpy_filename = path_lib.basename(runpy_path);
-    // let command = await this.get_command(python3_path, runpy_dirname,
-    //   runpy_filename, simulator, simulator_install_path, extra_options, gui, false, tests);
-
-    // if (command === undefined) {
-    //   return [];
-    // }
-
-    // let result = await this.run_command(command, runpy_dirname, tests);
-    // return result;
-
-
-    for (let cocotb_test_item of cocotb_test_list)
-    {
-      let index_of_test = tests_names.indexOf(cocotb_test_item.name);
-      if (index_of_test > -1)
-      {
-        let path_of_makefile = cocotb_test_item.location?.parent_makefile;
-        let dir_of_makefile = path_lib.dirname(path_of_makefile);
-        let name_of_makefile = path_lib.basename(path_of_makefile);
-        let result = await this.run_makefile(dir_of_makefile, name_of_makefile, tests_names);
-        return result;
+    if (tests_names.length == 0) {
+      for (let test_item of cocotb_test_list) {
+        push_makefile_if_not_exist(test_item);
       }
     }
-    return [];
+    else {
+      for (let test_item of cocotb_test_list) {
+        if (tests_names.includes(test_item.name)) {
+          push_makefile_if_not_exist(test_item);
+        }
+      }
+    }
+
+    let results: any[] = [];
+    for (let [makefile, tests] of makefiles_to_run) {
+      let dir_of_makefile = path_lib.dirname(makefile);
+      let name_of_makefile = path_lib.basename(makefile);
+      let result: any | [] = await this.run_makefile(dir_of_makefile, name_of_makefile, tests);
+      if (Array.isArray(result)) {
+        if (result.length > 0) {
+          results = results.concat(result);
+        }
+      }
+    }
+
+    return results;
   }
 
   async get_command(python3_path, runpy_dirname, runpy_filename, simulator,

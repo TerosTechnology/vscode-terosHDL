@@ -225,8 +225,7 @@ export class Project_manager {
 
   async run_cocotb_test(item) {
     let tests: string[] = [item.label];
-    let gui = false;
-    this.run_cocotb_tests(tests, gui);
+    this.run_cocotb_tests(tests);
   }
 
   async run_vunit_test_gui(item) {
@@ -283,33 +282,7 @@ export class Project_manager {
     this.set_vunit_results(force_fail_all);
   }
 
-  async run_cocotb_tests(tests, gui) {
-    // let selected_tool_configuration = this.config_file.get_config_of_selected_tool();
-    // let all_tool_configuration = this.config_file.get_config_tool();
-
-    // let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-    // let selected_project = this.edam_project_manager.selected_project;
-    // let prj = this.edam_project_manager.get_project(selected_project);
-
-    // let runpy_path = '';
-    // if (prj.relative_path !== '' && prj.relative_path !== undefined) {
-    //   runpy_path = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
-    // }
-    // else {
-    //   runpy_path = prj.toplevel_path;
-    // }
-
-    // let results = <[]>await this.cocotb.run_simulation(python3_path, selected_tool_configuration, all_tool_configuration,
-    //   runpy_path, tests, gui);
-      
-    // this.last_cocotb_results = results;
-    // let force_fail_all = false;
-    // if (results.length === 0) {
-    //   force_fail_all = true;
-    // }
-    // this.set_results(force_fail_all);
-
-    
+  async run_cocotb_tests(tests) {   
     let results = <[]>await this.cocotb.run_simulation(tests, this.cocotb_test_list);
 
     this.last_cocotb_results = results;
