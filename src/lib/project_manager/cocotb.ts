@@ -166,7 +166,7 @@ export class Cocotb {
     return results;
   }
 
-  async get_test_list(python3_path, runpy_path) {
+  async get_test_list() : Promise<TestItem[]> {
     let wksp_folder;
     if(vscode.workspace.workspaceFolders !== undefined) {
       wksp_folder = vscode.workspace.workspaceFolders[0].uri.fsPath;
