@@ -35,9 +35,12 @@ export default class Lint_manager {
         this.lang = language;
         this.linter_type = linter_type;
         this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
-        vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
-        vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
-        vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
+
+        this.config_linter_init();
+
+        // vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
+        // vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
+        // vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
 
         vscode.workspace.onDidChangeConfiguration(this.config_linter, this, this.subscriptions);
         this.lint(<vscode.TextDocument>vscode.window.activeTextEditor?.document);
@@ -49,8 +52,37 @@ export default class Lint_manager {
                 })
             );
         }
-        this.config_linter();
-        this.init = true;
+    }
+
+    config_linter_init() {
+        //todo: use doc!! .git error
+        let normalized_lang = this.lang;
+        if (this.lang === "systemverilog") {
+            normalized_lang = "verilog";
+        }
+        let linter_name: string;
+        linter_name = <string>vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + normalized_lang).get("linter.a");
+        linter_name = linter_name.toLowerCase();
+        this.linter_name = linter_name;
+
+        if (this.linter_type === "linter") {
+            //Enable custom binary exec
+            let custom_call_enable = <boolean>vscode.workspace.getConfiguration(
+                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name + ".xcall").get("enable");
+            let custom_call_bin = <string>vscode.workspace.getConfiguration(
+                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name + ".xcall").get("bin");
+            this.custom_exec = custom_call_bin;
+            this.enable_custom_exec = custom_call_enable;
+            //Custom linter path
+            let linter_path = <string>vscode.workspace.getConfiguration(
+                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("path");
+            this.linter_path = linter_path;
+            //Custom arguments
+            let linter_arguments = <string>vscode.workspace.getConfiguration(
+                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("arguments");
+            this.linter_arguments = linter_arguments;
+        }
+        this.linter_enable = true;
     }
 
     config_linter() {
@@ -84,15 +116,10 @@ export default class Lint_manager {
         this.linter_enable = true;
         if (linter_name === 'none') {
             this.linter_enable = false;
-            this.remove_all();
-        }
-        if (this.linter_enable === true) {
-            // const jsteros = require('jsteros');
-            // this.linter = new jsteros.Linter.Linter(linter_name, this.lang);
             this.refresh_lint();
         }
-        else {
-            return;
+        else{
+            this.refresh_lint();
         }
     }
 
@@ -176,6 +203,10 @@ export default class Lint_manager {
         }
         // let current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
         let current_path = doc.uri.fsPath;
+        if (this.init === false){
+            this.init = true;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
         //Save the uri linted
         this.add_uri_to_collections(doc.uri);
 
@@ -251,16 +282,14 @@ export default class Lint_manager {
 
     async get_errors(current_path) {
         try {
-            const jsteros = require('jsteros');
-            let linter = new jsteros.Linter.Linter(this.linter_name, this.lang);
-            let prj_files = this.project_manager.get_active_project_libraries();
+            const jsteros = await require('jsteros');
+            let linter = await new jsteros.Linter.Linter(this.linter_name, this.lang);
+            // let prj_files = this.project_manager.get_active_project_libraries();
             // let errors = await this.linter.lint_from_file(current_path, this.get_config(), prj_files);
-            if (linter === undefined){
-                this.config_linter();
-            }
             let errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
             return errors;
-        } catch (error) {            
+        } catch (error) {       
+            console.log(error);     
             return [];
         }
     }
