@@ -135,7 +135,7 @@ export async function activate(context: vscode.ExtensionContext) {
         ),
         vscode.workspace.onDidOpenTextDocument((e) => documenter.update_open_documentation_module(e)),
         vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
-        // vscode.workspace.onDidChangeTextDocument((e) => documenter.update_change_documentation_module(e)),
+        vscode.workspace.onDidChangeTextDocument((e) => documenter.update_change_documentation_module(e)),
         vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
     );
     /**************************************************************************/
