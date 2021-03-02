@@ -282,7 +282,7 @@ export class Project_manager {
     if (results.length === 0) {
       force_fail_all = true;
     }
-    this.set_vunit_results(force_fail_all);
+    this.set_results(force_fail_all, 'vunit');
   }
 
   async run_cocotb_tests(tests) {   
@@ -293,7 +293,7 @@ export class Project_manager {
     if (results.length === 0) {
       force_fail_all = true;
     }
-    this.set_cocotb_results(force_fail_all);
+    this.set_results(force_fail_all, 'cocotb');
   }
 
   getline_numberof_char(path, index) {
@@ -353,12 +353,11 @@ export class Project_manager {
     });
   }
 
-  set_vunit_results(force_fail_all) {
-    this.tree.set_results(this.last_vunit_results, this.tree.vunit_test_list_items, force_fail_all);
-  }
+  set_results(force_fail_all, context: string) {
+    let last_results_parameter_name = `last_${context}_results`;
+    let new_results_parameter_name = `${context}_test_list_items`;
 
-  set_cocotb_results(force_fail_all) {
-    this.tree.set_results(this.last_cocotb_results, this.tree.cocotb_test_list_items, force_fail_all);
+    this.tree.set_results(this[last_results_parameter_name], this.tree[new_results_parameter_name], force_fail_all);
   }
 
   set_top_from_project(project_name, library_name, path) {
@@ -425,8 +424,8 @@ export class Project_manager {
     }
 
     this.set_default_tops();
-    this.set_vunit_results(false);
-    this.set_cocotb_results(false);
+    this.set_results(false, 'vunit');
+    this.set_results(false, 'cocotb');
 
     let vunit_test_list_result = await this.get_vunit_test_list();
     let cocotb_test_list_result = await this.get_cocotb_test_list();
@@ -437,8 +436,8 @@ export class Project_manager {
       this.tree.select_project(selected_project);
     }
     this.set_default_tops();
-    this.set_vunit_results(false);
-    this.set_cocotb_results(false);
+    this.set_results(false, 'vunit');
+    this.set_results(false, 'cocotb');
   }
 
   set_default_tops() {
