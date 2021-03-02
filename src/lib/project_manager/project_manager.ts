@@ -738,42 +738,6 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.update_tree();
   }
 
-  set_cocotb_results(results, force_fail_all) {
-    if (results === undefined) {
-      return;
-    }
-    if (force_fail_all === true) {
-      this.set_fail_all_tests();
-      return;
-    }
-    for (let i = 0; i < this.cocotb_test_list_items.length; ++i) {
-      const test = this.cocotb_test_list_items[i];
-      for (let j = 0; j < results.length; j++) {
-        const result = results[j];
-        if (test.label === result.name) {
-
-          if (result.pass === false) {
-            let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'failed.svg');
-            let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'failed.svg');
-            test.iconPath = {
-              light: path_icon_light,
-              dark: path_icon_dark
-            };
-          }
-          else {
-            let path_icon_light = path.join(__filename, '..', '..', '..', '..', 'resources', 'light', 'passed.svg');
-            let path_icon_dark = path.join(__filename, '..', '..', '..', '..', 'resources', 'dark', 'passed.svg');
-            test.iconPath = {
-              light: path_icon_light,
-              dark: path_icon_dark
-            };
-          }
-        }
-      }
-    }
-    this.update_tree();
-  }
-
   set_fail_all_tests() {
     for (let i = 0; i < this.vunit_test_list_items.length; ++i) {
       const test = this.vunit_test_list_items[i];
