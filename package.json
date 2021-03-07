@@ -247,7 +247,7 @@
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.documenter.vhdl.header_file_path": {
+				"teroshdl.documenter.header_file_path": {
 					"markdownDescription": "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template",
 					"type": "string",
 					"default": ""
