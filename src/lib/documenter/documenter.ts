@@ -24,6 +24,9 @@ import * as path_lib from 'path';
 import * as util from "util";
 
 export default class Documenter {
+  private created_documenter = false;
+  private vhdl_documenter;
+  private verilog_documenter;
   private panel;
   private context;
   private current_document;
@@ -56,17 +59,27 @@ export default class Documenter {
   }
 
   get_documenter(language_id) {
-    if (language_id === 'vhdl') {
+    if (this.created_documenter === false){
       //Create VHDL documenter
-      let documenter = this.create_documenter('vhdl');
-      documenter.init();
-      return documenter;
+      this.vhdl_documenter = this.create_documenter('vhdl');
+      this.vhdl_documenter.init();
+      //Create Verilog documenter
+      this.verilog_documenter = this.create_documenter('verilog');
+      this.verilog_documenter.init();
+      this.created_documenter = true;
+    }
+
+    if (language_id === 'vhdl') {
+      // //Create VHDL documenter
+      // let documenter = this.create_documenter('vhdl');
+      // documenter.init();
+      return this.vhdl_documenter;
     }
     else if (language_id === 'verilog') {
-      //Create VHDL documenter
-      let documenter = this.create_documenter('verilog');
-      documenter.init();
-      return documenter;
+      // //Create VHDL documenter
+      // let documenter = this.create_documenter('verilog');
+      // documenter.init();
+      return this.verilog_documenter;
     }
     else {
       return undefined;
