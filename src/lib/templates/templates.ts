@@ -82,7 +82,7 @@ export async function get_template() {
 
     if (type === '' || subtype === '') { return; };
 
-    let header_file_path = vscode.workspace.getConfiguration('teroshdl.documenter.vhdl').get('header_file_path');
+    let header_file_path = vscode.workspace.getConfiguration('teroshdl.documenter').get('header_file_path');
 
     //Get tabsize
     let general_tabsize = <number>vscode.workspace.getConfiguration('editor').get('tabSize');
