@@ -82,6 +82,11 @@
 				"path": "./syntaxes/xdc.tmLanguage"
 			},
 			{
+				"language": "ldc",
+				"scopeName": "source.xdcconstraints",
+				"path": "./syntaxes/xdc.tmLanguage"
+			},
+			{
 				"language": "ucf",
 				"scopeName": "source.ucfconstraints",
 				"path": "./syntaxes/ucf.tmLanguage"
@@ -801,6 +806,17 @@
 				"configuration": "./configs/xdcconstraints.configuration.json"
 			},
 			{
+				"id": "ldc",
+				"aliases": [
+					"lattice constraints"
+				],
+				"extensions": [
+					".ldc",
+					".pdc"
+				],
+				"configuration": "./configs/xdcconstraints.configuration.json"
+			},
+			{
 				"id": "verilog",
 				"aliases": [
 					"Verilog",
@@ -841,6 +857,10 @@
 			},
 			{
 				"language": "xdc",
+				"path": "./snippets/xdc/xdc.json"
+			},
+			{
+				"language": "ldc",
 				"path": "./snippets/xdc/xdc.json"
 			}
 		]
