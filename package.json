@@ -846,7 +846,7 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
+		"vscode:prepublish": "npm run build:syntax & npm run compile",
 		"build:syntax": "js-yaml ./syntaxes/vhdl/vhdl.tmLanguage.yml > ./syntaxes/vhdl/vhdl.tmLanguage.json",
 		"compile": "tsc -p ./",
 		"lint": "eslint src --ext ts",
