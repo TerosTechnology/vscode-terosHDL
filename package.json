@@ -64,7 +64,7 @@
 			{
 				"language": "vhdl",
 				"scopeName": "source.vhdl",
-				"path": "./syntaxes/vhdl.tmLanguage"
+				"path": "./syntaxes/vhdl/vhdl.tmLanguage.json"
 			},
 			{
 				"language": "verilog",
@@ -78,6 +78,11 @@
 			},
 			{
 				"language": "xdc",
+				"scopeName": "source.xdcconstraints",
+				"path": "./syntaxes/xdc.tmLanguage"
+			},
+			{
+				"language": "ldc",
 				"scopeName": "source.xdcconstraints",
 				"path": "./syntaxes/xdc.tmLanguage"
 			},
@@ -801,6 +806,17 @@
 				"configuration": "./configs/xdcconstraints.configuration.json"
 			},
 			{
+				"id": "ldc",
+				"aliases": [
+					"lattice constraints"
+				],
+				"extensions": [
+					".ldc",
+					".pdc"
+				],
+				"configuration": "./configs/xdcconstraints.configuration.json"
+			},
+			{
 				"id": "verilog",
 				"aliases": [
 					"Verilog",
@@ -842,11 +858,16 @@
 			{
 				"language": "xdc",
 				"path": "./snippets/xdc/xdc.json"
+			},
+			{
+				"language": "ldc",
+				"path": "./snippets/xdc/xdc.json"
 			}
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
+		"vscode:prepublish": "npm run build:syntax & npm run compile",
+		"build:syntax": "js-yaml ./syntaxes/vhdl/vhdl.tmLanguage.yml > ./syntaxes/vhdl/vhdl.tmLanguage.json",
 		"compile": "tsc -p ./",
 		"lint": "eslint src --ext ts",
 		"watch": "tsc -watch -p ./",
@@ -868,6 +889,7 @@
 		"@typescript-eslint/parser": "^2.30.0",
 		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
+		"js-yaml": "^3.13.1",
 		"mocha": "^7.1.2",
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.3.0"
