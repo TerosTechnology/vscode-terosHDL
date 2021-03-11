@@ -19,7 +19,7 @@ jobs:
           cd ..
           git clone https://github.com/TerosTechnology/colibri.git
           cd vscode-terosHDL
-          rm -rf /usr/local/bin/phantomjs
+          sudo rm -rf /usr/local/bin/phantomjs
           npm install
           vsce package
       - uses: "marvinpinto/action-automatic-releases@latest"
