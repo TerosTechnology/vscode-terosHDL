@@ -101,7 +101,6 @@ export class Cocotb {
     element.output_channel.show();
 
     return new Promise(resolve => {
-      //@chcp 65001 >nul & cmd /d/s/c 
       shell.cd(dir);
       this.childp = shell.exec(`make -f ${filename}`, { async: true, encoding: "UTF-8" }, async function (code, stdout, stderr) {
         if (code === 0) {
