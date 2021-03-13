@@ -89,6 +89,12 @@ export class Cocotb {
   }
 
   async run_makefile(dir, filename, tests) {
+    if (shell.exec("cocotb-config -v").code == 127)
+    {
+      vscode.window.showErrorMessage("Install cocotb itself to run tests");
+      return([]);
+    }
+
     let element = this;
 
     element.output_channel.append(`Run makefile '${filename}' from directory '${dir}'\r\n`);
@@ -167,6 +173,12 @@ export class Cocotb {
   }
 
   async get_test_list() : Promise<TestItem[]> {
+    if (shell.exec("make").code == 127)
+    {
+      vscode.window.showErrorMessage("Install Make to use cocotb");
+      return([]);
+    }
+
     let wksp_folder;
     if(vscode.workspace.workspaceFolders !== undefined) {
       wksp_folder = vscode.workspace.workspaceFolders[0].uri.fsPath;
