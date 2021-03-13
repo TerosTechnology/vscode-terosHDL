@@ -215,8 +215,14 @@ export class Cocotb {
         const module_path = path_lib.dirname(makefile.makefile);
         const filename = path_lib.join(module_path, test_name);
 
-        let python_cocotb_data = fs.readFileSync(`${filename}.py`);
-
+        let python_cocotb_data;
+        try {
+          python_cocotb_data = fs.readFileSync(`${filename}.py`);
+        } catch {
+          vscode.window.showErrorMessage(`Found "${module}" module in Makefile's MODULE variable but no "${test_name}.py" file found`);
+          continue;
+        }
+        
         let input = python_cocotb_data.toString();
         let regex = /(^[^#\r\n]* *@cocotb\.test\(\)(\r\n|\n|\r))([^#\r\n]* *(async )?def ([\w_]+)\([\w_]+\):$)/gm;
         
