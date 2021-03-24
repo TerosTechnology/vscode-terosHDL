@@ -856,6 +856,10 @@
 				"path": "./snippets/systemverilog/systemverilog.json"
 			},
 			{
+				"language": "systemverilog",
+				"path": "./snippets/verilog/verilog.json"
+			},
+			{
 				"language": "xdc",
 				"path": "./snippets/xdc/xdc.json"
 			},
