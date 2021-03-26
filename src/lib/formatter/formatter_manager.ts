@@ -3,6 +3,7 @@
 // Ismael Perez Rojo
 // Carlos Alberto Ruiz Naranjo
 // Alfredo Saez
+// Julien Faucher
 //
 // This file is part of Colibri.
 //
@@ -38,6 +39,9 @@ export default class Formatter_manager {
         const jsteros = require('jsteros');
         let formatter = new jsteros.Formatter.Formatter(this.formatter_name);
         if (formatter !== undefined) {
+            if (formatter.update_params !== undefined ) {
+                formatter.update_params();
+            }
             let options = this.get_options();
             let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
@@ -49,7 +53,7 @@ export default class Formatter_manager {
 
     config_formatter() {
         let formatter_name: string;
-        formatter_name = <string>vscode.workspace.getConfiguration(`teroshdl.formatter.${this.lang}`).get("type.a");
+        formatter_name = <string>vscode.workspace.getConfiguration(`teroshdl.formatter.${this.lang}`).get("engine");
         formatter_name = formatter_name.toLowerCase();
         this.formatter_name = formatter_name;
     }
@@ -65,8 +69,11 @@ export default class Formatter_manager {
         }
         else if (this.formatter_name === "istyle") {
             let style = <string>vscode.workspace
-                .getConfiguration("teroshdl.formatter.verilog.type.istyle").get("style");
+                .getConfiguration("teroshdl.formatter.verilog.istyle").get("style");
             options = { 'style': get_istyle_style(), 'extra_args': get_istyle_extra_args() };
+        }
+        else if (this.formatter_name === "s3sv") {
+
         }
         return options;
     }
@@ -79,7 +86,7 @@ function get_istyle_style() {
         "GNU": "gnu",
         "ANSI": "ansi"
     };
-    let style = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.type.istyle").get("style");
+    let style = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.istyle").get("style");
     const map_style = style_map[style];
     if (map_style !== undefined) {
         return "--style=ansi";
@@ -90,7 +97,7 @@ function get_istyle_style() {
 
 function get_istyle_extra_args() {
     let extra_args = "";
-    let number_of_spaces = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.type.istyle").get("spaces");
+    let number_of_spaces = <integer>vscode.workspace.getConfiguration("teroshdl.formatter.verilog").get("indentSize");
     extra_args = "-s" + number_of_spaces + " ";
     return extra_args;
 }

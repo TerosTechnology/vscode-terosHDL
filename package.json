@@ -267,15 +267,26 @@
 					"type": "string",
 					"default": "!"
 				},
-				"teroshdl.formatter.verilog.type.a": {
+				"teroshdl.formatter.verilog.useTabs": {
+					"description": "Use tabs instead of spaces for indentation.",
+					"type": "boolean",
+					"default": false
+				},
+				"teroshdl.formatter.verilog.indentSize": {
+					"description": "Indentation size, in characters.",
+					"type": "integer",
+					"default": 2
+				},
+				"teroshdl.formatter.verilog.engine": {
 					"description": "Select verilog formatter",
 					"type": "string",
 					"enum": [
-						"iStyle"
+						"iStyle",
+						"s3sv"
 					],
-					"default": "iStyle"
+					"default": "s3sv"
 				},
-				"teroshdl.formatter.verilog.type.istyle.style": {
+				"teroshdl.formatter.verilog.istyle.style": {
 					"description": "Predefined Styling options",
 					"type": "string",
 					"default": "ANSI",
@@ -286,10 +297,15 @@
 						"Indent only"
 					]
 				},
-				"teroshdl.formatter.verilog.type.istyle.spaces": {
-					"description": "Indent using N spaces per indent.",
-					"type": "number",
-					"default": 2
+				"teroshdl.formatter.verilog.s3sv.oneBindPerLine": {
+					"description": "Force one binding per line in instanciations statements.",
+					"type": "boolean",
+					"default": true
+				},
+				"teroshdl.formatter.verilog.s3sv.oneDeclarationPerLine": {
+					"description": "Force one declaration per line.",
+					"type": "boolean",
+					"default": false
 				},
 				"teroshdl.formatter.vhdl.type.a": {
 					"description": "Select verilog formatter",
