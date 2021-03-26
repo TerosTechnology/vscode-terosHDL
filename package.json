@@ -277,7 +277,7 @@
 					"type": "integer",
 					"default": 2
 				},
-				"teroshdl.formatter.verilog.type.a": {
+				"teroshdl.formatter.verilog.engine": {
 					"description": "Select verilog formatter",
 					"type": "string",
 					"enum": [
@@ -286,7 +286,7 @@
 					],
 					"default": "s3sv"
 				},
-				"teroshdl.formatter.verilog.type.istyle.style": {
+				"teroshdl.formatter.verilog.istyle.style": {
 					"description": "Predefined Styling options",
 					"type": "string",
 					"default": "ANSI",
@@ -296,11 +296,6 @@
 						"GNU",
 						"Indent only"
 					]
-				},
-				"teroshdl.formatter.verilog.type.istyle.spaces": {
-					"description": "Indent using N spaces per indent.",
-					"type": "number",
-					"default": 2
 				},
 				"teroshdl.formatter.verilog.s3sv.oneBindPerLine": {
 					"description": "Force one binding per line in instanciations statements.",
