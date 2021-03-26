@@ -3,6 +3,7 @@
 // Ismael Perez Rojo
 // Carlos Alberto Ruiz Naranjo
 // Alfredo Saez
+// Julien Faucher
 //
 // This file is part of Colibri.
 //
@@ -38,6 +39,9 @@ export default class Formatter_manager {
         const jsteros = require('jsteros');
         let formatter = new jsteros.Formatter.Formatter(this.formatter_name);
         if (formatter !== undefined) {
+            if (formatter.update_params !== undefined ) {
+                formatter.update_params();
+            }
             let options = this.get_options();
             let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
@@ -67,6 +71,9 @@ export default class Formatter_manager {
             let style = <string>vscode.workspace
                 .getConfiguration("teroshdl.formatter.verilog.type.istyle").get("style");
             options = { 'style': get_istyle_style(), 'extra_args': get_istyle_extra_args() };
+        }
+        else if (this.formatter_name === "s3sv") {
+
         }
         return options;
     }
