@@ -73,7 +73,15 @@ export default class Formatter_manager {
             options = { 'style': get_istyle_style(), 'extra_args': get_istyle_extra_args() };
         }
         else if (this.formatter_name === "s3sv") {
-
+            let python = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+            python = (python === "") ? "python3" : python
+            options = {
+            "python3_path"      : python,
+            "use_tabs"          : vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("useTabs"),
+            "indent_size"       : vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("indentSize"),
+            "one_bind_per_line" : vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneBindPerLine"),
+            "one_decl_per_line" : vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneDeclarationPerLine")
+            };
         }
         return options;
     }
@@ -97,7 +105,7 @@ function get_istyle_style() {
 
 function get_istyle_extra_args() {
     let extra_args = "";
-    let number_of_spaces = <integer>vscode.workspace.getConfiguration("teroshdl.formatter.verilog").get("indentSize");
+    let number_of_spaces = vscode.workspace.getConfiguration("teroshdl.formatter.verilog").get("indentSize");
     extra_args = "-s" + number_of_spaces + " ";
     return extra_args;
 }
