@@ -1,4 +1,4 @@
-// Copyright 2020 Teros Technology
+// Copyright 2020-2021 Teros Technology
 //
 // Ismael Perez Rojo
 // Carlos Alberto Ruiz Naranjo
@@ -31,6 +31,7 @@ import * as Vunit from './vunit';
 import { dirname } from 'path';
 const path_lib = require('path');
 const fs = require('fs');
+const os = require('os');
 
 export class Project_manager {
 
@@ -134,7 +135,7 @@ export class Project_manager {
   }
 
   async save_toml(){
-    let file_path = '/home/carlos/.vhdl_ls.toml';
+    let file_path = os.homedir();
     let libraries = this.get_active_project_libraries();
     let absolute_path_init = this.get_active_project_absolute_path();
     let toml = '[libraries]\n\n';
