@@ -1,4 +1,4 @@
-// Copyright 2020 Teros Technology
+// Copyright 2020-2021 Teros Technology
 //
 // Ismael Perez Rojo
 // Carlos Alberto Ruiz Naranjo
@@ -31,6 +31,7 @@ import * as Vunit from './vunit';
 import { dirname } from 'path';
 const path_lib = require('path');
 const fs = require('fs');
+const os = require('os');
 
 export class Project_manager {
 
@@ -47,6 +48,8 @@ export class Project_manager {
   private init: boolean = false;
 
   constructor(context: vscode.ExtensionContext) {
+
+
     this.vunit = new Vunit.Vunit(context);
     this.terminal = new Terminal.Terminal(context);
     this.edam_project_manager = new Edam.Edam_project_manager();
@@ -120,17 +123,36 @@ export class Project_manager {
     vscode.commands.registerCommand('teroshdl_tree_view.open_file', (item) =>
       this.open_file(item)
     );
-    this.init = true;
   }
 
-  refresh_lint() {
-    if (this.init === true) {
-      // vscode.commands.executeCommand("teroshdl.refresh_lint_vhdl_linter");
-      // vscode.commands.executeCommand("teroshdl.refresh_lint_verilog_linter");
-      // vscode.commands.executeCommand("teroshdl.refresh_lint_systemverilog_linter");
-      // vscode.commands.executeCommand("teroshdl.refresh_lint_verilog_linter_style");
-      // vscode.commands.executeCommand("teroshdl.refresh_lint_systemverilog_linter_style");
+  async refresh_lint() {
+    if (this.init === false) {
+      this.init = false;
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
+    await this.save_toml();
+    vscode.commands.executeCommand("vhdlls.restart");
+  }
+
+  async save_toml(){
+    let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
+    let libraries = this.get_active_project_libraries();
+    let absolute_path_init = this.get_active_project_absolute_path();
+    let toml = '[libraries]\n\n';
+    for (let i = 0; i < libraries.length; i++) {
+      const library = libraries[i];
+      let files_in_library = '';
+      for (let j = 0; j < library.files.length; j++) {
+        const file_in_library = library.files[j];
+        files_in_library += `  '${absolute_path_init}${file_in_library}',\n`;
+      }
+      let lib_name = library.name;
+      if (lib_name === ''){
+        lib_name = 'none';
+      }
+      toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
+    }
+    fs.writeFileSync( file_path, toml);
   }
 
   open_file(item) {
@@ -159,7 +181,7 @@ export class Project_manager {
     catch (e) { }
   }
 
-  get_active_project_libraries() {
+  get_active_project_libraries(absolute_path = false) {
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === '') {
       return;
@@ -167,6 +189,16 @@ export class Project_manager {
     let prj = this.edam_project_manager.get_project(selected_project);
     let files = prj.get_normalized_project().libraries;
     return files;
+  }
+
+  get_active_project_absolute_path() {
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === '') {
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    let abs = prj.relative_path + path_lib.sep;
+    return abs;
   }
 
   async refresh_tests() {
@@ -421,11 +453,11 @@ export class Project_manager {
       if (value !== undefined) {
         for (let i = 0; i < value.length; ++i) {
           this.edam_project_manager.add_file(project_name, value[i].fsPath, false, '', library_name);
-          this.update_tree();
           if (this.edam_project_manager.get_number_of_files_of_project(project_name) === 1) {
             this.set_top_from_name(project_name, library_name, value[i].fsPath);
           }
         }
+        this.update_tree();
         this.refresh_lint();
       }
     });
@@ -840,8 +872,10 @@ class Project {
   get_library(library_name, sources): Library_item {
     let tree: Hdl_item[] = [];
     for (let i = 0; i < sources.length; ++i) {
-      let item_tree = new Hdl_item(sources[i], library_name, this.name);
-      tree.push(item_tree);
+      if (sources[i].includes('teroshdl_phantom_file') === false){
+        let item_tree = new Hdl_item(sources[i], library_name, this.name);
+        tree.push(item_tree);
+      }
     }
     let library = new Library_item(library_name, this.name, tree);
     return library;
