@@ -135,7 +135,7 @@ export class Project_manager {
   }
 
   async save_toml(){
-    let file_path = os.homedir();
+    let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
     let libraries = this.get_active_project_libraries();
     let absolute_path_init = this.get_active_project_absolute_path();
     let toml = '[libraries]\n\n';
