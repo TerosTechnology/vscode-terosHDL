@@ -205,7 +205,7 @@ export default class Lint_manager {
         let current_path = doc.uri.fsPath;
         if (this.init === false){
             this.init = true;
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 500));
         }
         //Save the uri linted
         this.add_uri_to_collections(doc.uri);
