@@ -720,7 +720,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.delete_file",
-				"title": "Delete file",
+				"title": "Delete",
 				"icon": {
 					"light": "resources/light/remove.svg",
 					"dark": "resources/dark/remove.svg"
@@ -728,7 +728,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.delete_library",
-				"title": "Delete library",
+				"title": "Delete",
 				"icon": {
 					"light": "resources/light/remove.svg",
 					"dark": "resources/dark/remove.svg"
