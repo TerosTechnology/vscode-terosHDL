@@ -74,7 +74,7 @@ export default class Formatter_manager {
         }
         else if (this.formatter_name === "s3sv") {
             let python = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-            python = (python === "") ? "python3" : python
+            python = (python === "") ? "python3" : python;
             options = {
             "python3_path"      : python,
             "use_tabs"          : vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("useTabs"),
@@ -96,10 +96,13 @@ function get_istyle_style() {
     };
     let style = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.istyle").get("style");
     const map_style = style_map[style];
-    if (map_style !== undefined) {
+    if (map_style === ''){
+        return '';
+    }
+    else if (map_style === undefined) {
         return "--style=ansi";
     } else {
-        return map_style;
+        return `--style=${map_style}`;
     }
 }
 
