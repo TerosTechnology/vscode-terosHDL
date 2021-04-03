@@ -307,8 +307,8 @@
 					"type": "boolean",
 					"default": false
 				},
-				"teroshdl.formatter.vhdl.type.a": {
-					"description": "Select verilog formatter",
+				"teroshdl.formatter.vhdl.engine": {
+					"description": "Select vhdl formatter",
 					"type": "string",
 					"enum": [
 						"Standalone"
