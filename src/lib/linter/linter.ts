@@ -189,6 +189,9 @@ export default class Lint_manager {
     }
 
     async lint(doc: vscode.TextDocument) {
+        if (this.linter_name === 'none'){
+            return;
+        }
         //todo: use doc!! .git error check sheme
         // if (vscode.window.activeTextEditor === undefined){
         //     return;
