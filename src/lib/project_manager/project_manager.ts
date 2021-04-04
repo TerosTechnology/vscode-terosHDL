@@ -232,6 +232,10 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
+    if (prj === undefined){
+      //TODO: show messge
+      return;
+    }
     let tool_configuration = this.config_file.get_config_of_selected_tool();
 
     let edam = {
