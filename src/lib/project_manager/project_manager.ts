@@ -148,6 +148,9 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
+    if (prj === undefined){
+      return [];
+    }
     let files = prj.get_normalized_project().libraries;
     return files;
   }
@@ -158,6 +161,9 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
+    if (prj === undefined){
+      return undefined;
+    }
     let abs = prj.relative_path + path_lib.sep;
     return abs;
   }
@@ -530,13 +536,48 @@ export class Project_manager {
   }
 
   async add_library(item) {
+    const library_add_types = ["Empty library", "Load library from file list"];
+
+    // Set library name
     let project_name = item.project_name;
     vscode.window.showInputBox({ prompt: "Set library name", placeHolder: "Library name" }).then((value) => {
-      if (value !== undefined) {
-        this.edam_project_manager.add_file(project_name, "teroshdl_phantom_file", false, "", value);
-        this.update_tree();
-        this.refresh_lint();
+      let library_name = value;
+      if (library_name === undefined){
+        return;
       }
+      // Choose type
+      vscode.window.showQuickPick(library_add_types, {placeHolder: "Choose library",}).then((lib_type) => {
+        if (lib_type === undefined){
+          return;
+        }
+        // Empty library
+        else if(lib_type === library_add_types[0]){
+          this.edam_project_manager.add_file(project_name, "teroshdl_phantom_file", false, "", value);
+          this.update_tree();
+          this.refresh_lint();
+        }
+        // Load from file
+        else if(lib_type === library_add_types[1]){
+          // Select file
+          vscode.window.showOpenDialog({ canSelectMany: false }).then((value) => {
+            if (value === undefined){
+              return;
+            }
+            let file_path = value[0].fsPath;
+            let file_list = fs.readFileSync(file_path, "utf8");
+            let file_list_array = file_list.split(/\r?\n/);
+
+            for (let i = 0; i < file_list_array.length; ++i) {
+              let element = file_list_array[i];
+              if (element !== ''){
+                this.edam_project_manager.add_file(project_name, element, false, "", library_name);
+              }
+            }
+            this.update_tree();
+            this.refresh_lint();
+          });
+        }
+      });
     });
   }
 
