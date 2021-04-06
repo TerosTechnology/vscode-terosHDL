@@ -284,7 +284,7 @@
 						"iStyle",
 						"s3sv"
 					],
-					"default": "s3sv"
+					"default": "iStyle"
 				},
 				"teroshdl.formatter.verilog.istyle.style": {
 					"description": "Predefined Styling options",

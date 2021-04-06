@@ -148,6 +148,9 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
+    if (prj === undefined){
+      return [];
+    }
     let files = prj.get_normalized_project().libraries;
     return files;
   }
@@ -158,6 +161,9 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
+    if (prj === undefined){
+      return undefined;
+    }
     let abs = prj.relative_path + path_lib.sep;
     return abs;
   }
@@ -226,6 +232,10 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
+    if (prj === undefined){
+      //TODO: show messge
+      return;
+    }
     let tool_configuration = this.config_file.get_config_of_selected_tool();
 
     let edam = {
@@ -419,12 +429,67 @@ export class Project_manager {
     this.config_file.set_projects(edam_projects);
   }
 
+
   async add_file(item) {
+    const files_add_types = ["Select files from browser", "Load files from file list"];
+
+    let library_name = item.library_name;
+    let project_name = item.project_name;
+
+    // Choose type
+    vscode.window.showQuickPick(files_add_types, {placeHolder: "Choose file",}).then((files_type) => {
+      if (files_type === undefined){
+        return;
+      }
+      // Files from browser
+      else if(files_type === files_add_types[0]){
+        this.add_file_from_item(item);
+      }
+      // Load from file
+      else if(files_type === files_add_types[1]){
+        // Select file
+        vscode.window.showOpenDialog({ canSelectMany: false }).then((value) => {
+          if (value === undefined){
+            return;
+          }
+          let file_path = value[0].fsPath;
+          let file_list = fs.readFileSync(file_path, "utf8");
+          let file_list_array = file_list.split(/\r?\n/);
+
+          for (let i = 0; i < file_list_array.length; ++i) {
+            let element = file_list_array[i];
+            if (element.trim() !== ''){
+              try{
+                let lib_inst = element.split(',')[0].trim();
+                let file_inst = element.split(',')[1].trim();
+                if (lib_inst === ""){
+                  lib_inst = "work";
+                }
+                this.edam_project_manager.add_file(project_name, file_inst, false, "", lib_inst);
+              }
+              catch(e){
+                console.log(e);
+                return;
+              }
+            }
+          }
+          this.update_tree();
+          this.refresh_lint();
+        });
+      }
+    });
+    
+  }
+
+  async add_file_from_item(item) {
     let library_name = item.library_name;
     let project_name = item.project_name;
     vscode.window.showOpenDialog({ canSelectMany: true }).then((value) => {
       if (value !== undefined) {
         for (let i = 0; i < value.length; ++i) {
+          if (library_name === ""){
+            library_name = "work";
+          }
           this.edam_project_manager.add_file(project_name, value[i].fsPath, false, "", library_name);
           if (this.edam_project_manager.get_number_of_files_of_project(project_name) === 1) {
             this.set_top_from_name(project_name, library_name, value[i].fsPath);
@@ -530,13 +595,51 @@ export class Project_manager {
   }
 
   async add_library(item) {
+    const library_add_types = ["Empty library", "Load library from file list"];
+
+    // Set library name
     let project_name = item.project_name;
     vscode.window.showInputBox({ prompt: "Set library name", placeHolder: "Library name" }).then((value) => {
-      if (value !== undefined) {
-        this.edam_project_manager.add_file(project_name, "teroshdl_phantom_file", false, "", value);
-        this.update_tree();
-        this.refresh_lint();
+      let library_name = value;
+      if (library_name === undefined){
+        return;
       }
+      // Choose type
+      vscode.window.showQuickPick(library_add_types, {placeHolder: "Choose library",}).then((lib_type) => {
+        if (lib_type === undefined){
+          return;
+        }
+        // Empty library
+        else if(lib_type === library_add_types[0]){
+          this.edam_project_manager.add_file(project_name, "teroshdl_phantom_file", false, "", value);
+          this.update_tree();
+          this.refresh_lint();
+        }
+        // Load from file
+        else if(lib_type === library_add_types[1]){
+          // Select file
+          vscode.window.showOpenDialog({ canSelectMany: false }).then((value) => {
+            if (value === undefined){
+              return;
+            }
+            let file_path = value[0].fsPath;
+            let file_list = fs.readFileSync(file_path, "utf8");
+            let file_list_array = file_list.split(/\r?\n/);
+
+            for (let i = 0; i < file_list_array.length; ++i) {
+              let element = file_list_array[i];
+              if (element !== ''){
+                if (library_name === ""){
+                  library_name = "work";
+                }
+                this.edam_project_manager.add_file(project_name, element, false, "", library_name);
+              }
+            }
+            this.update_tree();
+            this.refresh_lint();
+          });
+        }
+      });
     });
   }
 

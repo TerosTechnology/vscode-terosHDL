@@ -39,7 +39,7 @@ export default class Formatter_manager {
         const jsteros = require('jsteros');
         let formatter = new jsteros.Formatter.Formatter(this.formatter_name);
         if (formatter !== undefined) {
-            if (formatter.update_params !== undefined ) {
+            if (formatter.update_params !== undefined) {
                 formatter.update_params();
             }
             let options = this.get_options();
@@ -73,18 +73,26 @@ export default class Formatter_manager {
             options = { 'style': get_istyle_style(), 'extra_args': get_istyle_extra_args() };
         }
         else if (this.formatter_name === "s3sv") {
-            let python = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-            python = (python === "") ? "python3" : python;
+            let python = get_python_path();
             options = {
-            "python3_path"      : python,
-            "use_tabs"          : vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("useTabs"),
-            "indent_size"       : vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("indentSize"),
-            "one_bind_per_line" : vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneBindPerLine"),
-            "one_decl_per_line" : vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneDeclarationPerLine")
+                "python3_path": python,
+                "use_tabs": vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("useTabs"),
+                "indent_size": vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("indentSize"),
+                "one_bind_per_line": vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneBindPerLine"),
+                "one_decl_per_line": vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneDeclarationPerLine")
             };
         }
         return options;
     }
+}
+
+async function get_python_path() {
+    let python = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+    if (python === "") {
+        const jsteros = require('jsteros');
+        python = await jsteros.Nopy.exec_python_script();
+    }
+    return python;
 }
 
 function get_istyle_style() {
@@ -96,7 +104,7 @@ function get_istyle_style() {
     };
     let style = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.istyle").get("style");
     const map_style = style_map[style];
-    if (map_style === ''){
+    if (map_style === '') {
         return '';
     }
     else if (map_style === undefined) {
