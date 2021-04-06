@@ -1,11 +1,4 @@
-/*
- * Version      : 1.0
- * Created on   : 2020-11-05 10:15:39
- * Last Modified: 2021-02-05 20:47:01
- * FilePath     : /srsLTE_FPGA/home/carlos/repo/vscode-terosHDL/src/lib/templates/templates.ts
- * Description  : 
- */
-// Copyright 2020 Teros Technology
+// Copyright 2020-2021 Teros Technology
 //
 // Ismael Perez Rojo
 // Carlos Alberto Ruiz Naranjo
@@ -41,13 +34,13 @@ export async function get_template() {
     let document = vscode.window.activeTextEditor.document;
     let language_id: string = document.languageId;
 
-    const TYPES_VHDL_INFO: string[] = ["cocotb", "VUnit testbench", "VHDL testbench", "Copy as component", "Copy as signal", "Copy as instance", "Copy as instance VHDL >=93"];
-    const TYPES_VHDL: string[] = ["cocotb", "tb", "tb", "component", "component", "component", "component"];
-    const SUBTYPES_VHDL: string[] = ["cocotb", "vunit", "normal", "component", "signals", "instance", "instance_vhdl_2008"];
+    const TYPES_VHDL_INFO: string[] = ["cocotb", "VUnit testbench", "VHDL testbench", "Copy as component", "Copy as signal", "Copy as instance", "Copy as instance VHDL >=93", "Copy as verilog instance"];
+    const TYPES_VHDL: string[] = ["cocotb", "tb", "tb", "component", "component", "component", "component", "mix_component"];
+    const SUBTYPES_VHDL: string[] = ["cocotb", "vunit", "normal", "component", "signals", "instance", "instance_vhdl_2008", "mix_instance"];
 
-    const TYPES_VERILOG_INFO: string[] = ["cocotb", "Verilator", "VUnit testbench", "Verilog testbench", "Copy as signal", "Copy as instance"];
-    const TYPES_VERILOG: string[] = ["cocotb", "verilator", "tb", "tb", "component", "component"];
-    const SUBTYPES_VERILOG: string[] = ["cocotb", "verilator", "vunit", "normal", "signals", "instance"];
+    const TYPES_VERILOG_INFO: string[] = ["cocotb", "Verilator", "VUnit testbench", "Verilog testbench", "Copy as signal", "Copy as instance", "Copy as VHDL component", "Copy as VHDL instance"];
+    const TYPES_VERILOG: string[] = ["cocotb", "verilator", "tb", "tb", "component", "component", "mix_component", "mix_component"];
+    const SUBTYPES_VERILOG: string[] = ["cocotb", "verilator", "vunit", "normal", "signals", "instance", "mix_component", "mix_instance"];
 
     let type: string = "";
     let subtype: string = "";
