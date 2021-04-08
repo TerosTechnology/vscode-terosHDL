@@ -22,6 +22,10 @@ jobs:
           sudo rm -rf /usr/local/bin/phantomjs
           npm install
           vsce package
+          now=`date +"%Y-%m-%d__%H:%M"`
+          file=`ls *.vsix`
+          file_ver="${now}_${file}"
+          mv $file $file_ver
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
