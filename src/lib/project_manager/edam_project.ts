@@ -369,6 +369,10 @@ class Edam_project {
   }
 
   add_file(name: string, is_include_file: boolean = false, include_path: string = '', logic_name: string = '', force_no_relative = false) {
+    // File exists
+    if (this.check_if_file_exist(name,logic_name) === true){
+      return;
+    }
     if (this.relative_path !== '' && this.relative_path !== undefined && force_no_relative === false) {
       name = path_lib.relative(this.relative_path, name);
     }
@@ -376,6 +380,17 @@ class Edam_project {
     let edam_file = new Edam_file(name, is_include_file, include_path, logic_name);
     this.files.push(edam_file);
   }
+
+  check_if_file_exist(name: string, logic_name:string){
+    for (let i = 0; i < this.files.length; i++) {
+      const element = this.files[i];
+      if (element.name === name && element.logical_name === logic_name){
+        return true;
+      }
+    }
+    return false;
+  }
+
 
   delete_file(name: string, logic_name: string) {
     let new_files: Edam_file[] = [];
