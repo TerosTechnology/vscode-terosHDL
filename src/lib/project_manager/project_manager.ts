@@ -61,6 +61,7 @@ export class Project_manager {
     }
 
     this.treeview = vscode.window.createTreeView("teroshdl_tree_view", {
+      showCollapseAll : false,
       treeDataProvider: this.tree,
       canSelectMany: true,
     });
@@ -100,6 +101,9 @@ export class Project_manager {
     let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
     let libraries = this.get_active_project_libraries();
     let absolute_path_init = this.get_active_project_absolute_path();
+    if (absolute_path_init === '/' || absolute_path_init === '\\'){
+      absolute_path_init = '';
+    }
     let toml = "[libraries]\n\n";
     for (let i = 0; i < libraries.length; i++) {
       const library = libraries[i];
@@ -1080,6 +1084,7 @@ class Library_item extends vscode.TreeItem {
       label,
       children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
     );
+    this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
     this.item_type = "library_item";
     this.project_name = project_name;
     this.library_name = label;
