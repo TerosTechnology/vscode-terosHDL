@@ -42,7 +42,7 @@ export default class Formatter_manager {
             if (formatter.update_params !== undefined) {
                 formatter.update_params();
             }
-            let options = this.get_options();
+            let options = await this.get_options();
             let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
         }
@@ -58,7 +58,7 @@ export default class Formatter_manager {
         this.formatter_name = formatter_name;
     }
 
-    get_options() {
+    async get_options() {
         let options;
         if (this.formatter_name === "vsg") {
         }
@@ -73,7 +73,7 @@ export default class Formatter_manager {
             options = { 'style': get_istyle_style(), 'extra_args': get_istyle_extra_args() };
         }
         else if (this.formatter_name === "s3sv") {
-            let python = get_python_path();
+            let python = await get_python_path();
             options = {
                 "python3_path": python,
                 "use_tabs": vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("useTabs"),
