@@ -90,7 +90,7 @@ async function get_python_path() {
     let python = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
     if (python === "") {
         const jsteros = require('jsteros');
-        python = await jsteros.Nopy.exec_python_script();
+        python = await jsteros.Nopy.get_python_exec();
     }
     return python;
 }
