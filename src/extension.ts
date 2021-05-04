@@ -40,6 +40,8 @@ import * as linter from "./lib/linter/linter";
 import * as formatter from "./lib/formatter/formatter_manager";
 // Number hover
 import * as number_hover from "./lib/number_hover/number_hover";
+//RustHDL
+import * as rusthdl from './lib/rusthdl/rust_hdl';
 
 let linter_vhdl;
 let linter_verilog;
@@ -196,6 +198,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Language providers
     /**************************************************************************/
+    rusthdl.run_rusthdl(context);
     // document selector
     let verilogSelector: vscode.DocumentSelector = [{ scheme: 'file', language: 'verilog' }
         , { scheme: 'file', language: 'systemverilog' }];
@@ -208,17 +211,13 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
     // Configure Completion Item Provider
-    // Trigger on ".", "(", "="
     let compItemProvider = new VerilogCompletionItemProvider(logger);
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
     // Configure Hover Providers
     let hoverProvider = new VerilogHoverProvider(logger);
-    context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, hoverProvider));
     context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
     // Configure Definition Providers
     let defProvider = new VerilogDefinitionProvider(logger);
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, defProvider));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
     context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc); }));
     /**************************************************************************/

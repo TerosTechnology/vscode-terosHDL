@@ -114,6 +114,28 @@ https://observablehq.com/collection/@drom/bitfield
 
 ![alt text](./resources/images/readme/bitfield_example.png "title")
 
+## Doxygen Compatibility
+
+The following table of Doxygen commands are supported (both with ``@`` and ``\`` prefix) :
+
+| Command        | Behavior                                       | Notes                                                                    |
+|----------------|------------------------------------------------|--------------------------------------------------------------------------|
+| ``@title``     | changes the generated documentation page title | Single line command, if not provided defaults to : Entity <entity_name>  |
+| ``@file``      | Adds an entry for the file name                | Single line command                                                      |
+| ``@author``    | Adds an entry for the author name              | Single line command                                                      |
+| ``@version``   | Adds an entry for the code version             | Single line command                                                      |
+| ``@date``      | Adds an entry for the file date                | Single line command                                                      |
+| ``@copyright`` | Adds a copyright statements                    | multi-line, ends on the first empty line                                 |
+| ``@brief``     | appends the following text to the description  | Stripped from text, following text is located in the description section |
+| ``@details``   | appends the following text to the description  | Stripped from text, following text is located in the description section |
+
+![alt text](./resources/images/readme/doxygen_commands.png "title")
+
+## Virtual Buses
+
+Ports can be grouped into Virtual Buses for more clarity of the diagram
+
+![alt text](./resources/images/readme/group_ports.png "title")
 
 # 7. Errors checking <a name="id7"></a>
 

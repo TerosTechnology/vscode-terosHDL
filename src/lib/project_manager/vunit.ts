@@ -1,4 +1,4 @@
-// Copyright 2020 Teros Technology
+// Copyright 2020-2021 Teros Technology
 //
 // Ismael Perez Rojo
 // Carlos Alberto Ruiz Naranjo
@@ -49,20 +49,15 @@ export class Vunit {
   }
 
   async get_python3_path(python3_path) {
-    let python_path = '';
-    if (python3_path === '') {
-      const colibri = require('jsteros');
-      python_path = await colibri.Nopy.get_python_exec();
-    }
-    else {
-      python_path = python3_path;
-    }
+    let python_path = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+    const jsteros = require('jsteros');
+    python_path = await jsteros.Nopy.get_python_exec();
 
-    if (python_path === undefined || python_path === '') {
-      this.output_channel.append('[Error] Install and configure Python3 in the extension configuration.');
-      this.output_channel.show();
-      return undefined;
-    }
+    // if (python_path === undefined || python_path === '') {
+    //   this.output_channel.append('[Error] Install and configure Python3 in the extension configuration.');
+    //   this.output_channel.show();
+    //   return undefined;
+    // }
     return python_path;
   }
 

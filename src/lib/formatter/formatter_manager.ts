@@ -3,6 +3,7 @@
 // Ismael Perez Rojo
 // Carlos Alberto Ruiz Naranjo
 // Alfredo Saez
+// Julien Faucher
 //
 // This file is part of Colibri.
 //
@@ -38,7 +39,10 @@ export default class Formatter_manager {
         const jsteros = require('jsteros');
         let formatter = new jsteros.Formatter.Formatter(this.formatter_name);
         if (formatter !== undefined) {
-            let options = this.get_options();
+            if (formatter.update_params !== undefined) {
+                formatter.update_params();
+            }
+            let options = await this.get_options();
             let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
         }
@@ -49,12 +53,12 @@ export default class Formatter_manager {
 
     config_formatter() {
         let formatter_name: string;
-        formatter_name = <string>vscode.workspace.getConfiguration(`teroshdl.formatter.${this.lang}`).get("type.a");
+        formatter_name = <string>vscode.workspace.getConfiguration(`teroshdl.formatter.${this.lang}`).get("engine");
         formatter_name = formatter_name.toLowerCase();
         this.formatter_name = formatter_name;
     }
 
-    get_options() {
+    async get_options() {
         let options;
         if (this.formatter_name === "vsg") {
         }
@@ -65,11 +69,30 @@ export default class Formatter_manager {
         }
         else if (this.formatter_name === "istyle") {
             let style = <string>vscode.workspace
-                .getConfiguration("teroshdl.formatter.verilog.type.istyle").get("style");
+                .getConfiguration("teroshdl.formatter.verilog.istyle").get("style");
             options = { 'style': get_istyle_style(), 'extra_args': get_istyle_extra_args() };
+        }
+        else if (this.formatter_name === "s3sv") {
+            let python = await get_python_path();
+            options = {
+                "python3_path": python,
+                "use_tabs": vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("useTabs"),
+                "indent_size": vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("indentSize"),
+                "one_bind_per_line": vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneBindPerLine"),
+                "one_decl_per_line": vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneDeclarationPerLine")
+            };
         }
         return options;
     }
+}
+
+async function get_python_path() {
+    let python = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+    if (python === "") {
+        const jsteros = require('jsteros');
+        python = await jsteros.Nopy.get_python_exec();
+    }
+    return python;
 }
 
 function get_istyle_style() {
@@ -79,18 +102,21 @@ function get_istyle_style() {
         "GNU": "gnu",
         "ANSI": "ansi"
     };
-    let style = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.type.istyle").get("style");
+    let style = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.istyle").get("style");
     const map_style = style_map[style];
-    if (map_style !== undefined) {
+    if (map_style === '') {
+        return '';
+    }
+    else if (map_style === undefined) {
         return "--style=ansi";
     } else {
-        return map_style;
+        return `--style=${map_style}`;
     }
 }
 
 function get_istyle_extra_args() {
     let extra_args = "";
-    let number_of_spaces = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.type.istyle").get("spaces");
+    let number_of_spaces = vscode.workspace.getConfiguration("teroshdl.formatter.verilog").get("indentSize");
     extra_args = "-s" + number_of_spaces + " ";
     return extra_args;
 }
