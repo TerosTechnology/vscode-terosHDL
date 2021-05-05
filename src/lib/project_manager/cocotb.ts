@@ -14,6 +14,7 @@ const child_process = require("child_process");
 
 export interface TestItem {
   attributes: string | undefined;
+  test_type: string | undefined,
   location: {
     file_name: string;
     length: number;
@@ -171,7 +172,7 @@ export class Cocotb {
     return results;
   }
 
-  async get_test_list() : Promise<TestItem[]> {
+  async get_test_list(makefile_path: string) : Promise<TestItem[]> {
     if (shell.exec("make").code == 127)
     {
       vscode.window.showErrorMessage("Install Make to use cocotb");
@@ -185,7 +186,8 @@ export class Cocotb {
       return([]);
     }
 
-    let found_makefiles = glob.sync('/**/Makefile', {root: wksp_folder});
+    // let found_makefiles = glob.sync('/**/Makefile', {root: wksp_folder});
+    let found_makefiles = [makefile_path];
     let cocotb_makefiles: {makefile: string, modules: [string]}[] = [];
 
     const cocotb_makefile_must_contain = "include $(shell cocotb-config --makefiles)/Makefile.sim";
@@ -247,6 +249,7 @@ export class Cocotb {
         for (let cocotb_test of cocotb_tests) {
           const test_item: TestItem = {
             attributes: "",
+            test_type: "cocotb",
             location: {
               file_name: `${filename}.py`,
               length: cocotb_test.length,

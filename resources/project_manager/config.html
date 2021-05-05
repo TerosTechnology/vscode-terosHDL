@@ -133,6 +133,7 @@
   <button class="tablinks" onclick="openCity(event, 'riviera_pro')">Riviera-PRO</button>
   <button class="tablinks" onclick="openCity(event, 'active_hdl')">Active-HDL</button>
   <button class="tablinks" onclick="openCity(event, 'verilator')">Verilator</button>
+  <button class="tablinks" onclick="openCity(event, 'cocotb')">cocotb</button>
 </div>
 
 
@@ -155,8 +156,12 @@
   <label class="container">Xsim</label>
   <br><br> -->
 
-  <input type='radio' tool="vunit" class='radio-button' name='re' checked>
+  <input type='radio' tool="vunit" class='radio-button' name='re'>
   <label class="container">VUnit</label>
+  <br><br>
+
+  <input type='radio' tool="cocotb" class='radio-button' name='re'>
+  <label class="container">cocotb</label>
   <br><br>
 
   <!-- <input type='radio' tool="vivado" class='radio-button' name='re'>
@@ -290,6 +295,12 @@
   <input class="input" id="verilator_verilator_options" type="text"><br><br>
 </div>
 
+<div id="cocotb" class="tabcontent">
+  <h3>cocotb</h3>
+  <label>cocotb installation path.</label><br><br>
+  <input class="input" id="cocotb_installation_path" type="text"><br><br>
+</div>
+
  <button id="button_cancel" class="button" type="button" onclick="close_panel(event)">Cancel</button> 
  <button id="button_apply" class="button" type="button" onclick="send_config_and_close(event)">Apply and close</button> 
 
@@ -350,6 +361,7 @@
         get_vivado_options(),
         get_riviera_pro_options(),
         get_verilator_options(),
+        get_cocotb_options(),
         get_active_hdl_options()]
     }
     return config;
@@ -364,6 +376,14 @@
     return options;
   }
 
+  function get_cocotb_options(){
+    let options = {
+      'cocotb': {
+        'installation_path': document.getElementById("cocotb_installation_path").value
+      }
+    };
+    return options;
+  }
 
   function get_ghdl_options(){
     let options = {
@@ -466,9 +486,19 @@
   });
 
   function set_config(config){
+    let all_radios = document.getElementsByName('re');
+    for(let j = 0; j < all_radios.length; j++){
+      if(all_radios[j].getAttribute("tool") === config.selected_tool){
+        all_radios[j].checked = true;
+      }
+      else
+      {
+        all_radios[j].checked = false;
+      }
+    }
 
-    for (let i = 0; i < config.length; i++) {
-      let element = config[i];
+    for (let i = 0; i < config.tool_config.length; i++) {
+      let element = config.tool_config[i];
       let config_tool = '';
       let options;
       let installation_path = '';
@@ -504,6 +534,9 @@
       }
       else if (config_tool === 'activehdl'){
         set_active_hdl_options(options, installation_path);
+      }
+      else if (config_tool === 'cocotb'){
+        set_cocotb_options(options, installation_path);
       }
     }
   }
@@ -558,6 +591,10 @@
     document.getElementById("verilator_libs").value = options.libs;
     document.getElementById("verilator_mode").value = options.mode;
     document.getElementById("verilator_verilator_options").value = options.options;
+  }
+
+  function set_cocotb_options(options, installation_path){
+    document.getElementById("cocotb_installation_path").value = installation_path;
   }
 
 </script>

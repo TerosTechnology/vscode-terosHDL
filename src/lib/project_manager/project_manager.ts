@@ -262,11 +262,14 @@ export class Project_manager {
       tool_options: tool_configuration,
     };
 
-    if (tool_configuration !== undefined)
+    if ('vunit' in tool_configuration)
     {
       this.run_vunit_tests([], false);
     }
-    this.run_cocotb_tests([]);
+    else if ('cocotb' in tool_configuration)
+    {
+      this.run_cocotb_tests([]);
+    }
   }
 
   async run_vunit_tests(tests, gui) {
@@ -299,7 +302,7 @@ export class Project_manager {
     if (results.length === 0) {
       force_fail_all = true;
     }
-    this.set_results(force_fail_all, 'vunit');
+    this.set_results(force_fail_all);
   }
 
   async run_cocotb_tests(tests) {   
@@ -310,7 +313,7 @@ export class Project_manager {
     if (results.length === 0) {
       force_fail_all = true;
     }
-    this.set_results(force_fail_all, 'cocotb');
+    this.set_results(force_fail_all);
   }
 
   getline_numberof_char(path, index) {
@@ -370,11 +373,16 @@ export class Project_manager {
     });
   }
 
-  set_results(force_fail_all, context: string) {
-    let last_results_parameter_name = `last_${context}_results`;
-    let new_results_parameter_name = `${context}_test_list_items`;
-
-    this.tree.set_results(this[last_results_parameter_name], this.tree[new_results_parameter_name], force_fail_all);
+  set_results(force_fail_all) {
+    let tool_configuration = this.config_file.get_config_of_selected_tool();
+    if ('vunit' in tool_configuration)
+    {
+      this.tree.set_results(this.last_vunit_results, force_fail_all);
+    }
+    else if ('cocotb' in tool_configuration)
+    {
+      this.tree.set_results(this.last_cocotb_results, force_fail_all);
+    }
   }
 
   set_top_from_project(project_name, library_name, path) {
@@ -427,11 +435,9 @@ export class Project_manager {
   }
 
   async update_tree() {
-    let vunit_test_list = [{ name: "Loading tests...", location: undefined }];
-    let cocotb_test_list = [{ name: "Loading cocotb tests...", location: undefined }];
+    let test_list = [{ name: "Loading tests...", location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
-    this.tree.update_super_tree(normalized_prjs, vunit_test_list, 'vunit');
-    this.tree.update_super_tree(normalized_prjs, cocotb_test_list, 'covotb');
+    this.tree.update_super_tree(normalized_prjs, test_list);
     let edam_projects = this.edam_project_manager.get_edam_projects();
     this.config_file.set_projects(edam_projects);
 
@@ -441,20 +447,32 @@ export class Project_manager {
     }
 
     this.set_default_tops();
-    this.set_results(false, 'vunit');
-    this.set_results(false, 'cocotb');
+    this.set_results(false);
 
-    let vunit_test_list_result = await this.get_vunit_test_list();
-    let cocotb_test_list_result = await this.get_cocotb_test_list();
-    this.tree.update_super_tree(normalized_prjs, vunit_test_list_result, 'vunit');
-    this.tree.update_super_tree(normalized_prjs, cocotb_test_list_result, 'cocotb');
+    let tool_configuration = this.config_file.get_config_of_selected_tool();
+    let test_list_result : {}[] = [{
+      attributes: undefined,
+      test_type: undefined,
+      name: 'Tool is not configured',
+      location: undefined
+    }];
+
+    if ('vunit' in tool_configuration)
+    {
+      test_list_result = await this.get_vunit_test_list();
+    }
+    else if ('cocotb' in tool_configuration)
+    {
+      test_list_result = await this.get_cocotb_test_list();
+    }
+
+    this.tree.update_super_tree(normalized_prjs, test_list_result);
 
     if (selected_project !== "") {
       this.tree.select_project(selected_project);
     }
     this.set_default_tops();
-    this.set_results(false, 'vunit');
-    this.set_results(false, 'cocotb');
+    this.set_results(false);
   }
 
   set_default_tops() {
@@ -714,6 +732,7 @@ export class Project_manager {
 
       if (tests_vunit.length === 0) {
         let single_test = {
+          test_type: "vunit",
           name: "Not found.",
           location: undefined,
         };
@@ -734,12 +753,22 @@ export class Project_manager {
   async get_cocotb_test_list() {
     let single_test: Cocotb.TestItem = {
       attributes: undefined,
+      test_type: undefined,
       name: 'Cocotb tests not found.',
       location: undefined
     };
 
     try {
-      this.cocotb_test_list = await this.cocotb.get_test_list();
+      let selected_project = this.edam_project_manager.selected_project;
+      let prj = this.edam_project_manager.get_project(selected_project);
+      let makefile = "";
+      if (prj.relative_path !== "" && prj.relative_path !== undefined) {
+        makefile = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
+      } else {
+        makefile = prj.toplevel_path;
+      }
+
+      this.cocotb_test_list = await this.cocotb.get_test_list(makefile);
 
       if (this.cocotb_test_list.length === 0) {
         this.cocotb_test_list = [single_test];
@@ -828,16 +857,15 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
   data: TreeItem[] = [];
   projects: TreeItem[] = [];
-  vunit_test_list_items: Test_item[] = [];
-  cocotb_test_list_items: Test_item[] = [];
+  test_list_items: Test_item[] = [];
 
   init_tree() {
     this.data = [new TreeItem("TerosHDL Projects", []), new TreeItem("Test list", [])];
     this.refresh();
   }
 
-  update_super_tree(projects, vunit_test_list, context: string) {
-    this.get_test_list_items(vunit_test_list, context);
+  update_super_tree(projects, test_list) {
+    this.get_test_list_items(test_list);
     this.projects = [];
     for (let i = 0; i < projects.length; i++) {
       const element = projects[i];
@@ -848,7 +876,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.update_tree();
   }
 
-  set_results(results, new_results, force_fail_all) {
+  set_results(results, force_fail_all) {
     if (results === undefined) {
       return;
     }
@@ -856,8 +884,8 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       this.set_fail_all_tests();
       return;
     }
-    for (let i = 0; i < new_results.length; ++i) {
-      const test = new_results[i];
+    for (let i = 0; i < this.test_list_items.length; ++i) {
+      const test = this.test_list_items[i];
       for (let j = 0; j < results.length; j++) {
         const result = results[j];
         if (test.label === result.name) {
@@ -883,8 +911,8 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   set_fail_all_tests() {
-    for (let i = 0; i < this.vunit_test_list_items.length; ++i) {
-      const test = this.vunit_test_list_items[i];
+    for (let i = 0; i < this.test_list_items.length; ++i) {
+      const test = this.test_list_items[i];
       let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "failed.svg");
       let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "failed.svg");
       test.iconPath = {
@@ -895,16 +923,21 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.update_tree();
   }
 
-  get_test_list_items(vunit_test_list, context: string) {
-    let vunit_test_list_items: Test_item[] = [];
-    for (let i = 0; i < vunit_test_list.length; i++) {
-      const element = vunit_test_list[i];
+  get_test_list_items(test_list) {
+    let test_list_items: Test_item[] = [];
+    for (let i = 0; i < test_list.length; i++) {
+      const element = test_list[i];
       let item = new Test_item(element.name, element.location);
-      item.contextValue = `test_${context}`;
-      vunit_test_list_items.push(item);
+      if ("test_type" in element)
+      {
+        if (element.test_type !== undefined )
+        {
+          item.contextValue = `test_${element.test_type}`;
+        }
+      }
+      test_list_items.push(item);
     }
-    let parameter_name_to_save = `${context}_test_list_items`
-    this[parameter_name_to_save] = vunit_test_list_items;
+    this.test_list_items = test_list_items;
   }
 
   add_project(name: string, sources) {
@@ -988,8 +1021,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   update_tree() {
     this.data = [
       new TreeItem("TerosHDL Projects", this.projects),
-      new Test_title_item("Test list", this.vunit_test_list_items),
-      new Test_title_item("Cocotb Test list", this.cocotb_test_list_items)
+      new Test_title_item("Test list", this.test_list_items),
     ];
     this.refresh();
   }
