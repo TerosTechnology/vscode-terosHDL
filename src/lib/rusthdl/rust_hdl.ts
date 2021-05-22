@@ -31,7 +31,7 @@ let languageServer: string;
 
 export async function run_rusthdl(ctx: ExtensionContext) {
     const languageServerDir = ctx.asAbsolutePath(
-        path.join('resources', 'rusthdl', 'vhdl_ls')
+        path.join('server', 'vhdl_ls')
     );
     output.appendLine(
         'Checking for language server executable in ' + languageServerDir
