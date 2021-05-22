@@ -853,6 +853,7 @@
 				],
 				"extensions": [
 					".sv",
+					".svh",
 					".SV"
 				],
 				"configuration": "./configs/systemverilog.configuration.json"
