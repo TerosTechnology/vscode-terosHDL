@@ -90,10 +90,14 @@ export class Cocotb {
   }
 
   async run_makefile(dir, filename, tests) {
-    if (shell.exec("cocotb-config -v").code == 127)
-    {
-      vscode.window.showErrorMessage("Install cocotb itself to run tests");
-      return([]);
+    try {
+      shell.exec("cocotb-config -v",(code, output) => {
+        if (code === 127){
+        vscode.window.showErrorMessage("Install cocotb itself to run tests");
+        }
+      });
+    } catch (error) {
+      vscode.window.showErrorMessage("Error testing deps."); 
     }
 
     let element = this;
@@ -173,10 +177,14 @@ export class Cocotb {
   }
 
   async get_test_list(makefile_path: string) : Promise<TestItem[]> {
-    if (shell.exec("make").code == 127)
-    {
-      vscode.window.showErrorMessage("Install Make to use cocotb");
-      return([]);
+    try {
+      shell.exec("make",(code, output) => {
+        if (code === 127){
+        vscode.window.showErrorMessage("Install Make to use cocotb");
+        }
+      });
+    } catch (error) {
+      vscode.window.showErrorMessage("Error testing deps."); 
     }
 
     let wksp_folder;
