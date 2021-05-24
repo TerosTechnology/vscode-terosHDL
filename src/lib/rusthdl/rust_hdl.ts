@@ -31,7 +31,7 @@ let languageServer: string;
 
 export async function run_rusthdl(ctx: ExtensionContext) {
     const languageServerDir = ctx.asAbsolutePath(
-        path.join('resources', 'rusthdl', 'vhdl_ls')
+        path.join('server', 'vhdl_ls')
     );
     output.appendLine(
         'Checking for language server executable in ' + languageServerDir
@@ -93,22 +93,6 @@ export async function run_rusthdl(ctx: ExtensionContext) {
             ctx.subscriptions.push(languageServerDisposable);
         })
     );
-
-    output.appendLine('Checking for updates...');
-    lockfile
-        .lock(ctx.asAbsolutePath('server'), {
-            lockfilePath: ctx.asAbsolutePath(path.join('server', '.lock')),
-        })
-        .then((release: () => void) => {
-            getLatestLanguageServer(60000, ctx)
-                .catch((err) => {
-                    output.appendLine(err);
-                })
-                .finally(() => {
-                    output.appendLine('Language server update finished.');
-                    return release();
-                });
-        });
 
     output.appendLine('Language server started');
 }
