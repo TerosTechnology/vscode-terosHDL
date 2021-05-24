@@ -94,22 +94,6 @@ export async function run_rusthdl(ctx: ExtensionContext) {
         })
     );
 
-    output.appendLine('Checking for updates...');
-    // lockfile
-    //     .lock(ctx.asAbsolutePath('server'), {
-    //         lockfilePath: ctx.asAbsolutePath(path.join('server', '.lock')),
-    //     })
-    //     .then((release: () => void) => {
-    //         getLatestLanguageServer(60000, ctx)
-    //             .catch((err) => {
-    //                 output.appendLine(err);
-    //             })
-    //             .finally(() => {
-    //                 output.appendLine('Language server update finished.');
-    //                 return release();
-    //             });
-    //     });
-
     output.appendLine('Language server started');
 }
 
