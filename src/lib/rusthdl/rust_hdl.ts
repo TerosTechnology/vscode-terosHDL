@@ -39,7 +39,6 @@ export async function run_rusthdl(ctx: ExtensionContext) {
     let languageServerVersion = embeddedVersion(languageServerDir);
     if (languageServerVersion === '0.0.0') {
         output.appendLine('No language server installed');
-        window.showInformationMessage('Downloading language server...');
         await getLatestLanguageServer(60000, ctx);
         languageServerVersion = embeddedVersion(languageServerDir);
     } else {
