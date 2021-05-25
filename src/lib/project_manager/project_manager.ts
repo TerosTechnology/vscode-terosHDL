@@ -726,7 +726,8 @@ export class Project_manager {
       }
       let tests_vunit: {}[] = [];
       for (let i = 0; i < tests.length; i++) {
-        const element = tests[i];
+        let element = tests[i];
+        element.test_type= "vunit";
         tests_vunit.push(element);
       }
 
