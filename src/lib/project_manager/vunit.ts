@@ -29,6 +29,7 @@ export class Vunit {
   private output_channel;
   private exp: string = '';
   private more: string = '';
+  private switch: string = '';
   private folder_sep: string = '';
   private childp;
   private context;
@@ -39,11 +40,13 @@ export class Vunit {
 
     this.exp = "export ";
     this.more = ";";
+    this.switch = '';
     this.folder_sep = "/";
 
     if (os.platform() === "win32") {
       this.exp = "SET ";
       this.more = "&&";
+      this.switch = '/D';
       this.folder_sep = "\\";
     }
   }
@@ -132,7 +135,7 @@ export class Vunit {
     }
 
     let simulator_config = this.get_simulator_config(simulator, simulator_install_path);
-    let go_to_dir = `cd ${runpy_dirname}${this.more}`;
+    let go_to_dir = `cd ${this.switch} ${runpy_dirname}${this.more}`;
     let vunit_default_options = `--no-color -x teroshdl_out.xml --exit-0 ${gui_cmd} ${list_cmd}`;
     let command = `${simulator_config}${go_to_dir}${python3_path_exec} ${runpy_filename} ${tests_cmd} ${vunit_default_options}${extra_options}`;
 
