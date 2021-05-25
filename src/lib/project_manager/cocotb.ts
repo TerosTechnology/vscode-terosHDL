@@ -234,7 +234,7 @@ export class Cocotb {
         }
         
         let input = python_cocotb_data.toString();
-        let regex = /(^[^#\r\n]* *@cocotb\.test\(\)(\r\n|\n|\r))([^#\r\n]* *(async )?def ([\w_]+)\([\w_]+\):$)/gm;
+        let regex = /(^[^#\r\n]* *@cocotb\.test[ \t]*\([ \t\w=.()"'\[\],]*\)[ \t]*(\r\n|\n|\r))([^#\r\n]*[ \t]*(async)?def[ \t]+([\w_]+)[ \t]*\([ \t\w_]+\)[ \t]*:[ \t]*$)/gm;
         
         let cocotb_test_matches: RegExpExecArray | null;
         let cocotb_tests: {name: string, offset: number, length: number}[] = [];
