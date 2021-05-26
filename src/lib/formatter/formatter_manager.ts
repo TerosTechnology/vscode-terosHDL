@@ -129,8 +129,8 @@ function get_standalone_vhdl_config() {
         "CheckAlias": false,
         "AlignComments": configuration.get('align-comments'),
         "SignAlignSettings": {
-            "isRegional": true,
-            "isAll": true,
+            "isRegional": configuration.get('align-generic-port'),
+            "isAll": configuration.get('align-generic-port'),
             "mode": 'local',
             "keyWords": [
                 "FUNCTION",

@@ -343,27 +343,8 @@
 					"type": "string",
 					"default": "  "
 				},
-				"teroshdl.formatter.vhdl.type.standalone.align-port": {
-					"description": "Align signs in port",
-					"type": "boolean",
-					"default": true
-				},
-				"teroshdl.formatter.vhdl.type.standalone.align-generic": {
-					"description": "Align signs in generic",
-					"type": "boolean",
-					"default": true,
-					"enum": [
-						true,
-						false
-					]
-				},
-				"teroshdl.formatter.vhdl.type.standalone.align-procedure": {
-					"description": "Align signs in procedure",
-					"type": "boolean",
-					"default": true
-				},
-				"teroshdl.formatter.vhdl.type.standalone.align-function": {
-					"description": "Align signs in function",
+				"teroshdl.formatter.vhdl.type.standalone.align-generic-port": {
+					"description": "Align signs in generics and ports.",
 					"type": "boolean",
 					"default": true
 				}
