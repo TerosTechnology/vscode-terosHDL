@@ -896,6 +896,7 @@
 		"abort-controller": "3.0.0",
 		"extract-zip": "1.6.2",
 		"fs-extra": "8.1.0",
+		"tmp": "0.2.1",
 		"jsteros": "file:../colibri",
 		"proper-lockfile": "4.1.1",
 		"shelljs": "^0.8.3",
