@@ -112,7 +112,7 @@ export default class Dependencies_viewer_manager {
   private async update_viewer() {
     try{
       let dot = await this.get_dot();
-      if (dot === undefined) {
+      if (dot === undefined || dot === '' || dot === null) {
         this.show_python3_error_message();
       }
       else {
@@ -127,7 +127,12 @@ export default class Dependencies_viewer_manager {
   }
 
   private show_python3_error_message() {
-    vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration. Install VUnit: sudo pip3 install vunit_hdl');
+    if (require('os').platform() === 'win32'){
+      vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration. E.g: C:\Users\isma\AppData\Local\Microsoft\WindowsApps\python3.exe. Install VUnit: sudo pip3 install vunit_hdl');
+    }
+    else{
+      vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration. E.g: /usr/bin/python3 Install VUnit: sudo pip3 install vunit_hdl');
+    }
   }
 
   //Clear
