@@ -6,8 +6,6 @@ const path_lib = require('path');
 const os = require('os');
 const shell = require('shelljs');
 const fs = require('fs');
-const colibri = require('jsteros');
-const glob = require( 'glob' );
 const tmp = require('tmp');
 const child_process = require("child_process");
 
