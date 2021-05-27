@@ -198,18 +198,20 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Language providers
     /**************************************************************************/
-    rusthdl.run_rusthdl(context);
+    let is_alive = await rusthdl.run_rusthdl(context);
     // document selector
-    let verilogSelector: vscode.DocumentSelector = [{ scheme: 'file', language: 'verilog' }
-        , { scheme: 'file', language: 'systemverilog' }];
+    let verilogSelector: vscode.DocumentSelector = [
+        { scheme: 'file', language: 'verilog' },
+        { scheme: 'file', language: 'systemverilog' }
+    ];
     let vhdlSelector: vscode.DocumentSelector = { scheme: 'file', language: 'vhdl' };
     // Configure ctags
     ctagsManager = new CtagsManager(logger, context);
     ctagsManager.configure();
     // Configure Document Symbol Provider
     let docProvider = new VerilogDocumentSymbolProvider(logger, context);
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
     // Configure Completion Item Provider
     let compItemProvider = new VerilogCompletionItemProvider(logger);
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
@@ -219,7 +221,13 @@ export async function activate(context: vscode.ExtensionContext) {
     // Configure Definition Providers
     let defProvider = new VerilogDefinitionProvider(logger);
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
+    if (is_alive === false){
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
+        context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, hoverProvider));
+        context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, defProvider));
+    }
     context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc); }));
+
     /**************************************************************************/
     // Hover Hexa
     /**************************************************************************/

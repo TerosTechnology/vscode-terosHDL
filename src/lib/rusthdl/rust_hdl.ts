@@ -53,11 +53,6 @@ export async function run_rusthdl(ctx: ExtensionContext) {
         languageServerBinaryName + (isWindows ? '.exe' : '')
     );
     // Get language server configuration and command to start server
-
-    let workspace = vscode.workspace;
-    let languageServerBinary = workspace
-        .getConfiguration()
-        .get('vhdlls.languageServer');
     let serverOptions: ServerOptions;
     serverOptions = getServerOptionsEmbedded(ctx);
     output.appendLine('Using embedded language server');
@@ -77,6 +72,16 @@ export async function run_rusthdl(ctx: ExtensionContext) {
         clientOptions
     );
 
+    let server_path = ctx.asAbsolutePath(languageServer);
+    let is_alive = await check_rust_hdl(server_path);
+    if (is_alive === false){
+        ctx.subscriptions.push(
+            vscode.commands.registerCommand('vhdlls.restart', async () => {
+            })
+        );
+        return false;
+    }
+
     // Start the client. This will also launch the server
     let languageServerDisposable = client.start();
 
@@ -94,7 +99,28 @@ export async function run_rusthdl(ctx: ExtensionContext) {
     );
 
     output.appendLine('Language server started');
+    return true;
 }
+
+async function check_rust_hdl(rust_hdl_bin_path : string) {
+    let command = rust_hdl_bin_path + ' --version';
+    // eslint-disable-next-line no-console
+    console.log(`[colibri][info] Linting with command: ${command}`);
+    const exec = require('child_process').exec;
+    return new Promise((resolve) => {
+      exec(command, (err, stdout, stderr) => {
+        if (stderr !== '') {
+          console.log(`[rusthdl][error] ${stderr}`);
+        }
+        if (stderr === ''){
+            resolve(true);
+        }
+        else{
+            resolve(false);
+        }
+      });
+    });
+  }
 
 export function deactivate(): Thenable<void> | undefined {
     if (!client) {
