@@ -50,7 +50,7 @@ export class Cocotb {
 
     let push_makefile_if_not_exist = (test_item: TestItem) => {
       let makefile = test_item.location?.parent_makefile;
-      if (!makefile) return;
+      if (!makefile) {return;}
 
       let makefile_to_run = makefiles_to_run.get(makefile);
       makefiles_to_run.set(
@@ -59,7 +59,7 @@ export class Cocotb {
       );
     };
 
-    if (tests_names.length == 0) {
+    if (tests_names.length === 0) {
       for (let test_item of cocotb_test_list) {
         push_makefile_if_not_exist(test_item);
       }
@@ -105,7 +105,22 @@ export class Cocotb {
 
     return new Promise(resolve => {
       shell.cd(dir);
-      this.childp = shell.exec(`make -f ${filename}`, { async: true, encoding: "UTF-8" }, async function (code, stdout, stderr) {
+
+      let cmd_tests = '';
+      if (tests.length > 0){
+        cmd_tests = 'TESTCASE=';
+        for (let i = 0; i < tests.length-1; i++) {
+          const element = tests[i].split('.');
+          let testname = element[element.length-1];
+          cmd_tests += testname + ',';
+        }
+        let test_split = tests[tests.length -1].split('.');
+        let testname = test_split[test_split.length-1];
+        cmd_tests += testname;
+      }
+
+      this.childp = shell.exec(`make -f ${filename} ${cmd_tests}`, 
+          { async: true, encoding: "UTF-8" }, async function (code, stdout, stderr) {
         if (code === 0) {
           let results = await element.get_result(dir, tests);
           resolve(results);

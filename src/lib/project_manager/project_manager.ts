@@ -116,7 +116,12 @@ export class Project_manager {
       let files_in_library = "";
       for (let j = 0; j < library.files.length; j++) {
         const file_in_library = library.files[j];
-        files_in_library += `  '${absolute_path_init}${file_in_library}',\n`;
+        const path = require("path");
+        let file_extension = path.extname(file_in_library);
+        let filename = path.basename(file_in_library);
+        if (file_extension !== '.py' && filename.toLowerCase() !== 'makefile'){
+          files_in_library += `  '${absolute_path_init}${file_in_library}',\n`;
+        }
       }
       let lib_name = library.name;
       if (lib_name === "") {
@@ -305,7 +310,7 @@ export class Project_manager {
     this.set_results(force_fail_all);
   }
 
-  async run_cocotb_tests(tests) {   
+  async run_cocotb_tests(tests) {
     let results = <[]>await this.cocotb.run_simulation(tests, this.cocotb_test_list);
 
     this.last_cocotb_results = results;
