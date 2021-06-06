@@ -305,7 +305,15 @@ export class Project_manager {
     this.set_results(force_fail_all);
   }
 
-  async run_cocotb_tests(tests) {   
+  async run_cocotb_tests(tests) {
+    // let current_tests : Cocotb.TestItem[] [];
+    // for (let i = 0; i < tests.length; i++) {
+    //   const element = tests[i];
+    //   if (element === this.cocotb_test_list[i].name){
+    //     current_tests.push(this.cocotb_test_list[i]);
+    //   } 
+    // }
+    
     let results = <[]>await this.cocotb.run_simulation(tests, this.cocotb_test_list);
 
     this.last_cocotb_results = results;
