@@ -522,7 +522,7 @@ export class Project_manager {
                 let lib_inst = element.split(',')[0].trim();
                 let file_inst = element.split(',')[1].trim();
                 if (lib_inst === ""){
-                  lib_inst = "work";
+                  lib_inst = "";
                 }
                 this.edam_project_manager.add_file(project_name, file_inst, false, "", lib_inst);
               }
@@ -547,7 +547,7 @@ export class Project_manager {
       if (value !== undefined) {
         for (let i = 0; i < value.length; ++i) {
           if (library_name === ""){
-            library_name = "work";
+            library_name = "";
           }
           this.edam_project_manager.add_file(project_name, value[i].fsPath, false, "", library_name);
           if (this.edam_project_manager.get_number_of_files_of_project(project_name) === 1) {
@@ -980,8 +980,10 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   set_icon_no_select_file(item) {
-    let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "verilog.svg");
-    let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "verilog.svg");
+    let item_path = item.path;
+    let path_icon_light = get_icon_light(item.path);
+    let path_icon_dark = get_icon_dark(item.path);
+    
     item.iconPath = {
       light: path_icon_light,
       dark: path_icon_dark,
@@ -1099,6 +1101,38 @@ class Project {
     }
     return tree;
   }
+}
+
+function get_icon_light(full_path){
+  const path = require("path");
+  let file_extension = path.extname(full_path);
+  let filename = path.basename(full_path);
+  
+  let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "verilog.svg");
+  // Python file
+  if (file_extension === '.py'){
+    path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "python.svg");
+  }
+  else if(filename === 'Makefile'){
+    path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "makefile.svg");
+  }
+  return path_icon_light;
+}
+
+function get_icon_dark(full_path){
+  const path = require("path");
+  let file_extension = path.extname(full_path);
+  let filename = path.basename(full_path);
+  
+  let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "verilog.svg");
+  // Python file
+  if (file_extension === '.py'){
+    path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "python.svg");
+  }
+  else if(filename === 'Makefile'){
+    path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "makefile.svg");  
+  }
+  return path_icon_dark;
 }
 
 class TreeItem extends vscode.TreeItem {
@@ -1220,8 +1254,10 @@ class Hdl_item extends vscode.TreeItem {
     this.description = dirname;
     this.children = children;
     this.contextValue = "hdl_source";
-    let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "verilog.svg");
-    let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "verilog.svg");
+
+    let path_icon_light = get_icon_light(label);
+    let path_icon_dark = get_icon_dark(label);
+
     this.iconPath = {
       light: path_icon_light,
       dark: path_icon_dark,
