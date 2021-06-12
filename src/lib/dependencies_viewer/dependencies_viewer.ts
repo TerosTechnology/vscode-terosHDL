@@ -103,8 +103,14 @@ export default class Dependencies_viewer_manager {
   private async get_dot() {
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
     const jsteros = require('jsteros');
-    let project_manager = new jsteros.Project_manager.Manager("");
-    project_manager.add_source_from_array(this.sources);
+    // let project_manager = new jsteros.Project_manager.Manager("");
+    let project_manager = new  jsteros.Edam.Edam_project('', '');
+    for (let i = 0; i < this.sources.length; i++) {
+      const source = this.sources[i];
+      project_manager.add_file(source);
+    }
+
+    // project_manager.add_source_from_array(this.sources);
     let dependencies_dot = await project_manager.get_dependency_graph_dot(python3_path);
     return dependencies_dot;
   }
@@ -158,10 +164,13 @@ export default class Dependencies_viewer_manager {
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-
     const jsteros = require('jsteros');
-    let project_manager = new jsteros.Project_manager.Manager("");
-    project_manager.add_source_from_array(this.sources);
+    let project_manager = new  jsteros.Edam.Edam_project('', '');
+    for (let i = 0; i < this.sources.length; i++) {
+      const source = this.sources[i];
+      project_manager.add_file(source);
+    }
+
     if (type === "markdown") {
       project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
     }

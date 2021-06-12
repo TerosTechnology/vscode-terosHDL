@@ -472,6 +472,11 @@
 					"group": "inline"
 				},
 				{
+					"command": "teroshdl_tree_view.save_doc",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
 					"command": "teroshdl_tree_view.add_file",
 					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources"
 				},
@@ -653,6 +658,14 @@
 			{
 				"command": "teroshdl_tree_view.add_library",
 				"title": "Add library",
+				"icon": {
+					"light": "resources/light/library.svg",
+					"dark": "resources/dark/library.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.save_doc",
+				"title": "Save doc",
 				"icon": {
 					"light": "resources/light/library.svg",
 					"dark": "resources/dark/library.svg"

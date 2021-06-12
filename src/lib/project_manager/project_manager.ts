@@ -89,6 +89,7 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.save_project", (item) => this.save_project_to_file(item));
     vscode.commands.registerCommand("teroshdl_tree_view.stop", () => this.stop());
     vscode.commands.registerCommand("teroshdl_tree_view.open_file", (item) => this.open_file(item));
+    vscode.commands.registerCommand("teroshdl_tree_view.save_doc", (item) => this.save_doc(item));
   }
 
   async refresh_lint() {
@@ -624,6 +625,42 @@ export class Project_manager {
     if (delete_selection === true) {
       this.update_tree();
       this.refresh_lint();
+    }
+  }
+
+
+  async save_doc(item) {
+    const doc_types = ["Save as HTML", "Save as Markdown"];
+    let project_name = item.project_name;
+    let prj = this.edam_project_manager.get_project(project_name);
+
+    let output_dir = '/home/carlos/Desktop';
+    vscode.window.showQuickPick(doc_types, {placeHolder: "Choose output format",}).then((lib_type) => {
+      if (lib_type === undefined){
+        return;
+      }
+      // HTML
+      else if(lib_type === doc_types[0]){
+        this.generate_and_save_documentation(prj, output_dir, 'html', undefined);
+      }
+      // Markdown
+      else if(lib_type === doc_types[0]){
+        this.generate_and_save_documentation(prj, output_dir, 'html', undefined);
+      }
+    });
+  }
+
+  private generate_and_save_documentation(project_manager, output_path, type: string, config) {
+    let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
+    let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
+    let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
+    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+
+    if (type === "markdown") {
+      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
+    }
+    else {
+      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
     }
   }
 
