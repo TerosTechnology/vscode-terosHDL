@@ -4,20 +4,20 @@
 // Carlos Alberto Ruiz Naranjo
 // Alfredo Saez
 //
-// This file is part of Colibri.
+// This file is part of TerosHDL.
 //
-// Colibri is free software: you can redistribute it and/or modify
+// TerosHDL is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Colibri is distributed in the hope that it will be useful,
+// TerosHDL is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
+// along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from "vscode";
@@ -26,10 +26,8 @@ import * as Config_view from "./config_view";
 import * as Edam from "./edam_project";
 import * as Config from "./config";
 import * as Terminal from "./terminal";
-import * as Sample_projects from "./sample_projects";
 import * as Vunit from "./vunit";
 import * as Cocotb from "./cocotb";
-import { dirname } from "path";
 const path_lib = require("path");
 const fs = require("fs");
 const os = require("os");
@@ -82,7 +80,6 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.rename_library", (item) => this.rename_library(item));
     vscode.commands.registerCommand("teroshdl_tree_view.config", () => this.config());
     vscode.commands.registerCommand("teroshdl_tree_view.simulate", () => this.simulate());
-    vscode.commands.registerCommand("teroshdl_tree_view.add_workspace", () => this.add_workspace());
     vscode.commands.registerCommand("teroshdl_tree_view.set_top", (item) => this.set_top(item));
     vscode.commands.registerCommand("teroshdl_tree_view.run_vunit_test", (item) => this.run_vunit_test(item));
     vscode.commands.registerCommand("teroshdl_tree_view.run_cocotb_test", (item) => this.run_cocotb_test(item));
@@ -194,24 +191,21 @@ export class Project_manager {
     vscode.window
       .showSaveDialog({
         saveLabel: "Save project",
-        filters: { "Edam (.edam)": ["edam"], "TerosHDL (.trs)": ["trs"] },
+        filters: { "YAML (.yml)": ["yml"], "JSON (.json)": ["json"], "EDAM (.edam)": ["edam"]},
       })
       .then((value) => {
         if (value !== undefined) {
           let path = value.fsPath;
-          this.edam_project_manager.absolute_project_paths_to_realtive(project_name, path_lib.dirname(path));
           let prj = this.edam_project_manager.get_project(project_name);
           let tool_configuration = this.config_file.get_config_of_selected_tool();
-          let edam = {
-            enable_relative_path: true,
-            work_directory: "",
-            top_level: "top_level",
-            name: prj.name,
-            files: prj.files,
-            tool_options: tool_configuration,
-          };
-          let edam_str = JSON.stringify(edam);
-          fs.writeFileSync(path, edam_str, "utf8");
+
+          let extension = path_lib.extname(path).toLowerCase();
+          if (extension === '.json'){
+            prj.save_as_json(path, tool_configuration);
+          }
+          else{
+            prj.save_as_yml(path, tool_configuration);
+          }
           this.update_tree();
         }
       });
@@ -258,15 +252,6 @@ export class Project_manager {
       return;
     }
     let tool_configuration = this.config_file.get_config_of_selected_tool();
-
-    let edam = {
-      work_directory: "",
-      top_level: "top_level",
-      name: prj.name,
-      files: prj.files,
-      tool_options: tool_configuration,
-    };
-
     if ('vunit' in tool_configuration)
     {
       this.run_vunit_tests([], false);
@@ -423,22 +408,6 @@ export class Project_manager {
     this.config_view.open();
   }
 
-  async add_workspace() {
-    const options: vscode.OpenDialogOptions = {
-      canSelectMany: false,
-      openLabel: "Select workspace folder",
-      canSelectFiles: false,
-      canSelectFolders: true,
-    };
-    vscode.window.showOpenDialog(options).then((value) => {
-      if (value !== undefined) {
-        this.config_file.set_workspace_folder(value[0].fsPath);
-        this.workspace_folder = value[0].fsPath;
-        this.tree.init_tree();
-      }
-    });
-  }
-
   async update_tree() {
     let test_list = [{ name: "Loading tests...", location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
@@ -542,7 +511,7 @@ export class Project_manager {
         });
       }
     });
-    
+    this.update_tree();
   }
 
   async add_file_from_item(item) {
@@ -814,22 +783,28 @@ export class Project_manager {
             }
             this.update_tree();
             this.refresh_tests();
+            this.refresh_lint();
           }
         });
     } else if (picker_value === project_add_types[1]) {
       vscode.window
         .showOpenDialog({
           canSelectMany: true,
-          filters: {
-            "Edam (.edam)": ["edam"],
-            "TerosHDL (.trs)": ["trs"],
-          },
+          filters: { "YAML (.yml)": ["yml"], "JSON (.json)": ["json"], "EDAM (.edam)": ["edam"]},
         })
         .then((value) => {
           if (value !== undefined) {
             for (let i = 0; i < value.length; ++i) {
-              let rawdata = fs.readFileSync(value[i].fsPath);
-              let prj_json = JSON.parse(rawdata);
+              let rawdata = fs.readFileSync(value[i].fsPath, 'utf8');
+              let prj_json = {};
+              let extension = path_lib.extname(value[i].fsPath).toLowerCase();
+              if (extension === '.json'){
+                prj_json = JSON.parse(rawdata);
+              }
+              else{
+                const jsteros = require('jsteros');
+                prj_json = jsteros.Edam.yml_edam_str_to_json_edam(rawdata);
+              }
               this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(value[i].fsPath));
               if (this.edam_project_manager.get_number_of_projects() === 1) {
                 let prj_name = this.edam_project_manager.projects[0].name;
@@ -838,19 +813,9 @@ export class Project_manager {
             }
           }
           this.update_tree();
+          this.refresh_tests();
         });
     }
-    // else if (picker_value === project_add_types[2]) {
-    //   let result = this.edam_project_manager.create_project_from_edam(Sample_projects.sample_vhdl);
-    //   if (result !== 0) {
-    //     this.show_export_message(result);
-    //     return;
-    //   }
-    //   this.update_tree();
-    //   if (this.edam_project_manager.get_number_of_projects() === 1) {
-    //     this.select_project_from_name(Sample_projects.sample_vhdl.name);
-    //   }
-    // }
     this.refresh_lint();
   }
 }

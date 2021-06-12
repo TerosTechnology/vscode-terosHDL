@@ -37,12 +37,6 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"viewsWelcome": [
-			{
-				"view": "teroshdl_tree_view",
-				"contents": "No TerosHDL workspace found.\n[Add workspace folder](command:teroshdl_tree_view.add_workspace)"
-			}
-		],
 		"viewsContainers": {
 			"activitybar": [
 				{
