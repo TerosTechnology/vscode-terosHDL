@@ -4,20 +4,20 @@
 // Carlos Alberto Ruiz Naranjo
 // Alfredo Saez
 //
-// This file is part of Colibri.
+// This file is part of TerosHDL.
 //
-// Colibri is free software: you can redistribute it and/or modify
+// TerosHDL is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Colibri is distributed in the hope that it will be useful,
+// TerosHDL is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
+// along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 const fs = require('fs');
 const path = require('path');
 
@@ -103,6 +103,18 @@ export class Config {
     }
     catch (e) {
       return { config: {}, projects: [] };
+    }
+  }
+
+  get_config_documentation(){
+    let config_tool = this.config['config_tool'].config;
+    for (let i = 0; i < config_tool.length; i++) {
+      const element = config_tool[i];
+      for(let attributename in element){
+        if (attributename === 'documentation'){
+          return element[attributename];
+        }
+      }     
     }
   }
 

@@ -37,12 +37,6 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"viewsWelcome": [
-			{
-				"view": "teroshdl_tree_view",
-				"contents": "No TerosHDL workspace found.\n[Add workspace folder](command:teroshdl_tree_view.add_workspace)"
-			}
-		],
 		"viewsContainers": {
 			"activitybar": [
 				{
@@ -478,6 +472,11 @@
 					"group": "inline"
 				},
 				{
+					"command": "teroshdl_tree_view.save_doc",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
 					"command": "teroshdl_tree_view.add_file",
 					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources"
 				},
@@ -662,6 +661,14 @@
 				"icon": {
 					"light": "resources/light/library.svg",
 					"dark": "resources/dark/library.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.save_doc",
+				"title": "Save doc",
+				"icon": {
+					"light": "resources/light/book.svg",
+					"dark": "resources/dark/book.svg"
 				}
 			},
 			{
