@@ -123,19 +123,54 @@
 <p>Configure your tools.</p>
 
 <div class="tab">
-  <button class="tablinks" onclick="openCity(event, 'general')" id="defaultOpen">General</button>
-  <button class="tablinks" onclick="openCity(event, 'ghdl')">GHDL</button>
-  <button class="tablinks" onclick="openCity(event, 'icarus')">Icarus</button>
-  <button class="tablinks" onclick="openCity(event, 'modelsim')">ModelSim</button>
-  <button class="tablinks" onclick="openCity(event, 'xsim')">Xsim</button>
-  <button class="tablinks" onclick="openCity(event, 'vunit')">VUnit</button>
-  <button class="tablinks" onclick="openCity(event, 'vivado')">Vivado</button>
-  <button class="tablinks" onclick="openCity(event, 'riviera_pro')">Riviera-PRO</button>
-  <button class="tablinks" onclick="openCity(event, 'active_hdl')">Active-HDL</button>
-  <button class="tablinks" onclick="openCity(event, 'verilator')">Verilator</button>
-  <button class="tablinks" onclick="openCity(event, 'cocotb')">cocotb</button>
+  <button class="tablinks" onclick="open_tab(event, 'documentation')" id="default_open">Documentation</button>
+  <button class="tablinks" onclick="open_tab(event, 'general')">Simulator selection</button>
+  <button class="tablinks" onclick="open_tab(event, 'ghdl')">GHDL</button>
+  <button class="tablinks" onclick="open_tab(event, 'icarus')">Icarus</button>
+  <button class="tablinks" onclick="open_tab(event, 'modelsim')">ModelSim</button>
+  <button class="tablinks" onclick="open_tab(event, 'xsim')">Xsim</button>
+  <button class="tablinks" onclick="open_tab(event, 'vunit')">VUnit</button>
+  <button class="tablinks" onclick="open_tab(event, 'vivado')">Vivado</button>
+  <button class="tablinks" onclick="open_tab(event, 'riviera_pro')">Riviera-PRO</button>
+  <button class="tablinks" onclick="open_tab(event, 'active_hdl')">Active-HDL</button>
+  <button class="tablinks" onclick="open_tab(event, 'verilator')">Verilator</button>
+  <button class="tablinks" onclick="open_tab(event, 'cocotb')">cocotb</button>
 </div>
 
+<div id="documentation" class="tabcontent">
+  <h3>Documentation settings</h3>
+  
+  <label>Include dependency graph:</label>
+  <input type='checkbox' id="doc_include_dependency_graph" class='radio-button'>
+  <br><br>
+
+  <label>Include FSM:</label>
+  <input type='checkbox' id="doc_include_fsm" class='radio-button'>
+  <br><br>
+
+  <label>Include signals:</label>
+  <select name="select" id="doc_signal">
+    <option value="all" selected>All</option>
+    <option value="only_commented">Only commented</option>
+    <option value="none">None</option>
+  </select>
+  <br><br>
+
+  <label>Include constants an types:</label>
+  <select name="select" id="doc_constant">
+    <option value="all" selected>All</option>
+    <option value="only_commented">Only commented</option>
+    <option value="none">None</option>
+  </select>
+  <br><br>
+
+  <label>Include always/processes:</label>
+  <select name="select" id="doc_always">
+    <option value="all" selected>All</option>
+    <option value="only_commented">Only commented</option>
+    <option value="none">None</option>
+  </select>
+</div>
 
 <div id="general" class="tabcontent">
   <h3>Select tool</h3>
@@ -308,7 +343,7 @@
 <script>
   const vscode = acquireVsCodeApi();
 
-  function openCity(evt, cityName) {
+  function open_tab(evt, cityName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -322,8 +357,8 @@
     evt.currentTarget.className += " active";
   }
 
-  // Get the element with id="defaultOpen" and click on it
-  document.getElementById("defaultOpen").click();
+  // Get the element with id="default_open" and click on it
+  document.getElementById("default_open").click();
 
   
   function send_config_and_close(){
@@ -353,7 +388,9 @@
     let config = {
       'selected_tool':selected_tool,
       'config': 
-        [get_ghdl_options(),
+      [
+        get_documentation_options(),
+        get_ghdl_options(),
         get_icarus_options(),
         get_modelsim_options(),
         get_xsim_options(),
@@ -362,7 +399,8 @@
         get_riviera_pro_options(),
         get_verilator_options(),
         get_cocotb_options(),
-        get_active_hdl_options()]
+        get_active_hdl_options()
+      ]
     }
     return config;
   }
@@ -380,6 +418,19 @@
     let options = {
       'cocotb': {
         'installation_path': document.getElementById("cocotb_installation_path").value
+      }
+    };
+    return options;
+  }
+
+  function get_documentation_options(){
+    let options = {
+      'documentation':{
+        'dependency_graph': document.getElementById("doc_include_dependency_graph").checked,
+        'fsm': document.getElementById("doc_include_fsm").checked,
+        'signals': document.getElementById("doc_signal").value,
+        'constants': document.getElementById("doc_constant").value,
+        'process': document.getElementById("doc_always").value
       }
     };
     return options;
@@ -506,8 +557,7 @@
         config_tool = attributename;
         options = element[attributename];
         installation_path = element[attributename].installation_path;
-      }
-
+      }      
       if (config_tool === 'ghdl'){
         set_ghdl_options(options, installation_path);
       }
@@ -538,7 +588,30 @@
       else if (config_tool === 'cocotb'){
         set_cocotb_options(options, installation_path);
       }
+      else if (config_tool === 'documentation'){
+        set_documentation_options(options);
+      }
     }
+  }
+
+  function set_documentation_options(options){
+    if (options.dependency_graph == true){
+      document.getElementById("doc_include_dependency_graph").checked = true;
+    }
+    else{
+      document.getElementById("doc_include_dependency_graph").checked = false;
+    }
+
+    if (options.fsm == true){
+      document.getElementById("doc_include_fsm").checked = true;
+    }
+    else{
+      document.getElementById("doc_include_fsm").checked = false;
+    }
+
+    document.getElementById("doc_signal").value = options.signals;
+    document.getElementById("doc_constant").value = options.constants;
+    document.getElementById("doc_always").value = options.process;
   }
 
   function set_ghdl_options(options, installation_path){
@@ -566,7 +639,6 @@
   }
 
   function set_vunit_options(options, installation_path){
-      console.log("entra")
       document.getElementById("vunit_simulator").value = options.simulator;
       document.getElementById("vunit_vunit_options").value = options.options;
       document.getElementById("vunit_add_libraries").value = options.add_libraries;

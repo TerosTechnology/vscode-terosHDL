@@ -106,6 +106,18 @@ export class Config {
     }
   }
 
+  get_config_documentation(){
+    let config_tool = this.config['config_tool'].config;
+    for (let i = 0; i < config_tool.length; i++) {
+      const element = config_tool[i];
+      for(let attributename in element){
+        if (attributename === 'documentation'){
+          return element[attributename];
+        }
+      }     
+    }
+  }
+
   get_config_tool() {
     return this.config['config_tool'].config;
   }

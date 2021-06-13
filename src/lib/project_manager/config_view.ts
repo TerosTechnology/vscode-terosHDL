@@ -97,6 +97,10 @@ export default class config_view {
     this.panel?.dispose();
   }
 
+  get_config_documentation() {
+    return this.config.get_config_documentation();
+  }
+
   get_config() {
     return this.config;
   }

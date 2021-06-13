@@ -628,25 +628,34 @@ export class Project_manager {
     }
   }
 
-
   async save_doc(item) {
     const doc_types = ["Save as HTML", "Save as Markdown"];
     let project_name = item.project_name;
     let prj = this.edam_project_manager.get_project(project_name);
 
-    let output_dir = '/home/carlos/Desktop';
     vscode.window.showQuickPick(doc_types, {placeHolder: "Choose output format",}).then((lib_type) => {
       if (lib_type === undefined){
         return;
       }
-      // HTML
-      else if(lib_type === doc_types[0]){
-        this.generate_and_save_documentation(prj, output_dir, 'html', undefined);
-      }
-      // Markdown
-      else if(lib_type === doc_types[0]){
-        this.generate_and_save_documentation(prj, output_dir, 'html', undefined);
-      }
+      vscode.window.showOpenDialog({ canSelectMany: false, canSelectFiles: false, canSelectFolders:true, 
+        title:'Where the documentation will be generated'
+      }).then((output_path) => {
+        if (output_path === undefined){
+          return;
+        }
+        let output_dir = output_path[0].fsPath;
+        //Get documentation configuration
+        let config = this.config_view.get_config_documentation();
+
+        // HTML
+        if(lib_type === doc_types[0]){
+          this.generate_and_save_documentation(prj, output_dir, 'html', config);
+        }
+        // Markdown
+        else if(lib_type === doc_types[0]){
+          this.generate_and_save_documentation(prj, output_dir, 'html', config);
+        }
+      });
     });
   }
 

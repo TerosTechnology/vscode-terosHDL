@@ -667,8 +667,8 @@
 				"command": "teroshdl_tree_view.save_doc",
 				"title": "Save doc",
 				"icon": {
-					"light": "resources/light/library.svg",
-					"dark": "resources/dark/library.svg"
+					"light": "resources/light/book.svg",
+					"dark": "resources/dark/book.svg"
 				}
 			},
 			{
