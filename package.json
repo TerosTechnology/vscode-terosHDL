@@ -501,8 +501,18 @@
 					"group": "inline"
 				},
 				{
+					"command": "teroshdl_tree_view.run_edalize_test_gui",
+					"when": "view == teroshdl_tree_view && viewItem == test_edalize",
+					"group": "inline"
+				},
+				{
 					"command": "teroshdl_tree_view.go_to_code",
-					"when": "viewItem == test_cocotb || viewItem == test_vunit && view == teroshdl_tree_view",
+					"when": "viewItem == test_edalize || viewItem == test_cocotb || viewItem == test_vunit && view == teroshdl_tree_view",
+					"group": "inline"
+				},
+				{
+					"command": "teroshdl_tree_view.run_edalize_test",
+					"when": "view == teroshdl_tree_view && viewItem == test_edalize",
 					"group": "inline"
 				},
 				{
@@ -597,6 +607,22 @@
 				"icon": {
 					"light": "resources/light/run.svg",
 					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.run_edalize_test",
+				"title": "Run Edalize test",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.run_edalize_test_gui",
+				"title": "Run Edalize test in GUI",
+				"icon": {
+					"light": "resources/light/debug.svg",
+					"dark": "resources/dark/debug.svg"
 				}
 			},
 			{

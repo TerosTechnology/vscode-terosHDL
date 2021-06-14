@@ -28,6 +28,7 @@ import * as Config from "./config";
 import * as Terminal from "./terminal";
 import * as Vunit from "./vunit";
 import * as Cocotb from "./cocotb";
+import * as Edalize from "./edalize";
 const path_lib = require("path");
 const fs = require("fs");
 const os = require("os");
@@ -44,14 +45,17 @@ export class Project_manager {
   private cocotb_test_list: Cocotb.TestItem[] = [];
   private vunit: Vunit.Vunit;
   private cocotb: Cocotb.Cocotb;
+  private edalize: Edalize.Edalize;
   private last_vunit_results;
   private last_cocotb_results;
+  private last_edalize_results;
   private init: boolean = false;
   private treeview;
 
   constructor(context: vscode.ExtensionContext) {
     this.vunit = new Vunit.Vunit(context);
     this.cocotb = new Cocotb.Cocotb(context);
+    this.edalize = new Edalize.Edalize(context);
     this.terminal = new Terminal.Terminal(context);
     this.edam_project_manager = new Edam.Edam_project_manager();
     this.config_file = new Config.Config(context.extensionPath);
@@ -59,10 +63,8 @@ export class Project_manager {
     this.config_view = new Config_view.default(context, this.config_file);
 
     this.tree = new TreeDataProvider();
-    if (this.workspace_folder !== "") {
-      this.set_default_projects();
-    }
-
+    this.set_default_projects();
+    
     this.treeview = vscode.window.createTreeView("teroshdl_tree_view", {
       showCollapseAll : false,
       treeDataProvider: this.tree,
@@ -83,7 +85,9 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.set_top", (item) => this.set_top(item));
     vscode.commands.registerCommand("teroshdl_tree_view.run_vunit_test", (item) => this.run_vunit_test(item));
     vscode.commands.registerCommand("teroshdl_tree_view.run_cocotb_test", (item) => this.run_cocotb_test(item));
+    vscode.commands.registerCommand("teroshdl_tree_view.run_edalize_test", (item) => this.run_edalize_test(item));
     vscode.commands.registerCommand("teroshdl_tree_view.run_vunit_test_gui", (item) => this.run_vunit_test_gui(item));
+    vscode.commands.registerCommand("teroshdl_tree_view.run_edalize_test_gui", (item) => this.run_edalize_test_gui(item));
     vscode.commands.registerCommand("teroshdl_tree_view.go_to_code", (item) => this.go_to_code(item));
     vscode.commands.registerCommand("teroshdl_tree_view.refresh_tests", () => this.refresh_tests());
     vscode.commands.registerCommand("teroshdl_tree_view.save_project", (item) => this.save_project_to_file(item));
@@ -184,6 +188,7 @@ export class Project_manager {
   async refresh_tests() {
     this.last_vunit_results = [];
     this.last_cocotb_results = [];
+    this.last_edalize_results = [];
     this.update_tree();
   }
 
@@ -213,12 +218,12 @@ export class Project_manager {
   }
 
   async set_default_projects() {
-    this.edam_project_manager.create_projects_from_edam(this.config_file.projects);
-    await this.update_tree();
     let selected_project = this.config_file.selected_project;
     if (selected_project !== "" && selected_project !== undefined) {
       this.edam_project_manager.selected_project = selected_project;
     }
+    this.edam_project_manager.create_projects_from_edam(this.config_file.projects);
+    await this.update_tree();
     this.update_tree();
     this.refresh_lint();
   }
@@ -234,10 +239,21 @@ export class Project_manager {
     this.run_cocotb_tests(tests);
   }
 
+  async run_edalize_test(item) {
+    let tests: string[] = [item.label];
+    this.run_edalize_tests(tests, false);
+  }
+
   async run_vunit_test_gui(item) {
     let tests: string[] = [item.label];
     let gui = true;
     this.run_vunit_tests(tests, gui);
+  }
+
+  async run_edalize_test_gui(item) {
+    let tests: string[] = [item.label];
+    let gui = true;
+    this.run_edalize_tests(tests, gui);
   }
 
   async simulate() {
@@ -261,6 +277,60 @@ export class Project_manager {
     {
       this.run_cocotb_tests([]);
     }
+    else{
+      this.run_edalize_tests([], false);
+    }
+  }
+
+  async get_toplevel_selected_prj(){
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === "") {
+      let msg = "Mark a project to simulate";
+      this.show_export_message(msg);
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    let toplevel_path = prj.toplevel_path;
+    let toplevel = await this.get_toplevel_from_path(toplevel_path);
+    return toplevel;
+  }
+
+  get_toplevel_path_selected_prj(){
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === "") {
+      let msg = "Mark a project to simulate";
+      this.show_export_message(msg);
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    let toplevel_path = prj.toplevel_path;
+    return toplevel_path;
+  }
+
+  async get_toplevel_from_path(filepath : string){
+    const jsteros = require('jsteros');
+    let lang = this.get_file_lang(filepath);
+    let parser_factory = new jsteros.Parser.ParserFactory();
+    let parser = await parser_factory.getParser(lang);
+
+    let code = fs.readFileSync(filepath, "utf8");
+    let entity_declaration = await parser.get_all(code, '!');
+    let entity_name = entity_declaration.entity.name;
+    return entity_name;
+  }
+
+  get_file_lang(filepath : string){
+    let vhdl_extensions = ['.vhd', '.vho', '.vhdl', '.vhd'];
+    let verilog_extensions = ['.v', '.vh', '.vl', '.sv', '.svh'];
+    let extension = path_lib.extname(filepath).toLowerCase();
+    let lang = 'vhdl';
+    if (vhdl_extensions.includes(extension) === true){
+      lang = 'vhdl';
+    }
+    else if(verilog_extensions.includes(extension) === true){
+      lang = 'verilog';
+    }
+    return lang;
   }
 
   async run_vunit_tests(tests, gui) {
@@ -289,6 +359,26 @@ export class Project_manager {
       )
     );
     this.last_vunit_results = results;
+    let force_fail_all = false;
+    if (results.length === 0) {
+      force_fail_all = true;
+    }
+    this.set_results(force_fail_all);
+  }
+
+  async run_edalize_tests(tests, gui) {
+    let selected_project = this.edam_project_manager.selected_project;
+    let prj = this.edam_project_manager.get_project(selected_project);
+    let edam = prj.export_edam_file();
+    let tool_configuration = this.config_file.get_config_of_selected_tool();
+    edam.tool_options = tool_configuration;
+
+    let toplevel = await this.get_toplevel_selected_prj();;
+    edam.toplevel = toplevel;
+    let python3_path = <string>vscode.workspace.getConfiguration("teroshdl.global").get("python3-path");
+    let results = <[]>await this.edalize.run_simulation(python3_path, edam, toplevel, gui);
+    this.last_edalize_results = results;
+
     let force_fail_all = false;
     if (results.length === 0) {
       force_fail_all = true;
@@ -374,6 +464,9 @@ export class Project_manager {
     {
       this.tree.set_results(this.last_cocotb_results, force_fail_all);
     }
+    else{
+      this.tree.set_results(this.last_edalize_results, force_fail_all);
+    }
   }
 
   set_top_from_project(project_name, library_name, path) {
@@ -439,6 +532,9 @@ export class Project_manager {
     else if ('cocotb' in tool_configuration)
     {
       test_list_result = await this.get_cocotb_test_list();
+    }
+    else{
+      test_list_result = await this.get_edalize_test_list();
     }
 
     this.tree.update_super_tree(normalized_prjs, test_list_result);
@@ -770,6 +866,23 @@ export class Project_manager {
       return [single_test];
     }
   }
+
+
+  async get_edalize_test_list() {
+    let testname = await this.get_toplevel_selected_prj();
+    let toplevel_path = this.get_toplevel_path_selected_prj();
+    let single_test: Edalize.TestItem = {
+      test_type: 'edalize',
+      name: testname,
+      location: {
+        file_name: toplevel_path,
+        length: 0,
+        offset:0
+      }
+    };
+    return [single_test];
+  }
+
 
   async get_cocotb_test_list() {
     let single_test: Cocotb.TestItem = {
