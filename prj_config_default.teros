@@ -19,8 +19,9 @@
             {
                "ghdl":{
                   "installation_path":"",
-                  "analize":"",
-                  "run":""
+                  "waveform":"none",
+                  "analyze_options":"-fexplicit,--no-vital-checks,-frelaxed-rules",
+                  "run_options":""
                }
             },
             {

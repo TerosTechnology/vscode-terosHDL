@@ -124,7 +124,7 @@
 
 <div class="tab">
   <button class="tablinks" onclick="open_tab(event, 'documentation')" id="default_open">Documentation</button>
-  <button class="tablinks" onclick="open_tab(event, 'general')">Simulator selection</button>
+  <button class="tablinks" onclick="open_tab(event, 'general')">Tool selection</button>
   <button class="tablinks" onclick="open_tab(event, 'ghdl')">GHDL</button>
   <button class="tablinks" onclick="open_tab(event, 'icarus')">Icarus</button>
   <button class="tablinks" onclick="open_tab(event, 'modelsim')">ModelSim</button>
@@ -175,7 +175,7 @@
 <div id="general" class="tabcontent">
   <h3>Select tool</h3>
   
-  <!-- <input type='radio' tool="ghdl" class='radio-button' name='re' checked>
+  <input type='radio' tool="ghdl" class='radio-button' name='re' checked>
   <label class="container">GHDL</label>
   <br><br>
 
@@ -189,7 +189,7 @@
 
   <input type='radio' tool="xsim" class='radio-button' name='re'>
   <label class="container">Xsim</label>
-  <br><br> -->
+  <br><br>
 
   <input type='radio' tool="vunit" class='radio-button' name='re'>
   <label class="container">VUnit</label>
@@ -199,7 +199,7 @@
   <label class="container">cocotb</label>
   <br><br>
 
-  <!-- <input type='radio' tool="vivado" class='radio-button' name='re'>
+  <input type='radio' tool="vivado" class='radio-button' name='re'>
   <label class="container">Vivado</label>
   <br><br>
 
@@ -209,24 +209,32 @@
 
   <input type='radio' tool="verilator" class='radio-button' name='re'>
   <label class="container">Verilator</label>
-  <br><br> -->
+  <br><br>
 </div>
 
 <div id="ghdl" class="tabcontent">
   <h3>GHDL</h3>
-  
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
   <label>GHDL installation path.</label><br><br>
   <input class="input" id="ghdl_installation_path" type="text"><br><br>
   
-  <label>Analize options. Extra options used for the GHDL analyze stage (ghdl -a).</label><br><br>
-  <input class="input" id="ghdl_analize" type="text"><br><br>
+  <label>Waveform output format:</label>
+  <select name="select" id="ghdl_waveform">
+    <option value="vcd" selected>vcd</option>
+    <option value="ghw">ghw</option>
+  </select>
+  <br><br>
+
+  <label>analyze options. Extra options used for the GHDL analyze stage (ghdl -a).</label><br><br>
+  <input class="input" id="ghdl_analyze_options" type="text"><br><br>
   
   <label>Run options. Extra options used when running GHDL simulations (ghdl -r).</label><br><br>
-  <input class="input" id="ghdl_run" type="text"><br><br>
+  <input class="input" id="ghdl_run_options" type="text"><br><br>
 </div>
 
 <div id="icarus" class="tabcontent">
   <h3>Icarus</h3>
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
   <label>Icarus installation path.</label><br><br>
   <input class="input" id="icarus_installation_path" type="text"><br><br>
   
@@ -239,18 +247,20 @@
 
 <div id="modelsim" class="tabcontent">
   <h3>ModelSim</h3>
-  <label>ModelSim installation path.</label><br><br>
-  <input id="modelsim_installation_path" type="text"><br><br>
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
+  <label>ModelSim installation path. E.g: /opt/intelFPGA_pro/20.1/modelsim_ase/bin</label><br><br>
+  <input class="input" id="modelsim_installation_path" type="text"><br><br>
   
   <label>VLOG. Extra options for each Verilog file compiled with vlog.</label><br><br>
-  <input id="modelsim_vlog_options" type="text"><br><br>
+  <input class="input" id="modelsim_vlog_options" type="text"><br><br>
   
   <label>VSIM options. Extra options for running the simulation with vsim.</label><br><br>
-  <input id="modelsim_vsim_options" type="text"><br><br>
+  <input class="input" id="modelsim_vsim_options" type="text"><br><br>
 </div>
 
 <div id="xsim" class="tabcontent">
   <h3>Xsim</h3>
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
   <label>Xsim installation path.</label><br><br>
   <input class="input" id="xsim_installation_path" type="text"><br><br>
   
@@ -263,6 +273,7 @@
 
 <div id="vunit" class="tabcontent">
   <h3>VUnit</h3>
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
   <label>Configure your Python3 installation path in the extension configuration.</label><br><br>
   <!-- <input class="input" id="vunit_installation_path" type="text"><br><br> -->
   
@@ -287,6 +298,7 @@
 
 <div id="vivado" class="tabcontent">
   <h3>Vivado</h3>
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
   <label>Vivado installation path.</label><br><br>
   <input class="input" id="vivado_installation_path" type="text"><br><br>
   
@@ -296,6 +308,7 @@
 
 <div id="riviera_pro" class="tabcontent">
   <h3>Riviera-PRO</h3>
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
   <label>Riviera-PRO installation path.</label><br><br>
   <input class="input" id="riviera_pro_installation_path" type="text"><br><br>
   
@@ -308,13 +321,15 @@
 
 <div id="active_hdl" class="tabcontent">
   <h3>Active-HDL</h3>
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
   <label>Active-HDL installation path.</label><br><br>
   <input class="input" id="active_hdl_installation_path" type="text"><br><br>
 </div>
 
 <div id="verilator" class="tabcontent">
   <h3>Verilator</h3>
-  <label>Riviera-PRO installation path.</label><br><br>
+  <b>All the options are comma separated. E.g: </b><br><code>--option1 op, --option2 op2</code><br><br>
+  <label>Verilator installation path.</label><br><br>
   <input class="input" id="verilator_installation_path" type="text"><br><br>
   
   <label>CLI parser. If cli_parser is set to managed, Edalize will parse all command-line options. Otherwise, they are sent directly to the compiled simulation model..</label><br><br>
@@ -440,8 +455,9 @@
     let options = {
       'ghdl':{
         'installation_path': document.getElementById("ghdl_installation_path").value,
-        'analize': document.getElementById("ghdl_analize").value,
-        'run': document.getElementById("ghdl_run").value
+        'waveform': document.getElementById("ghdl_waveform").value,
+        'analyze_options': document.getElementById("ghdl_analyze_options").value,
+        'run_options': document.getElementById("ghdl_run_options").value
       }
     };
     return options;
@@ -616,8 +632,9 @@
 
   function set_ghdl_options(options, installation_path){
     document.getElementById("ghdl_installation_path").value = installation_path;
-    document.getElementById("ghdl_analize").value = options.analize;
-    document.getElementById("ghdl_run").value = options.run;
+    document.getElementById("ghdl_waveform").value = options.waveform;
+    document.getElementById("ghdl_analyze_options").value = options.analyze_options;
+    document.getElementById("ghdl_run_options").value = options.run_options;
   }
 
   function set_icarus_options(options, installation_path){
