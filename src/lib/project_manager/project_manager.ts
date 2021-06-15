@@ -289,10 +289,15 @@ export class Project_manager {
       this.show_export_message(msg);
       return;
     }
-    let prj = this.edam_project_manager.get_project(selected_project);
-    let toplevel_path = prj.toplevel_path;
-    let toplevel = await this.get_toplevel_from_path(toplevel_path);
-    return toplevel;
+    try{
+      let prj = this.edam_project_manager.get_project(selected_project);
+      let toplevel_path = prj.toplevel_path;
+      let toplevel = await this.get_toplevel_from_path(toplevel_path);
+      return toplevel;
+    }
+    catch{
+      return '';
+    }
   }
 
   get_toplevel_path_selected_prj(){
@@ -303,6 +308,9 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
+    if (prj === undefined){
+      return '';
+    }
     let toplevel_path = prj.toplevel_path;
     return toplevel_path;
   }
@@ -314,8 +322,10 @@ export class Project_manager {
     let parser = await parser_factory.getParser(lang);
 
     let code = fs.readFileSync(filepath, "utf8");
-    let entity_declaration = await parser.get_all(code, '!');
-    let entity_name = entity_declaration.entity.name;
+    let entity_name = await parser.get_only_entity_name(code);
+    if (entity_name === undefined){
+      return '';
+    }
     return entity_name;
   }
 
@@ -649,6 +659,8 @@ export class Project_manager {
     vscode.window.showInputBox({ prompt: "Set the project name", value: project_name }).then((value) => {
       if (value !== undefined) {
         this.edam_project_manager.rename_project(project_name, value);
+        let selected_project = this.edam_project_manager.selected_project;
+        this.config_file.set_selected_project(selected_project);
         this.update_tree();
       }
     });
@@ -867,7 +879,6 @@ export class Project_manager {
     }
   }
 
-
   async get_edalize_test_list() {
     let testname = await this.get_toplevel_selected_prj();
     let toplevel_path = this.get_toplevel_path_selected_prj();
@@ -882,7 +893,6 @@ export class Project_manager {
     };
     return [single_test];
   }
-
 
   async get_cocotb_test_list() {
     let single_test: Cocotb.TestItem = {

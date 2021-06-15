@@ -128,6 +128,9 @@ export class Edam_project_manager {
   }
 
   rename_project(name, new_name) {
+    if (this.select_project === name){
+      this.selected_project = new_name;
+    }
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].name === name) {
         this.projects[i].name = new_name;
@@ -232,6 +235,5 @@ export class Edam_project_manager {
     }
     return projects;
   }
-
 }
 

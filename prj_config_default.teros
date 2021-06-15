@@ -27,7 +27,7 @@
             {
                "icarus":{
                   "installation_path":"",
-                  "options":"",
+                  "iverilog_options":"",
                   "timescale":""
                }
             },
@@ -68,11 +68,21 @@
                }
             },
             {
+               "quartus":{
+                  "installation_path":"",
+                  "board_device_index":"",
+                  "family":"",
+                  "device":"",
+                  "quartus_options":"",
+                  "dse_options":""
+               }
+            },
+            {
                "verilator":{
                   "installation_path":"",
                   "cli_parser":"",
                   "libs":"",
-                  "mode":"",
+                  "mode":"lint-only",
                   "options":""
                }
             },
