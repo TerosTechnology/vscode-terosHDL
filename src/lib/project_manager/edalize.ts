@@ -21,9 +21,9 @@
 
 import * as vscode from 'vscode';
 const path_lib = require('path');
-const os = require('os');
 const shell = require('shelljs');
 const fs = require('fs');
+const tool_base = require('./tool_base');
 
 export interface TestItem {
   test_type: string | undefined,
@@ -35,60 +35,28 @@ export interface TestItem {
   name: string;
 }
 
-export class Edalize {
-  private output_channel;
-  private exp: string = '';
-  private more: string = '';
-  private switch: string = '';
-  private folder_sep: string = '';
-  private childp;
-  private context;
+export class Edalize extends tool_base.Tool_base{
   private waveform_path;
   private complete_waveform_path = '';
 
   constructor(context) {
-    this.context = context;
-    this.output_channel = vscode.window.createOutputChannel('TerosHDL');
-
-    this.exp = "export ";
-    this.more = ";";
-    this.switch = '';
-    this.folder_sep = "/";
-
-    if (os.platform() === "win32") {
-      this.exp = "SET ";
-      this.more = "&&";
-      this.switch = '/D';
-      this.folder_sep = "\\";
-    }
+    super(context);
     this.waveform_path = `${__dirname}${this.folder_sep}waveform`;
   }
 
-  async get_python3_path(python3_path) {
-    let python_path = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-    const jsteros = require('jsteros');
-    python_path = await jsteros.Nopy.get_python_exec();
-
-    if (python_path === undefined || python_path === '') {
-      this.output_channel.append('[Error] Install and configure Python3 in the extension configuration.');
-      this.output_channel.show();
-      return undefined;
-    }
-    return python_path;
-  }
-
-  async run_simulation(python3_path, edam, testname, gui) {
+  async run_simulation(edam, testname, gui) {
     let normalized_edam = this.normalize_edam(edam);
     this.output_channel.clear();
     let simulator_name = this.get_simulator_from_edam(normalized_edam);
-    if (gui === true){
+    let simulator_gui_support = this.check_gui_support(simulator_name, gui);
+    if (simulator_gui_support === true){
       normalized_edam = this.configure_waveform_gui(simulator_name, normalized_edam);
     }
     const edam_path = `${__dirname}${this.folder_sep}edam.json`;
     let edam_json = JSON.stringify(normalized_edam);
     fs.writeFileSync(edam_path, edam_json);
 
-    let command = await this.get_command(python3_path, edam_path, simulator_name, normalized_edam);
+    let command = await this.get_command(edam_path, simulator_name, normalized_edam);
     if (command === undefined) {
       return [];
     }
@@ -99,7 +67,7 @@ export class Edalize {
       pass : result
     };
 
-    if (gui === true && simulator_name === 'ghdl'){
+    if (simulator_gui_support === true){
       this.open_waveform_gtkwave();
     }
 
@@ -124,6 +92,19 @@ export class Edalize {
       }
       return edam_normalized;
     } 
+  }
+
+  check_gui_support(simulator_name, gui){
+    if (gui === false){
+      return false;
+    }
+    const simulator_name_gui = ['ghdl'];
+    let check = true;
+    if (simulator_name_gui.includes(simulator_name) !== true){
+      vscode.window.showInformationMessage(`GUI option not supported for ${simulator_name}. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html)`);
+      check = false;
+    }
+    return check;
   }
 
   normalize_option(tool, option, value){
@@ -160,10 +141,10 @@ export class Edalize {
     }
   }
 
-  async get_command(python3_path, edam_path, simulator, edam) {
+  async get_command(edam_path, simulator, edam) {
     let python3_edalize_script = `${path_lib.sep}resources${path_lib.sep}project_manager${path_lib.sep}run_edalize.py`;
     python3_edalize_script = this.context.asAbsolutePath(python3_edalize_script);
-    let python3_path_exec = await this.get_python3_path(python3_path);
+    let python3_path_exec = await this.get_python3_path();
     if (python3_path_exec === undefined) {
       return undefined;
     }
@@ -190,15 +171,19 @@ export class Edalize {
       let waveform_type = edam_gui.tool_options[simulator_name].waveform; 
       if (waveform_type === 'vcd'){
         let complete_waveform_path = `${this.waveform_path}.vcd`;
-        edam_gui.tool_options[simulator_name].run_options.push([`--vcd=${complete_waveform_path}`]);
+        edam_gui.tool_options[simulator_name].run_options.push(`--vcd=${complete_waveform_path}`);
         this.complete_waveform_path = complete_waveform_path;
       }
       else{
         let complete_waveform_path = `${this.waveform_path}.ghw`;
-        edam_gui.tool_options[simulator_name].run_options.push([`--wave=${complete_waveform_path}`]);
+        edam_gui.tool_options[simulator_name].run_options.push(`--wave=${complete_waveform_path}`);
         this.complete_waveform_path = complete_waveform_path;
       }
     }
+    else if (simulator_name === 'xsim'){
+      edam_gui.tool_options[simulator_name].xsim_options.push(`--gui`);
+    }
+
     return edam_gui;
   }
 
@@ -216,6 +201,7 @@ export class Edalize {
         else {
           resolve(false);
         }
+        element.output_channel.append('---> The test has finished!');
       });
 
       this.childp.stdout.on('data', function (data) {
@@ -226,43 +212,6 @@ export class Edalize {
         element.output_channel.append(data);
         element.output_channel.show();
       });
-    });
-  }
-
-  async get_result(folder, tests) {
-    const result_file = `${folder}${this.folder_sep}teroshdl_out.xml`;
-    const xml2js = require('xml2js');
-    const parser = new xml2js.Parser({ attrkey: "atrr" });
-
-    // this example reads the file synchronously
-    // you can read it asynchronously also
-    let xml_string = fs.readFileSync(result_file, "utf8");
-
-    return new Promise(resolve => {
-      try {
-        parser.parseString(xml_string, function (error, result) {
-          let testsuites = result.testsuite;
-          let testcase = testsuites.testcase;
-          let results: {}[] = [];
-          for (let i = 0; i < testcase.length; i++) {
-            const test = testcase[i];
-            let test_name = `${test.atrr.classname}.${test.atrr.name}`;
-            let pass = true;
-            if (test.failure !== undefined) {
-              pass = false;
-            }
-            let test_info = {
-              name: test_name,
-              pass: pass
-            };
-            results.push(test_info);
-          }
-          resolve(results);
-        });
-      } catch (e) {
-        let results = this.get_all_test_fail(tests);
-        resolve(results);
-      }
     });
   }
 

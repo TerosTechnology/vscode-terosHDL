@@ -367,7 +367,7 @@
 <div id="verilator" class="tabcontent">
   <h3>Verilator</h3>
   <b>Example of comma separated options. E.g: </b><br><code>--option1 op, -option2 op2 , other</code><br><br>
-  <label>Riviera-PRO installation path.</label><br><br>
+  <label>Verilator installation path.</label><br><br>
   <input class="input" id="verilator_installation_path" type="text"><br><br>
   
   <label>CLI parser. If cli_parser is set to managed, Edalize will parse all command-line options. Otherwise, they are sent directly to the compiled simulation model..</label><br><br>
@@ -528,7 +528,7 @@
       'xsim':{
         'installation_path': document.getElementById("xsim_installation_path").value,
         'xelab_options': document.getElementById("xsim_xelab_options").value,
-        'xsim_options': document.getElementById("xsim_xelab_options").value
+        'xsim_options': document.getElementById("xsim_xsim_options").value
       }
     };
     return options;
@@ -707,7 +707,7 @@
   function set_xsim_options(options, installation_path){
     document.getElementById("xsim_installation_path").value = installation_path;
     document.getElementById("xsim_xelab_options").value = options.xelab_options;
-    document.getElementById("xsim_xelab_options").value = options.xsim_options;
+    document.getElementById("xsim_xsim_options").value = options.xsim_options;
   }
 
   function set_vunit_options(options, installation_path){

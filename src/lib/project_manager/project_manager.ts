@@ -386,7 +386,7 @@ export class Project_manager {
     let toplevel = await this.get_toplevel_selected_prj();;
     edam.toplevel = toplevel;
     let python3_path = <string>vscode.workspace.getConfiguration("teroshdl.global").get("python3-path");
-    let results = <[]>await this.edalize.run_simulation(python3_path, edam, toplevel, gui);
+    let results = <[]>await this.edalize.run_simulation(edam, toplevel, gui);
     this.last_edalize_results = results;
 
     let force_fail_all = false;

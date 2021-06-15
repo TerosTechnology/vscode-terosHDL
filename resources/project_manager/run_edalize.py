@@ -3,11 +3,16 @@ import shutil
 import edalize
 import json
 import sys
+from os.path import expanduser
 
-if (os.path.isdir('./build') == True):
-    shutil.rmtree('./build')
+home_dir = expanduser("~")
+work_root = os.path.join(home_dir, '.teroshdl', 'build')
 
-work_root = 'build'
+print("---> Build directory: {}".format(work_root))
+
+if (os.path.isdir(work_root) == True):
+    shutil.rmtree(work_root)
+
 edam_file = sys.argv[1]
 simulator = sys.argv[2]
 
