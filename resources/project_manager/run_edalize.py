@@ -7,7 +7,8 @@ from os.path import expanduser
 
 home_dir = expanduser("~")
 work_root = os.path.join(home_dir, '.teroshdl', 'build')
-
+print("")
+print("************************************************************************************************")
 print("---> Build directory: {}".format(work_root))
 
 if (os.path.isdir(work_root) == True):

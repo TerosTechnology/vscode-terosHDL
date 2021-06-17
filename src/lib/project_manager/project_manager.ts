@@ -25,22 +25,22 @@ import * as path from "path";
 import * as Config_view from "./config_view";
 import * as Edam from "./edam_project";
 import * as Config from "./config";
-import * as Terminal from "./terminal";
-import * as Vunit from "./vunit";
-import * as Cocotb from "./cocotb";
-import * as Edalize from "./edalize";
+import * as Vunit from "./tools/vunit";
+import * as Cocotb from "./tools/cocotb";
+import * as Edalize from "./tools/edalize";
+import * as Tree_types from "./tree_types";
+
 const path_lib = require("path");
 const fs = require("fs");
 const os = require("os");
 
 export class Project_manager {
   tree!: TreeDataProvider;
-  projects: TreeItem[] = [];
+  projects: Tree_types.TreeItem[] = [];
   config_view;
   edam_project_manager;
   config_file;
   workspace_folder;
-  private terminal: Terminal.Terminal;
   private vunit_test_list: {}[] = [];
   private cocotb_test_list: Cocotb.TestItem[] = [];
   private vunit: Vunit.Vunit;
@@ -56,7 +56,6 @@ export class Project_manager {
     this.vunit = new Vunit.Vunit(context);
     this.cocotb = new Cocotb.Cocotb(context);
     this.edalize = new Edalize.Edalize(context);
-    this.terminal = new Terminal.Terminal(context);
     this.edam_project_manager = new Edam.Edam_project_manager();
     this.config_file = new Config.Config(context.extensionPath);
     this.workspace_folder = this.config_file.get_workspace_folder();
@@ -137,12 +136,16 @@ export class Project_manager {
   open_file(item) {
     let project_name = item.project_name;
     let path = item.path;
+    let contextValue = item.contextValue;
 
-    let prj = this.edam_project_manager.get_project(project_name);
-    let relative_path = prj.relative_path;
-    if (relative_path !== "" && relative_path !== undefined) {
-      path = `${relative_path}${path_lib.sep}${path}`;
+    if (contextValue !== 'build_source'){
+      let prj = this.edam_project_manager.get_project(project_name);
+      let relative_path = prj.relative_path;
+      if (relative_path !== "" && relative_path !== undefined) {
+        path = `${relative_path}${path_lib.sep}${path}`;
+      }
     }
+
     try {
       let pos_1 = new vscode.Position(0, 0);
       let pos_2 = new vscode.Position(0, 0);
@@ -224,7 +227,6 @@ export class Project_manager {
     }
     this.edam_project_manager.create_projects_from_edam(this.config_file.projects);
     await this.update_tree();
-    this.update_tree();
     this.refresh_lint();
   }
 
@@ -265,7 +267,7 @@ export class Project_manager {
     }
     let prj = this.edam_project_manager.get_project(selected_project);
     if (prj === undefined){
-      //TODO: show messge
+      vscode.window.showInformationMessage(`Select a project. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html)`);
       return;
     }
     let tool_configuration = this.config_file.get_config_of_selected_tool();
@@ -385,7 +387,6 @@ export class Project_manager {
 
     let toplevel = await this.get_toplevel_selected_prj();;
     edam.toplevel = toplevel;
-    let python3_path = <string>vscode.workspace.getConfiguration("teroshdl.global").get("python3-path");
     let results = <[]>await this.edalize.run_simulation(edam, toplevel, gui);
     this.last_edalize_results = results;
 
@@ -513,9 +514,10 @@ export class Project_manager {
   }
 
   async update_tree() {
-    let test_list = [{ name: "Loading tests...", location: undefined }];
+    let test_list_initial = [{ name: "Loading tests...", location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
-    this.tree.update_super_tree(normalized_prjs, test_list);
+    // Set "loading test" message
+    this.tree.update_super_tree(normalized_prjs, test_list_initial);
     let edam_projects = this.edam_project_manager.get_edam_projects();
     this.config_file.set_projects(edam_projects);
 
@@ -528,7 +530,7 @@ export class Project_manager {
     this.set_results(false);
 
     let tool_configuration = this.config_file.get_config_of_selected_tool();
-    let test_list_result : {}[] = [{
+    let test_list : {}[] = [{
       attributes: undefined,
       test_type: undefined,
       name: 'Tool is not configured',
@@ -537,17 +539,17 @@ export class Project_manager {
 
     if ('vunit' in tool_configuration)
     {
-      test_list_result = await this.get_vunit_test_list();
+      test_list = await this.get_vunit_test_list();
     }
     else if ('cocotb' in tool_configuration)
     {
-      test_list_result = await this.get_cocotb_test_list();
+      test_list = await this.get_cocotb_test_list();
     }
     else{
-      test_list_result = await this.get_edalize_test_list();
+      test_list = await this.get_edalize_test_list();
     }
-
-    this.tree.update_super_tree(normalized_prjs, test_list_result);
+    // Show the test list
+    this.tree.update_super_tree(normalized_prjs, test_list);
 
     if (selected_project !== "") {
       this.tree.select_project(selected_project);
@@ -881,6 +883,9 @@ export class Project_manager {
 
   async get_edalize_test_list() {
     let testname = await this.get_toplevel_selected_prj();
+    if (testname === ''){
+      return [];
+    }
     let toplevel_path = this.get_toplevel_path_selected_prj();
     let single_test: Edalize.TestItem = {
       test_type: 'edalize',
@@ -989,23 +994,26 @@ export class Project_manager {
   }
 }
 
-class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
-  private _onDidChangeTreeData: vscode.EventEmitter<TreeItem | undefined | null | void> = new vscode.EventEmitter<
-    TreeItem | undefined | null | void
+class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
+  private _onDidChangeTreeData: vscode.EventEmitter<Tree_types.TreeItem | undefined | null | void> = new vscode.EventEmitter<
+  Tree_types.TreeItem | undefined | null | void
   >();
-  readonly onDidChangeTreeData: vscode.Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData: vscode.Event<Tree_types.TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-  data: TreeItem[] = [];
-  projects: TreeItem[] = [];
-  test_list_items: Test_item[] = [];
+  data: Tree_types.TreeItem[] = [];
+  projects: Tree_types.TreeItem[] = [];
+  test_list_items: Tree_types.Test_item[] = [];
+  build_list_items: Tree_types.Build_item[] = [];
 
   init_tree() {
-    this.data = [new TreeItem("TerosHDL Projects", []), new TreeItem("Test list", [])];
+    this.data = [new Tree_types.TreeItem("TerosHDL Projects", []), new Tree_types.TreeItem("Test list", []), 
+      new Tree_types.TreeItem("Resources utilization", [])];
     this.refresh();
   }
 
   update_super_tree(projects, test_list) {
     this.get_test_list_items(test_list);
+    this.get_build_list_items(test_list);
     this.projects = [];
     for (let i = 0; i < projects.length; i++) {
       const element = projects[i];
@@ -1047,6 +1055,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
         }
       }
     }
+    this.get_build_list_items(results);
     this.update_tree();
   }
 
@@ -1064,10 +1073,10 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   get_test_list_items(test_list) {
-    let test_list_items: Test_item[] = [];
+    let test_list_items: Tree_types.Test_item[] = [];
     for (let i = 0; i < test_list.length; i++) {
       const element = test_list[i];
-      let item = new Test_item(element.name, element.location);
+      let item = new Tree_types.Test_item(element.name, element.location);
       if ("test_type" in element)
       {
         if (element.test_type !== undefined )
@@ -1078,6 +1087,21 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       test_list_items.push(item);
     }
     this.test_list_items = test_list_items;
+  }
+
+  get_build_list_items(build_list) {
+    if (build_list === undefined || build_list.length === 0 || build_list[0].builds === undefined){
+      this.build_list_items = [];
+      return;
+    }
+    let build_i = build_list[0].builds;
+    let build_list_items: Tree_types.Build_item[] = [];
+    for (let i = 0; i < build_i.length; i++) {
+      const element = build_i[i];
+      let item = new Tree_types.Build_item(element.location, element.name);
+      build_list_items.push(item);
+    }
+    this.build_list_items = build_list_items;
   }
 
   add_project(name: string, sources) {
@@ -1120,8 +1144,8 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
   set_icon_no_select_file(item) {
     let item_path = item.path;
-    let path_icon_light = get_icon_light(item.path);
-    let path_icon_dark = get_icon_dark(item.path);
+    let path_icon_light = Tree_types.get_icon_light(item.path);
+    let path_icon_dark = Tree_types.get_icon_dark(item.path);
     
     item.iconPath = {
       light: path_icon_light,
@@ -1162,8 +1186,9 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
   update_tree() {
     this.data = [
-      new TreeItem("TerosHDL Projects", this.projects),
-      new Test_title_item("Test list", this.test_list_items),
+      new Tree_types.TreeItem("TerosHDL Projects", this.projects),
+      new Tree_types.Test_title_item("Test list", this.test_list_items),
+      new Tree_types.Build_title_item("Resources utilization", this.build_list_items),
     ];
     this.refresh();
   }
@@ -1172,11 +1197,11 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem(element: TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: Tree_types.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
-  getChildren(element?: TreeItem | undefined): vscode.ProviderResult<TreeItem[]> {
+  getChildren(element?: Tree_types.TreeItem | undefined): vscode.ProviderResult<Tree_types.TreeItem[]> {
     if (element === undefined) {
       return this.data;
     }
@@ -1186,15 +1211,15 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
 class Project {
   private name: string = "";
-  data: TreeItem;
+  data: Tree_types.TreeItem;
 
   constructor(name: string, libraries) {
     this.name = name;
     if (libraries !== undefined) {
       let sources_items = this.get_sources(libraries);
-      this.data = new Project_item(name, sources_items);
+      this.data = new Tree_types.Project_item(name, sources_items);
     } else {
-      this.data = new Project_item(name, []);
+      this.data = new Tree_types.Project_item(name, []);
     }
   }
 
@@ -1203,8 +1228,8 @@ class Project {
   }
 
   get_sources(sources) {
-    let libraries: (Library_item | Hdl_item)[] = [];
-    let files_no_lib: (Library_item | Hdl_item)[] = [];
+    let libraries: (Tree_types.Library_item | Tree_types.Hdl_item)[] = [];
+    let files_no_lib: (Tree_types.Library_item | Tree_types.Hdl_item)[] = [];
     for (let i = 0; i < sources.length; ++i) {
       if (sources[i].name === "") {
         let sources_no_lib = this.get_no_library(sources[i].name, sources[i].files);
@@ -1220,228 +1245,24 @@ class Project {
     return libraries;
   }
 
-  get_library(library_name, sources): Library_item {
-    let tree: Hdl_item[] = [];
+  get_library(library_name, sources): Tree_types.Library_item {
+    let tree: Tree_types.Hdl_item[] = [];
     for (let i = 0; i < sources.length; ++i) {
       if (sources[i].includes("teroshdl_phantom_file") === false) {
-        let item_tree = new Hdl_item(sources[i], library_name, this.name);
+        let item_tree = new Tree_types.Hdl_item(sources[i], library_name, this.name);
         tree.push(item_tree);
       }
     }
-    let library = new Library_item(library_name, this.name, tree);
+    let library = new Tree_types.Library_item(library_name, this.name, tree);
     return library;
   }
 
-  get_no_library(library_name, sources): Hdl_item[] {
-    let tree: Hdl_item[] = [];
+  get_no_library(library_name, sources): Tree_types.Hdl_item[] {
+    let tree: Tree_types.Hdl_item[] = [];
     for (let i = 0; i < sources.length; ++i) {
-      let item_tree = new Hdl_item(sources[i], library_name, this.name);
+      let item_tree = new Tree_types.Hdl_item(sources[i], library_name, this.name);
       tree.push(item_tree);
     }
     return tree;
-  }
-}
-
-function get_icon_light(full_path){
-  const path = require("path");
-  let file_extension = path.extname(full_path);
-  let filename = path.basename(full_path);
-  
-  let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "verilog.svg");
-  // Python file
-  if (file_extension === '.py'){
-    path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "python.svg");
-  }
-  else if(filename === 'Makefile'){
-    path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "makefile.svg");
-  }
-  return path_icon_light;
-}
-
-function get_icon_dark(full_path){
-  const path = require("path");
-  let file_extension = path.extname(full_path);
-  let filename = path.basename(full_path);
-  
-  let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "verilog.svg");
-  // Python file
-  if (file_extension === '.py'){
-    path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "python.svg");
-  }
-  else if(filename === 'Makefile'){
-    path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "makefile.svg");  
-  }
-  return path_icon_dark;
-}
-
-class TreeItem extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  project_name: string;
-  title: string = "";
-  library_name: string;
-  path: string = "";
-
-  constructor(label: string, children?: TreeItem[]) {
-    super(
-      label,
-      children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
-    );
-    this.project_name = label;
-    this.children = children;
-    this.contextValue = "teroshdl";
-    this.library_name = "";
-  }
-}
-
-class Test_title_item extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  project_name: string;
-  title: string = "";
-  library_name: string;
-  path: string = "";
-
-  constructor(label: string, children?: TreeItem[]) {
-    super(
-      label,
-      children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
-    );
-    this.project_name = label;
-    this.children = children;
-    this.contextValue = "test_title";
-    this.library_name = "";
-  }
-}
-
-class Project_item extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  project_name: string;
-  title: string = "";
-  library_name: string;
-  path: string = "";
-  item_type;
-
-  constructor(label: string, children?: TreeItem[]) {
-    super(
-      label,
-      children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
-    );
-    this.item_type = "project_item";
-    this.project_name = label;
-    this.children = children;
-    this.contextValue = "project";
-    this.library_name = "";
-    let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "project.svg");
-    let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "project.svg");
-    this.iconPath = {
-      light: path_icon_light,
-      dark: path_icon_dark,
-    };
-  }
-}
-
-class Library_item extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  library_name: string = "";
-  project_name: string;
-  title: string = "";
-  path: string = "";
-  item_type;
-
-  constructor(label: string, project_name: string, children?: TreeItem[]) {
-    super(
-      label,
-      children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
-    );
-    this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-    this.item_type = "library_item";
-    this.project_name = project_name;
-    this.library_name = label;
-    this.children = children;
-    this.contextValue = "hdl_library";
-    let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "library.svg");
-    let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "library.svg");
-    this.iconPath = {
-      light: path_icon_light,
-      dark: path_icon_dark,
-    };
-  }
-}
-
-class Hdl_item extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  library_name: string;
-  project_name: string;
-  title: string;
-  path: string;
-  item_type;
-
-  constructor(label: string, library_name, project_name: string, children?: TreeItem[]) {
-    const path = require("path");
-    let dirname = path.dirname(label);
-    let basename = path.basename(label);
-    super(
-      basename,
-      children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
-    );
-
-    this.item_type = "hdl_item";
-    this.path = label;
-    this.title = "";
-    this.project_name = project_name;
-    this.library_name = library_name;
-    this.tooltip = label;
-    this.description = dirname;
-    this.children = children;
-    this.contextValue = "hdl_source";
-
-    let path_icon_light = get_icon_light(label);
-    let path_icon_dark = get_icon_dark(label);
-
-    this.iconPath = {
-      light: path_icon_light,
-      dark: path_icon_dark,
-    };
-
-    this.command = {
-      command: "teroshdl_tree_view.open_file",
-      title: "Select Node",
-      arguments: [this],
-    };
-  }
-}
-
-class Test_item extends vscode.TreeItem {
-  children: TreeItem[] | undefined;
-  library_name: string;
-  project_name: string;
-  title: string;
-  path: string;
-  location;
-  item_type;
-
-  constructor(label: string, location, children?: TreeItem[]) {
-    const path = require("path");
-    let dirname = path.dirname(label);
-    let basename = path.basename(label);
-    super(
-      basename,
-      children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
-    );
-
-    this.item_type = "test_item";
-    this.path = label;
-    this.title = "";
-    this.project_name = "";
-    this.library_name = "";
-    this.tooltip = label;
-    this.description = "";
-    this.children = children;
-    this.contextValue = "test";
-    this.location = location;
-    this.command = {
-      command: "teroshdl_tree_view.go_to_code",
-      title: "Go to test code",
-      arguments: [this],
-    };
   }
 }

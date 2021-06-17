@@ -48,6 +48,8 @@ export class Edalize extends tool_base.Tool_base{
     let normalized_edam = this.normalize_edam(edam);
     this.output_channel.clear();
     let simulator_name = this.get_simulator_from_edam(normalized_edam);
+    let project_name = edam.name;
+    let top_level = edam.toplevel;
     let simulator_gui_support = this.check_gui_support(simulator_name, gui);
     if (simulator_gui_support === true){
       normalized_edam = this.configure_waveform_gui(simulator_name, normalized_edam);
@@ -64,7 +66,8 @@ export class Edalize extends tool_base.Tool_base{
     let result = await this.run_command(command);
     let reslet_j = {
       name : testname,
-      pass : result
+      pass : result,
+      builds: this.set_builds(simulator_name, project_name, top_level)
     };
 
     if (simulator_gui_support === true){
@@ -73,6 +76,31 @@ export class Edalize extends tool_base.Tool_base{
 
     return [reslet_j];
   }
+
+  set_builds(simulator_name, project_name, top_level){
+    if (simulator_name !== 'vivado'){
+      return [];
+    }
+    const homedir = require('os').homedir();
+    let runs_folder = `${project_name}.runs`;
+    let synt_file = `${top_level}_utilization_synth.rpt`;
+    let imp_file = `${top_level}_utilization_placed.rpt`;
+    let synt_path = path_lib.join(homedir, '.teroshdl', 'build', runs_folder, 'synth_1', synt_file);
+    let imp_path = path_lib.join(homedir, '.teroshdl', 'build', runs_folder, 'impl_1', imp_file);
+
+    let builds = [
+      {
+        name: 'Synthesis utilization design information',
+        location: synt_path
+      },
+      {
+        name: 'Implementation utilization design information',
+        location: imp_path
+      }
+    ];
+    return builds;
+  }
+
 
   open_waveform_gtkwave(){
     let shell = require('shelljs');
@@ -201,7 +229,8 @@ export class Edalize extends tool_base.Tool_base{
         else {
           resolve(false);
         }
-        element.output_channel.append('---> The test has finished!');
+        element.output_channel.append('---> The test has finished!\n');
+        element.output_channel.append('************************************************************************************************\n');
       });
 
       this.childp.stdout.on('data', function (data) {

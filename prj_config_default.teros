@@ -61,6 +61,15 @@
                }
             },
             {
+               "icestorm":{
+                  "installation_path":"",
+                  "arachne_pnr_options":"",
+                  "nextpnr_options":"",
+                  "pnr":"arachne",
+                  "yosys_synth_options":""
+               }
+            },
+            {
                "rivierapro":{
                   "installation_path":"",
                   "vlog_options":"",

@@ -128,6 +128,7 @@
   <button class="tablinks" onclick="open_tab(event, 'vunit')">VUnit</button>
   <button class="tablinks" onclick="open_tab(event, 'cocotb')">cocotb</button>
   <button class="tablinks" onclick="open_tab(event, 'vivado')">Vivado</button>
+  <button class="tablinks" onclick="open_tab(event, 'icestorm')">Icestorm</button>
   <button class="tablinks" onclick="open_tab(event, 'quartus')">Quartus</button>
   <button class="tablinks" onclick="open_tab(event, 'ghdl')">GHDL</button>
   <button class="tablinks" onclick="open_tab(event, 'icarus')">Icarus</button>
@@ -186,6 +187,10 @@
   <h3>Tool</h3>
   <input type='radio' tool="vivado" class='radio-button' name='re'>
   <label class="container">Vivado</label>
+  <br><br>
+
+  <input type='radio' tool="icestorm" class='radio-button' name='re'>
+  <label class="container">Icestorm</label>
   <br><br>
 
   <input type='radio' tool="quartus" class='radio-button' name='re'>
@@ -262,6 +267,31 @@
   
   <label>Part. Device identifier. e.g. xc7a35tcsg324-1.</label><br><br>
   <input class="input" id="vivado_part" type="text"><br><br>
+</div>
+
+<div id="icestorm" class="tabcontent">
+  <h3>Icestorm</h3>
+  <b>Example of comma separated options. E.g: </b><br><code>--option1 op, -option2 op2 , other</code><br><br>
+
+  <label>Icestorm installation path.</label><br><br>
+  <input class="input" id="icestorm_installation_path" type="text"><br><br>
+  
+  <label>Options for ArachnePNR Place & Route.<b style="color:#c22200"> (Comma separated).</b></label><br><br>
+  <input class="input" id="icestorm_arachne_pnr_options" type="text"><br><br>
+
+  <label>Options for NextPNR Place & Route.<b style="color:#c22200"> (Comma separated).</b></label><br><br>
+  <input class="input" id="icestorm_nextpnr_options" type="text"><br><br>
+
+  <label>Select P&R tool. Valid values are arachne and next. Default is arachne.</label>
+  <select name="select" id="icestorm_pnr">
+    <option value="arachne" selected>Arachne-pnr</option>
+    <option value="next">nextpnr</option>
+    <option value="none">Only perform synthesis</option>
+  </select>
+  <br><br>
+
+  <label>Options for Yosys Synthesis.<b style="color:#c22200"> (Comma separated).</b></label><br><br>
+  <input class="input" id="icestorm_yosys_synth_options" type="text"><br><br>
 </div>
 
 <div id="quartus" class="tabcontent">
@@ -448,6 +478,7 @@
         get_xsim_options(),
         get_vunit_options(),
         get_vivado_options(),
+        get_icestorm_options(),
         get_quartus_options(),
         get_riviera_pro_options(),
         get_verilator_options(),
@@ -557,6 +588,19 @@
     return options;
   }
 
+  function get_icestorm_options(){
+    let options = {
+      'icestorm':{
+        'installation_path': document.getElementById("icestorm_installation_path").value,
+        'arachne_pnr_options': document.getElementById("icestorm_arachne_pnr_options").value,
+        'nextpnr_options': document.getElementById("icestorm_nextpnr_options").value,
+        'pnr': document.getElementById("icestorm_pnr").value,
+        'yosys_synth_options': document.getElementById("icestorm_yosys_synth_options").value
+      }
+    };
+    return options;
+  }
+
   function get_quartus_options(){
     let options = {
       'quartus':{
@@ -644,6 +688,9 @@
       else if (config_tool === 'vivado'){
         set_vivado_options(options, installation_path);
       }
+      else if (config_tool === 'icestorm'){
+        set_icestorm_options(options, installation_path);
+      }
       else if (config_tool === 'quartus'){
         set_quartus_options(options, installation_path);
       }      
@@ -721,6 +768,14 @@
     document.getElementById("vivado_installation_path").value = installation_path;
     document.getElementById("vivado_part").value = options.part;
 
+  }
+
+  function set_icestorm_options(options, installation_path){
+    document.getElementById("icestorm_installation_path").value = installation_path;
+    document.getElementById("icestorm_arachne_pnr_options").value = options.arachne_pnr_options;
+    document.getElementById("icestorm_nextpnr_options").value = options.nextpnr_options;
+    document.getElementById("icestorm_pnr").value = options.pnr;
+    document.getElementById("icestorm_yosys_synth_options").value = options.yosys_synth_options;
   }
 
   function set_quartus_options(options, installation_path){
