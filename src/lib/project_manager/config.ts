@@ -71,6 +71,31 @@ export class Config {
     this.save_current_config();
   }
 
+  // set_config_tool_for_project_selected(){
+  //   let current_config_tool = this.get_config_of_selected_tool();
+  //   for (let i = 0; i < this.projects.length; i++) {
+  //     const element = this.projects[i];
+  //     if (element['name'] === this.selected_project){
+  //       let selected_project_config_tool = element['tool_options'];
+
+  //       current_config_tool.toplevel = '';
+  //       if (selected_project_config_tool.toplevel !== undefined){
+  //         current_config_tool.toplevel = selected_project_config_tool.toplevel;
+  //       }
+
+  //       current_config_tool.toplevel_library = '';
+  //       if (selected_project_config_tool.toplevel_library !== undefined){
+  //         current_config_tool.toplevel_library = selected_project_config_tool.toplevel_library;
+  //       }
+
+  //       current_config_tool.toplevel_path = '';
+  //       if (selected_project_config_tool.toplevel_path !== undefined){
+  //         current_config_tool.toplevel_path = selected_project_config_tool.toplevel_path;
+  //       }
+  //     }
+  //   }
+  // }
+
   set_config_tool(config_tool) {
     this.config['config_tool'] = config_tool;
     this.save_current_config();
@@ -82,6 +107,7 @@ export class Config {
   }
 
   save_current_config() {
+    // this.set_config_tool_for_project_selected();
     let config_to_file = {
       selected_project: this.selected_project,
       projects: this.projects,

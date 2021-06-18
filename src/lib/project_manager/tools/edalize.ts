@@ -38,6 +38,7 @@ export interface TestItem {
 export class Edalize extends tool_base.Tool_base{
   private waveform_path;
   private complete_waveform_path = '';
+  private childp;
 
   constructor(context) {
     super(context);
@@ -100,8 +101,7 @@ export class Edalize extends tool_base.Tool_base{
     ];
     return builds;
   }
-
-
+  
   open_waveform_gtkwave(){
     let shell = require('shelljs');
     let command = `gtkwave ${this.complete_waveform_path}`;
@@ -222,7 +222,7 @@ export class Edalize extends tool_base.Tool_base{
     element.output_channel.show();
 
     return new Promise(resolve => {
-      this.childp = shell.exec(command, { async: true }, async function (code, stdout, stderr) {
+      element.childp = shell.exec(command, { async: true }, async function (code, stdout, stderr) {
         if (code === 0) {
           resolve(true);
         }
@@ -233,13 +233,11 @@ export class Edalize extends tool_base.Tool_base{
         element.output_channel.append('************************************************************************************************\n');
       });
 
-      this.childp.stdout.on('data', function (data) {
+      element.childp.stdout.on('data', function (data) {
         element.output_channel.append(data);
-        element.output_channel.show();
       });
-      this.childp.stderr.on('data', function (data) {
+      element.childp.stderr.on('data', function (data) {
         element.output_channel.append(data);
-        element.output_channel.show();
       });
     });
   }
@@ -256,26 +254,4 @@ export class Edalize extends tool_base.Tool_base{
     }
     return results;
   }
-
-  async stop_test() {
-    let path_bin = `${path_lib.sep}resources${path_lib.sep}bin${path_lib.sep}kill_vunit${path_lib.sep}kill.sh`;
-
-    if (this.childp === undefined) {
-      return;
-    }
-    try {
-      var os = require('os');
-      if (os.platform === "win32") {
-        var cmd = "TASKKILL /F /T /PID  " + (this.childp.pid);
-      }
-      else {
-        var path_kill = this.context.asAbsolutePath(path_bin);
-        var cmd = "bash " + path_kill + " " + (this.childp.pid);
-      }
-      shell.exec(cmd, { async: true }, function (error, stdout, stderr) {
-      });
-    }
-    catch (e) { }
-  }
-
 }

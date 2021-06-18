@@ -20,6 +20,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 import * as vscode from 'vscode';
+const path_lib = require('path');
+const shell = require('shelljs');
 const os = require('os');
 
 export class Tool_base {
@@ -47,18 +49,38 @@ export class Tool_base {
         }
     }
 
-    async get_python3_path() {
+    async get_python3_path(show_message = true) {
         let python_path = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
         const jsteros = require('jsteros');
         python_path = await jsteros.Nopy.get_python_exec(python_path);
     
-        if (python_path === undefined || python_path === '') {
-            let msg = `Install and configure Python3 in the extension configuration. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/configuration/general.html)`;
-            vscode.window.showInformationMessage(msg);
-            this.output_channel.append(msg);
-            this.output_channel.show();
-            return undefined;
+        if ( (python_path === undefined || python_path === '') && show_message === true) {
+          let msg = `Install and configure Python3 in the extension configuration. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/configuration/general.html)`;
+          vscode.window.showInformationMessage(msg);
+          return undefined;
         }
         return python_path;
       }
+
+    async stop_test() {
+        let path_bin = path_lib.join('resources', 'bin', 'kill_vunit','kill.sh');
+    
+        if (this.childp === undefined) {
+            return;
+        }
+        try {
+            const os = require('os');
+            let cmd = '';
+            if (os.platform === "win32") {
+                cmd = "TASKKILL /F /T /PID  " + (this.childp.pid);
+            }
+            else {
+              let path_kill = this.context.asAbsolutePath(path_bin);
+              cmd = "bash " + path_kill + " " + (this.childp.pid);
+            }
+            shell.exec(cmd, { async: true }, function (error, stdout, stderr) {
+            });
+        }
+        catch (e) { }
+    }
 }

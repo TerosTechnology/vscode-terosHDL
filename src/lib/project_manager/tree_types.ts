@@ -2,38 +2,7 @@
 
 import * as vscode from "vscode";
 import * as path_lib from "path";
-
-export function get_icon_light(full_path){
-    const path = require("path");
-    let file_extension = path.extname(full_path);
-    let filename = path.basename(full_path);
-    
-    let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "verilog.svg");
-    // Python file
-    if (file_extension === '.py'){
-      path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "python.svg");
-    }
-    else if(filename === 'Makefile'){
-      path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "makefile.svg");
-    }
-    return path_icon_light;
-}
-  
-export function get_icon_dark(full_path){
-    const path = require("path");
-    let file_extension = path.extname(full_path);
-    let filename = path.basename(full_path);
-    
-    let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "verilog.svg");
-    // Python file
-    if (file_extension === '.py'){
-      path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "python.svg");
-    }
-    else if(filename === 'Makefile'){
-      path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "makefile.svg");  
-    }
-    return path_icon_dark;
-}
+import * as utils from "./utils";
 
 export class TreeItem extends vscode.TreeItem {
     children: TreeItem[] | undefined;
@@ -174,8 +143,8 @@ export class Hdl_item extends vscode.TreeItem {
       this.children = children;
       this.contextValue = "hdl_source";
   
-      let path_icon_light = get_icon_light(label);
-      let path_icon_dark = get_icon_dark(label);
+      let path_icon_light = utils.get_icon_light(label);
+      let path_icon_dark = utils.get_icon_dark(label);
   
       this.iconPath = {
         light: path_icon_light,

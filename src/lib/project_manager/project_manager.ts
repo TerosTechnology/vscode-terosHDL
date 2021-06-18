@@ -29,6 +29,7 @@ import * as Vunit from "./tools/vunit";
 import * as Cocotb from "./tools/cocotb";
 import * as Edalize from "./tools/edalize";
 import * as Tree_types from "./tree_types";
+import * as utils from "./utils";
 
 const path_lib = require("path");
 const fs = require("fs");
@@ -51,6 +52,7 @@ export class Project_manager {
   private last_edalize_results;
   private init: boolean = false;
   private treeview;
+  private init_test_list: boolean = false;
 
   constructor(context: vscode.ExtensionContext) {
     this.vunit = new Vunit.Vunit(context);
@@ -145,24 +147,10 @@ export class Project_manager {
         path = `${relative_path}${path_lib.sep}${path}`;
       }
     }
-
-    try {
-      let pos_1 = new vscode.Position(0, 0);
-      let pos_2 = new vscode.Position(0, 0);
-      vscode.workspace.openTextDocument(path).then((doc) => {
-        vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then((editor) => {
-          // Line added - by having a selection at the same position twice, the cursor jumps there
-          editor.selections = [new vscode.Selection(pos_1, pos_2)];
-
-          // And the visible range jumps there too
-          var range = new vscode.Range(pos_1, pos_2);
-          editor.revealRange(range);
-        });
-      });
-    } catch (e) {}
+    utils.open_file(path);
   }
 
-  get_active_project_libraries(absolute_path = false) {
+  get_active_project_libraries() {
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
       return;
@@ -191,7 +179,7 @@ export class Project_manager {
   async refresh_tests() {
     this.last_vunit_results = [];
     this.last_cocotb_results = [];
-    this.last_edalize_results = [];
+    this.last_edalize_results = [];  
     this.update_tree();
   }
 
@@ -236,6 +224,12 @@ export class Project_manager {
     this.run_vunit_tests(tests, gui);
   }
 
+  async run_vunit_test_gui(item) {
+    let tests: string[] = [item.label];
+    let gui = true;
+    this.run_vunit_tests(tests, gui);
+  }
+
   async run_cocotb_test(item) {
     let tests: string[] = [item.label];
     this.run_cocotb_tests(tests);
@@ -243,13 +237,8 @@ export class Project_manager {
 
   async run_edalize_test(item) {
     let tests: string[] = [item.label];
-    this.run_edalize_tests(tests, false);
-  }
-
-  async run_vunit_test_gui(item) {
-    let tests: string[] = [item.label];
-    let gui = true;
-    this.run_vunit_tests(tests, gui);
+    let gui = false;
+    this.run_edalize_tests(tests, gui);
   }
 
   async run_edalize_test_gui(item) {
@@ -262,12 +251,12 @@ export class Project_manager {
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
       let msg = "Mark a project to simulate";
-      this.show_export_message(msg);
+      utils.show_message(msg, 'project_manager');
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
     if (prj === undefined){
-      vscode.window.showInformationMessage(`Select a project. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html)`);
+      utils.show_message(`Select a project`,'project_manager');
       return;
     }
     let tool_configuration = this.config_file.get_config_of_selected_tool();
@@ -288,13 +277,13 @@ export class Project_manager {
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
       let msg = "Mark a project to simulate";
-      this.show_export_message(msg);
+      utils.show_message(msg, 'project_manager');
       return;
     }
     try{
       let prj = this.edam_project_manager.get_project(selected_project);
       let toplevel_path = prj.toplevel_path;
-      let toplevel = await this.get_toplevel_from_path(toplevel_path);
+      let toplevel = await utils.get_toplevel_from_path(toplevel_path);
       return toplevel;
     }
     catch{
@@ -306,7 +295,7 @@ export class Project_manager {
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
       let msg = "Mark a project to simulate";
-      this.show_export_message(msg);
+      utils.show_message(msg, 'project_manager');
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
@@ -317,39 +306,10 @@ export class Project_manager {
     return toplevel_path;
   }
 
-  async get_toplevel_from_path(filepath : string){
-    const jsteros = require('jsteros');
-    let lang = this.get_file_lang(filepath);
-    let parser_factory = new jsteros.Parser.ParserFactory();
-    let parser = await parser_factory.getParser(lang);
-
-    let code = fs.readFileSync(filepath, "utf8");
-    let entity_name = await parser.get_only_entity_name(code);
-    if (entity_name === undefined){
-      return '';
-    }
-    return entity_name;
-  }
-
-  get_file_lang(filepath : string){
-    let vhdl_extensions = ['.vhd', '.vho', '.vhdl', '.vhd'];
-    let verilog_extensions = ['.v', '.vh', '.vl', '.sv', '.svh'];
-    let extension = path_lib.extname(filepath).toLowerCase();
-    let lang = 'vhdl';
-    if (vhdl_extensions.includes(extension) === true){
-      lang = 'vhdl';
-    }
-    else if(verilog_extensions.includes(extension) === true){
-      lang = 'verilog';
-    }
-    return lang;
-  }
-
   async run_vunit_tests(tests, gui) {
     let selected_tool_configuration = this.config_file.get_config_of_selected_tool();
     let all_tool_configuration = this.config_file.get_config_tool();
 
-    let python3_path = <string>vscode.workspace.getConfiguration("teroshdl.global").get("python3-path");
     let selected_project = this.edam_project_manager.selected_project;
     let prj = this.edam_project_manager.get_project(selected_project);
 
@@ -362,7 +322,6 @@ export class Project_manager {
 
     let results = <[]>(
       await this.vunit.run_simulation(
-        python3_path,
         selected_tool_configuration,
         all_tool_configuration,
         runpy_path,
@@ -503,10 +462,7 @@ export class Project_manager {
   stop() {
     this.vunit.stop_test();
     this.cocotb.stop_test();
-  }
-
-  private show_export_message(msg) {
-    vscode.window.showInformationMessage(msg);
+    this.edalize.stop_test();
   }
 
   async config() {
@@ -539,7 +495,7 @@ export class Project_manager {
 
     if ('vunit' in tool_configuration)
     {
-      test_list = await this.get_vunit_test_list();
+      test_list = await this.get_vunit_test_list(this.init_test_list);
     }
     else if ('cocotb' in tool_configuration)
     {
@@ -556,6 +512,7 @@ export class Project_manager {
     }
     this.set_default_tops();
     this.set_results(false);
+    this.init_test_list = true;
   }
 
   set_default_tops() {
@@ -574,8 +531,6 @@ export class Project_manager {
 
   async add_file(item) {
     const files_add_types = ["Select files from browser", "Load files from file list"];
-
-    let library_name = item.library_name;
     let project_name = item.project_name;
 
     // Choose type
@@ -615,12 +570,11 @@ export class Project_manager {
               }
             }
           }
-          this.update_tree();
           this.refresh_lint();
+          this.update_tree();
         });
       }
     });
-    this.update_tree();
   }
 
   async add_file_from_item(item) {
@@ -832,9 +786,7 @@ export class Project_manager {
     });
   }
 
-  async get_vunit_test_list() {
-    let python3_path = <string>vscode.workspace.getConfiguration("teroshdl.global").get("python3-path");
-
+  async get_vunit_test_list(show_error_message = true) {
     let tests;
     try {
       let selected_project = this.edam_project_manager.selected_project;
@@ -846,10 +798,8 @@ export class Project_manager {
         runpy = prj.toplevel_path;
       }
 
-      let runpy_ext = path_lib.extname(runpy);
-
       if (runpy !== undefined) {
-        tests = await this.vunit.get_test_list(python3_path, runpy);
+        tests = await this.vunit.get_test_list(runpy, show_error_message);
       } else {
         this.vunit_test_list = [];
         return [];
@@ -949,7 +899,7 @@ export class Project_manager {
           if (value !== undefined) {
             let result = this.edam_project_manager.create_project(value);
             if (result !== 0) {
-              this.show_export_message(result);
+              utils.show_message(result, 'project_manager');
               return;
             }
             if (this.edam_project_manager.get_number_of_projects() === 1) {
@@ -1144,8 +1094,8 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
 
   set_icon_no_select_file(item) {
     let item_path = item.path;
-    let path_icon_light = Tree_types.get_icon_light(item.path);
-    let path_icon_dark = Tree_types.get_icon_dark(item.path);
+    let path_icon_light = utils.get_icon_light(item.path);
+    let path_icon_dark = utils.get_icon_dark(item.path);
     
     item.iconPath = {
       light: path_icon_light,
