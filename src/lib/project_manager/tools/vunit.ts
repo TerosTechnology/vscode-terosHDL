@@ -24,47 +24,16 @@ const path_lib = require('path');
 const os = require('os');
 const shell = require('shelljs');
 const fs = require('fs');
+const tool_base = require('./tool_base');
 
-export class Vunit {
-  private output_channel;
-  private exp: string = '';
-  private more: string = '';
-  private switch: string = '';
-  private folder_sep: string = '';
+export class Vunit extends tool_base.Tool_base{
   private childp;
-  private context;
 
   constructor(context) {
-    this.context = context;
-    this.output_channel = vscode.window.createOutputChannel('TerosHDL');
-
-    this.exp = "export ";
-    this.more = ";";
-    this.switch = '';
-    this.folder_sep = "/";
-
-    if (os.platform() === "win32") {
-      this.exp = "SET ";
-      this.more = "&&";
-      this.switch = '/D';
-      this.folder_sep = "\\";
-    }
+    super(context);
   }
 
-  async get_python3_path(python3_path) {
-    let python_path = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-    const jsteros = require('jsteros');
-    python_path = await jsteros.Nopy.get_python_exec();
-
-    // if (python_path === undefined || python_path === '') {
-    //   this.output_channel.append('[Error] Install and configure Python3 in the extension configuration.');
-    //   this.output_channel.show();
-    //   return undefined;
-    // }
-    return python_path;
-  }
-
-  async run_simulation(python3_path, selected_tool_configuration, all_tool_configuration, runpy_path,
+  async run_simulation(selected_tool_configuration, all_tool_configuration, runpy_path,
     tests: string[] = [], gui = false) {
     this.output_channel.clear();
     let options_vunit = selected_tool_configuration['vunit'];
@@ -93,7 +62,7 @@ export class Vunit {
 
     let runpy_dirname = path_lib.dirname(runpy_path);
     let runpy_filename = path_lib.basename(runpy_path);
-    let command = await this.get_command(python3_path, runpy_dirname,
+    let command = await this.get_command(runpy_dirname,
       runpy_filename, simulator, simulator_install_path, extra_options, gui, false, tests);
 
     if (command === undefined) {
@@ -104,10 +73,10 @@ export class Vunit {
     return result;
   }
 
-  async get_command(python3_path, runpy_dirname, runpy_filename, simulator,
-    simulator_install_path, extra_options, gui, list = false, tests: string[] = []) {
+  async get_command(runpy_dirname, runpy_filename, simulator,
+    simulator_install_path, extra_options, gui, list = false, tests: string[] = [], show_error_message=true) {
 
-    let python3_path_exec = await this.get_python3_path(python3_path);
+    let python3_path_exec = await this.get_python3_path(show_error_message);
     if (python3_path_exec === undefined) {
       return undefined;
     }
@@ -230,7 +199,7 @@ export class Vunit {
     return results;
   }
 
-  async get_test_list(python3_path, runpy_path) {
+  async get_test_list(runpy_path, show_error_message=true) {
     let runpy_dirname = path_lib.dirname(runpy_path);
     let runpy_filename = path_lib.basename(runpy_path);
     let json_path = `${runpy_dirname}${this.folder_sep}teroshdl_export.json`;
@@ -240,7 +209,8 @@ export class Vunit {
     let gui = false;
     let list = true;
 
-    let command = await this.get_command(python3_path, runpy_dirname, runpy_filename, simulator, simulator_install_path, extra_options, gui, list);
+    let command = await this.get_command(runpy_dirname, runpy_filename, simulator, simulator_install_path, 
+          extra_options, gui, list, [], show_error_message);
     if (command === undefined) {
       return [];
     }
@@ -258,26 +228,4 @@ export class Vunit {
       });
     });
   }
-
-  async stop_test() {
-    let path_bin = `${path_lib.sep}resources${path_lib.sep}bin${path_lib.sep}kill_vunit${path_lib.sep}kill.sh`;
-
-    if (this.childp === undefined) {
-      return;
-    }
-    try {
-      var os = require('os');
-      if (os.platform === "win32") {
-        var cmd = "TASKKILL /F /T /PID  " + (this.childp.pid);
-      }
-      else {
-        var path_kill = this.context.asAbsolutePath(path_bin);
-        var cmd = "bash " + path_kill + " " + (this.childp.pid);
-      }
-      shell.exec(cmd, { async: true }, function (error, stdout, stderr) {
-      });
-    }
-    catch (e) { }
-  }
-
 }

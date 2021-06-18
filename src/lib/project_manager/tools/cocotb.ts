@@ -26,6 +26,7 @@ const shell = require('shelljs');
 const fs = require('fs');
 const tmp = require('tmp');
 const child_process = require("child_process");
+const tool_base = require('./tool_base');
 
 export interface TestItem {
   attributes: string | undefined;
@@ -39,27 +40,11 @@ export interface TestItem {
   name: string;
 }
 
-export class Cocotb {
-  private output_channel;
-  private exp: string = '';
-  private more: string = '';
-  private folder_sep: string = '';
+export class Cocotb extends tool_base.Tool_base{
   private childp;
-  private context;
 
   constructor(context) {
-    this.context = context;
-    this.output_channel = vscode.window.createOutputChannel('TerosHDL');
-
-    this.exp = "export ";
-    this.more = ";";
-    this.folder_sep = "/";
-
-    if (os.platform() === "win32") {
-      this.exp = "SET ";
-      this.more = "&&";
-      this.folder_sep = "\\";
-    }
+    super(context);
   }
 
   async run_simulation(tests_names: string[] = [], cocotb_test_list: TestItem[] = []) {
@@ -150,11 +135,9 @@ export class Cocotb {
 
       this.childp.stdout.on('data', function (data) {
         element.output_channel.append(data);
-        element.output_channel.show();
       });
       this.childp.stderr.on('data', function (data) {
         element.output_channel.append(data);
-        element.output_channel.show();
       });
     });
   }
@@ -304,26 +287,4 @@ export class Cocotb {
 
     return(test_array);
   }
-
-  async stop_test() {
-    let path_bin = `${path_lib.sep}resources${path_lib.sep}bin${path_lib.sep}kill_vunit${path_lib.sep}kill.sh`;
-
-    if (this.childp === undefined) {
-      return;
-    }
-    try {
-      var os = require('os');
-      if (os.platform === "win32") {
-        var cmd = "TASKKILL /F /T /PID  " + (this.childp.pid);
-      }
-      else {
-        var path_kill = this.context.asAbsolutePath(path_bin);
-        var cmd = "bash " + path_kill + " " + (this.childp.pid);
-      }
-      shell.exec(cmd, { async: true }, function (error, stdout, stderr) {
-      });
-    }
-    catch (e) { }
-  }
-
 }

@@ -212,7 +212,8 @@ export default class Documenter {
     this.current_document = document;
     this.last_document = document;
 
-    let html_result = await documenter.get_html(true);
+    const extra_top_space = true;
+    let html_result = await documenter.get_html(true, extra_top_space);
     let preview_html = this.html_base;
     preview_html += html_result.html;
 
