@@ -723,7 +723,7 @@ export class Project_manager {
     });
   }
 
-  private generate_and_save_documentation(project_manager, output_path, type: string, config) {
+  private async generate_and_save_documentation(project_manager, output_path, type: string, config) {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
@@ -733,11 +733,12 @@ export class Project_manager {
     config.verilog_symbol = comment_symbol_verilog;
 
     if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, python3_path, config);
+      await project_manager.save_markdown_doc(output_path, python3_path, config);
     }
     else {
-      project_manager.save_html_doc(output_path, python3_path, config);
+      await project_manager.save_html_doc(output_path, python3_path, config);
     }
+    utils.show_message(`The documentation has been generated in: ${output_path}`);
   }
 
   async add_library(item) {
