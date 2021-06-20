@@ -11,6 +11,7 @@
                "documentation":{
                   "dependency_graph":true,
                   "fsm":true,
+                  "self_contained":false,
                   "signals":"all",
                   "constants":"all",
                   "process":"all"

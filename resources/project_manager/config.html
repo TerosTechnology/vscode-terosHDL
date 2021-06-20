@@ -146,6 +146,10 @@
   <input type='checkbox' id="doc_include_dependency_graph" class='radio-button'>
   <br><br>
 
+  <label>Self contained:</label>
+  <input type='checkbox' id="doc_self_contained" class='radio-button'>
+  <br><br>
+
   <label>Include FSM:</label>
   <input type='checkbox' id="doc_include_fsm" class='radio-button'>
   <br><br>
@@ -512,9 +516,10 @@
       'documentation':{
         'dependency_graph': document.getElementById("doc_include_dependency_graph").checked,
         'fsm': document.getElementById("doc_include_fsm").checked,
+        'self_contained': document.getElementById("doc_self_contained").checked,
         'signals': document.getElementById("doc_signal").value,
         'constants': document.getElementById("doc_constant").value,
-        'process': document.getElementById("doc_always").value
+        'process': document.getElementById("doc_always").value,
       }
     };
     return options;
@@ -725,6 +730,13 @@
     }
     else{
       document.getElementById("doc_include_fsm").checked = false;
+    }
+
+    if (options.self_contained == true){
+      document.getElementById("doc_self_contained").checked = true;
+    }
+    else{
+      document.getElementById("doc_self_contained").checked = false;
     }
 
     document.getElementById("doc_signal").value = options.signals;
