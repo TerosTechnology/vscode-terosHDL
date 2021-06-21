@@ -188,7 +188,7 @@ export class Project_manager {
     vscode.window
       .showSaveDialog({
         saveLabel: "Save project",
-        filters: { "YAML (.yml)": ["yml"], "JSON (.json)": ["json"], "EDAM (.edam)": ["edam"]},
+        filters: { "YAML (.yml)": ["yml"]},
       })
       .then((value) => {
         if (value !== undefined) {
