@@ -271,6 +271,13 @@
   
   <label>Part. Device identifier. e.g. xc7a35tcsg324-1.</label><br><br>
   <input class="input" id="vivado_part" type="text"><br><br>
+
+  <label>P&R tool. Allowed values are vivado (default) and none (to just run synthesis):</label>
+  <select name="select" id="vivado_pnr">
+    <option value="vivado" selected>Vivado</option>
+    <option value="none">None</option>
+  </select>
+  <br><br>
 </div>
 
 <div id="icestorm" class="tabcontent">
@@ -587,7 +594,8 @@
     let options = {
       'vivado':{
         'installation_path': document.getElementById("vivado_installation_path").value,
-        'part': document.getElementById("vivado_part").value
+        'part': document.getElementById("vivado_part").value,
+        'pnr': document.getElementById("vivado_pnr").value
       }
     };
     return options;
@@ -779,7 +787,7 @@
   function set_vivado_options(options, installation_path){
     document.getElementById("vivado_installation_path").value = installation_path;
     document.getElementById("vivado_part").value = options.part;
-
+    document.getElementById("vivado_prn").value = options.pnr;
   }
 
   function set_icestorm_options(options, installation_path){

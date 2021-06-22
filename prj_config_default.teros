@@ -58,7 +58,8 @@
             {
                "vivado":{
                   "installation_path":"",
-                  "part":""
+                  "part":"XC7Z010",
+                  "pnr":"vivado"
                }
             },
             {
