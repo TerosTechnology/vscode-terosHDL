@@ -163,6 +163,11 @@ export default class Dependencies_viewer_manager {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
+
+    config.symbol_vhdl = comment_symbol_vhdl;
+    config.symbol_verilog = comment_symbol_verilog;
+    config.dependency_graph = true;
+
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
     const jsteros = require('jsteros');
     let project_manager = new  jsteros.Edam.Edam_project('', '');
@@ -172,10 +177,10 @@ export default class Dependencies_viewer_manager {
     }
 
     if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
+      project_manager.save_markdown_doc(output_path, python3_path, config);
     }
     else {
-      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
+      project_manager.save_html_doc(output_path, python3_path, config);
     }
   }
 

@@ -188,7 +188,7 @@ export class Project_manager {
     vscode.window
       .showSaveDialog({
         saveLabel: "Save project",
-        filters: { "YAML (.yml)": ["yml"], "JSON (.json)": ["json"], "EDAM (.edam)": ["edam"]},
+        filters: { "YAML (.yml)": ["yml"]},
       })
       .then((value) => {
         if (value !== undefined) {
@@ -716,25 +716,29 @@ export class Project_manager {
           this.generate_and_save_documentation(prj, output_dir, 'html', config);
         }
         // Markdown
-        else if(lib_type === doc_types[0]){
-          this.generate_and_save_documentation(prj, output_dir, 'html', config);
+        else if(lib_type === doc_types[1]){
+          this.generate_and_save_documentation(prj, output_dir, 'markdown', config);
         }
       });
     });
   }
 
-  private generate_and_save_documentation(project_manager, output_path, type: string, config) {
+  private async generate_and_save_documentation(project_manager, output_path, type: string, config) {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
 
+    config.vhdl_symbol = comment_symbol_vhdl;
+    config.verilog_symbol = comment_symbol_verilog;
+
     if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
+      await project_manager.save_markdown_doc(output_path, python3_path, config);
     }
     else {
-      project_manager.save_html_doc(output_path, comment_symbol_vhdl, comment_symbol_verilog, true, python3_path, config);
+      await project_manager.save_html_doc(output_path, python3_path, config);
     }
+    utils.show_message(`The documentation has been generated in: ${output_path}`);
   }
 
   async add_library(item) {
@@ -956,7 +960,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
   build_list_items: Tree_types.Build_item[] = [];
 
   init_tree() {
-    this.data = [new Tree_types.TreeItem("TerosHDL Projects", []), new Tree_types.TreeItem("Test list", []), 
+    this.data = [new Tree_types.TreeItem("TerosHDL Projects", []), new Tree_types.TreeItem("Runs list", []), 
       new Tree_types.TreeItem("Resources utilization", [])];
     this.refresh();
   }
@@ -1137,7 +1141,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
   update_tree() {
     this.data = [
       new Tree_types.TreeItem("TerosHDL Projects", this.projects),
-      new Tree_types.Test_title_item("Test list", this.test_list_items),
+      new Tree_types.Test_title_item("Runs list", this.test_list_items),
       new Tree_types.Build_title_item("Resources utilization", this.build_list_items),
     ];
     this.refresh();

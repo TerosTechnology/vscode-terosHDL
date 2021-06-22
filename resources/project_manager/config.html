@@ -146,6 +146,10 @@
   <input type='checkbox' id="doc_include_dependency_graph" class='radio-button'>
   <br><br>
 
+  <label>HTML documentation self contained:</label>
+  <input type='checkbox' id="doc_self_contained" class='radio-button'>
+  <br><br>
+
   <label>Include FSM:</label>
   <input type='checkbox' id="doc_include_fsm" class='radio-button'>
   <br><br>
@@ -267,6 +271,13 @@
   
   <label>Part. Device identifier. e.g. xc7a35tcsg324-1.</label><br><br>
   <input class="input" id="vivado_part" type="text"><br><br>
+
+  <label>P&R tool. Allowed values are vivado (default) and none (to just run synthesis):</label>
+  <select name="select" id="vivado_pnr">
+    <option value="vivado" selected>Vivado</option>
+    <option value="none">None</option>
+  </select>
+  <br><br>
 </div>
 
 <div id="icestorm" class="tabcontent">
@@ -512,9 +523,10 @@
       'documentation':{
         'dependency_graph': document.getElementById("doc_include_dependency_graph").checked,
         'fsm': document.getElementById("doc_include_fsm").checked,
+        'self_contained': document.getElementById("doc_self_contained").checked,
         'signals': document.getElementById("doc_signal").value,
         'constants': document.getElementById("doc_constant").value,
-        'process': document.getElementById("doc_always").value
+        'process': document.getElementById("doc_always").value,
       }
     };
     return options;
@@ -582,7 +594,8 @@
     let options = {
       'vivado':{
         'installation_path': document.getElementById("vivado_installation_path").value,
-        'part': document.getElementById("vivado_part").value
+        'part': document.getElementById("vivado_part").value,
+        'pnr': document.getElementById("vivado_pnr").value
       }
     };
     return options;
@@ -727,6 +740,13 @@
       document.getElementById("doc_include_fsm").checked = false;
     }
 
+    if (options.self_contained == true){
+      document.getElementById("doc_self_contained").checked = true;
+    }
+    else{
+      document.getElementById("doc_self_contained").checked = false;
+    }
+
     document.getElementById("doc_signal").value = options.signals;
     document.getElementById("doc_constant").value = options.constants;
     document.getElementById("doc_always").value = options.process;
@@ -767,7 +787,7 @@
   function set_vivado_options(options, installation_path){
     document.getElementById("vivado_installation_path").value = installation_path;
     document.getElementById("vivado_part").value = options.part;
-
+    document.getElementById("vivado_prn").value = options.pnr;
   }
 
   function set_icestorm_options(options, installation_path){

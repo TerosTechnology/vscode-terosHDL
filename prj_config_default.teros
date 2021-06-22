@@ -11,6 +11,7 @@
                "documentation":{
                   "dependency_graph":true,
                   "fsm":true,
+                  "self_contained":false,
                   "signals":"all",
                   "constants":"all",
                   "process":"all"
@@ -57,7 +58,8 @@
             {
                "vivado":{
                   "installation_path":"",
-                  "part":""
+                  "part":"XC7Z010",
+                  "pnr":"vivado"
                }
             },
             {

@@ -571,7 +571,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.stop",
-				"title": "Stop tests",
+				"title": "Stop",
 				"icon": {
 					"light": "resources/light/stop.svg",
 					"dark": "resources/dark/stop.svg"
@@ -587,7 +587,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.refresh_tests",
-				"title": "Refresh tests",
+				"title": "Refresh",
 				"icon": {
 					"light": "resources/light/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
@@ -611,7 +611,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.run_edalize_test",
-				"title": "Run Edalize test",
+				"title": "Run",
 				"icon": {
 					"light": "resources/light/run.svg",
 					"dark": "resources/dark/run.svg"
@@ -619,7 +619,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.run_edalize_test_gui",
-				"title": "Run Edalize test in GUI",
+				"title": "Run with GUI",
 				"icon": {
 					"light": "resources/light/debug.svg",
 					"dark": "resources/dark/debug.svg"
@@ -707,7 +707,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.simulate",
-				"title": "Start simulation",
+				"title": "Start",
 				"icon": {
 					"light": "resources/light/run.svg",
 					"dark": "resources/dark/run.svg"
