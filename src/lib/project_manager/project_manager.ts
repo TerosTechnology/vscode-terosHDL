@@ -113,6 +113,7 @@ export class Project_manager {
     if (absolute_path_init === '/' || absolute_path_init === '\\'){
       absolute_path_init = '';
     }
+    absolute_path_init = '';
     let toml = "[libraries]\n\n";
     for (let i = 0; i < libraries.length; i++) {
       const library = libraries[i];
