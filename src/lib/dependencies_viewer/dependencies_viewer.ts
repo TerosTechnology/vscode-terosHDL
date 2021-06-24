@@ -32,8 +32,9 @@ export default class Dependencies_viewer_manager {
     this.context = context;
   }
 
-  async open_viewer() {
+  async open_viewer(prj) {
     this.create_viewer();
+    this.update_viewer(prj);
   }
 
   async create_viewer() {
@@ -55,50 +56,25 @@ export default class Dependencies_viewer_manager {
       null,
       this.context.subscriptions
     );
-    // Handle messages from the webview
-    this.panel.webview.onDidReceiveMessage(
-      message => {
-        switch (message.command) {
-          case 'add_source':
-            this.add_source();
-            console.log("Add source: " + message.text);
-            return;
-          case 'clear_graph':
-            this.clear_viewer();
-            console.log("Clear graph");
-            return;
-          case 'generate_documentation_markdown':
-            this.generate_documentation("markdown", message.config);
-            console.log("Generate documentation Markdown");
-            return;
-          case 'generate_documentation_html':
-            this.generate_documentation("html", message.config);
-            console.log("Generate documentation HTML");
-            return;
-        }
-      },
-      undefined,
-      this.context.subscriptions
-    );
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
   }
 
-  private async add_source() {
-    let files = await vscode.window.showOpenDialog({ canSelectMany: true });
-    if (files !== undefined) {
-      this.sources.push();
-      for (let i = 0; i < files.length; ++i) {
-        if (files[i]['path'][0] === '/' && require('os').platform() === 'win32') {
-          this.sources.push(files[i]['path'].substring(1));
-        }
-        else {
-          this.sources.push(files[i]['path']);
-        }
-      }
-      await this.update_viewer();
-    }
-  }
+  // private async add_source() {
+  //   let files = await vscode.window.showOpenDialog({ canSelectMany: true });
+  //   if (files !== undefined) {
+  //     this.sources.push();
+  //     for (let i = 0; i < files.length; ++i) {
+  //       if (files[i]['path'][0] === '/' && require('os').platform() === 'win32') {
+  //         this.sources.push(files[i]['path'].substring(1));
+  //       }
+  //       else {
+  //         this.sources.push(files[i]['path']);
+  //       }
+  //     }
+  //     await this.update_viewer();
+  //   }
+  // }
 
   private async get_dot() {
     let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
@@ -115,7 +91,9 @@ export default class Dependencies_viewer_manager {
     return dependencies_dot;
   }
 
-  private async update_viewer() {
+  async update_viewer(prj) {
+    let sources = prj.get_sources_as_array();
+    this.sources = sources;
     try{
       let dot = await this.get_dot();
       if (dot === undefined || dot === '' || dot === null) {
@@ -149,39 +127,6 @@ export default class Dependencies_viewer_manager {
 
   private clear_sources() {
     this.sources = [];
-  }
-
-  private generate_documentation(type: string, config) {
-    vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false }).then(file_uri => {
-      if (file_uri && file_uri[0]) {
-        this.generate_and_save_documentation(file_uri[0].fsPath, type, config);
-      }
-    });
-  }
-
-  private generate_and_save_documentation(output_path, type: string, config) {
-    let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
-    let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
-    let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
-
-    config.symbol_vhdl = comment_symbol_vhdl;
-    config.symbol_verilog = comment_symbol_verilog;
-    config.dependency_graph = true;
-
-    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-    const jsteros = require('jsteros');
-    let project_manager = new  jsteros.Edam.Edam_project('', '');
-    for (let i = 0; i < this.sources.length; i++) {
-      const source = this.sources[i];
-      project_manager.add_file(source);
-    }
-
-    if (type === "markdown") {
-      project_manager.save_markdown_doc(output_path, python3_path, config);
-    }
-    else {
-      project_manager.save_html_doc(output_path, python3_path, config);
-    }
   }
 
   private getWebviewContent(context: vscode.ExtensionContext) {

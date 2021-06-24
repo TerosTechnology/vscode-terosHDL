@@ -30,6 +30,7 @@ import * as Cocotb from "./tools/cocotb";
 import * as Edalize from "./tools/edalize";
 import * as Tree_types from "./tree_types";
 import * as utils from "./utils";
+import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
 
 const path_lib = require("path");
 const fs = require("fs");
@@ -53,8 +54,11 @@ export class Project_manager {
   private init: boolean = false;
   private treeview;
   private init_test_list: boolean = false;
+  private  dependencies_viewer_manager: Dependencies_viewer.default;
 
   constructor(context: vscode.ExtensionContext) {
+    this.dependencies_viewer_manager = new Dependencies_viewer.default(context);
+
     this.vunit = new Vunit.Vunit(context);
     this.cocotb = new Cocotb.Cocotb(context);
     this.edalize = new Edalize.Edalize(context);
@@ -71,7 +75,7 @@ export class Project_manager {
       treeDataProvider: this.tree,
       canSelectMany: true,
     });
-
+    vscode.commands.registerCommand("teroshdl_tree_view.dependencies_viewer", () => this.open_dependencies_viewer());
     vscode.commands.registerCommand("teroshdl_tree_view.add_project", () => this.add_project());
     vscode.commands.registerCommand("teroshdl_tree_view.add_file", (item) => this.add_file(item));
     vscode.commands.registerCommand("teroshdl_tree_view.delete_file", (item) => this.delete_file(item));
@@ -96,6 +100,30 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.open_file", (item) => this.open_file(item));
     vscode.commands.registerCommand("teroshdl_tree_view.save_doc", (item) => this.save_doc(item));
   }
+
+  open_dependencies_viewer(){
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === "") {
+      let msg = "Mark a project to show the dependencies.";
+      utils.show_message(msg, 'project_manager');
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    this.dependencies_viewer_manager.open_viewer(prj);
+  }
+
+  update_dependencies_viewer(){
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === "") {
+      let msg = "Mark a project to show the dependencies.";
+      utils.show_message(msg, 'project_manager');
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    this.dependencies_viewer_manager.update_viewer(prj);
+  }
+
+
 
   async refresh_lint() {
     if (this.init === false) {
@@ -471,6 +499,7 @@ export class Project_manager {
   }
 
   async update_tree() {
+    this.update_dependencies_viewer();
     let test_list_initial = [{ name: "Loading tests...", location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
     // Set "loading test" message
