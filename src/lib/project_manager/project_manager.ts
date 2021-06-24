@@ -582,8 +582,8 @@ export class Project_manager {
     let project_name = item.project_name;
     vscode.window.showOpenDialog({ canSelectMany: true }).then((value) => {
       if (value !== undefined) {
-        console.log("------> file is: " + value[i].fsPath);
         for (let i = 0; i < value.length; ++i) {
+          console.log("------> file is: " + value[i].fsPath);
           if (library_name === ""){
             library_name = "";
           }
