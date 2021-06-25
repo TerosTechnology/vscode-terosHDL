@@ -347,6 +347,11 @@
 		"menus": {
 			"view/title": [
 				{
+					"command": "teroshdl_tree_view.dependencies_viewer",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				},
+				{
 					"command": "teroshdl_tree_view.simulate",
 					"when": "view == teroshdl_tree_view",
 					"group": "navigation"
@@ -599,6 +604,14 @@
 				"icon": {
 					"light": "resources/light/run.svg",
 					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.dependencies_viewer",
+				"title": "Open dependencies viewer",
+				"icon": {
+					"light": "resources/light/circuit-board.svg",
+					"dark": "resources/dark/circuit-board.svg"
 				}
 			},
 			{

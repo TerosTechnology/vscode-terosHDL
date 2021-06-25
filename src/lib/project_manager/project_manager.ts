@@ -30,6 +30,7 @@ import * as Cocotb from "./tools/cocotb";
 import * as Edalize from "./tools/edalize";
 import * as Tree_types from "./tree_types";
 import * as utils from "./utils";
+import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
 
 const path_lib = require("path");
 const fs = require("fs");
@@ -39,7 +40,7 @@ export class Project_manager {
   tree!: TreeDataProvider;
   projects: Tree_types.TreeItem[] = [];
   config_view;
-  edam_project_manager;
+  edam_project_manager: Edam.Edam_project_manager;
   config_file;
   workspace_folder;
   private vunit_test_list: {}[] = [];
@@ -53,8 +54,11 @@ export class Project_manager {
   private init: boolean = false;
   private treeview;
   private init_test_list: boolean = false;
+  private  dependencies_viewer_manager: Dependencies_viewer.default;
 
   constructor(context: vscode.ExtensionContext) {
+    this.dependencies_viewer_manager = new Dependencies_viewer.default(context);
+
     this.vunit = new Vunit.Vunit(context);
     this.cocotb = new Cocotb.Cocotb(context);
     this.edalize = new Edalize.Edalize(context);
@@ -71,7 +75,7 @@ export class Project_manager {
       treeDataProvider: this.tree,
       canSelectMany: true,
     });
-
+    vscode.commands.registerCommand("teroshdl_tree_view.dependencies_viewer", () => this.open_dependencies_viewer());
     vscode.commands.registerCommand("teroshdl_tree_view.add_project", () => this.add_project());
     vscode.commands.registerCommand("teroshdl_tree_view.add_file", (item) => this.add_file(item));
     vscode.commands.registerCommand("teroshdl_tree_view.delete_file", (item) => this.delete_file(item));
@@ -95,6 +99,28 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.stop", () => this.stop());
     vscode.commands.registerCommand("teroshdl_tree_view.open_file", (item) => this.open_file(item));
     vscode.commands.registerCommand("teroshdl_tree_view.save_doc", (item) => this.save_doc(item));
+  }
+
+  open_dependencies_viewer(){
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === "") {
+      let msg = "Mark a project to show the dependencies.";
+      utils.show_message(msg, 'project_manager');
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    this.dependencies_viewer_manager.open_viewer(prj);
+  }
+
+  update_dependencies_viewer(){
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === "") {
+      let msg = "Mark a project to show the dependencies.";
+      utils.show_message(msg, 'project_manager');
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    this.dependencies_viewer_manager.update_viewer(prj);
   }
 
   async refresh_lint() {
@@ -121,9 +147,10 @@ export class Project_manager {
       for (let j = 0; j < library.files.length; j++) {
         const file_in_library = library.files[j];
         const path = require("path");
-        let file_extension = path.extname(file_in_library);
         let filename = path.basename(file_in_library);
-        if (file_extension !== '.py' && filename.toLowerCase() !== 'makefile'){
+        const jsteros = require('jsteros');
+        let lang = jsteros.Utils.get_lang_from_path(filename);
+        if (lang === 'vhdl'){
           files_in_library += `  '${absolute_path_init}${file_in_library}',\n`;
         }
       }
@@ -214,7 +241,8 @@ export class Project_manager {
     if (selected_project !== "" && selected_project !== undefined) {
       this.edam_project_manager.selected_project = selected_project;
     }
-    this.edam_project_manager.create_projects_from_edam(this.config_file.projects);
+    let current_projects = this.config_file.projects;
+    this.edam_project_manager.create_projects_from_edam(current_projects);
     await this.update_tree();
     this.refresh_lint();
   }
@@ -471,6 +499,7 @@ export class Project_manager {
   }
 
   async update_tree() {
+    this.update_dependencies_viewer();
     let test_list_initial = [{ name: "Loading tests...", location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
     // Set "loading test" message
@@ -734,6 +763,7 @@ export class Project_manager {
     config.vhdl_symbol = comment_symbol_vhdl;
     config.verilog_symbol = comment_symbol_verilog;
 
+
     if (type === "markdown") {
       await project_manager.save_markdown_doc(output_path, python3_path, config);
     }
@@ -760,7 +790,7 @@ export class Project_manager {
         }
         // Empty library
         else if(lib_type === library_add_types[0]){
-          this.edam_project_manager.add_file(project_name, "teroshdl_phantom_file", false, "", value);
+          this.edam_project_manager.add_file(project_name, "", false, "", library_name);
           this.update_tree();
           this.refresh_lint();
         }
@@ -904,7 +934,7 @@ export class Project_manager {
         .then((value) => {
           if (value !== undefined) {
             let result = this.edam_project_manager.create_project(value);
-            if (result !== 0) {
+            if (result !== '') {
               utils.show_message(result, 'project_manager');
               return;
             }
@@ -1204,7 +1234,7 @@ class Project {
   get_library(library_name, sources): Tree_types.Library_item {
     let tree: Tree_types.Hdl_item[] = [];
     for (let i = 0; i < sources.length; ++i) {
-      if (sources[i].includes("teroshdl_phantom_file") === false) {
+      if (sources[i] !== ''){
         let item_tree = new Tree_types.Hdl_item(sources[i], library_name, this.name);
         tree.push(item_tree);
       }
@@ -1222,3 +1252,5 @@ class Project {
     return tree;
   }
 }
+
+

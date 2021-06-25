@@ -148,7 +148,8 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(
             'teroshdl.dependencies.viewer',
             async () => {
-                await dependencies_viewer_manager.open_viewer();
+                let msg =  'Dependencies viewer has been moved to the project manager. Check [TerosHDL documentation.](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html)';
+                vscode.window.showInformationMessage(msg);
             }
         )
     );
