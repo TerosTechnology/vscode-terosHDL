@@ -21,6 +21,7 @@
 
 /* eslint-disable @typescript-eslint/class-name-casing */
 const path_lib = require('path');
+import * as vscode from "vscode";
 
 export class Edam_project_manager {
   public projects: any[] = [];
@@ -97,11 +98,15 @@ export class Edam_project_manager {
     let files = edam.files;
 
     for (let i = 0; i < files.length; i++) {
-      const file = files[i].name;
+      const file = files[i];
+      const filename = files[i].name;
       //Relative path to absolute
       let resolve = require('path').resolve;
-      let full_path = relative_path + path_lib.sep + file;
-      let absolute_path = resolve(full_path);
+      let absolute_path = filename;
+      if (relative_path !== ''){
+        let full_path = relative_path + path_lib.sep + filename;
+        absolute_path = resolve(full_path);
+      }
       this.add_file(project_name, absolute_path, file.is_include_file, file.include_path, file.logical_name);
       this.set_top(project_name, file.logical_name, file.name);
     }
@@ -159,10 +164,11 @@ export class Edam_project_manager {
     if (this.check_if_project_exists(name) === true) {
       return `The project with name [${name}] already exists in the workspace.`;
     }
+    let logger = new Cli_logger();
     const jsteros = require('jsteros');
-    let prj = new  jsteros.Edam.Edam_project(name, relative_path);
+    let prj = new  jsteros.Edam.Edam_project(name, relative_path, logger);
     this.projects.push(prj);
-    return 0;
+    return '';
   }
 
   delete_project(name) {
@@ -237,3 +243,22 @@ export class Edam_project_manager {
   }
 }
 
+class Cli_logger {
+  output_channel;
+  constructor(){
+    this.output_channel = vscode.window.createOutputChannel('TerosHDL');
+  }
+
+  start(value0){
+    this.output_channel.show();
+  }
+
+  update(value0, value1){
+    if (value1 !== undefined){
+      this.output_channel.appendLine(value1.filename);
+    }
+  }
+
+  stop(){
+  }
+}

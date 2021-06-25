@@ -40,7 +40,7 @@ export class Project_manager {
   tree!: TreeDataProvider;
   projects: Tree_types.TreeItem[] = [];
   config_view;
-  edam_project_manager;
+  edam_project_manager: Edam.Edam_project_manager;
   config_file;
   workspace_folder;
   private vunit_test_list: {}[] = [];
@@ -123,8 +123,6 @@ export class Project_manager {
     this.dependencies_viewer_manager.update_viewer(prj);
   }
 
-
-
   async refresh_lint() {
     if (this.init === false) {
       this.init = false;
@@ -149,9 +147,10 @@ export class Project_manager {
       for (let j = 0; j < library.files.length; j++) {
         const file_in_library = library.files[j];
         const path = require("path");
-        let file_extension = path.extname(file_in_library);
         let filename = path.basename(file_in_library);
-        if (file_extension !== '.py' && filename.toLowerCase() !== 'makefile'){
+        const jsteros = require('jsteros');
+        let lang = jsteros.Utils.get_lang_from_path(filename);
+        if (lang === 'vhdl'){
           files_in_library += `  '${absolute_path_init}${file_in_library}',\n`;
         }
       }
@@ -242,7 +241,8 @@ export class Project_manager {
     if (selected_project !== "" && selected_project !== undefined) {
       this.edam_project_manager.selected_project = selected_project;
     }
-    this.edam_project_manager.create_projects_from_edam(this.config_file.projects);
+    let current_projects = this.config_file.projects;
+    this.edam_project_manager.create_projects_from_edam(current_projects);
     await this.update_tree();
     this.refresh_lint();
   }
@@ -763,6 +763,7 @@ export class Project_manager {
     config.vhdl_symbol = comment_symbol_vhdl;
     config.verilog_symbol = comment_symbol_verilog;
 
+
     if (type === "markdown") {
       await project_manager.save_markdown_doc(output_path, python3_path, config);
     }
@@ -789,7 +790,7 @@ export class Project_manager {
         }
         // Empty library
         else if(lib_type === library_add_types[0]){
-          this.edam_project_manager.add_file(project_name, "teroshdl_phantom_file", false, "", value);
+          this.edam_project_manager.add_file(project_name, "", false, "", library_name);
           this.update_tree();
           this.refresh_lint();
         }
@@ -933,7 +934,7 @@ export class Project_manager {
         .then((value) => {
           if (value !== undefined) {
             let result = this.edam_project_manager.create_project(value);
-            if (result !== 0) {
+            if (result !== '') {
               utils.show_message(result, 'project_manager');
               return;
             }
@@ -1233,7 +1234,7 @@ class Project {
   get_library(library_name, sources): Tree_types.Library_item {
     let tree: Tree_types.Hdl_item[] = [];
     for (let i = 0; i < sources.length; ++i) {
-      if (sources[i].includes("teroshdl_phantom_file") === false) {
+      if (sources[i] !== ''){
         let item_tree = new Tree_types.Hdl_item(sources[i], library_name, this.name);
         tree.push(item_tree);
       }
@@ -1251,3 +1252,5 @@ class Project {
     return tree;
   }
 }
+
+
