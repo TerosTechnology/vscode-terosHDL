@@ -25,8 +25,7 @@ import * as util from "util";
 
 export default class Documenter {
   private created_documenter = false;
-  private vhdl_documenter;
-  private verilog_documenter;
+  private documenter;
   private panel;
   private context;
   private current_document;
@@ -36,7 +35,10 @@ export default class Documenter {
     'fsm': true,
     'signals': 'all',
     'constants': 'all',
-    'process': 'all'
+    'process': 'all',
+    'symbol_vhdl': '',
+    'symbol_verilog': '',
+    'extra_top_space': true
   };
   private last_document: vscode.TextDocument | undefined = undefined;
 
@@ -50,53 +52,21 @@ export default class Documenter {
     const readFileAsync = util.promisify(fs.readFile);
     this.html_base = await readFileAsync(
       this.context.asAbsolutePath(path_html), "utf8");
-    // //Create VHDL documenter
-    // this.vhdl_documenter = this.create_documenter('vhdl');
-    // this.vhdl_documenter.init();
-    // //Create Verilog documenter
-    // this.verilog_documenter = this.create_documenter('verilog');
-    // this.verilog_documenter.init();
   }
 
-  get_documenter(language_id) {
+  async get_documenter() {
     if (this.created_documenter === false){
-      //Create VHDL documenter
-      this.vhdl_documenter = this.create_documenter('vhdl');
-      this.vhdl_documenter.init();
-      //Create Verilog documenter
-      this.verilog_documenter = this.create_documenter('verilog');
-      this.verilog_documenter.init();
+      const jsteros = require('jsteros');
+      this.documenter = new jsteros.Documenter.Documenter();
       this.created_documenter = true;
     }
-
-    if (language_id === 'vhdl') {
-      // //Create VHDL documenter
-      // let documenter = this.create_documenter('vhdl');
-      // documenter.init();
-      return this.vhdl_documenter;
-    }
-    else if (language_id === 'verilog') {
-      // //Create VHDL documenter
-      // let documenter = this.create_documenter('verilog');
-      // documenter.init();
-      return this.verilog_documenter;
-    }
-    else {
-      return undefined;
-    }
+    return this.documenter;
   }
 
   get_symbol(language_id) {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
     return comment_symbol;
-  }
-
-  create_documenter(language_id) {
-    let code: string = '';
-    const jsteros = require('jsteros');
-    let documenter = new jsteros.Documenter.Documenter(code, language_id, this.get_symbol(language_id));
-    return documenter;
   }
 
   get_language(document): string {
@@ -143,14 +113,6 @@ export default class Documenter {
     return code;
   }
 
-  configure_documenter(documenter, document, config) {
-    let language_id = this.get_language(document);
-    let code = this.get_document_code(document);
-    let symbol = this.get_symbol(language_id);
-    documenter.set_symbol(symbol);
-    documenter.set_code(code);
-    documenter.set_config(config);
-  }
 
   async get_documentation_module() {
     let active_document = this.get_active_document();
@@ -199,6 +161,14 @@ export default class Documenter {
     this.update_doc(active_document);
   }
 
+  get_configuration(){
+    this.global_config.symbol_vhdl = <string>this.get_symbol('vhdl');
+    this.global_config.symbol_verilog = <string>this.get_symbol('verilog');
+    this.global_config.extra_top_space = true;
+
+    return this.global_config;
+  }
+
   set_config(config) {
     this.global_config = config;
     this.force_update_documentation_module();
@@ -206,14 +176,15 @@ export default class Documenter {
 
   async update_doc(document) {
     let language_id: string = this.get_language(document);
+    let code = this.get_document_code(document);
 
-    let documenter = this.get_documenter(language_id);
-    this.configure_documenter(documenter, document, this.global_config);
+    let documenter = await this.get_documenter();
     this.current_document = document;
     this.last_document = document;
 
-    const extra_top_space = true;
-    let html_result = await documenter.get_html(true, extra_top_space);
+    let configuration = this.get_configuration();
+
+    let html_result = await documenter.get_html(code, language_id, configuration);
     let preview_html = this.html_base;
     preview_html += html_result.html;
 
@@ -269,10 +240,6 @@ export default class Documenter {
     this.current_path = document.uri.fsPath;
   }
 
-  show_python3_error_message() {
-    vscode.window.showInformationMessage('Error: make sure Python3 is installed in your system and added to the system path.');
-  }
-
   normalize_path(path: string) {
     if (path[0] === '/' && require('os').platform() === 'win32') {
       return path.substring(1);
@@ -293,10 +260,12 @@ export default class Documenter {
     // /one/two/five
     let full_path = path_lib.dirname(this.current_path) + path_lib.sep + filename;
 
-    let language_id: string = this.get_language(this.current_document);
-    let documenter = this.get_documenter(language_id);
-    this.configure_documenter(documenter, this.current_document, this.global_config);
 
+    let language_id: string = this.get_language(this.current_document);
+    let code = this.get_document_code(this.current_document);    
+    let documenter = await this.get_documenter();
+    let configuration = this.get_configuration();
+    
     if (type === "markdown") {
       let filter = { 'markdown': ['md'] };
       let default_path = full_path + '.md';
@@ -305,7 +274,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          documenter.save_markdown(path_norm);
+          documenter.save_markdown(code, language_id, configuration, path_norm);
         }
       });
     }
@@ -317,7 +286,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          documenter.save_html(path_norm);
+          documenter.save_html(code, language_id, configuration, path_norm);
         }
       });
     }
@@ -329,7 +298,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
-          documenter.save_svg(path_norm);
+          documenter.save_svg(code, language_id, configuration, path_norm);
         }
       });
     }
