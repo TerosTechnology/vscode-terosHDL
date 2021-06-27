@@ -218,6 +218,7 @@ export class Edalize extends tool_base.Tool_base{
   async run_command(command) {
     let element = this;
 
+    element.output_channel.clear();
     element.output_channel.append(command);
     element.output_channel.show();
 

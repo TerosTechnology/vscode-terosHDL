@@ -32,6 +32,7 @@ export class Tool_base {
     private folder_sep: string = '';
     private childp;
     private context;
+    private python_path: string = '';
 
     constructor(context){
         this.context = context;
@@ -40,6 +41,7 @@ export class Tool_base {
         this.more = ";";
         this.switch = '';
         this.folder_sep = "/";
+        this.python_path = '';
     
         if (os.platform() === "win32") {
           this.exp = "SET ";
@@ -49,13 +51,17 @@ export class Tool_base {
         }
     }
 
+    set_python_path(python_path){
+      this.python_path = python_path;
+    }
+
     async get_python3_path(show_message = true) {
-        let python_path = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+        let python_path = this.python_path;
         const jsteros = require('jsteros');
         python_path = await jsteros.Nopy.get_python_exec(python_path);
     
         if ( (python_path === undefined || python_path === '') && show_message === true) {
-          let msg = `Install and configure Python3 in the extension configuration. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/configuration/general.html)`;
+          let msg = `Install and configure Python3 in the project manager configuration. Install pyteroshdl: pip install pyteroshdl. If you dont't want to see this message select empty tool in the project manager configuration. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/configuration/general.html)`;
           vscode.window.showInformationMessage(msg);
           return undefined;
         }

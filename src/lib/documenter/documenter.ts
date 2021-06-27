@@ -24,6 +24,7 @@ import * as path_lib from 'path';
 import * as util from "util";
 
 export default class Documenter {
+  private subscriptions: vscode.Disposable[] | undefined;
   private created_documenter = false;
   private documenter;
   private panel;
@@ -44,6 +45,7 @@ export default class Documenter {
 
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
+    vscode.workspace.onDidChangeConfiguration(this.force_update_documentation_module, this, this.subscriptions);
   }
 
   async init() {

@@ -109,7 +109,9 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
-    this.dependencies_viewer_manager.open_viewer(prj);
+    let config = this.config_view.get_config_documentation();
+
+    this.dependencies_viewer_manager.open_viewer(prj, config);
   }
 
   update_dependencies_viewer(){
@@ -120,7 +122,8 @@ export class Project_manager {
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
-    this.dependencies_viewer_manager.update_viewer(prj);
+    let config = this.config_view.get_config_documentation();
+    this.dependencies_viewer_manager.update_viewer(prj, config);
   }
 
   async refresh_lint() {
@@ -205,6 +208,7 @@ export class Project_manager {
   }
 
   async refresh_tests() {
+    this.config_python_path();
     this.last_vunit_results = [];
     this.last_cocotb_results = [];
     this.last_edalize_results = [];  
@@ -248,35 +252,41 @@ export class Project_manager {
   }
 
   async run_vunit_test(item) {
+    this.config_python_path();
     let tests: string[] = [item.label];
     let gui = false;
     this.run_vunit_tests(tests, gui);
   }
 
   async run_vunit_test_gui(item) {
+    this.config_python_path();
     let tests: string[] = [item.label];
     let gui = true;
     this.run_vunit_tests(tests, gui);
   }
 
   async run_cocotb_test(item) {
+    this.config_python_path();
     let tests: string[] = [item.label];
     this.run_cocotb_tests(tests);
   }
 
   async run_edalize_test(item) {
+    this.config_python_path();
     let tests: string[] = [item.label];
     let gui = false;
     this.run_edalize_tests(tests, gui);
   }
 
   async run_edalize_test_gui(item) {
+    this.config_python_path();
     let tests: string[] = [item.label];
     let gui = true;
     this.run_edalize_tests(tests, gui);
   }
 
   async simulate() {
+    this.config_python_path();
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
       let msg = "Mark a project to simulate";
@@ -289,6 +299,9 @@ export class Project_manager {
       return;
     }
     let tool_configuration = this.config_file.get_config_of_selected_tool();
+    if (tool_configuration === undefined){
+      return;
+    }
     if ('vunit' in tool_configuration)
     {
       this.run_vunit_tests([], false);
@@ -300,6 +313,14 @@ export class Project_manager {
     else{
       this.run_edalize_tests([], false);
     }
+  }
+
+  config_python_path(){
+    let config = this.config_view.get_config_documentation();
+    let pypath = config.pypath;
+    this.vunit.set_python_path(pypath);
+    this.edalize.set_python_path(pypath);
+    return pypath;
   }
 
   async get_toplevel_selected_prj(){
@@ -455,12 +476,13 @@ export class Project_manager {
 
   set_results(force_fail_all) {
     let tool_configuration = this.config_file.get_config_of_selected_tool();
-    if ('vunit' in tool_configuration)
-    {
+    if (tool_configuration === undefined){
+      return [];
+    }
+    if ('vunit' in tool_configuration){
       this.tree.set_results(this.last_vunit_results, force_fail_all);
     }
-    else if ('cocotb' in tool_configuration)
-    {
+    else if ('cocotb' in tool_configuration){
       this.tree.set_results(this.last_cocotb_results, force_fail_all);
     }
     else{
@@ -499,6 +521,7 @@ export class Project_manager {
   }
 
   async update_tree() {
+    this.config_python_path();
     this.update_dependencies_viewer();
     let test_list_initial = [{ name: "Loading tests...", location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
@@ -522,17 +545,16 @@ export class Project_manager {
       name: 'Tool is not configured',
       location: undefined
     }];
-
-    if ('vunit' in tool_configuration)
-    {
-      test_list = await this.get_vunit_test_list(this.init_test_list);
-    }
-    else if ('cocotb' in tool_configuration)
-    {
-      test_list = await this.get_cocotb_test_list();
-    }
-    else{
-      test_list = await this.get_edalize_test_list();
+    if (tool_configuration !== undefined){
+      if ('vunit' in tool_configuration){
+        test_list = await this.get_vunit_test_list(this.init_test_list);
+      }
+      else if ('cocotb' in tool_configuration){
+        test_list = await this.get_cocotb_test_list();
+      }
+      else{
+        test_list = await this.get_edalize_test_list();
+      }
     }
     // Show the test list
     this.tree.update_super_tree(normalized_prjs, test_list);
@@ -758,17 +780,16 @@ export class Project_manager {
     let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
-    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
 
     config.vhdl_symbol = comment_symbol_vhdl;
     config.verilog_symbol = comment_symbol_verilog;
 
 
     if (type === "markdown") {
-      await project_manager.save_markdown_doc(output_path, python3_path, config);
+      await project_manager.save_markdown_doc(output_path, config);
     }
     else {
-      await project_manager.save_html_doc(output_path, python3_path, config);
+      await project_manager.save_html_doc(output_path, config);
     }
     utils.show_message(`The documentation has been generated in: ${output_path}`);
   }
