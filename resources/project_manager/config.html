@@ -123,8 +123,9 @@
 <p>Configure your tools.</p>
 
 <div class="tab">
-  <button class="tablinks" onclick="open_tab(event, 'documentation')" id="default_open">Documentation</button>
-  <button class="tablinks" onclick="open_tab(event, 'general')">Tool selection</button>
+  <button class="tablinks" onclick="open_tab(event, 'general')" id="default_open">General</button>
+  <button class="tablinks" onclick="open_tab(event, 'documentation')">Documentation</button>
+  <button class="tablinks" onclick="open_tab(event, 'tool_selection')">Tool selection</button>
   <button class="tablinks" onclick="open_tab(event, 'vunit')">VUnit</button>
   <button class="tablinks" onclick="open_tab(event, 'cocotb')">cocotb</button>
   <button class="tablinks" onclick="open_tab(event, 'vivado')">Vivado</button>
@@ -137,6 +138,13 @@
   <button class="tablinks" onclick="open_tab(event, 'riviera_pro')">Riviera-PRO</button>
   <button class="tablinks" onclick="open_tab(event, 'verilator')">Verilator</button>
   <button class="tablinks" onclick="open_tab(event, 'active_hdl')">Active-HDL</button>
+</div>
+
+<div id="general" class="tabcontent">
+  <h3>General configuration</h3>
+
+  <label>Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. Install pyteroshdl. E.g: pip install pyteroshdl</label><br><br>
+  <input class="input" id="pypath" type="text"><br><br>
 </div>
 
 <div id="documentation" class="tabcontent">
@@ -178,7 +186,12 @@
   </select>
 </div>
 
-<div id="general" class="tabcontent">
+<div id="tool_selection" class="tabcontent">
+  <h3>Empty</h3>
+  <input type='radio' tool="none" class='radio-button' name='re'>
+  <label class="container">None</label>
+  <br><br>
+
   <h3>Testing Framework</h3>
   <input type='radio' tool="vunit" class='radio-button' name='re'>
   <label class="container">VUnit</label>
@@ -239,8 +252,6 @@
 <div id="vunit" class="tabcontent">
   <h3>VUnit</h3>
   <b>Example of comma separated options. E.g: </b><br><code>--option1 op, -option2 op2 , other</code><br><br>
-  <label>Configure your Python3 installation path in the extension configuration.</label><br><br>
-  <!-- <input class="input" id="vunit_installation_path" type="text"><br><br> -->
   
   <label>VUnit simulator:</label><br><br>
   <select id="vunit_simulator" name="select">
@@ -272,10 +283,10 @@
   <label>Part. Device identifier. e.g. xc7a35tcsg324-1.</label><br><br>
   <input class="input" id="vivado_part" type="text"><br><br>
 
-  <label>P&R tool. Allowed values are vivado (default) and none (to just run synthesis):</label>
+  <label>Choose only synthesis or place and route and bitstream generation:</label>
   <select name="select" id="vivado_pnr">
-    <option value="vivado" selected>Vivado</option>
-    <option value="none">None</option>
+    <option value="vivado" selected>Place and route</option>
+    <option value="none">Only synthesis</option>
   </select>
   <br><br>
 </div>
@@ -521,6 +532,7 @@
   function get_documentation_options(){
     let options = {
       'documentation':{
+        'pypath': document.getElementById("pypath").value,
         'dependency_graph': document.getElementById("doc_include_dependency_graph").checked,
         'fsm': document.getElementById("doc_include_fsm").checked,
         'self_contained': document.getElementById("doc_self_contained").checked,
@@ -726,6 +738,8 @@
   }
 
   function set_documentation_options(options){
+    document.getElementById("pypath").value = options.pypath;
+
     if (options.dependency_graph == true){
       document.getElementById("doc_include_dependency_graph").checked = true;
     }
@@ -787,7 +801,7 @@
   function set_vivado_options(options, installation_path){
     document.getElementById("vivado_installation_path").value = installation_path;
     document.getElementById("vivado_part").value = options.part;
-    document.getElementById("vivado_prn").value = options.pnr;
+    document.getElementById("vivado_pnr").value = options.pnr;
   }
 
   function set_icestorm_options(options, installation_path){

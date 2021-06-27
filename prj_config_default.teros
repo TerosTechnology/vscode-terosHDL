@@ -9,6 +9,7 @@
          "config":[
             {
                "documentation":{
+                  "pypath":"",
                   "dependency_graph":true,
                   "fsm":true,
                   "self_contained":false,

@@ -32,9 +32,9 @@ export default class Dependencies_viewer_manager {
     this.context = context;
   }
 
-  async open_viewer(prj) {
+  async open_viewer(prj, config) {
     this.create_viewer();
-    this.update_viewer(prj);
+    this.update_viewer(prj, config);
   }
 
   async create_viewer() {
@@ -76,8 +76,8 @@ export default class Dependencies_viewer_manager {
   //   }
   // }
 
-  private async get_dot() {
-    let python3_path = <string>vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
+  private async get_dot(config) {
+    let python3_path = config.pypath;
     const jsteros = require('jsteros');
     // let project_manager = new jsteros.Project_manager.Manager("");
     let project_manager = new  jsteros.Edam.Edam_project('', '');
@@ -91,11 +91,14 @@ export default class Dependencies_viewer_manager {
     return dependencies_dot;
   }
 
-  async update_viewer(prj) {
+  async update_viewer(prj, config) {
+    if (config === undefined){
+      return;
+    }
     let sources = prj.get_sources_as_array();
     this.sources = sources;
     try{
-      let dot = await this.get_dot();
+      let dot = await this.get_dot(config);
       if (dot === undefined || dot === '' || dot === null) {
         this.show_python3_error_message();
       }

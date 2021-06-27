@@ -1,7 +1,4 @@
 <style nonce="{nonce}">
-
-
-
   h1,h2,h3,table {margin-left:5%;margin-right:5%;}
   td,th,h1,h2,h3 {color: black;}
   h1,h2 {font-weight:bold;}
@@ -167,24 +164,14 @@
             <input id="export-as-markdown" name="zoom-mode" type="radio" value="fixed" />
             <div class="button">Export markdown</div>
         </label>
-        <!-- <label class="fancy-checkbox">
-            <input id="export-as-pdf" name="zoom-mode" type="radio" value="fit"/>
-            <div class="button">Export PDF</div>
-        </label> -->
         <label class="fancy-checkbox">
             <input id="export-as-html" name="zoom-mode" type="radio" value="fit" />
             <div class="button">Export HTML</div>
         </label>
         <label class="fancy-checkbox">
             <input id="export-as-image" name="zoom-mode" type="radio" value="fit" />
-            <div class="button">Export SVG diagrams</div>
+            <div class="button">Export as SVG</div>
         </label>
-        <!-- <label id="fancy-checkbox">Include state machines</label>
-        <input id="enable-state-machines" type="checkbox"> -->
-<!--        <label class="fancy-checkbox">
-            <input id="export-as-latex" name="zoom-mode" type="radio" value="fit" />
-            <div class="button">Export LaTeX</div>
-        </label>-->
     </div>
 </div>
 
@@ -219,7 +206,6 @@
 <script>
     const vscode = acquireVsCodeApi();
     document.getElementById("export-as-markdown").onclick = function() {export_message("markdown")};
-    document.getElementById("export-as-pdf").onclick = function() {export_message("pdf")};
     document.getElementById("export-as-html").onclick = function() {export_message("html")};
     document.getElementById("export-as-image").onclick = function() {export_message("image")};
 
