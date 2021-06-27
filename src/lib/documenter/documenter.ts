@@ -309,24 +309,6 @@ export default class Documenter {
         }
       });
     }
-    else if (type === "pdf") {
-      let platform = require('os').platform();
-      if (platform !== 'linux') {
-        vscode.window.showErrorMessage('Currently this feature is only supported in Linux.');
-        return;
-      }
-
-      let filter = { 'PDF': ['pdf'] };
-      let default_path = full_path + '.pdf';
-      let uri = vscode.Uri.file(default_path);
-      vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
-        if (fileInfos?.path !== undefined) {
-          let path_norm = this.normalize_path(fileInfos?.path);
-          this.show_export_message(path_norm);
-          documenter.save_pdf(path_norm);
-        }
-      });
-    }
     else if (type === "html") {
       let filter = { 'HTML': ['html'] };
       let default_path = full_path + '.html';
