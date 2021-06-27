@@ -31,6 +31,7 @@ import * as Edalize from "./tools/edalize";
 import * as Tree_types from "./tree_types";
 import * as utils from "./utils";
 import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
+import { Hdl_dependencies_tree } from './hdl_dependencies_tree';
 
 const path_lib = require("path");
 const fs = require("fs");
@@ -55,6 +56,7 @@ export class Project_manager {
   private treeview;
   private init_test_list: boolean = false;
   private  dependencies_viewer_manager: Dependencies_viewer.default;
+  private hdl_dependencies_provider : Hdl_dependencies_tree;
 
   constructor(context: vscode.ExtensionContext) {
     this.dependencies_viewer_manager = new Dependencies_viewer.default(context);
@@ -99,6 +101,13 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.stop", () => this.stop());
     vscode.commands.registerCommand("teroshdl_tree_view.open_file", (item) => this.open_file(item));
     vscode.commands.registerCommand("teroshdl_tree_view.save_doc", (item) => this.save_doc(item));
+
+    this.hdl_dependencies_provider = new Hdl_dependencies_tree();
+    vscode.window.registerTreeDataProvider('teroshdl_dependencies_tree_view', this.hdl_dependencies_provider);
+    vscode.commands.registerCommand('teroshdl_dependencies_tree_view.refreshEntry', () => this.hdl_dependencies_provider.refresh());
+    vscode.commands.registerCommand("teroshdl_dependencies_tree_view.open_file", (item) => this.open_file(item));
+    vscode.commands.registerCommand("teroshdl_dependencies_tree_view.dependencies_viewer", () => this.open_dependencies_viewer());
+
   }
 
   open_dependencies_viewer(){
@@ -167,17 +176,7 @@ export class Project_manager {
   }
 
   open_file(item) {
-    let project_name = item.project_name;
     let path = item.path;
-    let contextValue = item.contextValue;
-
-    if (contextValue !== 'build_source'){
-      let prj = this.edam_project_manager.get_project(project_name);
-      let relative_path = prj.relative_path;
-      if (relative_path !== "" && relative_path !== undefined) {
-        path = `${relative_path}${path_lib.sep}${path}`;
-      }
-    }
     utils.open_file(path);
   }
 
@@ -565,7 +564,27 @@ export class Project_manager {
     this.set_default_tops();
     this.set_results(false);
     this.init_test_list = true;
+    await this.set_dependency_tree();
   }
+
+  async set_dependency_tree(){
+    let selected_project = this.edam_project_manager.selected_project;
+    if (selected_project === "") {
+      return;
+    }
+    let prj = this.edam_project_manager.get_project(selected_project);
+    if (prj === undefined){
+      return;
+    }
+    let toplevel_path = prj.toplevel_path;
+    let config = this.config_view.get_config_documentation();
+    let pypath = config.pypath;
+    let dependency_tree = await prj.get_dependency_tree(pypath);
+    if (dependency_tree !== undefined){
+      this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
+    }
+  }
+
 
   set_default_tops() {
     let tops = this.edam_project_manager.get_tops();
@@ -635,7 +654,6 @@ export class Project_manager {
     vscode.window.showOpenDialog({ canSelectMany: true }).then((value) => {
       if (value !== undefined) {
         for (let i = 0; i < value.length; ++i) {
-          console.log("------> file is: " + value[i].fsPath);
           if (library_name === ""){
             library_name = "";
           }
