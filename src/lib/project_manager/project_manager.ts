@@ -41,7 +41,7 @@ export class Project_manager {
   tree!: TreeDataProvider;
   projects: Tree_types.TreeItem[] = [];
   config_view;
-  edam_project_manager: Edam.Edam_project_manager;
+  edam_project_manager;
   config_file;
   workspace_folder;
   private vunit_test_list: {}[] = [];
