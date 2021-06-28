@@ -50,7 +50,11 @@
 			"teroshdl_tree_view": [
 				{
 					"id": "teroshdl_tree_view",
-					"name": "teroshdl_tree_view"
+					"name": "TerosHDL: project manager"
+				},
+				{
+					"id": "teroshdl_dependencies_tree_view",
+					"name": "TerosHDL: dependency tree"
 				}
 			]
 		},
@@ -347,8 +351,8 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "teroshdl_tree_view.dependencies_viewer",
-					"when": "view == teroshdl_tree_view",
+					"command": "teroshdl_dependencies_tree_view.dependencies_viewer",
+					"when": "view == teroshdl_dependencies_tree_view",
 					"group": "navigation"
 				},
 				{
@@ -607,11 +611,11 @@
 				}
 			},
 			{
-				"command": "teroshdl_tree_view.dependencies_viewer",
+				"command": "teroshdl_dependencies_tree_view.dependencies_viewer",
 				"title": "Open dependencies viewer",
 				"icon": {
-					"light": "resources/light/circuit-board.svg",
-					"dark": "resources/dark/circuit-board.svg"
+					"light": "resources/light/dep.png",
+					"dark": "resources/dark/dep.svg"
 				}
 			},
 			{
