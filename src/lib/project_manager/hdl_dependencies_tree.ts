@@ -1,5 +1,25 @@
+// Copyright 2020 Teros Technology
+//
+// Ismael Perez Rojo
+// Carlos Alberto Ruiz Naranjo
+// Alfredo Saez
+//
+// This file is part of Colibri.
+//
+// Colibri is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Colibri is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
+
 /* eslint-disable @typescript-eslint/class-name-casing */
-/* eslint-disable no-mixed-spaces-and-tabs */
 import * as vscode from 'vscode';
 import * as path from 'path';
 
@@ -11,90 +31,6 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
 	private toplevel_path : string = '';
 
 	constructor() {
-		// let hdl_tree = {
-		// 		"root": [
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_top.v",
-		// 			"entity": "serv_top",
-		// 			"dependencies": [
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_decode.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_alu.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_bufreg.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_state.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_csr.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_ctrl.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_mem_if.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_immdec.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_rf_if.v"
-		// 			]
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_state.v",
-		// 			"entity": "serv_state",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_rf_top.v",
-		// 			"entity": "serv_rf_top",
-		// 			"dependencies": [
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_top.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_rf_ram_if.v",
-		// 			  "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_rf_ram.v"
-		// 			]
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_rf_ram_if.v",
-		// 			"entity": "serv_rf_ram_if",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_rf_ram.v",
-		// 			"entity": "serv_rf_ram",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_rf_if.v",
-		// 			"entity": "serv_rf_if",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_mem_if.v",
-		// 			"entity": "serv_mem_if",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_immdec.v",
-		// 			"entity": "serv_immdec",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_decode.v",
-		// 			"entity": "serv_decode",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_ctrl.v",
-		// 			"entity": "serv_ctrl",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_csr.v",
-		// 			"entity": "serv_csr",
-		// 			"dependencies": ["/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_decode.v"]
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_bufreg.v",
-		// 			"entity": "serv_bufreg",
-		// 			"dependencies": []
-		// 		  },
-		// 		  {
-		// 			"filename": "/home/carlos/workspace/teroshdl-documenter-demo/serv/rtl/serv_alu.v",
-		// 			"entity": "serv_alu",
-		// 			"dependencies": []
-		// 		  }
-		// 		]
-		// 	  };
-
 		let hdl_tree = {
 			"root": []
 		};
@@ -121,26 +57,23 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
 
 	getChildren(element?: Dependency): Thenable<Dependency[]> {
 		if (element) {
-			return Promise.resolve(this.getDepsInPackageJson(<string>element.filename));
+			return Promise.resolve(this.get_deps(<string>element.filename));
 		} else {
-			return Promise.resolve(this.getDepsInPackageJson(this.toplevel_path));
+			return Promise.resolve(this.get_deps(this.toplevel_path));
 		}
 	}
 
-	/**
-	 * Given the path to package.json, read all its dependencies and devDependencies.
-	 */
-	private getDepsInPackageJson(root_element: string): Dependency[] {
-		let packageJson;
+	private get_deps(root_element: string): Dependency[] {
+		let current_dep;
 		for (let i = 0; i < this.hdl_tree.length; i++) {
 			const element = this.hdl_tree[i];
 			if (element.filename === root_element){
-				packageJson = element;
+				current_dep = element;
 			}
 			
 		}
 
-		if (packageJson === undefined){
+		if (current_dep === undefined){
 			let empty_dep = [];
 			return empty_dep;
 		}
@@ -157,8 +90,8 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
 			return new Dependency(filename, entity_name, vscode.TreeItemCollapsibleState.Collapsed);
 		};
 
-		const deps = packageJson.dependencies
-			? Object.keys(packageJson.dependencies).map(dep => toDep(packageJson.dependencies[dep]))
+		const deps = current_dep.dependencies
+			? Object.keys(current_dep.dependencies).map(dep => toDep(current_dep.dependencies[dep]))
 			: [];
 		return deps;
 	}
