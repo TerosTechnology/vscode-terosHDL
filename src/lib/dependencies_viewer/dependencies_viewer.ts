@@ -27,7 +27,7 @@ export default class Dependencies_viewer_manager {
   private panel: vscode.WebviewPanel | undefined = undefined;
   private context: vscode.ExtensionContext;
   private sources: string[] = [];
-  private last_dot:string = '';
+  private last_sources: [] = [];
 
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
@@ -35,7 +35,7 @@ export default class Dependencies_viewer_manager {
 
   async open_viewer(prj, config) {
     this.create_viewer();
-    this.update_viewer(prj, config);
+    this.update_viewer(prj, config, true);
   }
 
   async create_viewer() {
@@ -52,7 +52,7 @@ export default class Dependencies_viewer_manager {
     this.panel.onDidDispose(
       () => {
         // When the panel is closed, cancel any future updates to the webview content
-        this.last_dot = '';
+        this.last_sources = [];
         this.panel = undefined;
       },
       null,
@@ -93,7 +93,7 @@ export default class Dependencies_viewer_manager {
     return dependencies_dot;
   }
 
-  async update_viewer(prj, config) {
+  async update_viewer(prj, config, force_reload) {
     if (config === undefined){
       return;
     }
@@ -105,10 +105,10 @@ export default class Dependencies_viewer_manager {
         this.show_python3_error_message();
       }
       else {
-        if (this.last_dot !== dot){
+        if ( (JSON.stringify(this.last_sources) !== JSON.stringify(sources)) || force_reload === true){
           await this.panel?.webview.postMessage({ command: "update", message: dot });
         }
-        this.last_dot = dot;
+        this.last_sources = sources;
       }
     }
     catch(e){

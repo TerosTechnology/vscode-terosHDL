@@ -55,11 +55,12 @@ export class Project_manager {
   private init: boolean = false;
   private treeview;
   private init_test_list: boolean = false;
-  private  dependencies_viewer_manager: Dependencies_viewer.default;
+  private  dependencies_viewer_manager: Dependencies_viewer.default | undefined;
   private hdl_dependencies_provider : Hdl_dependencies_tree;
+  private context;
 
   constructor(context: vscode.ExtensionContext) {
-    this.dependencies_viewer_manager = new Dependencies_viewer.default(context);
+    this.context = context;
 
     this.vunit = new Vunit.Vunit(context);
     this.cocotb = new Cocotb.Cocotb(context);
@@ -120,6 +121,10 @@ export class Project_manager {
     let prj = this.edam_project_manager.get_project(selected_project);
     let config = this.config_view.get_config_documentation();
 
+    if (this.dependencies_viewer_manager === undefined){
+      this.dependencies_viewer_manager = new Dependencies_viewer.default(this.context);
+    }
+
     this.dependencies_viewer_manager.open_viewer(prj, config);
   }
 
@@ -132,7 +137,9 @@ export class Project_manager {
     }
     let prj = this.edam_project_manager.get_project(selected_project);
     let config = this.config_view.get_config_documentation();
-    this.dependencies_viewer_manager.update_viewer(prj, config);
+    if (this.dependencies_viewer_manager !== undefined){
+      this.dependencies_viewer_manager.update_viewer(prj, config, false);
+    }
   }
 
   async refresh_lint() {
@@ -147,30 +154,27 @@ export class Project_manager {
   async save_toml() {
     let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
     let libraries = this.get_active_project_libraries();
-    let absolute_path_init = this.get_active_project_absolute_path();
-    if (absolute_path_init === '/' || absolute_path_init === '\\'){
-      absolute_path_init = '';
-    }
-    absolute_path_init = '';
     let toml = "[libraries]\n\n";
-    for (let i = 0; i < libraries.length; i++) {
-      const library = libraries[i];
-      let files_in_library = "";
-      for (let j = 0; j < library.files.length; j++) {
-        const file_in_library = library.files[j];
-        const path = require("path");
-        let filename = path.basename(file_in_library);
-        const jsteros = require('jsteros');
-        let lang = jsteros.Utils.get_lang_from_path(filename);
-        if (lang === 'vhdl'){
-          files_in_library += `  '${absolute_path_init}${file_in_library}',\n`;
+    if (libraries !== undefined){
+      for (let i = 0; i < libraries.length; i++) {
+        const library = libraries[i];
+        let files_in_library = "";
+        for (let j = 0; j < library.files.length; j++) {
+          const file_in_library = library.files[j];
+          const path = require("path");
+          let filename = path.basename(file_in_library);
+          const jsteros = require('jsteros');
+          let lang = jsteros.Utils.get_lang_from_path(filename);
+          if (lang === 'vhdl'){
+            files_in_library += `  '${file_in_library}',\n`;
+          }
         }
+        let lib_name = library.name;
+        if (lib_name === "") {
+          lib_name = "none";
+        }
+        toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
       }
-      let lib_name = library.name;
-      if (lib_name === "") {
-        lib_name = "none";
-      }
-      toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
     }
     fs.writeFileSync(file_path, toml);
   }
@@ -672,12 +676,12 @@ export class Project_manager {
     let project_name = item.project_name;
     this.select_project_from_name(project_name);
     this.refresh_lint();
+    this.update_tree();
   }
 
   async select_project_from_name(project_name) {
     this.config_file.set_selected_project(project_name);
     this.edam_project_manager.select_project(project_name);
-    this.update_tree();
     this.tree.select_project(project_name);
   }
 
@@ -981,8 +985,6 @@ export class Project_manager {
               this.select_project_from_name(value);
             }
             this.update_tree();
-            this.refresh_tests();
-            this.refresh_lint();
           }
         });
     } else if (picker_value === project_add_types[1]) {
@@ -1012,7 +1014,6 @@ export class Project_manager {
             }
           }
           this.update_tree();
-          this.refresh_tests();
         });
     }
     this.refresh_lint();
@@ -1101,11 +1102,12 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
     let test_list_items: Tree_types.Test_item[] = [];
     for (let i = 0; i < test_list.length; i++) {
       const element = test_list[i];
+      if (element.name === undefined){
+        return test_list_items;
+      }
       let item = new Tree_types.Test_item(element.name, element.location);
-      if ("test_type" in element)
-      {
-        if (element.test_type !== undefined )
-        {
+      if ("test_type" in element){
+        if (element.test_type !== undefined){
           item.contextValue = `test_${element.test_type}`;
         }
       }

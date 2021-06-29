@@ -29,6 +29,7 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
 	readonly onDidChangeTreeData: vscode.Event<Dependency | undefined | void> = this._onDidChangeTreeData.event;
 	private hdl_tree : any[];
 	private toplevel_path : string = '';
+	private entity_toplevel: string = '';
 
 	constructor() {
 		let hdl_tree = {
@@ -44,6 +45,17 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
 		}
 		this.toplevel_path = toplevel_path;
 		this.hdl_tree = hdl_tree.root;
+		//Search toplevel
+		let entity_toplevel = '';
+		for (let i = 0; i < this.hdl_tree.length; i++) {
+			const element = this.hdl_tree[i];
+			if (element.filename === toplevel_path){
+				entity_toplevel = element.entity;
+			}
+		}
+		let speciap_dep = {filename: entity_toplevel, dependencies: [toplevel_path], entity: entity_toplevel};
+		this.entity_toplevel = entity_toplevel;
+		this.hdl_tree.push(speciap_dep);
 		this._onDidChangeTreeData.fire();
 	}
 
@@ -59,7 +71,7 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
 		if (element) {
 			return Promise.resolve(this.get_deps(<string>element.filename));
 		} else {
-			return Promise.resolve(this.get_deps(this.toplevel_path));
+			return Promise.resolve(this.get_deps(this.entity_toplevel));
 		}
 	}
 
@@ -89,6 +101,8 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
 			}
 			return new Dependency(filename, entity_name, vscode.TreeItemCollapsibleState.Collapsed);
 		};
+
+		current_dep.dependencies = current_dep.dependencies.sort();
 
 		const deps = current_dep.dependencies
 			? Object.keys(current_dep.dependencies).map(dep => toDep(current_dep.dependencies[dep]))

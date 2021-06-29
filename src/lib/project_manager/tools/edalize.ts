@@ -118,9 +118,20 @@ export class Edalize extends tool_base.Tool_base{
         let option_vaue = edam_normalized.tool_options[tool][option];
         edam_normalized.tool_options[tool][option] = this.normalize_option(tool,option, option_vaue);
       }
-      return edam_normalized;
-    } 
+    }
+    let clean_files : any[]= [];
+    let sources = edam_normalized.files;
+    for (let i = 0; i < sources.length; i++) {
+      const element = sources[i];
+      if (element.name !== ""){
+        clean_files.push(element);
+      }
+    }
+    edam_normalized.files = clean_files;
+    return edam_normalized;
   }
+
+
 
   check_gui_support(simulator_name, gui){
     if (gui === false){
@@ -183,13 +194,14 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   get_simulator_config(simulator_name, edam){
-    let installation_path = edam.tool_options[simulator_name].installation_path;
     let cmd = '';
-    if (installation_path !== ''){
-      if (simulator_name === 'modelsim'){
-        cmd = `${this.exp} MODEL_TECH=${installation_path} ${this.more}`;
-      }
-    }
+    // let installation_path = edam.tool_options[simulator_name].installation_path;
+    // let cmd = '';
+    // if (installation_path !== ''){
+    //   if (simulator_name === 'modelsim'){
+    //     cmd = `${this.exp} MODEL_TECH=${installation_path} ${this.more}`;
+    //   }
+    // }
     return cmd;
   }
 
