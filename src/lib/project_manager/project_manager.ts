@@ -336,6 +336,9 @@ export class Project_manager {
     try{
       let prj = this.edam_project_manager.get_project(selected_project);
       let toplevel_path = prj.toplevel_path;
+      if (toplevel_path === undefined){
+        return '';
+      }
       let toplevel = await utils.get_toplevel_from_path(toplevel_path);
       return toplevel;
     }
@@ -499,16 +502,16 @@ export class Project_manager {
     this.save_project();
   }
 
-  set_top(item) {
+  async set_top(item) {
     let project_name = item.project_name;
     let library_name = item.library_name;
     let path = item.path;
-    this.set_top_from_name(project_name, library_name, path);
+    await this.set_top_from_name(project_name, library_name, path);
   }
 
-  set_top_from_name(project_name, library_name, path) {
-    this.edam_project_manager.set_top(project_name, library_name, path);
-    this.tree.select_top(project_name, library_name, path);
+  async set_top_from_name(project_name, library_name, path) {
+    await this.edam_project_manager.set_top(project_name, library_name, path);
+    // this.tree.select_top(project_name, library_name, path);
     this.save_project();
     this.update_tree();
   }

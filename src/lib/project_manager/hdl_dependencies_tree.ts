@@ -40,7 +40,7 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
 	}
 
 	set_hdl_tree(hdl_tree, toplevel_path){
-		if (hdl_tree === undefined || hdl_tree.root === undefined){
+		if (hdl_tree === undefined || hdl_tree.root === undefined || toplevel_path === undefined){
 			return;
 		}
 		this.toplevel_path = toplevel_path;

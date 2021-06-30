@@ -75,11 +75,11 @@ export class Edam_project_manager {
     }
   }
 
-  set_top(project_name, library, path) {
+  async set_top(project_name, library, path) {
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].name === project_name) {
         const prj = this.projects[i];
-        prj.set_top(path, library);
+        await prj.set_top(path, library);
         break;
       }
     }
@@ -106,6 +106,12 @@ export class Edam_project_manager {
       if (relative_path !== ''){
         let full_path = relative_path + path_lib.sep + filename;
         absolute_path = resolve(full_path);
+      }
+      if (file.logical_name === undefined){
+        file.logical_name = '';
+      }
+      if (file.include_path === undefined){
+        file.include_path = false;
       }
       this.add_file(project_name, absolute_path, file.is_include_file, file.include_path, file.logical_name);
       this.set_top(project_name, file.logical_name, file.name);

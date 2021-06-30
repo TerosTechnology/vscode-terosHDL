@@ -61,33 +61,22 @@ export function show_message(msg:string, info_web='') {
     vscode.window.showInformationMessage(msg);
 }
 
-export function get_file_lang(filepath : string){
-    let vhdl_extensions = ['.vhd', '.vho', '.vhdl', '.vhd'];
-    let verilog_extensions = ['.v', '.vh', '.vl', '.sv', '.svh'];
-    let extension = path_lib.extname(filepath).toLowerCase();
-    let lang = 'vhdl';
-    if (vhdl_extensions.includes(extension) === true){
-      lang = 'vhdl';
+export function get_file_lang(filepath : string | undefined){
+    if (filepath === undefined){
+        return '';
     }
-    else if(verilog_extensions.includes(extension) === true){
-      lang = 'verilog';
-    }
-    else{
-        lang = 'none';
-    }
+    const jsteros = require('jsteros');
+    const utils = jsteros.Utils;
+    let lang = utils.get_file_lang(filepath);
     return lang;
 }
 
-export async function get_toplevel_from_path(filepath : string){
-    const jsteros = require('jsteros');
-    let lang = get_file_lang(filepath);
-    let parser_factory = new jsteros.Parser.ParserFactory();
-    let parser = await parser_factory.getParser(lang);
-
-    let code = fs.readFileSync(filepath, "utf8");
-    let entity_name = await parser.get_only_entity_name(code);
-    if (entity_name === undefined){
-      return '';
+export async function get_toplevel_from_path(filepath : string| undefined){
+    if (filepath === undefined){
+        return '';
     }
-    return entity_name;
+    const jsteros = require('jsteros');
+    const utils = jsteros.Utils;
+    let toplevel = await utils.get_toplevel_from_path(filepath);
+    return toplevel;
 }

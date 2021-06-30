@@ -131,8 +131,6 @@ export class Edalize extends tool_base.Tool_base{
     return edam_normalized;
   }
 
-
-
   check_gui_support(simulator_name, gui){
     if (gui === false){
       return false;
