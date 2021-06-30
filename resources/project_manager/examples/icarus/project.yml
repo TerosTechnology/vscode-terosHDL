@@ -1,4 +1,4 @@
-toplevel: ""
+toplevel: "blinky_tb"
 name: project_icarus
 files: 
   - name: "vlog_tb_utils.v"

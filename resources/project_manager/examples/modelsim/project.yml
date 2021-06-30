@@ -1,4 +1,4 @@
-toplevel: ""
+toplevel: "half_adder_lookup_tb"
 name: project_modelsim
 files: 
   - name: "half_adder_tb.vhd"

@@ -249,7 +249,7 @@ export class Project_manager {
       this.edam_project_manager.selected_project = selected_project;
     }
     let current_projects = this.config_file.projects;
-    this.edam_project_manager.create_projects_from_edam(current_projects);
+    await this.edam_project_manager.create_projects_from_edam(current_projects);
     await this.update_tree();
     this.refresh_lint();
   }
@@ -1010,14 +1010,17 @@ export class Project_manager {
                 const jsteros = require('jsteros');
                 prj_json = jsteros.Edam.yml_edam_str_to_json_edam(rawdata);
               }
-              this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(value[i].fsPath));
-              if (this.edam_project_manager.get_number_of_projects() === 1) {
-                let prj_name = this.edam_project_manager.projects[0].name;
-                this.select_project_from_name(prj_name);
-              }
+              let element = this;
+              this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(value[i].fsPath)).then(function(value){
+                if (element.edam_project_manager.get_number_of_projects() === 1) {
+                  let prj_name = element.edam_project_manager.projects[0].name;
+                  element.select_project_from_name(prj_name);
+                }
+                element.update_tree();
+                element.refresh_lint();
+              });
             }
           }
-          this.update_tree();
         });
     }
     else if (picker_value === project_add_types[2]) {
@@ -1038,15 +1041,19 @@ export class Project_manager {
             const jsteros = require('jsteros');
             prj_json = jsteros.Edam.yml_edam_str_to_json_edam(rawdata);
           }
-          this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(project_path));
-          if (this.edam_project_manager.get_number_of_projects() === 1) {
-            let prj_name = this.edam_project_manager.projects[0].name;
-            this.select_project_from_name(prj_name);
-          }
+          let element = this;
+          this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(project_path)).then(function(value){
+            if (element.edam_project_manager.get_number_of_projects() === 1) {
+              let prj_name = element.edam_project_manager.projects[0].name;
+              element.select_project_from_name(prj_name);
+            }
+            element.update_tree();
+            element.refresh_lint();
+            let msg = `Make sure you have selected ${picker_value} in the project manager configuration.`;
+            utils.show_message(msg, 'project_manager');
+          });
         }
-        this.update_tree();
     }
-    this.refresh_lint();
   }
 }
 

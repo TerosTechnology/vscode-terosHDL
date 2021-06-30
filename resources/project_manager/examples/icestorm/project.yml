@@ -1,4 +1,4 @@
-toplevel: ""
+toplevel: "blinky"
 name: project_icestorm
 files: 
   - name: "pinout.pcf"

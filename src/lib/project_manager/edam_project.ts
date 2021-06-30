@@ -68,27 +68,42 @@ export class Edam_project_manager {
     }
   }
 
-  create_projects_from_edam(projects) {
+  async create_projects_from_edam(projects) {
     for (let i = 0; i < projects.length; i++) {
       const prj = projects[i];
-      this.create_project_from_edam(prj);
+     await this.create_project_from_edam(prj);
     }
   }
 
-  async set_top(project_name, library, path) {
+  async set_top(project_name, library, toplevel_path, toplevel) {
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].name === project_name) {
         const prj = this.projects[i];
-        await prj.set_top(path, library);
+        if (toplevel_path !== '' && toplevel_path !== undefined){
+          await prj.set_top(toplevel_path, library);
+        }
+        else{
+          await prj.set_top_from_toplevel(toplevel, library);
+        }
         break;
       }
     }
   }
 
-  create_project_from_edam(edam, relative_path = '') {
+  async create_project_from_edam(edam, relative_path = '') {
     let project_name = edam.name;
     let toplevel_library = edam.toplevel_library;
     let toplevel_path = edam.toplevel_path;
+    let toplevel = edam.toplevel;
+    if (toplevel_path === undefined){
+      toplevel_path = '';
+    }
+    if (toplevel_library === undefined){
+      toplevel_library = '';
+    }
+    if (toplevel === undefined){
+      toplevel = '';
+    }
 
     if (this.check_if_project_exists(project_name) === true) {
       return `The project with name [${project_name}] already exists in the workspace.`;
@@ -114,12 +129,10 @@ export class Edam_project_manager {
         file.include_path = false;
       }
       this.add_file(project_name, absolute_path, file.is_include_file, file.include_path, file.logical_name);
-      this.set_top(project_name, file.logical_name, file.name);
+      // this.set_top(project_name, file.logical_name, file.name);
     }
 
-    if ((toplevel_path !== '' && toplevel_path !== undefined) || (toplevel_library !== '' && toplevel_library !== undefined)) {
-      this.set_top(project_name, toplevel_library, toplevel_path);
-    }
+    await this.set_top(project_name, toplevel_library, toplevel_path, toplevel);
 
     return 0;
   }
