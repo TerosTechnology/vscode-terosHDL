@@ -6,8 +6,8 @@ files:
     is_include_file: false
     include_path: ""
     logical_name: ""
-  - name: "blinky.xdc"
-    file_type: XDC
+  - name: "blinky_c.xdc"
+    file_type: xdc
     is_include_file: false
     include_path: ""
     logical_name: ""
