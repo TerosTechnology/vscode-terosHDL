@@ -55,11 +55,12 @@ export class Project_manager {
   private init: boolean = false;
   private treeview;
   private init_test_list: boolean = false;
-  private  dependencies_viewer_manager: Dependencies_viewer.default;
+  private  dependencies_viewer_manager: Dependencies_viewer.default | undefined;
   private hdl_dependencies_provider : Hdl_dependencies_tree;
+  private context;
 
   constructor(context: vscode.ExtensionContext) {
-    this.dependencies_viewer_manager = new Dependencies_viewer.default(context);
+    this.context = context;
 
     this.vunit = new Vunit.Vunit(context);
     this.cocotb = new Cocotb.Cocotb(context);
@@ -120,6 +121,10 @@ export class Project_manager {
     let prj = this.edam_project_manager.get_project(selected_project);
     let config = this.config_view.get_config_documentation();
 
+    if (this.dependencies_viewer_manager === undefined){
+      this.dependencies_viewer_manager = new Dependencies_viewer.default(this.context);
+    }
+
     this.dependencies_viewer_manager.open_viewer(prj, config);
   }
 
@@ -132,7 +137,9 @@ export class Project_manager {
     }
     let prj = this.edam_project_manager.get_project(selected_project);
     let config = this.config_view.get_config_documentation();
-    this.dependencies_viewer_manager.update_viewer(prj, config);
+    if (this.dependencies_viewer_manager !== undefined){
+      this.dependencies_viewer_manager.update_viewer(prj, config, false);
+    }
   }
 
   async refresh_lint() {
@@ -147,30 +154,27 @@ export class Project_manager {
   async save_toml() {
     let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
     let libraries = this.get_active_project_libraries();
-    let absolute_path_init = this.get_active_project_absolute_path();
-    if (absolute_path_init === '/' || absolute_path_init === '\\'){
-      absolute_path_init = '';
-    }
-    absolute_path_init = '';
     let toml = "[libraries]\n\n";
-    for (let i = 0; i < libraries.length; i++) {
-      const library = libraries[i];
-      let files_in_library = "";
-      for (let j = 0; j < library.files.length; j++) {
-        const file_in_library = library.files[j];
-        const path = require("path");
-        let filename = path.basename(file_in_library);
-        const jsteros = require('jsteros');
-        let lang = jsteros.Utils.get_lang_from_path(filename);
-        if (lang === 'vhdl'){
-          files_in_library += `  '${absolute_path_init}${file_in_library}',\n`;
+    if (libraries !== undefined){
+      for (let i = 0; i < libraries.length; i++) {
+        const library = libraries[i];
+        let files_in_library = "";
+        for (let j = 0; j < library.files.length; j++) {
+          const file_in_library = library.files[j];
+          const path = require("path");
+          let filename = path.basename(file_in_library);
+          const jsteros = require('jsteros');
+          let lang = jsteros.Utils.get_lang_from_path(filename);
+          if (lang === 'vhdl'){
+            files_in_library += `  '${file_in_library}',\n`;
+          }
         }
+        let lib_name = library.name;
+        if (lib_name === "") {
+          lib_name = "none";
+        }
+        toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
       }
-      let lib_name = library.name;
-      if (lib_name === "") {
-        lib_name = "none";
-      }
-      toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
     }
     fs.writeFileSync(file_path, toml);
   }
@@ -245,7 +249,7 @@ export class Project_manager {
       this.edam_project_manager.selected_project = selected_project;
     }
     let current_projects = this.config_file.projects;
-    this.edam_project_manager.create_projects_from_edam(current_projects);
+    await this.edam_project_manager.create_projects_from_edam(current_projects);
     await this.update_tree();
     this.refresh_lint();
   }
@@ -332,6 +336,9 @@ export class Project_manager {
     try{
       let prj = this.edam_project_manager.get_project(selected_project);
       let toplevel_path = prj.toplevel_path;
+      if (toplevel_path === undefined){
+        return '';
+      }
       let toplevel = await utils.get_toplevel_from_path(toplevel_path);
       return toplevel;
     }
@@ -495,16 +502,16 @@ export class Project_manager {
     this.save_project();
   }
 
-  set_top(item) {
+  async set_top(item) {
     let project_name = item.project_name;
     let library_name = item.library_name;
     let path = item.path;
-    this.set_top_from_name(project_name, library_name, path);
+    await this.set_top_from_name(project_name, library_name, path);
   }
 
-  set_top_from_name(project_name, library_name, path) {
-    this.edam_project_manager.set_top(project_name, library_name, path);
-    this.tree.select_top(project_name, library_name, path);
+  async set_top_from_name(project_name, library_name, path) {
+    await this.edam_project_manager.set_top(project_name, library_name, path);
+    // this.tree.select_top(project_name, library_name, path);
     this.save_project();
     this.update_tree();
   }
@@ -672,12 +679,12 @@ export class Project_manager {
     let project_name = item.project_name;
     this.select_project_from_name(project_name);
     this.refresh_lint();
+    this.update_tree();
   }
 
   async select_project_from_name(project_name) {
     this.config_file.set_selected_project(project_name);
     this.edam_project_manager.select_project(project_name);
-    this.update_tree();
     this.tree.select_project(project_name);
   }
 
@@ -958,7 +965,7 @@ export class Project_manager {
   load_project_from_edam() {}
 
   async add_project() {
-    const project_add_types = ["Empty project", "Load project (EDAM format is supported)"];
+    const project_add_types = ["Empty project", "Load project (EDAM format is supported)", "Load an example project"];
 
     let picker_value = await vscode.window.showQuickPick(project_add_types, {
       placeHolder: "Add/load a project.",
@@ -981,11 +988,10 @@ export class Project_manager {
               this.select_project_from_name(value);
             }
             this.update_tree();
-            this.refresh_tests();
-            this.refresh_lint();
           }
         });
-    } else if (picker_value === project_add_types[1]) {
+    } 
+    else if (picker_value === project_add_types[1]) {
       vscode.window
         .showOpenDialog({
           canSelectMany: true,
@@ -1004,18 +1010,50 @@ export class Project_manager {
                 const jsteros = require('jsteros');
                 prj_json = jsteros.Edam.yml_edam_str_to_json_edam(rawdata);
               }
-              this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(value[i].fsPath));
-              if (this.edam_project_manager.get_number_of_projects() === 1) {
-                let prj_name = this.edam_project_manager.projects[0].name;
-                this.select_project_from_name(prj_name);
-              }
+              let element = this;
+              this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(value[i].fsPath)).then(function(value){
+                if (element.edam_project_manager.get_number_of_projects() === 1) {
+                  let prj_name = element.edam_project_manager.projects[0].name;
+                  element.select_project_from_name(prj_name);
+                }
+                element.update_tree();
+                element.refresh_lint();
+              });
             }
           }
-          this.update_tree();
-          this.refresh_tests();
         });
     }
-    this.refresh_lint();
+    else if (picker_value === project_add_types[2]) {
+        const project_examples_types = ['Xsim', 'GHDL', 'Icarus', 'IceStorm', 'ModelSim', 'Quartus', 'Vivado', 'VUnit', 'cocotb', 'Yosys'];
+        let picker_value = await vscode.window.showQuickPick(project_examples_types, {
+          placeHolder: "Choose a example projectt.",
+        });
+        if (picker_value !== undefined) {
+          let project_path = path.join(__filename, "..", "..", "..", "..", "resources", "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
+
+          let rawdata = fs.readFileSync(project_path, 'utf8');
+          let prj_json = {};
+          let extension = path_lib.extname(project_path).toLowerCase();
+          if (extension === '.json'){
+            prj_json = JSON.parse(rawdata);
+          }
+          else{
+            const jsteros = require('jsteros');
+            prj_json = jsteros.Edam.yml_edam_str_to_json_edam(rawdata);
+          }
+          let element = this;
+          this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(project_path)).then(function(value){
+            if (element.edam_project_manager.get_number_of_projects() === 1) {
+              let prj_name = element.edam_project_manager.projects[0].name;
+              element.select_project_from_name(prj_name);
+            }
+            element.update_tree();
+            element.refresh_lint();
+            let msg = `Make sure you have selected ${picker_value} in the project manager configuration.`;
+            utils.show_message(msg, 'project_manager');
+          });
+        }
+    }
   }
 }
 
@@ -1101,11 +1139,12 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
     let test_list_items: Tree_types.Test_item[] = [];
     for (let i = 0; i < test_list.length; i++) {
       const element = test_list[i];
+      if (element.name === undefined){
+        return test_list_items;
+      }
       let item = new Tree_types.Test_item(element.name, element.location);
-      if ("test_type" in element)
-      {
-        if (element.test_type !== undefined )
-        {
+      if ("test_type" in element){
+        if (element.test_type !== undefined){
           item.contextValue = `test_${element.test_type}`;
         }
       }

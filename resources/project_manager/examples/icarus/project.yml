@@ -1,0 +1,17 @@
+toplevel: "blinky_tb"
+name: project_icarus
+files: 
+  - name: "vlog_tb_utils.v"
+    file_type: "verilogSource-2005"
+    is_include_file: false
+  - name: "blinky_tb.v"
+    file_type: "verilogSource-2005"
+    is_include_file: false
+  - name: "blinky.v"
+    file_type: "verilogSource-2005"
+    is_include_file: false
+tool_options: 
+  icarus: 
+    installation_path: ""
+    iverilog_options: ""
+    timescale: ""

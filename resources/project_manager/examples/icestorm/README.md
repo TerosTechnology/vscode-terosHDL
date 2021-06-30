@@ -1,0 +1,1 @@
+ice40-hx1k_icestick

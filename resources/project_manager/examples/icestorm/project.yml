@@ -1,0 +1,16 @@
+toplevel: "blinky"
+name: project_icestorm
+files: 
+  - name: "pinout.pcf"
+    file_type: PCF
+    is_include_file: false
+  - name: "blinky.v"
+    file_type: "verilogSource-2005"
+    is_include_file: false
+tool_options: 
+  icestorm: 
+    installation_path: ""
+    arachne_pnr_options: ""
+    nextpnr_options: ""
+    pnr: arachne
+    yosys_synth_options: ""

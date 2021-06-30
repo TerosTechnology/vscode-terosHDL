@@ -3,6 +3,7 @@ import shutil
 import edalize
 import json
 import sys
+from distutils.spawn import find_executable
 from os.path import expanduser
 
 home_dir = expanduser("~")
@@ -17,7 +18,12 @@ if (os.path.isdir(work_root) == True):
 edam_file = sys.argv[1]
 simulator = sys.argv[2]
 
-# Opening JSON file
+if (simulator == 'modelsim'):
+    vsim_path = find_executable("vsim")
+    vsim_dir = os.path.dirname(vsim_path)
+    os.environ["MODEL_TECH"] = vsim_dir
+
+    # Opening JSON file
 f = open(edam_file,)
 
 # returns JSON object as
