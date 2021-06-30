@@ -6,7 +6,7 @@ files:
     is_include_file: false
     include_path: ""
     logical_name: ""
-  - name: "\x20blinky.xdc"
+  - name: "blinky.xdc"
     file_type: XDC
     is_include_file: false
     include_path: ""
