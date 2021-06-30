@@ -962,7 +962,7 @@ export class Project_manager {
   load_project_from_edam() {}
 
   async add_project() {
-    const project_add_types = ["Empty project", "Load project (EDAM format is supported)"];
+    const project_add_types = ["Empty project", "Load project (EDAM format is supported)", "Load an example project"];
 
     let picker_value = await vscode.window.showQuickPick(project_add_types, {
       placeHolder: "Add/load a project.",
@@ -987,7 +987,8 @@ export class Project_manager {
             this.update_tree();
           }
         });
-    } else if (picker_value === project_add_types[1]) {
+    } 
+    else if (picker_value === project_add_types[1]) {
       vscode.window
         .showOpenDialog({
           canSelectMany: true,
@@ -1015,6 +1016,32 @@ export class Project_manager {
           }
           this.update_tree();
         });
+    }
+    else if (picker_value === project_add_types[2]) {
+        const project_examples_types = ['Xsim', 'GHDL', 'Icarus', 'IceStorm', 'ModelSim', 'Quartus', 'Vivado', 'VUnit', 'cocotb', 'Yosys'];
+        let picker_value = await vscode.window.showQuickPick(project_examples_types, {
+          placeHolder: "Choose a example projectt.",
+        });
+        if (picker_value !== undefined) {
+          let project_path = path.join(__filename, "..", "..", "..", "..", "resources", "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
+
+          let rawdata = fs.readFileSync(project_path, 'utf8');
+          let prj_json = {};
+          let extension = path_lib.extname(project_path).toLowerCase();
+          if (extension === '.json'){
+            prj_json = JSON.parse(rawdata);
+          }
+          else{
+            const jsteros = require('jsteros');
+            prj_json = jsteros.Edam.yml_edam_str_to_json_edam(rawdata);
+          }
+          this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(project_path));
+          if (this.edam_project_manager.get_number_of_projects() === 1) {
+            let prj_name = this.edam_project_manager.projects[0].name;
+            this.select_project_from_name(prj_name);
+          }
+        }
+        this.update_tree();
     }
     this.refresh_lint();
   }
