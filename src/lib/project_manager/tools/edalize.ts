@@ -79,16 +79,19 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   set_builds(simulator_name, project_name, top_level){
+    console.log(simulator_name);
+    let builds;
     switch (simulator_name) {
       case 'vivado':
-        this.vivado_builds( project_name, top_level);
+        builds = this.vivado_builds( project_name, top_level);
         break;
       case 'quartus':
-        this.quartus_builds( project_name, top_level);
+        builds = this.quartus_builds( project_name, top_level);
         break;
       default:
-        return [];
+        builds = [];
     }
+    return builds;
   }
   
   vivado_builds( project_name, top_level){
