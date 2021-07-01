@@ -83,8 +83,8 @@
                "quartus":{
                   "installation_path":"",
                   "board_device_index":"",
-                  "family":"",
-                  "device":"",
+                  "family":"Cyclone V",
+                  "device":"5CSXFC6D6F31C8ES",
                   "quartus_options":"",
                   "dse_options":""
                }

@@ -79,9 +79,19 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   set_builds(simulator_name, project_name, top_level){
-    if (simulator_name !== 'vivado'){
-      return [];
+    switch (simulator_name) {
+      case 'vivado':
+        this.vivado_builds( project_name, top_level);
+        break;
+      case 'quartus':
+        this.quartus_builds( project_name, top_level);
+        break;
+      default:
+        return [];
     }
+  }
+  
+  vivado_builds( project_name, top_level){
     const homedir = require('os').homedir();
     let runs_folder = `${project_name}.runs`;
     let synt_file = `${top_level}_utilization_synth.rpt`;
@@ -90,7 +100,7 @@ export class Edalize extends tool_base.Tool_base{
     let synt_path = path_lib.join(homedir, '.teroshdl', 'build', runs_folder, 'synth_1', synt_file);
     let imp_path = path_lib.join(homedir, '.teroshdl', 'build', runs_folder, 'impl_1', imp_file);
     let time_path = path_lib.join(homedir, '.teroshdl', 'build', runs_folder, 'impl_1', time_file);
-
+  
     let builds = [
       {
         name: 'Synthesis utilization design information',
@@ -107,7 +117,33 @@ export class Edalize extends tool_base.Tool_base{
     ];
     return builds;
   }
+
+  quartus_builds( project_name, top_level){
+    const homedir = require('os').homedir();
+    let synt_file = `${top_level}.map.summary`;
+    let imp_file = `${top_level}.fit.summary`;
+    let time_file = `${top_level}.sta.summary`;
+    let synt_path = path_lib.join(homedir, '.teroshdl', 'build', synt_file);
+    let imp_path = path_lib.join(homedir, '.teroshdl', 'build', imp_file);
+    let time_path = path_lib.join(homedir, '.teroshdl', 'build', time_file);
   
+    let builds = [
+      {
+        name: 'Synthesis design information',
+        location: synt_path
+      },
+      {
+        name: 'Place & route design information',
+        location: imp_path
+      },
+      {
+        name: 'Timming report',
+        location: time_path
+      }
+    ];
+    return builds;
+  }
+
   open_waveform_gtkwave(){
     let shell = require('shelljs');
     let command = `gtkwave ${this.complete_waveform_path}`;
