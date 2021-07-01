@@ -86,8 +86,10 @@ export class Edalize extends tool_base.Tool_base{
     let runs_folder = `${project_name}.runs`;
     let synt_file = `${top_level}_utilization_synth.rpt`;
     let imp_file = `${top_level}_utilization_placed.rpt`;
+    let time_file = `${top_level}_timing_summary_routed.rpt`;
     let synt_path = path_lib.join(homedir, '.teroshdl', 'build', runs_folder, 'synth_1', synt_file);
     let imp_path = path_lib.join(homedir, '.teroshdl', 'build', runs_folder, 'impl_1', imp_file);
+    let time_path = path_lib.join(homedir, '.teroshdl', 'build', runs_folder, 'impl_1', time_file);
 
     let builds = [
       {
@@ -97,6 +99,10 @@ export class Edalize extends tool_base.Tool_base{
       {
         name: 'Implementation utilization design information',
         location: imp_path
+      },
+      {
+        name: 'Timming report',
+        location: time_path
       }
     ];
     return builds;
