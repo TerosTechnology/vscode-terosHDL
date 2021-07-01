@@ -122,9 +122,9 @@ export class Edalize extends tool_base.Tool_base{
 
   quartus_builds( project_name, top_level){
     const homedir = require('os').homedir();
-    let synt_file = `${top_level}.map.summary`;
-    let imp_file = `${top_level}.fit.summary`;
-    let time_file = `${top_level}.sta.summary`;
+    let synt_file = `${project_name}.map.summary`;
+    let imp_file = `${project_name}.fit.summary`;
+    let time_file = `${project_name}.sta.summary`;
     let synt_path = path_lib.join(homedir, '.teroshdl', 'build', synt_file);
     let imp_path = path_lib.join(homedir, '.teroshdl', 'build', imp_file);
     let time_path = path_lib.join(homedir, '.teroshdl', 'build', time_file);
