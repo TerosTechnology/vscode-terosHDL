@@ -79,7 +79,6 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   set_builds(simulator_name, project_name, top_level){
-    console.log(simulator_name);
     let builds;
     switch (simulator_name) {
       case 'vivado':
