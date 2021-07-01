@@ -1,5 +1,5 @@
 toplevel: blinky
-name: quartus_blinky
+name: project_quartus
 files: 
   - name: "pinmap.tcl"
     file_type: tclSource
