@@ -806,8 +806,8 @@ export class Project_manager {
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
 
-    config.vhdl_symbol = comment_symbol_vhdl;
-    config.verilog_symbol = comment_symbol_verilog;
+    config.symbol_vhdl = comment_symbol_vhdl;
+    config.symbol_verilog = comment_symbol_verilog;
 
 
     if (type === "markdown") {
