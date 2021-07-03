@@ -153,16 +153,7 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   normalize_edam(edam){
-    const non_normalized_options = ['installation_path', 'waveform', 'timescale', 'part'];
     let edam_normalized = JSON.parse(JSON.stringify(edam));
-    let config_tool = edam_normalized.tool_options;
-    for (let tool in config_tool) {
-      let pp = config_tool[tool];
-      for (let option in pp) {
-        let option_vaue = edam_normalized.tool_options[tool][option];
-        edam_normalized.tool_options[tool][option] = this.normalize_option(tool,option, option_vaue);
-      }
-    }
     let clean_files : any[]= [];
     let sources = edam_normalized.files;
     for (let i = 0; i < sources.length; i++) {
@@ -186,33 +177,6 @@ export class Edalize extends tool_base.Tool_base{
       check = false;
     }
     return check;
-  }
-
-  normalize_option(tool, option, value){
-    const norm_options = {
-      ghdl : ['analyze_options', 'run_options'],
-      icarus : ['iverilog_options'],
-      icestorm : ['arachne_pnr_options', 'nextpnr_options', 'yosys_synth_options'],
-      ise : [],
-      isim : ['fuse_options', 'isim_options'],
-      modelsim : ['vlog_options', 'vsim_options'],
-      quartus : ['board_device_index', 'quartus_options', 'dse_options'],
-      rivierapro : ['vlog_options', 'vsim_options'],
-      spyglass : ['goals', 'rule_parameters', 'spyglass_parameters'],
-      trellis : ['nextpnr_options', 'yosys_synth_options'],
-      vcs : ['vcs_options', 'run_options'],
-      verilator : ['libs', 'verilator_options'],
-      vivado : [],
-      vunit : ['vunit_options', 'add_libraries'],
-      xcelium : ['xmvlog_options', 'xmvhdl_options', 'xmsim_options', 'xrun_options'],
-      xsim : ['xelab_options', 'xsim_options']
-    };
-
-    let options_value = value;
-    if (norm_options[tool].includes(option)){
-      options_value = value.split(',');
-    }
-    return options_value;
   }
 
   get_simulator_from_edam(edam){

@@ -85,6 +85,7 @@ def generate_html_tab(tab, tab_name, doc):
     html = f"<div id='{tab_name}' class='tabcontent'>\n"
     html += f"  <h3>{tab_title}</h3>\n"
     html += f"  <p><i>{tab_description}</i></p>\n"
+    html += '  <hr></hr>'
 
     for option_name in tab:
         if (option_name != 'title' and option_name != 'description' and option_name != 'type'):
@@ -180,7 +181,7 @@ def generate_get_config(doc):
                 option_type = option['type']
                 if (option_type == 'checkbox'):
                     html += f"""        '{option_name}': document.getElementById("{id_name}").checked,\n"""
-                elif (option_type != 'input_comma'):
+                elif (option_type == 'input_comma'):
                     html += f"""        '{option_name}': document.getElementById("{id_name}").value.split(','),\n"""
                 else:
                     html += f"""        '{option_name}': document.getElementById("{id_name}").value,\n"""
@@ -304,6 +305,7 @@ def main():
 </head>
 <body>
 <article class="markdown-body">
+<br>
 <h2>\nTerosHDL configuration</h2>
     """
 
@@ -321,12 +323,6 @@ def main():
 
     with open('config.html', 'w') as f:
         f.write(html)
-
-    print('end')
-
-    # for tabname in doc:
-    #     tab = doc[tabname]
-    #     generate_html_tab(tab)
 
 
 if __name__ == "__main__":

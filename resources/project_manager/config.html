@@ -10,25 +10,11 @@ body {
 /* Style the tab */
 .tab {
     float: left;
-    border: 1px solid #ccc;
+    border: 3px solid #ccc;
     background-color: #f1f1f1;
     width: 30%;
-    height: 100%;
-  }
-
-  /* Style the buttons inside the tab */
-  .tab button {
-    display: block;
-    background-color: inherit;
-    color: black;
-    padding: 22px 16px;
-    width: 100%;
-    border: none;
-    outline: none;
-    text-align: left;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 17px;
+    height: 500px;
+    overflow-y: scroll;
   }
 
   /* Change background color of buttons on hover */
@@ -45,10 +31,13 @@ body {
   .tabcontent {
     float: left;
     padding: 0px 12px;
-    border: 1px solid #ccc;
+    border: 3px solid #ccc;
     width: 70%;
     border-left: none;
     height: 100%;
+    border-left: 20px;
+    overflow-y: scroll;
+    height: 500px;
   }
 
   /* Style the buttons inside the tab */
@@ -77,6 +66,7 @@ body {
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
+    float: right;
   }
 
   #button_cancel {
@@ -91,6 +81,7 @@ body {
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
+    float: right;
   }
 
 
@@ -1104,6 +1095,7 @@ body {
 </head>
 <body>
 <article class="markdown-body">
+<br>
 <h2>
 TerosHDL configuration</h2>
     <div class="tab">
@@ -1141,7 +1133,7 @@ TerosHDL configuration</h2>
 <div id='general' class='tabcontent'>
   <h3>General</h3>
   <p><i></i></p>
-  <label>Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. Install pyteroshdl. E.g: pip install pyteroshdl</label>
+  <hr></hr>  <label>Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. Install pyteroshdl. E.g: pip install pyteroshdl</label>
   <input type='input' id='general_pypath' class='radio-button'>
   <br><br>
   <label>Select a tool, framework, linter...</label>
@@ -1179,7 +1171,7 @@ TerosHDL configuration</h2>
 <div id='documentation' class='tabcontent'>
   <h3>Documentation settings</h3>
   <p><i></i></p>
-  <label>Include dependency graph:</label>
+  <hr></hr>  <label>Include dependency graph:</label>
   <input class='radio-button' id='documentation_dependency_graph' type='checkbox'>
   <br><br>
   <label>HTML documentation self contained:</label>
@@ -1217,7 +1209,7 @@ TerosHDL configuration</h2>
 <div id='linter' class='tabcontent'>
   <h3>Linters settings</h3>
   <p><i></i></p>
-  <label>VHDL linter:</label>
+  <hr></hr>  <label>VHDL linter:</label>
   <br>
   <select name='select' id='linter_linter_vhdl'>
     <option value='ghdl'>GHDL</option>
@@ -1238,7 +1230,7 @@ TerosHDL configuration</h2>
 <div id='ascentlint' class='tabcontent'>
   <h3>Ascentlint</h3>
   <p><i>Ascent Lint performs static source code analysis on HDL code and checks for common coding errors or coding style violations.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='ascentlint_installation_path' class='radio-button'>
   <br><br>
   <label>Additional run options for ascentlint.</label>
@@ -1249,7 +1241,7 @@ TerosHDL configuration</h2>
 <div id='diamond' class='tabcontent'>
   <h3>Diamond</h3>
   <p><i>Backend for Lattice Diamond.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='diamond_installation_path' class='radio-button'>
   <br><br>
   <label>FPGA part number (e.g. LFE5U-45F-6BG381C).</label>
@@ -1260,7 +1252,7 @@ TerosHDL configuration</h2>
 <div id='ghdl' class='tabcontent'>
   <h3>GHDL</h3>
   <p><i>GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='ghdl_installation_path' class='radio-button'>
   <br><br>
   <label>Waveform output format:</label>
@@ -1281,7 +1273,7 @@ TerosHDL configuration</h2>
 <div id='icarus' class='tabcontent'>
   <h3>Icarus</h3>
   <p><i>Icarus Verilog is a Verilog simulation and synthesis tool. It operates as a compiler, compiling source code written in Verilog (IEEE-1364) into some target format.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='icarus_installation_path' class='radio-button'>
   <br><br>
   <label>Default timescale.</label>
@@ -1295,7 +1287,7 @@ TerosHDL configuration</h2>
 <div id='icestorm' class='tabcontent'>
   <h3>Icestorm</h3>
   <p><i>Open source toolchain for Lattice iCE40 FPGAs. Uses yosys for synthesis and arachne-pnr or nextpnr for Place & Route.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='icestorm_installation_path' class='radio-button'>
   <br><br>
   <label>Select P&R tool. Valid values are arachne and next. Default is arachne.</label>
@@ -1342,7 +1334,7 @@ TerosHDL configuration</h2>
 <div id='Ise' class='tabcontent'>
   <h3>ISE</h3>
   <p><i>Xilinx ISE Design Suite.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='Ise_installation_path' class='radio-button'>
   <br><br>
   <label>FPGA family (e.g. spartan6).</label>
@@ -1362,7 +1354,7 @@ TerosHDL configuration</h2>
 <div id='isim' class='tabcontent'>
   <h3>Isim</h3>
   <p><i>Xilinx ISim simulator from ISE design suite.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='isim_installation_path' class='radio-button'>
   <br><br>
   <label>Additional options for compilation with FUSE.</label>
@@ -1376,7 +1368,7 @@ TerosHDL configuration</h2>
 <div id='modelsim' class='tabcontent'>
   <h3>ModelSim</h3>
   <p><i>ModelSim simulator from Mentor Graphics.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='modelsim_installation_path' class='radio-button'>
   <br><br>
   <label>Additional options for compilation with vcom.</label>
@@ -1393,7 +1385,7 @@ TerosHDL configuration</h2>
 <div id='morty' class='tabcontent'>
   <h3>Morty</h3>
   <p><i>Run the (System-) Verilog pickle tool called morty.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='morty_installation_path' class='radio-button'>
   <br><br>
   <label>Run-time options passed to morty..</label>
@@ -1404,7 +1396,7 @@ TerosHDL configuration</h2>
 <div id='quartus' class='tabcontent'>
   <h3>Quartus</h3>
   <p><i>The Quartus backend supports Intel Quartus Std and Pro editions to build systems and program the FPGA.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='quartus_installation_path' class='radio-button'>
   <br><br>
   <label>FPGA family (e.g. Cyclone V).</label>
@@ -1438,7 +1430,7 @@ TerosHDL configuration</h2>
 <div id='radiant' class='tabcontent'>
   <h3>Radiant</h3>
   <p><i>Backend for Lattice Radiant.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='radiant_installation_path' class='radio-button'>
   <br><br>
   <label>FPGA part number (e.g. LIFCL-40-9BG400C).</label>
@@ -1449,7 +1441,7 @@ TerosHDL configuration</h2>
 <div id='rivierapro' class='tabcontent'>
   <h3>Rivierapro</h3>
   <p><i>Riviera Pro simulator from Aldec.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='rivierapro_installation_path' class='radio-button'>
   <br><br>
   <label>Common or separate compilation, sep - for separate compilation, common - for common compilation.</label>
@@ -1466,7 +1458,7 @@ TerosHDL configuration</h2>
 <div id='spyglass' class='tabcontent'>
   <h3>Spyglass</h3>
   <p><i>Synopsys (formerly Atrenta) Spyglass Backend. Spyglass performs static source code analysis on HDL code and checks for common coding errors or coding style violations.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='spyglass_installation_path' class='radio-button'>
   <br><br>
   <label></label>
@@ -1486,7 +1478,7 @@ TerosHDL configuration</h2>
 <div id='symbiflow' class='tabcontent'>
   <h3>symbiflow</h3>
   <p><i>The Symbiflow backend executes Yosys sythesis tool and VPR place and route. It can target multiple different FPGA vendorss.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='symbiflow_installation_path' class='radio-button'>
   <br><br>
   <label>FPGA chip package (e.g. clg400-1).</label>
@@ -1515,7 +1507,7 @@ TerosHDL configuration</h2>
 <div id='symbiyosys' class='tabcontent'>
   <h3>Symbiyosys</h3>
   <p><i>SymbiYosys formal verification wrapper for Yosys.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='symbiyosys_installation_path' class='radio-button'>
   <br><br>
   <label>A list of the .sby file’s tasks to run. Passed on the sby command line..</label>
@@ -1526,7 +1518,7 @@ TerosHDL configuration</h2>
 <div id='trellis' class='tabcontent'>
   <h3>Trellis</h3>
   <p><i>Project Trellis enables a fully open-source flow for ECP5 FPGAs using Yosys for Verilog synthesis and nextpnr for place and route.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='trellis_installation_path' class='radio-button'>
   <br><br>
   <label>Target architecture.</label>
@@ -1565,7 +1557,7 @@ TerosHDL configuration</h2>
 <div id='vcs' class='tabcontent'>
   <h3>Vcs</h3>
   <p><i>Synopsys VCS Backend</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='vcs_installation_path' class='radio-button'>
   <br><br>
   <label></label>
@@ -1579,7 +1571,7 @@ TerosHDL configuration</h2>
 <div id='veribleformat' class='tabcontent'>
   <h3>Veribleformat</h3>
   <p><i>Verible format backend (verible-verilog-format).</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='veribleformat_installation_path' class='radio-button'>
   <br><br>
   <label>Extra command line arguments passed to the Verible tool</label>
@@ -1590,7 +1582,7 @@ TerosHDL configuration</h2>
 <div id='veriblelint' class='tabcontent'>
   <h3>Veriblelint</h3>
   <p><i>Verible lint backend (verible-verilog-lint).</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='veriblelint_installation_path' class='radio-button'>
   <br><br>
   <label>Ruleset.</label>
@@ -1612,7 +1604,7 @@ TerosHDL configuration</h2>
 <div id='verilator' class='tabcontent'>
   <h3>Verilator</h3>
   <p><i>Verible lint backend (verible-verilog-lint).</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='verilator_installation_path' class='radio-button'>
   <br><br>
   <label>Select compilation mode. Legal values are cc for C++ testbenches, sc for SystemC testbenches or lint-only to only perform linting on the Verilog code.</label>
@@ -1643,7 +1635,7 @@ TerosHDL configuration</h2>
 <div id='vivado' class='tabcontent'>
   <h3>Vivado</h3>
   <p><i>The Vivado backend executes Xilinx Vivado to build systems and program the FPGA.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='vivado_installation_path' class='radio-button'>
   <br><br>
   <label>Path to vivado settings (e.g. /opt/Xilinx/Vivado/2017.2/settings64.sh).</label>
@@ -1673,7 +1665,7 @@ TerosHDL configuration</h2>
 <div id='vunit' class='tabcontent'>
   <h3>Vunit</h3>
   <p><i>VUnit testing framework.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='vunit_installation_path' class='radio-button'>
   <br><br>
   <label>VUnit simulator:</label>
@@ -1700,7 +1692,7 @@ TerosHDL configuration</h2>
 <div id='xcelium' class='tabcontent'>
   <h3>Xcelium</h3>
   <p><i>Xcelium simulator from Cadence Design Systems.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='xcelium_installation_path' class='radio-button'>
   <br><br>
   <label>Additional options for compilation with xmvhdl.</label>
@@ -1720,7 +1712,7 @@ TerosHDL configuration</h2>
 <div id='yosys' class='tabcontent'>
   <h3>Yosys</h3>
   <p><i>Open source synthesis tool targeting many different FPGAs.</i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='yosys_installation_path' class='radio-button'>
   <br><br>
   <label>Target architecture.</label>
@@ -1756,7 +1748,7 @@ TerosHDL configuration</h2>
 <div id='cocotb' class='tabcontent'>
   <h3>Cocotb</h3>
   <p><i></i></p>
-  <label>Installation path:</label>
+  <hr></hr>  <label>Installation path:</label>
   <input type='input' id='cocotb_installation_path' class='radio-button'>
   <br><br>
 </div>
@@ -1847,8 +1839,8 @@ TerosHDL configuration</h2>
   function get_general_options(){
     let options = {
       'general': {
-        'pypath': document.getElementById("general_pypath").value.split(','),
-        'select_tool': document.getElementById("general_select_tool").value.split(','),
+        'pypath': document.getElementById("general_pypath").value,
+        'select_tool': document.getElementById("general_select_tool").value,
       }
     };
     return options;
@@ -1859,9 +1851,9 @@ TerosHDL configuration</h2>
         'dependency_graph': document.getElementById("documentation_dependency_graph").checked,
         'self_contained': document.getElementById("documentation_self_contained").checked,
         'fsm': document.getElementById("documentation_fsm").checked,
-        'signals': document.getElementById("documentation_signals").value.split(','),
-        'include_constants': document.getElementById("documentation_include_constants").value.split(','),
-        'include_always': document.getElementById("documentation_include_always").value.split(','),
+        'signals': document.getElementById("documentation_signals").value,
+        'include_constants': document.getElementById("documentation_include_constants").value,
+        'include_always': document.getElementById("documentation_include_always").value,
       }
     };
     return options;
@@ -1869,8 +1861,8 @@ TerosHDL configuration</h2>
   function get_linter_options(){
     let options = {
       'linter': {
-        'linter_vhdl': document.getElementById("linter_linter_vhdl").value.split(','),
-        'linter_verilog': document.getElementById("linter_linter_verilog").value.split(','),
+        'linter_vhdl': document.getElementById("linter_linter_vhdl").value,
+        'linter_verilog': document.getElementById("linter_linter_verilog").value,
       }
     };
     return options;
@@ -1878,8 +1870,8 @@ TerosHDL configuration</h2>
   function get_ascentlint_options(){
     let options = {
       'ascentlint': {
-        'installation_path': document.getElementById("ascentlint_installation_path").value.split(','),
-        'ascentlint_options': document.getElementById("ascentlint_ascentlint_options").value,
+        'installation_path': document.getElementById("ascentlint_installation_path").value,
+        'ascentlint_options': document.getElementById("ascentlint_ascentlint_options").value.split(','),
       }
     };
     return options;
@@ -1887,8 +1879,8 @@ TerosHDL configuration</h2>
   function get_diamond_options(){
     let options = {
       'diamond': {
-        'installation_path': document.getElementById("diamond_installation_path").value.split(','),
-        'part': document.getElementById("diamond_part").value.split(','),
+        'installation_path': document.getElementById("diamond_installation_path").value,
+        'part': document.getElementById("diamond_part").value,
       }
     };
     return options;
@@ -1896,10 +1888,10 @@ TerosHDL configuration</h2>
   function get_ghdl_options(){
     let options = {
       'ghdl': {
-        'installation_path': document.getElementById("ghdl_installation_path").value.split(','),
-        'waveform': document.getElementById("ghdl_waveform").value.split(','),
-        'analyze_options': document.getElementById("ghdl_analyze_options").value,
-        'run_options': document.getElementById("ghdl_run_options").value,
+        'installation_path': document.getElementById("ghdl_installation_path").value,
+        'waveform': document.getElementById("ghdl_waveform").value,
+        'analyze_options': document.getElementById("ghdl_analyze_options").value.split(','),
+        'run_options': document.getElementById("ghdl_run_options").value.split(','),
       }
     };
     return options;
@@ -1907,9 +1899,9 @@ TerosHDL configuration</h2>
   function get_icarus_options(){
     let options = {
       'icarus': {
-        'installation_path': document.getElementById("icarus_installation_path").value.split(','),
-        'timescale': document.getElementById("icarus_timescale").value.split(','),
-        'iverilog_options': document.getElementById("icarus_iverilog_options").value,
+        'installation_path': document.getElementById("icarus_installation_path").value,
+        'timescale': document.getElementById("icarus_timescale").value,
+        'iverilog_options': document.getElementById("icarus_iverilog_options").value.split(','),
       }
     };
     return options;
@@ -1917,15 +1909,15 @@ TerosHDL configuration</h2>
   function get_icestorm_options(){
     let options = {
       'icestorm': {
-        'installation_path': document.getElementById("icestorm_installation_path").value.split(','),
-        'pnr': document.getElementById("icestorm_pnr").value.split(','),
-        'arch': document.getElementById("icestorm_arch").value.split(','),
-        'output_format': document.getElementById("icestorm_output_format").value.split(','),
+        'installation_path': document.getElementById("icestorm_installation_path").value,
+        'pnr': document.getElementById("icestorm_pnr").value,
+        'arch': document.getElementById("icestorm_arch").value,
+        'output_format': document.getElementById("icestorm_output_format").value,
         'yosys_as_subtool': document.getElementById("icestorm_yosys_as_subtool").checked,
-        'makefile_name': document.getElementById("icestorm_makefile_name").value.split(','),
-        'arachne_pnr_options': document.getElementById("icestorm_arachne_pnr_options").value,
-        'nextpnr_options': document.getElementById("icestorm_nextpnr_options").value,
-        'yosys_synth_options': document.getElementById("icestorm_yosys_synth_options").value,
+        'makefile_name': document.getElementById("icestorm_makefile_name").value,
+        'arachne_pnr_options': document.getElementById("icestorm_arachne_pnr_options").value.split(','),
+        'nextpnr_options': document.getElementById("icestorm_nextpnr_options").value.split(','),
+        'yosys_synth_options': document.getElementById("icestorm_yosys_synth_options").value.split(','),
       }
     };
     return options;
@@ -1933,11 +1925,11 @@ TerosHDL configuration</h2>
   function get_Ise_options(){
     let options = {
       'Ise': {
-        'installation_path': document.getElementById("Ise_installation_path").value.split(','),
-        'family': document.getElementById("Ise_family").value.split(','),
-        'device': document.getElementById("Ise_device").value.split(','),
-        'package': document.getElementById("Ise_package").value.split(','),
-        'speed': document.getElementById("Ise_speed").value.split(','),
+        'installation_path': document.getElementById("Ise_installation_path").value,
+        'family': document.getElementById("Ise_family").value,
+        'device': document.getElementById("Ise_device").value,
+        'package': document.getElementById("Ise_package").value,
+        'speed': document.getElementById("Ise_speed").value,
       }
     };
     return options;
@@ -1945,9 +1937,9 @@ TerosHDL configuration</h2>
   function get_isim_options(){
     let options = {
       'isim': {
-        'installation_path': document.getElementById("isim_installation_path").value.split(','),
-        'fuse_options': document.getElementById("isim_fuse_options").value,
-        'isim_options': document.getElementById("isim_isim_options").value,
+        'installation_path': document.getElementById("isim_installation_path").value,
+        'fuse_options': document.getElementById("isim_fuse_options").value.split(','),
+        'isim_options': document.getElementById("isim_isim_options").value.split(','),
       }
     };
     return options;
@@ -1955,10 +1947,10 @@ TerosHDL configuration</h2>
   function get_modelsim_options(){
     let options = {
       'modelsim': {
-        'installation_path': document.getElementById("modelsim_installation_path").value.split(','),
-        'vcom_options': document.getElementById("modelsim_vcom_options").value,
-        'vlog_options': document.getElementById("modelsim_vlog_options").value,
-        'vsim_options': document.getElementById("modelsim_vsim_options").value,
+        'installation_path': document.getElementById("modelsim_installation_path").value,
+        'vcom_options': document.getElementById("modelsim_vcom_options").value.split(','),
+        'vlog_options': document.getElementById("modelsim_vlog_options").value.split(','),
+        'vsim_options': document.getElementById("modelsim_vsim_options").value.split(','),
       }
     };
     return options;
@@ -1966,8 +1958,8 @@ TerosHDL configuration</h2>
   function get_morty_options(){
     let options = {
       'morty': {
-        'installation_path': document.getElementById("morty_installation_path").value.split(','),
-        'morty_options': document.getElementById("morty_morty_options").value,
+        'installation_path': document.getElementById("morty_installation_path").value,
+        'morty_options': document.getElementById("morty_morty_options").value.split(','),
       }
     };
     return options;
@@ -1975,14 +1967,14 @@ TerosHDL configuration</h2>
   function get_quartus_options(){
     let options = {
       'quartus': {
-        'installation_path': document.getElementById("quartus_installation_path").value.split(','),
-        'family': document.getElementById("quartus_family").value.split(','),
-        'device': document.getElementById("quartus_device").value.split(','),
-        'cable': document.getElementById("quartus_cable").value.split(','),
-        'board_device_index': document.getElementById("quartus_board_device_index").value.split(','),
-        'pnr': document.getElementById("quartus_pnr").value.split(','),
-        'dse_options': document.getElementById("quartus_dse_options").value,
-        'quartus_options': document.getElementById("quartus_quartus_options").value,
+        'installation_path': document.getElementById("quartus_installation_path").value,
+        'family': document.getElementById("quartus_family").value,
+        'device': document.getElementById("quartus_device").value,
+        'cable': document.getElementById("quartus_cable").value,
+        'board_device_index': document.getElementById("quartus_board_device_index").value,
+        'pnr': document.getElementById("quartus_pnr").value,
+        'dse_options': document.getElementById("quartus_dse_options").value.split(','),
+        'quartus_options': document.getElementById("quartus_quartus_options").value.split(','),
       }
     };
     return options;
@@ -1990,8 +1982,8 @@ TerosHDL configuration</h2>
   function get_radiant_options(){
     let options = {
       'radiant': {
-        'installation_path': document.getElementById("radiant_installation_path").value.split(','),
-        'part': document.getElementById("radiant_part").value.split(','),
+        'installation_path': document.getElementById("radiant_installation_path").value,
+        'part': document.getElementById("radiant_part").value,
       }
     };
     return options;
@@ -1999,10 +1991,10 @@ TerosHDL configuration</h2>
   function get_rivierapro_options(){
     let options = {
       'rivierapro': {
-        'installation_path': document.getElementById("rivierapro_installation_path").value.split(','),
-        'compilation_mode': document.getElementById("rivierapro_compilation_mode").value.split(','),
-        'vlog_options': document.getElementById("rivierapro_vlog_options").value,
-        'vsim_options': document.getElementById("rivierapro_vsim_options").value,
+        'installation_path': document.getElementById("rivierapro_installation_path").value,
+        'compilation_mode': document.getElementById("rivierapro_compilation_mode").value,
+        'vlog_options': document.getElementById("rivierapro_vlog_options").value.split(','),
+        'vsim_options': document.getElementById("rivierapro_vsim_options").value.split(','),
       }
     };
     return options;
@@ -2010,11 +2002,11 @@ TerosHDL configuration</h2>
   function get_spyglass_options(){
     let options = {
       'spyglass': {
-        'installation_path': document.getElementById("spyglass_installation_path").value.split(','),
-        'methodology': document.getElementById("spyglass_methodology").value.split(','),
-        'goals': document.getElementById("spyglass_goals").value,
-        'spyglass_options': document.getElementById("spyglass_spyglass_options").value,
-        'rule_parameters': document.getElementById("spyglass_rule_parameters").value,
+        'installation_path': document.getElementById("spyglass_installation_path").value,
+        'methodology': document.getElementById("spyglass_methodology").value,
+        'goals': document.getElementById("spyglass_goals").value.split(','),
+        'spyglass_options': document.getElementById("spyglass_spyglass_options").value.split(','),
+        'rule_parameters': document.getElementById("spyglass_rule_parameters").value.split(','),
       }
     };
     return options;
@@ -2022,13 +2014,13 @@ TerosHDL configuration</h2>
   function get_symbiflow_options(){
     let options = {
       'symbiflow': {
-        'installation_path': document.getElementById("symbiflow_installation_path").value.split(','),
-        'package': document.getElementById("symbiflow_package").value.split(','),
-        'part': document.getElementById("symbiflow_part").value.split(','),
-        'vendor': document.getElementById("symbiflow_vendor").value.split(','),
-        'pnr': document.getElementById("symbiflow_pnr").value.split(','),
-        'vpr_options': document.getElementById("symbiflow_vpr_options").value.split(','),
-        'environment_script': document.getElementById("symbiflow_environment_script").value.split(','),
+        'installation_path': document.getElementById("symbiflow_installation_path").value,
+        'package': document.getElementById("symbiflow_package").value,
+        'part': document.getElementById("symbiflow_part").value,
+        'vendor': document.getElementById("symbiflow_vendor").value,
+        'pnr': document.getElementById("symbiflow_pnr").value,
+        'vpr_options': document.getElementById("symbiflow_vpr_options").value,
+        'environment_script': document.getElementById("symbiflow_environment_script").value,
       }
     };
     return options;
@@ -2036,8 +2028,8 @@ TerosHDL configuration</h2>
   function get_symbiyosys_options(){
     let options = {
       'symbiyosys': {
-        'installation_path': document.getElementById("symbiyosys_installation_path").value.split(','),
-        'tasknames': document.getElementById("symbiyosys_tasknames").value,
+        'installation_path': document.getElementById("symbiyosys_installation_path").value,
+        'tasknames': document.getElementById("symbiyosys_tasknames").value.split(','),
       }
     };
     return options;
@@ -2045,14 +2037,14 @@ TerosHDL configuration</h2>
   function get_trellis_options(){
     let options = {
       'trellis': {
-        'installation_path': document.getElementById("trellis_installation_path").value.split(','),
-        'arch': document.getElementById("trellis_arch").value.split(','),
-        'output_format': document.getElementById("trellis_output_format").value.split(','),
+        'installation_path': document.getElementById("trellis_installation_path").value,
+        'arch': document.getElementById("trellis_arch").value,
+        'output_format': document.getElementById("trellis_output_format").value,
         'yosys_as_subtool': document.getElementById("trellis_yosys_as_subtool").checked,
-        'makefile_name': document.getElementById("trellis_makefile_name").value.split(','),
-        'script_name': document.getElementById("trellis_script_name").value.split(','),
-        'nextpnr_options': document.getElementById("trellis_nextpnr_options").value,
-        'yosys_synth_options': document.getElementById("trellis_yosys_synth_options").value,
+        'makefile_name': document.getElementById("trellis_makefile_name").value,
+        'script_name': document.getElementById("trellis_script_name").value,
+        'nextpnr_options': document.getElementById("trellis_nextpnr_options").value.split(','),
+        'yosys_synth_options': document.getElementById("trellis_yosys_synth_options").value.split(','),
       }
     };
     return options;
@@ -2060,9 +2052,9 @@ TerosHDL configuration</h2>
   function get_vcs_options(){
     let options = {
       'vcs': {
-        'installation_path': document.getElementById("vcs_installation_path").value.split(','),
-        'vcs_options': document.getElementById("vcs_vcs_options").value,
-        'run_options': document.getElementById("vcs_run_options").value,
+        'installation_path': document.getElementById("vcs_installation_path").value,
+        'vcs_options': document.getElementById("vcs_vcs_options").value.split(','),
+        'run_options': document.getElementById("vcs_run_options").value.split(','),
       }
     };
     return options;
@@ -2070,8 +2062,8 @@ TerosHDL configuration</h2>
   function get_veribleformat_options(){
     let options = {
       'veribleformat': {
-        'installation_path': document.getElementById("veribleformat_installation_path").value.split(','),
-        'verible_format_args': document.getElementById("veribleformat_verible_format_args").value,
+        'installation_path': document.getElementById("veribleformat_installation_path").value,
+        'verible_format_args': document.getElementById("veribleformat_verible_format_args").value.split(','),
       }
     };
     return options;
@@ -2079,10 +2071,10 @@ TerosHDL configuration</h2>
   function get_veriblelint_options(){
     let options = {
       'veriblelint': {
-        'installation_path': document.getElementById("veriblelint_installation_path").value.split(','),
-        'ruleset': document.getElementById("veriblelint_ruleset").value.split(','),
-        'verible_lint_args': document.getElementById("veriblelint_verible_lint_args").value,
-        'rules': document.getElementById("veriblelint_rules").value,
+        'installation_path': document.getElementById("veriblelint_installation_path").value,
+        'ruleset': document.getElementById("veriblelint_ruleset").value,
+        'verible_lint_args': document.getElementById("veriblelint_verible_lint_args").value.split(','),
+        'rules': document.getElementById("veriblelint_rules").value.split(','),
       }
     };
     return options;
@@ -2090,13 +2082,13 @@ TerosHDL configuration</h2>
   function get_verilator_options(){
     let options = {
       'verilator': {
-        'installation_path': document.getElementById("verilator_installation_path").value.split(','),
-        'mode': document.getElementById("verilator_mode").value.split(','),
-        'cli_parser': document.getElementById("verilator_cli_parser").value,
-        'libs': document.getElementById("verilator_libs").value,
-        'verilator_options': document.getElementById("verilator_verilator_options").value,
-        'make_options': document.getElementById("verilator_make_options").value,
-        'run_options': document.getElementById("verilator_run_options").value,
+        'installation_path': document.getElementById("verilator_installation_path").value,
+        'mode': document.getElementById("verilator_mode").value,
+        'cli_parser': document.getElementById("verilator_cli_parser").value.split(','),
+        'libs': document.getElementById("verilator_libs").value.split(','),
+        'verilator_options': document.getElementById("verilator_verilator_options").value.split(','),
+        'make_options': document.getElementById("verilator_make_options").value.split(','),
+        'run_options': document.getElementById("verilator_run_options").value.split(','),
       }
     };
     return options;
@@ -2104,13 +2096,13 @@ TerosHDL configuration</h2>
   function get_vivado_options(){
     let options = {
       'vivado': {
-        'installation_path': document.getElementById("vivado_installation_path").value.split(','),
-        'vivado-settings': document.getElementById("vivado_vivado-settings").value.split(','),
-        'part': document.getElementById("vivado_part").value.split(','),
-        'synth': document.getElementById("vivado_synth").value.split(','),
-        'pnr': document.getElementById("vivado_pnr").value.split(','),
-        'jtag_freq': document.getElementById("vivado_jtag_freq").value.split(','),
-        'hw_target': document.getElementById("vivado_hw_target").value.split(','),
+        'installation_path': document.getElementById("vivado_installation_path").value,
+        'vivado-settings': document.getElementById("vivado_vivado-settings").value,
+        'part': document.getElementById("vivado_part").value,
+        'synth': document.getElementById("vivado_synth").value,
+        'pnr': document.getElementById("vivado_pnr").value,
+        'jtag_freq': document.getElementById("vivado_jtag_freq").value,
+        'hw_target': document.getElementById("vivado_hw_target").value,
       }
     };
     return options;
@@ -2118,11 +2110,11 @@ TerosHDL configuration</h2>
   function get_vunit_options(){
     let options = {
       'vunit': {
-        'installation_path': document.getElementById("vunit_installation_path").value.split(','),
-        'vunit_simulator': document.getElementById("vunit_vunit_simulator").value.split(','),
-        'vunit_options': document.getElementById("vunit_vunit_options").value,
-        'add_libraries': document.getElementById("vunit_add_libraries").value,
-        'vunit_runner': document.getElementById("vunit_vunit_runner").value.split(','),
+        'installation_path': document.getElementById("vunit_installation_path").value,
+        'vunit_simulator': document.getElementById("vunit_vunit_simulator").value,
+        'vunit_options': document.getElementById("vunit_vunit_options").value.split(','),
+        'add_libraries': document.getElementById("vunit_add_libraries").value.split(','),
+        'vunit_runner': document.getElementById("vunit_vunit_runner").value,
       }
     };
     return options;
@@ -2130,11 +2122,11 @@ TerosHDL configuration</h2>
   function get_xcelium_options(){
     let options = {
       'xcelium': {
-        'installation_path': document.getElementById("xcelium_installation_path").value.split(','),
-        'xmvhdl_options': document.getElementById("xcelium_xmvhdl_options").value,
-        'xmvlog_options': document.getElementById("xcelium_xmvlog_options").value,
-        'xmsim_options': document.getElementById("xcelium_xmsim_options").value,
-        'xrun_options': document.getElementById("xcelium_xrun_options").value,
+        'installation_path': document.getElementById("xcelium_installation_path").value,
+        'xmvhdl_options': document.getElementById("xcelium_xmvhdl_options").value.split(','),
+        'xmvlog_options': document.getElementById("xcelium_xmvlog_options").value.split(','),
+        'xmsim_options': document.getElementById("xcelium_xmsim_options").value.split(','),
+        'xrun_options': document.getElementById("xcelium_xrun_options").value.split(','),
       }
     };
     return options;
@@ -2142,13 +2134,13 @@ TerosHDL configuration</h2>
   function get_yosys_options(){
     let options = {
       'yosys': {
-        'installation_path': document.getElementById("yosys_installation_path").value.split(','),
-        'arch': document.getElementById("yosys_arch").value.split(','),
-        'output_format': document.getElementById("yosys_output_format").value.split(','),
+        'installation_path': document.getElementById("yosys_installation_path").value,
+        'arch': document.getElementById("yosys_arch").value,
+        'output_format': document.getElementById("yosys_output_format").value,
         'yosys_as_subtool': document.getElementById("yosys_yosys_as_subtool").checked,
-        'makefile_name': document.getElementById("yosys_makefile_name").value.split(','),
-        'script_name': document.getElementById("yosys_script_name").value.split(','),
-        'yosys_synth_options': document.getElementById("yosys_yosys_synth_options").value,
+        'makefile_name': document.getElementById("yosys_makefile_name").value,
+        'script_name': document.getElementById("yosys_script_name").value,
+        'yosys_synth_options': document.getElementById("yosys_yosys_synth_options").value.split(','),
       }
     };
     return options;
@@ -2156,7 +2148,7 @@ TerosHDL configuration</h2>
   function get_cocotb_options(){
     let options = {
       'cocotb': {
-        'installation_path': document.getElementById("cocotb_installation_path").value.split(','),
+        'installation_path': document.getElementById("cocotb_installation_path").value,
       }
     };
     return options;

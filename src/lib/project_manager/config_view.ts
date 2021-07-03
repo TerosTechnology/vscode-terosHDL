@@ -101,6 +101,10 @@ export default class config_view {
     return this.config.get_config_documentation();
   }
 
+  get_config_python_path() {
+    return this.config.get_config_python_path();
+  }
+
   get_config() {
     return this.config;
   }

@@ -319,7 +319,7 @@ export class Project_manager {
   }
 
   config_python_path(){
-    let pypath = this.config_view.get_python_path();
+    let pypath = this.config_view.get_config_python_path();
     this.vunit.set_python_path(pypath);
     this.edalize.set_python_path(pypath);
     return pypath;
@@ -583,8 +583,7 @@ export class Project_manager {
       return;
     }
     let toplevel_path = prj.toplevel_path;
-    let config = this.config_view.get_config_documentation();
-    let pypath = config.pypath;
+    let pypath = this.config_view.get_config_python_path();
     let dependency_tree = await prj.get_dependency_tree(pypath);
     if (dependency_tree !== undefined){
       this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
