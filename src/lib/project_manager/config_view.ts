@@ -74,7 +74,7 @@ export default class config_view {
 
     try {
       if (this.config !== undefined) {
-        let tool_config = this.config.get_config_tool();
+        let tool_config = this.config.get_config_all_tool();
         await this.panel?.webview.postMessage({
           command: "set_config",
           config: {

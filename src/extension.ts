@@ -24,6 +24,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as utils from "./lib/utils/utils";
+import * as config_reader_lib from "./lib/utils/config_reader";
 //Project manager
 import * as project_manager_lib from "./lib/project_manager/project_manager";
 let project_manager;
@@ -51,6 +52,7 @@ let linter_systemverilog_style;
 let formatter_vhdl;
 let formatter_verilog;
 let documenter;
+let config_reader;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager: dependencies_viewer.default;
@@ -102,12 +104,16 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Templates
     /**************************************************************************/
+    config_reader = new config_reader_lib.Config_reader(context);
+    /**************************************************************************/
+    // Templates
+    /**************************************************************************/
     context.subscriptions.push(vscode.commands.registerCommand('teroshdl.generate_template', templates.get_template));
     /**************************************************************************/
     // Formatter
     /**************************************************************************/
-    formatter_vhdl = new formatter.default("vhdl");
-    formatter_verilog = new formatter.default("verilog");
+    formatter_vhdl = new formatter.default("vhdl", config_reader);
+    formatter_verilog = new formatter.default("verilog", config_reader);
     // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
     const disposable = vscode.languages.registerDocumentFormattingEditProvider(
         [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
@@ -137,7 +143,6 @@ export async function activate(context: vscode.ExtensionContext) {
         ),
         vscode.workspace.onDidOpenTextDocument((e) => documenter.update_open_documentation_module(e)),
         vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
-        //vscode.workspace.onDidChangeTextDocument((e) => documenter.update_change_documentation_module(e)),
         vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
     );
     /**************************************************************************/

@@ -202,10 +202,10 @@ export default class Documenter {
   }
 
   async update_visible_documentation_module(e) {
-    if (e.length !== 1) {
+    if (e.length === 0) {
       return;
     }
-    let document = e[0].document;
+    let document = e[e.length-1].document;
     if (this.panel === undefined) {
       return;
     }

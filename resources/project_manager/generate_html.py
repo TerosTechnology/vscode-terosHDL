@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import yaml
 
@@ -72,7 +72,7 @@ def generate_select_tool(option, name, tab_name, doc):
     html += "  <br>\n"
     html += f"  <select name='select' id='{id_name}'>\n"
     for op in tools:
-        html += f"    <option value='{op}'>{op}</option>\n"
+        html += f"    <option value='{op}'>{op.capitalize()}</option>\n"
     html += "  </select>\n"
     html += "  <br><br>\n"
     return html
@@ -205,17 +205,6 @@ def generate_set_config(doc):
       }
   });
   function set_config(config){
-    let all_radios = document.getElementsByName('re');
-    for(let j = 0; j < all_radios.length; j++){
-      if(all_radios[j].getAttribute("tool") === config.selected_tool){
-        all_radios[j].checked = true;
-      }
-      else
-      {
-        all_radios[j].checked = false;
-      }
-    }
-
     for (let i = 0; i < config.tool_config.length; i++) {
       let element = config.tool_config[i];
       let config_tool = '';

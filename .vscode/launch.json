@@ -16,7 +16,7 @@
 			"outFiles": [
 				"${workspaceFolder}/out/src/**/*.js"
 			],
-			"preLaunchTask": "${defaultBuildTask}"
+			"preLaunchTask": "npm: build-config-html"
 		},
 		{
 			"name": "Extension Tests",

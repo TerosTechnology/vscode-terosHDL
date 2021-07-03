@@ -1,98 +1,111 @@
 body {
   background-color: white;
 }
+
+/*style the items (options), including the selected item:*/
+select{
+  width:60%;
+  padding: 8px 16px;
+  cursor: pointer;
+  padding-right: 29px;
+}
+
 /* Style the tab */
 .tab {
-    float: left;
-    border: 3px solid #ccc;
-    background-color: #f1f1f1;
-    width: 30%;
-    height: 500px;
-    overflow-y: scroll;
-  }
+  float: left;
+  border: 3px solid #ccc;
+  background-color: #f1f1f1;
+  width: 30%;
+  height: 500px;
+  overflow-y: scroll;
+}
 
-  /* Change background color of buttons on hover */
-  .tab button:hover {
-    background-color: #ddd;
-  }
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
 
-  /* Create an active/current "tab button" class */
-  .tab button.active {
+/* Create an active/current "tab button" class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  float: left;
+  padding: 0px 12px;
+  border: 3px solid #ccc;
+  width: 70%;
+  border-left: none;
+  height: 100%;
+  border-left: 20px;
+  overflow-y: scroll;
+  height: 500px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: black;
+  padding: 22px 16px;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+#button_apply {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  float: right;
+}
+
+#button_cancel {
+  outline:none;
+  background-color: #ff5a31; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  float: right;
+}
+
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
     background-color: #ccc;
-  }
+}
 
-  /* Style the tab content */
-  .tabcontent {
-    float: left;
-    padding: 0px 12px;
-    border: 3px solid #ccc;
-    width: 70%;
-    border-left: none;
-    height: 100%;
-    border-left: 20px;
-    overflow-y: scroll;
-    height: 500px;
-  }
-
-  /* Style the buttons inside the tab */
-  .tab button {
-    display: block;
-    background-color: inherit;
-    color: black;
-    padding: 22px 16px;
-    width: 100%;
-    border: none;
-    outline: none;
-    text-align: left;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 17px;
-  }
-
-  #button_apply {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    float: right;
-  }
-
-  #button_cancel {
-    outline:none;
-    background-color: #ff5a31; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    float: right;
-  }
-
-
-  /* Change background color of buttons on hover */
-  .tab button:hover {
-    background-color: #ddd;
-  }
-
-  /* Create an active/current "tab button" class */
-  .tab button.active {
-    background-color: #ccc;
-  }
-
-  .markdown-body .octicon {
+.markdown-body .octicon {
   display: inline-block;
   fill: currentColor;
   vertical-align: text-bottom;
+}
+
+input[type='input'] {
+  width: 100%
 }
 
 .markdown-body .anchor {

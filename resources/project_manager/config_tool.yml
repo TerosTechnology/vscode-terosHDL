@@ -31,8 +31,8 @@ ghdl:
         description: "Waveform output format:"
         type: select
         options: 
-            vcd: "vcd"
-            ghw: "ghw"
+            vcd: "VCD"
+            ghw: "GHW"
     analyze_options:
         description: "analyze options. Extra options used for the GHDL analyze stage (ghdl -a)."
         type: input_comma
@@ -400,9 +400,9 @@ vivado:
     installation_path:
         description: "Installation path:"
         type: input
-    vivado-settings:
-        description: "Path to vivado settings (e.g. /opt/Xilinx/Vivado/2017.2/settings64.sh)."
-        type: input
+    # vivado-settings:
+    #     description: "Path to vivado settings (e.g. /opt/Xilinx/Vivado/2017.2/settings64.sh)."
+    #     type: input
     part:
         description: "Part. Device identifier. e.g. xc7a35tcsg324-1."
         type: input

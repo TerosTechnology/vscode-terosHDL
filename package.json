@@ -873,11 +873,12 @@
 	"scripts": {
 		"vscode:prepublish": "npm run build:syntax & npm run compile",
 		"build:syntax": "js-yaml ./syntaxes/vhdl/vhdl.tmLanguage.yml > ./syntaxes/vhdl/vhdl.tmLanguage.json",
-		"compile": "tsc -p ./",
+		"compile": "npm run build-config-html & tsc -p ./",
 		"lint": "eslint src --ext ts",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"build-config-html": "cd ./resources/project_manager; ./generate_html.py"
 	},
 	"dependencies": {
 		"@octokit/rest": "16.36.0",

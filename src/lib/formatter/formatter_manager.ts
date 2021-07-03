@@ -28,8 +28,10 @@ export default class Formatter_manager {
     private lang: string = "";
     private formatter_name: string = "";
     private subscriptions: vscode.Disposable[] | undefined;
+    private config_reader;
 
-    constructor(language: string) {
+    constructor(language: string, config_reader) {
+        this.config_reader = config_reader;
         this.lang = language;
         vscode.workspace.onDidChangeConfiguration(this.config_formatter, this, this.subscriptions);
     }
@@ -73,7 +75,7 @@ export default class Formatter_manager {
             options = { 'style': get_istyle_style(), 'extra_args': get_istyle_extra_args() };
         }
         else if (this.formatter_name === "s3sv") {
-            let python = await get_python_path();
+            let python = await this.get_python_path();
             options = {
                 "python3_path": python,
                 "use_tabs": vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("useTabs"),
@@ -84,16 +86,16 @@ export default class Formatter_manager {
         }
         return options;
     }
+    async get_python_path() {
+        let python_path = this.config_reader.get_config_python_path();
+        const jsteros = require('jsteros');
+        let python = await jsteros.Nopy.get_python_exec(python_path);
+        return python;
+    }
+
 }
 
-async function get_python_path() {
-    let python = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-    if (python === "") {
-        const jsteros = require('jsteros');
-        python = await jsteros.Nopy.get_python_exec();
-    }
-    return python;
-}
+
 
 function get_istyle_style() {
     const style_map: { [style: string]: string } = {

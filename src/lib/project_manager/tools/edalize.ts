@@ -79,7 +79,7 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   set_builds(simulator_name, project_name, top_level){
-    let builds;
+    let builds : {}[]= [];
     switch (simulator_name) {
       case 'vivado':
         builds = this.vivado_builds( project_name, top_level);
@@ -87,9 +87,10 @@ export class Edalize extends tool_base.Tool_base{
       case 'quartus':
         builds = this.quartus_builds( project_name, top_level);
         break;
-      default:
-        builds = [];
     }
+    const homedir = require('os').homedir();
+    let build_folder = path_lib.join(homedir, '.teroshdl', 'build');
+    builds.unshift({name: 'Open build directory',location: build_folder});
     return builds;
   }
   
@@ -159,6 +160,7 @@ export class Edalize extends tool_base.Tool_base{
     for (let i = 0; i < sources.length; i++) {
       const element = sources[i];
       if (element.name !== ""){
+        element.name = element.name.replace(/ /g, '\\ ');
         clean_files.push(element);
       }
     }
