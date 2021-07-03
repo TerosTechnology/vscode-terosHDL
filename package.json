@@ -119,16 +119,6 @@
 					"type": "string",
 					"default": ""
 				},
-				"teroshdl.linter.vhdl.linter.ghdl.xcall.enable": {
-					"description": "Enable GHDL custom call",
-					"type": "boolean",
-					"default": false
-				},
-				"teroshdl.linter.vhdl.linter.ghdl.xcall.bin": {
-					"description": "GHDL custom call. It is useful for Windows Subsystem for Linux",
-					"type": "string",
-					"default": "wsl ghdl"
-				},
 				"teroshdl.linter.vhdl.linter.modelsim.arguments": {
 					"description": "ModelSim arguments",
 					"type": "string",
@@ -136,16 +126,6 @@
 				},
 				"teroshdl.linter.vhdl.linter.modelsim.path": {
 					"description": "ModelSim path",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.vhdl.linter.modelsim.enable.xcall.enable": {
-					"description": "Enable ModelSim custom call",
-					"type": "boolean",
-					"default": false
-				},
-				"teroshdl.linter.vhdl.modelsim.xcall.bin": {
-					"description": "ModelSim custom call. It is useful for Windows Subsystem for Linux",
 					"type": "string",
 					"default": ""
 				},
@@ -158,16 +138,6 @@
 					"description": "xvhdl path",
 					"type": "string",
 					"default": ""
-				},
-				"teroshdl.linter.vhdl.linter.xvhdl.xcall.enable": {
-					"description": "Enable xvhdl custom call",
-					"type": "boolean",
-					"default": false
-				},
-				"teroshdl.linter.vhdl.linter.xvhdl.xcall.bin": {
-					"description": "xvhdl custom call. It is useful for Windows Subsystem for Linux",
-					"type": "string",
-					"default": "wsl xvhdl"
 				},
 				"teroshdl.linter_style.verilog.linter.a": {
 					"description": "Select Verilog linter style",
@@ -200,16 +170,6 @@
 					"type": "string",
 					"default": ""
 				},
-				"teroshdl.linter.verilog.linter.icarus.xcall.bin": {
-					"description": "Icarus custom call. It is useful for Windows Subsystem for Linux",
-					"type": "string",
-					"default": "wsl iverilog"
-				},
-				"teroshdl.linter.verilog.linter.icarus.xcall.enable": {
-					"description": "Enable Icarus custom call",
-					"type": "boolean",
-					"default": false
-				},
 				"teroshdl.linter.verilog.linter.verilator.arguments": {
 					"description": "Verilator arguments",
 					"type": "string",
@@ -220,16 +180,6 @@
 					"type": "string",
 					"default": ""
 				},
-				"teroshdl.linter.verilog.linter.verilator.xcall.bin": {
-					"description": "Verilator custom call. It is useful for Windows Subsystem for Linux",
-					"type": "string",
-					"default": "wsl verilator"
-				},
-				"teroshdl.linter.verilog.linter.verilator.xcall.enable": {
-					"description": "Enable Verilator custom call",
-					"type": "boolean",
-					"default": false
-				},
 				"teroshdl.linter.verilog.linter.xvlog.arguments": {
 					"description": "xvlog arguments",
 					"type": "string",
@@ -239,16 +189,6 @@
 					"description": "xvlog path",
 					"type": "string",
 					"default": ""
-				},
-				"teroshdl.linter.verilog.linter.xvlog.xcall.bin": {
-					"description": "xvlog custom call. It is useful for Windows Subsystem for Linux",
-					"type": "string",
-					"default": "wsl xvlog"
-				},
-				"teroshdl.linter.verilog.linter.xvlog.xcall.enable": {
-					"description": "Enable xvlog custom call",
-					"type": "boolean",
-					"default": false
 				},
 				"teroshdl.documenter.header_file_path": {
 					"markdownDescription": "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template",

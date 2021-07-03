@@ -319,8 +319,7 @@ export class Project_manager {
   }
 
   config_python_path(){
-    let config = this.config_view.get_config_documentation();
-    let pypath = config.pypath;
+    let pypath = this.config_view.get_python_path();
     this.vunit.set_python_path(pypath);
     this.edalize.set_python_path(pypath);
     return pypath;
@@ -806,9 +805,8 @@ export class Project_manager {
     let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
     let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
 
-    config.vhdl_symbol = comment_symbol_vhdl;
-    config.verilog_symbol = comment_symbol_verilog;
-
+    config.symbol_vhdl = comment_symbol_vhdl;
+    config.symbol_verilog = comment_symbol_verilog;
 
     if (type === "markdown") {
       await project_manager.save_markdown_doc(output_path, config);

@@ -132,16 +132,27 @@ export class Config {
     }
   }
 
-  get_config_documentation(){
+  get_python_path(){
     let config_tool = this.config['config_tool'].config;
+    let tool;
     for (let i = 0; i < config_tool.length; i++) {
-      const element = config_tool[i];
-      for(let attributename in element){
-        if (attributename === 'documentation'){
-          return element[attributename];
-        }
-      }     
+      tool = config_tool[i];
+      if (tool !== undefined){
+        // return tool['pypath'];
+      }  
     }
+  }
+
+  get_config_documentation(){
+    // let config_tool = this.config['config_tool'].config;
+    // for (let i = 0; i < config_tool.length; i++) {
+    //   const element = config_tool[i];
+    //   for(let attributename in element){
+    //     if (attributename === 'documentation'){
+    //       return element[attributename];
+    //     }
+    //   }     
+    // }
   }
 
   get_config_tool() {
@@ -150,7 +161,7 @@ export class Config {
 
   get_config_of_selected_tool() {
     try {
-      let selected_tool = this.config['config_tool'].selected_tool;
+      let selected_tool = this.config['config_tool'].config.selected_tool;
       let all_configs = this.config['config_tool'].config;
       let config_selected_tool;
       for (let i = 0; i < all_configs.length; i++) {

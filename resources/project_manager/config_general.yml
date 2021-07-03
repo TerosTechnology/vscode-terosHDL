@@ -1,0 +1,75 @@
+general:
+    title: General
+    description: ""
+    type: "none"
+    pypath:
+        description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. Install pyteroshdl. E.g: pip install pyteroshdl"
+        type: input
+        default: ""
+    select_tool:
+        description: "Select a tool, framework, linter..."
+        type: select_tool
+
+documentation:
+    title: Documentation settings
+    description: ""
+    type: "none"
+    dependency_graph:
+        description: "Include dependency graph:"
+        type: checkbox
+        default: true
+    self_contained:
+        description: "HTML documentation self contained:"
+        type: checkbox
+        default: true
+    fsm:
+        description: "Include FSM:"
+        type: checkbox
+        default: true
+    signals:
+        description: "Include signals:"
+        type: select
+        options:
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+        
+    include_constants:
+        description: "Include consants and types:"
+        type: select
+        options: 
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+        
+    include_always:
+        description: "Include always/processes:"
+        type: select
+        options: 
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+
+linter:
+    title: Linters settings
+    description: ""
+    type: "none"
+    linter_vhdl:
+        description: "VHDL linter:"
+        type: select
+        options:
+            ghdl: "GHDL"
+            modelsim: "Modelsim"
+            vivado: "Vivado"
+    linter_verilog:
+        description: "Verilog/SV linter:"
+        type: select
+        options:
+            ghdl: "GHDL"
+            modelsim: "Modelsim"
+            vivado: "Vivado"
+
+
+
+
+

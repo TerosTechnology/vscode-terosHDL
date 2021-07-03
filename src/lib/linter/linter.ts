@@ -15,21 +15,12 @@ export default class Lint_manager {
     //Configuration
     private linter_path: string = "";
     private linter_arguments: string = "";
-    private enable_custom_exec: boolean = false;
-    private custom_exec: string = "";
 
-    // private linter_options : {'custom_bin' : string | undefined,
-    //                           'custom_arguments' : string | undefined,
-    //                           'custom_path' : string | undefined};
     private lang: string;
     protected diagnostic_collection: vscode.DiagnosticCollection;
 
     constructor(language: string, linter_type: string, context: vscode.ExtensionContext,
         project_manager: project_manager_lib.Project_manager) {
-
-        // vscode.commands.registerCommand(`teroshdl.refresh_lint_${language}_${linter_type}`, () =>
-        //     this.refresh_lint_cmd(this.uri_collections)
-        // );
 
         this.project_manager = project_manager;
         this.lang = language;
@@ -66,13 +57,6 @@ export default class Lint_manager {
         this.linter_name = linter_name;
 
         if (this.linter_type === "linter") {
-            //Enable custom binary exec
-            let custom_call_enable = <boolean>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name + ".xcall").get("enable");
-            let custom_call_bin = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name + ".xcall").get("bin");
-            this.custom_exec = custom_call_bin;
-            this.enable_custom_exec = custom_call_enable;
             //Custom linter path
             let linter_path = <string>vscode.workspace.getConfiguration(
                 `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("path");
@@ -97,13 +81,6 @@ export default class Lint_manager {
         this.linter_name = linter_name;
 
         if (this.linter_type === "linter") {
-            //Enable custom binary exec
-            let custom_call_enable = <boolean>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name + ".xcall").get("enable");
-            let custom_call_bin = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name + ".xcall").get("bin");
-            this.custom_exec = custom_call_bin;
-            this.enable_custom_exec = custom_call_enable;
             //Custom linter path
             let linter_path = <string>vscode.workspace.getConfiguration(
                 `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("path");
@@ -170,13 +147,7 @@ export default class Lint_manager {
 
     get_config() {
         let options;
-        if (this.enable_custom_exec === true) {
-            options = {
-                'custom_bin': this.custom_exec,
-                'custom_arguments': this.linter_arguments
-            };
-        }
-        else if (this.linter_path !== "") {
+        if (this.linter_path !== "") {
             options = {
                 'custom_path': this.linter_path,
                 'custom_arguments': this.linter_arguments
