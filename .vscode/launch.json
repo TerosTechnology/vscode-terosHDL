@@ -16,7 +16,7 @@
 			"outFiles": [
 				"${workspaceFolder}/out/src/**/*.js"
 			],
-			"preLaunchTask": "npm: build-config-html"
+			"preLaunchTask": "npm: watch"
 		},
 		{
 			"name": "Extension Tests",

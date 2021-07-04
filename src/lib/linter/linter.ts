@@ -2,11 +2,10 @@
 // import { Disposable, workspace, TextDocument, window, QuickPickItem, ProgressLocation} from "vscode";
 import * as vscode from 'vscode';
 import * as vsg_action_provider from './vsg_action_provider';
-import * as project_manager_lib from '../project_manager/project_manager';
+import * as config_reader_lib from "../utils/config_reader";
 
 export default class Lint_manager {
     private init: boolean = false;
-    private project_manager: project_manager_lib.Project_manager;
     private subscriptions: vscode.Disposable[] | undefined;
     private uri_collections: vscode.Uri[] = [];
     private linter_type: string = "";
@@ -15,25 +14,25 @@ export default class Lint_manager {
     //Configuration
     private linter_path: string = "";
     private linter_arguments: string = "";
+    private config_reader : config_reader_lib.Config_reader;
 
     private lang: string;
     protected diagnostic_collection: vscode.DiagnosticCollection;
 
-    constructor(language: string, linter_type: string, context: vscode.ExtensionContext,
-        project_manager: project_manager_lib.Project_manager) {
-
-        this.project_manager = project_manager;
+    constructor(language: string, linter_type: string, context: vscode.ExtensionContext, config_reader) {
+        this.config_reader = config_reader;
         this.lang = language;
         this.linter_type = linter_type;
         this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
 
-        this.config_linter_init();
+        this.set_config_linter();
 
         // vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
         // vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
         // vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
 
-        vscode.workspace.onDidChangeConfiguration(this.config_linter, this, this.subscriptions);
+        vscode.commands.registerCommand(`teroshdl.linter.${linter_type}.${language}.set_config`, () => this.config_linter());
+
         this.lint(<vscode.TextDocument>vscode.window.activeTextEditor?.document);
 
         if (language === "vhdl" && linter_type === "linter_style") {
@@ -45,53 +44,26 @@ export default class Lint_manager {
         }
     }
 
-    config_linter_init() {
-        //todo: use doc!! .git error
+    set_config_linter(){
         let normalized_lang = this.lang;
         if (this.lang === "systemverilog") {
             normalized_lang = "verilog";
         }
-        let linter_name: string;
-        linter_name = <string>vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + normalized_lang).get("linter.a");
-        linter_name = linter_name.toLowerCase();
+        let linter_name = this.config_reader.get_linter_name(normalized_lang, this.linter_type).toLowerCase();
         this.linter_name = linter_name;
 
-        if (this.linter_type === "linter") {
-            //Custom linter path
-            let linter_path = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("path");
-            this.linter_path = linter_path;
-            //Custom arguments
-            let linter_arguments = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("arguments");
-            this.linter_arguments = linter_arguments;
-        }
+        let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
+        let linter_path = linter_config.installation_path;
+        this.linter_path = linter_path;
+        let linter_arguments = '';
+        this.linter_arguments = linter_arguments;
+        
         this.linter_enable = true;
     }
 
     config_linter() {
-        //todo: use doc!! .git error
-        let normalized_lang = this.lang;
-        if (this.lang === "systemverilog") {
-            normalized_lang = "verilog";
-        }
-        let linter_name: string;
-        linter_name = <string>vscode.workspace.getConfiguration(`teroshdl.${this.linter_type}.` + normalized_lang).get("linter.a");
-        linter_name = linter_name.toLowerCase();
-        this.linter_name = linter_name;
-
-        if (this.linter_type === "linter") {
-            //Custom linter path
-            let linter_path = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("path");
-            this.linter_path = linter_path;
-            //Custom arguments
-            let linter_arguments = <string>vscode.workspace.getConfiguration(
-                `teroshdl.${this.linter_type}.` + normalized_lang + ".linter." + linter_name).get("arguments");
-            this.linter_arguments = linter_arguments;
-        }
-        this.linter_enable = true;
-        if (linter_name === 'none') {
+        this.set_config_linter();
+        if (this.linter_name === 'none') {
             this.linter_enable = false;
             this.refresh_lint();
         }
@@ -258,8 +230,6 @@ export default class Lint_manager {
         try {
             const jsteros = await require('jsteros');
             let linter = await new jsteros.Linter.Linter(this.linter_name, this.lang);
-            // let prj_files = this.project_manager.get_active_project_libraries();
-            // let errors = await this.linter.lint_from_file(current_path, this.get_config(), prj_files);
             let errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
             return errors;
         } catch (error) {       

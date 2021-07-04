@@ -78,6 +78,13 @@ def generate_select_tool(option, name, tab_name, doc):
     return html
 
 
+def generate_subtitle(option, name, tab_name, doc):
+    description = option['title']
+    html = f"  <h4>{description}</h4>\n"
+    html += "  <br>\n"
+    return html
+
+
 def generate_html_tab(tab, tab_name, doc):
     tab_title = tab['title']
     tab_description = tab['description']
@@ -99,6 +106,8 @@ def generate_html_tab(tab, tab_name, doc):
                 html += generate_select(option, option_name, tab_name)
             elif (option_type == 'select_tool'):
                 html += generate_select_tool(option, option_name, tab_name, doc)
+            elif (option_type == 'subtitle'):
+                html += generate_subtitle(option, option_name, tab_name, doc)
 
     html += '</div>\n\n'
     return html
@@ -183,6 +192,8 @@ def generate_get_config(doc):
                     html += f"""        '{option_name}': document.getElementById("{id_name}").checked,\n"""
                 elif (option_type == 'input_comma'):
                     html += f"""        '{option_name}': document.getElementById("{id_name}").value.split(','),\n"""
+                elif (option_type == 'subtitle'):
+                    pass
                 else:
                     html += f"""        '{option_name}': document.getElementById("{id_name}").value,\n"""
 
@@ -248,6 +259,8 @@ def generate_set_options(doc):
                     html += f"    document.getElementById('{id_name}').checked = options.{option_name};\n"
                 elif(option_type == "input_comma"):
                     html += f"    document.getElementById('{id_name}').value = options.{option_name}.join(',');\n"
+                elif(option_type == "subtitle"):
+                    pass
                 else:
                     html += f"    document.getElementById('{id_name}').value = options.{option_name};\n"
         html += '  }\n'
@@ -300,8 +313,8 @@ def main():
 
     html += generate_html_button_tab(doc)
     html += generate_html_tabs(doc)
-    html += '<button id="button_cancel" class="button" type="button" onclick="close_panel(event)">Cancel</button>'
-    html += '<button id="button_apply" class="button" type="button" onclick="send_config_and_close(event)">Apply and close</button>'
+    html += '<button id="button_cancel" class="button" type="button" onclick="close_panel(event)">Close</button>'
+    html += '<button id="button_apply" class="button" type="button" onclick="send_config_and_close(event)">Apply</button>'
     html += '<script>'
     html += generate_script_switch_ab()
     html += generate_get_config(doc)

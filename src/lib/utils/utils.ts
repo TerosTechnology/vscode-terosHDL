@@ -20,6 +20,23 @@
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 
 
+const fs = require('fs');
+const path_lib = require('path');
+
+export function get_files_from_dir_recursive (dir: any, filelist: any[] = []) {
+    fs.readdirSync(dir).forEach(file => {
+        const dirFile = path_lib.join(dir, file);
+        try {
+            filelist = get_files_from_dir_recursive(dirFile, filelist);
+        }
+        catch (err) {
+            if (err.code === 'ENOTDIR' || err.code === 'EBUSY') filelist = [...filelist, dirFile];
+            else throw err;
+        }
+    });
+    return filelist;
+}
+
 export function line_index_to_character_index(line_number: number, character_number: number, txt: string): number {
     let txt_split = txt.split('\n');
     let character_index: number = 0;

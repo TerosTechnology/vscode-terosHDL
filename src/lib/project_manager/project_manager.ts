@@ -30,6 +30,7 @@ import * as Cocotb from "./tools/cocotb";
 import * as Edalize from "./tools/edalize";
 import * as Tree_types from "./tree_types";
 import * as utils from "./utils";
+import * as utils_vscode from "../utils/utils";
 import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
 import { Hdl_dependencies_tree } from './hdl_dependencies_tree';
 
@@ -606,7 +607,7 @@ export class Project_manager {
 
 
   async add_file(item) {
-    const files_add_types = ["Select files from browser", "Load files from file list"];
+    const files_add_types = ["Select files from browser", "Load files from file list", "Load all files in folder and subfolders"];
     let project_name = item.project_name;
 
     // Choose type
@@ -646,6 +647,31 @@ export class Project_manager {
               }
             }
           }
+          this.refresh_lint();
+          this.update_tree();
+        });
+      }
+      //Load files in folder and subfolders
+      else if(files_type === files_add_types[2]){
+        // Select file
+        vscode.window.showOpenDialog({ canSelectMany: false, canSelectFolders: true, canSelectFiles: false }).then((value) => {
+          if (value === undefined){
+            return;
+          }
+          let folder_path = value[0].fsPath;
+
+          let files_list_array = utils_vscode.get_files_from_dir_recursive(folder_path);
+          let library_name = item.library_name;
+          for (let i = 0; i < files_list_array.length; ++i) {
+            if (library_name === ""){
+              library_name = "";
+            }
+            this.edam_project_manager.add_file(project_name, files_list_array[i], false, "", library_name);
+            if (this.edam_project_manager.get_number_of_files_of_project(project_name) === 1) {
+              this.set_top_from_name(project_name, library_name, value[i].fsPath);
+            }
+          }
+          
           this.refresh_lint();
           this.update_tree();
         });

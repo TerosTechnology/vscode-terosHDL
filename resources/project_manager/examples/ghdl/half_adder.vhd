@@ -3,10 +3,11 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity half_adder is 
-  port (a, b : in std_logic;
-        sum, carry : inout std_logic
-    );
+entity half_adder is
+  port (
+    a, b : in std_logic; -- example
+    sum, carry : inout std_logic
+  );
 end half_adder;
 
 architecture arch of half_adder is

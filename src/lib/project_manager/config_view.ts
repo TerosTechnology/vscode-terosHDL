@@ -32,6 +32,7 @@ export default class config_view {
   constructor(context: vscode.ExtensionContext, config: Config.Config) {
     this.context = context;
     this.config = config;
+    vscode.commands.registerCommand("teroshdl.configuration", () => this.open());
   }
 
   async create_viewer() {
@@ -90,7 +91,13 @@ export default class config_view {
 
   set_config(config) {
     this.config.set_config_tool(config);
-    this.close_panel();
+    vscode.commands.executeCommand("teroshdl.formatter.vhdl.set_config");
+    vscode.commands.executeCommand("teroshdl.formatter.verilog.set_config");
+    vscode.commands.executeCommand("teroshdl_tree_view.refresh_tests");
+    vscode.commands.executeCommand("teroshdl.documenter.set_config");
+    vscode.commands.executeCommand("teroshdl.linter.linter.vhdl.set_config");
+    vscode.commands.executeCommand("teroshdl.linter.linter.verilog.set_config");
+    vscode.commands.executeCommand("teroshdl.linter.linter.systemverilog.set_config");
   }
 
   close_panel() {
@@ -111,10 +118,6 @@ export default class config_view {
 
   open() {
     this.create_viewer();
-  }
-
-  private show_export_message(path_full) {
-    vscode.window.showInformationMessage(`Schematic saved in ${path_full} 😊`);
   }
 
   public set_config_to_view(config) {

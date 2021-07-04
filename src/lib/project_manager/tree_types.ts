@@ -219,9 +219,15 @@ export class Build_item extends vscode.TreeItem {
       this.children = children;
       this.contextValue = "build_source";
   
+      const fs = require('fs');
       let path_icon_light = path_lib.join(__filename, "..", "..", "..", "..", "resources", "light", "archive.svg");;
       let path_icon_dark = path_lib.join(__filename, "..", "..", "..", "..", "resources", "dark", "archive.svg");;
-  
+		  //Folder
+      if (fs.existsSync(label) && fs.lstatSync(label).isDirectory()){
+        path_icon_light = path_lib.join(__filename, "..", "..", "..", "..", "resources", "light", "folder.svg");;
+        path_icon_dark = path_lib.join(__filename, "..", "..", "..", "..", "resources", "dark", "folder.svg");;
+      }
+
       this.iconPath = {
         light: path_icon_light,
         dark: path_icon_dark,

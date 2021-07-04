@@ -128,7 +128,7 @@ export class Dependency extends vscode.TreeItem {
 			title: "Select Node",
 			arguments: [this],
 		};
-	}
+		}
 
 	iconPath = {
 		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),

@@ -50,7 +50,7 @@ export class Config_reader {
     }
   }
   
-  get_config_fiels(field){
+  get_config_fields(field){
     let config = this.read_file_config();
     let config_tool = config?.config.config_tool.config;
     for (let i = 0; i < config_tool.length; i++) {
@@ -63,17 +63,65 @@ export class Config_reader {
     }
   }
 
+  get_header_path(){
+    let field = this.get_config_fields('general');
+    return field.header_file_path;
+  }
+
   get_config_python_path(){
-    let field = this.get_config_fiels('general');
+    let field = this.get_config_fields('general');
     return field.pypath;
   }
 
   get_config_documentation(){
-    this.read_file_config()
     let pypath = this.get_config_python_path();
-    let field = this.get_config_fiels('documentation');
+    let field = this.get_config_fields('documentation');
     field.pypath = pypath;
     return field;
+  }
+
+  get_linter_name(lang, linter_type){
+    let field_linter = this.get_config_fields('linter');
+    let selected_linter = '';
+    if (lang === 'verilog' && linter_type === 'style'){
+      selected_linter = field_linter.style_verilog;
+    }
+    else if (lang === 'vhdl'){
+      selected_linter = field_linter.linter_vhdl;
+    }
+    else{
+      selected_linter = field_linter.linter_verilog;
+    }
+    return selected_linter;
+  }
+
+  get_formatter_name(lang){
+    let field_linter = this.get_config_fields('formatter');
+    let selected_formatter = '';
+    if (lang === 'vhdl'){
+      selected_formatter = field_linter.formatter_vhdl;
+    }
+    else{
+      selected_formatter = field_linter.formatter_verilog;
+    }
+    return selected_formatter;
+  }
+
+  get_formatter_config(){
+    let field_linter = this.get_config_fields('formatter');
+    return field_linter;
+  }
+
+  get_linter_config(lang, linter_type){
+    let linter_name = this.get_linter_name(lang, linter_type);
+    if (linter_name === 'xvhdl' || linter_name === 'xvlog'){
+      linter_name = 'vivado';
+    }
+    else if(linter_name === 'verible'){
+      linter_name = 'veriblelint';
+    }
+    let field_linter = this.get_config_fields(linter_name);
+    return field_linter;
   }
 
 }

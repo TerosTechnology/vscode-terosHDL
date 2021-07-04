@@ -22,6 +22,7 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as util from "util";
+import * as config_reader_lib from "../utils/config_reader";
 
 export default class Documenter {
   private subscriptions: vscode.Disposable[] | undefined;
@@ -32,20 +33,23 @@ export default class Documenter {
   private current_document;
   private current_path;
   private html_base: string = '';
-  private global_config = {
-    'fsm': true,
-    'signals': 'all',
-    'constants': 'all',
-    'process': 'all',
-    'symbol_vhdl': '',
-    'symbol_verilog': '',
-    'extra_top_space': true
-  };
+  // private global_config = {
+  //   'fsm': true,
+  //   'signals': 'all',
+  //   'constants': 'all',
+  //   'process': 'all',
+  //   'symbol_vhdl': '',
+  //   'symbol_verilog': '',
+  //   'extra_top_space': true
+  // };
   private last_document: vscode.TextDocument | undefined = undefined;
+  private config_reader : config_reader_lib.Config_reader;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, config_reader) {
+    this.config_reader = config_reader;
     this.context = context;
     vscode.workspace.onDidChangeConfiguration(this.force_update_documentation_module, this, this.subscriptions);
+    vscode.commands.registerCommand("teroshdl.documenter.set_config", () => this.set_config());
   }
 
   async init() {
@@ -63,12 +67,6 @@ export default class Documenter {
       this.created_documenter = true;
     }
     return this.documenter;
-  }
-
-  get_symbol(language_id) {
-    let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
-    let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
-    return comment_symbol;
   }
 
   get_language(document): string {
@@ -150,9 +148,6 @@ export default class Documenter {
               this.export_as(message.text);
               console.log(message.text);
               return;
-            case 'set_config':
-              this.set_config(message.config);
-              return;
           }
         },
         undefined,
@@ -160,19 +155,15 @@ export default class Documenter {
       );
     }
     // And set its HTML content
-    this.update_doc(active_document);
+    await this.update_doc(active_document);
   }
 
   get_configuration(){
-    this.global_config.symbol_vhdl = <string>this.get_symbol('vhdl');
-    this.global_config.symbol_verilog = <string>this.get_symbol('verilog');
-    this.global_config.extra_top_space = true;
-
-    return this.global_config;
+    let config = this.config_reader.get_config_documentation();
+    return config;
   }
 
-  set_config(config) {
-    this.global_config = config;
+  set_config() {
     this.force_update_documentation_module();
   }
 
@@ -191,7 +182,6 @@ export default class Documenter {
     preview_html += html_result.html;
 
     this.panel.webview.html = preview_html;
-    await this.panel?.webview.postMessage({ command: "set_config", config: this.global_config });
   }
 
 

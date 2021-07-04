@@ -14,7 +14,7 @@
 		"Linters"
 	],
 	"icon": "resources/images/icon_128_128_circle.png",
-	"homepage": "https://www.terostech.com/",
+	"homepage": "https://terostechnology.github.io/terosHDLdoc/",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/TerosTechnology/vscode-terosHDL"
@@ -93,199 +93,9 @@
 		"configuration": {
 			"title": "teroshdl",
 			"properties": {
-				"teroshdl.linter.vhdl.linter.a": {
-					"description": "Select VHDL linter",
-					"type": "string",
-					"enum": [
-						"GHDL",
-						"ModelSim",
-						"xvhdl",
-						"None"
-					],
-					"default": "GHDL"
-				},
-				"teroshdl.global.python3-path": {
-					"description": "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path.",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.vhdl.linter.ghdl.arguments": {
-					"description": "GHDL arguments",
-					"type": "string",
-					"default": "--std=08"
-				},
-				"teroshdl.linter.vhdl.linter.ghdl.path": {
-					"description": "GHDL path",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.vhdl.linter.modelsim.arguments": {
-					"description": "ModelSim arguments",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.vhdl.linter.modelsim.path": {
-					"description": "ModelSim path",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.vhdl.linter.xvhdl.arguments": {
-					"description": "xvhdl arguments",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.vhdl.linter.xvhdl.path": {
-					"description": "xvhdl path",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter_style.verilog.linter.a": {
-					"description": "Select Verilog linter style",
-					"type": "string",
-					"enum": [
-						"verible",
-						"None"
-					],
-					"default": "verible"
-				},
-				"teroshdl.linter.verilog.linter.a": {
-					"description": "Select verilog linter",
-					"type": "string",
-					"enum": [
-						"Icarus",
-						"ModelSim",
-						"Verilator",
-						"xvlog",
-						"None"
-					],
-					"default": "Icarus"
-				},
-				"teroshdl.linter.verilog.linter.icarus.arguments": {
-					"description": "Icarus arguments",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.verilog.linter.icarus.path": {
-					"description": "Icarus path",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.verilog.linter.verilator.arguments": {
-					"description": "Verilator arguments",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.verilog.linter.verilator.path": {
-					"description": "Verilator path",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.verilog.linter.xvlog.arguments": {
-					"description": "xvlog arguments",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.linter.verilog.linter.xvlog.path": {
-					"description": "xvlog path",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.documenter.header_file_path": {
-					"markdownDescription": "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template",
-					"type": "string",
-					"default": ""
-				},
-				"teroshdl.documenter.vhdl.symbol": {
-					"markdownDescription": "Special symbol at the begin of the comment symbol to extract documentation. Example: ```--! Code comment```",
-					"type": "string",
-					"default": "!"
-				},
-				"teroshdl.documenter.verilog.symbol": {
-					"markdownDescription": "Special symbol at the begin of the comment symbol to extract documentation. Example: ```//! Code comment```",
-					"type": "string",
-					"default": "!"
-				},
-				"teroshdl.formatter.verilog.useTabs": {
-					"description": "Use tabs instead of spaces for indentation.",
-					"type": "boolean",
-					"default": false
-				},
-				"teroshdl.formatter.verilog.indentSize": {
-					"description": "Indentation size, in characters.",
-					"type": "integer",
-					"default": 2
-				},
-				"teroshdl.formatter.verilog.engine": {
-					"description": "Select verilog formatter",
-					"type": "string",
-					"enum": [
-						"iStyle",
-						"s3sv"
-					],
-					"default": "iStyle"
-				},
-				"teroshdl.formatter.verilog.istyle.style": {
-					"description": "Predefined Styling options",
-					"type": "string",
-					"default": "ANSI",
-					"enum": [
-						"ANSI",
-						"Kernighan&Ritchie",
-						"GNU",
-						"Indent only"
-					]
-				},
-				"teroshdl.formatter.verilog.s3sv.oneBindPerLine": {
-					"description": "Force one binding per line in instanciations statements.",
-					"type": "boolean",
-					"default": true
-				},
-				"teroshdl.formatter.verilog.s3sv.oneDeclarationPerLine": {
-					"description": "Force one declaration per line.",
-					"type": "boolean",
-					"default": false
-				},
-				"teroshdl.formatter.vhdl.engine": {
-					"description": "Select vhdl formatter",
-					"type": "string",
-					"enum": [
-						"Standalone"
-					],
-					"default": "Standalone"
-				},
-				"teroshdl.formatter.vhdl.type.standalone.keyword-case": {
-					"description": "Keyword case",
-					"type": "string",
-					"default": "LowerCase",
-					"enum": [
-						"LowerCase",
-						"UpperCase"
-					]
-				},
-				"teroshdl.formatter.vhdl.type.standalone.align-comments": {
-					"description": "Align comments",
-					"type": "boolean",
-					"default": false
-				},
-				"teroshdl.formatter.vhdl.type.standalone.type-name-case": {
-					"description": "Type name case",
-					"type": "string",
-					"default": "LowerCase",
-					"enum": [
-						"LowerCase",
-						"UpperCase"
-					]
-				},
-				"teroshdl.formatter.vhdl.type.standalone.indentation": {
-					"description": "Indentation",
-					"type": "string",
-					"default": "  "
-				},
-				"teroshdl.formatter.vhdl.type.standalone.align-generic-port": {
-					"description": "Align signs in generics and ports.",
-					"type": "boolean",
-					"default": true
-				}
+				"message": {
+					"markdownDescription": "TerosHDL settings have been moved. Open TerosHDL configuration menu from [project manager](https://terostechnology.github.io/terosHDLdoc/) or from VSCode [command palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette): `TerosHDL: Open configuration menu` . **More info in the documentation** [page](https://terostechnology.github.io/terosHDLdoc/)"
+				  }
 			}
 		},
 		"menus": {
@@ -731,6 +541,14 @@
 				}
 			},
 			{
+				"command": "teroshdl.configuration",
+				"title": "TerosHDL: Open configuration menu",
+				"icon": {
+					"light": "resources/light/file-code.svg",
+					"dark": "resources/dark/file-code.svg"
+				}
+			},
+			{
 				"command": "teroshdl.state_machine.designer",
 				"title": "State machine designer"
 			},
@@ -871,14 +689,14 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run build:syntax & npm run compile",
+		"vscode:prepublish": "npm run build-prepare & npm run build:syntax & npm run compile",
 		"build:syntax": "js-yaml ./syntaxes/vhdl/vhdl.tmLanguage.yml > ./syntaxes/vhdl/vhdl.tmLanguage.json",
-		"compile": "npm run build-config-html & tsc -p ./",
+		"compile": "tsc -p ./",
 		"lint": "eslint src --ext ts",
-		"watch": "tsc -watch -p ./",
+		"watch": "npm run build-prepare & tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
-		"build-config-html": "cd ./resources/project_manager; ./generate_html.py"
+		"build-prepare": "cd ./resources/project_manager; ./generate_html.py"
 	},
 	"dependencies": {
 		"@octokit/rest": "16.36.0",
