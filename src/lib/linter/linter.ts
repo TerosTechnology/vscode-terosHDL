@@ -52,13 +52,16 @@ export default class Lint_manager {
         let linter_name = this.config_reader.get_linter_name(normalized_lang, this.linter_type).toLowerCase();
         this.linter_name = linter_name;
 
-        let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
-        let linter_path = linter_config.installation_path;
-        this.linter_path = linter_path;
-        let linter_arguments = '';
-        this.linter_arguments = linter_arguments;
-        
-        this.linter_enable = true;
+        if (linter_name !== 'none'){
+            let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
+            let linter_path = linter_config.installation_path;
+            this.linter_path = linter_path;
+            let linter_arguments = '';
+            this.linter_arguments = linter_arguments;
+        }
+        else{
+            this.linter_enable = false;
+        }
     }
 
     config_linter() {

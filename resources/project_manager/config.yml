@@ -592,10 +592,10 @@ vivado:
             none: "Only synthesis"
     jtag_freq:
         description: "The frequency for jtag communication."
-        type: input
+        type: input_integer
     hw_target:
         description: "Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A."
-        type: input_integer
+        type: input
 
 vunit:
     title: Vunit

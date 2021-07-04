@@ -40,6 +40,24 @@ def generate_input(option, name, tab_name):
     return html
 
 
+def generate_input_comma(option, name, tab_name):
+    id_name = f"{tab_name}_{name}"
+    description = option['description']
+    html = f"  <label>{description} <b style=\"color:#c22200\">(Comma separated).</b></label>\n"
+    html += f"  <input type='input' id='{id_name}' class='radio-button'>\n"
+    html += "  <br><br>\n"
+    return html
+
+
+def generate_input_number(option, name, tab_name):
+    id_name = f"{tab_name}_{name}"
+    description = option['description']
+    html = f"  <label>{description}</label>\n"
+    html += f"  <input type='number' id='{id_name}' class='radio-button'>\n"
+    html += "  <br><br>\n"
+    return html
+
+
 def generate_select(option, name, tab_name):
     id_name = f"{tab_name}_{name}"
     description = option['description']
@@ -100,8 +118,12 @@ def generate_html_tab(tab, tab_name, doc):
             option_type = option['type']
             if (option_type == 'checkbox'):
                 html += generate_checkbox(option, option_name, tab_name)
-            elif (option_type == 'input' or option_type == 'input_comma' or option_type == 'input_integer'):
+            elif (option_type == 'input'):
                 html += generate_input(option, option_name, tab_name)
+            elif (option_type == 'input_integer'):
+                html += generate_input_number(option, option_name, tab_name)
+            elif (option_type == 'input_comma'):
+                html += generate_input_comma(option, option_name, tab_name)
             elif (option_type == 'select'):
                 html += generate_select(option, option_name, tab_name)
             elif (option_type == 'select_tool'):
