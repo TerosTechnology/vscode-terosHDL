@@ -24,6 +24,7 @@ const path_lib = require('path');
 const shell = require('shelljs');
 const fs = require('fs');
 const tool_base = require('./tool_base');
+import * as Output_channel_lib from '../../utils/output_channel';
 
 export interface TestItem {
   test_type: string | undefined,
@@ -40,8 +41,8 @@ export class Edalize extends tool_base.Tool_base{
   private complete_waveform_path = '';
   private childp;
 
-  constructor(context) {
-    super(context);
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
+    super(context, output_channel);
     this.waveform_path = `${__dirname}${this.folder_sep}waveform`;
   }
 
@@ -49,6 +50,7 @@ export class Edalize extends tool_base.Tool_base{
     let normalized_edam = this.normalize_edam(edam);
     this.output_channel.clear();
     let simulator_name = this.get_simulator_from_edam(normalized_edam);
+    let installation_path = this.get_installation_path_from_edam(normalized_edam);
     let project_name = edam.name;
     let top_level = edam.toplevel;
     let simulator_gui_support = this.check_gui_support(simulator_name, gui);
@@ -59,7 +61,7 @@ export class Edalize extends tool_base.Tool_base{
     let edam_json = JSON.stringify(normalized_edam);
     fs.writeFileSync(edam_path, edam_json);
 
-    let command = await this.get_command(edam_path, simulator_name, normalized_edam);
+    let command = await this.get_command(edam_path, simulator_name, installation_path, normalized_edam);
     if (command === undefined) {
       return [];
     }
@@ -188,7 +190,15 @@ export class Edalize extends tool_base.Tool_base{
     }
   }
 
-  async get_command(edam_path, simulator, edam) {
+  get_installation_path_from_edam(edam){
+    let config_tool = edam.tool_options;
+    for (let property in config_tool) {
+      let installation_path = config_tool[property].installation_path;
+      return installation_path;
+    }
+  }
+
+  async get_command(edam_path, simulator, installation_path, edam) {
     let python3_edalize_script = `${path_lib.sep}resources${path_lib.sep}project_manager${path_lib.sep}run_edalize.py`;
     python3_edalize_script = this.context.asAbsolutePath(python3_edalize_script);
     let python3_path_exec = await this.get_python3_path();
@@ -196,7 +206,7 @@ export class Edalize extends tool_base.Tool_base{
       return undefined;
     }
     let simulator_config = this.get_simulator_config(simulator, edam);
-    let command = `${simulator_config} ${python3_path_exec} ${python3_edalize_script} ${edam_path} ${simulator}\n`;
+    let command = `${simulator_config} ${python3_path_exec} "${python3_edalize_script}" "${edam_path}" "${simulator}" "${installation_path}"`;
 
     return command;
   }

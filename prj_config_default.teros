@@ -247,7 +247,7 @@
           "veribleformat": {
             "installation_path": "",
             "verible_format_args": [
-              ""
+              "--inplace"
             ]
           }
         },

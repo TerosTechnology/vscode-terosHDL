@@ -23,6 +23,7 @@ import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as util from "util";
 import * as config_reader_lib from "../utils/config_reader";
+import * as Output_channel_lib from '../../utils/output_channel';
 
 export default class Documenter {
   private subscriptions: vscode.Disposable[] | undefined;
@@ -33,19 +34,13 @@ export default class Documenter {
   private current_document;
   private current_path;
   private html_base: string = '';
-  // private global_config = {
-  //   'fsm': true,
-  //   'signals': 'all',
-  //   'constants': 'all',
-  //   'process': 'all',
-  //   'symbol_vhdl': '',
-  //   'symbol_verilog': '',
-  //   'extra_top_space': true
-  // };
+
   private last_document: vscode.TextDocument | undefined = undefined;
   private config_reader : config_reader_lib.Config_reader;
+  private output_channel : Output_channel_lib.Output_channel;
 
-  constructor(context: vscode.ExtensionContext, config_reader) {
+  constructor(context: vscode.ExtensionContext, config_reader, output_channel: Output_channel_lib.Output_channel) {
+    this.output_channel = output_channel;
     this.config_reader = config_reader;
     this.context = context;
     vscode.workspace.onDidChangeConfiguration(this.force_update_documentation_module, this, this.subscriptions);
@@ -146,7 +141,6 @@ export default class Documenter {
           switch (message.command) {
             case 'export':
               this.export_as(message.text);
-              console.log(message.text);
               return;
           }
         },
@@ -243,6 +237,7 @@ export default class Documenter {
 
   async export_as(type: string) {
     const path_lib = require('path');
+    let file_input = this.current_path;
     // /one/two/five.h --> five.h
     let basename = path_lib.basename(this.current_path);
     // five.h --> .h
@@ -257,6 +252,7 @@ export default class Documenter {
     let code = this.get_document_code(this.current_document);    
     let documenter = await this.get_documenter();
     let configuration = this.get_configuration();
+
     
     if (type === "markdown") {
       let filter = { 'markdown': ['md'] };
@@ -266,6 +262,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
+          this.print_documenter_log(configuration, file_input, path_norm, type);
           documenter.save_markdown(code, language_id, configuration, path_norm);
         }
       });
@@ -278,6 +275,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
+          this.print_documenter_log(configuration, file_input, path_norm, type);
           documenter.save_html(code, language_id, configuration, path_norm);
         }
       });
@@ -290,6 +288,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
+          this.print_documenter_log(configuration, file_input, path_norm, type);
           documenter.save_svg(code, language_id, configuration, path_norm);
         }
       });
@@ -302,6 +301,7 @@ export default class Documenter {
         if (fileInfos?.path !== undefined) {
           let path_norm = this.normalize_path(fileInfos?.path);
           this.show_export_message(path_norm);
+          this.print_documenter_log(configuration, file_input, path_norm, type);
           documenter.save_latex(path_norm);
         }
       });
@@ -311,6 +311,9 @@ export default class Documenter {
     }
   }
 
+  print_documenter_log(configuration, file_input, file_output, type){
+    this.output_channel.print_documenter_configurtion(configuration, file_input, file_output, type);
+  }
 
   private show_export_message(path_exp) {
     vscode.window.showInformationMessage(`Documentation saved in ${path_exp} 😊`);

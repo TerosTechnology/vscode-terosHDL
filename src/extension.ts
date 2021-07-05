@@ -42,8 +42,12 @@ import * as formatter from "./lib/formatter/formatter_manager";
 // Number hover
 import * as number_hover from "./lib/number_hover/number_hover";
 //RustHDL
-import * as rusthdl from './lib/rusthdl/rust_hdl';
+import * as rusthdl_lib from './lib/rusthdl/rust_hdl';
+//Utils
+import * as Output_channel_lib from './lib/utils/output_channel';
 
+let output_channel : Output_channel_lib.Output_channel;
+let rusthdl : rusthdl_lib.Rusthdl_lsp;
 let linter_vhdl;
 let linter_verilog;
 let linter_systemverilog;
@@ -100,6 +104,9 @@ export async function activate(context: vscode.ExtensionContext) {
         console.log(e);
     }
 
+    //TerosHDL console
+    output_channel = new Output_channel_lib.Output_channel();
+
     //Context
     current_context = context;
     /**************************************************************************/
@@ -133,7 +140,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Documenter
     /**************************************************************************/
-    documenter = new documentation.default(context, config_reader);
+    documenter = new documentation.default(context, config_reader, output_channel);
     await documenter.init();
     context.subscriptions.push(
         vscode.commands.registerCommand(
@@ -193,19 +200,20 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // State machine designer
     /**************************************************************************/
-    state_machine_designer_manager = new state_machine_designer_t.default(context);
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'teroshdl.state_machine.designer',
-            async () => {
-                await state_machine_designer_manager.open_viewer();
-            }
-        )
-    );
+    // state_machine_designer_manager = new state_machine_designer_t.default(context);
+    // context.subscriptions.push(
+    //     vscode.commands.registerCommand(
+    //         'teroshdl.state_machine.designer',
+    //         async () => {
+    //             await state_machine_designer_manager.open_viewer();
+    //         }
+    //     )
+    // );
     /**************************************************************************/
     // Language providers
     /**************************************************************************/
-    let is_alive = await rusthdl.run_rusthdl(context);
+    rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
+    let is_alive = await rusthdl.run_rusthdl();
     // document selector
     let verilogSelector: vscode.DocumentSelector = [
         { scheme: 'file', language: 'verilog' },
@@ -251,9 +259,9 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(hover_numbers_vhdl);
     context.subscriptions.push(hover_numbers_verilog);
     /**************************************************************************/
-    // Tree view
+    // Project manager
     /**************************************************************************/
-    project_manager = new project_manager_lib.Project_manager(context);
+    project_manager = new project_manager_lib.Project_manager(context, output_channel);
     // /**************************************************************************/
     // Linter
     /**************************************************************************/

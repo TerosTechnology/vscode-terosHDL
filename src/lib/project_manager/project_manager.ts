@@ -33,6 +33,7 @@ import * as utils from "./utils";
 import * as utils_vscode from "../utils/utils";
 import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
 import { Hdl_dependencies_tree } from './hdl_dependencies_tree';
+import * as Output_channel_lib from '../utils/output_channel';
 
 const path_lib = require("path");
 const fs = require("fs");
@@ -59,13 +60,15 @@ export class Project_manager {
   private  dependencies_viewer_manager: Dependencies_viewer.default | undefined;
   private hdl_dependencies_provider : Hdl_dependencies_tree;
   private context;
+  private output_channel : Output_channel_lib.Output_channel;
 
-  constructor(context: vscode.ExtensionContext) {
+
+  constructor(context: vscode.ExtensionContext, output_channel) {
+    this.output_channel = output_channel;
     this.context = context;
-
-    this.vunit = new Vunit.Vunit(context);
-    this.cocotb = new Cocotb.Cocotb(context);
-    this.edalize = new Edalize.Edalize(context);
+    this.vunit = new Vunit.Vunit(context, output_channel);
+    this.cocotb = new Cocotb.Cocotb(context, output_channel);
+    this.edalize = new Edalize.Edalize(context, output_channel);
     this.edam_project_manager = new Edam.Edam_project_manager();
     this.config_file = new Config.Config(context.extensionPath);
     this.workspace_folder = this.config_file.get_workspace_folder();
@@ -148,17 +151,18 @@ export class Project_manager {
       this.init = false;
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
-    await this.save_toml();
-    vscode.commands.executeCommand("vhdlls.restart");
+    this.save_toml();
+    vscode.commands.executeCommand("teroshdl.vhdlls.restart");
   }
 
-  async save_toml() {
+  save_toml () : string[]{
+    let files_toml : string[] = [];
     let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
     let libraries = this.get_active_project_libraries();
     let toml = "[libraries]\n\n";
     if (libraries !== undefined){
       for (let i = 0; i < libraries.length; i++) {
-        const library = libraries[i];
+        let library = libraries[i];
         let files_in_library = "";
         for (let j = 0; j < library.files.length; j++) {
           const file_in_library = library.files[j];
@@ -168,16 +172,21 @@ export class Project_manager {
           let lang = jsteros.Utils.get_lang_from_path(filename);
           if (lang === 'vhdl'){
             files_in_library += `  '${file_in_library}',\n`;
+            files_toml.push(file_in_library);
           }
         }
         let lib_name = library.name;
         if (lib_name === "") {
           lib_name = "none";
         }
+        if (library.name === undefined || library.name === ''){
+          library.name = 'work';
+        }
         toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
       }
     }
     fs.writeFileSync(file_path, toml);
+    return files_toml;
   }
 
   open_file(item) {
@@ -798,6 +807,7 @@ export class Project_manager {
     const doc_types = ["Save as HTML", "Save as Markdown"];
     let project_name = item.project_name;
     let prj = this.edam_project_manager.get_project(project_name);
+    prj.cli_bar = new Edam.Cli_logger(this.output_channel);
 
     vscode.window.showQuickPick(doc_types, {placeHolder: "Choose output format",}).then((lib_type) => {
       if (lib_type === undefined){
@@ -812,14 +822,21 @@ export class Project_manager {
         let output_dir = output_path[0].fsPath;
         //Get documentation configuration
         let config = this.config_view.get_config_documentation();
-
+        this.output_channel.print_project_documenter_configurtion(config, 'Project', output_dir, lib_type);
         // HTML
+        let element_this = this;
         if(lib_type === doc_types[0]){
-          this.generate_and_save_documentation(prj, output_dir, 'html', config);
+          this.generate_and_save_documentation(prj, output_dir, 'html', config).then(function(result){
+              element_this.output_channel.print_project_documenter_result(result);
+            }
+          );
         }
         // Markdown
         else if(lib_type === doc_types[1]){
-          this.generate_and_save_documentation(prj, output_dir, 'markdown', config);
+          this.generate_and_save_documentation(prj, output_dir, 'markdown', config).then(function(result){
+              element_this.output_channel.print_project_documenter_result(result);
+            }
+          );
         }
       });
     });
@@ -833,13 +850,15 @@ export class Project_manager {
     config.symbol_vhdl = comment_symbol_vhdl;
     config.symbol_verilog = comment_symbol_verilog;
 
+    let result = {};
     if (type === "markdown") {
-      await project_manager.save_markdown_doc(output_path, config);
+      result = await project_manager.save_markdown_doc(output_path, config);
     }
     else {
-      await project_manager.save_html_doc(output_path, config);
+      result = await project_manager.save_html_doc(output_path, config);
     }
     utils.show_message(`The documentation has been generated in: ${output_path}`);
+    return result;
   }
 
   async add_library(item) {

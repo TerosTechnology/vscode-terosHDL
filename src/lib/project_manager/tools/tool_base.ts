@@ -23,20 +23,21 @@ import * as vscode from 'vscode';
 const path_lib = require('path');
 const shell = require('shelljs');
 const os = require('os');
+import * as Output_channel_lib from '../../utils/output_channel';
 
 export class Tool_base {
-    private output_channel;
     private exp: string = '';
     private more: string = '';
     private switch: string = '';
     private folder_sep: string = '';
     private childp;
-    private context;
+    private context: vscode.ExtensionContext;
     private python_path: string = '';
+    private output_channel : Output_channel_lib.Output_channel;
 
-    constructor(context){
+    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
         this.context = context;
-        this.output_channel = vscode.window.createOutputChannel('TerosHDL');
+        this.output_channel = output_channel;
         this.exp = "export ";
         this.more = ";";
         this.switch = '';

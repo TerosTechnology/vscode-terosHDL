@@ -262,10 +262,15 @@ export class Edam_project_manager {
   }
 }
 
-class Cli_logger {
+export class Cli_logger {
   output_channel;
-  constructor(){
-    this.output_channel = vscode.window.createOutputChannel('TerosHDL');
+  constructor(output_channel){
+    if (output_channel === undefined){
+      this.output_channel = vscode.window.createOutputChannel('TerosHDL');
+    }
+    else{
+      this.output_channel = output_channel;
+    }
   }
 
   start(value0){

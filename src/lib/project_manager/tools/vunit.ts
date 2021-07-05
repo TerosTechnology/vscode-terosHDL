@@ -25,12 +25,13 @@ const os = require('os');
 const shell = require('shelljs');
 const fs = require('fs');
 const tool_base = require('./tool_base');
+import * as Output_channel_lib from '../../utils/output_channel';
 
 export class Vunit extends tool_base.Tool_base{
   private childp;
 
-  constructor(context) {
-    super(context);
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
+    super(context, output_channel);
   }
 
   async run_simulation(selected_tool_configuration, all_tool_configuration, runpy_path,
