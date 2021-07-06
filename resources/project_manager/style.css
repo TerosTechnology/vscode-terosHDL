@@ -72,6 +72,20 @@ select{
   float: right;
 }
 
+#button_apply_close {
+  background-color: #4c7aaf; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  float: right;
+}
+
 #button_cancel {
   outline:none;
   background-color: #ff5a31; /* Green */

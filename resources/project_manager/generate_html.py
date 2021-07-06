@@ -161,6 +161,15 @@ def generate_script_switch_ab():
     let config = get_config();
 
     vscode.postMessage({
+        command: 'set_config_and_close',
+        config : config
+    });
+  }
+
+  function send_config(){
+    let config = get_config();
+
+    vscode.postMessage({
         command: 'set_config',
         config : config
     });
@@ -336,7 +345,8 @@ def main():
     html += generate_html_button_tab(doc)
     html += generate_html_tabs(doc)
     html += '<button id="button_cancel" class="button" type="button" onclick="close_panel(event)">Close</button>'
-    html += '<button id="button_apply" class="button" type="button" onclick="send_config_and_close(event)">Apply</button>'
+    html += '<button id="button_apply" class="button" type="button" onclick="send_config(event)">Apply</button>'
+    html += '<button id="button_apply_close" class="button" type="button" onclick="send_config_and_close(event)">Apply and close</button>'
     html += '<script>'
     html += generate_script_switch_ab()
     html += generate_get_config(doc)

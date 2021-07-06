@@ -61,6 +61,9 @@ export default class config_view {
           case 'set_config':
             this.set_config(message.config);
             return;
+          case 'set_config_and_close':
+            this.set_config_and_close(message.config);
+            return;
           case 'close':
             this.close_panel();
             return;
@@ -87,6 +90,11 @@ export default class config_view {
     }
     catch (e) {
     }
+  }
+
+  set_config_and_close(config) {
+    this.set_config(config);
+    this.close_panel();
   }
 
   set_config(config) {
