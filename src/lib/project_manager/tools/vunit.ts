@@ -34,6 +34,19 @@ export class Vunit extends tool_base.Tool_base{
     super(context, output_channel);
   }
 
+  add_simulator_to_path(simulator_install_path:string){
+    if (simulator_install_path === ''){
+      return;
+    }
+    if (os.platform() === "win32") {
+      shell.env["PATH"] += `;${simulator_install_path}`;
+    }
+    else{
+      shell.env["PATH"] += `;${simulator_install_path}`;
+    }
+  }
+
+
   async run_simulation(selected_tool_configuration, all_tool_configuration, runpy_path,
     tests: string[] = [], gui = false) {
     this.output_channel.clear();
@@ -45,9 +58,14 @@ export class Vunit extends tool_base.Tool_base{
       return results;
     }
 
-    let simulator = options_vunit.simulator;
+    let simulator = options_vunit.vunit_simulator;
     let simulator_install_path = '';
-    let extra_options = ` ${options_vunit.options} `;
+    let extra_options = '';
+    for (let i = 0; i < options_vunit.vunit_options.length; i++) {
+      const element = options_vunit.vunit_options[i];
+      extra_options += ` ${element} `;
+    }
+
     for (let i = 0; i < all_tool_configuration.length; i++) {
       const tool = all_tool_configuration[i];
       let tool_name = '';
@@ -60,6 +78,8 @@ export class Vunit extends tool_base.Tool_base{
         break;
       }
     }
+
+    this.add_simulator_to_path(simulator_install_path);
 
     let runpy_dirname = path_lib.dirname(runpy_path);
     let runpy_filename = path_lib.basename(runpy_path);
@@ -103,6 +123,9 @@ export class Vunit extends tool_base.Tool_base{
       extra_options = '';
       gui_cmd = '--gui';
     }
+    if (extra_options === undefined){
+      extra_options = '';
+    }
 
     let simulator_config = this.get_simulator_config(simulator, simulator_install_path);
     let go_to_dir = `cd ${this.switch} ${runpy_dirname}${this.more}`;
@@ -113,11 +136,15 @@ export class Vunit extends tool_base.Tool_base{
   }
 
   get_simulator_config(simulator_name, simulator_install_path) {
+    this.add_simulator_to_path(simulator_install_path);
+
+
     let simulator_name_up = simulator_name.toUpperCase();
     let simulator_name_low = simulator_name.toLowerCase();
+    let simulator_cmd = `${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more}`;
 
-    let simulator_cmd = `${this.exp} VUNIT_${simulator_name_up}_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more}`;
-
+    // let simulator_cmd = `${this.exp} VUNIT_${simulator_name_up}_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more}`;
+    // let simulator_cmd = ''
     return simulator_cmd;
   }
 
