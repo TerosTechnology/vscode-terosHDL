@@ -1085,17 +1085,27 @@ export class Project_manager {
           }
           let element = this;
           this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(project_path)).then(function(value){
-            if (element.edam_project_manager.get_number_of_projects() === 1) {
-              let prj_name = element.edam_project_manager.projects[0].name;
+            if (prj_json['name'] !== undefined) {
+              let prj_name = prj_json['name'];
               element.select_project_from_name(prj_name);
             }
+            element.set_selected_tool_from_json_project(prj_json);
             element.update_tree();
             element.refresh_lint();
-            let msg = `Make sure you have selected ${picker_value} in the project manager configuration.`;
+            let msg = `Set ${picker_value} settings in the project manager configuration.`;
             utils.show_message(msg, 'project_manager');
           });
         }
     }
+  }
+
+  set_selected_tool_from_json_project(prj){
+    let tool_options = prj.tool_options;
+    let tool = '';
+    for(let attributename in tool_options){
+      tool = attributename;
+    }  
+    this.config_file.set_tool(tool);
   }
 }
 

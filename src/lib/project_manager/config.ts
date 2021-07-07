@@ -164,6 +164,21 @@ export class Config {
     return this.config['config_tool'].config;
   }
 
+  set_tool(tool){
+    // let all_tools = this.get_config_tool();
+    let config_tool = this.config['config_tool'].config;
+    for (let i = 0; i < config_tool.length; i++) {
+      const element = config_tool[i];
+      for(let attributename in element){
+        if (attributename === 'general'){
+          element[attributename].select_tool = tool;
+          break;
+        }
+      }     
+    }
+    this.save_current_config();
+  }
+
   get_config_tool() {
     let config_tool = this.config['config_tool'].config;
     for (let i = 0; i < config_tool.length; i++) {
