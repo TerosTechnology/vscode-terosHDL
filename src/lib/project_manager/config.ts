@@ -176,6 +176,11 @@ export class Config {
     }
   }
 
+  get_all_config_tool() {
+    let config_tool = this.config['config_tool'].config;
+    return config_tool;
+  }
+
   get_config_of_selected_tool() {
     try {
       let selected_tool = this.get_config_tool();

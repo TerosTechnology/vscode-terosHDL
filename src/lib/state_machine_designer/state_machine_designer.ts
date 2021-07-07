@@ -41,7 +41,7 @@ export default class State_machine_designer_manager {
     this.panel = vscode.window.createWebviewPanel(
       'state_machine_viewer',
       'State machine designer',
-      vscode.ViewColumn.One,
+      vscode.ViewColumn.Two,
       {
         enableScripts: true,
         enableCommandUris: true,

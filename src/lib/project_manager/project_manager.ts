@@ -373,7 +373,7 @@ export class Project_manager {
 
   async run_vunit_tests(tests, gui) {
     let selected_tool_configuration = this.config_file.get_config_of_selected_tool();
-    let all_tool_configuration = this.config_file.get_config_tool();
+    let all_tool_configuration = this.config_file.get_all_config_tool();
 
     let selected_project = this.edam_project_manager.selected_project;
     let prj = this.edam_project_manager.get_project(selected_project);

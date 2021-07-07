@@ -34,19 +34,6 @@ export class Vunit extends tool_base.Tool_base{
     super(context, output_channel);
   }
 
-  add_simulator_to_path(simulator_install_path:string){
-    if (simulator_install_path === ''){
-      return;
-    }
-    if (os.platform() === "win32") {
-      shell.env["PATH"] += `;${simulator_install_path}`;
-    }
-    else{
-      shell.env["PATH"] += `;${simulator_install_path}`;
-    }
-  }
-
-
   async run_simulation(selected_tool_configuration, all_tool_configuration, runpy_path,
     tests: string[] = [], gui = false) {
     this.output_channel.clear();
@@ -78,8 +65,6 @@ export class Vunit extends tool_base.Tool_base{
         break;
       }
     }
-
-    this.add_simulator_to_path(simulator_install_path);
 
     let runpy_dirname = path_lib.dirname(runpy_path);
     let runpy_filename = path_lib.basename(runpy_path);
@@ -136,15 +121,19 @@ export class Vunit extends tool_base.Tool_base{
   }
 
   get_simulator_config(simulator_name, simulator_install_path) {
-    this.add_simulator_to_path(simulator_install_path);
-
-
-    let simulator_name_up = simulator_name.toUpperCase();
     let simulator_name_low = simulator_name.toLowerCase();
-    let simulator_cmd = `${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more}`;
 
-    // let simulator_cmd = `${this.exp} VUNIT_${simulator_name_up}_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more}`;
-    // let simulator_cmd = ''
+    let simulator_path_cmd = '';
+
+    //Add simulator install path to system path
+    if (os.platform() === "win32" && simulator_install_path !== '') {
+      simulator_path_cmd = `export PATH="$PATH;${simulator_install_path}"${this.more}`;
+    }
+    else if(simulator_install_path !== ''){
+      simulator_path_cmd = `export PATH="$PATH:${simulator_install_path}"${this.more}`;
+    }
+
+    let simulator_cmd = `${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more} ${simulator_path_cmd} `;
     return simulator_cmd;
   }
 

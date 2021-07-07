@@ -200,15 +200,15 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // State machine designer
     /**************************************************************************/
-    // state_machine_designer_manager = new state_machine_designer_t.default(context);
-    // context.subscriptions.push(
-    //     vscode.commands.registerCommand(
-    //         'teroshdl.state_machine.designer',
-    //         async () => {
-    //             await state_machine_designer_manager.open_viewer();
-    //         }
-    //     )
-    // );
+    state_machine_designer_manager = new state_machine_designer_t.default(context);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.state_machine.designer',
+            async () => {
+                await state_machine_designer_manager.open_viewer();
+            }
+        )
+    );
     /**************************************************************************/
     // Language providers
     /**************************************************************************/

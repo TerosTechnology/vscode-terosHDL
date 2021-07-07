@@ -93,26 +93,29 @@
         </div>
       </div>
     </div>
+    <div id="config">
+      <label for="config_0">Language:</label>
+      <select id="config_0">
+        <option value="vhdl">VHDL</option>
+        <option value="verilog">Verilog</option>
+      </select>
+      <br>
+      <label id="label_config_1">Clock name:</label>
+      <input class="text_area" id="clock_name" type="text" value="clk">
+      <br>
+      <label id="label_config_1">State name:</label>
+      <input class="text_area" id="state_name" type="text" value="state">
+      <br>
+      <label id="label_config_2">Enable reset:</label>
+      <input class="text_area" id="reset_enable" type="checkbox" value="reset">
+      <br>
+      <label id="label_config_1">Reset condition:</label>
+      <input class="text_area" id="reset_signal" type="text" value="resetn = 0">
+      <label id="label_config_1">Reset state:</label>
+      <input class="text_area" id="reset_state" type="text" value="S0">
+    </div>
   </div>
  
-  <div id="config">
-    <label for="config_0">Language:</label>
-    <select id="config_0">
-      <option value="vhdl">VHDL</option>
-      <option value="verilog">Verilog</option>
-    </select>
-    <label id="label_config_1">Clock name:</label>
-    <input class="text_area" id="clock_name" type="text" value="clk">
-    <label id="label_config_1">State name:</label>
-    <input class="text_area" id="state_name" type="text" value="state">
-    <label id="label_config_1">Enable reset:</label>
-    <input class="text_area" id="reset_enable" type="checkbox" value="reset">
-    <label id="label_config_1">Reset condition:</label>
-    <input class="text_area" id="reset_signal" type="text" value="resetn = 0">
-    <label id="label_config_1">Reset state:</label>
-    <input class="text_area" id="reset_state" type="text" value="S0">
-  </div>
-
   <!-- Context menu -->
   <input id="inp" type='file' style="visibility:hidden;"/>
   <ul id="menu_state"></ul>
