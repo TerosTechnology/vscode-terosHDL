@@ -242,7 +242,7 @@ spyglass:
         type: input_comma
 
 symbiflow:
-    title: symbiflow
+    title: Symbiflow
     description: "The Symbiflow backend executes Yosys sythesis tool and VPR place and route. It can target multiple different FPGA vendorss."
     type: tool
     installation_path:
