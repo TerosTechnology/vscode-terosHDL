@@ -46,7 +46,6 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
         CtagsManager.ctags.index()
             .then(() => {
                 let symbols = CtagsManager.ctags.symbols;
-                // console.log(symbols);
                 this.docSymbols = this.buildDocumentSymbolList(symbols);
                 this.logger.log(this.docSymbols.length + " top-level symbols returned",
                     (this.docSymbols.length > 0) ? Log_Severity.Info : Log_Severity.Warn);
@@ -61,7 +60,6 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
         return new Promise((resolve) => {
             this.logger.log("Symbols Requested: " + document.uri);
             let symbols: Symbol[] = [];
-            // console.log("symbol provider");
             let activeDoc: TextDocument | undefined = window.activeTextEditor?.document;
             if (CtagsManager.ctags.doc === undefined || CtagsManager.ctags.doc.uri.fsPath !== activeDoc?.uri.fsPath) {
                 CtagsManager.ctags.setDocument(<TextDocument>activeDoc);
@@ -72,7 +70,6 @@ export default class VerilogDocumentSymbolProvider implements DocumentSymbolProv
                 ctags.index()
                     .then(() => {
                         symbols = ctags.symbols;
-                        // console.log(symbols);
                         this.docSymbols = this.buildDocumentSymbolList(symbols);
                         this.logger.log(this.docSymbols.length + " top-level symbols returned",
                             (this.docSymbols.length > 0) ? Log_Severity.Info : Log_Severity.Warn);

@@ -24,6 +24,7 @@ const path_lib = require('path');
 const shell = require('shelljs');
 const fs = require('fs');
 const tool_base = require('./tool_base');
+import * as Output_channel_lib from '../../utils/output_channel';
 
 export interface TestItem {
   test_type: string | undefined,
@@ -40,8 +41,8 @@ export class Edalize extends tool_base.Tool_base{
   private complete_waveform_path = '';
   private childp;
 
-  constructor(context) {
-    super(context);
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
+    super(context, output_channel);
     this.waveform_path = `${__dirname}${this.folder_sep}waveform`;
   }
 
@@ -49,6 +50,7 @@ export class Edalize extends tool_base.Tool_base{
     let normalized_edam = this.normalize_edam(edam);
     this.output_channel.clear();
     let simulator_name = this.get_simulator_from_edam(normalized_edam);
+    let installation_path = this.get_installation_path_from_edam(normalized_edam);
     let project_name = edam.name;
     let top_level = edam.toplevel;
     let simulator_gui_support = this.check_gui_support(simulator_name, gui);
@@ -59,7 +61,7 @@ export class Edalize extends tool_base.Tool_base{
     let edam_json = JSON.stringify(normalized_edam);
     fs.writeFileSync(edam_path, edam_json);
 
-    let command = await this.get_command(edam_path, simulator_name, normalized_edam);
+    let command = await this.get_command(edam_path, simulator_name, installation_path, normalized_edam);
     if (command === undefined) {
       return [];
     }
@@ -79,7 +81,7 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   set_builds(simulator_name, project_name, top_level){
-    let builds;
+    let builds : {}[]= [];
     switch (simulator_name) {
       case 'vivado':
         builds = this.vivado_builds( project_name, top_level);
@@ -87,9 +89,10 @@ export class Edalize extends tool_base.Tool_base{
       case 'quartus':
         builds = this.quartus_builds( project_name, top_level);
         break;
-      default:
-        builds = [];
     }
+    const homedir = require('os').homedir();
+    let build_folder = path_lib.join(homedir, '.teroshdl', 'build');
+    builds.unshift({name: 'Open build directory',location: build_folder});
     return builds;
   }
   
@@ -153,21 +156,13 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   normalize_edam(edam){
-    const non_normalized_options = ['installation_path', 'waveform', 'timescale', 'part'];
     let edam_normalized = JSON.parse(JSON.stringify(edam));
-    let config_tool = edam_normalized.tool_options;
-    for (let tool in config_tool) {
-      let pp = config_tool[tool];
-      for (let option in pp) {
-        let option_vaue = edam_normalized.tool_options[tool][option];
-        edam_normalized.tool_options[tool][option] = this.normalize_option(tool,option, option_vaue);
-      }
-    }
     let clean_files : any[]= [];
     let sources = edam_normalized.files;
     for (let i = 0; i < sources.length; i++) {
       const element = sources[i];
       if (element.name !== ""){
+        element.name = element.name.replace(/ /g, '\\ ');
         clean_files.push(element);
       }
     }
@@ -188,33 +183,6 @@ export class Edalize extends tool_base.Tool_base{
     return check;
   }
 
-  normalize_option(tool, option, value){
-    const norm_options = {
-      ghdl : ['analyze_options', 'run_options'],
-      icarus : ['iverilog_options'],
-      icestorm : ['arachne_pnr_options', 'nextpnr_options', 'yosys_synth_options'],
-      ise : [],
-      isim : ['fuse_options', 'isim_options'],
-      modelsim : ['vlog_options', 'vsim_options'],
-      quartus : ['board_device_index', 'quartus_options', 'dse_options'],
-      rivierapro : ['vlog_options', 'vsim_options'],
-      spyglass : ['goals', 'rule_parameters', 'spyglass_parameters'],
-      trellis : ['nextpnr_options', 'yosys_synth_options'],
-      vcs : ['vcs_options', 'run_options'],
-      verilator : ['libs', 'verilator_options'],
-      vivado : [],
-      vunit : ['vunit_options', 'add_libraries'],
-      xcelium : ['xmvlog_options', 'xmvhdl_options', 'xmsim_options', 'xrun_options'],
-      xsim : ['xelab_options', 'xsim_options']
-    };
-
-    let options_value = value;
-    if (norm_options[tool].includes(option)){
-      options_value = value.split(',');
-    }
-    return options_value;
-  }
-
   get_simulator_from_edam(edam){
     let config_tool = edam.tool_options;
     for (let property in config_tool) {
@@ -222,7 +190,15 @@ export class Edalize extends tool_base.Tool_base{
     }
   }
 
-  async get_command(edam_path, simulator, edam) {
+  get_installation_path_from_edam(edam){
+    let config_tool = edam.tool_options;
+    for (let property in config_tool) {
+      let installation_path = config_tool[property].installation_path;
+      return installation_path;
+    }
+  }
+
+  async get_command(edam_path, simulator, installation_path, edam) {
     let python3_edalize_script = `${path_lib.sep}resources${path_lib.sep}project_manager${path_lib.sep}run_edalize.py`;
     python3_edalize_script = this.context.asAbsolutePath(python3_edalize_script);
     let python3_path_exec = await this.get_python3_path();
@@ -230,7 +206,7 @@ export class Edalize extends tool_base.Tool_base{
       return undefined;
     }
     let simulator_config = this.get_simulator_config(simulator, edam);
-    let command = `${simulator_config} ${python3_path_exec} ${python3_edalize_script} ${edam_path} ${simulator}\n`;
+    let command = `${simulator_config} ${python3_path_exec} "${python3_edalize_script}" "${edam_path}" "${simulator}" "${installation_path}"`;
 
     return command;
   }

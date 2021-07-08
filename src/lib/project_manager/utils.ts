@@ -31,7 +31,7 @@ function get_icon(full_path: string, mode: string){
     return path_icon;
 }
 
-export function open_file(path) {
+export async function open_file(path) {
     //Check if file exists
     if (fs.existsSync(path) !== true) {
         let msg = "File doesn't exist. ";
@@ -39,6 +39,11 @@ export function open_file(path) {
         return;
     }
     try {
+        if (fs.lstatSync(path).isDirectory()){
+            let uri = vscode.Uri.file(path);
+            let success = await vscode.commands.executeCommand('revealFileInOS', uri);
+            return;
+        }
         let pos_1 = new vscode.Position(0, 0);
         let pos_2 = new vscode.Position(0, 0);
         vscode.workspace.openTextDocument(path).then((doc) => {

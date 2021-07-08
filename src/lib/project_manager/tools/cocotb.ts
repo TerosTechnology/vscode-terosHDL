@@ -27,6 +27,7 @@ const fs = require('fs');
 const tmp = require('tmp');
 const child_process = require("child_process");
 const tool_base = require('./tool_base');
+import * as Output_channel_lib from '../../utils/output_channel';
 
 export interface TestItem {
   attributes: string | undefined;
@@ -43,8 +44,8 @@ export interface TestItem {
 export class Cocotb extends tool_base.Tool_base{
   private childp;
 
-  constructor(context) {
-    super(context);
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
+    super(context, output_channel);
   }
 
   async run_simulation(tests_names: string[] = [], cocotb_test_list: TestItem[] = []) {

@@ -15,6 +15,13 @@ td, th {
 
 }
 body {color:black;}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    overflow-y:auto;
+}
 code {color:#545253;}
 h1{font-size:16px;}
 h2{font-size:13px;}
@@ -51,6 +58,10 @@ p {
   opacity: 1;
   transform: scale(1);
   transform-origin: top left;
+}
+
+#config {
+  line-height: 200%;
 }
 
 .menu-item {
@@ -239,14 +250,8 @@ body {
   margin-left: 3%;
 }
 
-#label_config_1 {
-  margin-left: 1%;
-}
-
 #config_0, #config_1 {
   width:12%;
-  padding: 12px 20px;
-  margin: 8px 0;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -269,30 +274,19 @@ body {
 
 
 #state_name, #reset_state, #clock_name {
-  width: 5%;
-  padding: 12px 20px;
-  margin: 8px 0;
   display: inline-block;
   border: 1px solid #ccc;
-  border-radius: 4px;
   box-sizing: border-box;
 }
 
 #reset_signal{
-  width: 8%;
-  padding: 12px 20px;
-  margin: 8px 0;
   display: inline-block;
   border: 1px solid #ccc;
-  border-radius: 4px;
   box-sizing: border-box;
 }
 
 #reset_enable {
-  padding: 12px 20px;
-  margin: 8px 0;
   display: inline-block;
   border: 1px solid #ccc;
-  border-radius: 4px;
   box-sizing: border-box;
 }

@@ -30,8 +30,10 @@ import * as Cocotb from "./tools/cocotb";
 import * as Edalize from "./tools/edalize";
 import * as Tree_types from "./tree_types";
 import * as utils from "./utils";
+import * as utils_vscode from "../utils/utils";
 import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
 import { Hdl_dependencies_tree } from './hdl_dependencies_tree';
+import * as Output_channel_lib from '../utils/output_channel';
 
 const path_lib = require("path");
 const fs = require("fs");
@@ -58,13 +60,15 @@ export class Project_manager {
   private  dependencies_viewer_manager: Dependencies_viewer.default | undefined;
   private hdl_dependencies_provider : Hdl_dependencies_tree;
   private context;
+  private output_channel : Output_channel_lib.Output_channel;
 
-  constructor(context: vscode.ExtensionContext) {
+
+  constructor(context: vscode.ExtensionContext, output_channel) {
+    this.output_channel = output_channel;
     this.context = context;
-
-    this.vunit = new Vunit.Vunit(context);
-    this.cocotb = new Cocotb.Cocotb(context);
-    this.edalize = new Edalize.Edalize(context);
+    this.vunit = new Vunit.Vunit(context, output_channel);
+    this.cocotb = new Cocotb.Cocotb(context, output_channel);
+    this.edalize = new Edalize.Edalize(context, output_channel);
     this.edam_project_manager = new Edam.Edam_project_manager();
     this.config_file = new Config.Config(context.extensionPath);
     this.workspace_folder = this.config_file.get_workspace_folder();
@@ -147,17 +151,18 @@ export class Project_manager {
       this.init = false;
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
-    await this.save_toml();
-    vscode.commands.executeCommand("vhdlls.restart");
+    this.save_toml();
+    vscode.commands.executeCommand("teroshdl.vhdlls.restart");
   }
 
-  async save_toml() {
+  save_toml () : string[]{
+    let files_toml : string[] = [];
     let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
     let libraries = this.get_active_project_libraries();
     let toml = "[libraries]\n\n";
     if (libraries !== undefined){
       for (let i = 0; i < libraries.length; i++) {
-        const library = libraries[i];
+        let library = libraries[i];
         let files_in_library = "";
         for (let j = 0; j < library.files.length; j++) {
           const file_in_library = library.files[j];
@@ -167,16 +172,21 @@ export class Project_manager {
           let lang = jsteros.Utils.get_lang_from_path(filename);
           if (lang === 'vhdl'){
             files_in_library += `  '${file_in_library}',\n`;
+            files_toml.push(file_in_library);
           }
         }
         let lib_name = library.name;
         if (lib_name === "") {
           lib_name = "none";
         }
+        if (library.name === undefined || library.name === ''){
+          library.name = 'work';
+        }
         toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
       }
     }
     fs.writeFileSync(file_path, toml);
+    return files_toml;
   }
 
   open_file(item) {
@@ -319,8 +329,7 @@ export class Project_manager {
   }
 
   config_python_path(){
-    let config = this.config_view.get_config_documentation();
-    let pypath = config.pypath;
+    let pypath = this.config_view.get_config_python_path();
     this.vunit.set_python_path(pypath);
     this.edalize.set_python_path(pypath);
     return pypath;
@@ -364,7 +373,7 @@ export class Project_manager {
 
   async run_vunit_tests(tests, gui) {
     let selected_tool_configuration = this.config_file.get_config_of_selected_tool();
-    let all_tool_configuration = this.config_file.get_config_tool();
+    let all_tool_configuration = this.config_file.get_all_config_tool();
 
     let selected_project = this.edam_project_manager.selected_project;
     let prj = this.edam_project_manager.get_project(selected_project);
@@ -584,8 +593,7 @@ export class Project_manager {
       return;
     }
     let toplevel_path = prj.toplevel_path;
-    let config = this.config_view.get_config_documentation();
-    let pypath = config.pypath;
+    let pypath = this.config_view.get_config_python_path();
     let dependency_tree = await prj.get_dependency_tree(pypath);
     if (dependency_tree !== undefined){
       this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
@@ -608,7 +616,7 @@ export class Project_manager {
 
 
   async add_file(item) {
-    const files_add_types = ["Select files from browser", "Load files from file list"];
+    const files_add_types = ["Select files from browser", "Load files from file list", "Load all files in folder and subfolders"];
     let project_name = item.project_name;
 
     // Choose type
@@ -648,6 +656,31 @@ export class Project_manager {
               }
             }
           }
+          this.refresh_lint();
+          this.update_tree();
+        });
+      }
+      //Load files in folder and subfolders
+      else if(files_type === files_add_types[2]){
+        // Select file
+        vscode.window.showOpenDialog({ canSelectMany: false, canSelectFolders: true, canSelectFiles: false }).then((value) => {
+          if (value === undefined){
+            return;
+          }
+          let folder_path = value[0].fsPath;
+
+          let files_list_array = utils_vscode.get_files_from_dir_recursive(folder_path);
+          let library_name = item.library_name;
+          for (let i = 0; i < files_list_array.length; ++i) {
+            if (library_name === ""){
+              library_name = "";
+            }
+            this.edam_project_manager.add_file(project_name, files_list_array[i], false, "", library_name);
+            if (this.edam_project_manager.get_number_of_files_of_project(project_name) === 1) {
+              this.set_top_from_name(project_name, library_name, value[i].fsPath);
+            }
+          }
+          
           this.refresh_lint();
           this.update_tree();
         });
@@ -774,6 +807,7 @@ export class Project_manager {
     const doc_types = ["Save as HTML", "Save as Markdown"];
     let project_name = item.project_name;
     let prj = this.edam_project_manager.get_project(project_name);
+    prj.cli_bar = new Edam.Cli_logger(this.output_channel);
 
     vscode.window.showQuickPick(doc_types, {placeHolder: "Choose output format",}).then((lib_type) => {
       if (lib_type === undefined){
@@ -788,14 +822,21 @@ export class Project_manager {
         let output_dir = output_path[0].fsPath;
         //Get documentation configuration
         let config = this.config_view.get_config_documentation();
-
+        this.output_channel.print_project_documenter_configurtion(config, 'Project', output_dir, lib_type);
         // HTML
+        let element_this = this;
         if(lib_type === doc_types[0]){
-          this.generate_and_save_documentation(prj, output_dir, 'html', config);
+          this.generate_and_save_documentation(prj, output_dir, 'html', config).then(function(result){
+              element_this.output_channel.print_project_documenter_result(result);
+            }
+          );
         }
         // Markdown
         else if(lib_type === doc_types[1]){
-          this.generate_and_save_documentation(prj, output_dir, 'markdown', config);
+          this.generate_and_save_documentation(prj, output_dir, 'markdown', config).then(function(result){
+              element_this.output_channel.print_project_documenter_result(result);
+            }
+          );
         }
       });
     });
@@ -809,14 +850,15 @@ export class Project_manager {
     config.symbol_vhdl = comment_symbol_vhdl;
     config.symbol_verilog = comment_symbol_verilog;
 
-
+    let result = {};
     if (type === "markdown") {
-      await project_manager.save_markdown_doc(output_path, config);
+      result = await project_manager.save_markdown_doc(output_path, config);
     }
     else {
-      await project_manager.save_html_doc(output_path, config);
+      result = await project_manager.save_html_doc(output_path, config);
     }
     utils.show_message(`The documentation has been generated in: ${output_path}`);
+    return result;
   }
 
   async add_library(item) {
@@ -1043,17 +1085,27 @@ export class Project_manager {
           }
           let element = this;
           this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(project_path)).then(function(value){
-            if (element.edam_project_manager.get_number_of_projects() === 1) {
-              let prj_name = element.edam_project_manager.projects[0].name;
+            if (prj_json['name'] !== undefined) {
+              let prj_name = prj_json['name'];
               element.select_project_from_name(prj_name);
             }
+            element.set_selected_tool_from_json_project(prj_json);
             element.update_tree();
             element.refresh_lint();
-            let msg = `Make sure you have selected ${picker_value} in the project manager configuration.`;
+            let msg = `Set ${picker_value} settings in the project manager configuration.`;
             utils.show_message(msg, 'project_manager');
           });
         }
     }
+  }
+
+  set_selected_tool_from_json_project(prj){
+    let tool_options = prj.tool_options;
+    let tool = '';
+    for(let attributename in tool_options){
+      tool = attributename;
+    }  
+    this.config_file.set_tool(tool);
   }
 }
 

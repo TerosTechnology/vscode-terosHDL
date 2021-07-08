@@ -24,6 +24,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as utils from "./lib/utils/utils";
+import * as config_reader_lib from "./lib/utils/config_reader";
 //Project manager
 import * as project_manager_lib from "./lib/project_manager/project_manager";
 let project_manager;
@@ -41,16 +42,22 @@ import * as formatter from "./lib/formatter/formatter_manager";
 // Number hover
 import * as number_hover from "./lib/number_hover/number_hover";
 //RustHDL
-import * as rusthdl from './lib/rusthdl/rust_hdl';
+import * as rusthdl_lib from './lib/rusthdl/rust_hdl';
+//Utils
+import * as Output_channel_lib from './lib/utils/output_channel';
 
+let output_channel : Output_channel_lib.Output_channel;
+let rusthdl : rusthdl_lib.Rusthdl_lsp;
 let linter_vhdl;
 let linter_verilog;
 let linter_systemverilog;
+let template;
 let linter_verilog_style;
 let linter_systemverilog_style;
 let formatter_vhdl;
 let formatter_verilog;
 let documenter;
+let config_reader;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager: dependencies_viewer.default;
@@ -97,17 +104,24 @@ export async function activate(context: vscode.ExtensionContext) {
         console.log(e);
     }
 
+    //TerosHDL console
+    output_channel = new Output_channel_lib.Output_channel();
+
     //Context
     current_context = context;
     /**************************************************************************/
+    // Config
+    /**************************************************************************/
+    config_reader = new config_reader_lib.Config_reader(context);
+    /**************************************************************************/
     // Templates
     /**************************************************************************/
-    context.subscriptions.push(vscode.commands.registerCommand('teroshdl.generate_template', templates.get_template));
+    template = new templates.Template(context, config_reader);
     /**************************************************************************/
     // Formatter
     /**************************************************************************/
-    formatter_vhdl = new formatter.default("vhdl");
-    formatter_verilog = new formatter.default("verilog");
+    formatter_vhdl = new formatter.default("vhdl", config_reader);
+    formatter_verilog = new formatter.default("verilog", config_reader);
     // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
     const disposable = vscode.languages.registerDocumentFormattingEditProvider(
         [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
@@ -126,7 +140,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Documenter
     /**************************************************************************/
-    documenter = new documentation.default(context);
+    documenter = new documentation.default(context, config_reader, output_channel);
     await documenter.init();
     context.subscriptions.push(
         vscode.commands.registerCommand(
@@ -137,7 +151,6 @@ export async function activate(context: vscode.ExtensionContext) {
         ),
         vscode.workspace.onDidOpenTextDocument((e) => documenter.update_open_documentation_module(e)),
         vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
-        //vscode.workspace.onDidChangeTextDocument((e) => documenter.update_change_documentation_module(e)),
         vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
     );
     /**************************************************************************/
@@ -199,7 +212,8 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Language providers
     /**************************************************************************/
-    let is_alive = await rusthdl.run_rusthdl(context);
+    rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
+    let is_alive = await rusthdl.run_rusthdl();
     // document selector
     let verilogSelector: vscode.DocumentSelector = [
         { scheme: 'file', language: 'verilog' },
@@ -245,31 +259,31 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(hover_numbers_vhdl);
     context.subscriptions.push(hover_numbers_verilog);
     /**************************************************************************/
-    // Tree view
+    // Project manager
     /**************************************************************************/
-    project_manager = new project_manager_lib.Project_manager(context);
+    project_manager = new project_manager_lib.Project_manager(context, output_channel);
     // /**************************************************************************/
     // Linter
     /**************************************************************************/
-    linter_vhdl = new linter.default("vhdl", "linter", context, project_manager);
+    linter_vhdl = new linter.default("vhdl", "linter", context, config_reader);
     vscode.workspace.onDidOpenTextDocument((e) => linter_vhdl.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_vhdl.lint(e));
     vscode.workspace.onDidCloseTextDocument((e) => linter_vhdl.remove_file_diagnostics(e));
 
-    linter_verilog = new linter.default("verilog", "linter", context, project_manager);
+    linter_verilog = new linter.default("verilog", "linter", context, config_reader);
     vscode.workspace.onDidOpenTextDocument((e) => linter_verilog.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_verilog.lint(e));
     vscode.workspace.onDidCloseTextDocument((e) => linter_verilog.remove_file_diagnostics(e));
 
-    linter_systemverilog = new linter.default("systemverilog", "linter", context, project_manager);
+    linter_systemverilog = new linter.default("systemverilog", "linter", context, config_reader);
     vscode.workspace.onDidOpenTextDocument((e) => linter_systemverilog.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_systemverilog.lint(e));
     vscode.workspace.onDidCloseTextDocument((e) => linter_systemverilog.remove_file_diagnostics(e));
     /**************************************************************************/
     // Check style
     /**************************************************************************/
-    linter_verilog_style = new linter.default("verilog", "linter_style", context, project_manager);
-    linter_systemverilog_style = new linter.default("systemverilog", "linter_style", context, project_manager);
+    linter_verilog_style = new linter.default("verilog", "style", context, config_reader);
+    linter_systemverilog_style = new linter.default("systemverilog", "style", context, config_reader);
 }
 
 // this method is called when your extension is deactivated

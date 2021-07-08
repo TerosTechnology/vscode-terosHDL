@@ -23,15 +23,18 @@
 
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
+import * as config_reader_lib from "../utils/config_reader";
 
 export default class Formatter_manager {
     private lang: string = "";
     private formatter_name: string = "";
     private subscriptions: vscode.Disposable[] | undefined;
+    private config_reader : config_reader_lib.Config_reader;
 
-    constructor(language: string) {
+    constructor(language: string, config_reader) {
+        this.config_reader = config_reader;
         this.lang = language;
-        vscode.workspace.onDidChangeConfiguration(this.config_formatter, this, this.subscriptions);
+        vscode.commands.registerCommand(`teroshdl.formatter.${language}.set_config`, () => this.config_formatter());
     }
 
     public async format(code) {
@@ -53,106 +56,106 @@ export default class Formatter_manager {
 
     config_formatter() {
         let formatter_name: string;
-        formatter_name = <string>vscode.workspace.getConfiguration(`teroshdl.formatter.${this.lang}`).get("engine");
+        formatter_name = this.config_reader.get_formatter_name(this.lang);
         formatter_name = formatter_name.toLowerCase();
         this.formatter_name = formatter_name;
     }
 
     async get_options() {
+        let configuration = this.config_reader.get_formatter_config();
+
         let options;
         if (this.formatter_name === "vsg") {
         }
         else if (this.formatter_name === "standalone") {
-            options = { 'settings': get_standalone_vhdl_config() };
+            options = { 'settings': this.get_standalone_vhdl_config() };
         }
         else if (this.formatter_name === "verible") {
         }
         else if (this.formatter_name === "istyle") {
-            let style = <string>vscode.workspace
-                .getConfiguration("teroshdl.formatter.verilog.istyle").get("style");
-            options = { 'style': get_istyle_style(), 'extra_args': get_istyle_extra_args() };
+            let style = configuration.istyle_style;
+            options = { 'style': this.get_istyle_style(), 'extra_args': this.get_istyle_extra_args() };
         }
         else if (this.formatter_name === "s3sv") {
-            let python = await get_python_path();
+            let python = await this.get_python_path();
             options = {
                 "python3_path": python,
-                "use_tabs": vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("useTabs"),
-                "indent_size": vscode.workspace.getConfiguration('teroshdl.formatter.verilog').get("indentSize"),
-                "one_bind_per_line": vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneBindPerLine"),
-                "one_decl_per_line": vscode.workspace.getConfiguration('teroshdl.formatter.verilog.s3sv').get("oneDeclarationPerLine")
+                "use_tabs": configuration.s3sv_use_tabs,
+                "indent_size": configuration.s3sv_indentation_size,
+                "one_bind_per_line": configuration.s3sv_one_bind_per_line,
+                "one_decl_per_line": configuration.s3sv_one_declaration_per_line
             };
         }
         return options;
     }
-}
-
-async function get_python_path() {
-    let python = vscode.workspace.getConfiguration('teroshdl.global').get("python3-path");
-    if (python === "") {
+    async get_python_path() {
+        let python_path = this.config_reader.get_config_python_path();
         const jsteros = require('jsteros');
-        python = await jsteros.Nopy.get_python_exec();
+        let python = await jsteros.Nopy.get_python_exec(python_path);
+        return python;
     }
-    return python;
-}
 
-function get_istyle_style() {
-    const style_map: { [style: string]: string } = {
-        "Indent only": "",
-        "Kernighan&Ritchie": "kr",
-        "GNU": "gnu",
-        "ANSI": "ansi"
-    };
-    let style = <string>vscode.workspace.getConfiguration("teroshdl.formatter.verilog.istyle").get("style");
-    const map_style = style_map[style];
-    if (map_style === '') {
-        return '';
+    get_istyle_style() {
+        let configuration = this.config_reader.get_formatter_config();
+        const style_map: { [style: string]: string } = {
+            "indent_only": "",
+            "kernighan&ritchie": "kr",
+            "gnu": "gnu",
+            "ansi": "ansi"
+        };
+        let style = configuration.istyle_style;
+        const map_style = style_map[style];
+        if (map_style === '') {
+            return '';
+        }
+        else if (map_style === undefined) {
+            return "--style=ansi";
+        } else {
+            return `--style=${map_style}`;
+        }
     }
-    else if (map_style === undefined) {
-        return "--style=ansi";
-    } else {
-        return `--style=${map_style}`;
+    
+    get_istyle_extra_args() {
+        let extra_args = "";
+        let configuration = this.config_reader.get_formatter_config();
+        let number_of_spaces = configuration.istyle_indentation_size;
+        extra_args = "-s" + number_of_spaces + " ";
+        return extra_args;
     }
-}
-
-function get_istyle_extra_args() {
-    let extra_args = "";
-    let number_of_spaces = vscode.workspace.getConfiguration("teroshdl.formatter.verilog").get("indentSize");
-    extra_args = "-s" + number_of_spaces + " ";
-    return extra_args;
-}
-
-function get_standalone_vhdl_config() {
-    let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl.formatter.vhdl.type.standalone');
-    let settings = {
-        "RemoveComments": false,
-        "RemoveAsserts": false,
-        "CheckAlias": false,
-        "AlignComments": configuration.get('align-comments'),
-        "SignAlignSettings": {
-            "isRegional": configuration.get('align-generic-port'),
-            "isAll": configuration.get('align-generic-port'),
-            "mode": 'local',
-            "keyWords": [
-                "FUNCTION",
-                "IMPURE FUNCTION",
-                "GENERIC",
-                "PORT",
-                "PROCEDURE"
-            ]
-        },
-        "KeywordCase": configuration.get('keyword-case'),
-        "TypeNameCase": configuration.get('type-name-case'),
-        "Indentation": configuration.get('indentation'),
-        "NewLineSettings": {
-            "newLineAfter": [
-                ";",
-                "then"
-            ],
-            "noNewLineAfter": []
-        },
-        "EndOfLine": "\n"
-    };
-    return settings;
+    
+    get_standalone_vhdl_config() {
+        let configuration = this.config_reader.get_formatter_config();
+        let settings = {
+            "RemoveComments": false,
+            "RemoveAsserts": false,
+            "CheckAlias": false,
+            "AlignComments": configuration.vhdl_standalone_align_comments,
+            "SignAlignSettings": {
+                "isRegional": configuration.vhdl_standalone_align_generic_port,
+                "isAll": configuration.vhdl_standalone_align_generic_port,
+                "mode": 'local',
+                "keyWords": [
+                    "FUNCTION",
+                    "IMPURE FUNCTION",
+                    "GENERIC",
+                    "PORT",
+                    "PROCEDURE"
+                ]
+            },
+            "KeywordCase": configuration.vhdl_standalone_keyword_case,
+            "TypeNameCase": configuration.vhdl_standalone_name_case,
+            "Indentation": configuration.vhdl_standalone_indentation,
+            "NewLineSettings": {
+                "newLineAfter": [
+                    ";",
+                    "then"
+                ],
+                "noNewLineAfter": []
+            },
+            "EndOfLine": "\n"
+        };
+        return settings;
+    }
 }
 
 export const getDocumentRange = (document: vscode.TextDocument): vscode.Range => {

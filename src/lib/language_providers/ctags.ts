@@ -153,10 +153,7 @@ export class Ctags {
     }
 
     execCtags(filepath: string): Thenable<string> {
-        // console.log("executing ctags");
-
         let current_dir = path_lib.dirname(__filename);
-
 
         let ctags: string = <string>workspace.getConfiguration().get('verilog.ctags.path');
         let path_bin = path_lib.sep + "resources" + path_lib.sep + "bin" + path_lib.sep + "ctags" + path_lib.sep;
@@ -179,7 +176,6 @@ export class Ctags {
 
         let command: string = this.context.asAbsolutePath(path_bin) + ' --options='
             + path_options + ' -f - --fields=+K --sort=no --excmd=n "' + filepath + '"';
-        // console.log(command);
         this.logger.log(command, Log_Severity.Command);
         return new Promise((resolve, reject) => {
             child.exec(command, {}, (error, stdout: string) => {
@@ -220,7 +216,6 @@ export class Ctags {
             return symbols;
         }
         catch (e) {
-            // console.log(e);
             this.logger.log('Ctags Line Parser: ' + e, Log_Severity.Error);
             this.logger.log('Line: ' + line, Log_Severity.Error);
             return undefined;
@@ -229,9 +224,7 @@ export class Ctags {
 
     buildSymbolsList(tags: string): Thenable<void> | undefined {
         try {
-            // console.log("building symbols");
             if (tags === '') {
-                // console.log("No output from ctags");
                 return;
             }
             // Parse ctags output
@@ -272,14 +265,12 @@ export class Ctags {
                     }
                 }
             }
-            // console.log(this.symbols);
             this.isDirty = false;
             return Promise.resolve();
         } catch (e) { console.log(e); }
     }
 
     index(): Thenable<void> {
-        // console.log("indexing...");
         return new Promise((resolve, reject) => {
             this.execCtags(<string>this.doc?.uri.fsPath)
                 .then(output => this.buildSymbolsList(output))
@@ -314,7 +305,6 @@ export class CtagsManager {
 
     onDidChangeActiveTextEditor(editor) {
         if (!this.isOutputPanel(editor.document.uri)) {
-            // console.log("on open");
             CtagsManager.ctags.setDocument(editor.document);
         }
     }

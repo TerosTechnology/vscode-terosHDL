@@ -25,12 +25,13 @@ const os = require('os');
 const shell = require('shelljs');
 const fs = require('fs');
 const tool_base = require('./tool_base');
+import * as Output_channel_lib from '../../utils/output_channel';
 
 export class Vunit extends tool_base.Tool_base{
   private childp;
 
-  constructor(context) {
-    super(context);
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
+    super(context, output_channel);
   }
 
   async run_simulation(selected_tool_configuration, all_tool_configuration, runpy_path,
@@ -44,9 +45,14 @@ export class Vunit extends tool_base.Tool_base{
       return results;
     }
 
-    let simulator = options_vunit.simulator;
+    let simulator = options_vunit.vunit_simulator;
     let simulator_install_path = '';
-    let extra_options = ` ${options_vunit.options} `;
+    let extra_options = '';
+    for (let i = 0; i < options_vunit.vunit_options.length; i++) {
+      const element = options_vunit.vunit_options[i];
+      extra_options += ` ${element} `;
+    }
+
     for (let i = 0; i < all_tool_configuration.length; i++) {
       const tool = all_tool_configuration[i];
       let tool_name = '';
@@ -102,6 +108,9 @@ export class Vunit extends tool_base.Tool_base{
       extra_options = '';
       gui_cmd = '--gui';
     }
+    if (extra_options === undefined){
+      extra_options = '';
+    }
 
     let simulator_config = this.get_simulator_config(simulator, simulator_install_path);
     let go_to_dir = `cd ${this.switch} ${runpy_dirname}${this.more}`;
@@ -112,11 +121,19 @@ export class Vunit extends tool_base.Tool_base{
   }
 
   get_simulator_config(simulator_name, simulator_install_path) {
-    let simulator_name_up = simulator_name.toUpperCase();
     let simulator_name_low = simulator_name.toLowerCase();
 
-    let simulator_cmd = `${this.exp} VUNIT_${simulator_name_up}_PATH=${simulator_install_path}${this.more}${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more}`;
+    let simulator_path_cmd = '';
 
+    //Add simulator install path to system path
+    if (os.platform() === "win32" && simulator_install_path !== '') {
+      simulator_path_cmd = `export PATH="$PATH;${simulator_install_path}"${this.more}`;
+    }
+    else if(simulator_install_path !== ''){
+      simulator_path_cmd = `export PATH="$PATH:${simulator_install_path}"${this.more}`;
+    }
+
+    let simulator_cmd = `${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more} ${simulator_path_cmd} `;
     return simulator_cmd;
   }
 

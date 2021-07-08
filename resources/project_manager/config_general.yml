@@ -1,0 +1,174 @@
+general:
+    title: General
+    description: ""
+    type: "none"
+    pypath:
+        description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. Install pyteroshdl. E.g: pip install pyteroshdl"
+        type: input
+        default: ""
+    header_file_path:
+        description: "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template"
+        type: input
+        default: ""
+    select_tool:
+        description: "Select a tool, framework, simulator..."
+        type: select_tool
+
+documentation:
+    title: Documentation settings
+    description: ""
+    type: "none"
+    symbol_vhdl:
+        description: "Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code>"
+        type: input
+        default: ""
+    symbol_verilog:
+        description: "Special Verilog symbol at the begin of the comment to extract documentation. Example: <code>//! Code comment</code>"
+        type: input
+        default: ""
+    dependency_graph:
+        description: "Include dependency graph:"
+        type: checkbox
+        default: true
+    self_contained:
+        description: "HTML documentation self contained:"
+        type: checkbox
+        default: true
+    fsm:
+        description: "Include FSM:"
+        type: checkbox
+        default: true
+    signals:
+        description: "Include signals:"
+        type: select
+        options:
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+        
+    constants:
+        description: "Include consants and types:"
+        type: select
+        options: 
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+        
+    process:
+        description: "Include always/processes:"
+        type: select
+        options: 
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+
+linter:
+    title: Linters settings
+    description: ""
+    type: "none"
+    linter_vhdl:
+        description: "VHDL linter:"
+        type: select
+        options:
+            ghdl: "GHDL"
+            modelsim: "Modelsim"
+            xvhdl: "Vivado"
+            none: "None"
+    linter_verilog:
+        description: "Verilog/SV linter:"
+        type: select
+        options:
+            icarus: "Icarus"
+            modelsim: "Modelsim"
+            verilator: "Verilator"
+            xvlog: "Vivado"
+            none: "None"
+    style_verilog:
+        description: "Verilog/SV style checker:"
+        type: select
+        options:
+            verible: "Verible"
+            none: "None"
+
+formatter:
+    title: Formatter settings
+    description: ""
+    type: "none"
+
+
+    formatter_verilog:
+        description: "Verilog/SV formatter:"
+        type: select
+        options:
+            istyle: "iStyle"
+            s3sv: "s3sv"
+    formatter_vhdl:
+        description: "Verilog/SV formatter:"
+        type: select
+        options:
+            standalone: "Standalone"
+
+    subtitle_0:
+        type: subtitle
+        title: "Verilog/SV iStyle formatter"
+    istyle_style:
+        description: "Predefined Styling options."
+        type: select
+        options:
+            ansi: "ANSI"
+            kernighan&ritchie: "Kernighan&Ritchie"
+            gnu: "GNU"
+            indent_only: "Indent only"
+    istyle_indentation_size:
+        description: "Indentation size in number of characters."
+        type: input
+
+    subtitle_1:
+        type: subtitle
+        title: "Verilog/SV S3SV formatter"      
+    s3sv_one_bind_per_line:
+        description: "Force one binding per line in instanciations statements."
+        type: checkbox
+    s3sv_one_declaration_per_line:
+        description: "Force one declaration per line."
+        type: checkbox
+    s3sv_use_tabs:
+        description: "Use tabs instead of spaces for indentation."
+        type: checkbox
+    s3sv_indentation_size:
+        description: "Indentation size in number of characters."
+        type: input
+
+    subtitle_2:
+        type: subtitle
+        title: "VHDL standalone formatter"      
+    vhdl_standalone_keyword_case:
+        description: "Keyword case."
+        type: select
+        options:
+            lowercase: "LowerCase"
+            uppercase: "UpperCase"
+    vhdl_standalone_name_case:
+        description: "Type name case."
+        type: select
+        options:
+            lowercase: "LowerCase"
+            uppercase: "UpperCase"
+    vhdl_standalone_align_comments:
+        description: "Align comments."
+        type: checkbox
+    vhdl_standalone_indentation:
+        description: "Indentation."
+        type: input
+    vhdl_standalone_align_generic_port:
+        description: "Align signs in generics and ports."
+        type: checkbox
+
+
+
+
+
+
+
+
+

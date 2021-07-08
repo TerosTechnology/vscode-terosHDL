@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/class-name-casing */
 /* ------------------------------------------------------------------------------------------
  * MIT License
  * Copyright (c) 2020 Henrik Bohlin
@@ -20,7 +21,6 @@ import {
     ServerOptions,
 } from 'vscode-languageclient';
 
-let client: LanguageClient;
 
 const isWindows = process.platform === 'win32';
 const languageServerName = isWindows
@@ -29,185 +29,194 @@ const languageServerName = isWindows
 const languageServerBinaryName = 'vhdl_ls';
 let languageServer: string;
 
-export async function run_rusthdl(ctx: ExtensionContext) {
-    const languageServerDir = ctx.asAbsolutePath(
-        path.join('server', 'vhdl_ls')
-    );
-    output.appendLine(
-        'Checking for language server executable in ' + languageServerDir
-    );
-    let languageServerVersion = embeddedVersion(languageServerDir);
-    if (languageServerVersion === '0.0.0') {
-        output.appendLine('No language server installed');
-        await getLatestLanguageServer(60000, ctx);
-        languageServerVersion = embeddedVersion(languageServerDir);
-    } else {
-        output.appendLine('Found version ' + languageServerVersion);
-    }
-    languageServer = path.join(
-        'server',
-        'vhdl_ls',
-        languageServerVersion,
-        languageServerName,
-        'bin',
-        languageServerBinaryName + (isWindows ? '.exe' : '')
-    );
-    // Get language server configuration and command to start server
-    let serverOptions: ServerOptions;
-    serverOptions = getServerOptionsEmbedded(ctx);
-    output.appendLine('Using embedded language server');
+export class Rusthdl_lsp{
 
-    // Options to control the language client
-    let clientOptions: LanguageClientOptions = {
-        documentSelector: [{ scheme: 'file', language: 'vhdl' }],
-        initializationOptions: vscode.workspace.getConfiguration('vhdlls'),
-        traceOutputChannel,
-    };
-
-    // Create the language client
-    client = new LanguageClient(
-        'vhdlls',
-        'VHDL LS',
-        serverOptions,
-        clientOptions
-    );
-
-    let server_path = ctx.asAbsolutePath(languageServer);
-    let is_alive = await check_rust_hdl(server_path);
-    if (is_alive === false){
-        ctx.subscriptions.push(
-            vscode.commands.registerCommand('vhdlls.restart', async () => {
-            })
-        );
-        return false;
+    private client!: LanguageClient;
+    private context : ExtensionContext;
+    private languageServerDisposable;
+    constructor(context : ExtensionContext){
+        this.context = context;
     }
 
-    // Start the client. This will also launch the server
-    let languageServerDisposable = client.start();
-
-    // Register command to restart language server
-    ctx.subscriptions.push(languageServerDisposable);
-    ctx.subscriptions.push(
-        vscode.commands.registerCommand('vhdlls.restart', async () => {
-            const MSG = 'Restarting VHDL LS';
-            output.appendLine(MSG);
-            await client.stop();
-            languageServerDisposable.dispose();
-            languageServerDisposable = client.start();
-            ctx.subscriptions.push(languageServerDisposable);
-        })
-    );
-
-    output.appendLine('Language server started');
-    return true;
-}
-
-async function check_rust_hdl(rust_hdl_bin_path : string) {
-    let command = rust_hdl_bin_path + ' --version';
-    // eslint-disable-next-line no-console
-    console.log(`[colibri][info] Linting with command: ${command}`);
-    const exec = require('child_process').exec;
-    return new Promise((resolve) => {
-      exec(command, (err, stdout, stderr) => {
-        if (stderr !== '') {
-          console.log(`[rusthdl][error] ${stderr}`);
-        }
-        if (stderr === ''){
-            resolve(true);
-        }
-        else{
-            resolve(false);
-        }
-      });
-    });
-  }
-
-export function deactivate(): Thenable<void> | undefined {
-    if (!client) {
-        return undefined;
-    }
-    return client.stop();
-}
-
-function embeddedVersion(languageServerDir: string): string {
-    try {
-        return fs
-            .readdirSync(languageServerDir)
-            .reduce((version: string, dir: string) => {
-                if (semver.gt(dir, version)) {
-                    fs.remove(path.join(languageServerDir, version)).catch(
-                        (err: any) => {
-                            output.appendLine(err);
-                        }
-                    );
-                    return dir;
-                } else {
-                    return version;
-                }
-            }, '0.0.0');
-    } catch {
-        return '0.0.0';
-    }
-}
-
-function getServerOptionsEmbedded(context: ExtensionContext) {
-    let serverCommand = context.asAbsolutePath(languageServer);
-    let serverOptions: ServerOptions = {
-        run: {
-            command: serverCommand,
-        },
-        debug: {
-            command: serverCommand,
-        },
-    };
-    return serverOptions;
-}
-
-async function getLatestLanguageServer(
-    timeoutMs: number,
-    ctx: ExtensionContext
-) {
-    let latest : string = 'v0.1.8';
-
-    const languageServerAssetName = languageServerName + '.zip';
-    const languageServerAsset = ctx.asAbsolutePath(
-        path.join('resources', 'rusthdl', 'install', latest, languageServerAssetName)
-    );
-    output.appendLine(`Writing ${languageServerAsset}`);
-    if (!fs.existsSync(path.dirname(languageServerAsset))) {
-        fs.mkdirSync(path.dirname(languageServerAsset), {
-            recursive: true,
-        });
-    }
-
-    await new Promise<void>((resolve, reject) => {
-        const targetDir = ctx.asAbsolutePath(
-            path.join('server', 'vhdl_ls', latest)
+    async run_rusthdl() {
+        const languageServerDir = this.context.asAbsolutePath(
+            path.join('server', 'vhdl_ls')
         );
         output.appendLine(
-            `Extracting ${languageServerAsset} to ${targetDir}`
+            'Checking for language server executable in ' + languageServerDir
         );
-        if (!fs.existsSync(targetDir)) {
-            fs.mkdirSync(targetDir, { recursive: true });
+        let languageServerVersion = this.embeddedVersion(languageServerDir);
+        if (languageServerVersion === '0.0.0') {
+            output.appendLine('No language server installed');
+            await this.getLatestLanguageServer(60000, this.context);
+            languageServerVersion = this.embeddedVersion(languageServerDir);
+        } else {
+            output.appendLine('Found version ' + languageServerVersion);
         }
-        extract(languageServerAsset, { dir: targetDir }, (err) => {
-            try {
-                fs.removeSync(
-                    ctx.asAbsolutePath(path.join('server', 'install'))
-                );
-            } catch {}
-            if (err) {
-                output.appendLine('Error when extracting server');
-                output.appendLine(err);
-                try {
-                    fs.removeSync(targetDir);
-                } catch {}
-                reject(err);
-            } else {
-                output.appendLine('Server extracted');
-                resolve();
+        languageServer = path.join(
+            'server',
+            'vhdl_ls',
+            languageServerVersion,
+            languageServerName,
+            'bin',
+            languageServerBinaryName + (isWindows ? '.exe' : '')
+        );
+        // Get language server configuration and command to start server
+        let serverOptions: ServerOptions;
+        serverOptions = this.getServerOptionsEmbedded(this.context);
+        output.appendLine('Using embedded language server');
+
+        // Options to control the language client
+        let clientOptions: LanguageClientOptions = {
+            documentSelector: [{ scheme: 'file', language: 'vhdl' }],
+            traceOutputChannel,
+        };
+
+        // Create the language client
+        this.client = new LanguageClient(
+            'vhdlls',
+            'VHDL LS',
+            serverOptions,
+            clientOptions
+        );
+
+        let server_path = this.context.asAbsolutePath(languageServer);
+        let is_alive = await this.check_rust_hdl(server_path);
+        if (is_alive === false){
+            this.context.subscriptions.push(
+                vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
+                })
+            );
+            return false;
+        }
+
+        // Start the client. This will also launch the server
+        this.languageServerDisposable = this.client.start();
+
+        // Register command to restart language server
+        this.context.subscriptions.push(this.languageServerDisposable);
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
+                const MSG = 'Restarting VHDL LS';
+                output.appendLine(MSG);
+                await this.client.stop();
+                this.languageServerDisposable.dispose();
+                this.languageServerDisposable = this.client.start();
+                this.context.subscriptions.push(this.languageServerDisposable);
+            })
+        );
+
+        output.appendLine('Language server started');
+        return true;
+    }
+
+    async check_rust_hdl(rust_hdl_bin_path : string) {
+        let command = rust_hdl_bin_path + ' --version';
+        // eslint-disable-next-line no-console
+        console.log(`[colibri][info] Linting with command: ${command}`);
+        const exec = require('child_process').exec;
+        return new Promise((resolve) => {
+        exec(command, (err, stdout, stderr) => {
+            if (stderr !== '') {
+            console.log(`[rusthdl][error] ${stderr}`);
+            }
+            if (stderr === ''){
+                resolve(true);
+            }
+            else{
+                resolve(false);
             }
         });
-    });
-    return Promise.resolve();
+        });
+    }
+
+    deactivate(): Thenable<void> | undefined {
+        if (!this.client) {
+            return undefined;
+        }
+        return this.client.stop();
+    }
+
+    embeddedVersion(languageServerDir: string): string {
+        try {
+            return fs
+                .readdirSync(languageServerDir)
+                .reduce((version: string, dir: string) => {
+                    if (semver.gt(dir, version)) {
+                        fs.remove(path.join(languageServerDir, version)).catch(
+                            (err: any) => {
+                                output.appendLine(err);
+                            }
+                        );
+                        return dir;
+                    } else {
+                        return version;
+                    }
+                }, '0.0.0');
+        } catch {
+            return '0.0.0';
+        }
+    }
+
+    getServerOptionsEmbedded(context: ExtensionContext) {
+        let serverCommand = context.asAbsolutePath(languageServer);
+        let serverOptions: ServerOptions = {
+            run: {
+                command: serverCommand,
+            },
+            debug: {
+                command: serverCommand,
+            },
+        };
+        return serverOptions;
+    }
+
+    async getLatestLanguageServer(
+        timeoutMs: number,
+        ctx: ExtensionContext
+    ) {
+        let latest : string = 'v0.1.8';
+
+        const languageServerAssetName = languageServerName + '.zip';
+        const languageServerAsset = ctx.asAbsolutePath(
+            path.join('resources', 'rusthdl', 'install', latest, languageServerAssetName)
+        );
+        output.appendLine(`Writing ${languageServerAsset}`);
+        if (!fs.existsSync(path.dirname(languageServerAsset))) {
+            fs.mkdirSync(path.dirname(languageServerAsset), {
+                recursive: true,
+            });
+        }
+
+        await new Promise<void>((resolve, reject) => {
+            const targetDir = ctx.asAbsolutePath(
+                path.join('server', 'vhdl_ls', latest)
+            );
+            output.appendLine(
+                `Extracting ${languageServerAsset} to ${targetDir}`
+            );
+            if (!fs.existsSync(targetDir)) {
+                fs.mkdirSync(targetDir, { recursive: true });
+            }
+            extract(languageServerAsset, { dir: targetDir }, (err) => {
+                try {
+                    fs.removeSync(
+                        ctx.asAbsolutePath(path.join('server', 'install'))
+                    );
+                } catch {}
+                if (err) {
+                    output.appendLine('Error when extracting server');
+                    output.appendLine(err);
+                    try {
+                        fs.removeSync(targetDir);
+                    } catch {}
+                    reject(err);
+                } else {
+                    output.appendLine('Server extracted');
+                    resolve();
+                }
+            });
+        });
+        return Promise.resolve();
+    }
 }

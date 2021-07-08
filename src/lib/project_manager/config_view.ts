@@ -32,6 +32,7 @@ export default class config_view {
   constructor(context: vscode.ExtensionContext, config: Config.Config) {
     this.context = context;
     this.config = config;
+    vscode.commands.registerCommand("teroshdl.configuration", () => this.open());
   }
 
   async create_viewer() {
@@ -60,6 +61,9 @@ export default class config_view {
           case 'set_config':
             this.set_config(message.config);
             return;
+          case 'set_config_and_close':
+            this.set_config_and_close(message.config);
+            return;
           case 'close':
             this.close_panel();
             return;
@@ -74,7 +78,7 @@ export default class config_view {
 
     try {
       if (this.config !== undefined) {
-        let tool_config = this.config.get_config_tool();
+        let tool_config = this.config.get_config_all_tool();
         await this.panel?.webview.postMessage({
           command: "set_config",
           config: {
@@ -88,9 +92,20 @@ export default class config_view {
     }
   }
 
+  set_config_and_close(config) {
+    this.set_config(config);
+    this.close_panel();
+  }
+
   set_config(config) {
     this.config.set_config_tool(config);
-    this.close_panel();
+    vscode.commands.executeCommand("teroshdl.formatter.vhdl.set_config");
+    vscode.commands.executeCommand("teroshdl.formatter.verilog.set_config");
+    vscode.commands.executeCommand("teroshdl_tree_view.refresh_tests");
+    vscode.commands.executeCommand("teroshdl.documenter.set_config");
+    vscode.commands.executeCommand("teroshdl.linter.linter.vhdl.set_config");
+    vscode.commands.executeCommand("teroshdl.linter.linter.verilog.set_config");
+    vscode.commands.executeCommand("teroshdl.linter.linter.systemverilog.set_config");
   }
 
   close_panel() {
@@ -101,16 +116,16 @@ export default class config_view {
     return this.config.get_config_documentation();
   }
 
+  get_config_python_path() {
+    return this.config.get_config_python_path();
+  }
+
   get_config() {
     return this.config;
   }
 
   open() {
     this.create_viewer();
-  }
-
-  private show_export_message(path_full) {
-    vscode.window.showInformationMessage(`Schematic saved in ${path_full} 😊`);
   }
 
   public set_config_to_view(config) {

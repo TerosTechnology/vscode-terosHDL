@@ -1,0 +1,523 @@
+ascentlint:
+    title: Ascentlint
+    description: "Ascent Lint performs static source code analysis on HDL code and checks for common coding errors or coding style violations."
+    type: linter
+    installation_path:
+        description: "Installation path:"
+        type: input
+    ascentlint_options:
+        description: "Additional run options for ascentlint."
+        type: input_comma
+
+diamond:
+    description: "Backend for Lattice Diamond."
+    title: Diamond
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    part:
+        description: "FPGA part number (e.g. LFE5U-45F-6BG381C)."
+        type: input
+
+ghdl:
+    title: GHDL
+    description: "GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL."
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    waveform:
+        description: "Waveform output format:"
+        type: select
+        options: 
+            vcd: "VCD"
+            ghw: "GHW"
+    analyze_options:
+        description: "analyze options. Extra options used for the GHDL analyze stage (ghdl -a)."
+        type: input_comma
+    run_options:
+        description: "Run options. Extra options used when running GHDL simulations (ghdl -r)."
+        type: input_comma
+
+icarus:
+    title: Icarus
+    description: "Icarus Verilog is a Verilog simulation and synthesis tool. It operates as a compiler, compiling source code written in Verilog (IEEE-1364) into some target format."
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    timescale:
+        description: "Default timescale."
+        type: input
+    iverilog_options:
+        description: "Additional options for iverilog."
+        type: input_comma
+
+icestorm:
+    title: Icestorm
+    description: "Open source toolchain for Lattice iCE40 FPGAs. Uses yosys for synthesis and arachne-pnr or nextpnr for Place & Route."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    pnr:
+        description: "Select P&R tool. Valid values are arachne and next. Default is arachne."
+        type: select
+        options: 
+            arachne: "Arachne-pnr"
+            next: "nextpnr"
+            none: "Only perform synthesis"
+    arch:
+        description: "Target architecture."
+        type: select
+        options: 
+            xilinx: "Xilinx"
+            ice40: "ICE40"
+            ecp5: "ECP5"
+    output_format:
+        description: "Output file format."
+        type: select
+        options: 
+            json: "JSON"
+            edif: "EDIF"
+            blif: "BLIF"
+    yosys_as_subtool:
+        description: "Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool."
+        type: checkbox
+    makefile_name:
+        description: "Generated makefile name, defaults to $name.mk"
+        type: input
+    arachne_pnr_options:
+        description: "Options for ArachnePNR Place & Route."
+        type: input_comma
+    nextpnr_options:
+        description: "Options for NextPNR Place & Route."
+        type: input_comma
+    yosys_synth_options:
+        description: "Additional options for the synth_ice40 command."
+        type: input_comma
+
+Ise:
+    title: ISE
+    description: "Xilinx ISE Design Suite."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    family:
+        description: "FPGA family (e.g. spartan6)."
+        type: input
+    device:
+        description: "FPGA device (e.g. xc6slx45)."
+        type: input
+    package:
+        description: "FPGA package (e.g. csg324)."
+        type: input
+    speed:
+        description: "FPGA speed grade (e.g. -2)."
+        type: input
+
+isim:
+    title: Isim
+    description: "Xilinx ISim simulator from ISE design suite."
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    fuse_options:
+        description: "Additional options for compilation with FUSE."
+        type: input_comma
+    isim_options:
+        description: "Additional run options for ISim."
+        type: input_comma
+
+modelsim:
+    title: ModelSim
+    description: "ModelSim simulator from Mentor Graphics."
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    vcom_options:
+        description: "Additional options for compilation with vcom."
+        type: input_comma
+    vlog_options:
+        description: "Additional options for compilation with vlog."
+        type: input_comma
+    vsim_options:
+        description: "Additional run options for vsim."
+        type: input_comma
+
+morty:
+    title: Morty
+    description: "Run the (System-) Verilog pickle tool called morty."
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    morty_options:
+        description: "Run-time options passed to morty.."
+        type: input_comma
+
+quartus:
+    title: Quartus
+    description: "The Quartus backend supports Intel Quartus Std and Pro editions to build systems and program the FPGA."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    family:
+        description: "FPGA family (e.g. Cyclone V)."
+        type: input
+    device:
+        description: "FPGA device (e.g. 5CSXFC6D6F31C8ES)."
+        type: input
+    cable:
+        description: "Specifies the FPGA’s JTAG programming cable. Use the tool jtagconfig to determine the available cables."
+        type: input
+    board_device_index:
+        description: "Specifies the FPGA’s device number in the JTAG chain. The device index specifies the device where the flash programmer looks for the Nios® II JTAG debug module. JTAG devices are numbered relative to the JTAG chain, starting at 1. Use the tool jtagconfig to determine the index."
+        type: input
+    pnr:
+        description: "P&R tool. one (to just run synthesis)."
+        type: select
+        options: 
+            default: "Default"
+            dse: "Run Design Space Explorer"
+            none: "Run synthesis"
+    dse_options:
+        description: "Command-line options for Design Space Explorer."
+        type: input_comma
+    quartus_options:
+        description: "Extra command-line options for Quartus."
+        type: input_comma
+
+radiant:
+    title: Radiant
+    description: "Backend for Lattice Radiant."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    part:
+        description: "FPGA part number (e.g. LIFCL-40-9BG400C)."
+        type: input
+
+rivierapro:
+    title: Rivierapro
+    description: "Riviera Pro simulator from Aldec."
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    compilation_mode:
+        description: "Common or separate compilation, sep - for separate compilation, common - for common compilation."
+        type: input
+    vlog_options:
+        description: "Additional options for compilation with vlog."
+        type: input_comma
+    vsim_options:
+        description: "Additional run options for vsim."
+        type: input_comma
+
+spyglass:
+    title: Spyglass
+    description: "Synopsys (formerly Atrenta) Spyglass Backend. Spyglass performs static source code analysis on HDL code and checks for common coding errors or coding style violations."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    methodology:
+        description: ""
+        type: input
+    goals:
+        description: ""
+        type: input_comma
+    spyglass_options:
+        description: ""
+        type: input_comma
+    rule_parameters:
+        description: ""
+        type: input_comma
+
+symbiflow:
+    title: symbiflow
+    description: "The Symbiflow backend executes Yosys sythesis tool and VPR place and route. It can target multiple different FPGA vendorss."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    package:
+        description: "FPGA chip package (e.g. clg400-1)."
+        type: input
+    part:
+        description: "FPGA part type (e.g. xc7a50t)."
+        type: input
+    vendor:
+        description: "Target architecture. Currently only “xilinx” is supported."
+        type: input
+    pnr:
+        description: "Place and Route tool. Currently only “vpr” is supported."
+        type: select
+        options: 
+            vpr: "VPR"
+    vpr_options:
+        description: "Additional vpr tool options. If not used, default options for the tool will be used."
+        type: input
+    environment_script:
+        description: "Optional bash script that will be sourced before each build step.."
+        type: input
+
+symbiyosys:
+    title: Symbiyosys
+    description: "SymbiYosys formal verification wrapper for Yosys."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    tasknames:
+        description: "A list of the .sby file’s tasks to run. Passed on the sby command line.."
+        type: input_comma
+
+trellis:
+    title: Trellis
+    description: "Project Trellis enables a fully open-source flow for ECP5 FPGAs using Yosys for Verilog synthesis and nextpnr for place and route."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    arch:
+        description: "Target architecture."
+        type: select
+        options: 
+            xilinx: "Xilinx"
+            ice40: "ICE40"
+            ecp5: "ECP5"
+    output_format:
+        description: "Output file format."
+        type: select
+        options: 
+            json: "JSON"
+            edif: "EDIF"
+            blif: "BLIF"
+    yosys_as_subtool:
+        description: "Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool."
+        type: checkbox
+    makefile_name:
+        description: "Generated makefile name, defaults to $name.mk"
+        type: input
+    script_name:
+        description: "Generated tcl script filename, defaults to $name.mk"
+        type: input
+    nextpnr_options:
+        description: "Options for NextPNR Place & Route."
+        type: input_comma
+    yosys_synth_options:
+        description: "Additional options for the synth_ice40 command."
+        type: input_comma
+
+vcs:
+    title: Vcs
+    description: "Synopsys VCS Backend"
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    vcs_options:
+        description: ""
+        type: input_comma
+    run_options:
+        description: ""
+        type: input_comma
+
+veribleformat:
+    title: Veribleformat
+    description: "Verible format backend (verible-verilog-format)."
+    type: linter
+    installation_path:
+        description: "Installation path:"
+        type: input
+    verible_format_args:
+        description: "Extra command line arguments passed to the Verible tool"
+        type: input_comma
+
+veriblelint:
+    title: Veriblelint
+    description: "Verible lint backend (verible-verilog-lint)."
+    type: linter
+    installation_path:
+        description: "Installation path:"
+        type: input
+    ruleset:
+        description: "Ruleset."
+        type: select
+        options: 
+            default: "Default"
+            all: "All"
+            none: "None"
+    verible_lint_args:
+        description: "Extra command line arguments passed to the Verible tool."
+        type: input_comma
+    rules:
+        description: "What rules to use. Prefix a rule name with “-” to disable it."
+        type: input_comma
+
+verilator:
+    title: Verilator
+    description: "Verible lint backend (verible-verilog-lint)."
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    mode:
+        description: "Select compilation mode. Legal values are cc for C++ testbenches, sc for SystemC testbenches or lint-only to only perform linting on the Verilog code."
+        type: select
+        options: 
+            cc: "cc"
+            sc: "sc"
+            lint-only: "lint-only"
+    cli_parser:
+        description: "Deprecated: Use run_options instead : Select whether FuseSoC should handle command-line arguments (managed) or if they should be passed directly to the verilated model (raw). Default is managed."
+        type: input_comma
+    libs:
+        description: "Extra libraries for the verilated model to link against."
+        type: input_comma
+    verilator_options:
+        description: "Additional options for verilator."
+        type: input_comma
+    make_options:
+        description: "Additional arguments passed to make when compiling the simulation. This is commonly used to set OPT/OPT_FAST/OPT_SLOW."
+        type: input_comma
+    run_options:
+        description: "Additional arguments directly passed to the verilated model."
+        type: input_comma
+
+vivado:
+    title: Vivado
+    description: "The Vivado backend executes Xilinx Vivado to build systems and program the FPGA."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    # vivado-settings:
+    #     description: "Path to vivado settings (e.g. /opt/Xilinx/Vivado/2017.2/settings64.sh)."
+    #     type: input
+    part:
+        description: "Part. Device identifier. e.g. xc7a35tcsg324-1."
+        type: input
+    synth:
+        description: "Synthesis tool. Allowed values are vivado (default) and yosys.."
+        type: input
+    pnr:
+        description: "Choose only synthesis or place and route and bitstream generation:"
+        type: select
+        options: 
+            vivado: "Place and route"
+            none: "Only synthesis"
+    jtag_freq:
+        description: "The frequency for jtag communication."
+        type: input_integer
+    hw_target:
+        description: "Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A."
+        type: input
+
+vunit:
+    title: Vunit
+    description: "VUnit testing framework."
+    type: framework
+    installation_path:
+        description: "Installation path:"
+        type: input
+    vunit_simulator:
+        description: "VUnit simulator:"
+        type: select
+        options: 
+            rivierapro: "Aldec Riviera-PRO"
+            activehdl: "Aldec Active-HDL"
+            ghdl: "GHDL"
+            modelsim: "Mentor Graphics ModelSim/Questa"
+            xsim: "XSIM (Not supported in official VUnit)"
+    vunit_options:
+        description: "VUnit options. Extra options for the VUnit test runner."
+        type: input_comma
+    add_libraries:
+        description: "Add libraries. A list of framework libraries to add. Allowed values include “array_util”, “com”, “json4hdl”, “osvvm”, “random”, “verification_components”."
+        type: input_comma
+    vunit_runner:
+        description: "VUnit runner. Name of the Python file exporting a VUnitRunner class (must derive from edalize.vunit_hooks.VUnitHooks) that is used to configure and execute test. This allows very customized test control via VUnit’s Python-interfaces."
+        type: input
+
+xcelium:
+    title: Xcelium
+    description: "Xcelium simulator from Cadence Design Systems."
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    xmvhdl_options:
+        description: "Additional options for compilation with xmvhdl."
+        type: input_comma
+    xmvlog_options:
+        description: "Additional options for compilation with xmvlog."
+        type: input_comma
+    xmsim_options:
+        description: "Additional run options for xmsim."
+        type: input_comma
+    xrun_options:
+        description: "Additional run options for xrun."
+        type: input_comma
+
+yosys:
+    title: Yosys
+    description: "Open source synthesis tool targeting many different FPGAs."
+    type: tool
+    installation_path:
+        description: "Installation path:"
+        type: input
+    arch:
+        description: "Target architecture."
+        type: select
+        options: 
+            xilinx: "Xilinx"
+            ice40: "ICE40"
+            ecp5: "ECP5"
+    output_format:
+        description: "Output file format."
+        type: select
+        options: 
+            json: "JSON"
+            edif: "EDIF"
+            blif: "BLIF"
+    yosys_as_subtool:
+        description: "Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool."
+        type: checkbox
+    makefile_name:
+        description: "Generated makefile name, defaults to $name.mk"
+        type: input
+    script_name:
+        description: "Generated tcl script filename, defaults to $name.mk"
+        type: input
+    yosys_synth_options:
+        description: "Additional options for the synth_ice40 command."
+        type: input_comma
+
+cocotb:
+    title: Cocotb
+    description: ""
+    type: framework
+    installation_path:
+        description: "Installation path:"
+        type: input
+
+
+
+
+
+
+
+
+
+
+
+
