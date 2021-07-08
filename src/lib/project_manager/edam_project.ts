@@ -183,7 +183,7 @@ export class Edam_project_manager {
     if (this.check_if_project_exists(name) === true) {
       return `The project with name [${name}] already exists in the workspace.`;
     }
-    let logger = new Cli_logger();
+    let logger = new Cli_logger(undefined);
     const jsteros = require('jsteros');
     let prj = new  jsteros.Edam.Edam_project(name, relative_path, logger);
     this.projects.push(prj);
