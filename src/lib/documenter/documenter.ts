@@ -23,7 +23,7 @@ import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as util from "util";
 import * as config_reader_lib from "../utils/config_reader";
-import * as Output_channel_lib from '../../utils/output_channel';
+import * as Output_channel_lib from '../utils/output_channel';
 
 export default class Documenter {
   private subscriptions: vscode.Disposable[] | undefined;
