@@ -34,6 +34,9 @@ def generate_checkbox(option, name, tab_name):
 def generate_input(option, name, tab_name):
     id_name = f"{tab_name}_{name}"
     description = option['description']
+    if (name == 'installation_path'):
+        description = "Installation path: <strong>directory</strong> to the location where tool binary is located."
+
     html = f"  <label>{description}</label>\n"
     html += f"  <input type='input' id='{id_name}' class='radio-button'>\n"
     html += "  <br><br>\n"

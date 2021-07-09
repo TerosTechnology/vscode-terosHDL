@@ -32,10 +32,12 @@ export default class State_machine_viewer_manager {
   private state_machines;
   private document;
   private config_reader : config_reader_lib.Config_reader;
+  private last_document;
 
   constructor(context: vscode.ExtensionContext, config_reader : config_reader_lib.Config_reader) {
     this.context = context;
     this.config_reader = config_reader;
+    vscode.commands.registerCommand("teroshdl.fsm.set_config", () => this.update_to_last_document());
   }
 
   async open_viewer() {
@@ -223,13 +225,13 @@ export default class State_machine_viewer_manager {
       }
       document = active_editor.document;
     }
-    this.document = document;
     let language_id: string = document.languageId;
     let code: string = document.getText();
-
+    
     if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== 'systemverilog') {
       return;
     }
+    this.document = document;
     let config = this.config_reader.get_config_documentation();
     let comment_symbol = config['symbol_'+ language_id];
 
@@ -253,6 +255,20 @@ export default class State_machine_viewer_manager {
     let document = e[0].document;
     if (this.panel !== undefined) {
       let state_machines = await this.get_state_machines(document);
+      this.state_machines = state_machines;
+      if (state_machines === undefined){
+        return;
+      }
+      this.send_state_machines(state_machines);
+    }
+  }
+
+  async update_to_last_document() {
+    if (this.panel !== undefined && this.document !== undefined) {
+      let state_machines = await this.get_state_machines(this.document);
+      if (state_machines === undefined){
+        return;
+      }
       this.state_machines = state_machines;
       this.send_state_machines(state_machines);
     }

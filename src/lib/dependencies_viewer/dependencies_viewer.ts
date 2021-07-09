@@ -45,7 +45,8 @@ export default class Dependencies_viewer_manager {
       'Dependencies viewer',
       vscode.ViewColumn.Two,
       {
-        enableScripts: true
+        enableScripts: true,
+        retainContextWhenHidden:true
       }
     );
 
