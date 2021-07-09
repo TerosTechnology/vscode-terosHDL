@@ -20,6 +20,20 @@ diamond:
         description: "FPGA part number (e.g. LFE5U-45F-6BG381C)."
         type: input
 
+xsim:
+    description: "XSim simulator from the Xilinx Vivado suite."
+    title: XSim
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    xelab_options:
+        description: "Additional options for compilation with xelab."
+        type: input_comma
+    xsim_options:
+        description: "Additional run options for XSim."
+        type: input_comma
+
 ghdl:
     title: GHDL
     description: "GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL."

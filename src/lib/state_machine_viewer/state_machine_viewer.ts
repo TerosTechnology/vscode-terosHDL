@@ -22,6 +22,7 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
+import * as config_reader_lib from "../utils/config_reader";
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export default class State_machine_viewer_manager {
@@ -30,9 +31,11 @@ export default class State_machine_viewer_manager {
   private sources: string[] = [];
   private state_machines;
   private document;
+  private config_reader : config_reader_lib.Config_reader;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, config_reader : config_reader_lib.Config_reader) {
     this.context = context;
+    this.config_reader = config_reader;
   }
 
   async open_viewer() {
@@ -227,8 +230,8 @@ export default class State_machine_viewer_manager {
     if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== 'systemverilog') {
       return;
     }
-    let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
-    let comment_symbol = configuration.get('documenter.' + language_id + '.symbol');
+    let config = this.config_reader.get_config_documentation();
+    let comment_symbol = config['symbol_'+ language_id];
 
     const jsteros = require('jsteros');
     let state_machines = jsteros.State_machine.get_svg_sm(language_id, code, comment_symbol);

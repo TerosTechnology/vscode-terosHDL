@@ -87,7 +87,7 @@ def get_select_tool_options(doc):
         elif (tab_type == 'simulator'):
             options_simulator.append(tabname)
         elif (tab_type == 'linter'):
-            options_simulator.append(tabname)
+            options_linter.append(tabname)
     return options_framework, options_tool, options_simulator, options_linter
 
 

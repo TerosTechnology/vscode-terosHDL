@@ -45,7 +45,6 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-        
     constants:
         description: "Include consants and types:"
         type: select
@@ -53,7 +52,6 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-        
     process:
         description: "Include always/processes:"
         type: select
@@ -61,7 +59,14 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-
+    functions:
+        description: "Include functions:"
+        type: select
+        options:
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+            
 linter:
     title: Linters settings
     description: ""
@@ -194,6 +199,20 @@ diamond:
     part:
         description: "FPGA part number (e.g. LFE5U-45F-6BG381C)."
         type: input
+
+xsim:
+    description: "XSim simulator from the Xilinx Vivado suite."
+    title: XSim
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    xelab_options:
+        description: "Additional options for compilation with xelab."
+        type: input_comma
+    xsim_options:
+        description: "Additional run options for XSim."
+        type: input_comma
 
 ghdl:
     title: GHDL
