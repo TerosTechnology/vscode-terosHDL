@@ -595,9 +595,14 @@ export class Project_manager {
     let toplevel_path = prj.toplevel_path;
     let pypath = this.config_view.get_config_python_path();
     let dependency_tree = await prj.get_dependency_tree(pypath);
-    if (dependency_tree !== undefined){
-      this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
+    if (dependency_tree.root === undefined){
+      dependency_tree = {root: [
+          {filename: "", entity: "Configure your Python 3 path.", dependencies: []}
+        ]
+      };
+      toplevel_path = "Configure your Python 3 path.";
     }
+    this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
   }
 
 
