@@ -175,10 +175,6 @@ export default class State_machine_viewer_manager {
     }
   }
 
-  private show_export_message() {
-    vscode.window.showInformationMessage('Documentation saved 😊');
-  }
-
   async export_as(type: string) {
     if (type === "svg") {
       let filter = { 'svg': ['svg'] };
@@ -192,7 +188,6 @@ export default class State_machine_viewer_manager {
             let custom_path = `${dir_name}${path_lib.sep}${file_name}_${i}.svg`;
             fs.writeFileSync(custom_path, this.state_machines.svg[i].svg);
           }
-          this.show_export_message();
         }
       });
     }

@@ -25,6 +25,7 @@ const shell = require('shelljs');
 const fs = require('fs');
 const tool_base = require('./tool_base');
 import * as Output_channel_lib from '../../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export interface TestItem {
   test_type: string | undefined,
@@ -48,7 +49,6 @@ export class Edalize extends tool_base.Tool_base{
 
   async run_simulation(edam, testname, gui) {
     let normalized_edam = this.normalize_edam(edam);
-    this.output_channel.clear();
     let simulator_name = this.get_simulator_from_edam(normalized_edam);
     let installation_path = this.get_installation_path_from_edam(normalized_edam);
     let project_name = edam.name;
@@ -177,7 +177,7 @@ export class Edalize extends tool_base.Tool_base{
     const simulator_name_gui = ['ghdl'];
     let check = true;
     if (simulator_name_gui.includes(simulator_name) !== true){
-      vscode.window.showInformationMessage(`GUI option not supported for ${simulator_name}. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html)`);
+      this.output_channel.show_message(ERROR_CODE.EDALIZE_GUI_ERROR, '');
       check = false;
     }
     return check;
@@ -248,7 +248,6 @@ export class Edalize extends tool_base.Tool_base{
   async run_command(command) {
     let element = this;
 
-    element.output_channel.clear();
     element.output_channel.append(command);
     element.output_channel.show();
 

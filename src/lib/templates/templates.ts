@@ -20,11 +20,15 @@
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 import * as vscode from 'vscode';
 import * as config_reader_lib from "../utils/config_reader";
+import * as Output_channel_lib from '../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export class Template {
     private config_reader : config_reader_lib.Config_reader;
+    private output_channel : Output_channel_lib.Output_channel;
 
-    constructor(context, config_reader){
+    constructor(context, config_reader, output_channel : Output_channel_lib.Output_channel){
+        this.output_channel = output_channel;
         this.config_reader = config_reader;
         vscode.commands.registerCommand("teroshdl.generate_template", () => this.get_template());
     }
@@ -165,11 +169,10 @@ export class Template {
 
         //Error
         if (template_str === undefined) {
-            vscode.window.showErrorMessage('Select a valid file.!');
-            console.log("Error parser template.");
+            this.output_channel.show_message(ERROR_CODE.TEMPLATE_NOT_VALID_FILE, '');
         }
         else {
-            vscode.window.showInformationMessage('Template copied to clipboard!\n');
+            this.output_channel.show_message(ERROR_CODE.COPIED_TO_CLIPBOARD, '');
             vscode.env.clipboard.writeText(template_str);
         }
     }

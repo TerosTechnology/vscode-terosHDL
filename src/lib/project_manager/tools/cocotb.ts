@@ -28,6 +28,7 @@ const tmp = require('tmp');
 const child_process = require("child_process");
 const tool_base = require('./tool_base');
 import * as Output_channel_lib from '../../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export interface TestItem {
   attributes: string | undefined;
@@ -94,11 +95,11 @@ export class Cocotb extends tool_base.Tool_base{
     try {
       shell.exec("cocotb-config -v",(code, output) => {
         if (code === 127){
-        vscode.window.showErrorMessage("Install cocotb itself to run tests");
+          this.output_channel.show_message(ERROR_CODE.COCOTB_INSTALLATION, '');
         }
       });
     } catch (error) {
-      vscode.window.showErrorMessage("Error testing deps."); 
+      this.output_channel.show_message(ERROR_CODE.COCOTB_DEPS, '');
     }
 
     let element = this;
@@ -194,11 +195,11 @@ export class Cocotb extends tool_base.Tool_base{
     try {
       shell.exec("make",(code, output) => {
         if (code === 127){
-        vscode.window.showErrorMessage("Install Make to use cocotb");
+          this.output_channel.show_message(ERROR_CODE.COCOTB_INSTALLATION, '');
         }
       });
     } catch (error) {
-      vscode.window.showErrorMessage("Error testing deps."); 
+      this.output_channel.show_message(ERROR_CODE.COCOTB_DEPS, '');
     }
 
     let wksp_folder;
@@ -243,7 +244,7 @@ export class Cocotb extends tool_base.Tool_base{
         try {
           python_cocotb_data = fs.readFileSync(`${filename}.py`);
         } catch {
-          vscode.window.showErrorMessage(`Found "${module}" module in Makefile's MODULE variable but no "${test_name}.py" file found`);
+          this.output_channel.show_message(ERROR_CODE.COCOTB_TEST_NOT_FOUND, '');
           continue;
         }
         

@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 const fs = require("fs");
 const path_lib = require("path");
+import * as Output_channel_lib from '../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export function get_icon_light(full_path){
     let path_icon = get_icon(full_path, 'light');
@@ -31,11 +33,10 @@ function get_icon(full_path: string, mode: string){
     return path_icon;
 }
 
-export async function open_file(path) {
+export async function open_file(path, output_channel) {
     //Check if file exists
     if (fs.existsSync(path) !== true) {
-        let msg = "File doesn't exist. ";
-        show_message(msg,'project_manager');
+        output_channel.show_message(ERROR_CODE.FILE_NOT_FOUND, '');
         return;
     }
     try {
@@ -57,13 +58,6 @@ export async function open_file(path) {
         });
       });
     } catch (e) {}
-}
-
-export function show_message(msg:string, info_web='') {
-    if (info_web === 'project_manager'){
-        msg +=  'Check [TerosHDL documentation.](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html)';
-    }
-    vscode.window.showInformationMessage(msg);
 }
 
 export function get_file_lang(filepath : string | undefined){

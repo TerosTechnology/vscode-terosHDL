@@ -24,6 +24,7 @@ import * as path_lib from 'path';
 import * as util from "util";
 import * as config_reader_lib from "../utils/config_reader";
 import * as Output_channel_lib from '../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export default class Documenter {
   private subscriptions: vscode.Disposable[] | undefined;
@@ -112,7 +113,7 @@ export default class Documenter {
   async get_documentation_module() {
     let active_document = this.get_active_document();
     if (active_document === undefined) {
-      vscode.window.showErrorMessage('Select a valid file.!');
+      this.output_channel.show_message(ERROR_CODE.DOCUMENTER_NOT_VALID_FILE, '');
       return;
     }
     this.current_path = active_document.uri.fsPath;
@@ -317,7 +318,7 @@ export default class Documenter {
   }
 
   private show_export_message(path_exp) {
-    vscode.window.showInformationMessage(`Documentation saved in ${path_exp} 😊`);
+    this.output_channel.show_message(ERROR_CODE.DOCUMENTER_SAVE, path_exp);
   }
 
 }

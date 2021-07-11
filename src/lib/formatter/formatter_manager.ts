@@ -24,16 +24,19 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 import * as config_reader_lib from "../utils/config_reader";
+import * as Output_channel_lib from '../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export default class Formatter_manager {
     private lang: string = "";
     private formatter_name: string = "";
-    private subscriptions: vscode.Disposable[] | undefined;
     private config_reader : config_reader_lib.Config_reader;
+    private output_channel : Output_channel_lib.Output_channel;
 
-    constructor(language: string, config_reader) {
+    constructor(language: string, config_reader, output_channel: Output_channel_lib.Output_channel) {
         this.config_reader = config_reader;
         this.lang = language;
+        this.output_channel = output_channel;
         vscode.commands.registerCommand(`teroshdl.formatter.${language}.set_config`, () => this.config_formatter());
     }
 
@@ -77,7 +80,7 @@ export default class Formatter_manager {
             options = { 'style': this.get_istyle_style(), 'extra_args': this.get_istyle_extra_args() };
         }
         else if (this.formatter_name === "s3sv") {
-            let python = await this.get_python_path();
+            let python = await this.config_reader.get_python_path_binary(true);
             options = {
                 "python3_path": python,
                 "use_tabs": configuration.s3sv_use_tabs,
@@ -87,12 +90,6 @@ export default class Formatter_manager {
             };
         }
         return options;
-    }
-    async get_python_path() {
-        let python_path = this.config_reader.get_config_python_path();
-        const jsteros = require('jsteros');
-        let python = await jsteros.Nopy.get_python_exec(python_path);
-        return python;
     }
 
     get_istyle_style() {

@@ -21,6 +21,8 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
+import * as Output_channel_lib from '../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export default class Dependencies_viewer_manager {
@@ -28,8 +30,10 @@ export default class Dependencies_viewer_manager {
   private context: vscode.ExtensionContext;
   private sources: string[] = [];
   private last_sources: [] = [];
+  private output_channel: Output_channel_lib.Output_channel;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, output_channel) {
+    this.output_channel = output_channel;
     this.context = context;
   }
 
@@ -63,22 +67,6 @@ export default class Dependencies_viewer_manager {
     this.panel.webview.html = previewHtml;
   }
 
-  // private async add_source() {
-  //   let files = await vscode.window.showOpenDialog({ canSelectMany: true });
-  //   if (files !== undefined) {
-  //     this.sources.push();
-  //     for (let i = 0; i < files.length; ++i) {
-  //       if (files[i]['path'][0] === '/' && require('os').platform() === 'win32') {
-  //         this.sources.push(files[i]['path'].substring(1));
-  //       }
-  //       else {
-  //         this.sources.push(files[i]['path']);
-  //       }
-  //     }
-  //     await this.update_viewer();
-  //   }
-  // }
-
   private async get_dot(config) {
     let python3_path = config.pypath;
     const jsteros = require('jsteros');
@@ -103,7 +91,7 @@ export default class Dependencies_viewer_manager {
     try{
       let dot = await this.get_dot(config);
       if (dot === undefined || dot === '' || dot === null) {
-        this.show_python3_error_message();
+        this.output_channel.show_message(ERROR_CODE.PYTHON, '');
       }
       else {
         if ( (JSON.stringify(this.last_sources) !== JSON.stringify(sources)) || force_reload === true){
@@ -113,18 +101,9 @@ export default class Dependencies_viewer_manager {
       }
     }
     catch(e){
-      this.show_python3_error_message();
+      this.output_channel.show_message(ERROR_CODE.PYTHON, '');
       console.log("[TerosHDL][dependencies-viewer]");
       console.log(e);
-    }
-  }
-
-  private show_python3_error_message() {
-    if (require('os').platform() === 'win32'){
-      vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration. E.g: C:\Users\isma\AppData\Local\Microsoft\WindowsApps\python3.exe. Install VUnit: sudo pip3 install vunit_hdl');
-    }
-    else{
-      vscode.window.showInformationMessage('Install Python3 and configure the binary path in TerosHDL plugin configuration. E.g: /usr/bin/python3 Install VUnit: sudo pip3 install vunit_hdl');
     }
   }
 

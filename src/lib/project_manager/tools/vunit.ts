@@ -26,6 +26,7 @@ const shell = require('shelljs');
 const fs = require('fs');
 const tool_base = require('./tool_base');
 import * as Output_channel_lib from '../../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export class Vunit extends tool_base.Tool_base{
   private childp;
@@ -75,6 +76,7 @@ export class Vunit extends tool_base.Tool_base{
       return [];
     }
 
+    shell.cd(runpy_dirname);
     let result = await this.run_command(command, runpy_dirname, tests);
     return result;
   }
