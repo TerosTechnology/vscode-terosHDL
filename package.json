@@ -696,7 +696,7 @@
 		"watch": "npm run build-prepare & tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
-		"build-prepare": "cd ./resources/project_manager; ./generate_html.py; ./copy_examples"
+		"build-prepare": "cd ./resources/project_manager; ./generate_html.py; ./copy_examples.sh"
 	},
 	"dependencies": {
 		"@octokit/rest": "16.36.0",
