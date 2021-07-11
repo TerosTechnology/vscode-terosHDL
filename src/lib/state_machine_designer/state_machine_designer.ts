@@ -45,6 +45,7 @@ export default class State_machine_designer_manager {
       {
         enableScripts: true,
         enableCommandUris: true,
+        retainContextWhenHidden:true
       },
     );
 

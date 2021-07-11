@@ -20,6 +20,20 @@ diamond:
         description: "FPGA part number (e.g. LFE5U-45F-6BG381C)."
         type: input
 
+xsim:
+    description: "XSim simulator from the Xilinx Vivado suite."
+    title: XSim
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    xelab_options:
+        description: "Additional options for compilation with xelab."
+        type: input_comma
+    xsim_options:
+        description: "Additional run options for XSim."
+        type: input_comma
+
 ghdl:
     title: GHDL
     description: "GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL."
@@ -242,7 +256,7 @@ spyglass:
         type: input_comma
 
 symbiflow:
-    title: symbiflow
+    title: Symbiflow
     description: "The Symbiflow backend executes Yosys sythesis tool and VPR place and route. It can target multiple different FPGA vendorss."
     type: tool
     installation_path:
@@ -426,9 +440,6 @@ vunit:
     title: Vunit
     description: "VUnit testing framework."
     type: framework
-    installation_path:
-        description: "Installation path:"
-        type: input
     vunit_simulator:
         description: "VUnit simulator:"
         type: select
@@ -441,12 +452,12 @@ vunit:
     vunit_options:
         description: "VUnit options. Extra options for the VUnit test runner."
         type: input_comma
-    add_libraries:
-        description: "Add libraries. A list of framework libraries to add. Allowed values include “array_util”, “com”, “json4hdl”, “osvvm”, “random”, “verification_components”."
-        type: input_comma
-    vunit_runner:
-        description: "VUnit runner. Name of the Python file exporting a VUnitRunner class (must derive from edalize.vunit_hooks.VUnitHooks) that is used to configure and execute test. This allows very customized test control via VUnit’s Python-interfaces."
-        type: input
+    # add_libraries:
+    #     description: "Add libraries. A list of framework libraries to add. Allowed values include “array_util”, “com”, “json4hdl”, “osvvm”, “random”, “verification_components”."
+    #     type: input_comma
+    # vunit_runner:
+    #     description: "VUnit runner. Name of the Python file exporting a VUnitRunner class (must derive from edalize.vunit_hooks.VUnitHooks) that is used to configure and execute test. This allows very customized test control via VUnit’s Python-interfaces."
+    #     type: input
 
 xcelium:
     title: Xcelium

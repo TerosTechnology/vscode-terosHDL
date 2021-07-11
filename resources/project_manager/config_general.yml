@@ -3,7 +3,7 @@ general:
     description: ""
     type: "none"
     pypath:
-        description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. Install pyteroshdl. E.g: pip install pyteroshdl"
+        description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install pyteroshdl. E.g: pip3 install pyteroshdl</strong>"
         type: input
         default: ""
     header_file_path:
@@ -45,7 +45,6 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-        
     constants:
         description: "Include consants and types:"
         type: select
@@ -53,7 +52,6 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-        
     process:
         description: "Include always/processes:"
         type: select
@@ -61,7 +59,14 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-
+    functions:
+        description: "Include functions:"
+        type: select
+        options:
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+            
 linter:
     title: Linters settings
     description: ""
@@ -103,7 +108,7 @@ formatter:
             istyle: "iStyle"
             s3sv: "s3sv"
     formatter_vhdl:
-        description: "Verilog/SV formatter:"
+        description: "VHDL formatter:"
         type: select
         options:
             standalone: "Standalone"

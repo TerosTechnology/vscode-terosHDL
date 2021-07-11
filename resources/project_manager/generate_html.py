@@ -34,6 +34,9 @@ def generate_checkbox(option, name, tab_name):
 def generate_input(option, name, tab_name):
     id_name = f"{tab_name}_{name}"
     description = option['description']
+    if (name == 'installation_path'):
+        description = "Installation path: <strong>directory</strong> to the location where tool binary is located."
+
     html = f"  <label>{description}</label>\n"
     html += f"  <input type='input' id='{id_name}' class='radio-button'>\n"
     html += "  <br><br>\n"
@@ -74,23 +77,51 @@ def generate_select(option, name, tab_name):
 
 
 def get_select_tool_options(doc):
-    options = []
+    options_framework = []
+    options_tool = []
+    options_simulator = []
+    options_linter = []
     for tabname in doc:
         tab_type = doc[tabname]['type']
-        if (tab_type != 'none'):
-            options.append(tabname)
-    return options
+        if (tab_type == 'framework'):
+            options_framework.append(tabname)
+        elif (tab_type == 'tool'):
+            options_tool.append(tabname)
+        elif (tab_type == 'simulator'):
+            options_simulator.append(tabname)
+        elif (tab_type == 'linter'):
+            options_linter.append(tabname)
+    return options_framework, options_tool, options_simulator, options_linter
 
 
 def generate_select_tool(option, name, tab_name, doc):
-    tools = get_select_tool_options(doc)
+    frameworks, tools, simulators, linters = get_select_tool_options(doc)
     id_name = f"{tab_name}_{name}"
     description = option['description']
     html = f"  <label>{description}</label>\n"
     html += "  <br>\n"
     html += f"  <select name='select' id='{id_name}'>\n"
+
+    html += f"     <optgroup label='Frameworks'>\n"
+    for op in frameworks:
+        html += f"      <option value='{op}'>{op.capitalize()}</option>\n"
+    html += f"     </optgroup>\n"
+
+    html += f"     <optgroup label='Tools'>\n"
     for op in tools:
-        html += f"    <option value='{op}'>{op.capitalize()}</option>\n"
+        html += f"      <option value='{op}'>{op.capitalize()}</option>\n"
+    html += f"     </optgroup>\n"
+
+    html += f"     <optgroup label='Simulators'>\n"
+    for op in simulators:
+        html += f"      <option value='{op}'>{op.capitalize()}</option>\n"
+    html += f"     </optgroup>\n"
+
+    html += f"     <optgroup label='Linters/formatters'>\n"
+    for op in linters:
+        html += f"      <option value='{op}'>{op.capitalize()}</option>\n"
+    html += f"     </optgroup>\n"
+
     html += "  </select>\n"
     html += "  <br><br>\n"
     return html

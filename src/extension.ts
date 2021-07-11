@@ -169,7 +169,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // State machine viewer
     /**************************************************************************/
-    state_machine_viewer_manager = new state_machine_viewer.default(context);
+    state_machine_viewer_manager = new state_machine_viewer.default(context, config_reader);
     context.subscriptions.push(
         vscode.commands.registerCommand(
             'teroshdl.state_machine.viewer',

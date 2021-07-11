@@ -3,7 +3,7 @@ general:
     description: ""
     type: "none"
     pypath:
-        description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. Install pyteroshdl. E.g: pip install pyteroshdl"
+        description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install pyteroshdl. E.g: pip3 install pyteroshdl</strong>"
         type: input
         default: ""
     header_file_path:
@@ -45,7 +45,6 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-        
     constants:
         description: "Include consants and types:"
         type: select
@@ -53,7 +52,6 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-        
     process:
         description: "Include always/processes:"
         type: select
@@ -61,7 +59,14 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
-
+    functions:
+        description: "Include functions:"
+        type: select
+        options:
+            all: "All"
+            only_commented: "Only commented"
+            none: "None"
+            
 linter:
     title: Linters settings
     description: ""
@@ -103,7 +108,7 @@ formatter:
             istyle: "iStyle"
             s3sv: "s3sv"
     formatter_vhdl:
-        description: "Verilog/SV formatter:"
+        description: "VHDL formatter:"
         type: select
         options:
             standalone: "Standalone"
@@ -194,6 +199,20 @@ diamond:
     part:
         description: "FPGA part number (e.g. LFE5U-45F-6BG381C)."
         type: input
+
+xsim:
+    description: "XSim simulator from the Xilinx Vivado suite."
+    title: XSim
+    type: simulator
+    installation_path:
+        description: "Installation path:"
+        type: input
+    xelab_options:
+        description: "Additional options for compilation with xelab."
+        type: input_comma
+    xsim_options:
+        description: "Additional run options for XSim."
+        type: input_comma
 
 ghdl:
     title: GHDL
@@ -417,7 +436,7 @@ spyglass:
         type: input_comma
 
 symbiflow:
-    title: symbiflow
+    title: Symbiflow
     description: "The Symbiflow backend executes Yosys sythesis tool and VPR place and route. It can target multiple different FPGA vendorss."
     type: tool
     installation_path:
@@ -601,9 +620,6 @@ vunit:
     title: Vunit
     description: "VUnit testing framework."
     type: framework
-    installation_path:
-        description: "Installation path:"
-        type: input
     vunit_simulator:
         description: "VUnit simulator:"
         type: select
@@ -616,12 +632,12 @@ vunit:
     vunit_options:
         description: "VUnit options. Extra options for the VUnit test runner."
         type: input_comma
-    add_libraries:
-        description: "Add libraries. A list of framework libraries to add. Allowed values include “array_util”, “com”, “json4hdl”, “osvvm”, “random”, “verification_components”."
-        type: input_comma
-    vunit_runner:
-        description: "VUnit runner. Name of the Python file exporting a VUnitRunner class (must derive from edalize.vunit_hooks.VUnitHooks) that is used to configure and execute test. This allows very customized test control via VUnit’s Python-interfaces."
-        type: input
+    # add_libraries:
+    #     description: "Add libraries. A list of framework libraries to add. Allowed values include “array_util”, “com”, “json4hdl”, “osvvm”, “random”, “verification_components”."
+    #     type: input_comma
+    # vunit_runner:
+    #     description: "VUnit runner. Name of the Python file exporting a VUnitRunner class (must derive from edalize.vunit_hooks.VUnitHooks) that is used to configure and execute test. This allows very customized test control via VUnit’s Python-interfaces."
+    #     type: input
 
 xcelium:
     title: Xcelium

@@ -124,7 +124,8 @@ export default class Documenter {
         'Module documentation',
         vscode.ViewColumn.Two,
         {
-          enableScripts: true
+          enableScripts: true,
+          retainContextWhenHidden:true
         }
       );
       this.panel.onDidDispose(

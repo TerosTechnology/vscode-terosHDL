@@ -42,7 +42,8 @@ export default class config_view {
       'Tool configuration',
       vscode.ViewColumn.Two,
       {
-        enableScripts: true
+        enableScripts: true,
+        retainContextWhenHidden: true
       }
     );
 
@@ -103,6 +104,7 @@ export default class config_view {
     vscode.commands.executeCommand("teroshdl.formatter.verilog.set_config");
     vscode.commands.executeCommand("teroshdl_tree_view.refresh_tests");
     vscode.commands.executeCommand("teroshdl.documenter.set_config");
+    vscode.commands.executeCommand("teroshdl.fsm.set_config");
     vscode.commands.executeCommand("teroshdl.linter.linter.vhdl.set_config");
     vscode.commands.executeCommand("teroshdl.linter.linter.verilog.set_config");
     vscode.commands.executeCommand("teroshdl.linter.linter.systemverilog.set_config");

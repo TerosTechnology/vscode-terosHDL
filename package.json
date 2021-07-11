@@ -3,7 +3,7 @@
 	"displayName": "TerosHDL",
 	"publisher": "teros-technology",
 	"description": "VHDL and Verilog/SV IDE: state machine viewer, linter, documentation, snippets... and more! ",
-	"version": "0.1.91",
+	"version": "2.0.0-beta",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
@@ -54,7 +54,7 @@
 				},
 				{
 					"id": "teroshdl_dependencies_tree_view",
-					"name": "TerosHDL: dependency tree"
+					"name": "TerosHDL: Hierarchy View"
 				}
 			]
 		},
@@ -696,7 +696,7 @@
 		"watch": "npm run build-prepare & tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
-		"build-prepare": "cd ./resources/project_manager; ./generate_html.py"
+		"build-prepare": "cd ./resources/project_manager; ./generate_html.py; ./copy_examples"
 	},
 	"dependencies": {
 		"@octokit/rest": "16.36.0",
