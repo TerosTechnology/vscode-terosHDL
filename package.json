@@ -431,7 +431,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.save_project",
-				"title": "Save project",
+				"title": "Export project",
 				"icon": {
 					"light": "resources/light/save.svg",
 					"dark": "resources/dark/save.svg"
@@ -463,7 +463,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.save_doc",
-				"title": "Save doc",
+				"title": "Save project documentation",
 				"icon": {
 					"light": "resources/light/book.svg",
 					"dark": "resources/dark/book.svg"
@@ -495,7 +495,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.help",
-				"title": "Tools configuration",
+				"title": "Go to TerosHDL documentation",
 				"icon": {
 					"light": "resources/light/help.svg",
 					"dark": "resources/dark/help.svg"

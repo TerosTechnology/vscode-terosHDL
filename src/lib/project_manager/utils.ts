@@ -30,6 +30,9 @@ function get_icon(full_path: string, mode: string){
     else if(filename === 'Makefile'){
         path_icon = path_lib.join(__filename, "..", "..", "..", "..", "resources", mode, "makefile.svg");  
     }
+    else{
+        path_icon = path_lib.join(__filename, "..", "..", "..", "..", "resources", mode, "file.svg");   
+    }
     return path_icon;
 }
 
