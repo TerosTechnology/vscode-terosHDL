@@ -34,7 +34,9 @@ import * as utils_vscode from "../utils/utils";
 import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
 import { Hdl_dependencies_tree } from './hdl_dependencies_tree';
 import * as Output_channel_lib from '../utils/output_channel';
+import * as config_reader_lib from "../utils/config_reader";
 
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 const path_lib = require("path");
 const fs = require("fs");
 const os = require("os");
@@ -61,9 +63,11 @@ export class Project_manager {
   private hdl_dependencies_provider : Hdl_dependencies_tree;
   private context;
   private output_channel : Output_channel_lib.Output_channel;
+  private config_reader : config_reader_lib.Config_reader;
 
 
-  constructor(context: vscode.ExtensionContext, output_channel) {
+  constructor(context: vscode.ExtensionContext, output_channel, config_reader: config_reader_lib.Config_reader) {
+    this.config_reader = config_reader;
     this.output_channel = output_channel;
     this.context = context;
     this.vunit = new Vunit.Vunit(context, output_channel);
@@ -106,6 +110,7 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.stop", () => this.stop());
     vscode.commands.registerCommand("teroshdl_tree_view.open_file", (item) => this.open_file(item));
     vscode.commands.registerCommand("teroshdl_tree_view.save_doc", (item) => this.save_doc(item));
+    vscode.commands.registerCommand("teroshdl_tree_view.help", (item) => this.help());
 
     this.hdl_dependencies_provider = new Hdl_dependencies_tree();
     vscode.window.registerTreeDataProvider('teroshdl_dependencies_tree_view', this.hdl_dependencies_provider);
@@ -115,18 +120,35 @@ export class Project_manager {
 
   }
 
+  help(){
+    const exec = require('child_process').exec;
+    const help_index_path = path.join('file://' + __filename, "..", "..", "..", "..", "resources", "project_manager", "help", 'index.html');
+    let opener;
+    switch (process.platform) {
+      case 'darwin':
+        opener = 'open';
+        break;
+      case 'win32':
+        opener = 'start';
+        break;
+      default:
+        opener = 'xdg-open';
+        break;
+    }
+    exec(`${opener} "${help_index_path.replace(/"/g, '\\\"')}"`);
+  }
+
   open_dependencies_viewer(){
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
-      let msg = "Mark a project to show the dependencies.";
-      utils.show_message(msg, 'project_manager');
+      this.output_channel.show_message(ERROR_CODE.SELECT_PROJECT_TREE_VIEW, '');
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
     let config = this.config_view.get_config_documentation();
 
     if (this.dependencies_viewer_manager === undefined){
-      this.dependencies_viewer_manager = new Dependencies_viewer.default(this.context);
+      this.dependencies_viewer_manager = new Dependencies_viewer.default(this.context, this.output_channel);
     }
 
     this.dependencies_viewer_manager.open_viewer(prj, config);
@@ -135,8 +157,7 @@ export class Project_manager {
   update_dependencies_viewer(){
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
-      let msg = "Mark a project to show the dependencies.";
-      utils.show_message(msg, 'project_manager');
+      this.output_channel.show_message(ERROR_CODE.SELECT_PROJECT_TREE_VIEW, '');
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
@@ -191,7 +212,7 @@ export class Project_manager {
 
   open_file(item) {
     let path = item.path;
-    utils.open_file(path);
+    utils.open_file(path, this.output_channel);
   }
 
   get_active_project_libraries() {
@@ -221,7 +242,6 @@ export class Project_manager {
   }
 
   async refresh_tests() {
-    this.config_python_path();
     this.last_vunit_results = [];
     this.last_cocotb_results = [];
     this.last_edalize_results = [];  
@@ -265,50 +285,47 @@ export class Project_manager {
   }
 
   async run_vunit_test(item) {
-    this.config_python_path();
     let tests: string[] = [item.label];
     let gui = false;
     this.run_vunit_tests(tests, gui);
   }
 
   async run_vunit_test_gui(item) {
-    this.config_python_path();
     let tests: string[] = [item.label];
     let gui = true;
     this.run_vunit_tests(tests, gui);
   }
 
   async run_cocotb_test(item) {
-    this.config_python_path();
     let tests: string[] = [item.label];
     this.run_cocotb_tests(tests);
   }
 
   async run_edalize_test(item) {
-    this.config_python_path();
     let tests: string[] = [item.label];
     let gui = false;
     this.run_edalize_tests(tests, gui);
   }
 
   async run_edalize_test_gui(item) {
-    this.config_python_path();
     let tests: string[] = [item.label];
     let gui = true;
     this.run_edalize_tests(tests, gui);
   }
 
   async simulate() {
-    this.config_python_path();
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
-      let msg = "Mark a project to simulate";
-      utils.show_message(msg, 'project_manager');
+      this.output_channel.show_message(ERROR_CODE.SELECT_PROJECT_SIMULATION, '');
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
     if (prj === undefined){
-      utils.show_message(`Select a project`,'project_manager');
+      this.output_channel.show_message(ERROR_CODE.SELECT_PROJECT_SIMULATION, '');
+      return;
+    }
+    if (prj.toplevel_path === '' || prj.toplevel_path === undefined){
+      this.output_channel.show_message(ERROR_CODE.SELECT_TOPLEVELPATH, '');
       return;
     }
     let tool_configuration = this.config_file.get_config_of_selected_tool();
@@ -328,18 +345,10 @@ export class Project_manager {
     }
   }
 
-  config_python_path(){
-    let pypath = this.config_view.get_config_python_path();
-    this.vunit.set_python_path(pypath);
-    this.edalize.set_python_path(pypath);
-    return pypath;
-  }
-
-  async get_toplevel_selected_prj(){
+  async get_toplevel_selected_prj(verbose: boolean){
     let selected_project = this.edam_project_manager.selected_project;
-    if (selected_project === "") {
-      let msg = "Mark a project to simulate";
-      utils.show_message(msg, 'project_manager');
+    if (selected_project === "" && verbose === true) {
+      this.output_channel.show_message(ERROR_CODE.SELECT_PROJECT_SIMULATION, '');
       return;
     }
     try{
@@ -349,6 +358,9 @@ export class Project_manager {
         return '';
       }
       let toplevel = await utils.get_toplevel_from_path(toplevel_path);
+      if ( (toplevel === '' || toplevel === undefined)  && verbose === true){
+        this.output_channel.show_message(ERROR_CODE.SELECT_TOPLEVEL, '');
+      }
       return toplevel;
     }
     catch{
@@ -359,8 +371,7 @@ export class Project_manager {
   get_toplevel_path_selected_prj(){
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
-      let msg = "Mark a project to simulate";
-      utils.show_message(msg, 'project_manager');
+      this.output_channel.show_message(ERROR_CODE.SELECT_PROJECT_SIMULATION, '');
       return;
     }
     let prj = this.edam_project_manager.get_project(selected_project);
@@ -409,7 +420,7 @@ export class Project_manager {
     let tool_configuration = this.config_file.get_config_of_selected_tool();
     edam.tool_options = tool_configuration;
 
-    let toplevel = await this.get_toplevel_selected_prj();;
+    let toplevel = await this.get_toplevel_selected_prj(false);;
     edam.toplevel = toplevel;
     let results = <[]>await this.edalize.run_simulation(edam, toplevel, gui);
     this.last_edalize_results = results;
@@ -451,6 +462,9 @@ export class Project_manager {
 
   async go_to_code(item) {
     let location = item.location;
+    if (location === undefined){
+      return;
+    }
     let open_path = location.file_name;
     let position = <{}>this.getline_numberof_char(open_path, location.offset);
 
@@ -536,7 +550,6 @@ export class Project_manager {
   }
 
   async update_tree() {
-    this.config_python_path();
     this.update_dependencies_viewer();
     let test_list_initial = [{ name: "Loading tests...", location: undefined }];
     let normalized_prjs = this.edam_project_manager.get_normalized_projects();
@@ -593,7 +606,7 @@ export class Project_manager {
       return;
     }
     let toplevel_path = prj.toplevel_path;
-    let pypath = this.config_view.get_config_python_path();
+    let pypath = await this.config_reader.get_python_path_binary(false);
     let dependency_tree = await prj.get_dependency_tree(pypath);
     if (dependency_tree.root === undefined){
       dependency_tree = {root: [
@@ -604,7 +617,6 @@ export class Project_manager {
     }
     this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
   }
-
 
   set_default_tops() {
     let tops = this.edam_project_manager.get_tops();
@@ -862,7 +874,6 @@ export class Project_manager {
     else {
       result = await project_manager.save_html_doc(output_path, config);
     }
-    utils.show_message(`The documentation has been generated in: ${output_path}`);
     return result;
   }
 
@@ -961,7 +972,7 @@ export class Project_manager {
   }
 
   async get_edalize_test_list() {
-    let testname = await this.get_toplevel_selected_prj();
+    let testname = await this.get_toplevel_selected_prj(false);
     if (testname === ''){
       return [];
     }
@@ -1028,7 +1039,6 @@ export class Project_manager {
           if (value !== undefined) {
             let result = this.edam_project_manager.create_project(value);
             if (result !== '') {
-              utils.show_message(result, 'project_manager');
               return;
             }
             if (this.edam_project_manager.get_number_of_projects() === 1) {
@@ -1097,8 +1107,6 @@ export class Project_manager {
             element.set_selected_tool_from_json_project(prj_json);
             element.update_tree();
             element.refresh_lint();
-            let msg = `Set ${picker_value} settings in the project manager configuration.`;
-            utils.show_message(msg, 'project_manager');
           });
         }
     }

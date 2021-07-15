@@ -22,6 +22,7 @@
 
 const fs = require('fs');
 const path_lib = require('path');
+import * as config_reader_lib from "./config_reader";
 
 export function get_files_from_dir_recursive (dir: any, filelist: any[] = []) {
     fs.readdirSync(dir).forEach(file => {
@@ -30,8 +31,13 @@ export function get_files_from_dir_recursive (dir: any, filelist: any[] = []) {
             filelist = get_files_from_dir_recursive(dirFile, filelist);
         }
         catch (err) {
-            if (err.code === 'ENOTDIR' || err.code === 'EBUSY') filelist = [...filelist, dirFile];
-            else throw err;
+            if (err.code === 'ENOTDIR' || err.code === 'EBUSY') {
+                filelist = [...filelist, dirFile];
+            }
+            else 
+            {
+                throw err;
+            }
         }
     });
     return filelist;

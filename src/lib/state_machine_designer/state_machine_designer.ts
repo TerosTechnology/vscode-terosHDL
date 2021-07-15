@@ -21,14 +21,18 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
+import * as Output_channel_lib from '../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export default class State_machine_designer_manager {
   private panel: vscode.WebviewPanel | undefined = undefined;
   private context: vscode.ExtensionContext;
   private sources: string[] = [];
+  private output_channel : Output_channel_lib.Output_channel;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel) {
+    this.output_channel = output_channel;
     this.context = context;
   }
 
@@ -75,7 +79,7 @@ export default class State_machine_designer_manager {
   }
 
   private show_export_message() {
-    vscode.window.showInformationMessage('Code copied to clipboard 🖥️');
+    this.output_channel.show_message(ERROR_CODE.COPIED_TO_CLIPBOARD, '');
   }
 
   private getWebviewContent(context: vscode.ExtensionContext) {

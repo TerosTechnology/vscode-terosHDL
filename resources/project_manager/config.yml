@@ -6,13 +6,18 @@ general:
         description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install pyteroshdl. E.g: pip3 install pyteroshdl</strong>"
         type: input
         default: ""
+    select_tool:
+        description: "Select a tool, framework, simulator..."
+        type: select_tool
+
+templates:
+    title: Templates
+    description: ""
+    type: "none"
     header_file_path:
         description: "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template"
         type: input
         default: ""
-    select_tool:
-        description: "Select a tool, framework, simulator..."
-        type: select_tool
 
 documentation:
     title: Documentation settings

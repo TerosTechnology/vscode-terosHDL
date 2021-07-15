@@ -1,6 +1,37 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 
+const MSG_PYTHON = "Error Python3 path.";
+const MSG_COCOTB_INSTALLATION = "Install cocotb itself to run tests.";
+const MSG_COCOTB_DEPS = "Error testing deps.";
+const MSG_COCOTB_TEST_NOT_FOUND = "Found module in Makefile's MODULE variable but no python file found.";
+const MSG_EDALIZE_GUI_ERROR = "GUI option not supported for your current simulator. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html).";
+const MSG_FILE_NOT_FOUND = "File not found.";
+const MSG_DOCUMENTER_NOT_VALID_FILE = "Select a valid file.";
+const MSG_DOCUMENTER_SAVE = "Document saved in ";
+const MSG_COPIED_TO_CLIPBOARD = "Code copied to clipboard.";
+const MSG_SELECT_TOPLEVELPATH = "Select a toplvel.";
+const MSG_SELECT_TOPLEVEL = "Select a toplvel.";
+const MSG_SELECT_PROJECT_TREE_VIEW = "Select a project.";
+const MSG_SELECT_PROJECT_SIMULATION = "Select a project.";
+
+export const ERROR_CODE = {
+    PYTHON : MSG_PYTHON,
+    SELECT_PROJECT_TREE_VIEW: MSG_SELECT_PROJECT_TREE_VIEW,
+    SELECT_PROJECT_SIMULATION: MSG_SELECT_PROJECT_SIMULATION,
+    SELECT_TOPLEVEL: MSG_SELECT_TOPLEVEL,
+    COCOTB_INSTALLATION: MSG_COCOTB_INSTALLATION,
+    COCOTB_DEPS: MSG_COCOTB_DEPS,
+    COCOTB_TEST_NOT_FOUND: MSG_COCOTB_TEST_NOT_FOUND,
+    EDALIZE_GUI_ERROR: MSG_EDALIZE_GUI_ERROR,
+    FILE_NOT_FOUND: MSG_FILE_NOT_FOUND,
+    DOCUMENTER_NOT_VALID_FILE: MSG_DOCUMENTER_NOT_VALID_FILE,
+    DOCUMENTER_SAVE: MSG_DOCUMENTER_SAVE, //argument path 
+    COPIED_TO_CLIPBOARD: MSG_COPIED_TO_CLIPBOARD,
+    TEMPLATE_NOT_VALID_FILE: MSG_DOCUMENTER_NOT_VALID_FILE,
+    SELECT_TOPLEVELPATH: MSG_SELECT_TOPLEVELPATH,
+};
+
 export class Output_channel{
 
     private output_channel : vscode.OutputChannel;
@@ -8,7 +39,6 @@ export class Output_channel{
     constructor(){
         this.output_channel = vscode.window.createOutputChannel('TerosHDL');
     }
-
 
     clear(){
         this.output_channel.clear();   
@@ -24,6 +54,29 @@ export class Output_channel{
 
     show(){
         this.output_channel.show();
+    }
+
+    get_date(){
+        let date_ob = new Date();
+        let date = ("0" + date_ob.getDate()).slice(-2);
+        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+        let year = date_ob.getFullYear();
+        let hours = date_ob.getHours().toString().padStart(2, '0');
+        let minutes = date_ob.getMinutes().toString().padStart(2, '0');
+        let seconds = date_ob.getSeconds().toString().padStart(2, '0');
+        let date_str = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+        return date_str.padEnd(19);
+    }
+
+    show_message(error_message, ags){
+        this.show();
+        if (error_message === ERROR_CODE.PYTHON){
+            error_message += `Current Python3 path: ${ags}`;
+        }
+
+        let date = this.get_date();
+        let msg = date + ': ' + error_message;
+        this.appendLine(msg);
     }
 
     print_project_documenter_configurtion(configuration, file_input:string, file_output:string, type_output:string){

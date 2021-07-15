@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/class-name-casing */
 // Copyright 2020 Teros Technology
 //
 // Ismael Perez Rojo
@@ -20,14 +21,19 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 const fs = require('fs');
 const path = require('path');
+import * as Output_channel_lib from '../utils/output_channel';
+import * as vscode from 'vscode';
 
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 const teroshdl_config_filename = 'prj_config.teros';
 
 export class Config_reader {
   private config_filepath: string = '';
   private config: {} = {};
+  private output_channel : Output_channel_lib.Output_channel;
 
-  constructor(context) {
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel) {
+    this.output_channel = output_channel;
     let folder_path = context.extensionPath;
     this.config_filepath = path.join(folder_path, teroshdl_config_filename);
   }
@@ -64,13 +70,26 @@ export class Config_reader {
   }
 
   get_header_path(){
-    let field = this.get_config_fields('general');
+    let field = this.get_config_fields('templates');
     return field.header_file_path;
   }
 
   get_config_python_path(){
     let field = this.get_config_fields('general');
     return field.pypath;
+  }
+
+  async get_python_path_binary(verbose: boolean){
+    let config_python_path = this.get_config_python_path();
+    const jsteros = require('jsteros');
+    let python = await jsteros.Nopy.get_python_exec(config_python_path);
+    if (python === '' || python === undefined){
+      if (verbose === true){
+        this.output_channel.show_message(ERROR_CODE.PYTHON, config_python_path);
+      }
+      return config_python_path;
+    }
+    return python;
   }
 
   get_config_documentation(){

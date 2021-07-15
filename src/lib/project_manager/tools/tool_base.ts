@@ -24,6 +24,8 @@ const path_lib = require('path');
 const shell = require('shelljs');
 const os = require('os');
 import * as Output_channel_lib from '../../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
+import * as config_reader_lib from "../../utils/config_reader";
 
 export class Tool_base {
     private exp: string = '';
@@ -34,10 +36,12 @@ export class Tool_base {
     private context: vscode.ExtensionContext;
     private python_path: string = '';
     private output_channel : Output_channel_lib.Output_channel;
+    private config_reader : config_reader_lib.Config_reader;
 
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
         this.context = context;
         this.output_channel = output_channel;
+        this.config_reader = new config_reader_lib.Config_reader(context, output_channel);
         this.exp = "export ";
         this.more = ";";
         this.switch = '';
@@ -57,17 +61,9 @@ export class Tool_base {
     }
 
     async get_python3_path(show_message = true) {
-        let python_path = this.python_path;
-        const jsteros = require('jsteros');
-        python_path = await jsteros.Nopy.get_python_exec(python_path);
-    
-        if ( (python_path === undefined || python_path === '') && show_message === true) {
-          let msg = `Install and configure Python3 in the project manager configuration. Install pyteroshdl: pip install pyteroshdl. If you dont't want to see this message select empty tool in the project manager configuration. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/configuration/general.html)`;
-          vscode.window.showInformationMessage(msg);
-          return undefined;
-        }
+        let python_path = await this.config_reader.get_python_path_binary(show_message);
         return python_path;
-      }
+    }
 
     async stop_test() {
         let path_bin = path_lib.join('resources', 'bin', 'kill_vunit','kill.sh');

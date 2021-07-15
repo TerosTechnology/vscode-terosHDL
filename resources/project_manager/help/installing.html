@@ -1,0 +1,370 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installing &mdash; TerosHDL 0.1.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Testimonials" href="testimonials.html" />
+    <link rel="prev" title="What is TerosHDL?" href="about.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #ffffff" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">About</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">What is TerosHDL?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requisites">Requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python3">Python3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hdl-simulator">HDL simulator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vunit">Vunit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testimonials.html">Testimonials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="team.html">Team</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="donate.html">Donate</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="configuration/general.html">General settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/linters.html">Linters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration/documenter.html">Documenter</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="features/go_to_definition.html">Go to definition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/hover_evaluate.html">Hover &amp; evaluate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/template_generator.html">Template generator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/documenter.html">Documenter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/schematic_viewer.html">Verilog/SV beta schematic viewer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/error_checking.html">Errors checking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/style_checking.html">Style checking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/formatting.html">Code formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/stm_viewer.html">State machine viewer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/stm_designer.html">State machine designer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/dependencies_viewer.html">Dependencies viewer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/project_manager.html">Project manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/code_snippets.html">Code snippets and grammar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="similar_projects.html">Similar projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thanks_to.html">Thanks to</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future_work.html">Future work</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TerosHDL</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Installing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            
+              <a href="https://github.com/TerosTechnology/terosHDLdoc/blob/main/doc/installing.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installing">
+<span id="id1"></span><h1>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h1>
+<p>All the tools are automatically managed by TerosHDL vscode plugin.
+But there are some requisites you have to satisfy to enable the all the functionalities.
+You can search for <code class="docutils literal notranslate"><span class="pre">TerosHDL</span></code> inside VSCode in the extensions tab or Launch VS Code Quick Open <code class="docutils literal notranslate"><span class="pre">Ctrl+P</span></code>, paste the following command, and press enter:
+<code class="docutils literal notranslate"><span class="pre">ext</span> <span class="pre">install</span> <span class="pre">teros-technology.teroshdl</span></code></p>
+<div class="section" id="requisites">
+<h2>Requisites<a class="headerlink" href="#requisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></p></li>
+<li><p><a class="reference internal" href="#python3">Python3</a></p></li>
+<li><p><a class="reference internal" href="#hdl-simulator">HDL simulator</a></p></li>
+<li><p><a class="reference internal" href="#vunit">Vunit</a></p></li>
+</ul>
+<p>Most features work without external Visual Studio Code dependencies but some special features require
+manually installed software by the user.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 55%" />
+<col style="width: 45%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Requisite</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Linter</p></td>
+<td><p><a class="reference internal" href="#hdl-simulator">HDL simulator</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Dependencie viewer</p></td>
+<td><p><a class="reference internal" href="#python3">Python3</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Project manager</p></td>
+<td><p><a class="reference internal" href="#vunit">Vunit</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="visual-studio-code">
+<h3>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference download external" download="" href="https://code.visualstudio.com/Download"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">VSCode</span></code></a></p>
+<p>CLI Ubuntu installation example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;</span> dpkg -i vscode_downloaded_file.deb
+</pre></div>
+</div>
+</div>
+<div class="section" id="python3">
+<h3>Python3<a class="headerlink" href="#python3" title="Permalink to this headline">¶</a></h3>
+<p>Python3 must be installed in the machine to use the dependencies viewer.</p>
+<p>Check how to <a class="reference internal" href="configuration/general.html"><span class="doc">configure the python3 path</span></a>  if python3 issues appear.</p>
+</div>
+<div class="section" id="hdl-simulator">
+<h3>HDL simulator<a class="headerlink" href="#hdl-simulator" title="Permalink to this headline">¶</a></h3>
+<p>Linter needs a simulator to work. The currently supported simulators are the following:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Verilog/SV</p></th>
+<th class="head"><p>VHDL</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ModelSim</p></td>
+<td><p>ModelSim</p></td>
+</tr>
+<tr class="row-odd"><td><p>Vivado</p></td>
+<td><p>Vivado</p></td>
+</tr>
+<tr class="row-even"><td><p>Icarus</p></td>
+<td><p>GHDL</p></td>
+</tr>
+<tr class="row-odd"><td><p>Verilator</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>To configure the linter visit the <a class="reference internal" href="configuration/linters.html"><span class="doc">linter configuration section</span></a></p>
+</div>
+<div class="section" id="vunit">
+<h3>Vunit<a class="headerlink" href="#vunit" title="Permalink to this headline">¶</a></h3>
+<p>It is necessary to use the project manager.
+Install:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;</span> pip install vunit_hdl
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="testimonials.html" class="btn btn-neutral float-right" title="Testimonials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="about.html" class="btn btn-neutral float-left" title="What is TerosHDL?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, Ismael Perez Rojo, Carlos Alberto Ruiz Naranjo, Alfredo Saez
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/buildthedocs/sphinx.theme">theme</a>
+    
+    provided by <a href="https://buildthedocs.github.io">Build the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-140380699-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

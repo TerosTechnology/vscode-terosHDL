@@ -112,16 +112,16 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Config
     /**************************************************************************/
-    config_reader = new config_reader_lib.Config_reader(context);
+    config_reader = new config_reader_lib.Config_reader(context, output_channel);
     /**************************************************************************/
     // Templates
     /**************************************************************************/
-    template = new templates.Template(context, config_reader);
+    template = new templates.Template(context, config_reader, output_channel);
     /**************************************************************************/
     // Formatter
     /**************************************************************************/
-    formatter_vhdl = new formatter.default("vhdl", config_reader);
-    formatter_verilog = new formatter.default("verilog", config_reader);
+    formatter_vhdl = new formatter.default("vhdl", config_reader, output_channel);
+    formatter_verilog = new formatter.default("verilog", config_reader, output_channel);
     // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
     const disposable = vscode.languages.registerDocumentFormattingEditProvider(
         [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
@@ -156,7 +156,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
-    dependencies_viewer_manager = new dependencies_viewer.default(context);
+    dependencies_viewer_manager = new dependencies_viewer.default(context, output_channel);
     context.subscriptions.push(
         vscode.commands.registerCommand(
             'teroshdl.dependencies.viewer',
@@ -200,7 +200,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // State machine designer
     /**************************************************************************/
-    state_machine_designer_manager = new state_machine_designer_t.default(context);
+    state_machine_designer_manager = new state_machine_designer_t.default(context, output_channel);
     context.subscriptions.push(
         vscode.commands.registerCommand(
             'teroshdl.state_machine.designer',
@@ -261,7 +261,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Project manager
     /**************************************************************************/
-    project_manager = new project_manager_lib.Project_manager(context, output_channel);
+    project_manager = new project_manager_lib.Project_manager(context, output_channel, config_reader);
     // /**************************************************************************/
     // Linter
     /**************************************************************************/

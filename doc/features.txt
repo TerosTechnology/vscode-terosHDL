@@ -1,0 +1,20 @@
+- Linter
+- Documenter
+- State machine viewer
+- Templates
+- Formatter (P)
+- Simulators (P)
+- Hierarchy tree (P)
+- Dependencies viewer (P)
+
+- rusthdl
+- Language providers
+- Number hover
+- State machine designer
+- Netlist viewer
+
+P --> Python
+
+LD --> Logger documenter
+LC --> Logger common
+LP --> Logger project manager

@@ -317,13 +317,18 @@ def generate_set_options(doc):
                 option = tab[option_name]
                 id_name = f"""{tabname}_{option_name}"""
                 option_type = option['type']
+                option_let = f"{option_name}_value_i"
+                html += f"    let {option_let} = options.{option_name};\n"
                 if (option_type == "checkbox"):
+                    html += f"    if({option_let} === undefined){{{option_let} = false;}}\n"
                     html += f"    document.getElementById('{id_name}').checked = options.{option_name};\n"
                 elif(option_type == "input_comma"):
+                    html += f"    if({option_let} === undefined){{{option_let} = '';}}\n"
                     html += f"    document.getElementById('{id_name}').value = options.{option_name}.join(',');\n"
                 elif(option_type == "subtitle"):
                     pass
                 else:
+                    html += f"    if({option_let} === undefined){{{option_let} = '';}}\n"
                     html += f"    document.getElementById('{id_name}').value = options.{option_name};\n"
         html += '  }\n'
     return html
