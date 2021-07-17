@@ -25,7 +25,7 @@ import * as Output_channel_lib from '../utils/output_channel';
 import * as vscode from 'vscode';
 
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
-const teroshdl_config_filename = 'prj_config.teros';
+const teroshdl_config_filename = '.prj_config.teros';
 
 export class Config_reader {
   private config_filepath: string = '';
@@ -34,8 +34,8 @@ export class Config_reader {
 
   constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel) {
     this.output_channel = output_channel;
-    let folder_path = context.extensionPath;
-    this.config_filepath = path.join(folder_path, teroshdl_config_filename);
+    const homedir = require('os').homedir();
+    this.config_filepath = path.join(homedir, teroshdl_config_filename);
   }
 
   read_file_config() {

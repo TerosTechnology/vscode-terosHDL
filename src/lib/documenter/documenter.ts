@@ -172,6 +172,7 @@ export default class Documenter {
     this.last_document = document;
 
     let configuration = this.get_configuration();
+    configuration.input_path = document.fileName;
 
     let html_result = await documenter.get_html(code, language_id, configuration);
     let preview_html = this.html_base;
@@ -254,7 +255,7 @@ export default class Documenter {
     let code = this.get_document_code(this.current_document);    
     let documenter = await this.get_documenter();
     let configuration = this.get_configuration();
-
+    configuration.input_path = this.current_document.fileName;
     
     if (type === "markdown") {
       let filter = { 'markdown': ['md'] };

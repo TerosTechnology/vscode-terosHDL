@@ -57,7 +57,8 @@ export class Edalize extends tool_base.Tool_base{
     if (simulator_gui_support === true){
       normalized_edam = this.configure_waveform_gui(simulator_name, normalized_edam);
     }
-    const edam_path = `${__dirname}${this.folder_sep}edam.json`;
+    const tmpdir = require('os').tmpdir();
+    const edam_path = path_lib.join(tmpdir, 'edam.json');
     let edam_json = JSON.stringify(normalized_edam);
     fs.writeFileSync(edam_path, edam_json);
 
@@ -151,8 +152,10 @@ export class Edalize extends tool_base.Tool_base{
 
   open_waveform_gtkwave(){
     let shell = require('shelljs');
-    let command = `gtkwave ${this.complete_waveform_path}`;
-    shell.exec(command, {async:true});
+    let uri = vscode.Uri.file(this.complete_waveform_path);
+    vscode.commands.executeCommand("vscode.openWith", uri, "de.toem.impulse.editor.records");
+    // let command = `gtkwave ${this.complete_waveform_path}`;
+    // shell.exec(command, {async:true});
   }
 
   normalize_edam(edam){

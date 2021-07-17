@@ -21,7 +21,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const teroshdl_config_filename = 'prj_config.teros';
+const teroshdl_config_filename = '.prj_config.teros';
 const teroshdl_config_filename_default = 'prj_config_default.teros';
 
 export class Config {
@@ -31,7 +31,8 @@ export class Config {
   public selected_project: string = '';
 
   constructor(folder_path) {
-    this.config_filepath = folder_path + path.sep + teroshdl_config_filename;
+    const homedir = require('os').homedir();
+    this.config_filepath = path.join(homedir, teroshdl_config_filename);
     let exists = fs.existsSync(this.config_filepath);
     if (exists === true) {
       let result = this.read_file_config(this.config_filepath);
@@ -132,10 +133,9 @@ export class Config {
     }
   }
   
-
   get_config_documentation(){
     let pypath = this.get_config_python_path();
-    let config_tool = this.config['config_tool'].config;
+    let config_tool = this.config['config_tool']['config'];
     for (let i = 0; i < config_tool.length; i++) {
       const element = config_tool[i];
       for(let attributename in element){
@@ -148,7 +148,7 @@ export class Config {
   }
 
   get_config_python_path(){
-    let config_tool = this.config['config_tool'].config;
+    let config_tool = this.config['config_tool']['config'];
     for (let i = 0; i < config_tool.length; i++) {
       const element = config_tool[i];
       for(let attributename in element){
@@ -161,12 +161,12 @@ export class Config {
 
 
   get_config_all_tool() {
-    return this.config['config_tool'].config;
+    return this.config['config_tool']['config'];
   }
 
   set_tool(tool){
     // let all_tools = this.get_config_tool();
-    let config_tool = this.config['config_tool'].config;
+    let config_tool = this.config['config_tool']['config'];
     for (let i = 0; i < config_tool.length; i++) {
       const element = config_tool[i];
       for(let attributename in element){
@@ -180,7 +180,7 @@ export class Config {
   }
 
   get_config_tool() {
-    let config_tool = this.config['config_tool'].config;
+    let config_tool = this.config['config_tool']['config'];
     for (let i = 0; i < config_tool.length; i++) {
       const element = config_tool[i];
       for(let attributename in element){
@@ -192,14 +192,14 @@ export class Config {
   }
 
   get_all_config_tool() {
-    let config_tool = this.config['config_tool'].config;
+    let config_tool = this.config['config_tool']['config'];
     return config_tool;
   }
 
   get_config_of_selected_tool() {
     try {
       let selected_tool = this.get_config_tool();
-      let all_configs = this.config['config_tool'].config;
+      let all_configs = this.config['config_tool']['config'];
       let config_selected_tool;
       for (let i = 0; i < all_configs.length; i++) {
         const element = all_configs[i];
