@@ -860,13 +860,6 @@ export class Project_manager {
   }
 
   private async generate_and_save_documentation(project_manager, output_path, type: string, config) {
-    let configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('teroshdl');
-    let comment_symbol_vhdl = configuration.get('documenter.vhdl.symbol');
-    let comment_symbol_verilog = configuration.get('documenter.verilog.symbol');
-
-    config.symbol_vhdl = comment_symbol_vhdl;
-    config.symbol_verilog = comment_symbol_verilog;
-
     let result = {};
     if (type === "markdown") {
       result = await project_manager.save_markdown_doc(output_path, config);

@@ -114,6 +114,43 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     config_reader = new config_reader_lib.Config_reader(context, output_channel);
     /**************************************************************************/
+    // Language providers
+    /**************************************************************************/
+    rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
+    let is_alive = await rusthdl.run_rusthdl();
+    // document selector
+    let verilogSelector: vscode.DocumentSelector = [
+        { scheme: 'file', language: 'verilog' },
+        { scheme: 'file', language: 'systemverilog' }
+    ];
+    let vhdlSelector: vscode.DocumentSelector = { scheme: 'file', language: 'vhdl' };
+    // Configure ctags
+    ctagsManager = new CtagsManager(logger, context);
+    ctagsManager.configure();
+    // Configure Document Symbol Provider
+    let docProvider = new VerilogDocumentSymbolProvider(logger, context);
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
+    // Configure Completion Item Provider
+    let compItemProvider = new VerilogCompletionItemProvider(logger);
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
+    // Configure Hover Providers
+    let hoverProvider = new VerilogHoverProvider(logger);
+    context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
+    // Configure Definition Providers
+    let defProvider = new VerilogDefinitionProvider(logger);
+    context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
+    if (is_alive === false){
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
+        context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, hoverProvider));
+        context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, defProvider));
+    }
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc); }));
+    /**************************************************************************/
+    // Project manager
+    /**************************************************************************/
+    project_manager = new project_manager_lib.Project_manager(context, output_channel, config_reader);
+    /**************************************************************************/
     // Templates
     /**************************************************************************/
     template = new templates.Template(context, config_reader, output_channel);
@@ -210,40 +247,6 @@ export async function activate(context: vscode.ExtensionContext) {
         )
     );
     /**************************************************************************/
-    // Language providers
-    /**************************************************************************/
-    rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
-    let is_alive = await rusthdl.run_rusthdl();
-    // document selector
-    let verilogSelector: vscode.DocumentSelector = [
-        { scheme: 'file', language: 'verilog' },
-        { scheme: 'file', language: 'systemverilog' }
-    ];
-    let vhdlSelector: vscode.DocumentSelector = { scheme: 'file', language: 'vhdl' };
-    // Configure ctags
-    ctagsManager = new CtagsManager(logger, context);
-    ctagsManager.configure();
-    // Configure Document Symbol Provider
-    let docProvider = new VerilogDocumentSymbolProvider(logger, context);
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
-    // Configure Completion Item Provider
-    let compItemProvider = new VerilogCompletionItemProvider(logger);
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
-    // Configure Hover Providers
-    let hoverProvider = new VerilogHoverProvider(logger);
-    context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
-    // Configure Definition Providers
-    let defProvider = new VerilogDefinitionProvider(logger);
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
-    if (is_alive === false){
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
-        context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, hoverProvider));
-        context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, defProvider));
-    }
-    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => { docProvider.onSave(doc); }));
-
-    /**************************************************************************/
     // Hover Hexa
     /**************************************************************************/
     let hover_numbers_vhdl = vscode.languages.registerHoverProvider(vhdlSelector, {
@@ -258,10 +261,6 @@ export async function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(hover_numbers_vhdl);
     context.subscriptions.push(hover_numbers_verilog);
-    /**************************************************************************/
-    // Project manager
-    /**************************************************************************/
-    project_manager = new project_manager_lib.Project_manager(context, output_channel, config_reader);
     // /**************************************************************************/
     // Linter
     /**************************************************************************/
