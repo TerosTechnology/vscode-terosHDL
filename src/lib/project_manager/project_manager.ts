@@ -174,6 +174,35 @@ export class Project_manager {
     }
     this.save_toml();
     vscode.commands.executeCommand("teroshdl.vhdlls.restart");
+    await this.save_compile_order();
+  }
+
+  async save_compile_order(){
+    let developer_mode = this.config_reader.get_developer_mode();
+    if (developer_mode === true){
+      let selected_project = this.edam_project_manager.selected_project;
+      if (selected_project === "") {
+        return;
+      }
+      let prj = this.edam_project_manager.get_project(selected_project);
+      if (prj === undefined){
+        return;
+      }
+      let pypath = await this.config_reader.get_python_path_binary(false);
+      let compile_order = await prj.get_compile_order(pypath);
+      if (compile_order === undefined){
+        return;
+      }
+      let file_path = path_lib.join(os.homedir(), '.teroshdl_compile_order.toml');
+      let toml = "[libraries]\n\n";
+      toml += 'lib.files = [\n';
+      for (let i = 0; i < compile_order.length; i++) {
+        const element = compile_order[i];
+        toml += `'${element}'\n,`;
+      }
+      toml += ']\n';
+      fs.writeFileSync(file_path, toml);
+    }
   }
 
   save_toml () : string[]{

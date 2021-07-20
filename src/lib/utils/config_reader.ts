@@ -69,9 +69,29 @@ export class Config_reader {
     }
   }
 
+  get_developer_mode(){
+    let field = this.get_config_fields('general');
+    let developer_mode = field['developer_mode'];
+    if (developer_mode !== true){
+      developer_mode = false;
+    }
+    return developer_mode;
+  }
+
+
+  get_tool_path(tool){
+    let field = this.get_config_fields(tool);
+    return field.installation_path;
+  }
+
   get_header_path(){
     let field = this.get_config_fields('templates');
     return field.header_file_path;
+  }
+
+  get_schematic_backend(){
+    let field = this.get_config_fields('schematic');
+    return field.backend;
   }
 
   get_config_python_path(){

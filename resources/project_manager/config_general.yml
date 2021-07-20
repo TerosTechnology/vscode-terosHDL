@@ -9,6 +9,9 @@ general:
     select_tool:
         description: "Select a tool, framework, simulator..."
         type: select_tool
+    developer_mode:
+        description: "Developer mode: be careful!!"
+        type: checkbox
 
 templates:
     title: Templates
@@ -18,6 +21,17 @@ templates:
         description: "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template"
         type: input
         default: ""
+
+schematic:
+    title: Schematic viewer
+    description: ""
+    type: "none"
+    backend:
+        description: "Select the backend:"
+        type: select
+        options:
+            yowasp: "YoWASP"
+            yosys: "Yosys"
 
 documentation:
     title: Documentation settings

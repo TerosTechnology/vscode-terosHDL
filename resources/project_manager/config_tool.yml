@@ -33,6 +33,9 @@ xsim:
     xsim_options:
         description: "Additional run options for XSim."
         type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
+        type: input_comma
 
 ghdl:
     title: GHDL
@@ -53,6 +56,9 @@ ghdl:
     run_options:
         description: "Run options. Extra options used when running GHDL simulations (ghdl -r)."
         type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
+        type: input_comma
 
 icarus:
     title: Icarus
@@ -66,6 +72,9 @@ icarus:
         type: input
     iverilog_options:
         description: "Additional options for iverilog."
+        type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
         type: input_comma
 
 icestorm:
@@ -161,6 +170,9 @@ modelsim:
         type: input_comma
     vsim_options:
         description: "Additional run options for vsim."
+        type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
         type: input_comma
 
 morty:
@@ -391,9 +403,6 @@ verilator:
             cc: "cc"
             sc: "sc"
             lint-only: "lint-only"
-    cli_parser:
-        description: "Deprecated: Use run_options instead : Select whether FuseSoC should handle command-line arguments (managed) or if they should be passed directly to the verilated model (raw). Default is managed."
-        type: input_comma
     libs:
         description: "Extra libraries for the verilated model to link against."
         type: input_comma
@@ -405,6 +414,9 @@ verilator:
         type: input_comma
     run_options:
         description: "Additional arguments directly passed to the verilated model."
+        type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
         type: input_comma
 
 vivado:
