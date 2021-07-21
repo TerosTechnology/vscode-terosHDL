@@ -21,6 +21,10 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
+const shell = require('shelljs');
+import * as config_reader_lib from "../utils/config_reader";
+import * as Output_channel_lib from '../utils/output_channel';
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
@@ -31,8 +35,13 @@ export default class netlist_viewer_manager {
   private document;
   private svg_element;
   private document_element;
+  private childp;
+  private config_reader : config_reader_lib.Config_reader;
+  private output_channel : Output_channel_lib.Output_channel;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel, config_reader) {
+    this.config_reader = config_reader;
+    this.output_channel = output_channel;
     this.context = context;
   }
 
@@ -47,7 +56,8 @@ export default class netlist_viewer_manager {
       'Schematic viewer',
       vscode.ViewColumn.Two,
       {
-        enableScripts: true
+        enableScripts: true,
+        retainContextWhenHidden:true
       }
     );
 
@@ -66,9 +76,6 @@ export default class netlist_viewer_manager {
           case 'export':
             this.export_as(message.type, message.svg);
             return;
-          case 'html_loaded':
-            this.update_viewer_last_code();
-            return;
         }
       },
       undefined,
@@ -82,6 +89,7 @@ export default class netlist_viewer_manager {
     if (code !== undefined) {
       this.code = code;
     }
+    await this.send_code(code);
   }
 
   private show_export_message(path_full) {
@@ -93,7 +101,7 @@ export default class netlist_viewer_manager {
       let filter = { 'svg': ['svg'] };
       vscode.window.showSaveDialog({ filters: filter }).then(fileInfos => {
         if (fileInfos?.path !== undefined) {
-          let path_full = this.normalize_path(fileInfos?.path);
+          let path_full = fileInfos?.path;
           fs.writeFileSync(path_full, svg);
 
           this.show_export_message(path_full);
@@ -105,19 +113,10 @@ export default class netlist_viewer_manager {
     }
   }
 
-  normalize_path(path: string) {
-    if (path[0] === '/' && require('os').platform() === 'win32') {
-      return path.substring(1);
-    }
-    else {
-      return path;
-    }
-  }
-
   private async send_code(code) {
-    let filename = this.document.fileName;
-    if (code !== undefined) {
-      await this.panel?.webview.postMessage({ command: "update", code: code, filename: filename });
+    let result = await this.generate(code);
+    if (result !== undefined) {
+      await this.panel?.webview.postMessage({ command: "update", result: result});
     }
   }
 
@@ -164,6 +163,68 @@ export default class netlist_viewer_manager {
       this.code = code;
       await this.send_code(code);
     }
+  }
+
+  async generate(code) {
+    if (code === undefined){
+      return '';
+    }
+    const tmpdir = require('os').homedir();
+    // const tmpdir = require('os').tmpdir();
+    const code_path = path_lib.join(tmpdir, '.teroshdl_yosys_code.v');
+    code = code.replace(/`include/g, "//`include");
+    fs.writeFileSync(code_path, code);
+
+    const output_path = path_lib.join(tmpdir, '.teroshdl_yosys_output.json');
+    const script_path = path_lib.join(tmpdir, '.teroshdl_yosys_script');
+    const script_code = `read_verilog ${code_path}\n design -reset\n read_verilog -sv ${code_path}\n proc\n opt\n write_json ${output_path}`;
+    fs.writeFileSync(script_path, script_code);
+
+
+    // this.config_reader.
+    const backend = this.config_reader.get_schematic_backend();
+    let yosys_path = this.config_reader.get_tool_path('yosys');
+    let command = `yowasp-yosys -s ${script_path}`;
+    if (backend === 'yosys'){
+      if (yosys_path === ''){
+        yosys_path = 'yosys';
+      }
+      else{
+        yosys_path = path_lib.join(yosys_path,'yosys');
+        if (process.platform === "win32"){
+          yosys_path += '.exe';
+        }
+      }
+      command = `${yosys_path} -s ${script_path}`;
+    }
+
+    let element = this;
+    element.output_channel.clear();
+    element.output_channel.append(command);
+    element.output_channel.show();
+
+    return new Promise(resolve => {
+      element.childp = shell.exec(command, { async: true }, async function (code, stdout, stderr) {
+        if (code === 0) {
+          let result_yosys = '';
+          if (fs.existsSync(output_path)) {
+            result_yosys = fs.readFileSync(output_path,{encoding:'utf8', flag:'r'});
+          }
+          result_yosys = JSON.parse(result_yosys);
+          resolve(result_yosys);
+        }
+        else {
+          resolve('');
+        }
+      });
+
+      element.childp.stdout.on('data', function (data) {
+        element.output_channel.append(data);
+      });
+      element.childp.stderr.on('data', function (data) {
+        element.output_channel.append(data);
+      });
+    });
   }
 
   private getWebviewContent(context: vscode.ExtensionContext) {

@@ -9,6 +9,9 @@ general:
     select_tool:
         description: "Select a tool, framework, simulator..."
         type: select_tool
+    developer_mode:
+        description: "Developer mode: be careful!!"
+        type: checkbox
 
 templates:
     title: Templates
@@ -18,6 +21,17 @@ templates:
         description: "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template"
         type: input
         default: ""
+
+schematic:
+    title: Schematic viewer
+    description: ""
+    type: "none"
+    backend:
+        description: "Select the backend:"
+        type: select
+        options:
+            yowasp: "YoWASP"
+            yosys: "Yosys"
 
 documentation:
     title: Documentation settings
@@ -218,6 +232,9 @@ xsim:
     xsim_options:
         description: "Additional run options for XSim."
         type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
+        type: input_comma
 
 ghdl:
     title: GHDL
@@ -238,6 +255,9 @@ ghdl:
     run_options:
         description: "Run options. Extra options used when running GHDL simulations (ghdl -r)."
         type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
+        type: input_comma
 
 icarus:
     title: Icarus
@@ -251,6 +271,9 @@ icarus:
         type: input
     iverilog_options:
         description: "Additional options for iverilog."
+        type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
         type: input_comma
 
 icestorm:
@@ -346,6 +369,9 @@ modelsim:
         type: input_comma
     vsim_options:
         description: "Additional run options for vsim."
+        type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
         type: input_comma
 
 morty:
@@ -576,9 +602,6 @@ verilator:
             cc: "cc"
             sc: "sc"
             lint-only: "lint-only"
-    cli_parser:
-        description: "Deprecated: Use run_options instead : Select whether FuseSoC should handle command-line arguments (managed) or if they should be passed directly to the verilated model (raw). Default is managed."
-        type: input_comma
     libs:
         description: "Extra libraries for the verilated model to link against."
         type: input_comma
@@ -590,6 +613,9 @@ verilator:
         type: input_comma
     run_options:
         description: "Additional arguments directly passed to the verilated model."
+        type: input_comma
+    linter_options:
+        description: "Additional arguments directly passed to linter."
         type: input_comma
 
 vivado:

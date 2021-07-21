@@ -56,8 +56,15 @@ export default class Lint_manager {
             let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
             let linter_path = linter_config.installation_path;
             this.linter_path = linter_path;
-            let linter_arguments = '';
-            this.linter_arguments = linter_arguments;
+            this.linter_arguments = '';
+            
+            let arguments_v = linter_config.linter_options;
+            if (arguments_v !== undefined){
+                for (let i = 0; i < arguments_v.length; i++) {
+                    const element = arguments_v[i];
+                    this.linter_arguments += ' ' + element;
+                }
+            }
         }
         else{
             this.linter_enable = false;

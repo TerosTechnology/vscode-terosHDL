@@ -222,7 +222,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Netlist viewer
     /**************************************************************************/
-    netlist_viewer_manager = new netlist_viewer.default(context);
+    netlist_viewer_manager = new netlist_viewer.default(context, output_channel, config_reader);
     context.subscriptions.push(
         vscode.commands.registerCommand(
             'teroshdl.netlist.viewer',
@@ -282,7 +282,13 @@ export async function activate(context: vscode.ExtensionContext) {
     // Check style
     /**************************************************************************/
     linter_verilog_style = new linter.default("verilog", "style", context, config_reader);
+    vscode.workspace.onDidOpenTextDocument((e) => linter_verilog_style.lint(e));
+    vscode.workspace.onDidSaveTextDocument((e) => linter_verilog_style.lint(e));
+    vscode.workspace.onDidCloseTextDocument((e) => linter_verilog_style.remove_file_diagnostics(e));
     linter_systemverilog_style = new linter.default("systemverilog", "style", context, config_reader);
+    vscode.workspace.onDidOpenTextDocument((e) => linter_systemverilog_style.lint(e));
+    vscode.workspace.onDidSaveTextDocument((e) => linter_systemverilog_style.lint(e));
+    vscode.workspace.onDidCloseTextDocument((e) => linter_systemverilog_style.remove_file_diagnostics(e));
 }
 
 // this method is called when your extension is deactivated
