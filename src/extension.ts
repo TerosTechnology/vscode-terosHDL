@@ -116,9 +116,17 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Language providers
     /**************************************************************************/
-    rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
-    let is_alive = await rusthdl.run_rusthdl();
-    // document selector
+    let is_alive = false;
+
+    let enable_vhdl_provider = config_reader.get_enable_lang_provider('vhdl');
+    let enable_verilog_provider = config_reader.get_enable_lang_provider('verilog');
+
+    if (enable_vhdl_provider === true){
+        rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
+        is_alive = await rusthdl.run_rusthdl();
+    }
+
+    // Document selector
     let verilogSelector: vscode.DocumentSelector = [
         { scheme: 'file', language: 'verilog' },
         { scheme: 'file', language: 'systemverilog' }
@@ -129,18 +137,26 @@ export async function activate(context: vscode.ExtensionContext) {
     ctagsManager.configure();
     // Configure Document Symbol Provider
     let docProvider = new VerilogDocumentSymbolProvider(logger, context);
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
-    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
     // Configure Completion Item Provider
     let compItemProvider = new VerilogCompletionItemProvider(logger);
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
     // Configure Hover Providers
     let hoverProvider = new VerilogHoverProvider(logger);
-    context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
     // Configure Definition Providers
     let defProvider = new VerilogDefinitionProvider(logger);
+
+    //VHDL
+    if (enable_vhdl_provider === true){
+        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
+    }
+    //Verilog
+    if (enable_verilog_provider === true){
+        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
+        context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
+    }
+
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
-    if (is_alive === false){
+    if (is_alive === false && enable_vhdl_provider === true){
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
         context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, hoverProvider));
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, defProvider));

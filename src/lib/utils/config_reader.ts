@@ -69,6 +69,13 @@ export class Config_reader {
     }
   }
 
+  get_enable_lang_provider(lang){
+    let field = this.get_config_fields('general');
+    let key_s = 'go_to_definition_' + lang;
+    let enable_lang = field[key_s];
+    return enable_lang;
+  }
+
   get_developer_mode(){
     let field = this.get_config_fields('general');
     let developer_mode = field['developer_mode'];

@@ -9,6 +9,12 @@ general:
     select_tool:
         description: "Select a tool, framework, simulator..."
         type: select_tool
+    go_to_definition_vhdl:
+        description: "Activate go to definition feature for VHDL (you need to restart VSCode)."
+        type: checkbox
+    go_to_definition_verilog:
+        description: "Activate go to definition feature for Verilog/SV (you need to restart VSCode)."
+        type: checkbox
     developer_mode:
         description: "Developer mode: be careful!!"
         type: checkbox
