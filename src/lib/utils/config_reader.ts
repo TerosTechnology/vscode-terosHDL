@@ -59,6 +59,9 @@ export class Config_reader {
   get_config_fields(field){
     let config = this.read_file_config();
     let config_tool = config?.config.config_tool.config;
+    if (config_tool === undefined){
+      return {};
+    }
     for (let i = 0; i < config_tool.length; i++) {
       const element = config_tool[i];
       for(let attributename in element){
