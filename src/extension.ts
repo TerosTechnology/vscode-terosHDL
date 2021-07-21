@@ -153,9 +153,9 @@ export async function activate(context: vscode.ExtensionContext) {
     if (enable_verilog_provider === true){
         context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
         context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
+        context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
     }
 
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
     if (is_alive === false && enable_vhdl_provider === true){
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
         context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, hoverProvider));
