@@ -126,6 +126,11 @@
 					"group": "navigation"
 				},
 				{
+					"command": "teroshdl_tree_view.config_check",
+					"when": "view == teroshdl_tree_view",
+					"group": "navigation"
+				},
+				{
 					"command": "teroshdl_tree_view.help",
 					"when": "view == teroshdl_tree_view",
 					"group": "navigation"
@@ -491,6 +496,14 @@
 				"icon": {
 					"light": "resources/light/settings-gear.svg",
 					"dark": "resources/dark/settings-gear.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.config_check",
+				"title": "Tools configuration check",
+				"icon": {
+					"light": "resources/light/lightbulb.svg",
+					"dark": "resources/dark/lightbulb.svg"
 				}
 			},
 			{

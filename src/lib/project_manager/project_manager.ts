@@ -73,7 +73,7 @@ export class Project_manager {
     this.vunit = new Vunit.Vunit(context, output_channel);
     this.cocotb = new Cocotb.Cocotb(context, output_channel);
     this.edalize = new Edalize.Edalize(context, output_channel);
-    this.edam_project_manager = new Edam.Edam_project_manager();
+    this.edam_project_manager = new Edam.Edam_project_manager(output_channel);
     this.config_file = new Config.Config(context.extensionPath);
     this.workspace_folder = this.config_file.get_workspace_folder();
     this.config_view = new Config_view.default(context, this.config_file);
@@ -97,6 +97,7 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.rename_project", (item) => this.rename_project(item));
     vscode.commands.registerCommand("teroshdl_tree_view.rename_library", (item) => this.rename_library(item));
     vscode.commands.registerCommand("teroshdl_tree_view.config", () => this.config());
+    vscode.commands.registerCommand("teroshdl_tree_view.config_check", () => this.config_check());
     vscode.commands.registerCommand("teroshdl_tree_view.simulate", () => this.simulate());
     vscode.commands.registerCommand("teroshdl_tree_view.set_top", (item) => this.set_top(item));
     vscode.commands.registerCommand("teroshdl_tree_view.run_vunit_test", (item) => this.run_vunit_test(item));
@@ -148,7 +149,7 @@ export class Project_manager {
     let config = this.config_view.get_config_documentation();
 
     if (this.dependencies_viewer_manager === undefined){
-      this.dependencies_viewer_manager = new Dependencies_viewer.default(this.context, this.output_channel);
+      this.dependencies_viewer_manager = new Dependencies_viewer.default(this.context, this.output_channel, this.config_reader);
     }
 
     this.dependencies_viewer_manager.open_viewer(prj, config);
@@ -576,6 +577,10 @@ export class Project_manager {
 
   async config() {
     this.config_view.open();
+  
+  }
+  async config_check() {
+    await this.config_reader.check_configuration();
   }
 
   async update_tree() {
@@ -639,10 +644,10 @@ export class Project_manager {
     let dependency_tree = await prj.get_dependency_tree(pypath);
     if (dependency_tree.root === undefined){
       dependency_tree = {root: [
-          {filename: "", entity: "Configure your Python 3 path.", dependencies: []}
+          {filename: "", entity: "Configure your Python 3 path and install pyteroshdl.", dependencies: []}
         ]
       };
-      toplevel_path = "Configure your Python 3 path.";
+      toplevel_path = "Configure your Python 3 path and install pyteroshdl.";
     }
     this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
   }
@@ -793,7 +798,7 @@ export class Project_manager {
 
   async delete_project(item, delete_selection = true) {
     if (delete_selection === true) {
-      this.delete_selection();
+      this.delete_selection(item);
     }
     let project_name = item.project_name;
     this.edam_project_manager.delete_project(project_name);
@@ -804,8 +809,22 @@ export class Project_manager {
     }
   }
 
-  delete_selection() {
+  delete_selection(item) {
     let selection = this.treeview.selection;
+
+    //Check if item is in the selection
+    let is_selected = false;
+    for (let i = 0; i < selection.length; i++) {
+      const element = selection[i];
+      if (element === item) {
+        is_selected = true;
+      }
+    }
+
+    if (is_selected === false){
+      return;
+    }
+
     for (let i = 0; i < selection.length; i++) {
       const element = selection[i];
       if (element.item_type === "hdl_item") {
@@ -820,7 +839,7 @@ export class Project_manager {
 
   async delete_file(item, delete_selection = true) {
     if (delete_selection === true) {
-      this.delete_selection();
+      this.delete_selection(item);
     }
 
     let library_name = item.library_name;
@@ -836,7 +855,7 @@ export class Project_manager {
 
   async delete_library(item, delete_selection = true) {
     if (delete_selection === true) {
-      this.delete_selection();
+      this.delete_selection(item);
     }
 
     let library_name = item.library_name;

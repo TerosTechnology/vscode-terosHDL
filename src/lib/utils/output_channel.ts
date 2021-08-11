@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 
-const MSG_PYTHON = "Error Python3 path.";
+const MSG_PYTHON = "Error Python3 path. ";
 const MSG_COCOTB_INSTALLATION = "Install cocotb itself to run tests.";
 const MSG_COCOTB_DEPS = "Error testing deps.";
 const MSG_COCOTB_TEST_NOT_FOUND = "Found module in Makefile's MODULE variable but no python file found.";
@@ -14,6 +14,7 @@ const MSG_SELECT_TOPLEVELPATH = "Select a toplvel.";
 const MSG_SELECT_TOPLEVEL = "Select a toplvel.";
 const MSG_SELECT_PROJECT_TREE_VIEW = "Select a project.";
 const MSG_SELECT_PROJECT_SIMULATION = "Select a project.";
+const NETLIST_VIEWER = "Configure Yosys or install YoWASP: pip install yowasp-yosys";
 
 export const ERROR_CODE = {
     PYTHON : MSG_PYTHON,
@@ -30,6 +31,7 @@ export const ERROR_CODE = {
     COPIED_TO_CLIPBOARD: MSG_COPIED_TO_CLIPBOARD,
     TEMPLATE_NOT_VALID_FILE: MSG_DOCUMENTER_NOT_VALID_FILE,
     SELECT_TOPLEVELPATH: MSG_SELECT_TOPLEVELPATH,
+    NETLIST_VIEWER: NETLIST_VIEWER,
 };
 
 export class Output_channel{
@@ -79,6 +81,69 @@ export class Output_channel{
         this.appendLine(msg);
     }
 
+    print_message(msg_i){
+        this.show();
+
+        let date = this.get_date();
+        let msg = date + ': ' + msg_i;
+        this.appendLine(msg); 
+    }
+
+    print_check_configuration(check_configuration){
+        this.clear();
+        this.show();
+        this.appendLine("************************************************************************************************");
+        
+        let errors = '';
+        let python3_error = false;
+
+        let msg = `---> Python3 path: ${check_configuration.python_path}`;
+        if (check_configuration.python_path === ''){
+            msg = `---> Python3 path: doesn't detected.`;
+            python3_error = true;
+        }
+        this.appendLine(msg);    
+
+        msg = `---> Python3 packages directory: ${check_configuration.python_directories}`;
+        this.appendLine(msg); 
+
+        if (check_configuration.vunit === true){
+            this.appendLine('---> VUnit is installed.');
+        }
+        else{
+            errors += 'VUnit';
+            this.appendLine('---> VUnit is NOT installed.');
+        }
+        
+        if (check_configuration.cocotb === true){
+            this.appendLine('---> Cocotb is installed.');
+        }
+        else{
+            this.appendLine('---> Cocotb is NOT installed.');
+        }
+        
+        if (check_configuration.edalize === true){
+            this.appendLine('---> Edalize is installed.');
+        }
+        else{
+            errors += ', Edalize';
+            this.appendLine('---> Edalize is NOT installed.');
+        }
+        this.appendLine("************************************************************************************************");
+        if (python3_error === true){
+            msg = `Configure your Python 3 path correctly.`;
+            this.appendLine(msg);
+        }
+        if (errors !== ''){
+            msg = `Install ${errors} manually or install pyTerosHDL: pip install pyTerosHDL`;
+            this.appendLine(msg);
+        }
+        if (python3_error === true || errors !== ''){
+            this.appendLine("************************************************************************************************");
+        }
+
+    }
+
     print_project_documenter_configurtion(configuration, file_input:string, file_output:string, type_output:string){
         this.print_documenter_configurtion(configuration, file_input, file_output, type_output);
         this.appendLine("• Files processed: ");
@@ -117,6 +182,19 @@ export class Output_channel{
         this.appendLine(`• Output file: ${file_output}`);
         this.appendLine(`• Output type: ${type_output.toLocaleUpperCase()}`);
         this.appendLine("• Learn how to configure your documentation: https://terostechnology.github.io/terosHDLdoc/configuration/documenter.html");
+        this.appendLine("****************************************************************************************************************************************");
+    }
+
+    print_formatter(formatter_name, options){
+        this.clear();
+        this.show();
+        this.appendLine("****************************************************************************************************************************************");
+        let msg = `Formatting file with ${formatter_name}: `;
+        this.print_message(msg);
+        for (const [key, value] of Object.entries(options)) {
+            let option = `• ${key}: ${value}`;
+            this.appendLine(option);
+          }
         this.appendLine("****************************************************************************************************************************************");
     }
 
