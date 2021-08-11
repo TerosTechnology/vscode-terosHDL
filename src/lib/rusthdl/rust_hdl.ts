@@ -11,9 +11,8 @@ import * as path from 'path';
 import semver = require('semver');
 import vscode = require('vscode');
 import { ExtensionContext, window } from 'vscode';
-import * as lockfile from 'proper-lockfile';
-const output = vscode.window.createOutputChannel('VHDL LS Client');
-const traceOutputChannel = vscode.window.createOutputChannel('VHDL LS Trace');
+// const output = vscode.window.createOutputChannel('TerosHDL LS Client');
+// const traceOutputChannel = vscode.window.createOutputChannel('TerosHDL LS Trace');
 
 import {
     LanguageClient,
@@ -42,16 +41,16 @@ export class Rusthdl_lsp{
         const languageServerDir = this.context.asAbsolutePath(
             path.join('server', 'vhdl_ls')
         );
-        output.appendLine(
-            'Checking for language server executable in ' + languageServerDir
-        );
+        // output.appendLine(
+        //     'Checking for language server executable in ' + languageServerDir
+        // );
         let languageServerVersion = this.embeddedVersion(languageServerDir);
         if (languageServerVersion === '0.0.0') {
-            output.appendLine('No language server installed');
+            // output.appendLine('No language server installed');
             await this.getLatestLanguageServer(60000, this.context);
             languageServerVersion = this.embeddedVersion(languageServerDir);
         } else {
-            output.appendLine('Found version ' + languageServerVersion);
+            // output.appendLine('Found version ' + languageServerVersion);
         }
         languageServer = path.join(
             'server',
@@ -64,12 +63,12 @@ export class Rusthdl_lsp{
         // Get language server configuration and command to start server
         let serverOptions: ServerOptions;
         serverOptions = this.getServerOptionsEmbedded(this.context);
-        output.appendLine('Using embedded language server');
+        // output.appendLine('Using embedded language server');
 
         // Options to control the language client
         let clientOptions: LanguageClientOptions = {
             documentSelector: [{ scheme: 'file', language: 'vhdl' }],
-            traceOutputChannel,
+            // traceOutputChannel,
         };
 
         // Create the language client
@@ -98,7 +97,7 @@ export class Rusthdl_lsp{
         this.context.subscriptions.push(
             vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
                 const MSG = 'Restarting VHDL LS';
-                output.appendLine(MSG);
+                // output.appendLine(MSG);
                 await this.client.stop();
                 this.languageServerDisposable.dispose();
                 this.languageServerDisposable = this.client.start();
@@ -106,7 +105,7 @@ export class Rusthdl_lsp{
             })
         );
 
-        output.appendLine('Language server started');
+        // output.appendLine('Language server started');
         return true;
     }
 
@@ -145,7 +144,7 @@ export class Rusthdl_lsp{
                     if (semver.gt(dir, version)) {
                         fs.remove(path.join(languageServerDir, version)).catch(
                             (err: any) => {
-                                output.appendLine(err);
+                                // output.appendLine(err);
                             }
                         );
                         return dir;
@@ -181,7 +180,7 @@ export class Rusthdl_lsp{
         const languageServerAsset = ctx.asAbsolutePath(
             path.join('resources', 'rusthdl', 'install', latest, languageServerAssetName)
         );
-        output.appendLine(`Writing ${languageServerAsset}`);
+        // output.appendLine(`Writing ${languageServerAsset}`);
         if (!fs.existsSync(path.dirname(languageServerAsset))) {
             fs.mkdirSync(path.dirname(languageServerAsset), {
                 recursive: true,
@@ -192,9 +191,9 @@ export class Rusthdl_lsp{
             const targetDir = ctx.asAbsolutePath(
                 path.join('server', 'vhdl_ls', latest)
             );
-            output.appendLine(
-                `Extracting ${languageServerAsset} to ${targetDir}`
-            );
+            // output.appendLine(
+            //     `Extracting ${languageServerAsset} to ${targetDir}`
+            // );
             if (!fs.existsSync(targetDir)) {
                 fs.mkdirSync(targetDir, { recursive: true });
             }
@@ -205,14 +204,14 @@ export class Rusthdl_lsp{
                     );
                 } catch {}
                 if (err) {
-                    output.appendLine('Error when extracting server');
-                    output.appendLine(err);
+                    // output.appendLine('Error when extracting server');
+                    // output.appendLine(err);
                     try {
                         fs.removeSync(targetDir);
                     } catch {}
                     reject(err);
                 } else {
-                    output.appendLine('Server extracted');
+                    // output.appendLine('Server extracted');
                     resolve();
                 }
             });

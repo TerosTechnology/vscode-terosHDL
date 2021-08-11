@@ -132,6 +132,7 @@ formatter:
         options:
             istyle: "iStyle"
             s3sv: "s3sv"
+            verible: "Verible"
     formatter_vhdl:
         description: "VHDL formatter:"
         type: select
@@ -170,6 +171,16 @@ formatter:
         type: input
 
     subtitle_2:
+        type: subtitle
+        title: "Verilog/SV Verible formatter"      
+    verible_path:
+        description: "Verible formatter binary path. E.g: /home/user/Downloads/verible-v0.0-1296/bin/verible-verilog-format"
+        type: input
+    verible_format_args:
+        description: "Extra command line arguments passed to the Verible tool"
+        type: input_comma
+
+    subtitle_3:
         type: subtitle
         title: "VHDL standalone formatter"      
     vhdl_standalone_keyword_case:
@@ -560,17 +571,6 @@ vcs:
         type: input_comma
     run_options:
         description: ""
-        type: input_comma
-
-veribleformat:
-    title: Veribleformat
-    description: "Verible format backend (verible-verilog-format)."
-    type: linter
-    installation_path:
-        description: "Installation path:"
-        type: input
-    verible_format_args:
-        description: "Extra command line arguments passed to the Verible tool"
         type: input_comma
 
 veriblelint:

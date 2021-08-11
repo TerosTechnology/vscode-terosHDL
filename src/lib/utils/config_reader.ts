@@ -109,12 +109,21 @@ export class Config_reader {
     return field.pypath;
   }
 
+  async check_configuration(){
+    let config_python_path = this.get_config_python_path();
+    const jsteros = require('jsteros');
+    let info_configuration_check = await jsteros.Nopy.check_python(config_python_path);
+    this.output_channel.print_check_configuration(info_configuration_check);
+  }
+
   async get_python_path_binary(verbose: boolean){
     let config_python_path = this.get_config_python_path();
     const jsteros = require('jsteros');
     let python = await jsteros.Nopy.get_python_exec(config_python_path);
     if (python === '' || python === undefined){
       if (verbose === true){
+        let info_configuration_check = await jsteros.Nopy.check_python(config_python_path);
+        this.output_channel.print_check_configuration(info_configuration_check);
         this.output_channel.show_message(ERROR_CODE.PYTHON, config_python_path);
       }
       return config_python_path;

@@ -170,7 +170,6 @@ export default class netlist_viewer_manager {
       return '';
     }
     const tmpdir = require('os').homedir();
-    // const tmpdir = require('os').tmpdir();
     const code_path = path_lib.join(tmpdir, '.teroshdl_yosys_code.v');
     code = code.replace(/`include/g, "//`include");
     fs.writeFileSync(code_path, code);
@@ -180,8 +179,6 @@ export default class netlist_viewer_manager {
     const script_code = `read_verilog ${code_path}\n design -reset\n read_verilog -sv ${code_path}\n proc\n opt\n write_json ${output_path}`;
     fs.writeFileSync(script_path, script_code);
 
-
-    // this.config_reader.
     const backend = this.config_reader.get_schematic_backend();
     let yosys_path = this.config_reader.get_tool_path('yosys');
     let command = `yowasp-yosys -s ${script_path}`;
@@ -214,6 +211,7 @@ export default class netlist_viewer_manager {
           resolve(result_yosys);
         }
         else {
+          element.output_channel.show_message(ERROR_CODE.NETLIST_VIEWER, '');
           resolve('');
         }
       });

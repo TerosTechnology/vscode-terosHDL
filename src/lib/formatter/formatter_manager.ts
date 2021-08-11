@@ -49,6 +49,7 @@ export default class Formatter_manager {
                 formatter.update_params();
             }
             let options = await this.get_options();
+            this.output_channel.print_formatter(this.formatter_name, options);
             let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
         }
@@ -69,6 +70,16 @@ export default class Formatter_manager {
 
         let options;
         if (this.formatter_name === "vsg") {
+        }
+        else if (this.formatter_name === "verible") {
+            let arguments_array = configuration.verible_format_args;
+            let args = '';
+            for (let i = 0; i < arguments_array.length; i++) {
+                const element = arguments_array[i];
+                args += element + ' ';
+            }
+
+            options = { 'path': configuration.verible_path, 'args': args };
         }
         else if (this.formatter_name === "standalone") {
             options = { 'settings': this.get_standalone_vhdl_config() };

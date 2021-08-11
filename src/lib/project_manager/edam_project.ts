@@ -26,6 +26,11 @@ import * as vscode from "vscode";
 export class Edam_project_manager {
   public projects: any[] = [];
   public selected_project: string = '';
+  private output_channel;
+
+  constructor(output_channel){
+    this.output_channel = output_channel;
+  }
 
   get_number_of_projects() {
     return this.projects.length;
@@ -183,7 +188,7 @@ export class Edam_project_manager {
     if (this.check_if_project_exists(name) === true) {
       return `The project with name [${name}] already exists in the workspace.`;
     }
-    let logger = new Cli_logger(undefined);
+    let logger = new Cli_logger(this.output_channel);
     const jsteros = require('jsteros');
     let prj = new  jsteros.Edam.Edam_project(name, relative_path, logger);
     this.projects.push(prj);

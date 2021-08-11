@@ -21,6 +21,7 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
+import * as config_reader_lib from "../utils/config_reader";
 import * as Output_channel_lib from '../utils/output_channel';
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
@@ -31,10 +32,12 @@ export default class Dependencies_viewer_manager {
   private sources: string[] = [];
   private last_sources: [] = [];
   private output_channel: Output_channel_lib.Output_channel;
+  private config_reader : config_reader_lib.Config_reader;
 
-  constructor(context: vscode.ExtensionContext, output_channel) {
+  constructor(context: vscode.ExtensionContext, output_channel, config_reader) {
     this.output_channel = output_channel;
     this.context = context;
+    this.config_reader = config_reader;
   }
 
   async open_viewer(prj, config) {
@@ -70,14 +73,12 @@ export default class Dependencies_viewer_manager {
   private async get_dot(config) {
     let python3_path = config.pypath;
     const jsteros = require('jsteros');
-    // let project_manager = new jsteros.Project_manager.Manager("");
     let project_manager = new  jsteros.Edam.Edam_project('', '');
     for (let i = 0; i < this.sources.length; i++) {
       const source = this.sources[i];
       project_manager.add_file(source);
     }
 
-    // project_manager.add_source_from_array(this.sources);
     let dependencies_dot = await project_manager.get_dependency_graph_dot(python3_path);
     return dependencies_dot;
   }
@@ -91,7 +92,7 @@ export default class Dependencies_viewer_manager {
     try{
       let dot = await this.get_dot(config);
       if (dot === undefined || dot === '' || dot === null) {
-        this.output_channel.show_message(ERROR_CODE.PYTHON, '');
+        this.check_config();
       }
       else {
         if ( (JSON.stringify(this.last_sources) !== JSON.stringify(sources)) || force_reload === true){
@@ -101,7 +102,7 @@ export default class Dependencies_viewer_manager {
       }
     }
     catch(e){
-      this.output_channel.show_message(ERROR_CODE.PYTHON, '');
+      this.check_config();
       console.log("[TerosHDL][dependencies-viewer]");
       console.log(e);
     }
@@ -115,6 +116,10 @@ export default class Dependencies_viewer_manager {
 
   private clear_sources() {
     this.sources = [];
+  }
+
+  private check_config(){
+    this.config_reader.check_configuration();
   }
 
   private getWebviewContent(context: vscode.ExtensionContext) {

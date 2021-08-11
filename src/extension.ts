@@ -125,6 +125,12 @@ export async function activate(context: vscode.ExtensionContext) {
         rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
         is_alive = await rusthdl.run_rusthdl();
     }
+    else{
+        context.subscriptions.push(
+            vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
+            })
+        ); 
+    }
 
     // Document selector
     let verilogSelector: vscode.DocumentSelector = [
@@ -137,9 +143,9 @@ export async function activate(context: vscode.ExtensionContext) {
     ctagsManager.configure();
     // Configure Document Symbol Provider
     let docProvider = new VerilogDocumentSymbolProvider(logger, context);
-    // Configure Completion Item Provider
-    let compItemProvider = new VerilogCompletionItemProvider(logger);
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
+    // // Configure Completion Item Provider
+    // let compItemProvider = new VerilogCompletionItemProvider(logger);
+    // context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
     // Configure Hover Providers
     let hoverProvider = new VerilogHoverProvider(logger);
     // Configure Definition Providers
@@ -157,7 +163,6 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     if (is_alive === false && enable_vhdl_provider === true){
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
         context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, hoverProvider));
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, defProvider));
     }
@@ -301,6 +306,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidOpenTextDocument((e) => linter_verilog_style.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_verilog_style.lint(e));
     vscode.workspace.onDidCloseTextDocument((e) => linter_verilog_style.remove_file_diagnostics(e));
+    
     linter_systemverilog_style = new linter.default("systemverilog", "style", context, config_reader);
     vscode.workspace.onDidOpenTextDocument((e) => linter_systemverilog_style.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_systemverilog_style.lint(e));

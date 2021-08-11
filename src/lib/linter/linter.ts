@@ -26,15 +26,8 @@ export default class Lint_manager {
         this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
 
         this.set_config_linter();
-
-        // vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
-        // vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
-        // vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
-
+        
         vscode.commands.registerCommand(`teroshdl.linter.${linter_type}.${language}.set_config`, () => this.config_linter());
-
-        this.lint(<vscode.TextDocument>vscode.window.activeTextEditor?.document);
-
         if (language === "vhdl" && linter_type === "linter_style") {
             context.subscriptions.push(
                 vscode.languages.registerCodeActionsProvider('vhdl', new vsg_action_provider.Vsg_action_provider(), {
@@ -42,6 +35,7 @@ export default class Lint_manager {
                 })
             );
         }
+        this.lint_active_document();
     }
 
     set_config_linter(){
@@ -107,20 +101,9 @@ export default class Lint_manager {
         }
     }
 
-    refresh_lint_cmd(uri_collections: vscode.Uri[]) {
-        // try {
-        //     for (let i = 0; i < uri_collections.length; ++i) {
-        //         // this.remove_file_diagnostics();
-        //         this.lint_from_uri(uri_collections[i]);
-        //     }
-        // }
-        // catch (e) { console.log(e); }
-    }
-
     refresh_lint() {
         try {
             for (let i = 0; i < this.uri_collections.length; ++i) {
-                // this.remove_file_diagnostics();
                 this.lint_from_uri(this.uri_collections[i]);
             }
         }
@@ -141,15 +124,19 @@ export default class Lint_manager {
         return options;
     }
 
+    lint_active_document() {
+        let open_files = vscode.workspace.textDocuments;
+
+        for (let i = 0; i < open_files.length; i++) {
+            const document = open_files[i];
+            this.lint(document);
+        }
+    }
+
     async lint(doc: vscode.TextDocument) {
         if (this.linter_name === 'none'){
             return;
         }
-        //todo: use doc!! .git error check sheme
-        // if (vscode.window.activeTextEditor === undefined){
-        //     return;
-        // }
-        // let document = vscode.window.activeTextEditor.document;
         if (doc === undefined) {
             return;
         }
@@ -157,7 +144,6 @@ export default class Lint_manager {
         if (language_id !== this.lang) {
             return;
         }
-        // let current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
         let current_path = doc.uri.fsPath;
         if (this.init === false){
             this.init = true;
@@ -167,7 +153,6 @@ export default class Lint_manager {
         this.add_uri_to_collections(doc.uri);
 
         console.log(`[terosHDL] Linting ${current_path}`);
-        // let errors = await this.linter.lint_from_file(current_path, this.get_config());
         let errors = await this.get_errors(current_path);
 
         let diagnostics: vscode.Diagnostic[] = [];
@@ -175,18 +160,18 @@ export default class Lint_manager {
             const line = errors[i]['location']['position'][0];
             let col = errors[i]['location']['position'][1];
             let code = "";
-            if (errors[i].code !== undefined) {
-                code = errors[i].code;
+            if (errors[i]['code'] !== undefined) {
+                code = errors[i]['code'];
             }
             else {
-                code = errors[i].severity;
+                code = errors[i]['severity'];
             }
             diagnostics.push({
                 severity: this.get_severity(errors[i]['severity']),
                 range: new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
                 message: errors[i]['description'],
                 code: code,
-                source: `TerosHDL:${this.linter_name}`
+                source: `TerosHDL: ${this.linter_name}`
             });
         }
         this.diagnostic_collection.set(doc.uri, diagnostics);
@@ -207,7 +192,6 @@ export default class Lint_manager {
     async lint_from_uri(uri: vscode.Uri, empty: boolean = false) {
         let current_path = uri.fsPath;
 
-        // let errors = await this.linter.lint_from_file(current_path, this.get_config());
         let errors = await this.get_errors(current_path);
         let diagnostics: vscode.Diagnostic[] = [];
         if (empty === true) {
@@ -219,18 +203,18 @@ export default class Lint_manager {
             const line = errors[i]['location']['position'][0];
             let col = errors[i]['location']['position'][1];
             let code = "";
-            if (errors[i].code !== undefined) {
-                code = errors[i].code;
+            if (errors[i]['code'] !== undefined) {
+                code = errors[i]['code'];
             }
             else {
-                code = errors[i].severity;
+                code = errors[i]['severity'];
             }
             diagnostics.push({
                 severity: this.get_severity(errors[i]['severity']),
                 range: new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
                 message: errors[i]['description'],
                 code: code,
-                source: `TerosHDL:${this.linter_name}`
+                source: `TerosHDL: ${this.linter_name}`
             });
         }
         this.diagnostic_collection.set(uri, diagnostics);
@@ -238,9 +222,12 @@ export default class Lint_manager {
 
     async get_errors(current_path) {
         try {
-            const jsteros = await require('jsteros');
-            let linter = await new jsteros.Linter.Linter(this.linter_name, this.lang);
-            let errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
+            let errors = [];
+            if (this.linter_name !== 'none'){
+                const jsteros = await require('jsteros');
+                let linter = await new jsteros.Linter.Linter(this.linter_name, this.lang);
+                errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
+            }
             return errors;
         } catch (error) {       
             console.log(error);     
