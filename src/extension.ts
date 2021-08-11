@@ -214,7 +214,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
-    dependencies_viewer_manager = new dependencies_viewer.default(context, output_channel);
+    dependencies_viewer_manager = new dependencies_viewer.default(context, output_channel, config_reader);
     context.subscriptions.push(
         vscode.commands.registerCommand(
             'teroshdl.dependencies.viewer',
