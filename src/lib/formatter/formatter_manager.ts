@@ -49,7 +49,11 @@ export default class Formatter_manager {
                 formatter.update_params();
             }
             let options = await this.get_options();
-            this.output_channel.print_formatter(this.formatter_name, options);
+            let options_print = options;
+            if (this.formatter_name === 'standalone'){
+                options_print = options_print['settings'];
+            }
+            this.output_channel.print_formatter(this.formatter_name, options_print);
             let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
         }

@@ -123,7 +123,7 @@ export class Edam_project_manager {
       //Relative path to absolute
       let resolve = require('path').resolve;
       let absolute_path = filename;
-      if (relative_path !== ''){
+      if (relative_path !== '' && path_lib.isAbsolute(absolute_path) === false ){
         let full_path = relative_path + path_lib.sep + filename;
         absolute_path = resolve(full_path);
       }

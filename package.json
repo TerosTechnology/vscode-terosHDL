@@ -492,7 +492,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.config",
-				"title": "Tools configuration",
+				"title": "TerosHDL configuration",
 				"icon": {
 					"light": "resources/light/settings-gear.svg",
 					"dark": "resources/dark/settings-gear.svg"
@@ -500,7 +500,7 @@
 			},
 			{
 				"command": "teroshdl_tree_view.config_check",
-				"title": "Tools configuration check",
+				"title": "TerosHDL configuration check",
 				"icon": {
 					"light": "resources/light/lightbulb.svg",
 					"dark": "resources/dark/lightbulb.svg"
