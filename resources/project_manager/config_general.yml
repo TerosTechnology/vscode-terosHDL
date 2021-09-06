@@ -102,8 +102,8 @@ linter:
         options:
             ghdl: "GHDL"
             modelsim: "Modelsim"
-            xvhdl: "Vivado"
-            none: "None"
+            xvhdl: "Vivado (XSim)"
+            none: "VHDL-LS "
     linter_verilog:
         description: "Verilog/SV linter:"
         type: select
@@ -111,7 +111,7 @@ linter:
             icarus: "Icarus"
             modelsim: "Modelsim"
             verilator: "Verilator"
-            xvlog: "Vivado"
+            xvlog: "Vivado (XSim)"
             none: "None"
     style_verilog:
         description: "Verilog/SV style checker:"

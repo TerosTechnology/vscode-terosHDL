@@ -1,348 +1,375 @@
 {
-  "selected_project": "",
-  "projects": [],
-  "config": {
-    "workspace_folder": "",
-    "config_tool": {
-      "selected_tool": "",
-      "config": [
-        {
-          "general": {
-            "pypath": "",
-            "header_file_path": "",
-            "select_tool": "ghdl"
-          }
-        },
-        {
-          "documentation": {
-            "symbol_vhdl": "",
-            "symbol_verilog": "",
-            "dependency_graph": true,
-            "self_contained": false,
-            "fsm": true,
-            "signals": "all",
-            "constants": "all",
-            "process": "all",
-            "pypath": ""
-          }
-        },
-        {
-          "linter": {
-            "linter_vhdl": "ghdl",
-            "linter_verilog": "icarus",
-            "style_verilog": "verible"
-          }
-        },
-        {
-          "formatter": {
-            "formatter_verilog": "istyle",
-            "formatter_vhdl": "standalone",
-            "istyle_style": "ansi",
-            "istyle_indentation_size": "2",
-            "s3sv_one_bind_per_line": false,
-            "s3sv_one_declaration_per_line": false,
-            "s3sv_use_tabs": false,
-            "s3sv_indentation_size": "2",
-            "vhdl_standalone_keyword_case": "lowercase",
-            "vhdl_standalone_name_case": "lowercase",
-            "vhdl_standalone_align_comments": true,
-            "vhdl_standalone_indentation": "  ",
-            "vhdl_standalone_align_generic_port": true
-          }
-        },
-        {
-          "ascentlint": {
-            "installation_path": "",
-            "ascentlint_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "diamond": {
-            "installation_path": "",
-            "part": ""
-          }
-        },
-        {
-          "ghdl": {
-            "installation_path": "",
-            "waveform": "vcd",
-            "analyze_options": [
-              "-fexplicit",
-              "--no-vital-checks",
-              "-frelaxed-rules"
-            ],
-            "run_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "icarus": {
-            "installation_path": "",
-            "timescale": "",
-            "iverilog_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "icestorm": {
-            "installation_path": "",
-            "pnr": "arachne",
-            "arch": "xilinx",
-            "output_format": "json",
-            "yosys_as_subtool": false,
-            "makefile_name": "",
-            "arachne_pnr_options": [
-              ""
-            ],
-            "nextpnr_options": [
-              ""
-            ],
-            "yosys_synth_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "Ise": {
-            "installation_path": "",
-            "family": "",
-            "device": "",
-            "package": "",
-            "speed": ""
-          }
-        },
-        {
-          "isim": {
-            "installation_path": "",
-            "fuse_options": [
-              ""
-            ],
-            "isim_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "modelsim": {
-            "installation_path": "",
-            "vcom_options": [
-              ""
-            ],
-            "vlog_options": [
-              ""
-            ],
-            "vsim_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "morty": {
-            "installation_path": "",
-            "morty_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "quartus": {
-            "installation_path": "",
-            "family": "Cyclone V",
-            "device": "5CSXFC6D6F31C8ES",
-            "cable": "",
-            "board_device_index": "",
-            "pnr": "default",
-            "dse_options": [
-              ""
-            ],
-            "quartus_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "radiant": {
-            "installation_path": "",
-            "part": ""
-          }
-        },
-        {
-          "rivierapro": {
-            "installation_path": "",
-            "compilation_mode": "",
-            "vlog_options": [
-              ""
-            ],
-            "vsim_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "spyglass": {
-            "installation_path": "",
-            "methodology": "",
-            "goals": [
-              ""
-            ],
-            "spyglass_options": [
-              ""
-            ],
-            "rule_parameters": [
-              ""
-            ]
-          }
-        },
-        {
-          "symbiflow": {
-            "installation_path": "",
-            "package": "",
-            "part": "",
-            "vendor": "",
-            "pnr": "vpr",
-            "vpr_options": "",
-            "environment_script": ""
-          }
-        },
-        {
-          "symbiyosys": {
-            "installation_path": "",
-            "tasknames": [
-              ""
-            ]
-          }
-        },
-        {
-          "trellis": {
-            "installation_path": "",
-            "arch": "xilinx",
-            "output_format": "json",
-            "yosys_as_subtool": false,
-            "makefile_name": "",
-            "script_name": "",
-            "nextpnr_options": [
-              ""
-            ],
-            "yosys_synth_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "vcs": {
-            "installation_path": "",
-            "vcs_options": [
-              ""
-            ],
-            "run_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "veribleformat": {
-            "installation_path": "",
-            "verible_format_args": [
-              "--inplace"
-            ]
-          }
-        },
-        {
-          "veriblelint": {
-            "installation_path": "",
-            "ruleset": "default",
-            "verible_lint_args": [
-              ""
-            ],
-            "rules": [
-              ""
-            ]
-          }
-        },
-        {
-          "verilator": {
-            "installation_path": "",
-            "mode": "cc",
-            "cli_parser": [
-              ""
-            ],
-            "libs": [
-              ""
-            ],
-            "verilator_options": [
-              ""
-            ],
-            "make_options": [
-              ""
-            ],
-            "run_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "vivado": {
-            "installation_path": "",
-            "part": "xc7z010clg400-1",
-            "synth": "",
-            "pnr": "vivado",
-            "jtag_freq": "",
-            "hw_target": ""
-          }
-        },
-        {
-          "vunit": {
-            "installation_path": "",
-            "vunit_simulator": "ghdl",
-            "vunit_options": [
-              "--verbose"
-            ],
-            "add_libraries": [
-              ""
-            ],
-            "vunit_runner": ""
-          }
-        },
-        {
-          "xcelium": {
-            "installation_path": "",
-            "xmvhdl_options": [
-              ""
-            ],
-            "xmvlog_options": [
-              ""
-            ],
-            "xmsim_options": [
-              ""
-            ],
-            "xrun_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "yosys": {
-            "installation_path": "",
-            "arch": "xilinx",
-            "output_format": "json",
-            "yosys_as_subtool": false,
-            "makefile_name": "",
-            "script_name": "",
-            "yosys_synth_options": [
-              ""
-            ]
-          }
-        },
-        {
-          "cocotb": {
-            "installation_path": ""
-          }
-        }
-      ]
-    }
-  }
+   "selected_project":"project_ghdl",
+   "projects":[
+      
+   ],
+   "config":{
+      "workspace_folder":"",
+      "config_tool":{
+         "selected_tool":"",
+         "config":[
+            {
+               "general":{
+                  "pypath":"",
+                  "select_tool":"ghdl",
+                  "go_to_definition_vhdl":false,
+                  "go_to_definition_verilog":false,
+                  "developer_mode":false
+               }
+            },
+            {
+               "templates":{
+                  "header_file_path":""
+               }
+            },
+            {
+               "schematic":{
+                  "backend":"yowasp"
+               }
+            },
+            {
+               "documentation":{
+                  "symbol_vhdl":"",
+                  "symbol_verilog":"",
+                  "dependency_graph":true,
+                  "self_contained":false,
+                  "fsm":true,
+                  "signals":"all",
+                  "constants":"all",
+                  "process":"all",
+                  "functions":"all",
+                  "pypath":""
+               }
+            },
+            {
+               "linter":{
+                  "linter_vhdl":"none",
+                  "linter_verilog":"icarus",
+                  "style_verilog":"none"
+               }
+            },
+            {
+               "formatter":{
+                  "formatter_verilog":"istyle",
+                  "formatter_vhdl":"standalone",
+                  "istyle_style":"ansi",
+                  "istyle_indentation_size":"2",
+                  "s3sv_one_bind_per_line":false,
+                  "s3sv_one_declaration_per_line":false,
+                  "s3sv_use_tabs":false,
+                  "s3sv_indentation_size":"2",
+                  "verible_path":"",
+                  "verible_format_args":[
+                     ""
+                  ],
+                  "vhdl_standalone_keyword_case":"lowercase",
+                  "vhdl_standalone_name_case":"lowercase",
+                  "vhdl_standalone_align_comments":false,
+                  "vhdl_standalone_indentation":"",
+                  "vhdl_standalone_align_generic_port":false
+               }
+            },
+            {
+               "ascentlint":{
+                  "installation_path":"",
+                  "ascentlint_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "diamond":{
+                  "installation_path":"",
+                  "part":""
+               }
+            },
+            {
+               "xsim":{
+                  "installation_path":"",
+                  "xelab_options":[
+                     ""
+                  ],
+                  "xsim_options":[
+                     ""
+                  ],
+                  "linter_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "ghdl":{
+                  "installation_path":"",
+                  "waveform":"vcd",
+                  "analyze_options":[
+                     ""
+                  ],
+                  "run_options":[
+                     ""
+                  ],
+                  "linter_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "icarus":{
+                  "installation_path":"",
+                  "timescale":"",
+                  "iverilog_options":[
+                     ""
+                  ],
+                  "linter_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "icestorm":{
+                  "installation_path":"",
+                  "pnr":"arachne",
+                  "arch":"xilinx",
+                  "output_format":"json",
+                  "yosys_as_subtool":false,
+                  "makefile_name":"",
+                  "arachne_pnr_options":[
+                     ""
+                  ],
+                  "nextpnr_options":[
+                     ""
+                  ],
+                  "yosys_synth_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "Ise":{
+                  "installation_path":"",
+                  "family":"",
+                  "device":"",
+                  "package":"",
+                  "speed":""
+               }
+            },
+            {
+               "isim":{
+                  "installation_path":"",
+                  "fuse_options":[
+                     ""
+                  ],
+                  "isim_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "modelsim":{
+                  "installation_path":"",
+                  "vcom_options":[
+                     ""
+                  ],
+                  "vlog_options":[
+                     ""
+                  ],
+                  "vsim_options":[
+                     ""
+                  ],
+                  "linter_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "morty":{
+                  "installation_path":"",
+                  "morty_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "quartus":{
+                  "installation_path":"",
+                  "family":"",
+                  "device":"",
+                  "cable":"",
+                  "board_device_index":"",
+                  "pnr":"default",
+                  "dse_options":[
+                     ""
+                  ],
+                  "quartus_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "radiant":{
+                  "installation_path":"",
+                  "part":""
+               }
+            },
+            {
+               "rivierapro":{
+                  "installation_path":"",
+                  "compilation_mode":"",
+                  "vlog_options":[
+                     ""
+                  ],
+                  "vsim_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "spyglass":{
+                  "installation_path":"",
+                  "methodology":"",
+                  "goals":[
+                     ""
+                  ],
+                  "spyglass_options":[
+                     ""
+                  ],
+                  "rule_parameters":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "symbiflow":{
+                  "installation_path":"",
+                  "package":"",
+                  "part":"",
+                  "vendor":"",
+                  "pnr":"vpr",
+                  "vpr_options":"",
+                  "environment_script":""
+               }
+            },
+            {
+               "symbiyosys":{
+                  "installation_path":"",
+                  "tasknames":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "trellis":{
+                  "installation_path":"",
+                  "arch":"xilinx",
+                  "output_format":"json",
+                  "yosys_as_subtool":false,
+                  "makefile_name":"",
+                  "script_name":"",
+                  "nextpnr_options":[
+                     ""
+                  ],
+                  "yosys_synth_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "vcs":{
+                  "installation_path":"",
+                  "vcs_options":[
+                     ""
+                  ],
+                  "run_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "veriblelint":{
+                  "installation_path":"",
+                  "ruleset":"default",
+                  "verible_lint_args":[
+                     ""
+                  ],
+                  "rules":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "verilator":{
+                  "installation_path":"",
+                  "mode":"cc",
+                  "libs":[
+                     ""
+                  ],
+                  "verilator_options":[
+                     ""
+                  ],
+                  "make_options":[
+                     ""
+                  ],
+                  "run_options":[
+                     ""
+                  ],
+                  "linter_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "vivado":{
+                  "installation_path":"",
+                  "part":"",
+                  "synth":"",
+                  "pnr":"vivado",
+                  "jtag_freq":"",
+                  "hw_target":""
+               }
+            },
+            {
+               "vunit":{
+                  "vunit_simulator":"rivierapro",
+                  "vunit_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "xcelium":{
+                  "installation_path":"",
+                  "xmvhdl_options":[
+                     ""
+                  ],
+                  "xmvlog_options":[
+                     ""
+                  ],
+                  "xmsim_options":[
+                     ""
+                  ],
+                  "xrun_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "yosys":{
+                  "installation_path":"",
+                  "arch":"xilinx",
+                  "output_format":"json",
+                  "yosys_as_subtool":false,
+                  "makefile_name":"",
+                  "script_name":"",
+                  "yosys_synth_options":[
+                     ""
+                  ]
+               }
+            },
+            {
+               "cocotb":{
+                  "installation_path":""
+               }
+            }
+         ]
+      }
+   }
 }

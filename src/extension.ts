@@ -45,6 +45,8 @@ import * as number_hover from "./lib/number_hover/number_hover";
 import * as rusthdl_lib from './lib/rusthdl/rust_hdl';
 //Utils
 import * as Output_channel_lib from './lib/utils/output_channel';
+//Shutter mode
+import * as Shutter_mode from './lib/formatter/stutter_mode';
 
 let output_channel : Output_channel_lib.Output_channel;
 let rusthdl : rusthdl_lib.Rusthdl_lsp;
@@ -113,6 +115,10 @@ export async function activate(context: vscode.ExtensionContext) {
     // Config
     /**************************************************************************/
     config_reader = new config_reader_lib.Config_reader(context, output_channel);
+
+
+    context.subscriptions.push(Shutter_mode.VhdlStutterModeFormattingEditProvider);
+
     /**************************************************************************/
     // Language providers
     /**************************************************************************/

@@ -667,7 +667,7 @@ export class Project_manager {
 
 
   async add_file(item) {
-    const files_add_types = ["Select files from browser", "Load files from file list", "Load all files in folder and subfolders"];
+    const files_add_types = ["Select files from browser", "Load files from file list (CSV)", "Load all files in folder and subfolders"];
     let project_name = item.project_name;
 
     // Choose type
@@ -699,7 +699,12 @@ export class Project_manager {
                 if (lib_inst === ""){
                   lib_inst = "";
                 }
-                this.edam_project_manager.add_file(project_name, file_inst, false, "", lib_inst);
+                let complete_file_path = file_inst;
+                if( path.isAbsolute(file_inst) === false ) {
+                  let dirname_csv = path_lib.dirname(file_path);
+                  complete_file_path = path_lib.join(dirname_csv, file_inst);
+                }
+                this.edam_project_manager.add_file(project_name, complete_file_path, false, "", lib_inst);
               }
               catch(e){
                 console.log(e);

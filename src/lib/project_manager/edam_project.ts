@@ -269,6 +269,8 @@ export class Edam_project_manager {
 
 export class Cli_logger {
   output_channel;
+  number_of_files;
+
   constructor(output_channel){
     if (output_channel === undefined){
       this.output_channel = vscode.window.createOutputChannel('TerosHDL');
@@ -278,13 +280,15 @@ export class Cli_logger {
     }
   }
 
-  start(value0){
+  start(number_of_files){
+    this.number_of_files = number_of_files;
     this.output_channel.show();
   }
 
-  update(value0, value1){
+  update(index, value1){
     if (value1 !== undefined){
-      this.output_channel.appendLine(value1.filename);
+      let line_str = `[${this.number_of_files}/${index}] ${value1.filename}`;
+      this.output_channel.appendLine(line_str);
     }
   }
 

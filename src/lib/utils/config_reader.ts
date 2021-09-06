@@ -26,16 +26,24 @@ import * as vscode from 'vscode';
 
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 const teroshdl_config_filename = '.prj_config.teros';
+const teroshdl_config_filename_default = 'prj_config_default.teros';
 
 export class Config_reader {
   private config_filepath: string = '';
   private config: {} = {};
   private output_channel : Output_channel_lib.Output_channel;
+  private context : vscode.ExtensionContext;
 
   constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel) {
     this.output_channel = output_channel;
     const homedir = require('os').homedir();
     this.config_filepath = path.join(homedir, teroshdl_config_filename);
+    this.context = context;
+    this.check_config_file();
+  }
+
+  check_config_file(){
+    this.read_file_config();
   }
 
   read_file_config() {
@@ -47,15 +55,30 @@ export class Config_reader {
       let raw_data = fs.readFileSync(this.config_filepath);
       let json_data = JSON.parse(raw_data);
       let config = json_data.config;
+      if (config.config_tool === undefined){
+        return this.get_default_config();
+      }
       let projects = json_data.projects;
       let selected_project = json_data.selected_project;
       return { selected_project: selected_project, config: config, projects: projects };
     }
     catch (e) {
-      return { config: {}, projects: [] };
+      return this.get_default_config();
+      // return { config: {}, projects: [] };
     }
   }
   
+  get_default_config(){
+    let default_confi_path = this.context.extensionPath + path.sep + teroshdl_config_filename_default;
+    let raw_data = fs.readFileSync(default_confi_path);
+    fs.writeFileSync(this.config_filepath, raw_data);
+    let json_data = JSON.parse(raw_data);
+    let config = json_data.config;
+    let projects = json_data.projects;
+    let selected_project = json_data.selected_project;
+    return { selected_project: selected_project, config: config, projects: projects };
+  }
+
   get_config_fields(field){
     let config = this.read_file_config();
     let config_tool = config?.config.config_tool.config;
