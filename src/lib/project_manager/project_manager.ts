@@ -180,8 +180,12 @@ export class Project_manager {
 
   async save_compile_order(){
     let developer_mode = this.config_reader.get_developer_mode();
+    console.log("[Project manage| Compile order] Developer mode: " + developer_mode);
+
     if (developer_mode === true){
       let selected_project = this.edam_project_manager.selected_project;
+      console.log("[Project manage Compile order] Selected project: " + selected_project);
+
       if (selected_project === "") {
         return;
       }
@@ -190,7 +194,11 @@ export class Project_manager {
         return;
       }
       let pypath = await this.config_reader.get_python_path_binary(false);
+      console.log("[Project manage Compile order] Python path: " + pypath);
+
       let compile_order = await prj.get_compile_order(pypath);
+      console.log("[Project manage Compile order] Compile order: " + compile_order);
+
       if (compile_order === undefined){
         return;
       }
