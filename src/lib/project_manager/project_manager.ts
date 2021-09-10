@@ -206,9 +206,10 @@ export class Project_manager {
     }
   }
 
-  save_toml () : string[]{
+  save_toml(): string[]{
     let files_toml : string[] = [];
     let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
+    console.log("[Project manage] Save " + file_path);
     let libraries = this.get_active_project_libraries();
     let toml = "[libraries]\n\n";
     if (libraries !== undefined){
@@ -217,6 +218,7 @@ export class Project_manager {
         let files_in_library = "";
         for (let j = 0; j < library.files.length; j++) {
           const file_in_library = library.files[j];
+          console.log("[Project manage] File in library: " + file_in_library);
           const path = require("path");
           let filename = path.basename(file_in_library);
           const jsteros = require('jsteros');
@@ -237,6 +239,7 @@ export class Project_manager {
       }
     }
     fs.writeFileSync(file_path, toml);
+    console.log("[Project manage] Saved " + file_path + '\n');
     return files_toml;
   }
 

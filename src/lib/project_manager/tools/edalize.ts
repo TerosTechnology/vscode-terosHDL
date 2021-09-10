@@ -152,10 +152,10 @@ export class Edalize extends tool_base.Tool_base{
 
   open_waveform_gtkwave(){
     let shell = require('shelljs');
-    let uri = vscode.Uri.file(this.complete_waveform_path);
-    vscode.commands.executeCommand("vscode.openWith", uri, "de.toem.impulse.editor.records");
-    // let command = `gtkwave ${this.complete_waveform_path}`;
-    // shell.exec(command, {async:true});
+    // let uri = vscode.Uri.file(this.complete_waveform_path);
+    // vscode.commands.executeCommand("vscode.openWith", uri, "de.toem.impulse.editor.records");
+    let command = `gtkwave ${this.complete_waveform_path}`;
+    shell.exec(command, {async:true});
   }
 
   normalize_edam(edam){
