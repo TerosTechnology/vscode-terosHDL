@@ -132,11 +132,14 @@ export class Config_reader {
     return field.pypath;
   }
 
-  async check_configuration(){
+  async check_configuration(enable_msg = true){
     let config_python_path = this.get_config_python_path();
     const jsteros = require('jsteros');
     let info_configuration_check = await jsteros.Nopy.check_python(config_python_path);
-    this.output_channel.print_check_configuration(info_configuration_check);
+    if (enable_msg === true) {
+      this.output_channel.print_check_configuration(info_configuration_check);
+    }
+    return info_configuration_check;
   }
 
   async get_python_path_binary(verbose: boolean){

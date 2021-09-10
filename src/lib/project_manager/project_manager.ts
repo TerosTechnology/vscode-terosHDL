@@ -113,7 +113,7 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.save_doc", (item) => this.save_doc(item));
     vscode.commands.registerCommand("teroshdl_tree_view.help", (item) => this.help());
 
-    this.hdl_dependencies_provider = new Hdl_dependencies_tree();
+    this.hdl_dependencies_provider = new Hdl_dependencies_tree(context, output_channel);
     vscode.window.registerTreeDataProvider('teroshdl_dependencies_tree_view', this.hdl_dependencies_provider);
     vscode.commands.registerCommand('teroshdl_dependencies_tree_view.refreshEntry', () => this.hdl_dependencies_provider.refresh());
     vscode.commands.registerCommand("teroshdl_dependencies_tree_view.open_file", (item) => this.open_file(item));
@@ -641,7 +641,7 @@ export class Project_manager {
     await this.set_dependency_tree();
   }
 
-  async set_dependency_tree(){
+  async set_dependency_tree() {
     let selected_project = this.edam_project_manager.selected_project;
     if (selected_project === "") {
       return;
@@ -653,12 +653,13 @@ export class Project_manager {
     let toplevel_path = prj.toplevel_path;
     let pypath = await this.config_reader.get_python_path_binary(false);
     let dependency_tree = await prj.get_dependency_tree(pypath);
-    if (dependency_tree.root === undefined){
+    if (dependency_tree.root === undefined) {
+      let error_message = dependency_tree.error;
       dependency_tree = {root: [
-          {filename: "", entity: "Configure your Python 3 path and install pyteroshdl.", dependencies: []}
+          {filename: "", entity: error_message, dependencies: []}
         ]
       };
-      toplevel_path = "Configure your Python 3 path and install pyteroshdl.";
+      toplevel_path = error_message;
     }
     this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
   }

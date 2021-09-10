@@ -22,6 +22,11 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as utils from "./utils";
+import * as Output_channel_lib from '../utils/output_channel';
+const fs = require('fs');
+
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency> {
 
@@ -30,13 +35,53 @@ export class Hdl_dependencies_tree implements vscode.TreeDataProvider<Dependency
     private hdl_tree : any[];
     private toplevel_path : string = '';
     private entity_toplevel: string = '';
+    private output_channel : Output_channel_lib.Output_channel;
 
-    constructor() {
+    constructor(context, output_channel) {
         let hdl_tree = {
             "root": []
         };
 
+        this.output_channel = output_channel;
         this.hdl_tree = hdl_tree.root;
+        context.subscriptions.push(
+            vscode.commands.registerCommand('teroshdl.go_to_parent', async () => {
+                this.go_to_parent_file();
+            })
+        ); 
+    }
+
+    go_to_parent_file() {
+        //Get current document
+        let active_editor = vscode.window.activeTextEditor;
+        if (!active_editor) {
+            return;
+        }
+        let document = active_editor.document;
+        if (document === undefined) {
+            return;
+        }
+        let filename = document.uri.fsPath;
+        let hdl_tree = this.hdl_tree;
+        let parent = undefined;
+        for (let i = 0; i < hdl_tree.length; i++) {
+            const dependencies = hdl_tree[i].dependencies;
+            for (let j = 0; j < dependencies.length; j++) {
+                const element = dependencies[j];
+                if (element === filename) {
+                    if (fs.existsSync(hdl_tree[i].filename)) {
+                        parent = hdl_tree[i].filename;
+                        break;
+                      }
+                }
+            }
+        }
+        if (parent === undefined) {
+            this.output_channel.show_message(ERROR_CODE.NOT_PARENT, '');
+        }
+        else {
+            utils.open_file(parent, this.output_channel);
+        }
     }
 
     set_hdl_tree(hdl_tree, toplevel_path){

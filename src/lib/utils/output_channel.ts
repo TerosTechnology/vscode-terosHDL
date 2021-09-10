@@ -15,6 +15,7 @@ const MSG_SELECT_TOPLEVEL = "Select a toplvel.";
 const MSG_SELECT_PROJECT_TREE_VIEW = "Select a project.";
 const MSG_SELECT_PROJECT_SIMULATION = "Select a project.";
 const NETLIST_VIEWER = "Configure Yosys or install YoWASP: pip install yowasp-yosys";
+const MSG_NOT_PARENT = "This file hasn't parent.";
 
 export const ERROR_CODE = {
     PYTHON : MSG_PYTHON,
@@ -32,6 +33,7 @@ export const ERROR_CODE = {
     TEMPLATE_NOT_VALID_FILE: MSG_DOCUMENTER_NOT_VALID_FILE,
     SELECT_TOPLEVELPATH: MSG_SELECT_TOPLEVELPATH,
     NETLIST_VIEWER: NETLIST_VIEWER,
+    NOT_PARENT: MSG_NOT_PARENT,
 };
 
 export class Output_channel{

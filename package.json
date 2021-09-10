@@ -24,6 +24,7 @@
 	},
 	"activationEvents": [
 		"*",
+		"onCommand:teroshdl.go_to_parent",
 		"onCommand:teroshdl.generate_template",
 		"onCommand:teroshdl.format",
 		"onCommand:teroshdl.documentation.module",
@@ -335,6 +336,10 @@
 		},
 		"commands": [
 			{
+				"command": "teroshdl.go_to_parent",
+				"title": "Go to parent file"
+			},
+			{
 				"command": "teroshdl_tree_view.open_file",
 				"title": "Open file"
 			},
@@ -611,6 +616,12 @@
 				}
 			}
 		],
+		"keybindings": [{
+			"command": "teroshdl.go_to_parent",
+			"key": "alt+backspace",
+			"mac": "command+delete",
+			"when": "editorTextFocus"
+		}],
 		"languages": [
 			{
 				"id": "vhdl",
