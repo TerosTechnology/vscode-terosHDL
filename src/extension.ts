@@ -116,8 +116,12 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     config_reader = new config_reader_lib.Config_reader(context, output_channel);
 
-
-    context.subscriptions.push(Shutter_mode.VhdlStutterModeFormattingEditProvider);
+    /**************************************************************************/
+    // Shutter mode
+    /**************************************************************************/
+    context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'vhdl'));
+    context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'verilog'));
+    context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'systemverilog'));
 
     /**************************************************************************/
     // Language providers

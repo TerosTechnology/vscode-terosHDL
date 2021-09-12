@@ -122,6 +122,11 @@ export class Config_reader {
     return field.header_file_path;
   }
 
+  get_continue_comment(){
+    let field = this.get_config_fields('editor');
+    return field.continue_comment;
+  }
+
   get_schematic_backend(){
     let field = this.get_config_fields('schematic');
     return field.backend;

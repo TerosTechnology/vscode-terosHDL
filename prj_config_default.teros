@@ -1,5 +1,5 @@
 {
-   "selected_project":"project_ghdl",
+   "selected_project":"",
    "projects":[
       
    ],
@@ -12,9 +12,14 @@
                "general":{
                   "pypath":"",
                   "select_tool":"ghdl",
-                  "go_to_definition_vhdl":false,
-                  "go_to_definition_verilog":false,
+                  "go_to_definition_vhdl":true,
+                  "go_to_definition_verilog":true,
                   "developer_mode":false
+               }
+            },
+            {
+               "editor":{
+                  "continue_comment":false
                }
             },
             {
@@ -328,7 +333,7 @@
             },
             {
                "vunit":{
-                  "vunit_simulator":"rivierapro",
+                  "vunit_simulator":"ghdl",
                   "vunit_options":[
                      ""
                   ]

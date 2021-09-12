@@ -202,14 +202,6 @@ export class Cocotb extends tool_base.Tool_base{
       this.output_channel.show_message(ERROR_CODE.COCOTB_DEPS, '');
     }
 
-    let wksp_folder;
-    if(vscode.workspace.workspaceFolders !== undefined) {
-      wksp_folder = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    } else {
-      return([]);
-    }
-
-    // let found_makefiles = glob.sync('/**/Makefile', {root: wksp_folder});
     let found_makefiles = [makefile_path];
     let cocotb_makefiles: {makefile: string, modules: [string]}[] = [];
 

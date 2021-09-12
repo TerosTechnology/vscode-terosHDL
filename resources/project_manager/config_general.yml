@@ -19,6 +19,15 @@ general:
         description: "Developer mode: be careful!!"
         type: checkbox
 
+editor:
+    title: Editor
+    description: ""
+    type: "none"
+    continue_comment:
+        description: "An enter keypress at the end of a line that contains a non-empty comment will continue the comment on the next line. This can be cancelled by pressing enter again. You must also set <code>\"editor.formatOnType\": true\"</code>"
+        type: checkbox
+        default: false
+
 templates:
     title: Templates
     description: ""

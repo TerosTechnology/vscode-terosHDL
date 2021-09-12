@@ -16,6 +16,7 @@ const MSG_SELECT_PROJECT_TREE_VIEW = "Select a project.";
 const MSG_SELECT_PROJECT_SIMULATION = "Select a project.";
 const NETLIST_VIEWER = "Configure Yosys or install YoWASP: pip install yowasp-yosys";
 const MSG_NOT_PARENT = "This file hasn't parent.";
+const MSG_FILES_IN_PROJECT_NO_EXIST = "The following files doesn't exist (maybe the name has been changed): ";
 
 export const ERROR_CODE = {
     PYTHON : MSG_PYTHON,
@@ -34,6 +35,7 @@ export const ERROR_CODE = {
     SELECT_TOPLEVELPATH: MSG_SELECT_TOPLEVELPATH,
     NETLIST_VIEWER: NETLIST_VIEWER,
     NOT_PARENT: MSG_NOT_PARENT,
+    FILES_IN_PROJECT_NO_EXIST: MSG_FILES_IN_PROJECT_NO_EXIST,
 };
 
 export class Output_channel{
@@ -72,10 +74,19 @@ export class Output_channel{
         return date_str.padEnd(19);
     }
 
-    show_message(error_message, ags){
+    show_message(error_message, args){
         this.show();
         if (error_message === ERROR_CODE.PYTHON){
-            error_message += `Current Python3 path: ${ags}`;
+            error_message += `Current Python3 path: ${args}`;
+        }
+        if (error_message === ERROR_CODE.FILES_IN_PROJECT_NO_EXIST) {
+            let error_files = '';
+            for (let i = 0; i < args.length-1; i++) {
+                const element = args[i];
+                error_files += element + ', ';
+            }
+            error_files += args[args.length-1];
+            error_message += `${error_files}`;
         }
 
         let date = this.get_date();
@@ -92,7 +103,6 @@ export class Output_channel{
     }
 
     print_check_configuration(check_configuration){
-        this.clear();
         this.show();
         this.appendLine("************************************************************************************************");
         
@@ -166,7 +176,6 @@ export class Output_channel{
     }
 
     print_documenter_configurtion(configuration, file_input:string, file_output:string, type_output:string){
-        this.clear();
         this.show();
         this.appendLine("****************************************************************************************************************************************");
         let msg = `---> Python3 path: ${configuration.pypath}    
@@ -188,7 +197,6 @@ export class Output_channel{
     }
 
     print_formatter(formatter_name, options){
-        this.clear();
         this.show();
         this.appendLine("****************************************************************************************************************************************");
         let msg = `Formatting file with ${formatter_name}: `;

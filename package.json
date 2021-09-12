@@ -14,7 +14,7 @@
 		"Linters"
 	],
 	"icon": "resources/images/icon_128_128_circle.png",
-	"homepage": "https://terostechnology.github.io/terosHDLdoc/",
+	"homepage": "https://terostechnology.github.io/",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/TerosTechnology/vscode-terosHDL"

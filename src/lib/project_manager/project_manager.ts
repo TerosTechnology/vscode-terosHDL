@@ -180,11 +180,9 @@ export class Project_manager {
 
   async save_compile_order(){
     let developer_mode = this.config_reader.get_developer_mode();
-    console.log("[Project manage| Compile order] Developer mode: " + developer_mode);
 
     if (developer_mode === true){
       let selected_project = this.edam_project_manager.selected_project;
-      console.log("[Project manage Compile order] Selected project: " + selected_project);
 
       if (selected_project === "") {
         return;
@@ -194,10 +192,8 @@ export class Project_manager {
         return;
       }
       let pypath = await this.config_reader.get_python_path_binary(false);
-      console.log("[Project manage Compile order] Python path: " + pypath);
 
       let compile_order = await prj.get_compile_order(pypath);
-      console.log("[Project manage Compile order] Compile order: " + compile_order);
 
       if (compile_order === undefined){
         return;
@@ -217,7 +213,6 @@ export class Project_manager {
   save_toml(): string[]{
     let files_toml : string[] = [];
     let file_path = `${os.homedir()}${path.sep}.vhdl_ls.toml`;
-    console.log("[Project manage] Save " + file_path);
     let libraries = this.get_active_project_libraries();
     let toml = "[libraries]\n\n";
     if (libraries !== undefined){
@@ -226,7 +221,6 @@ export class Project_manager {
         let files_in_library = "";
         for (let j = 0; j < library.files.length; j++) {
           const file_in_library = library.files[j];
-          console.log("[Project manage] File in library: " + file_in_library);
           const path = require("path");
           let filename = path.basename(file_in_library);
           const jsteros = require('jsteros');
@@ -247,7 +241,6 @@ export class Project_manager {
       }
     }
     fs.writeFileSync(file_path, toml);
-    console.log("[Project manage] Saved " + file_path + '\n');
     return files_toml;
   }
 
@@ -650,10 +643,13 @@ export class Project_manager {
     if (prj === undefined){
       return;
     }
+    //Check if files exist
+    let check_files = prj.check_if_files_exist();
+
     let toplevel_path = prj.toplevel_path;
     let pypath = await this.config_reader.get_python_path_binary(false);
     let dependency_tree = await prj.get_dependency_tree(pypath);
-    if (dependency_tree.root === undefined) {
+    if (dependency_tree.root === undefined || check_files.error === true) {
       let error_message = dependency_tree.error;
       dependency_tree = {root: [
           {filename: "", entity: error_message, dependencies: []}
@@ -662,6 +658,9 @@ export class Project_manager {
       toplevel_path = error_message;
     }
     this.hdl_dependencies_provider.set_hdl_tree(dependency_tree, toplevel_path);
+    if (check_files.error === true) {
+      this.output_channel.show_message(ERROR_CODE.FILES_IN_PROJECT_NO_EXIST, check_files.files);
+    }
   }
 
   set_default_tops() {
@@ -719,7 +718,6 @@ export class Project_manager {
                 this.edam_project_manager.add_file(project_name, complete_file_path, false, "", lib_inst);
               }
               catch(e){
-                console.log(e);
                 return;
               }
             }
