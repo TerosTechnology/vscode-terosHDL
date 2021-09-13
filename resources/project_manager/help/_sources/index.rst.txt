@@ -19,70 +19,151 @@
 Welcome to TerosHDL's documentation!
 ====================================
 
+.. image:: img_logo/bcard-front.png
+
 The goal of TerosHDL is to provide an open source IDE for HDL devlopers with functionalities commonly used by software developers.
 The IDE consist in a bunch of tools and on top of them is the `VSCode plugin`_. Some tools are developed by `Teros Technology`_ organization and others
 come from open source proyects. All the tools are organized in different backends and exposed to the GUI with the plugin.
 
 The IDE tries to be as much self-contained as possible and simplify the installation process.
 
-.. image:: features/images/super_sample.gif
-
-Quick links
------------
-
--  :doc:`TerosHDL features <./about>`
--  :doc:`TerosHDL installation <./installing>`
--  :doc:`TerosHDL settings <./configuration/general>`
--  :doc:`TerosHDL documenter settings <./configuration/documenter>`
--  :doc:`Linter configurations <./configuration/linters>`
+.. image:: images/super.gif
 
 .. toctree::
    :caption: About
    :hidden:
 
-   about
-   installing
-   testimonials
-   team
-   contact
-   donate
+   about/about
+   about/team
+   about/testimonials
+   about/donate
+   about/contact
 
 .. toctree::
-   :caption: Configuration
+   :caption: Getting started
    :hidden:
 
-   configuration/general
-   configuration/linters
-   configuration/documenter
+   about/requirements
+   about/installing
+   configuration/python
+   configuration/tools
 
+.. *****************************************************************************
+.. Editor
+.. *****************************************************************************
 .. toctree::
-   :caption: Features
+   :caption: Editor
    :hidden:
 
-   features/go_to_definition
-   features/hover_evaluate
-   features/template_generator
-   features/documenter
-   features/schematic_viewer
-   features/error_checking
-   features/style_checking
-   features/formatting
-   features/stm_viewer
-   features/stm_designer
-   features/dependencies_viewer
-   features/project_manager
-   features/code_snippets
+   editor/configuration
+   editor/shutter_mode
+   editor/go_to_parent
+   editor/go_to_definition
+   editor/hover
+   editor/code_snippets
+   editor/sintax_highlighting
 
+.. *****************************************************************************
+.. Documenter
+.. *****************************************************************************
+.. toctree::
+   :caption: Documenter
+   :hidden:
+
+   documenter/configuration
+   documenter/start
+   documenter/command_line
+   documenter/examples
+.. *****************************************************************************
+.. Project manager
+.. *****************************************************************************
+.. toctree::
+   :caption: Project manager
+   :hidden:
+
+   project_manager/configuration
+   project_manager/start
+   project_manager/hiterachy
+   project_manager/dependency
+   project_manager/documentation
+   project_manager/simulators
+   project_manager/examples
+.. *****************************************************************************
+.. State machine viewer
+.. *****************************************************************************
+.. toctree::
+   :caption: State machine viewer
+   :hidden:
+
+   state_machine_viewer/start
+   state_machine_viewer/examples
+.. *****************************************************************************
+.. Errors checking
+.. *****************************************************************************
+.. toctree::
+   :caption: Errors checking
+   :hidden:
+
+   linter/configuration
+   linter/start
+.. *****************************************************************************
+.. Style checking
+.. *****************************************************************************
+.. toctree::
+   :caption: Style checking
+   :hidden:
+
+   style/configuration
+   style/start
+.. *****************************************************************************
+.. Code formatting
+.. *****************************************************************************
+.. toctree::
+   :caption: Code formatting
+   :hidden:
+
+   formatting/configuration
+   formatting/start
+   formatting/examples
+.. *****************************************************************************
+.. Templates
+.. *****************************************************************************
+.. toctree::
+   :caption: Templates
+   :hidden:
+
+   templates/configuration
+   templates/start
+.. *****************************************************************************
+.. Schematic viewer
+.. *****************************************************************************
+.. toctree::
+   :caption: Schematic viewer
+   :hidden:
+
+   netlist/configuration
+   netlist/start
+.. *****************************************************************************
+.. Others
+.. *****************************************************************************
+.. toctree::
+   :caption: Other features
+   :hidden:
+
+   others/state_machine_designer
+
+.. *****************************************************************************
+.. Appendix
+.. *****************************************************************************
 .. toctree:: 
    :caption: Appendix
    :hidden:
 
-   troubleshooting
-   similar_projects
-   thanks_to
-   future_work
+   appendix/release_notes
+   appendix/troubleshooting
+   appendix/similar_projects
+   appendix/thanks_to
    
-
 .. _VSCode plugin: https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl
 .. _Teros Technology: https://github.com/TerosTechnology
 

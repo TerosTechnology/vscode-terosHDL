@@ -256,8 +256,6 @@ For a full description visit the documentation web.
 
 # 17. Future work <a name="id17"></a>
 
-- Project manager improvements.
-- File tree view.
 - Integrate [triel](https://github.com/TerosTechnology/triel)
 
 # 18. Similar projects <a name="id18"></a>
