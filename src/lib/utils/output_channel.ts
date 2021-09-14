@@ -114,7 +114,7 @@ export class Output_channel{
     print_check_configuration(check_configuration){
         this.show();
         this.appendLine("************************************************************************************************");
-        
+
         let errors = '';
         let python3_error = false;
 
@@ -158,6 +158,21 @@ export class Output_channel{
             errors += ', Edalize';
             this.appendLine('---> Edalize is NOT installed.');
         }
+
+        if (check_configuration.make === true){
+            this.appendLine('---> Make is installed.');
+        }
+        else{
+            errors += ', Make';
+            let url = "https://www.gnu.org/software/make/";
+            let is_win = process.platform === "win32";
+            if (is_win === true) {
+                url = "http://gnuwin32.sourceforge.net/packages/make.htm";   
+            }
+
+            this.appendLine('---> Make is NOT installed: ' + url);
+        }
+
         this.appendLine("************************************************************************************************");
         if (python3_error === true){
             msg = `Configure your Python 3 path correctly.`;
