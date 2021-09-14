@@ -32,7 +32,9 @@ export default class Dependencies_viewer_manager {
   private sources: string[] = [];
   private last_sources: [] = [];
   private output_channel: Output_channel_lib.Output_channel;
-  private config_reader : config_reader_lib.Config_reader;
+  private config_reader: config_reader_lib.Config_reader;
+  private last_project_manager;
+  private last_config;
 
   constructor(context: vscode.ExtensionContext, output_channel, config_reader) {
     this.output_channel = output_channel;
@@ -66,8 +68,33 @@ export default class Dependencies_viewer_manager {
       null,
       this.context.subscriptions
     );
+    // Handle messages from the webview
+    this.panel.webview.onDidReceiveMessage(
+      message => {
+        switch (message.command) {
+          case 'export':
+            this.export_as(message.text);
+            return;
+        }
+      },
+      undefined,
+      this.context.subscriptions
+    );
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
+  }
+
+  private async get_last_svg() {
+    let python3_path = this.last_config.pypath;
+    const jsteros = require('jsteros');
+    let project_manager = new  jsteros.Edam.Edam_project('', '');
+    for (let i = 0; i < this.sources.length; i++) {
+      const source = this.sources[i];
+      project_manager.add_file(source);
+    }
+
+    let dependencies_svg = await project_manager.get_dependency_graph_svg(python3_path);
+    return dependencies_svg;
   }
 
   private async get_dot(config) {
@@ -80,6 +107,8 @@ export default class Dependencies_viewer_manager {
     }
 
     let dependencies_dot = await project_manager.get_dependency_graph_dot(python3_path);
+    this.last_project_manager = project_manager;
+    this.last_config = config;
     return dependencies_dot;
   }
 
@@ -133,4 +162,37 @@ export default class Dependencies_viewer_manager {
     });
     return html;
   }
+
+  async export_as(type: string) {
+    const path_lib = require('path');
+    const homedir = require('os').homedir();
+    
+    if (type === "image") {
+      let filter = { 'SVG': ['svg'] };
+      let uri = vscode.Uri.file(homedir);
+      vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
+        if (fileInfos?.path !== undefined) {
+          this.output_channel.show_message(ERROR_CODE.INFO_DEP_GRAPH);
+
+          let element = this;
+          this.get_last_svg().then(function(svg_content) {
+              if (svg_content === undefined) {
+               element.output_channel.show_message(ERROR_CODE.ERROR_SAVE_DEP_GRAPH);
+             }
+             else {            
+               let file_path = fileInfos?.path;
+               const fs = require('fs');
+               fs.writeFileSync(file_path, svg_content);
+               element.output_channel.show_message(ERROR_CODE.SAVE_DEP_GRAPH, file_path);
+             }
+          });
+        }
+      });
+    }
+    else {
+      console.log("Error export documentation.");
+    }
+  }
+
+
 }
