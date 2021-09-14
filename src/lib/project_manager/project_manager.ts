@@ -83,7 +83,7 @@ export class Project_manager {
     this.set_default_projects();
     
     this.treeview = vscode.window.createTreeView("teroshdl_tree_view", {
-      showCollapseAll : false,
+      showCollapseAll : true,
       treeDataProvider: this.tree,
       canSelectMany: true,
     });
