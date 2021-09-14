@@ -30,6 +30,7 @@ import * as Cocotb from "./tools/cocotb";
 import * as Edalize from "./tools/edalize";
 import * as Tree_types from "./tree_types";
 import * as utils from "./utils";
+import * as help_view from "./help_view";
 import * as utils_vscode from "../utils/utils";
 import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
 import { Hdl_dependencies_tree } from './hdl_dependencies_tree';
@@ -121,7 +122,9 @@ export class Project_manager {
 
   }
 
-  help(){
+  help() {
+    // let helper = new help_view.default(this.context);
+    // helper.open_viewer();
     const exec = require('child_process').exec;
     const help_index_path = path.join('file://' + __filename, "..", "..", "..", "..", "resources", "project_manager", "help", 'index.html');
     let opener;

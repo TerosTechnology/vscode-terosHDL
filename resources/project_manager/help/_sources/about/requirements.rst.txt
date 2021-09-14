@@ -7,7 +7,8 @@ All the tools are automatically managed by TerosHDL vscode plugin.
 But there are some requisites you have to satisfy to enable the all the functionalities.
 
 - Python 3: configured in TerosHDL.
-- pyteroshdl: ``pip3 install pyteroshdl``
+- teroshdl python libraries: ``pip3 install teroshdl``
+- Make: https://www.gnu.org/software/make/
 
 Simulators
 ~~~~~~~~~~~~~

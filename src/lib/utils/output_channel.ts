@@ -147,7 +147,7 @@ export class Output_channel{
             this.appendLine(msg);
         }
         if (errors !== ''){
-            msg = `Install ${errors} manually or install pyTerosHDL: pip install pyTerosHDL`;
+            msg = `Install ${errors} manually or install teroshdl python libraries: pip install teroshdl`;
             this.appendLine(msg);
         }
         if (python3_error === true || errors !== ''){

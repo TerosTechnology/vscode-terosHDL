@@ -3,7 +3,7 @@ general:
     description: ""
     type: "none"
     pypath:
-        description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install pyteroshdl. E.g: pip3 install pyteroshdl</strong>"
+        description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong>"
         type: input
         default: ""
     select_tool:
