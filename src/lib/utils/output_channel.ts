@@ -17,6 +17,9 @@ const MSG_SELECT_PROJECT_SIMULATION = "Select a project.";
 const NETLIST_VIEWER = "Configure Yosys or install YoWASP: pip install yowasp-yosys";
 const MSG_NOT_PARENT = "This file hasn't parent.";
 const MSG_FILES_IN_PROJECT_NO_EXIST = "The following files doesn't exist (maybe the name has been changed): ";
+const MSG_SAVE_DEP_GRAPH = "Dependency graph saved in";
+const MSG_ERROR_SAVE_DEP_GRAPH = "Dependency graph not defined.";
+const MSG_INFO_DEP_GRAPH = "TerosHDL is creating the diagram.";
 
 export const ERROR_CODE = {
     PYTHON : MSG_PYTHON,
@@ -36,6 +39,9 @@ export const ERROR_CODE = {
     NETLIST_VIEWER: NETLIST_VIEWER,
     NOT_PARENT: MSG_NOT_PARENT,
     FILES_IN_PROJECT_NO_EXIST: MSG_FILES_IN_PROJECT_NO_EXIST,
+    SAVE_DEP_GRAPH: MSG_SAVE_DEP_GRAPH,
+    ERROR_SAVE_DEP_GRAPH: MSG_ERROR_SAVE_DEP_GRAPH,
+    INFO_DEP_GRAPH: MSG_INFO_DEP_GRAPH
 };
 
 export class Output_channel{
@@ -74,8 +80,11 @@ export class Output_channel{
         return date_str.padEnd(19);
     }
 
-    show_message(error_message, args){
+    show_message(error_message, args=''){
         this.show();
+        if (error_message === ERROR_CODE.SAVE_DEP_GRAPH) {
+            error_message += ` ${args}`;
+        }
         if (error_message === ERROR_CODE.PYTHON){
             error_message += `Current Python3 path: ${args}`;
         }

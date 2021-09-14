@@ -2,12 +2,12 @@
 // default
 const vscode = acquireVsCodeApi();
 
-function send_command(command) {
-    let config = get_config();
+document.getElementById("export-as-image").onclick = function() {export_message("image")};
+
+function export_message(message) {
     vscode.postMessage({
-        command: command,
-        text: "message",
-        config: config
+        command: 'export',
+        text: message
     });
 }
 
