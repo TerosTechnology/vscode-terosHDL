@@ -30,7 +30,6 @@ import * as Cocotb from "./tools/cocotb";
 import * as Edalize from "./tools/edalize";
 import * as Tree_types from "./tree_types";
 import * as utils from "./utils";
-import * as help_view from "./help_view";
 import * as utils_vscode from "../utils/utils";
 import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
 import { Hdl_dependencies_tree } from './hdl_dependencies_tree';
@@ -73,7 +72,7 @@ export class Project_manager {
     this.context = context;
     this.vunit = new Vunit.Vunit(context, output_channel);
     this.cocotb = new Cocotb.Cocotb(context, output_channel);
-    this.edalize = new Edalize.Edalize(context, output_channel);
+    this.edalize = new Edalize.Edalize(context, output_channel, config_reader);
     this.edam_project_manager = new Edam.Edam_project_manager(output_channel);
     this.config_file = new Config.Config(context.extensionPath);
     this.workspace_folder = this.config_file.get_workspace_folder();
@@ -123,8 +122,6 @@ export class Project_manager {
   }
 
   help() {
-    // let helper = new help_view.default(this.context);
-    // helper.open_viewer();
     const exec = require('child_process').exec;
     const help_index_path = path.join('file://' + __filename, "..", "..", "..", "..", "resources", "project_manager", "help", 'index.html');
     let opener;

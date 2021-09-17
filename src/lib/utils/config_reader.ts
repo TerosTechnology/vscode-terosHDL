@@ -102,6 +102,12 @@ export class Config_reader {
     return enable_lang;
   }
 
+  get_waveform_viewer(){
+    let field = this.get_config_fields('general');
+    let waveform_viewer = field['waveform_viewer'];
+    return waveform_viewer;
+  }
+
   get_developer_mode(){
     let field = this.get_config_fields('general');
     let developer_mode = field['developer_mode'];

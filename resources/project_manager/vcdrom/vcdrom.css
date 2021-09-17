@@ -1,0 +1,124 @@
+@font-face {
+  font-family: Iosevka;
+  src: url('./iosevka-term-light.woff2') format('woff2')
+}
+
+body {
+  overflow: hidden;
+  margin: 0px;
+  border: 0px;
+  background: #111;
+  color: #fff;
+  font-family: 'Iosevka';
+  /* font-size: 16px; */
+}
+
+.wd-cursor {
+  position: absolute;
+  top: 0px;
+  z-index: 1;
+}
+
+line.wd-cursor-line {
+  stroke-dasharray: 4 3;
+  stroke: #fff7;
+  stroke-width: 1px;
+}
+
+text.wd-cursor-time {
+  font-size: 20px;
+  fill: hsl(70, 100%, 50%);
+  text-anchor: middle;
+  z-index: 1;
+}
+
+rect.wd-cursor-time {
+  fill: #222;
+}
+
+.wd-values {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+
+.wd-values text {
+  font-size: 14px;
+  text-anchor: middle;
+  fill: #fff;
+}
+
+line.wd-grid-time {
+  stroke: #333;
+  stroke-width: 1px;
+}
+
+text.wd-grid-time {
+  text-anchor: middle;
+  fill: hsla(49, 100%, 50%, 0.7);
+}
+
+.wd-view {
+  position: absolute;
+  left: 0px;
+  top: 20px;
+  bottom: 20px;
+}
+
+
+text.xred {
+  fill: hsl(0, 100%, 50%);
+}
+text.zxviolet {
+  fill: hsl(287, 100%, 67%);
+}
+
+/* .sidebar {
+  top: 20px;
+  bottom: 20px;
+        height: auto;
+  z-index: 2;
+} */
+
+.wd-container {
+  /* background-color: #1c1c1c; */
+  /* overflow: hidden; */
+  height: 100%;
+  cursor: col-resize;
+}
+
+.wd-progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cm-s-blackboard.CodeMirror {
+  /* font-family: 'Roboto mono', monospace; */
+  /* padding: 20 0 20 0; */
+  font-family: 'Iosevka';
+  line-height: 1.5;
+  font-size: 16px;
+  top: 20px;
+  bottom: 20px;
+  width: 220px;
+  background: #0007;
+}
+
+.CodeMirror {
+  /* font-family: 'Roboto mono', monospace; */
+  font-family: 'Iosevka';
+  line-height: 2;
+  font-size: 16px;
+  top: 20px;
+  bottom: 20px;
+  height: calc(100% - 40px);
+  left: 0px;
+  width: 220px;
+  background: #0007;
+}
+
+.CodeMirror-line > span {
+  background: #000f;
+}
