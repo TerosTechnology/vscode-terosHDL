@@ -9,6 +9,12 @@ general:
     select_tool:
         description: "Select a tool, framework, simulator..."
         type: select_tool
+    waveform_viewer:
+        description: "Select the waveform viewer. For GTKWave you need to install it."
+        type: select
+        options:
+            vcdrom: "vcdrom"
+            gtkwave: "GTKWave"
     go_to_definition_vhdl:
         description: "Activate go to definition feature for VHDL (you need to restart VSCode)."
         type: checkbox

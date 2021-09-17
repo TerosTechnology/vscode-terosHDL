@@ -24,6 +24,8 @@ const path_lib = require('path');
 const shell = require('shelljs');
 const fs = require('fs');
 const tool_base = require('./tool_base');
+import * as vcdrom from "../vcdrom";
+
 import * as Output_channel_lib from '../../utils/output_channel';
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
@@ -42,9 +44,10 @@ export class Edalize extends tool_base.Tool_base{
   private complete_waveform_path = '';
   private childp;
 
-  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
+  constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel, config_reader){
     super(context, output_channel);
     this.waveform_path = `${__dirname}${this.folder_sep}waveform`;
+    this.config_reader = config_reader;
   }
 
   async run_simulation(edam, testname, gui) {
@@ -151,11 +154,20 @@ export class Edalize extends tool_base.Tool_base{
   }
 
   open_waveform_gtkwave(){
-    let shell = require('shelljs');
-    // let uri = vscode.Uri.file(this.complete_waveform_path);
-    // vscode.commands.executeCommand("vscode.openWith", uri, "de.toem.impulse.editor.records");
-    let command = `gtkwave ${this.complete_waveform_path}`;
-    shell.exec(command, {async:true});
+    let waveform_viewer = this.config_reader.get_waveform_viewer();
+    if (waveform_viewer === 'gtkwave') {
+      let shell = require('shelljs');
+      let command = `gtkwave ${this.complete_waveform_path}`;
+      shell.exec(command, {async:true});
+    }
+    else if (waveform_viewer === "impulse"){
+      let uri = vscode.Uri.file(this.complete_waveform_path);
+      vscode.commands.executeCommand("vscode.openWith", uri, "de.toem.impulse.editor.records");
+    }
+    else {
+      let vcdrom_inst = new vcdrom.default(this.context);
+      vcdrom_inst.update_waveform(this.complete_waveform_path);
+    }
   }
 
   normalize_edam(edam){
