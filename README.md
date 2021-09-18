@@ -3,7 +3,7 @@
 [![Download Count](https://img.shields.io/visual-studio-marketplace/d/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
 
 
-![TerosHDL](./resources/images/banner.png)
+![TerosHDL](./resources/images/low_res_banner.png)
 
 **Check the full documentation:** https://terostechnology.github.io/
 
