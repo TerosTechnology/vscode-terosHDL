@@ -70,7 +70,7 @@
                   "vhdl_standalone_keyword_case":"lowercase",
                   "vhdl_standalone_name_case":"lowercase",
                   "vhdl_standalone_align_comments":false,
-                  "vhdl_standalone_indentation":"",
+                  "vhdl_standalone_indentation":"  ",
                   "vhdl_standalone_align_generic_port":false
                }
             },
