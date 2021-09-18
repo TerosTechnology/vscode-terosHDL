@@ -247,7 +247,7 @@ export async function activate(context: vscode.ExtensionContext) {
         ),
         vscode.workspace.onDidOpenTextDocument((e) => state_machine_viewer_manager.update_viewer()),
         vscode.workspace.onDidSaveTextDocument((e) => state_machine_viewer_manager.update_viewer()),
-        vscode.workspace.onDidChangeTextDocument((e) => state_machine_viewer_manager.update_viewer()),
+        // vscode.workspace.onDidChangeTextDocument((e) => state_machine_viewer_manager.update_viewer()),
         vscode.window.onDidChangeVisibleTextEditors((e) => state_machine_viewer_manager.update_visible_viewer(e)),
     );
     /**************************************************************************/

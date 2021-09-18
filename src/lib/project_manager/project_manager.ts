@@ -78,7 +78,7 @@ export class Project_manager {
     this.config_file = new Config.Config(context.extensionPath);
     this.workspace_folder = this.config_file.get_workspace_folder();
     this.config_view = new Config_view.default(context, this.config_file);
-    this.netlist_viewer_manager = new netlist_viewer.default(context, output_channel, config_reader);
+    this.netlist_viewer_manager = new netlist_viewer.default(context, output_channel, config_reader, true);
 
     this.tree = new TreeDataProvider();
     this.set_default_projects();
