@@ -247,6 +247,11 @@
 					"group": "inline"
 				},
 				{
+					"command": "teroshdl_tree_view.netlist_project",
+					"when": "view == teroshdl_tree_view && viewItem == project",
+					"group": "inline"
+				},
+				{
 					"command": "teroshdl_tree_view.add_file",
 					"when": "view == teroshdl_tree_view && viewItem == title_vhdl_sources"
 				},
@@ -318,7 +323,7 @@
 					"group": "navigation"
 				},
 				{
-					"when": "resourceLangId == verilog || resourceLangId == systemverilog",
+					"when": "resourceLangId == verilog || resourceLangId == systemverilog  || resourceLangId == vhdl",
 					"command": "teroshdl.netlist.viewer",
 					"group": "navigation"
 				},
@@ -477,6 +482,14 @@
 				"icon": {
 					"light": "resources/light/book.svg",
 					"dark": "resources/dark/book.svg"
+				}
+			},
+			{
+				"command": "teroshdl_tree_view.netlist_project",
+				"title": "Show the netlist",
+				"icon": {
+					"light": "resources/light/list-tree.svg",
+					"dark": "resources/dark/list-tree.svg"
 				}
 			},
 			{

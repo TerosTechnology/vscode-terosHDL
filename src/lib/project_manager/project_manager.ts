@@ -35,6 +35,7 @@ import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer
 import { Hdl_dependencies_tree } from './hdl_dependencies_tree';
 import * as Output_channel_lib from '../utils/output_channel';
 import * as config_reader_lib from "../utils/config_reader";
+import * as netlist_viewer from "../netlist_viewer/netlist_viewer";
 
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 const path_lib = require("path");
@@ -64,7 +65,7 @@ export class Project_manager {
   private context;
   private output_channel : Output_channel_lib.Output_channel;
   private config_reader : config_reader_lib.Config_reader;
-
+  private netlist_viewer_manager: netlist_viewer.default;
 
   constructor(context: vscode.ExtensionContext, output_channel, config_reader: config_reader_lib.Config_reader) {
     this.config_reader = config_reader;
@@ -77,6 +78,7 @@ export class Project_manager {
     this.config_file = new Config.Config(context.extensionPath);
     this.workspace_folder = this.config_file.get_workspace_folder();
     this.config_view = new Config_view.default(context, this.config_file);
+    this.netlist_viewer_manager = new netlist_viewer.default(context, output_channel, config_reader);
 
     this.tree = new TreeDataProvider();
     this.set_default_projects();
@@ -112,6 +114,7 @@ export class Project_manager {
     vscode.commands.registerCommand("teroshdl_tree_view.open_file", (item) => this.open_file(item));
     vscode.commands.registerCommand("teroshdl_tree_view.save_doc", (item) => this.save_doc(item));
     vscode.commands.registerCommand("teroshdl_tree_view.help", (item) => this.help());
+    vscode.commands.registerCommand("teroshdl_tree_view.netlist_project", (item) => this.netlist(item));
 
     this.hdl_dependencies_provider = new Hdl_dependencies_tree(context, output_channel);
     vscode.window.registerTreeDataProvider('teroshdl_dependencies_tree_view', this.hdl_dependencies_provider);
@@ -137,6 +140,13 @@ export class Project_manager {
         break;
     }
     exec(`${opener} "${help_index_path.replace(/"/g, '\\\"')}"`);
+  }
+
+  async netlist(item) {
+    let project_name = item.project_name;
+    let prj = this.edam_project_manager.get_project(project_name);
+    this.netlist_viewer_manager.create_viewer();
+    await this.netlist_viewer_manager.generate_project_netlist(prj);
   }
 
   open_dependencies_viewer(){
@@ -1191,7 +1201,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
 
   init_tree() {
     this.data = [new Tree_types.TreeItem("TerosHDL Projects", []), new Tree_types.TreeItem("Runs list", []), 
-      new Tree_types.TreeItem("Resources utilization", [])];
+      new Tree_types.TreeItem("Output products", [])];
     this.refresh();
   }
 
@@ -1373,7 +1383,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
     this.data = [
       new Tree_types.TreeItem("TerosHDL Projects", this.projects),
       new Tree_types.Test_title_item("Runs list", this.test_list_items),
-      new Tree_types.Build_title_item("Resources utilization", this.build_list_items),
+      new Tree_types.Build_title_item("Output products", this.build_list_items),
     ];
     this.refresh();
   }

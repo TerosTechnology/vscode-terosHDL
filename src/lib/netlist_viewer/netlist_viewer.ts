@@ -31,7 +31,7 @@ const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 export default class netlist_viewer_manager {
   private panel: vscode.WebviewPanel | undefined = undefined;
   private context: vscode.ExtensionContext;
-  private code;
+  private file_path;
   private document;
   private svg_element;
   private document_element;
@@ -49,7 +49,7 @@ export default class netlist_viewer_manager {
     this.create_viewer();
   }
 
-  async create_viewer() {
+  async create_viewer(mode_project=false) {
     // Create panel
     this.panel = vscode.window.createWebviewPanel(
       'netlist_viewer',
@@ -85,11 +85,13 @@ export default class netlist_viewer_manager {
     let previewHtml = this.getWebviewContent(this.context);
     this.panel.webview.html = previewHtml;
 
-    let code = await this.get_code(undefined);
-    if (code !== undefined) {
-      this.code = code;
+    if (mode_project === false) {      
+      let file_path = await this.get_file_path(undefined);
+      if (file_path !== undefined) {
+        this.file_path = file_path;
+      }
+      await this.send_file_path(file_path);
     }
-    await this.send_code(code);
   }
 
   private show_export_message(path_full) {
@@ -113,14 +115,14 @@ export default class netlist_viewer_manager {
     }
   }
 
-  private async send_code(code) {
-    let result = await this.generate(code);
+  private async send_file_path(file_path) {
+    let result = await this.generate(file_path);
     if (result !== undefined) {
       await this.panel?.webview.postMessage({ command: "update", result: result});
     }
   }
 
-  private async get_code(document_trigger) {
+  private async get_file_path(document_trigger) {
     let document = document_trigger;
     if (document_trigger === undefined) {
       let active_editor = vscode.window.activeTextEditor;
@@ -130,26 +132,26 @@ export default class netlist_viewer_manager {
       document = active_editor.document;
     }
     let language_id: string = document.languageId;
-    let code: string = document.getText();
 
-    if (language_id !== "verilog" && language_id !== 'systemverilog') {
+    if (language_id !== "verilog" && language_id !== 'systemverilog' && language_id !== 'vhdl') {
       return;
     }
+    let file_path = document.uri.fsPath;
     this.document = document;
-    return code;
+    return file_path;
   }
 
   async update_viewer() {
     if (this.panel !== undefined) {
-      let code = await this.get_code(undefined);
-      this.code = code;
-      await this.send_code(code);
+      let file_path = await this.get_file_path(undefined);
+      this.file_path = file_path;
+      await this.send_file_path(file_path);
     }
   }
 
   async update_viewer_last_code() {
     if (this.panel !== undefined) {
-      await this.send_code(this.code);
+      await this.send_file_path(this.file_path);
     }
   }
 
@@ -159,24 +161,50 @@ export default class netlist_viewer_manager {
     }
     let document = e[0].document;
     if (this.panel !== undefined) {
-      let code = await this.get_code(document);
-      this.code = code;
-      await this.send_code(code);
+      let file_path = await this.get_file_path(document);
+      this.file_path = file_path;
+      await this.send_file_path(file_path);
     }
   }
 
-  async generate(code) {
-    if (code === undefined){
+  async generate_project_netlist(project) {
+    let result = await this.generate_from_project(project);
+    if (result !== undefined) {
+      await this.panel?.webview.postMessage({ command: "update", result: result});
+    }
+  }
+
+  async generate_from_project(project) {
+    let sources = project.get_sources_as_array();
+
+    const tmpdir = require('os').homedir();
+
+    const output_path = path_lib.join(tmpdir, '.teroshdl_yosys_output_project.json');
+    const script_path = path_lib.join(tmpdir, '.teroshdl_yosys_script_project');
+
+    return await this.run_yosys_script(sources, script_path, output_path);
+  }
+
+  async generate(file_path) {
+    if (file_path === undefined){
       return '';
     }
     const tmpdir = require('os').homedir();
-    const code_path = path_lib.join(tmpdir, '.teroshdl_yosys_code.v');
-    code = code.replace(/`include/g, "//`include");
-    fs.writeFileSync(code_path, code);
 
     const output_path = path_lib.join(tmpdir, '.teroshdl_yosys_output.json');
     const script_path = path_lib.join(tmpdir, '.teroshdl_yosys_script');
-    const script_code = `read_verilog ${code_path}\n design -reset\n read_verilog -sv ${code_path}\n proc\n opt\n write_json ${output_path}`;
+    
+    return await this.run_yosys_script([file_path],script_path, output_path);
+  }
+
+  async run_yosys_script(sources, script_path, output_path) {
+    let read_verilog_script = '';
+    for (let i = 0; i < sources.length; i++) {
+      const element = sources[i];
+      read_verilog_script += `read_verilog -sv ${element}\n`;
+    }
+
+    const script_code = `${read_verilog_script}\nproc\nopt\nwrite_json ${output_path}`;
     fs.writeFileSync(script_path, script_code);
 
     const backend = this.config_reader.get_schematic_backend();
