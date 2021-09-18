@@ -20,6 +20,7 @@ const MSG_FILES_IN_PROJECT_NO_EXIST = "The following files doesn't exist (maybe 
 const MSG_SAVE_DEP_GRAPH = "Dependency graph saved in";
 const MSG_ERROR_SAVE_DEP_GRAPH = "Dependency graph not defined.";
 const MSG_INFO_DEP_GRAPH = "TerosHDL is creating the diagram.";
+const NETLIST_VHDL_ERROR = "Your project/file includes 1 or more VHDL files, but it's not configured the backend GHDL+Yosys.";
 
 export const ERROR_CODE = {
     PYTHON : MSG_PYTHON,
@@ -41,7 +42,13 @@ export const ERROR_CODE = {
     FILES_IN_PROJECT_NO_EXIST: MSG_FILES_IN_PROJECT_NO_EXIST,
     SAVE_DEP_GRAPH: MSG_SAVE_DEP_GRAPH,
     ERROR_SAVE_DEP_GRAPH: MSG_ERROR_SAVE_DEP_GRAPH,
-    INFO_DEP_GRAPH: MSG_INFO_DEP_GRAPH
+    INFO_DEP_GRAPH: MSG_INFO_DEP_GRAPH,
+    NETLIST_VHDL_ERROR: NETLIST_VHDL_ERROR,
+};
+
+const SAVE_NETLIST = "Schematic saved in ";
+export const MSG_CODE = {
+    SAVE_NETLIST: SAVE_NETLIST
 };
 
 export class Output_channel{
@@ -78,6 +85,17 @@ export class Output_channel{
         let seconds = date_ob.getSeconds().toString().padStart(2, '0');
         let date_str = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
         return date_str.padEnd(19);
+    }
+
+    show_info_message(code, args = '') {
+        this.show();
+        let msg = MSG_CODE.SAVE_NETLIST;
+        if (code === MSG_CODE.SAVE_NETLIST) {
+            msg += args;
+        }
+        let date = this.get_date();
+        let msg_end = date + ': ' + msg;
+        this.appendLine(msg_end);
     }
 
     show_message(error_message, args=''){

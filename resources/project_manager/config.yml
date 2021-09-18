@@ -53,6 +53,7 @@ schematic:
         options:
             yowasp: "YoWASP"
             yosys: "Yosys"
+            yosys_ghdl: "GHDL + Yosys"
 
 documentation:
     title: Documentation settings

@@ -1,251 +1,43 @@
-<html><head>
-    <!-- <script src="libs/d3/d3.v5.min.js"></script> -->
-    <!-- <script src="libs/d3/index.min.js"></script> -->
-    <!-- <script src="libs/d3/d3-graphviz.js"></script> -->
+<html>
 
-    <script type="text/javascript" src="libs/bundle.js"></script>
+<head>
     <script type="text/javascript" src="libs/elk.bundled.js"></script>
     <script type="text/javascript" src="libs/netlistsvg.bundle.js"></script>
     <script type="text/javascript" src="libs/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="libs/svg-pan-zoom.min.js"></script>
     <script type="text/javascript" src="libs/viz.js"></script>
-    <!-- <script type="text/javascript" src="libs/full.render.js"></script> -->
-    <!-- <script type="text/javascript" src="http://wavedrom.com/skins/default.js" type="text/javascript"></script>
-    <script type="text/javascript" src="http://wavedrom.com/WaveDrom.js" type="text/javascript"></script> -->
+    <script type="text/javascript" src="libs/main.js"></script>
+
     <link rel="stylesheet" href="netlist_viewer.css" type="text/css" />
     <style type="text/css">
-    .noedit { color: #666; }
-    body {
-        color: black;
-        background-color: white;
-    }
+        .noedit {
+            color: #666;
+        }
+        
+        body {
+            color: black;
+            background-color: white;
+        }
     </style>
-    </head><body id="body_element">
-        <div class="toolbar">
-            <div class="center-panel">
-                <label class="fancy-checkbox">
-                    <input id="export-as-svg" name="zoom-mode" type="radio" value="fit"/>
-                    <div class="button">Save as SVG</div>
-                </label>
-            </div>
+</head>
+
+<body id="body_element">
+    <div class="toolbar">
+        <div class="center-panel">
+            <label class="fancy-checkbox">
+                <input id="export-as-image" type="radio" value="fit" />
+                <div class="button">Save as SVG</div>
+            </label>
         </div>
-        <!-- <div id="popup" style="position: fixed; left: 0; top: 0; width:100%; height:100%; text-align:center; z-index: 1000;
-            background-color: rgba(100, 100, 100, 0.5);"><div style="width:300px; margin: 200px auto; background-color: #88f;
-            border:3px dashed #000; padding:15px; text-align:center;"><span id="popupmsg">Loading...</span></div>
-        </div> -->
-        <p></p>
+    </div>
 
-        <!-- <b style="color:red">&nbsp&nbsp&nbsp There is a problem with the latest versions of VSCode. It may not work. Feel free to help us :)</b>
-        <br> -->
+    <p></p>
 
-        <b>&nbsp&nbsp&nbspBe careful with the "include" clauses. Only this file is analized, not externals.</b>
-        <div id="graph" style="text-align: center;"></div>
-        <div id="main">
-            <div id="netlist_container"></div>
-            <p id="wave">&nbsp;</p>
-        </div>
-    </body></html>
-    <script>
-    
-    let last_embed_svg;
-    let pan_zoom;
-    let last_svg = '';
-    
-    function check_model(netlist) {
-      let netlist_container = document.getElementById('netlist_container');
-      // document.getElementById('popup').style.visibility = 'hidden';
-      let w = document.getElementById('wave');
-      w.innerHTML = '';
-      // let code_hdl = code;
-      function work() {
-        netlist = normalize_netlist(netlist);
-        netlistsvg.render(0, netlist, function (e, svg) {
-          //Create SVG element
-          let embed_svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          embed_svg.setAttribute('style', 'width: 100%; height: 100%');
-          embed_svg.setAttribute('type', 'image/svg+xml');
-          embed_svg.id = "svg_yosys";            
-          last_svg = svg;
-          //Add to container
-          netlist_container = document.getElementById('netlist_container');
-          netlist_container.innerHTML = '';
-          netlist_container.appendChild(embed_svg);
+    <div id="graph" style="text-align: center;"></div>
+    <div id="main">
+        <div id="netlist_container"></div>
+        <p id="wave">&nbsp;</p>
+    </div>
+</body>
 
-          embed_svg.innerHTML = svg;
-          set_svg_click(embed_svg);
-
-          last_embed_svg = embed_svg;
-          set_line_width();
-
-          netlist_container.setAttribute('style', 'width: 100%; height: 100%');
-          let pan_config = {
-            zoomEnabled: true,
-            controlIconsEnabled: true,
-            maxZoom: 50,
-            fit: true,
-            center: true
-          };
-          pan_zoom = svgPanZoom(embed_svg, pan_config);
-          pan_zoom.center();
-          pan_zoom.resize();
-
-          let main = document.getElementById('main')
-          main.setAttribute('style', 'width: 100%; height: 100%');
-          // document.getElementById('popup').style.visibility = 'hidden';
-          // document.getElementById('main').style.visibility = 'visible';
-        });
-      }
-      // document.getElementById('popup').style.visibility = 'visible';
-      work();
-    }
-    // "use strict";
-    const vscode = acquireVsCodeApi();
-
-    // Handle the message inside the webview
-    window.addEventListener('message', event => {
-      const message = event.data;
-      switch (message.command) {
-        case 'update':
-          check_model(message.result);
-          break;
-      }
-    });
-    
-    function set_svg_click(svg){
-      let countries = svg.childNodes;
-      for (let i = 0; i < countries.length; i++) {
-          countries[i].addEventListener('click', e => {
-            let element = e.target;
-
-            if (element.tagName === 'line'){
-              let class_name = element.getAttribute("class");
-              select_net(class_name);
-            }
-          });
-        }
-    }
-
-    function select_net(class_name){
-      search_in_tree(last_embed_svg, 'line', class_name);
-    }
-
-    function search_in_tree(element, tag_name, class_name) {
-      let match = undefined;
-      function recursive_searchTree(element, tag_name) {
-          let type = element.tagName;
-          let class_name_i = undefined;
-          try{
-            class_name_i = element.getAttribute("class");
-          }
-          catch{
-            class_name_i = '';
-          }
-          
-          if (type === tag_name && class_name_i === class_name) {
-            element.style = "stroke:#84da00;stroke-width:3";
-            match = element;
-          }
-          else if(type === tag_name && class_name_i !== class_name){
-            element.style = "stroke:#000000;stroke-width:2";
-          }
-          else if (element !== null) {
-            let i;
-            let result = null;
-            let childs = element.childNodes;
-            for (i = 0; result === null && i < childs.length; i++) {
-                result = recursive_searchTree(childs[i], tag_name, class_name);
-                if (result !== null) {
-                    break;
-                }
-            }
-            return result;
-          }
-          return null;
-      }
-    recursive_searchTree(element, tag_name, class_name);
-    return match;
-  }
-
-  function set_line_width() {
-      let tag_name = 'line';
-      let element = last_embed_svg;
-      let width = 2;
-      let match = undefined;
-      function recursive_searchTree(element, tag_name) {
-          let type = element.tagName;          
-          if (type === tag_name) {
-            element.style = `stroke:#000000;stroke-width:${width}`;
-            match = element;
-          }
-          else if (element !== null) {
-            let i;
-            let result = null;
-            let childs = element.childNodes;
-            for (i = 0; result === null && i < childs.length; i++) {
-                result = recursive_searchTree(childs[i], tag_name);
-                if (result !== null) {
-                    break;
-                }
-            }
-            return result;
-          }
-          return null;
-      }
-    recursive_searchTree(element, tag_name);
-    return match;
-  }
-
-    function normalize_netlist(netlist) {
-      try {
-        let norm_netlist = netlist;
-        let modules = netlist.modules;
-    
-        // Obteniendo todas las claves del JSON
-        for (let module in modules) {
-          let cells_module = modules[module].cells;
-          for (let cell in cells_module) {
-            let cell_i = cells_module[cell];
-            if (cell_i.type === '$dff'){
-              cell_i.type = 'D-Flip Flop';
-            }
-            else if (cell_i.type === '$adff'){
-              cell_i.type = 'D-Flip Flop areset';
-            }
-            else if (cell_i.type === '$eq'){
-              cell_i.type = 'equal';
-            }
-            else{
-              cell_i.type = cell_i.type.replace('$','');
-            }
-            if (cell_i.port_directions === undefined) {
-              let tt = cell_i.connections;
-              cell_i.port_directions = {};
-              for (let port in cell_i.connections) {
-                cell_i.port_directions[port] = 'input';
-              }
-            }
-          }
-        }
-        norm_netlist.modules = modules;
-        return norm_netlist;
-      }
-      catch (e) {
-        return netlist;
-      }
-    }
-    
-    // function html_loaded() {
-    //   vscode.postMessage({
-    //     command: 'html_loaded'
-    //   });
-    // }
-    
-    document.getElementById("export-as-svg").onclick = function () { export_message("svg"); };
-    function export_message(type) {
-        vscode.postMessage({
-            command: 'export',
-            type: type,
-            svg: last_svg
-        });
-    }
-    </script>
+</html>

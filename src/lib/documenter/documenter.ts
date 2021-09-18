@@ -24,6 +24,8 @@ import * as path_lib from 'path';
 import * as util from "util";
 import * as config_reader_lib from "../utils/config_reader";
 import * as Output_channel_lib from '../utils/output_channel';
+import * as fs from 'fs';
+
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export default class Documenter {
@@ -52,8 +54,7 @@ export default class Documenter {
     const fs = require('fs');
     let path_html = path_lib.sep + "resources" + path_lib.sep + "documenter" + path_lib.sep + "preview_module_doc.html";
     const readFileAsync = util.promisify(fs.readFile);
-    this.html_base = await readFileAsync(
-      this.context.asAbsolutePath(path_html), "utf8");
+    this.html_base = this.getWebviewContent(this.context);
   }
 
   async get_documenter() {
@@ -152,6 +153,18 @@ export default class Documenter {
     }
     // And set its HTML content
     await this.update_doc(active_document);
+  }
+
+  private getWebviewContent(context: vscode.ExtensionContext) {
+    let template_path = 'resources' + path_lib.sep + 'documenter' + path_lib.sep + 'index.html';
+    const resource_path = path_lib.join(context.extensionPath, template_path);
+    const dir_path = path_lib.dirname(resource_path);
+    let html = fs.readFileSync(resource_path, 'utf-8');
+
+    html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
+      return $1 + vscode.Uri.file(path_lib.resolve(dir_path, $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
+    });
+    return html;
   }
 
   get_configuration(){

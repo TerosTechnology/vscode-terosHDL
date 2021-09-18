@@ -1,9 +1,3 @@
-:root {
-    --light-foreground-color: black;
-    --dark-foreground-color: whitesmoke;
-    --high-contrast-foreground-color: whitesmoke;
-}
-
 h1,
 h2,
 h3,
@@ -80,6 +74,20 @@ body {
     z-index: 2;
 }
 
+.config {
+    background: rgba(255, 255, 255, 1);
+    top: 40px;
+    padding-top: 10%;
+    overflow: visible;
+    width: 100%;
+    position: fixed;
+    color: black;
+    font: 12px "Segoe UI", sans-serif;
+    padding: 0.25em;
+    white-space: nowrap;
+    z-index: 4;
+}
+
 .left-panel,
 .center-panel,
 .right-panel {
@@ -111,6 +119,10 @@ body {
     transition: background ease-out 125ms, color ease-out 125ms;
     user-select: none;
     width: 10em;
+}
+
+.config {
+    padding: 0.5em;
 }
 
 .button:hover {
