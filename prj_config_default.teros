@@ -107,7 +107,7 @@
                   "installation_path":"",
                   "waveform":"vcd",
                   "analyze_options":[
-                     ""
+                     "--ieee=synopsys"
                   ],
                   "run_options":[
                      ""
