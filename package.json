@@ -39,17 +39,14 @@
     "main": "./out/extension.js",
     "contributes": {
         "viewsContainers": {
-            "activitybar": [
-                {
-                    "id": "teroshdl_tree_view",
-                    "title": "TerosHDL",
-                    "icon": "resources/images/teros_logo.svg"
-                }
-            ]
+            "activitybar": [{
+                "id": "teroshdl_tree_view",
+                "title": "TerosHDL",
+                "icon": "resources/images/teros_logo.svg"
+            }]
         },
         "views": {
-            "teroshdl_tree_view": [
-                {
+            "teroshdl_tree_view": [{
                     "id": "teroshdl_tree_view",
                     "name": "TerosHDL: project manager"
                 },
@@ -59,8 +56,7 @@
                 }
             ]
         },
-        "grammars": [
-            {
+        "grammars": [{
                 "language": "vhdl",
                 "scopeName": "source.vhdl",
                 "path": "./syntaxes/vhdl/vhdl.tmLanguage.json"
@@ -100,8 +96,7 @@
             }
         },
         "menus": {
-            "view/title": [
-                {
+            "view/title": [{
                     "command": "teroshdl_dependencies_tree_view.dependencies_viewer",
                     "when": "view == teroshdl_dependencies_tree_view",
                     "group": "navigation"
@@ -137,8 +132,7 @@
                     "group": "navigation"
                 }
             ],
-            "view/item/context": [
-                {
+            "view/item/context": [{
                     "command": "teroshdl_tree_view.open_file",
                     "when": "view == teroshdl_tree_view && viewItem == hdl_source"
                 },
@@ -311,8 +305,7 @@
                     "group": "inline"
                 }
             ],
-            "editor/title": [
-                {
+            "editor/title": [{
                     "when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
                     "command": "teroshdl.generate_template",
                     "group": "navigation"
@@ -339,8 +332,7 @@
                 }
             ]
         },
-        "commands": [
-            {
+        "commands": [{
                 "command": "teroshdl.go_to_parent",
                 "title": "Go to parent file"
             },
@@ -629,16 +621,13 @@
                 }
             }
         ],
-        "keybindings": [
-            {
-                "command": "teroshdl.go_to_parent",
-                "key": "alt+backspace",
-                "mac": "command+delete",
-                "when": "editorTextFocus"
-            }
-        ],
-        "languages": [
-            {
+        "keybindings": [{
+            "command": "teroshdl.go_to_parent",
+            "key": "alt+backspace",
+            "mac": "command+delete",
+            "when": "editorTextFocus"
+        }],
+        "languages": [{
                 "id": "vhdl",
                 "aliases": [
                     "VHDL",
@@ -713,8 +702,7 @@
                 "configuration": "./configs/systemverilog.configuration.json"
             }
         ],
-        "snippets": [
-            {
+        "snippets": [{
                 "language": "vhdl",
                 "path": "./snippets/vhdl/vhdl.json"
             },
@@ -748,7 +736,7 @@
         "watch": "npm run build-prepare & tsc -watch -p ./",
         "pretest": "npm run compile && npm run lint",
         "test": "node ./out/test/runTest.js",
-        "build-prepare": "cd ./resources/project_manager; ./generate_html.py; ./copy_examples.sh"
+        "build-prepare": "cd ./resources/project_manager; ./generate_html.py; ./copy_examples.sh; copy_documentation.sh"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",
