@@ -26,29 +26,15 @@ window.addEventListener('message', event => {
     const message = event.data;
     switch (message.command) {
         case 'update':
-            netlist_to_svg(message.result);
+            set_svg(message.result);
             break;
     }
 });
 
-function netlist_to_svg(netlist) {
+function set_svg(svg) {
     let w = document.getElementById('wave');
     w.innerHTML = '';
 
-    function work() {
-        // netlist = normalize_netlist(netlist);
-        netlistsvg.render(0, netlist, function(e, svg) {
-            set_svg(svg);
-        });
-    }
-    try {
-        work();
-    } catch (error) {
-        set_svg('');
-    }
-}
-
-function set_svg(svg) {
     init();
     //Create SVG element
     let embed_svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
