@@ -54,13 +54,11 @@ export default class Vcdrom {
     this.context = context;
   }
 
-
   async update_waveform(path) {
-  
+
     let final_file = path;
     let vcd = vscode.Uri.file(final_file);
 
-    console.log(vcd);
     const fname = vcd.path;
     const title = path_lib.basename(fname);
     const vcdDir = path_lib.dirname(fname);
