@@ -96,6 +96,11 @@
             }
         },
         "menus": {
+            "explorer/context": [{
+                "command": "teroshdl.start_vcd",
+                "when": "resourceLangId == vcd",
+                "group": "navigation"
+            }],
             "view/title": [{
                     "command": "teroshdl_dependencies_tree_view.dependencies_viewer",
                     "when": "view == teroshdl_dependencies_tree_view",
@@ -103,6 +108,11 @@
                 },
                 {
                     "command": "teroshdl_tree_view.simulate",
+                    "when": "view == teroshdl_tree_view",
+                    "group": "navigation"
+                },
+                {
+                    "command": "teroshdl_tree_view.run_edalize_test_gui",
                     "when": "view == teroshdl_tree_view",
                     "group": "navigation"
                 },
@@ -295,11 +305,6 @@
                     "group": "inline"
                 },
                 {
-                    "command": "teroshdl_tree_view.simulate",
-                    "when": "view == teroshdl_tree_view && viewItem == test_title",
-                    "group": "inline"
-                },
-                {
                     "command": "teroshdl_tree_view.add_project",
                     "when": "view == teroshdl_tree_view && viewItem == teroshdl",
                     "group": "inline"
@@ -339,6 +344,10 @@
             {
                 "command": "teroshdl_tree_view.open_file",
                 "title": "Open file"
+            },
+            {
+                "command": "teroshdl.start_vcd",
+                "title": "Open with waveform viewer"
             },
             {
                 "command": "teroshdl_tree_view.stop",
@@ -642,6 +651,10 @@
                 "configuration": "./configs/vhdl.configuration.json"
             },
             {
+                "id": "vcd",
+                "extensions": [".vcd"]
+            },
+            {
                 "id": "ucf",
                 "aliases": [
                     "vivado ucf",
@@ -736,7 +749,9 @@
         "watch": "npm run build-prepare & tsc -watch -p ./",
         "pretest": "npm run compile && npm run lint",
         "test": "node ./out/test/runTest.js",
-        "build-prepare": "cd ./resources/project_manager; ./generate_html.py; ./copy_examples.sh; copy_documentation.sh"
+        "generate-doc": "cd ./resources/project_manager; ./copy_documentation.sh",
+        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh",
+        "build-prepare": "cd ./resources/project_manager; ./generate_html.py;"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",

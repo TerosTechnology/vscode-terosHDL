@@ -21,6 +21,8 @@ jobs:
           cd vscode-terosHDL
           sudo rm -rf /usr/local/bin/phantomjs
           npm install
+          npm run-script generate-doc
+          npm run-script generate-examples
           vsce package
           now=`date +"%Y-%m-%d__%H:%M"`
           file=`ls *.vsix`
