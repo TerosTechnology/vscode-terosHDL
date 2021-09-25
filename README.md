@@ -28,7 +28,7 @@ The IDE tries to be as much self-contained as possible and simplify the installa
 - State machine designer.
 - Code snippets and grammar.
 
-![TerosHDL](./resources/project_manager/help/_images/super.gif)
+![TerosHDL](./resources/images/gui.gif)
 
 ## Managed by
 
