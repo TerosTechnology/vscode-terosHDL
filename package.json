@@ -760,7 +760,7 @@
         "abort-controller": "3.0.0",
         "extract-zip": "1.6.2",
         "fs-extra": "8.1.0",
-        "teroshdl": "0.2.0",
+        "teroshdl": "file:../colibri",
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
         "proper-lockfile": "4.1.1",
         "shelljs": "^0.8.3",
