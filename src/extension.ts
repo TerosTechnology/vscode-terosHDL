@@ -391,7 +391,7 @@ export async function provideDocumentFormattingEdits(
 
 function help_message() {
     vscode.window
-        .showInformationMessage('TerosHDL needs your help!  😊', ...['Know the project', 'Documentation'])
+        .showInformationMessage('TerosHDL needs your help!  😊', ...['Know the team', 'Documentation'])
         .then(selection => {
             if (selection === 'Know the team') {
                 vscode.env.openExternal(vscode.Uri.parse(
