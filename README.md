@@ -1,6 +1,7 @@
 [![Current Version](https://img.shields.io/visual-studio-marketplace/v/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
 [![Install Count](https://img.shields.io/visual-studio-marketplace/i/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
 [![Download Count](https://img.shields.io/visual-studio-marketplace/d/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
+[![vscode-TerosHDL documentation](https://img.shields.io/website.svg?label=vscode-TerosHDL%20Documentation&longCache=true&style=flat-square&url=http%3A%2F%2FTerosTechnology.github.io%2FterosHDLdoc%2Findex.html)](https://TerosTechnology.github.io/terosHDLdoc)
 
 
 ![TerosHDL](./resources/images/low_res_banner.png)
@@ -28,7 +29,7 @@ The IDE tries to be as much self-contained as possible and simplify the installa
 - State machine designer.
 - Code snippets and grammar.
 
-![TerosHDL](./resources/project_manager/help/_images/super.gif)
+![TerosHDL](./resources/images/gui.gif)
 
 ## Managed by
 
