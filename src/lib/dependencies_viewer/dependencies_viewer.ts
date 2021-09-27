@@ -55,7 +55,7 @@ export default class Dependencies_viewer_manager {
       vscode.ViewColumn.Two,
       {
         enableScripts: true,
-        retainContextWhenHidden:true
+        retainContextWhenHidden: true
       }
     );
 
@@ -86,8 +86,8 @@ export default class Dependencies_viewer_manager {
 
   private async get_last_svg() {
     let python3_path = this.last_config.pypath;
-    const jsteros = require('jsteros');
-    let project_manager = new  jsteros.Edam.Edam_project('', '');
+    const teroshdl = require('teroshdl');
+    let project_manager = new teroshdl.Edam.Edam_project('', '');
     for (let i = 0; i < this.sources.length; i++) {
       const source = this.sources[i];
       project_manager.add_file(source);
@@ -99,8 +99,8 @@ export default class Dependencies_viewer_manager {
 
   private async get_dot(config) {
     let python3_path = config.pypath;
-    const jsteros = require('jsteros');
-    let project_manager = new  jsteros.Edam.Edam_project('', '');
+    const teroshdl = require('teroshdl');
+    let project_manager = new teroshdl.Edam.Edam_project('', '');
     for (let i = 0; i < this.sources.length; i++) {
       const source = this.sources[i];
       project_manager.add_file(source);
@@ -113,24 +113,24 @@ export default class Dependencies_viewer_manager {
   }
 
   async update_viewer(prj, config, force_reload) {
-    if (config === undefined){
+    if (config === undefined) {
       return;
     }
     let sources = prj.get_sources_as_array();
     this.sources = sources;
-    try{
+    try {
       let dot = await this.get_dot(config);
       if (dot === undefined || dot === '' || dot === null) {
         this.check_config();
       }
       else {
-        if ( (JSON.stringify(this.last_sources) !== JSON.stringify(sources)) || force_reload === true){
+        if ((JSON.stringify(this.last_sources) !== JSON.stringify(sources)) || force_reload === true) {
           await this.panel?.webview.postMessage({ command: "update", message: dot });
         }
         this.last_sources = sources;
       }
     }
-    catch(e){
+    catch (e) {
       this.check_config();
       console.log("[TerosHDL][dependencies-viewer]");
       console.log(e);
@@ -147,7 +147,7 @@ export default class Dependencies_viewer_manager {
     this.sources = [];
   }
 
-  private check_config(){
+  private check_config() {
     this.config_reader.check_configuration();
   }
 
@@ -166,7 +166,7 @@ export default class Dependencies_viewer_manager {
   async export_as(type: string) {
     const path_lib = require('path');
     const homedir = require('os').homedir();
-    
+
     if (type === "image") {
       let filter = { 'SVG': ['svg'] };
       let uri = vscode.Uri.file(homedir);
@@ -175,16 +175,16 @@ export default class Dependencies_viewer_manager {
           this.output_channel.show_message(ERROR_CODE.INFO_DEP_GRAPH);
 
           let element = this;
-          this.get_last_svg().then(function(svg_content) {
-              if (svg_content === undefined) {
-               element.output_channel.show_message(ERROR_CODE.ERROR_SAVE_DEP_GRAPH);
-             }
-             else {            
-               let file_path = fileInfos?.path;
-               const fs = require('fs');
-               fs.writeFileSync(file_path, svg_content);
-               element.output_channel.show_message(ERROR_CODE.SAVE_DEP_GRAPH, file_path);
-             }
+          this.get_last_svg().then(function (svg_content) {
+            if (svg_content === undefined) {
+              element.output_channel.show_message(ERROR_CODE.ERROR_SAVE_DEP_GRAPH);
+            }
+            else {
+              let file_path = fileInfos?.path;
+              const fs = require('fs');
+              fs.writeFileSync(file_path, svg_content);
+              element.output_channel.show_message(ERROR_CODE.SAVE_DEP_GRAPH, file_path);
+            }
           });
         }
       });

@@ -30,8 +30,8 @@ const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 export default class Formatter_manager {
     private lang: string = "";
     private formatter_name: string = "";
-    private config_reader : config_reader_lib.Config_reader;
-    private output_channel : Output_channel_lib.Output_channel;
+    private config_reader: config_reader_lib.Config_reader;
+    private output_channel: Output_channel_lib.Output_channel;
 
     constructor(language: string, config_reader, output_channel: Output_channel_lib.Output_channel) {
         this.config_reader = config_reader;
@@ -42,15 +42,15 @@ export default class Formatter_manager {
 
     public async format(code) {
         this.config_formatter();
-        const jsteros = require('jsteros');
-        let formatter = new jsteros.Formatter.Formatter(this.formatter_name);
+        const teroshdl = require('teroshdl');
+        let formatter = new teroshdl.Formatter.Formatter(this.formatter_name);
         if (formatter !== undefined) {
             if (formatter.update_params !== undefined) {
                 formatter.update_params();
             }
             let options = await this.get_options();
             let options_print = options;
-            if (this.formatter_name === 'standalone'){
+            if (this.formatter_name === 'standalone') {
                 options_print = options_print['settings'];
             }
             this.output_channel.print_formatter(this.formatter_name, options_print);
@@ -126,7 +126,7 @@ export default class Formatter_manager {
             return `--style=${map_style}`;
         }
     }
-    
+
     get_istyle_extra_args() {
         let extra_args = "";
         let configuration = this.config_reader.get_formatter_config();
@@ -134,7 +134,7 @@ export default class Formatter_manager {
         extra_args = "-s" + number_of_spaces + " ";
         return extra_args;
     }
-    
+
     get_standalone_vhdl_config() {
         let configuration = this.config_reader.get_formatter_config();
         let settings = {
