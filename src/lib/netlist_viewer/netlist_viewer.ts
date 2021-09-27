@@ -274,7 +274,7 @@ export default class netlist_viewer_manager {
 
         let yosys_path = this.config_reader.get_tool_path('yosys');
         let command = `yowasp-yosys -p "${script_code}"`;
-        if (backend === 'yosys' || 'yosys_ghdl') {
+        if (backend === 'yosys' || backend === 'yosys_ghdl') {
             if (yosys_path === '') {
                 yosys_path = 'yosys';
             }
