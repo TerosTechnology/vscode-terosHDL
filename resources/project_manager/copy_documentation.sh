@@ -5,7 +5,7 @@ REPO_DIR=$BASEDIR/terosHDLdoc
 
 
 rm -rf $OUTPUT_DIR
-git clone https://github.com/TerosTechnology/terosHDLdoc.git -b new_doc $REPO_DIR
+git clone https://github.com/TerosTechnology/terosHDLdoc.git -b master $REPO_DIR
 
 cd $REPO_DIR/doc/
 wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1v0P0A3Qa1Ht8gPcaq8r9OmxEboT-1CBt' -O theme.tar.gz
