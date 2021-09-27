@@ -24,21 +24,21 @@ import * as Output_channel_lib from '../utils/output_channel';
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export class Template {
-    private config_reader : config_reader_lib.Config_reader;
-    private output_channel : Output_channel_lib.Output_channel;
+    private config_reader: config_reader_lib.Config_reader;
+    private output_channel: Output_channel_lib.Output_channel;
 
-    constructor(context, config_reader, output_channel : Output_channel_lib.Output_channel){
+    constructor(context, config_reader, output_channel: Output_channel_lib.Output_channel) {
         this.output_channel = output_channel;
         this.config_reader = config_reader;
         vscode.commands.registerCommand("teroshdl.generate_template", () => this.get_template());
     }
 
     async get_template() {
-        const jsteros = require('jsteros');
+        const teroshdl = require('teroshdl');
 
         const LANGUAGES = {
-            "source.verilog": jsteros.General.LANGUAGES.VERILOG,
-            "source.vhdl": jsteros.General.LANGUAGES.VHDL
+            "source.verilog": teroshdl.General.LANGUAGES.VERILOG,
+            "source.vhdl": teroshdl.General.LANGUAGES.VHDL
         };
 
         if (!vscode.window.activeTextEditor) {
@@ -163,7 +163,7 @@ export class Template {
         };
         let code: string = document.getText();
 
-        let templates_cl = new jsteros.Templates.Templates_factory();
+        let templates_cl = new teroshdl.Templates.Templates_factory();
         let template = await templates_cl.get_template(type, language_id);
         let template_str: string = await template.generate(code, options);
 

@@ -39,8 +39,8 @@ export default class Documenter {
   private html_base: string = '';
 
   private last_document: vscode.TextDocument | undefined = undefined;
-  private config_reader : config_reader_lib.Config_reader;
-  private output_channel : Output_channel_lib.Output_channel;
+  private config_reader: config_reader_lib.Config_reader;
+  private output_channel: Output_channel_lib.Output_channel;
 
   constructor(context: vscode.ExtensionContext, config_reader, output_channel: Output_channel_lib.Output_channel) {
     this.output_channel = output_channel;
@@ -58,9 +58,9 @@ export default class Documenter {
   }
 
   async get_documenter() {
-    if (this.created_documenter === false){
-      const jsteros = require('jsteros');
-      this.documenter = new jsteros.Documenter.Documenter();
+    if (this.created_documenter === false) {
+      const teroshdl = require('teroshdl');
+      this.documenter = new teroshdl.Documenter.Documenter();
       this.created_documenter = true;
     }
     return this.documenter;
@@ -127,7 +127,7 @@ export default class Documenter {
         vscode.ViewColumn.Two,
         {
           enableScripts: true,
-          retainContextWhenHidden:true
+          retainContextWhenHidden: true
         }
       );
       this.panel.onDidDispose(
@@ -167,7 +167,7 @@ export default class Documenter {
     return html;
   }
 
-  get_configuration(){
+  get_configuration() {
     let config = this.config_reader.get_config_documentation();
     return config;
   }
@@ -205,7 +205,7 @@ export default class Documenter {
     if (e.length === 0) {
       return;
     }
-    let document = e[e.length-1].document;
+    let document = e[e.length - 1].document;
     if (this.panel === undefined) {
       return;
     }
@@ -265,11 +265,11 @@ export default class Documenter {
 
 
     let language_id: string = this.get_language(this.current_document);
-    let code = this.get_document_code(this.current_document);    
+    let code = this.get_document_code(this.current_document);
     let documenter = await this.get_documenter();
     let configuration = this.get_configuration();
     configuration.input_path = this.current_document.fileName;
-    
+
     if (type === "markdown") {
       let filter = { 'markdown': ['md'] };
       let default_path = full_path + '.md';
@@ -327,7 +327,7 @@ export default class Documenter {
     }
   }
 
-  print_documenter_log(configuration, file_input, file_output, type){
+  print_documenter_log(configuration, file_input, file_output, type) {
     this.output_channel.print_documenter_configurtion(configuration, file_input, file_output, type);
   }
 

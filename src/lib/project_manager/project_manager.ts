@@ -256,8 +256,8 @@ export class Project_manager {
                     const file_in_library = library.files[j];
                     const path = require("path");
                     let filename = path.basename(file_in_library);
-                    const jsteros = require('jsteros');
-                    let lang = jsteros.Utils.get_lang_from_path(filename);
+                    const teroshdl = require('teroshdl');
+                    let lang = teroshdl.Utils.get_lang_from_path(filename);
                     if (lang === 'vhdl') {
                         files_in_library += `  '${file_in_library}',\n`;
                         files_toml.push(file_in_library);
@@ -1160,8 +1160,8 @@ export class Project_manager {
                                 prj_json = JSON.parse(rawdata);
                             }
                             else {
-                                const jsteros = require('jsteros');
-                                prj_json = jsteros.Edam.yml_edam_str_to_json_edam(rawdata);
+                                const teroshdl = require('teroshdl');
+                                prj_json = teroshdl.Edam.yml_edam_str_to_json_edam(rawdata);
                             }
                             let element = this;
                             this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(value[i].fsPath)).then(function (value) {
@@ -1199,8 +1199,8 @@ export class Project_manager {
                     prj_json = JSON.parse(rawdata);
                 }
                 else {
-                    const jsteros = require('jsteros');
-                    prj_json = jsteros.Edam.yml_edam_str_to_json_edam(rawdata);
+                    const teroshdl = require('teroshdl');
+                    prj_json = teroshdl.Edam.yml_edam_str_to_json_edam(rawdata);
                 }
                 let element = this;
                 this.edam_project_manager.create_project_from_edam(prj_json, path_lib.dirname(project_path)).then(function (value) {

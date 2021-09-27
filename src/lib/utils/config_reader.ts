@@ -31,8 +31,8 @@ const teroshdl_config_filename_default = 'prj_config_default.teros';
 export class Config_reader {
   private config_filepath: string = '';
   private config: {} = {};
-  private output_channel : Output_channel_lib.Output_channel;
-  private context : vscode.ExtensionContext;
+  private output_channel: Output_channel_lib.Output_channel;
+  private context: vscode.ExtensionContext;
 
   constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel) {
     this.output_channel = output_channel;
@@ -42,20 +42,20 @@ export class Config_reader {
     this.check_config_file();
   }
 
-  check_config_file(){
+  check_config_file() {
     this.read_file_config();
   }
 
   read_file_config() {
     let exists = fs.existsSync(this.config_filepath);
-    if (exists === false){
-        return;
+    if (exists === false) {
+      return;
     }
     try {
       let raw_data = fs.readFileSync(this.config_filepath);
       let json_data = JSON.parse(raw_data);
       let config = json_data.config;
-      if (config.config_tool === undefined){
+      if (config.config_tool === undefined) {
         return this.get_default_config();
       }
       let projects = json_data.projects;
@@ -67,8 +67,8 @@ export class Config_reader {
       // return { config: {}, projects: [] };
     }
   }
-  
-  get_default_config(){
+
+  get_default_config() {
     let default_confi_path = this.context.extensionPath + path.sep + teroshdl_config_filename_default;
     let raw_data = fs.readFileSync(default_confi_path);
     fs.writeFileSync(this.config_filepath, raw_data);
@@ -79,87 +79,87 @@ export class Config_reader {
     return { selected_project: selected_project, config: config, projects: projects };
   }
 
-  get_config_fields(field){
+  get_config_fields(field) {
     let config = this.read_file_config();
     let config_tool = config?.config.config_tool.config;
-    if (config_tool === undefined){
+    if (config_tool === undefined) {
       return {};
     }
     for (let i = 0; i < config_tool.length; i++) {
       const element = config_tool[i];
-      for(let attributename in element){
-        if (attributename === field){
+      for (let attributename in element) {
+        if (attributename === field) {
           return element[attributename];
         }
-      }     
+      }
     }
   }
 
-  get_enable_lang_provider(lang){
+  get_enable_lang_provider(lang) {
     let field = this.get_config_fields('general');
     let key_s = 'go_to_definition_' + lang;
     let enable_lang = field[key_s];
     return enable_lang;
   }
 
-  get_waveform_viewer(){
+  get_waveform_viewer() {
     let field = this.get_config_fields('general');
     let waveform_viewer = field['waveform_viewer'];
     return waveform_viewer;
   }
 
-  get_developer_mode(){
+  get_developer_mode() {
     let field = this.get_config_fields('general');
     let developer_mode = field['developer_mode'];
-    if (developer_mode !== true){
+    if (developer_mode !== true) {
       developer_mode = false;
     }
     return developer_mode;
   }
 
 
-  get_tool_path(tool){
+  get_tool_path(tool) {
     let field = this.get_config_fields(tool);
     return field.installation_path;
   }
 
-  get_header_path(){
+  get_header_path() {
     let field = this.get_config_fields('templates');
     return field.header_file_path;
   }
 
-  get_continue_comment(){
+  get_continue_comment() {
     let field = this.get_config_fields('editor');
     return field.continue_comment;
   }
 
-  get_schematic_backend(){
+  get_schematic_backend() {
     let field = this.get_config_fields('schematic');
     return field.backend;
   }
 
-  get_config_python_path(){
+  get_config_python_path() {
     let field = this.get_config_fields('general');
     return field.pypath;
   }
 
-  async check_configuration(enable_msg = true){
+  async check_configuration(enable_msg = true) {
     let config_python_path = this.get_config_python_path();
-    const jsteros = require('jsteros');
-    let info_configuration_check = await jsteros.Nopy.check_python(config_python_path);
+    const teroshdl = require('teroshdl');
+    let info_configuration_check = await teroshdl.Nopy.check_python(config_python_path);
     if (enable_msg === true) {
       this.output_channel.print_check_configuration(info_configuration_check);
     }
     return info_configuration_check;
   }
 
-  async get_python_path_binary(verbose: boolean){
+  async get_python_path_binary(verbose: boolean) {
     let config_python_path = this.get_config_python_path();
-    const jsteros = require('jsteros');
-    let python = await jsteros.Nopy.get_python_exec(config_python_path);
-    if (python === '' || python === undefined){
-      if (verbose === true){
-        let info_configuration_check = await jsteros.Nopy.check_python(config_python_path);
+    const teroshdl = require('teroshdl');
+    let python = await teroshdl.Nopy.get_python_exec(config_python_path);
+    if (python === '' || python === undefined) {
+      if (verbose === true) {
+        let info_configuration_check = await teroshdl.Nopy.check_python(config_python_path);
         this.output_channel.print_check_configuration(info_configuration_check);
         this.output_channel.show_message(ERROR_CODE.PYTHON, config_python_path);
       }
@@ -168,51 +168,51 @@ export class Config_reader {
     return python;
   }
 
-  get_config_documentation(){
+  get_config_documentation() {
     let pypath = this.get_config_python_path();
     let field = this.get_config_fields('documentation');
     field.pypath = pypath;
     return field;
   }
 
-  get_linter_name(lang, linter_type){
+  get_linter_name(lang, linter_type) {
     let field_linter = this.get_config_fields('linter');
     let selected_linter = '';
-    if (lang === 'verilog' && linter_type === 'style'){
+    if (lang === 'verilog' && linter_type === 'style') {
       selected_linter = field_linter.style_verilog;
     }
-    else if (lang === 'vhdl'){
+    else if (lang === 'vhdl') {
       selected_linter = field_linter.linter_vhdl;
     }
-    else{
+    else {
       selected_linter = field_linter.linter_verilog;
     }
     return selected_linter;
   }
 
-  get_formatter_name(lang){
+  get_formatter_name(lang) {
     let field_linter = this.get_config_fields('formatter');
     let selected_formatter = '';
-    if (lang === 'vhdl'){
+    if (lang === 'vhdl') {
       selected_formatter = field_linter.formatter_vhdl;
     }
-    else{
+    else {
       selected_formatter = field_linter.formatter_verilog;
     }
     return selected_formatter;
   }
 
-  get_formatter_config(){
+  get_formatter_config() {
     let field_linter = this.get_config_fields('formatter');
     return field_linter;
   }
 
-  get_linter_config(lang, linter_type){
+  get_linter_config(lang, linter_type) {
     let linter_name = this.get_linter_name(lang, linter_type);
-    if (linter_name === 'xvhdl' || linter_name === 'xvlog'){
+    if (linter_name === 'xvhdl' || linter_name === 'xvlog') {
       linter_name = 'vivado';
     }
-    else if(linter_name === 'verible'){
+    else if (linter_name === 'verible') {
       linter_name = 'veriblelint';
     }
     let field_linter = this.get_config_fields(linter_name);

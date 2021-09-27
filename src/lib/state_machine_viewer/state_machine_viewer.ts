@@ -31,10 +31,10 @@ export default class State_machine_viewer_manager {
   private sources: string[] = [];
   private state_machines;
   private document;
-  private config_reader : config_reader_lib.Config_reader;
+  private config_reader: config_reader_lib.Config_reader;
   private last_document;
 
-  constructor(context: vscode.ExtensionContext, config_reader : config_reader_lib.Config_reader) {
+  constructor(context: vscode.ExtensionContext, config_reader: config_reader_lib.Config_reader) {
     this.context = context;
     this.config_reader = config_reader;
     vscode.commands.registerCommand("teroshdl.fsm.set_config", () => this.update_to_last_document());
@@ -222,16 +222,16 @@ export default class State_machine_viewer_manager {
     }
     let language_id: string = document.languageId;
     let code: string = document.getText();
-    
+
     if (language_id !== "vhdl" && language_id !== "verilog" && language_id !== 'systemverilog') {
       return;
     }
     this.document = document;
     let config = this.config_reader.get_config_documentation();
-    let comment_symbol = config['symbol_'+ language_id];
+    let comment_symbol = config['symbol_' + language_id];
 
-    const jsteros = require('jsteros');
-    let state_machines = jsteros.State_machine.get_svg_sm(language_id, code, comment_symbol);
+    const teroshdl = require('teroshdl');
+    let state_machines = teroshdl.State_machine.get_svg_sm(language_id, code, comment_symbol);
     return state_machines;
   }
 
@@ -251,7 +251,7 @@ export default class State_machine_viewer_manager {
     if (this.panel !== undefined) {
       let state_machines = await this.get_state_machines(document);
       this.state_machines = state_machines;
-      if (state_machines === undefined){
+      if (state_machines === undefined) {
         return;
       }
       this.send_state_machines(state_machines);
@@ -261,7 +261,7 @@ export default class State_machine_viewer_manager {
   async update_to_last_document() {
     if (this.panel !== undefined && this.document !== undefined) {
       let state_machines = await this.get_state_machines(this.document);
-      if (state_machines === undefined){
+      if (state_machines === undefined) {
         return;
       }
       this.state_machines = state_machines;

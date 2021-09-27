@@ -28,7 +28,7 @@ export class Edam_project_manager {
   public selected_project: string = '';
   private output_channel;
 
-  constructor(output_channel){
+  constructor(output_channel) {
     this.output_channel = output_channel;
   }
 
@@ -76,7 +76,7 @@ export class Edam_project_manager {
   async create_projects_from_edam(projects) {
     for (let i = 0; i < projects.length; i++) {
       const prj = projects[i];
-     await this.create_project_from_edam(prj);
+      await this.create_project_from_edam(prj);
     }
   }
 
@@ -84,10 +84,10 @@ export class Edam_project_manager {
     for (let i = 0; i < this.projects.length; ++i) {
       if (this.projects[i].name === project_name) {
         const prj = this.projects[i];
-        if (toplevel_path !== '' && toplevel_path !== undefined){
+        if (toplevel_path !== '' && toplevel_path !== undefined) {
           await prj.set_top(toplevel_path, library);
         }
-        else{
+        else {
           await prj.set_top_from_toplevel(toplevel, library);
         }
         break;
@@ -100,13 +100,13 @@ export class Edam_project_manager {
     let toplevel_library = edam.toplevel_library;
     let toplevel_path = edam.toplevel_path;
     let toplevel = edam.toplevel;
-    if (toplevel_path === undefined){
+    if (toplevel_path === undefined) {
       toplevel_path = '';
     }
-    if (toplevel_library === undefined){
+    if (toplevel_library === undefined) {
       toplevel_library = '';
     }
-    if (toplevel === undefined){
+    if (toplevel === undefined) {
       toplevel = '';
     }
 
@@ -123,14 +123,14 @@ export class Edam_project_manager {
       //Relative path to absolute
       let resolve = require('path').resolve;
       let absolute_path = filename;
-      if (relative_path !== '' && path_lib.isAbsolute(absolute_path) === false ){
+      if (relative_path !== '' && path_lib.isAbsolute(absolute_path) === false) {
         let full_path = relative_path + path_lib.sep + filename;
         absolute_path = resolve(full_path);
       }
-      if (file.logical_name === undefined){
+      if (file.logical_name === undefined) {
         file.logical_name = '';
       }
-      if (file.include_path === undefined){
+      if (file.include_path === undefined) {
         file.include_path = false;
       }
       this.add_file(project_name, absolute_path, file.is_include_file, file.include_path, file.logical_name);
@@ -157,7 +157,7 @@ export class Edam_project_manager {
   }
 
   rename_project(name, new_name) {
-    if (this.select_project === name){
+    if (this.select_project === name) {
       this.selected_project = new_name;
     }
     for (let i = 0; i < this.projects.length; ++i) {
@@ -189,8 +189,8 @@ export class Edam_project_manager {
       return `The project with name [${name}] already exists in the workspace.`;
     }
     let logger = new Cli_logger(this.output_channel);
-    const jsteros = require('jsteros');
-    let prj = new  jsteros.Edam.Edam_project(name, relative_path, logger);
+    const teroshdl = require('teroshdl');
+    let prj = new teroshdl.Edam.Edam_project(name, relative_path, logger);
     this.projects.push(prj);
     return '';
   }
@@ -271,27 +271,27 @@ export class Cli_logger {
   output_channel;
   number_of_files;
 
-  constructor(output_channel){
-    if (output_channel === undefined){
+  constructor(output_channel) {
+    if (output_channel === undefined) {
       this.output_channel = vscode.window.createOutputChannel('TerosHDL');
     }
-    else{
+    else {
       this.output_channel = output_channel;
     }
   }
 
-  start(number_of_files){
+  start(number_of_files) {
     this.number_of_files = number_of_files;
     this.output_channel.show();
   }
 
-  update(index, value1){
-    if (value1 !== undefined){
+  update(index, value1) {
+    if (value1 !== undefined) {
       let line_str = `[${this.number_of_files}/${index}] ${value1.filename}`;
       this.output_channel.appendLine(line_str);
     }
   }
 
-  stop(){
+  stop() {
   }
 }

@@ -14,7 +14,7 @@ export default class Lint_manager {
     //Configuration
     private linter_path: string = "";
     private linter_arguments: string = "";
-    private config_reader : config_reader_lib.Config_reader;
+    private config_reader: config_reader_lib.Config_reader;
 
     private lang: string;
     protected diagnostic_collection: vscode.DiagnosticCollection;
@@ -26,7 +26,7 @@ export default class Lint_manager {
         this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
 
         this.set_config_linter();
-        
+
         vscode.commands.registerCommand(`teroshdl.linter.${linter_type}.${language}.set_config`, () => this.config_linter());
         if (language === "vhdl" && linter_type === "linter_style") {
             context.subscriptions.push(
@@ -38,7 +38,7 @@ export default class Lint_manager {
         this.lint_active_document();
     }
 
-    set_config_linter(){
+    set_config_linter() {
         let normalized_lang = this.lang;
         if (this.lang === "systemverilog") {
             normalized_lang = "verilog";
@@ -46,21 +46,21 @@ export default class Lint_manager {
         let linter_name = this.config_reader.get_linter_name(normalized_lang, this.linter_type).toLowerCase();
         this.linter_name = linter_name;
 
-        if (linter_name !== 'none'){
+        if (linter_name !== 'none') {
             let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
             let linter_path = linter_config.installation_path;
             this.linter_path = linter_path;
             this.linter_arguments = '';
-            
+
             let arguments_v = linter_config.linter_options;
-            if (arguments_v !== undefined){
+            if (arguments_v !== undefined) {
                 for (let i = 0; i < arguments_v.length; i++) {
                     const element = arguments_v[i];
                     this.linter_arguments += ' ' + element;
                 }
             }
         }
-        else{
+        else {
             this.linter_enable = false;
         }
     }
@@ -71,7 +71,7 @@ export default class Lint_manager {
             this.linter_enable = false;
             this.refresh_lint();
         }
-        else{
+        else {
             this.refresh_lint();
         }
     }
@@ -134,7 +134,7 @@ export default class Lint_manager {
     }
 
     async lint(doc: vscode.TextDocument) {
-        if (this.linter_name === 'none'){
+        if (this.linter_name === 'none') {
             return;
         }
         if (doc === undefined) {
@@ -145,7 +145,7 @@ export default class Lint_manager {
             return;
         }
         let current_path = doc.uri.fsPath;
-        if (this.init === false){
+        if (this.init === false) {
             this.init = true;
             await new Promise(resolve => setTimeout(resolve, 500));
         }
@@ -223,14 +223,14 @@ export default class Lint_manager {
     async get_errors(current_path) {
         try {
             let errors = [];
-            if (this.linter_name !== 'none'){
-                const jsteros = await require('jsteros');
-                let linter = await new jsteros.Linter.Linter(this.linter_name, this.lang);
+            if (this.linter_name !== 'none') {
+                const teroshdl = await require('teroshdl');
+                let linter = await new teroshdl.Linter.Linter(this.linter_name, this.lang);
                 errors = await linter.lint_from_file(current_path, this.get_config(), undefined);
             }
             return errors;
-        } catch (error) {       
-            console.log(error);     
+        } catch (error) {
+            console.log(error);
             return [];
         }
     }

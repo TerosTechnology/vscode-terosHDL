@@ -9,17 +9,17 @@ export default class Vsg_manager {
     private linter_name: string | undefined;
     private linter_enable;
     //Configuration
-    private linter_path : string = "";
-    private linter_arguments : string = "";
-    private enable_custom_exec : boolean = false;
-    private custom_exec : string = "";
+    private linter_path: string = "";
+    private linter_arguments: string = "";
+    private enable_custom_exec: boolean = false;
+    private custom_exec: string = "";
 
-    private lang : string;
+    private lang: string;
     protected diagnostic_collection: vscode.DiagnosticCollection;
-    
+
     constructor(language: string) {
         this.lang = language;
-		this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
+        this.diagnostic_collection = vscode.languages.createDiagnosticCollection();
         vscode.workspace.onDidOpenTextDocument(this.lint, this, this.subscriptions);
         vscode.workspace.onDidSaveTextDocument(this.lint, this, this.subscriptions);
         vscode.workspace.onDidCloseTextDocument(this.remove_file_diagnostics, this, this.subscriptions);
@@ -30,41 +30,45 @@ export default class Vsg_manager {
     }
 
     config_linter() {
-        const jsteros = require('jsteros');
-        this.linter = new jsteros.Vsg.Vsg();
+        const teroshdl = require('teroshdl');
+        this.linter = new teroshdl.Vsg.Vsg();
     }
 
-	public remove_file_diagnostics(doc: vscode.TextDocument) {
+    public remove_file_diagnostics(doc: vscode.TextDocument) {
         this.diagnostic_collection.delete(doc.uri);
-        for (let i=0; i<this.uri_collections.length;++i){
-            if(doc.uri === this.uri_collections[i]){
-                this.uri_collections.splice(i, 1);  
+        for (let i = 0; i < this.uri_collections.length; ++i) {
+            if (doc.uri === this.uri_collections[i]) {
+                this.uri_collections.splice(i, 1);
                 break;
             }
         }
     }
-    
-    add_uri_to_collections(uri : vscode.Uri){
-        for (let i=0; i<this.uri_collections.length; ++i){
-            if (uri === this.uri_collections[i]){
+
+    add_uri_to_collections(uri: vscode.Uri) {
+        for (let i = 0; i < this.uri_collections.length; ++i) {
+            if (uri === this.uri_collections[i]) {
                 return;
             }
         }
         this.uri_collections.push(uri);
     }
 
-    get_config(){
+    get_config() {
         let options;
-        if(this.enable_custom_exec === true){
-            options = {'custom_bin' : this.custom_exec, 
-                       'custom_arguments' : this.linter_arguments};
+        if (this.enable_custom_exec === true) {
+            options = {
+                'custom_bin': this.custom_exec,
+                'custom_arguments': this.linter_arguments
+            };
         }
-        else if(this.linter_path !== ""){
-            options = {'custom_path' : this.linter_path, 
-                       'custom_arguments' : this.linter_arguments};
+        else if (this.linter_path !== "") {
+            options = {
+                'custom_path': this.linter_path,
+                'custom_arguments': this.linter_arguments
+            };
         }
-        else{
-            options = {'custom_arguments' : this.linter_arguments};    
+        else {
+            options = { 'custom_arguments': this.linter_arguments };
         }
         return options;
     }
@@ -75,11 +79,11 @@ export default class Vsg_manager {
         //     return;
         // }
         // let document = vscode.window.activeTextEditor.document;
-        if (doc === undefined){
+        if (doc === undefined) {
             return;
         }
-        let language_id : string = doc.languageId;
-        if(this.linter === null || (language_id !== this.lang)){
+        let language_id: string = doc.languageId;
+        if (this.linter === null || (language_id !== this.lang)) {
             return;
         }
         // let current_path = vscode.window.activeTextEditor?.document.uri.fsPath;
@@ -87,21 +91,21 @@ export default class Vsg_manager {
         //Save the uri linted
         this.add_uri_to_collections(doc.uri);
 
-        let errors  = await this.linter.check_style_from_code(doc.getText());
+        let errors = await this.linter.check_style_from_code(doc.getText());
         let diagnostics: vscode.Diagnostic[] = [];
-        for (var i=0; i<errors.length;++i){
+        for (var i = 0; i < errors.length; ++i) {
             const line = errors[i]['location']['position'][0];
-            let col    = errors[i]['location']['position'][1];
-            if (col === 0){
+            let col = errors[i]['location']['position'][1];
+            if (col === 0) {
                 col = 1;
             }
             diagnostics.push({
                 severity: vscode.DiagnosticSeverity.Warning,
-                range:new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
+                range: new vscode.Range((+line), (+col), (+line), Number.MAX_VALUE),
                 message: errors[i]['description'],
                 code: this.linter_name,
-                    source: 'TerosHDL'
-                });
+                source: 'TerosHDL'
+            });
         }
         this.diagnostic_collection.set(doc.uri, diagnostics);
     }
