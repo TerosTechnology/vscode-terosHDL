@@ -34,8 +34,8 @@
             },
             {
                "documentation":{
-                  "symbol_vhdl":"",
-                  "symbol_verilog":"",
+                  "symbol_vhdl":"!",
+                  "symbol_verilog":"!",
                   "dependency_graph":true,
                   "self_contained":false,
                   "fsm":true,

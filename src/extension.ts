@@ -48,8 +48,8 @@ import * as Output_channel_lib from './lib/utils/output_channel';
 //Shutter mode
 import * as Shutter_mode from './lib/formatter/stutter_mode';
 
-let output_channel : Output_channel_lib.Output_channel;
-let rusthdl : rusthdl_lib.Rusthdl_lsp;
+let output_channel: Output_channel_lib.Output_channel;
+let rusthdl: rusthdl_lib.Rusthdl_lsp;
 let linter_vhdl;
 let linter_verilog;
 let linter_systemverilog;
@@ -131,15 +131,15 @@ export async function activate(context: vscode.ExtensionContext) {
     let enable_vhdl_provider = config_reader.get_enable_lang_provider('vhdl');
     let enable_verilog_provider = config_reader.get_enable_lang_provider('verilog');
 
-    if (enable_vhdl_provider === true){
+    if (enable_vhdl_provider === true) {
         rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
         is_alive = await rusthdl.run_rusthdl();
     }
-    else{
+    else {
         context.subscriptions.push(
             vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
             })
-        ); 
+        );
     }
 
     // Document selector
@@ -162,17 +162,17 @@ export async function activate(context: vscode.ExtensionContext) {
     let defProvider = new VerilogDefinitionProvider(logger);
 
     //VHDL
-    if (enable_vhdl_provider === true){
+    if (enable_vhdl_provider === true) {
         context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
     }
     //Verilog
-    if (enable_verilog_provider === true){
+    if (enable_verilog_provider === true) {
         context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
         context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
     }
 
-    if (is_alive === false && enable_vhdl_provider === true){
+    if (is_alive === false && enable_vhdl_provider === true) {
         context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, hoverProvider));
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, defProvider));
     }
@@ -229,7 +229,7 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand(
             'teroshdl.dependencies.viewer',
             async () => {
-                let msg =  'Dependencies viewer has been moved to the project manager. Check [TerosHDL documentation.](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html)';
+                let msg = 'Dependencies viewer has been moved to the project manager. Check [TerosHDL documentation.](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html)';
                 vscode.window.showInformationMessage(msg);
             }
         )
@@ -315,7 +315,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidOpenTextDocument((e) => linter_verilog_style.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_verilog_style.lint(e));
     vscode.workspace.onDidCloseTextDocument((e) => linter_verilog_style.remove_file_diagnostics(e));
-    
+
     linter_systemverilog_style = new linter.default("systemverilog", "style", context, config_reader);
     vscode.workspace.onDidOpenTextDocument((e) => linter_systemverilog_style.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_systemverilog_style.lint(e));
@@ -391,15 +391,15 @@ export async function provideDocumentFormattingEdits(
 
 function help_message() {
     vscode.window
-        .showInformationMessage('TerosHDL needs your help!  😊', ...['Know the project', 'Donate'])
+        .showInformationMessage('TerosHDL needs your help!  😊', ...['Know the project', 'Documentation'])
         .then(selection => {
-            if (selection === 'Know the project') {
+            if (selection === 'Know the team') {
                 vscode.env.openExternal(vscode.Uri.parse(
-                    'https://www.terostech.com/#Team'));
+                    'https://terostechnology.github.io/terosHDLdoc/about/team.html'));
             }
-            else if (selection === 'Donate') {
+            else if (selection === 'Documentation') {
                 vscode.env.openExternal(vscode.Uri.parse(
-                    'https://www.terostech.com/#donate'));
+                    'https://terostechnology.github.io'));
             }
         });
 }

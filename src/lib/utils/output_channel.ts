@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 
-const MSG_PYTHON = "Error Python3 path. ";
-const MSG_COCOTB_INSTALLATION = "Install cocotb itself to run tests.";
-const MSG_COCOTB_DEPS = "Error testing deps.";
+const MSG_PYTHON = "Error Python3 path (https://terostechnology.github.io/terosHDLdoc/configuration/python.html). ";
+const MSG_COCOTB_INSTALLATION = "Install cocotb itself to run tests (https://terostechnology.github.io/terosHDLdoc/configuration/python.html).";
+const MSG_COCOTB_DEPS = "Error testing deps (https://terostechnology.github.io/terosHDLdoc/configuration/python.html).";
 const MSG_COCOTB_TEST_NOT_FOUND = "Found module in Makefile's MODULE variable but no python file found.";
-const MSG_EDALIZE_GUI_ERROR = "GUI option not supported for your current simulator. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/features/project_manager.html).";
+const MSG_EDALIZE_GUI_ERROR = "GUI option not supported for your current simulator. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/project_manager/gui.html).";
 const MSG_FILE_NOT_FOUND = "File not found.";
-const MSG_DOCUMENTER_NOT_VALID_FILE = "Select a valid file.";
+const MSG_DOCUMENTER_NOT_VALID_FILE = "Select a valid file. (https://terostechnology.github.io/terosHDLdoc/documenter/configuration.html)";
 const MSG_DOCUMENTER_SAVE = "Document saved in ";
 const MSG_COPIED_TO_CLIPBOARD = "Code copied to clipboard.";
-const MSG_SELECT_TOPLEVELPATH = "Select a toplvel.";
-const MSG_SELECT_TOPLEVEL = "Select a toplvel.";
-const MSG_SELECT_PROJECT_TREE_VIEW = "Select a project.";
-const MSG_SELECT_PROJECT_SIMULATION = "Select a project.";
-const NETLIST_VIEWER = "Configure Yosys or install YoWASP: pip install yowasp-yosys";
-const MSG_NOT_PARENT = "This file hasn't parent.";
+const MSG_SELECT_TOPLEVELPATH = "Select a toplvel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
+const MSG_SELECT_TOPLEVEL = "Select a toplvel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
+const MSG_SELECT_PROJECT_TREE_VIEW = "Select a project (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
+const MSG_SELECT_PROJECT_SIMULATION = "Select a project (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
+const NETLIST_VIEWER = "Configure (https://terostechnology.github.io/terosHDLdoc/netlist/configuration.html) Yosys or install YoWASP: pip install yowasp-yosys";
+const MSG_NOT_PARENT = "This file hasn't parent (https://terostechnology.github.io/terosHDLdoc/editor/go_to_parent.html).";
 const MSG_FILES_IN_PROJECT_NO_EXIST = "The following files doesn't exist (maybe the name has been changed): ";
 const MSG_SAVE_DEP_GRAPH = "Dependency graph saved in";
 const MSG_ERROR_SAVE_DEP_GRAPH = "Dependency graph not defined.";
 const MSG_INFO_DEP_GRAPH = "TerosHDL is creating the diagram.";
-const NETLIST_VHDL_ERROR = "Your project/file includes 1 or more VHDL files, but it's not configured the backend GHDL+Yosys.";
+const NETLIST_VHDL_ERROR = "Your project/file includes 1 or more VHDL files, but it's not configured the backend GHDL+Yosys (https://terostechnology.github.io/terosHDLdoc/netlist/configuration.html).";
 
 export const ERROR_CODE = {
     PYTHON: MSG_PYTHON,
@@ -211,6 +211,8 @@ export class Output_channel {
             msg = `Install ${errors} manually or install teroshdl python libraries: pip install teroshdl`;
             this.appendLine(msg);
         }
+        msg = 'Check the documenatation: https://terostechnology.github.io/terosHDLdoc/about/requirements.html';
+        this.appendLine(msg);
         if (python3_error === true || errors !== '') {
             this.print_separator();
         }
@@ -228,6 +230,7 @@ export class Output_channel {
         let total_files = fail_files + ok_files;
         this.print_separator();
         let msg = `
+---> Check the documentation: https://terostechnology.github.io/terosHDLdoc/documenter/start.html
 ---> Files found: ${total_files}
 ---> Files processed successfully: ${ok_files}
 ---> Unprocessed files: ${fail_files}
@@ -244,7 +247,8 @@ export class Output_channel {
         }
 
         this.print_separator();
-        let msg = `---> Project name: ${project_name}    
+        let msg = `---> Documentation: https://terostechnology.github.io/terosHDLdoc/project_manager/configuration.html
+---> Project name: ${project_name}
 ---> Top level: ${top_level}    
 ---> Tool name: ${simulator_name}     
 ---> Installation path: ${installation_path}     
@@ -257,7 +261,8 @@ export class Output_channel {
     print_documenter_configurtion(configuration, file_input: string, file_output: string, type_output: string) {
         this.show();
         this.print_separator();
-        let msg = `---> Python3 path: ${configuration.pypath}    
+        let msg = `---> Check the documentation: https://terostechnology.github.io/terosHDLdoc/documenter/start.html
+---> Python3 path: ${configuration.pypath}
 ---> Include constants/types: ${configuration.constants}    
 ---> Include signals: ${configuration.signals}     
 ---> Include dependency_graph: ${configuration.dependency_graph}     
