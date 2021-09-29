@@ -9,6 +9,7 @@
          "config":[
             {
                "general":{
+                  "logging":true,
                   "pypath":"",
                   "select_tool":"ghdl",
                   "waveform_viewer":"vcdrom",

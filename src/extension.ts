@@ -107,7 +107,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     //TerosHDL console
-    output_channel = new Output_channel_lib.Output_channel();
+    output_channel = new Output_channel_lib.Output_channel(context);
 
     //Context
     current_context = context;
@@ -154,8 +154,9 @@ export async function activate(context: vscode.ExtensionContext) {
     // Configure Document Symbol Provider
     let docProvider = new VerilogDocumentSymbolProvider(logger, context);
     // // Configure Completion Item Provider
-    // let compItemProvider = new VerilogCompletionItemProvider(logger);
-    // context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
+    let compItemProvider = new VerilogCompletionItemProvider(logger);
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
     // Configure Hover Providers
     let hoverProvider = new VerilogHoverProvider(logger);
     // Configure Definition Providers
