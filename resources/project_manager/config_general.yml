@@ -2,6 +2,9 @@ general:
     title: General
     description: ""
     type: "none"
+    logging:
+        description: "Enable show TerosHDL console with each message."
+        type: checkbox
     pypath:
         description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong>"
         type: input
