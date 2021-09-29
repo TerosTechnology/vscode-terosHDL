@@ -129,6 +129,9 @@ export class Project_manager {
     }
 
     start_vcd(item) {
+        // if (item.extension !== 'vcd') {
+        //     return;
+        // }
         let waveform_path = item.path;
 
         let waveform_viewer = this.config_reader.get_waveform_viewer();

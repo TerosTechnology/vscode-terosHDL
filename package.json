@@ -192,6 +192,10 @@
                     "when": "view == teroshdl_tree_view && viewItem == hdl_source"
                 },
                 {
+                    "command": "teroshdl.start_vcd",
+                    "when": "view == teroshdl_tree_view && viewItem == hdl_source"
+                },
+                {
                     "command": "teroshdl_tree_view.delete_file",
                     "when": "view == teroshdl_tree_view && viewItem == hdl_source"
                 },
