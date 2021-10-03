@@ -268,9 +268,6 @@ xsim:
     xsim_options:
         description: "Additional run options for XSim."
         type: input_comma
-    linter_options:
-        description: "Additional arguments directly passed to linter."
-        type: input_comma
 
 ghdl:
     title: GHDL
@@ -671,6 +668,12 @@ vivado:
     hw_target:
         description: "Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A."
         type: input
+    linter_options_xvlog:
+        description: "Additional arguments directly passed to linter (xvlog)."
+        type: input_comma
+    linter_options_xvhdl:
+        description: "Additional arguments directly passed to linter (xvhdl)."
+        type: input_comma
 
 vunit:
     title: Vunit
