@@ -52,12 +52,23 @@ export default class Lint_manager {
             this.linter_path = linter_path;
             this.linter_arguments = '';
 
-            let arguments_v;
+            let arguments_v: string[] = [];
             if (linter_name === 'xvhdl') {
                 arguments_v = linter_config.linter_options_xvhdl;
             }
             else if (linter_name === 'xvlog') {
                 arguments_v = linter_config.linter_options_xvlog;
+            }
+            else if (linter_name === 'verible') {
+
+                if (linter_config.rules.length > 0) {
+                    arguments_v = arguments_v.concat('--rules');
+                    arguments_v = arguments_v.concat(linter_config.rules);
+                }
+                arguments_v.push('--ruleset');
+                arguments_v.push(linter_config.ruleset.toLowerCase());
+
+                arguments_v = arguments_v.concat(linter_config.verible_lint_args);
             }
             else {
                 arguments_v = linter_config.linter_options;
