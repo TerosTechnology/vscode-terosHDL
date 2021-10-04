@@ -19,6 +19,12 @@ function get_icon(full_path: string, mode: string) {
     let filename = path_lib.basename(full_path);
     let lang = get_file_lang(full_path);
 
+    // Missing file icon
+    if (!fs.existsSync(full_path)) {
+        let path_icon = path_lib.join(__filename, "..", "..", "..", "..", "resources", mode, "error.svg");
+        return path_icon;
+    }
+
     let path_icon = path_lib.join(__filename, "..", "..", "..", "..", "resources", mode, "file.svg");
     // Python file
     if (lang === 'vhdl' || lang === 'verilog') {

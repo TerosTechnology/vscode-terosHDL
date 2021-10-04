@@ -52,7 +52,16 @@ export default class Lint_manager {
             this.linter_path = linter_path;
             this.linter_arguments = '';
 
-            let arguments_v = linter_config.linter_options;
+            let arguments_v;
+            if (linter_name === 'xvhdl') {
+                arguments_v = linter_config.linter_options_xvhdl;
+            }
+            else if (linter_name === 'xvlog') {
+                arguments_v = linter_config.linter_options_xvlog;
+            }
+            else {
+                arguments_v = linter_config.linter_options;
+            }
             if (arguments_v !== undefined) {
                 for (let i = 0; i < arguments_v.length; i++) {
                     const element = arguments_v[i];

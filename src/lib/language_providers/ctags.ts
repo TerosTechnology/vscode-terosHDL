@@ -153,9 +153,7 @@ export class Ctags {
     }
 
     execCtags(filepath: string): Thenable<string> {
-        let current_dir = path_lib.dirname(__filename);
 
-        let ctags: string = <string>workspace.getConfiguration().get('verilog.ctags.path');
         let path_bin = path_lib.sep + "resources" + path_lib.sep + "bin" + path_lib.sep + "ctags" + path_lib.sep;
         let path_options = this.context.asAbsolutePath(path_lib.sep + "resources" + path_lib.sep
             + "bin" + path_lib.sep + "ctags" + path_lib.sep + ".ctags");
