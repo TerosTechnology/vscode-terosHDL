@@ -163,12 +163,12 @@ export async function activate(context: vscode.ExtensionContext) {
     let defProvider = new VerilogDefinitionProvider(logger);
 
     //VHDL
-    if (enable_vhdl_provider === true) {
-        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
-    }
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
+    // if (enable_vhdl_provider === true) {
+    // }
     //Verilog
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
     if (enable_verilog_provider === true) {
-        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
         context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
         context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, defProvider));
     }

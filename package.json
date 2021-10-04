@@ -3,7 +3,7 @@
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
     "description": "VHDL and Verilog/SV IDE: state machine viewer, linter, documentation, snippets... and more! ",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "engines": {
         "vscode": "^1.45.0"
     },
