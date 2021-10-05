@@ -1,4 +1,4 @@
-import os
+# import os
 import shutil
 import edalize
 import json
@@ -11,6 +11,7 @@ import subprocess
 
 home_dir = expanduser("~")
 work_root = os.path.join(home_dir, '.teroshdl', 'build')
+makefile_path = os.path.join(work_root, 'Makefile')
 print("")
 print("************************************************************************************************")
 print("---> Build directory: {}".format(work_root))
@@ -23,6 +24,7 @@ simulator = sys.argv[2]
 installation_path = sys.argv[3]
 gui = sys.argv[4]
 developer_mode = sys.argv[5]
+waveform_viewer = sys.argv[6]
 
 if (installation_path != ''):
     # Check if installation path exists
@@ -66,8 +68,19 @@ try:
         p = subprocess.Popen(['make', 'build-gui'], cwd=work_root)
         p.wait()
     elif (gui == 'gui' and (simulator in simulator_gui_tools)):
-        p = subprocess.Popen(['make', 'run-gui'], cwd=work_root)
-        p.wait()
+        if (simulator == 'modelsim' and waveform_viewer != 'tool'):
+            run_gui_external = "\
+run-gui-external: work $(VPI_MODULES)\n\
+	$(VSIM) -do \"vcd file waveform.vcd;vcd add -r *;run -all;quit -code [expr [coverage attribute -name TESTSTATUS -concise] >= 2 ? [coverage attribute -name TESTSTATUS -concise] : 0]; exit\" -c $(addprefix -pli ,$(VPI_MODULES)) $(EXTRA_OPTIONS) $(TOPLEVEL)\
+"
+            make_file = open(makefile_path, "a")
+            make_file.write(run_gui_external)
+            make_file.close()
+            p = subprocess.Popen(['make', 'run-gui-external'], cwd=work_root)
+            p.wait()
+        else:
+            p = subprocess.Popen(['make', 'run-gui'], cwd=work_root)
+            p.wait()
     else:
         backend.build()
         backend.run()

@@ -49,7 +49,9 @@ export class Edalize extends tool_base.Tool_base {
 
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel, config_reader) {
         super(context, output_channel);
-        this.waveform_path = `${__dirname}${this.folder_sep}waveform`;
+        const homedir = require('os').homedir();
+        this.waveform_path = path_lib.join(homedir, '.teroshdl', 'build', 'waveform');
+        // this.waveform_path = `${__dirname}${this.folder_sep}waveform`;
         this.config_reader = config_reader;
     }
 
@@ -66,6 +68,7 @@ export class Edalize extends tool_base.Tool_base {
         let top_level = edam.toplevel;
         let simulator_gui_support = this.check_gui_support(simulator_name, gui);
         this.show_tool_information(project_name, top_level, simulator_gui_support, simulator_name, installation_path);
+        this.configure_waveform_path(normalized_edam, simulator_name);
         if (simulator_gui_support === true) {
             normalized_edam = this.configure_waveform_gui(simulator_name, normalized_edam);
         }
@@ -73,8 +76,9 @@ export class Edalize extends tool_base.Tool_base {
         const edam_path = path_lib.join(tmpdir, 'edam.json');
         let edam_json = JSON.stringify(normalized_edam);
         fs.writeFileSync(edam_path, edam_json);
+        let waveform_viewer = this.config_reader.get_waveform_viewer();
 
-        let command = await this.get_command(edam_path, simulator_name, installation_path, normalized_edam, gui);
+        let command = await this.get_command(edam_path, simulator_name, installation_path, normalized_edam, gui, waveform_viewer);
         if (command === undefined) {
             return [];
         }
@@ -86,8 +90,8 @@ export class Edalize extends tool_base.Tool_base {
             builds: this.set_builds(simulator_name, project_name, top_level)
         };
 
-        if (simulator_gui_support === true && simulator_name === 'ghdl') {
-            this.open_waveform_gtkwave();
+        if (simulator_gui_support === true && (simulator_name === 'ghdl' || (simulator_name === 'modelsim') && waveform_viewer !== 'tool')) {
+            this.open_waveform_gtkwave(waveform_viewer);
         }
 
         return [reslet_j];
@@ -162,8 +166,7 @@ export class Edalize extends tool_base.Tool_base {
         return builds;
     }
 
-    open_waveform_gtkwave() {
-        let waveform_viewer = this.config_reader.get_waveform_viewer();
+    open_waveform_gtkwave(waveform_viewer) {
         if (waveform_viewer === 'gtkwave') {
             let shell = require('shelljs');
             let command = `gtkwave ${this.complete_waveform_path}`;
@@ -222,7 +225,7 @@ export class Edalize extends tool_base.Tool_base {
         }
     }
 
-    async get_command(edam_path, simulator, installation_path, edam, gui) {
+    async get_command(edam_path, simulator, installation_path, edam, gui, waveform_viewer) {
         let gui_str = '';
         if (gui === true) {
             gui_str = 'gui';
@@ -243,7 +246,7 @@ export class Edalize extends tool_base.Tool_base {
             return undefined;
         }
         let simulator_config = this.get_simulator_config(simulator, edam);
-        let command = `${simulator_config} ${python3_path_exec} "${python3_edalize_script}" "${edam_path}" "${simulator}" "${installation_path}" "${gui_str}" "${developer_mode}"`;
+        let command = `${simulator_config} ${python3_path_exec} "${python3_edalize_script}" "${edam_path}" "${simulator}" "${installation_path}" "${gui_str}" "${developer_mode}" "${waveform_viewer}"`;
 
         return command;
     }
@@ -260,19 +263,29 @@ export class Edalize extends tool_base.Tool_base {
         return cmd;
     }
 
+    configure_waveform_path(edam, simulator_name) {
+        let edam_gui = JSON.parse(JSON.stringify(edam));
+
+        let waveform_type = edam_gui.tool_options[simulator_name].waveform;
+        let complete_waveform_path = '';
+        if (waveform_type === 'vcd' || simulator_name === 'modelsim') {
+            complete_waveform_path = `${this.waveform_path}.vcd`;
+        }
+        else {
+            complete_waveform_path = `${this.waveform_path}.ghw`;
+        }
+        this.complete_waveform_path = complete_waveform_path;
+    }
+
     configure_waveform_gui(simulator_name, edam) {
         let edam_gui = JSON.parse(JSON.stringify(edam));
         if (simulator_name === 'ghdl') {
             let waveform_type = edam_gui.tool_options[simulator_name].waveform;
             if (waveform_type === 'vcd') {
-                let complete_waveform_path = `${this.waveform_path}.vcd`;
-                edam_gui.tool_options[simulator_name].run_options.push(`--vcd=${complete_waveform_path}`);
-                this.complete_waveform_path = complete_waveform_path;
+                edam_gui.tool_options[simulator_name].run_options.push(`--vcd=${this.complete_waveform_path}`);
             }
             else {
-                let complete_waveform_path = `${this.waveform_path}.ghw`;
-                edam_gui.tool_options[simulator_name].run_options.push(`--wave=${complete_waveform_path}`);
-                this.complete_waveform_path = complete_waveform_path;
+                edam_gui.tool_options[simulator_name].run_options.push(`--wave=${this.complete_waveform_path}`);
             }
         }
         else if (simulator_name === 'xsim') {
