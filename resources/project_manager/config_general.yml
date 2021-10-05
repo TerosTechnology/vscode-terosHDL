@@ -16,6 +16,7 @@ general:
         description: "Select the waveform viewer. For GTKWave you need to install it."
         type: select
         options:
+            tool: "Tool GUI"
             vcdrom: "VCDrom"
             gtkwave: "GTKWave"
     go_to_definition_vhdl:

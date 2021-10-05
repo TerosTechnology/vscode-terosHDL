@@ -16,6 +16,7 @@ general:
         description: "Select the waveform viewer. For GTKWave you need to install it."
         type: select
         options:
+            tool: "Tool GUI"
             vcdrom: "VCDrom"
             gtkwave: "GTKWave"
     go_to_definition_vhdl:
@@ -121,7 +122,7 @@ linter:
         options:
             ghdl: "GHDL"
             modelsim: "Modelsim"
-            xvhdl: "Vivado (XSim)"
+            xvhdl: "Vivado (xvhdl)"
             none: "VHDL-LS "
     linter_verilog:
         description: "Verilog/SV linter:"
@@ -130,7 +131,7 @@ linter:
             icarus: "Icarus"
             modelsim: "Modelsim"
             verilator: "Verilator"
-            xvlog: "Vivado (XSim)"
+            xvlog: "Vivado (xvlog)"
             none: "None"
     style_verilog:
         description: "Verilog/SV style checker:"
@@ -394,6 +395,12 @@ modelsim:
     installation_path:
         description: "Installation path:"
         type: input
+    # gui_mode:
+    #     description: "Graphical user interface."
+    #     type: select
+    #     options: 
+    #         modelsim: "ModelSim"
+    #         external: "External waveform viewer"
     vcom_options:
         description: "Additional options for compilation with vcom."
         type: input_comma

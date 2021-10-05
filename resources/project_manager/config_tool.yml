@@ -159,6 +159,12 @@ modelsim:
     installation_path:
         description: "Installation path:"
         type: input
+    # gui_mode:
+    #     description: "Graphical user interface."
+    #     type: select
+    #     options: 
+    #         modelsim: "ModelSim"
+    #         external: "External waveform viewer"
     vcom_options:
         description: "Additional options for compilation with vcom."
         type: input_comma

@@ -78,8 +78,8 @@ export class Output_channel {
         this.output_channel.appendLine(msg);
     }
 
-    show() {
-        if (this.context === undefined) {
+    show(force = false) {
+        if (this.context === undefined || force === true) {
             this.output_channel.show();
         }
         else {
@@ -152,7 +152,7 @@ export class Output_channel {
 
 
     print_check_configuration(check_configuration, edalize_checking = false) {
-        this.show();
+        this.show(true);
         this.print_separator();
 
         let errors = '';
