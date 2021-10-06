@@ -1,11 +1,15 @@
 import * as Utils from '../project_manager/utils';
 
 
-export function get_yosys_read_file(sources, backend) {
-    let vhdl_files : string[] = [];
-    let verilog_files : string[] = [];
+export function get_yosys_read_file(sources, backend, working_directory) {
+    let vhdl_files: string[] = [];
+    let verilog_files: string[] = [];
     for (let i = 0; i < sources.length; i++) {
         const element = <string>sources[i];
+        const path_lib = require('path');
+        let relative_path_file = path_lib.relative(working_directory, element);
+
+
         let lang = Utils.get_file_lang(element);
         if (lang === 'vhdl') {
             vhdl_files.push(element);
@@ -13,7 +17,7 @@ export function get_yosys_read_file(sources, backend) {
         else if (lang === 'verilog' || lang === 'systemverilog') {
             verilog_files.push(element);
         }
-        
+
     }
     if (vhdl_files.length > 0 && backend !== 'yosys_ghdl') {
         return undefined;
@@ -26,7 +30,7 @@ export function get_yosys_read_file(sources, backend) {
         more = '; ';
     }
     if (verilog_files.length > 0) {
-        cmd += more + get_yosys_read_file_command_verilog(verilog_files);  
+        cmd += more + get_yosys_read_file_command_verilog(verilog_files);
     }
     return cmd;
 }
@@ -46,7 +50,7 @@ export function get_yosys_read_file_command_verilog(sources) {
     for (let i = 0; i < sources.length; i++) {
         const element = sources[i];
         cmd += ` ${element}`;
-      }
+    }
     return cmd;
 }
 

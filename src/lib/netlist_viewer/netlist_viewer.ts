@@ -256,6 +256,9 @@ export default class netlist_viewer_manager {
     }
 
     async run_yosys_script(sources, output_path) {
+        const os = require('os');
+        let working_directory = os.tmpdir();
+
         let netlist = {
             'result': '',
             'error': false,
@@ -264,7 +267,7 @@ export default class netlist_viewer_manager {
 
         const backend = this.config_reader.get_schematic_backend();
 
-        let cmd_files = Yosys_lib.get_yosys_read_file(sources, backend);
+        let cmd_files = Yosys_lib.get_yosys_read_file(sources, backend, working_directory);
         if (cmd_files === undefined) {
             this.output_channel.show_message(ERROR_CODE.NETLIST_VHDL_ERROR);
             netlist.empty = true;
@@ -294,7 +297,7 @@ export default class netlist_viewer_manager {
         element.output_channel.show();
 
         return new Promise(resolve => {
-            element.childp = shell.exec(command, { async: true }, async function (code, stdout, stderr) {
+            element.childp = shell.exec(command, { async: true, cwd: working_directory }, async function (code, stdout, stderr) {
                 if (code === 0) {
                     let result_yosys = '';
                     if (fs.existsSync(output_path)) {
