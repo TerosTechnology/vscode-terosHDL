@@ -10,12 +10,12 @@ export function get_yosys_read_file(sources, backend, working_directory) {
         let relative_path_file = path_lib.relative(working_directory, element);
 
 
-        let lang = Utils.get_file_lang(element);
+        let lang = Utils.get_file_lang(relative_path_file);
         if (lang === 'vhdl') {
-            vhdl_files.push(element);
+            vhdl_files.push(relative_path_file);
         }
         else if (lang === 'verilog' || lang === 'systemverilog') {
-            verilog_files.push(element);
+            verilog_files.push(relative_path_file);
         }
 
     }
