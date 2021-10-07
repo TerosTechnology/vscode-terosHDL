@@ -7,8 +7,15 @@ export function get_yosys_read_file(sources, backend, working_directory) {
     for (let i = 0; i < sources.length; i++) {
         const element = <string>sources[i];
         const path_lib = require('path');
-        let relative_path_file = path_lib.relative(working_directory, element);
 
+        let relative_path_file = element;
+        if (backend !== 'yosys_ghdl') {
+            const fs = require('fs');
+            let filename = path_lib.basename(element);
+            let dest = path_lib.join(working_directory, filename);
+            fs.copyFileSync(element, dest);
+            relative_path_file = filename;
+        }
 
         let lang = Utils.get_file_lang(relative_path_file);
         if (lang === 'vhdl') {
