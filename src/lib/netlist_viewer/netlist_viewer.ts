@@ -42,8 +42,13 @@ export default class netlist_viewer_manager {
     private config_reader: config_reader_lib.Config_reader;
     private output_channel: Output_channel_lib.Output_channel;
     private mode_project;
+    private working_directory;
+    private output_path;
 
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel, config_reader, mode = false) {
+        const os = require('os');
+        this.working_directory = os.tmpdir();
+        this.output_path = path_lib.join(this.working_directory, 'teroshdl_yosys_output.json');
         this.mode_project = mode;
         this.config_reader = config_reader;
         this.output_channel = output_channel;
@@ -237,10 +242,9 @@ export default class netlist_viewer_manager {
         let sources = project.get_sources_as_array();
 
         const tmpdir = require('os').homedir();
-        const output_path = path_lib.join(tmpdir, '.teroshdl_yosys_output_project.json');
-        this.clear_enviroment(output_path);
+        this.clear_enviroment(this.output_path);
 
-        return await this.run_yosys_script(sources, output_path);
+        return await this.run_yosys_script(sources, this.output_path);
     }
 
 
@@ -248,17 +252,12 @@ export default class netlist_viewer_manager {
         if (file_path === undefined) {
             return '';
         }
-        const tmpdir = require('os').homedir();
-        const output_path = path_lib.join(tmpdir, '.teroshdl_yosys_output.json');
-        this.clear_enviroment(output_path);
+        this.clear_enviroment(this.output_path);
 
-        return await this.run_yosys_script([file_path], output_path);
+        return await this.run_yosys_script([file_path], this.output_path);
     }
 
     async run_yosys_script(sources, output_path) {
-        const os = require('os');
-        let working_directory = os.tmpdir();
-
         let netlist = {
             'result': '',
             'error': false,
@@ -267,13 +266,14 @@ export default class netlist_viewer_manager {
 
         const backend = this.config_reader.get_schematic_backend();
 
-        let cmd_files = Yosys_lib.get_yosys_read_file(sources, backend, working_directory);
+        let cmd_files = Yosys_lib.get_yosys_read_file(sources, backend, this.working_directory);
         if (cmd_files === undefined) {
             this.output_channel.show_message(ERROR_CODE.NETLIST_VHDL_ERROR);
             netlist.empty = true;
             return netlist;
         }
-        const script_code = `${cmd_files}; proc; opt; write_json ${output_path}; stat`;
+        let output_path_filename = path_lib.basename(output_path);
+        const script_code = `${cmd_files}; proc; opt; write_json ${output_path_filename}; stat`;
 
         let yosys_path = this.config_reader.get_tool_path('yosys');
         let command = `yowasp-yosys -p "${script_code}"`;
@@ -297,7 +297,7 @@ export default class netlist_viewer_manager {
         element.output_channel.show();
 
         return new Promise(resolve => {
-            element.childp = shell.exec(command, { async: true, cwd: working_directory }, async function (code, stdout, stderr) {
+            element.childp = shell.exec(command, { async: true, cwd: this.working_directory }, async function (code, stdout, stderr) {
                 if (code === 0) {
                     let result_yosys = '';
                     if (fs.existsSync(output_path)) {
