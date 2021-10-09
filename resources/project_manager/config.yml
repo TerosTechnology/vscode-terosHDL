@@ -117,7 +117,7 @@ linter:
     description: ""
     type: "none"
     linter_vhdl:
-        description: "VHDL linter:"
+        description: "VHDL linter: disable VHDL-LS needs restart VSCode."
         type: select
         options:
             ghdl: "GHDL"

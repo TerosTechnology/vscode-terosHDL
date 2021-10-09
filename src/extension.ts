@@ -148,6 +148,8 @@ export async function activate(context: vscode.ExtensionContext) {
         { scheme: 'file', language: 'systemverilog' }
     ];
     let vhdlSelector: vscode.DocumentSelector = { scheme: 'file', language: 'vhdl' };
+    let tcl_selector: vscode.DocumentSelector = { scheme: 'file', language: 'tcl' };
+
     // Configure ctags
     ctagsManager = new CtagsManager(logger, context);
     ctagsManager.configure();
@@ -157,10 +159,16 @@ export async function activate(context: vscode.ExtensionContext) {
     let compItemProvider = new VerilogCompletionItemProvider(logger);
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, compItemProvider, ".", "(", "="));
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, compItemProvider, ".", "(", "="));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(tcl_selector, compItemProvider, ".", "(", "="));
     // Configure Hover Providers
     let hoverProvider = new VerilogHoverProvider(logger);
     // Configure Definition Providers
     let defProvider = new VerilogDefinitionProvider(logger);
+
+    //TCL
+    context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(tcl_selector, docProvider));
+    context.subscriptions.push(vscode.languages.registerHoverProvider(tcl_selector, hoverProvider));
+    context.subscriptions.push(vscode.languages.registerDefinitionProvider(tcl_selector, defProvider));
 
     //VHDL
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
