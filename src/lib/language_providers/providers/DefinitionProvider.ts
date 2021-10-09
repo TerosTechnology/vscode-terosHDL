@@ -66,6 +66,12 @@ export default class VerilogDefinitionProvider implements DefinitionProvider {
                             matchingSymbols.push(i);
                         }
                     }
+                    //TCL is case sensitive
+                    else if (document.languageId === "tcl") {
+                        if (i.name === targetText) {
+                            matchingSymbols.push(i);
+                        }
+                    }
                 }
                 for (let i of matchingSymbols) {
                     definitions.push({

@@ -2,11 +2,20 @@
     "name": "teroshdl",
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
-    "description": "VHDL and Verilog/SV IDE: state machine viewer, linter, documentation, snippets... and more! ",
+    "description": "Powerful IDE for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
     "version": "2.0.2",
     "engines": {
         "vscode": "^1.45.0"
     },
+    "keywords": [
+        "tcl",
+        "tk",
+        "vhdl",
+        "verilog",
+        "systemverilog",
+        "asic",
+        "fpga"
+    ],
     "categories": [
         "Programming Languages",
         "Snippets",
@@ -70,6 +79,11 @@
                 "language": "systemverilog",
                 "scopeName": "source.systemverilog",
                 "path": "./syntaxes/systemverilog.tmLanguage"
+            },
+            {
+                "language": "tcl",
+                "scopeName": "source.tcl",
+                "path": "./syntaxes/tcl/tcl.tmLanguage.json"
             },
             {
                 "language": "xdc",
@@ -659,6 +673,17 @@
                 "extensions": [".vcd"]
             },
             {
+                "id": "tcl",
+                "aliases": [
+                    "TCL",
+                    "tcl"
+                ],
+                "extensions": [
+                    ".tcl"
+                ],
+                "configuration": "./configs/tcl.configuration.json"
+            },
+            {
                 "id": "ucf",
                 "aliases": [
                     "vivado ucf",
@@ -740,6 +765,10 @@
                 "path": "./snippets/xdc/xdc.json"
             },
             {
+                "language": "tcl",
+                "path": "./snippets/tcl/tcl.json"
+            },
+            {
                 "language": "ldc",
                 "path": "./snippets/xdc/xdc.json"
             }
@@ -747,7 +776,7 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run build-prepare & npm run build:syntax & npm run compile",
-        "build:syntax": "js-yaml ./syntaxes/vhdl/vhdl.tmLanguage.yml > ./syntaxes/vhdl/vhdl.tmLanguage.json",
+        "build:syntax": "js-yaml ./syntaxes/vhdl/vhdl.tmLanguage.yml > ./syntaxes/vhdl/vhdl.tmLanguage.json; js-yaml ./syntaxes/tcl/tcl.tmLanguage.yml > ./syntaxes/tcl/tcl.tmLanguage.json",
         "compile": "tsc -p ./",
         "lint": "eslint src --ext ts",
         "watch": "npm run build-prepare & tsc -watch -p ./",
