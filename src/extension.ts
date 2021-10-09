@@ -132,7 +132,7 @@ export async function activate(context: vscode.ExtensionContext) {
     let enable_verilog_provider = config_reader.get_enable_lang_provider('verilog');
 
     if (enable_vhdl_provider === true) {
-        rusthdl = new rusthdl_lib.Rusthdl_lsp(context);
+        rusthdl = new rusthdl_lib.Rusthdl_lsp(context, config_reader);
         is_alive = await rusthdl.run_rusthdl();
     }
     else {
