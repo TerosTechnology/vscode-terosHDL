@@ -17,7 +17,7 @@ import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
-} from 'vscode-languageclient';
+} from 'vscode-languageclient/node';
 
 
 const isWindows = process.platform === 'win32';
