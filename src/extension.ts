@@ -331,10 +331,6 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidCloseTextDocument((e) => linter_systemverilog_style.remove_file_diagnostics(e));
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {
-    rusthdl.deactivate();
-}
 
 export async function provideDocumentFormattingEdits(
     document: vscode.TextDocument,
@@ -396,6 +392,12 @@ export async function provideDocumentFormattingEdits(
         edits.push(replacement);
         return edits;
     }
+}
+
+export function deactivate(): Thenable<void> | undefined {
+    console.log("TerosHDL deactivate!");
+    let promises = [rusthdl.deactivate()];
+    return Promise.all(promises).then(() => undefined);
 }
 
 function help_message() {
