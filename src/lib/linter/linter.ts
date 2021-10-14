@@ -46,7 +46,7 @@ export default class Lint_manager {
         let linter_name = this.config_reader.get_linter_name(normalized_lang, this.linter_type).toLowerCase();
         this.linter_name = linter_name;
 
-        if (linter_name !== 'none') {
+        if (linter_name !== 'none' && linter_name !== 'disabled') {
             let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
             let linter_path = linter_config.installation_path;
             this.linter_path = linter_path;
@@ -87,7 +87,7 @@ export default class Lint_manager {
 
     config_linter() {
         this.set_config_linter();
-        if (this.linter_name === 'none') {
+        if (this.linter_name === 'none' || this.linter_name === 'disabled') {
             this.linter_enable = false;
             this.refresh_lint();
         }
@@ -154,7 +154,7 @@ export default class Lint_manager {
     }
 
     async lint(doc: vscode.TextDocument) {
-        if (this.linter_name === 'none') {
+        if (this.linter_name === 'none' || this.linter_name === 'disabled') {
             return;
         }
         if (doc === undefined) {
@@ -243,7 +243,7 @@ export default class Lint_manager {
     async get_errors(current_path) {
         try {
             let errors = [];
-            if (this.linter_name !== 'none') {
+            if (this.linter_name !== 'none' && this.linter_name !== 'disabled') {
                 const teroshdl = await require('teroshdl');
                 let linter = await new teroshdl.Linter.Linter(this.linter_name, this.lang);
                 errors = await linter.lint_from_file(current_path, this.get_config(), undefined);

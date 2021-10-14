@@ -120,6 +120,7 @@ linter:
         description: "VHDL linter: disable VHDL-LS needs restart VSCode."
         type: select
         options:
+            disabled: "Disabled"
             ghdl: "GHDL"
             modelsim: "Modelsim"
             xvhdl: "Vivado (xvhdl)"
@@ -128,11 +129,11 @@ linter:
         description: "Verilog/SV linter:"
         type: select
         options:
+            disabled: "Disabled"
             icarus: "Icarus"
             modelsim: "Modelsim"
             verilator: "Verilator"
             xvlog: "Vivado (xvlog)"
-            none: "None"
     style_verilog:
         description: "Verilog/SV style checker:"
         type: select
