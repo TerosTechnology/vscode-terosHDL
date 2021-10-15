@@ -33,6 +33,7 @@ export class Rusthdl_lsp {
     private context: ExtensionContext;
     private languageServerDisposable;
     private config_reader: config_reader_lib.Config_reader;
+    public stop_client: boolean = false;
 
     constructor(context: ExtensionContext, config_reader: config_reader_lib.Config_reader) {
         this.context = context;
@@ -90,12 +91,12 @@ export class Rusthdl_lsp {
         this.context.subscriptions.push(this.languageServerDisposable);
         this.context.subscriptions.push(
             vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
-                const MSG = 'Restarting VHDL LS';
-                // output.appendLine(MSG);
-                await this.client.stop();
-                this.languageServerDisposable.dispose();
-                this.languageServerDisposable = this.client.start();
-                this.context.subscriptions.push(this.languageServerDisposable);
+                if (this.stop_client === false) {
+                    await this.client.stop();
+                    this.languageServerDisposable.dispose();
+                    this.languageServerDisposable = this.client.start();
+                    this.context.subscriptions.push(this.languageServerDisposable);
+                }
             })
         );
 

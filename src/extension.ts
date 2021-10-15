@@ -396,6 +396,7 @@ export async function provideDocumentFormattingEdits(
 
 export function deactivate(): Thenable<void> | undefined {
     console.log("TerosHDL deactivate!");
+    rusthdl.stop_client = true;
     let promises = [rusthdl.deactivate()];
     return Promise.all(promises).then(() => undefined);
 }
