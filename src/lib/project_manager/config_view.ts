@@ -110,6 +110,7 @@ export default class config_view {
     vscode.commands.executeCommand("teroshdl.linter.linter.systemverilog.set_config");
     vscode.commands.executeCommand("teroshdl.linter.style.verilog.set_config");
     vscode.commands.executeCommand("teroshdl.linter.style.systemverilog.set_config");
+    vscode.commands.executeCommand("teroshdl.linter.style.vhdl.set_config");
   }
 
   close_panel() {

@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import * as vsg_action_provider from './vsg_action_provider';
 import * as config_reader_lib from "../utils/config_reader";
+import { fstat } from 'fs';
 
 export default class Lint_manager {
     private init: boolean = false;
@@ -27,8 +28,9 @@ export default class Lint_manager {
 
         this.set_config_linter();
 
+        vscode.commands.registerCommand(`teroshdl.linter.${linter_type}.${language}.refresh`, () => this.refresh_lint());
         vscode.commands.registerCommand(`teroshdl.linter.${linter_type}.${language}.set_config`, () => this.config_linter());
-        if (language === "vhdl" && linter_type === "linter_style") {
+        if (language === "vhdl" && linter_type === "style") {
             context.subscriptions.push(
                 vscode.languages.registerCodeActionsProvider('vhdl', new vsg_action_provider.Vsg_action_provider(), {
                     providedCodeActionKinds: vsg_action_provider.Vsg_action_provider.providedCodeActionKinds
@@ -46,7 +48,23 @@ export default class Lint_manager {
         let linter_name = this.config_reader.get_linter_name(normalized_lang, this.linter_type).toLowerCase();
         this.linter_name = linter_name;
 
-        if (linter_name !== 'none' && linter_name !== 'disabled') {
+        if (linter_name === 'vsg') {
+            let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
+            if (linter_config === undefined) {
+                this.linter_path = '';
+                this.linter_arguments = '';
+            }
+            else {
+                let configuration_file = linter_config.configuration;
+                this.linter_path = '';
+                this.linter_arguments = '';
+                const fs = require('fs');
+                if (configuration_file !== '' && fs.existsSync(configuration_file)) {
+                    this.linter_arguments = `-c ${configuration_file}`;
+                }
+            }
+        }
+        else if (linter_name !== 'none' && linter_name !== 'disabled') {
             let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
             let linter_path = linter_config.installation_path;
             this.linter_path = linter_path;

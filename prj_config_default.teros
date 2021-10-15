@@ -51,7 +51,8 @@
                "linter":{
                   "linter_vhdl":"none",
                   "linter_verilog":"icarus",
-                  "style_verilog":"none"
+                  "style_verilog":"none",
+                  "style_vhdl":"none"
                }
             },
             {

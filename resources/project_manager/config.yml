@@ -139,7 +139,13 @@ linter:
         type: select
         options:
             verible: "Verible"
-            none: "None"
+            none: "Disabled"
+    style_vhdl:
+        description: "VHDL style checker:"
+        type: select
+        options:
+            vsg: "VSG"
+            none: "Disabled"
 
 formatter:
     title: Formatter settings
@@ -159,6 +165,7 @@ formatter:
         type: select
         options:
             standalone: "Standalone"
+            vsg: "VSG"
 
     subtitle_0:
         type: subtitle
@@ -226,8 +233,14 @@ formatter:
         description: "Align signs in generics and ports."
         type: checkbox
 
+vsg:
+    title: VSG
+    description: "VHDL Style Guide. Analyzes VHDL files for style guide violations. Reference documentation is located at: http://vhdl-style-guide.readthedocs.io/en/latest/index.html"
+    type: "none"
 
-
+    configuration:
+        description: "JSON or YAML configuration file."
+        type: input
 
 
 
