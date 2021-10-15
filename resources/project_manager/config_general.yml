@@ -139,13 +139,13 @@ linter:
         type: select
         options:
             verible: "Verible"
-            none: "Disabled"
+            disabled: "Disabled"
     style_vhdl:
         description: "VHDL style checker:"
         type: select
         options:
             vsg: "VSG"
-            none: "Disabled"
+            disabled: "Disabled"
 
 formatter:
     title: Formatter settings
