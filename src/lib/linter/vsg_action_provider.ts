@@ -150,7 +150,7 @@ export class Vsg_action_provider implements vscode.CodeActionProvider {
 
 
     private create_command_code_action_fix_all(document: vscode.TextDocument): vscode.CodeAction {
-        const action = new vscode.CodeAction("Fix all problems.", vscode.CodeActionKind.QuickFix);
+        const action = new vscode.CodeAction("Fix all the problems.", vscode.CodeActionKind.QuickFix);
         action.command = {
             title: "info.description",
             command: 'teroshdl.vsg.fixall',
@@ -161,7 +161,7 @@ export class Vsg_action_provider implements vscode.CodeActionProvider {
     }
 
     private create_command_code_action_disable_line(diagnostic: vscode.Diagnostic, document: vscode.TextDocument, range: vscode.Range): vscode.CodeAction {
-        const action = new vscode.CodeAction(`Disable ${diagnostic.code} for this line.`, vscode.CodeActionKind.QuickFix);
+        const action = new vscode.CodeAction(`Disable rule [${diagnostic.code}] for this line.`, vscode.CodeActionKind.QuickFix);
         // action.command = 'workbench.action.files.save';
         action.command = {
             title: "info.description",
@@ -178,7 +178,7 @@ export class Vsg_action_provider implements vscode.CodeActionProvider {
 
     private create_command_code_action_fix_rule(diagnostic: vscode.Diagnostic, document: vscode.TextDocument, range:
         vscode.Range): vscode.CodeAction {
-        const action = new vscode.CodeAction(`Fix ${diagnostic.code} for this line.`, vscode.CodeActionKind.QuickFix);
+        const action = new vscode.CodeAction(`Fix rule [${diagnostic.code}] for this line.`, vscode.CodeActionKind.QuickFix);
         action.command = {
             title: "info.description",
             command: 'teroshdl.vsg.fixrule',
@@ -190,7 +190,7 @@ export class Vsg_action_provider implements vscode.CodeActionProvider {
 
     private create_command_code_action_fix_rule_type(diagnostic: vscode.Diagnostic, document: vscode.TextDocument, range:
         vscode.Range): vscode.CodeAction {
-        const action = new vscode.CodeAction(`Fix all problems: ${diagnostic.code}.`, vscode.CodeActionKind.QuickFix);
+        const action = new vscode.CodeAction(`Fix all problems [${diagnostic.code}].`, vscode.CodeActionKind.QuickFix);
         action.command = {
             title: "info.description",
             command: 'teroshdl.vsg.fixrule_type',

@@ -22,6 +22,7 @@ const MSG_SAVE_DEP_GRAPH = "Dependency graph saved in";
 const MSG_ERROR_SAVE_DEP_GRAPH = "Dependency graph not defined.";
 const MSG_INFO_DEP_GRAPH = "TerosHDL is creating the diagram.";
 const NETLIST_VHDL_ERROR = "Your project/file includes 1 or more VHDL files, but it's not configured the backend GHDL+Yosys (https://terostechnology.github.io/terosHDLdoc/netlist/configuration.html).";
+const VSG_NOT_FOUND = "Your formatter for VHDL is VSG, but VSG isn't installed in the system (https://terostechnology.github.io/terosHDLdoc/style/configuration.html#vsg-vhdl-style-guide).";
 
 export const ERROR_CODE = {
     PYTHON: MSG_PYTHON,
@@ -45,6 +46,7 @@ export const ERROR_CODE = {
     ERROR_SAVE_DEP_GRAPH: MSG_ERROR_SAVE_DEP_GRAPH,
     INFO_DEP_GRAPH: MSG_INFO_DEP_GRAPH,
     NETLIST_VHDL_ERROR: NETLIST_VHDL_ERROR,
+    VSG_NOT_FOUND: VSG_NOT_FOUND,
 };
 
 const SAVE_PROJECT = "Project saved in: ";
