@@ -61,7 +61,14 @@ export default class Lint_manager {
             }
             else if (linter_name === 'verible') {
 
-                if (linter_config.rules.length > 0) {
+                let clean_rules: string[] = [];
+                for (let rule of linter_config.rules) {
+                    if (rule !== '') {
+                        clean_rules.push(rule);
+                    }
+                }
+
+                if (clean_rules.length > 0) {
                     arguments_v = arguments_v.concat('--rules');
                     arguments_v = arguments_v.concat(linter_config.rules);
                 }
