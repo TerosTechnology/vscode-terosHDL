@@ -198,6 +198,9 @@ export class Config_reader {
     else {
       selected_linter = field_linter.linter_verilog;
     }
+    if (selected_linter === undefined) {
+      return 'disabled';
+    }
     return selected_linter;
   }
 
