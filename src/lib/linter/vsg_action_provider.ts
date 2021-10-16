@@ -33,7 +33,7 @@ export class Vsg_action_provider implements vscode.CodeActionProvider {
     fix_all(document) {
         let file_path = document.fileName;
         const exec = require('child_process');
-        let cmd = `vsg --fix -f ${file_path}`;
+        let cmd = `vsg -p 2 --fix -f ${file_path}`;
         try {
             exec.execSync(cmd);
             vscode.commands.executeCommand("teroshdl.linter.linter.vhdl.refresh");
@@ -63,7 +63,7 @@ export class Vsg_action_provider implements vscode.CodeActionProvider {
         fs.writeFileSync(path_tmp, data);
 
         const exec = require('child_process');
-        let cmd = `vsg --fix --fix_only ${path_tmp} -f ${file_path}`;
+        let cmd = `vsg -p 2 --fix --fix_only ${path_tmp} -f ${file_path}`;
         try {
             exec.execSync(cmd);
             vscode.commands.executeCommand("teroshdl.linter.linter.vhdl.refresh");
@@ -93,7 +93,7 @@ export class Vsg_action_provider implements vscode.CodeActionProvider {
         fs.writeFileSync(path_tmp, data);
 
         const exec = require('child_process');
-        let cmd = `vsg --fix --fix_only ${path_tmp} -f ${file_path}`;
+        let cmd = `vsg -p 2 --fix --fix_only ${path_tmp} -f ${file_path}`;
         try {
             exec.execSync(cmd);
             vscode.commands.executeCommand("teroshdl.linter.linter.vhdl.refresh");
