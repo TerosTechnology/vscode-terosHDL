@@ -64,7 +64,8 @@ export default class Lint_manager {
                 }
             }
         }
-        else if (linter_name !== 'none' && linter_name !== 'disabled') {
+        else if (linter_name !== 'none' && linter_name !== 'disabled'
+            && linter_name !== '' && linter_name !== undefined) {
             let linter_config = this.config_reader.get_linter_config(normalized_lang, this.linter_type);
             let linter_path = linter_config.installation_path;
             this.linter_path = linter_path;
