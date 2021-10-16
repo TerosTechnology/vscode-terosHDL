@@ -161,7 +161,7 @@ export class Project_manager {
             case 'win32':
                 opener = 'start';
                 break;
-            default:
+            case 'linux':
                 opener = 'xdg-open';
                 break;
         }
