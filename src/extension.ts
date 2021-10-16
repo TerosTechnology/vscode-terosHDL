@@ -196,26 +196,6 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     template = new templates.Template(context, config_reader, output_channel);
     /**************************************************************************/
-    // Formatter
-    /**************************************************************************/
-    formatter_vhdl = new formatter.default("vhdl", config_reader, output_channel);
-    formatter_verilog = new formatter.default("verilog", config_reader, output_channel);
-    // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
-    const disposable = vscode.languages.registerDocumentFormattingEditProvider(
-        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
-        { scheme: "file", language: "systemverilog" }],
-        { provideDocumentFormattingEdits }
-    );
-    context.subscriptions.push(disposable);
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'teroshdl.format',
-            async () => {
-                vscode.commands.executeCommand("editor.action.format");
-            }
-        )
-    );
-    /**************************************************************************/
     // Documenter
     /**************************************************************************/
     documenter = new documentation.default(context, config_reader, output_channel);
@@ -335,6 +315,26 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidOpenTextDocument((e) => linter_systemverilog_style.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_systemverilog_style.lint(e));
     vscode.workspace.onDidCloseTextDocument((e) => linter_systemverilog_style.remove_file_diagnostics(e));
+    /**************************************************************************/
+    // Formatter
+    /**************************************************************************/
+    formatter_vhdl = new formatter.default("vhdl", config_reader, output_channel);
+    formatter_verilog = new formatter.default("verilog", config_reader, output_channel);
+    // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
+    const disposable = vscode.languages.registerDocumentFormattingEditProvider(
+        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
+        { scheme: "file", language: "systemverilog" }],
+        { provideDocumentFormattingEdits }
+    );
+    context.subscriptions.push(disposable);
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'teroshdl.format',
+            async () => {
+                vscode.commands.executeCommand("editor.action.format");
+            }
+        )
+    );
 }
 
 
