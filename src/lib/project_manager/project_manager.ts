@@ -151,21 +151,13 @@ export class Project_manager {
     }
 
     help() {
-        const exec = require('child_process').exec;
-        const help_index_path = path.join('file://' + __filename, "..", "..", "..", "..", "resources", "project_manager", "help", 'index.html');
-        let opener;
-        switch (process.platform) {
-            case 'darwin':
-                opener = 'open';
-                break;
-            case 'win32':
-                opener = 'start';
-                break;
-            default:
-                opener = 'xdg-open';
-                break;
-        }
-        exec(`${opener} "${help_index_path.replace(/"/g, '\\\"')}"`);
+        const resolve = require('path').resolve;
+
+        const help_index_path = path.join(__filename, "..", "..", "..", "..", "resources", "project_manager", "help", 'index.html');
+        let help_index_path_absolute = resolve(help_index_path);
+
+        const open = require('open');
+        open(help_index_path_absolute);
     }
 
     async netlist(item) {

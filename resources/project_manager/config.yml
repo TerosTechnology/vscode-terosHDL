@@ -235,7 +235,7 @@ formatter:
 
 vsg:
     title: VSG
-    description: "VHDL Style Guide. Analyzes VHDL files for style guide violations. Reference documentation is located at: http://vhdl-style-guide.readthedocs.io/en/latest/index.html"
+    description: "VHDL Style Guide. Analyzes VHDL files for style guide violations. Reference documentation is located at: <a href=\"https://terostechnology.github.io/terosHDLdoc/style/configuration.html#vsg-vhdl-style-guide\">https://terostechnology.github.io/terosHDLdoc/style/configuration.html#vsg-vhdl-style-guide</a>"
     type: "none"
 
     configuration:
