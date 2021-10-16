@@ -321,15 +321,15 @@ def generate_set_options(doc):
                 html += f"    let {option_let} = options.{option_name};\n"
                 if (option_type == "checkbox"):
                     html += f"    if({option_let} === undefined){{{option_let} = false;}}\n"
-                    html += f"    document.getElementById('{id_name}').checked = options.{option_name};\n"
+                    html += f"    document.getElementById('{id_name}').checked = {option_let};\n"
                 elif(option_type == "input_comma"):
                     html += f"    if({option_let} === undefined){{{option_let} = '';}}\n"
-                    html += f"    document.getElementById('{id_name}').value = options.{option_name}.join(',');\n"
+                    html += f"    document.getElementById('{id_name}').value = {option_let}.join(',');\n"
                 elif(option_type == "subtitle"):
                     pass
                 else:
                     html += f"    if({option_let} === undefined){{{option_let} = '';}}\n"
-                    html += f"    document.getElementById('{id_name}').value = options.{option_name};\n"
+                    html += f"    document.getElementById('{id_name}').value = {option_let};\n"
         html += '  }\n'
     return html
 
