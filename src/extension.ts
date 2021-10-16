@@ -54,6 +54,7 @@ let linter_vhdl;
 let linter_verilog;
 let linter_systemverilog;
 let template;
+let linter_vhdl_style;
 let linter_verilog_style;
 let linter_systemverilog_style;
 let formatter_vhdl;
@@ -320,6 +321,11 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Check style
     /**************************************************************************/
+    linter_vhdl_style = new linter.default("vhdl", "style", context, config_reader);
+    vscode.workspace.onDidOpenTextDocument((e) => linter_vhdl_style.lint(e));
+    vscode.workspace.onDidSaveTextDocument((e) => linter_vhdl_style.lint(e));
+    vscode.workspace.onDidCloseTextDocument((e) => linter_vhdl_style.remove_file_diagnostics(e));
+
     linter_verilog_style = new linter.default("verilog", "style", context, config_reader);
     vscode.workspace.onDidOpenTextDocument((e) => linter_verilog_style.lint(e));
     vscode.workspace.onDidSaveTextDocument((e) => linter_verilog_style.lint(e));

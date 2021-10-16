@@ -51,7 +51,8 @@
                "linter":{
                   "linter_vhdl":"none",
                   "linter_verilog":"icarus",
-                  "style_verilog":"none"
+                  "style_verilog":"disabled",
+                  "style_vhdl":"disabled"
                }
             },
             {
@@ -73,6 +74,11 @@
                   "vhdl_standalone_align_comments":false,
                   "vhdl_standalone_indentation":"  ",
                   "vhdl_standalone_align_generic_port":false
+               }
+            },
+            {
+               "vsg":{
+                  "configuration":""
                }
             },
             {

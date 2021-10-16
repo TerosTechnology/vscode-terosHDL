@@ -53,6 +53,9 @@ export default class Formatter_manager {
             if (this.formatter_name === 'standalone') {
                 options_print = options_print['settings'];
             }
+            if (this.formatter_name === 'vsg') {
+                this.check_vsg();
+            }
             this.output_channel.print_formatter(this.formatter_name, options_print);
             let formatted_code = await formatter.format_from_code(code, options);
             return formatted_code;
@@ -60,6 +63,15 @@ export default class Formatter_manager {
         else {
             return code;
         }
+    }
+
+    async check_vsg() {
+        let check = await this.config_reader.check_configuration(false);
+        let check_vsg = check.vsg;
+        if (check_vsg === false) {
+            this.output_channel.show_message(ERROR_CODE.VSG_NOT_FOUND);
+        }
+        return check.vsg;
     }
 
     config_formatter() {
@@ -72,8 +84,16 @@ export default class Formatter_manager {
     async get_options() {
         let configuration = this.config_reader.get_formatter_config();
 
-        let options;
+        let options = {};
         if (this.formatter_name === "vsg") {
+            let linter_config = this.config_reader.get_config_fields('vsg');
+            if (linter_config !== undefined) {
+                let configuration_file = linter_config.configuration;
+                const fs = require('fs');
+                if (configuration_file !== '' && fs.existsSync(configuration_file)) {
+                    options = { 'file_rules': `${configuration_file}` };
+                }
+            }
         }
         else if (this.formatter_name === "verible") {
             let arguments_array = configuration.verible_format_args;

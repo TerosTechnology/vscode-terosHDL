@@ -80,18 +80,23 @@ export class Config_reader {
   }
 
   get_config_fields(field) {
-    let config = this.read_file_config();
-    let config_tool = config?.config.config_tool.config;
-    if (config_tool === undefined) {
-      return {};
-    }
-    for (let i = 0; i < config_tool.length; i++) {
-      const element = config_tool[i];
-      for (let attributename in element) {
-        if (attributename === field) {
-          return element[attributename];
+    try {
+      let config = this.read_file_config();
+      let config_tool = config?.config.config_tool.config;
+      if (config_tool === undefined) {
+        return {};
+      }
+      for (let i = 0; i < config_tool.length; i++) {
+        const element = config_tool[i];
+        for (let attributename in element) {
+          if (attributename === field) {
+            return element[attributename];
+          }
         }
       }
+    }
+    catch {
+      return undefined;
     }
   }
 
@@ -177,15 +182,24 @@ export class Config_reader {
 
   get_linter_name(lang, linter_type) {
     let field_linter = this.get_config_fields('linter');
+    if (field_linter === undefined) {
+      return 'disabled';
+    }
     let selected_linter = '';
     if (lang === 'verilog' && linter_type === 'style') {
       selected_linter = field_linter.style_verilog;
+    }
+    else if (lang === 'vhdl' && linter_type === 'style') {
+      selected_linter = field_linter.style_vhdl;
     }
     else if (lang === 'vhdl') {
       selected_linter = field_linter.linter_vhdl;
     }
     else {
       selected_linter = field_linter.linter_verilog;
+    }
+    if (selected_linter === undefined) {
+      return 'disabled';
     }
     return selected_linter;
   }
