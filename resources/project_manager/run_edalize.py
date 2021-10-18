@@ -16,8 +16,11 @@ print("")
 print("************************************************************************************************")
 print("---> Build directory: {}".format(work_root))
 
-if (os.path.isdir(work_root) == True):
-    shutil.rmtree(work_root)
+try:
+    if (os.path.isdir(work_root) == True):
+        shutil.rmtree(work_root)
+except Exception as e:
+    pass
 
 edam_file = sys.argv[1]
 simulator = sys.argv[2]
