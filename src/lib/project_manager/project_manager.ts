@@ -202,8 +202,11 @@ export class Project_manager {
             await new Promise((resolve) => setTimeout(resolve, 500));
         }
         this.save_toml();
-        vscode.commands.executeCommand("teroshdl.vhdlls.restart");
-        await this.save_compile_order();
+        try{
+            vscode.commands.executeCommand("teroshdl.vhdlls.restart");
+            await this.save_compile_order();
+        }
+        catch{};
     }
 
     async save_compile_order() {
@@ -1343,8 +1346,8 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
         //Search project
         for (let i = 0; i < this.projects.length; ++i) {
             if (this.projects[i].project_name === project_name) {
-                let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "symbol-event.svg");
-                let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "symbol-event.svg");
+                let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "select.svg");
+                let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "select.svg");
                 this.projects[i].iconPath = {
                     light: path_icon_light,
                     dark: path_icon_dark,
@@ -1362,8 +1365,8 @@ class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
     }
 
     set_icon_select_file(item) {
-        let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "star-full.svg");
-        let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "star-full.svg");
+        let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "select.svg");
+        let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "select.svg");
         item.iconPath = {
             light: path_icon_light,
             dark: path_icon_dark,
