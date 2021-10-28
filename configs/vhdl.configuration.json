@@ -1,3 +1,5 @@
+// Copyright (c) 2019 Rich J. Young
+
 {
     "comments": {
         "lineComment": "--",
@@ -15,11 +17,22 @@
         ["\"", "\""],
         ["'", "'"]
     ],
+    "autoCloseBefore": ";:,=])\n\t",
     "surroundingPairs": [
         ["{", "}"],
         ["[", "]"],
         ["(", ")"],
         ["\"", "\""],
         ["'", "'"]
-    ]
+    ],
+    "wordPattern": "(?<!\\\\)\\b([0-9a-zA-Z]+[0-9a-zA-Z_]*)\\b(?!\\\\)|(\\\\([0-9a-zA-Z]+[0-9a-zA-Z_\\\\]*)\\\\)",
+    "indentationRules": {
+        "increaseIndentPattern": "^((?!(--|/\\*)).)*(\\b(begin|else|loop|generate|then)\\b|\\b(component|block|process|is|generic|port)\\b[^;]*$)",
+        // `^((?!(--|/\*)).)*` ignore any text in a comment
+        // `\b(begin|else|loop|generate|then)\b` increase indent on a line containing these keywords
+        // `\b(component|block|process|is|generic|port)\b[^;]*$` only increase indent a line containing these keywords if no `;` follows on the same line.
+        "decreaseIndentPattern": "^((?!.*?\\/\\*).*\\*/)?\\s*(elsif|else|end|begin)\\b",
+        // `^((?!.*?/\*).*\*/)??` ignore any text in a comment at the start of the line
+        // `\s*(elsif|else|end|begin)\b)` decrease indent on a line starting with these keywords
+    }
 }
