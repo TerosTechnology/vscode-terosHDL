@@ -41,6 +41,11 @@ export class Tool_manager {
         this.config_file = config_file;
     }
 
+    clear(){
+        this.osvvm.clear();
+        this.edalize.clear();
+    }
+
     stop(){
         this.vunit.stop_test();
         this.cocotb.stop_test();

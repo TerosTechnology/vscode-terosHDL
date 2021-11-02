@@ -59,6 +59,15 @@ export class Edalize extends tool_base.Tool_base {
         this.config_reader = config_reader;
     }
 
+
+    clear(){
+        //Remove build path
+        const fs = require('fs');
+        const homedir = require('os').homedir();
+        let build_folder = path_lib.join(homedir, '.teroshdl', 'build');
+        fs.rmdirSync(build_folder, { recursive: true });
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Get test list
     ////////////////////////////////////////////////////////////////////////////

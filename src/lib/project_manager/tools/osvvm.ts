@@ -48,12 +48,29 @@ export class Osvvm extends tool_base.Tool_base {
         this.build_folder = path_lib.join(homedir, '.teroshdl', 'osvvm_build');
     }
 
+    clear(){
+        //Remove build path
+        const fs = require('fs');
+        fs.rmdirSync(this.build_folder, { recursive: true });
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Get test list
     ////////////////////////////////////////////////////////////////////////////
     async get_test_list() {
-        return [];
+        let test_list = await this.get_result();
+        let tests : any[]= [];
+        for (let i = 0; i < test_list.length; i++) {
+            const test = test_list[i];
+            let single_test = {
+                test_type: "osvvm",
+                name: test['name'],
+                location: undefined,
+            };
+            tests.push(single_test);
+        }
+
+        return tests;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -68,17 +85,23 @@ export class Osvvm extends tool_base.Tool_base {
 
         let pro_file = prj.toplevel_path;
 
-        let build_directory = this.build_folder;
-
         //Remove build path
         // const fs = require('fs');
         // fs.rmdirSync(build_directory, { recursive: true });
-        // //Create build directory
-        // fs.mkdirSync(build_directory, { recursive: true });
+
+
+        let build_directory = this.build_folder;
+        let extra_build = 'build /home/carlos/repo/OsvvmLibraries/OsvvmLibraries.pro';
+        if (fs.existsSync(build_directory)) {
+            extra_build = '';
+        } else {
+            //Create build directory
+            fs.mkdirSync(build_directory, { recursive: true });
+        }
 
         let pro_top_file = `
 source /home/carlos/repo/OsvvmLibraries/Scripts/StartUp.tcl
-#build /home/carlos/repo/OsvvmLibraries/OsvvmLibraries.pro
+${extra_build}
 build ${pro_file}\n
 `;
 

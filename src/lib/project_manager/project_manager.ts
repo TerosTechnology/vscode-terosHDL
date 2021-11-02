@@ -102,6 +102,7 @@ export class Project_manager {
 
         vscode.commands.registerCommand("teroshdl_tree_view.run_tool_no_gui", (item) => this.run_tool_no_gui(item));
         vscode.commands.registerCommand("teroshdl_tree_view.run_tool_with_gui", (item) => this.run_tool_with_gui(item));
+        vscode.commands.registerCommand("teroshdl_tree_view.clear", (item) => this.clear(item));
 
         vscode.commands.registerCommand("teroshdl_tree_view.go_to_code", (item) => this.go_to_code(item));
         vscode.commands.registerCommand("teroshdl_tree_view.refresh_tests", () => this.refresh_tests());
@@ -118,6 +119,10 @@ export class Project_manager {
         vscode.commands.registerCommand('teroshdl_dependencies_tree_view.refreshEntry', () => this.hdl_dependencies_provider.refresh());
         vscode.commands.registerCommand("teroshdl_dependencies_tree_view.open_file", (item) => this.open_file(item));
         vscode.commands.registerCommand("teroshdl_dependencies_tree_view.dependencies_viewer", () => this.open_dependencies_viewer());
+    }
+
+    clear(){
+        this.tool_manager.clear();
     }
 
     start_vcd(item) {
