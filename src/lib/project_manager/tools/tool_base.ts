@@ -26,8 +26,9 @@ const os = require('os');
 import * as Output_channel_lib from '../../utils/output_channel';
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 import * as config_reader_lib from "../../utils/config_reader";
+import * as utils from "../utils";
 
-export class Tool_base {
+export abstract class Tool_base {
     private exp: string = '';
     private more: string = '';
     private switch: string = '';
@@ -37,8 +38,12 @@ export class Tool_base {
     private python_path: string = '';
     private output_channel : Output_channel_lib.Output_channel;
     private config_reader : config_reader_lib.Config_reader;
+    private edam_project_manager;
 
-    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel){
+    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
+            edam_project_manager){
+
+        this.edam_project_manager = edam_project_manager;
         this.context = context;
         this.output_channel = output_channel;
         this.config_reader = new config_reader_lib.Config_reader(context, output_channel);
@@ -55,6 +60,9 @@ export class Tool_base {
           this.folder_sep = "\\";
         }
     }
+
+    abstract run();
+    abstract stop();
 
     set_python_path(python_path){
       this.python_path = python_path;
@@ -86,4 +94,49 @@ export class Tool_base {
         }
         catch (e) { }
     }
+
+    get_toplevel_path_selected_prj() {
+        let selected_project = this.edam_project_manager.selected_project;
+        if (selected_project === "") {
+            this.output_channel.show_message(ERROR_CODE.SELECT_PROJECT_SIMULATION, '');
+            return;
+        }
+        let prj = this.edam_project_manager.get_project(selected_project);
+        if (prj === undefined) {
+            return '';
+        }
+        let toplevel_path = prj.toplevel_path;
+        return toplevel_path;
+    }
+
+
+    async get_toplevel_selected_prj(verbose: boolean) {
+        let selected_project = this.edam_project_manager.selected_project;
+        if (selected_project === "" && verbose === true) {
+            this.output_channel.show_message(ERROR_CODE.SELECT_PROJECT_SIMULATION, '');
+            return;
+        }
+        try {
+            let prj = this.edam_project_manager.get_project(selected_project);
+            let toplevel_path = prj.toplevel_path;
+            if (toplevel_path === undefined) {
+                return '';
+            }
+            let toplevel = await utils.get_toplevel_from_path(toplevel_path);
+            if ((toplevel === '' || toplevel === undefined) && verbose === true) {
+                this.output_channel.show_message(ERROR_CODE.SELECT_TOPLEVEL, '');
+            }
+            return toplevel;
+        }
+        catch {
+            return '';
+        }
+    }
+
+    get_selected_prj() {
+        let selected_project = this.edam_project_manager.selected_project;
+        let prj = this.edam_project_manager.get_project(selected_project);
+        return prj;
+    }
+
 }

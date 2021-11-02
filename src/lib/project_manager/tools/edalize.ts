@@ -46,16 +46,58 @@ export class Edalize extends tool_base.Tool_base {
     private waveform_path;
     private complete_waveform_path = '';
     private childp;
+    private edam_project_manager;
 
-    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel, config_reader) {
+    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel, 
+                config_reader, config_file, edam_project_manager) {
         super(context, output_channel);
+        this.edam_project_manager = edam_project_manager;
         const homedir = require('os').homedir();
         this.waveform_path = path_lib.join(homedir, '.teroshdl', 'build', 'waveform');
         // this.waveform_path = `${__dirname}${this.folder_sep}waveform`;
+        this.config_file = config_file;
         this.config_reader = config_reader;
     }
 
-    async run_simulation(edam, testname, gui) {
+    ////////////////////////////////////////////////////////////////////////////
+    // Get test list
+    ////////////////////////////////////////////////////////////////////////////
+    async get_test_list() {
+        let testname = await this.get_toplevel_selected_prj(false);
+        if (testname === '') {
+            return [];
+        }
+        let toplevel_path = this.get_toplevel_path_selected_prj();
+        let single_test: TestItem = {
+            test_type: 'edalize',
+            name: testname,
+            location: {
+                file_name: toplevel_path,
+                length: 0,
+                offset: 0
+            }
+        };
+        return [single_test];
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Run simulation
+    ////////////////////////////////////////////////////////////////////////////
+    async run(testnames, gui){
+        let selected_project = this.get_selected_prj();
+        let edam = selected_project.export_edam_file();
+
+        let tool_configuration = this.config_file.get_config_of_selected_tool();
+        edam.tool_options = tool_configuration;
+        edam.toplevel = testnames;
+
+        let result = await this.run_edalize(edam, testnames, gui);
+
+        return result;
+    }
+
+    async run_edalize(edam, testname, gui) {
+
         let check = await this.check_requisites();
         if (check === false) {
             return [];
@@ -245,22 +287,9 @@ export class Edalize extends tool_base.Tool_base {
         if (python3_path_exec === undefined) {
             return undefined;
         }
-        let simulator_config = this.get_simulator_config(simulator, edam);
-        let command = `${simulator_config} ${python3_path_exec} "${python3_edalize_script}" "${edam_path}" "${simulator}" "${installation_path}" "${gui_str}" "${developer_mode}" "${waveform_viewer}"`;
+        let command = `${python3_path_exec} "${python3_edalize_script}" "${edam_path}" "${simulator}" "${installation_path}" "${gui_str}" "${developer_mode}" "${waveform_viewer}"`;
 
         return command;
-    }
-
-    get_simulator_config(simulator_name, edam) {
-        let cmd = '';
-        // let installation_path = edam.tool_options[simulator_name].installation_path;
-        // let cmd = '';
-        // if (installation_path !== ''){
-        //   if (simulator_name === 'modelsim'){
-        //     cmd = `${this.exp} MODEL_TECH=${installation_path} ${this.more}`;
-        //   }
-        // }
-        return cmd;
     }
 
     configure_waveform_path(edam, simulator_name) {

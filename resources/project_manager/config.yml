@@ -719,6 +719,25 @@ vunit:
     #     description: "VUnit runner. Name of the Python file exporting a VUnitRunner class (must derive from edalize.vunit_hooks.VUnitHooks) that is used to configure and execute test. This allows very customized test control via VUnit’s Python-interfaces."
     #     type: input
 
+osvvm:
+    title: OSVVM
+    description: "Open Source VHDL Verification Methodology (OSVVM)."
+    type: framework
+    installation_path:
+        description: "Installation path:"
+        type: input
+    simulator:
+        description: "Simulator:"
+        type: select
+        options: 
+            activehdl: "Aldec Active-HDL"
+            ghdl: "GHDL"
+            modelsim: "Mentor Graphics ModelSim/Questa"
+            rivierapro: "RivieraPro"
+            vcs: "VCS"
+            xsim: "XSIM"
+            xcelium: "Xcelium"
+
 xcelium:
     title: Xcelium
     description: "Xcelium simulator from Cadence Design Systems."

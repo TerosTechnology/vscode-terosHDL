@@ -25,10 +25,9 @@ import * as path from "path";
 import * as Config_view from "./config_view";
 import * as Edam from "./edam_project";
 import * as Config from "./config";
-import * as Vunit from "./tools/vunit";
-import * as Cocotb from "./tools/cocotb";
-import * as Edalize from "./tools/edalize";
+import * as Tool_manager from "./tools/tool_manager";
 import * as Tree_types from "./tree_types";
+import * as Tree_data_provider from "./tree_data_provider";
 import * as utils from "./utils";
 import * as utils_vscode from "../utils/utils";
 import * as Dependencies_viewer from "../dependencies_viewer/dependencies_viewer";
@@ -46,20 +45,13 @@ const fs = require("fs");
 const os = require("os");
 
 export class Project_manager {
-    tree!: TreeDataProvider;
+    tree!: Tree_data_provider.TreeDataProvider;
     projects: Tree_types.TreeItem[] = [];
     config_view;
     edam_project_manager;
     config_file;
     workspace_folder;
-    private vunit_test_list: {}[] = [];
-    private cocotb_test_list: Cocotb.TestItem[] = [];
-    private vunit: Vunit.Vunit;
-    private cocotb: Cocotb.Cocotb;
-    private edalize: Edalize.Edalize;
-    private last_vunit_results;
-    private last_cocotb_results;
-    private last_edalize_results;
+    private last_results;
     private init: boolean = false;
     private treeview;
     private init_test_list: boolean = false;
@@ -69,21 +61,23 @@ export class Project_manager {
     private output_channel: Output_channel_lib.Output_channel;
     private config_reader: config_reader_lib.Config_reader;
     private netlist_viewer_manager: netlist_viewer.default;
+    private tool_manager: Tool_manager.Tool_manager;
 
     constructor(context: vscode.ExtensionContext, output_channel, config_reader: config_reader_lib.Config_reader) {
         this.config_reader = config_reader;
         this.output_channel = output_channel;
         this.context = context;
-        this.vunit = new Vunit.Vunit(context, output_channel);
-        this.cocotb = new Cocotb.Cocotb(context, output_channel);
-        this.edalize = new Edalize.Edalize(context, output_channel, config_reader);
         this.edam_project_manager = new Edam.Edam_project_manager(output_channel);
+
         this.config_file = new Config.Config(context.extensionPath);
         this.workspace_folder = this.config_file.get_workspace_folder();
         this.config_view = new Config_view.default(context, this.config_file);
         this.netlist_viewer_manager = new netlist_viewer.default(context, output_channel, config_reader, true);
+        this.tool_manager = new Tool_manager.Tool_manager(context, output_channel, 
+                    this.config_file, config_reader, this.edam_project_manager);
 
-        this.tree = new TreeDataProvider();
+
+        this.tree = new Tree_data_provider.TreeDataProvider();
         this.set_default_projects();
 
         this.treeview = vscode.window.createTreeView("teroshdl_tree_view", {
@@ -105,11 +99,10 @@ export class Project_manager {
         vscode.commands.registerCommand("teroshdl_tree_view.config_check", () => this.config_check());
         vscode.commands.registerCommand("teroshdl_tree_view.simulate", () => this.simulate());
         vscode.commands.registerCommand("teroshdl_tree_view.set_top", (item) => this.set_top(item));
-        vscode.commands.registerCommand("teroshdl_tree_view.run_vunit_test", (item) => this.run_vunit_test(item));
-        vscode.commands.registerCommand("teroshdl_tree_view.run_cocotb_test", (item) => this.run_cocotb_test(item));
-        vscode.commands.registerCommand("teroshdl_tree_view.run_edalize_test", (item) => this.run_edalize_test(item));
-        vscode.commands.registerCommand("teroshdl_tree_view.run_vunit_test_gui", (item) => this.run_vunit_test_gui(item));
-        vscode.commands.registerCommand("teroshdl_tree_view.run_edalize_test_gui", (item) => this.run_edalize_test_gui(item));
+
+        vscode.commands.registerCommand("teroshdl_tree_view.run_tool_no_gui", (item) => this.run_tool_no_gui(item));
+        vscode.commands.registerCommand("teroshdl_tree_view.run_tool_with_gui", (item) => this.run_tool_with_gui(item));
+
         vscode.commands.registerCommand("teroshdl_tree_view.go_to_code", (item) => this.go_to_code(item));
         vscode.commands.registerCommand("teroshdl_tree_view.refresh_tests", () => this.refresh_tests());
         vscode.commands.registerCommand("teroshdl_tree_view.save_project", (item) => this.save_project_to_file(item));
@@ -125,7 +118,6 @@ export class Project_manager {
         vscode.commands.registerCommand('teroshdl_dependencies_tree_view.refreshEntry', () => this.hdl_dependencies_provider.refresh());
         vscode.commands.registerCommand("teroshdl_dependencies_tree_view.open_file", (item) => this.open_file(item));
         vscode.commands.registerCommand("teroshdl_dependencies_tree_view.dependencies_viewer", () => this.open_dependencies_viewer());
-
     }
 
     start_vcd(item) {
@@ -307,9 +299,7 @@ export class Project_manager {
     }
 
     async refresh_tests() {
-        this.last_vunit_results = [];
-        this.last_cocotb_results = [];
-        this.last_edalize_results = [];
+        this.last_results = [];
         this.update_tree();
     }
 
@@ -350,30 +340,19 @@ export class Project_manager {
         this.refresh_lint();
     }
 
-    async run_vunit_test(item) {
-        let tests: string[] = [item.label];
+    async run_tool_no_gui(item) {
+        let tests: string[];
+        if (item === undefined) {
+            tests = [];
+        }
+        else {
+            tests = [item.label];
+        }
         let gui = false;
-        this.run_vunit_tests(tests, gui);
+        this.run_tool(tests, gui);
     }
 
-    async run_vunit_test_gui(item) {
-        let tests: string[] = [item.label];
-        let gui = true;
-        this.run_vunit_tests(tests, gui);
-    }
-
-    async run_cocotb_test(item) {
-        let tests: string[] = [item.label];
-        this.run_cocotb_tests(tests);
-    }
-
-    async run_edalize_test(item) {
-        let tests: string[] = [item.label];
-        let gui = false;
-        this.run_edalize_tests(tests, gui);
-    }
-
-    async run_edalize_test_gui(item) {
+    async run_tool_with_gui(item) {
         let tests: string[];
         if (item === undefined) {
             tests = [];
@@ -382,7 +361,23 @@ export class Project_manager {
             tests = [item.label];
         }
         let gui = true;
-        this.run_edalize_tests(tests, gui);
+        this.run_tool(tests, gui);
+    }
+
+    async run_tool(tests, gui) {
+        let results = <[]>(
+            await this.tool_manager.run(
+                tests,
+                gui
+            )
+        );
+
+        this.last_results = results;
+        let force_fail_all = false;
+        if (results.length === 0) {
+            force_fail_all = true;
+        }
+        this.set_results(force_fail_all);
     }
 
     async simulate() {
@@ -400,19 +395,8 @@ export class Project_manager {
             this.output_channel.show_message(ERROR_CODE.SELECT_TOPLEVELPATH, '');
             return;
         }
-        let tool_configuration = this.config_file.get_config_of_selected_tool();
-        if (tool_configuration === undefined) {
-            return;
-        }
-        if ('vunit' in tool_configuration) {
-            this.run_vunit_tests([], false);
-        }
-        else if ('cocotb' in tool_configuration) {
-            this.run_cocotb_tests([]);
-        }
-        else {
-            this.run_edalize_tests([], false);
-        }
+
+        this.run_tool([], false);
     }
 
     async get_toplevel_selected_prj(verbose: boolean) {
@@ -450,67 +434,6 @@ export class Project_manager {
         }
         let toplevel_path = prj.toplevel_path;
         return toplevel_path;
-    }
-
-    async run_vunit_tests(tests, gui) {
-        let selected_tool_configuration = this.config_file.get_config_of_selected_tool();
-        let all_tool_configuration = this.config_file.get_all_config_tool();
-
-        let selected_project = this.edam_project_manager.selected_project;
-        let prj = this.edam_project_manager.get_project(selected_project);
-
-        let runpy_path = "";
-        if (prj.relative_path !== "" && prj.relative_path !== undefined) {
-            runpy_path = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
-        } else {
-            runpy_path = prj.toplevel_path;
-        }
-
-        let results = <[]>(
-            await this.vunit.run_simulation(
-                selected_tool_configuration,
-                all_tool_configuration,
-                runpy_path,
-                tests,
-                gui
-            )
-        );
-        this.last_vunit_results = results;
-        let force_fail_all = false;
-        if (results.length === 0) {
-            force_fail_all = true;
-        }
-        this.set_results(force_fail_all);
-    }
-
-    async run_edalize_tests(tests, gui) {
-        let selected_project = this.edam_project_manager.selected_project;
-        let prj = this.edam_project_manager.get_project(selected_project);
-        let edam = prj.export_edam_file();
-        let tool_configuration = this.config_file.get_config_of_selected_tool();
-        edam.tool_options = tool_configuration;
-
-        let toplevel = await this.get_toplevel_selected_prj(false);;
-        edam.toplevel = toplevel;
-        let results = <[]>await this.edalize.run_simulation(edam, toplevel, gui);
-        this.last_edalize_results = results;
-
-        let force_fail_all = false;
-        if (results.length === 0) {
-            force_fail_all = true;
-        }
-        this.set_results(force_fail_all);
-    }
-
-    async run_cocotb_tests(tests) {
-        let results = <[]>await this.cocotb.run_simulation(tests, this.cocotb_test_list);
-
-        this.last_cocotb_results = results;
-        let force_fail_all = false;
-        if (results.length === 0) {
-            force_fail_all = true;
-        }
-        this.set_results(force_fail_all);
     }
 
     getline_numberof_char(path, index) {
@@ -578,15 +501,7 @@ export class Project_manager {
         if (tool_configuration === undefined) {
             return [];
         }
-        if ('vunit' in tool_configuration) {
-            this.tree.set_results(this.last_vunit_results, force_fail_all);
-        }
-        else if ('cocotb' in tool_configuration) {
-            this.tree.set_results(this.last_cocotb_results, force_fail_all);
-        }
-        else {
-            this.tree.set_results(this.last_edalize_results, force_fail_all);
-        }
+        this.tree.set_results(this.last_results, force_fail_all);
     }
 
     set_top_from_project(project_name, library_name, path) {
@@ -610,9 +525,7 @@ export class Project_manager {
     }
 
     stop() {
-        this.vunit.stop_test();
-        this.cocotb.stop_test();
-        this.edalize.stop_test();
+        this.tool_manager.stop();
     }
 
     async config() {
@@ -640,24 +553,14 @@ export class Project_manager {
         this.set_default_tops();
         this.set_results(false);
 
-        let tool_configuration = this.config_file.get_config_of_selected_tool();
         let test_list: {}[] = [{
             attributes: undefined,
             test_type: undefined,
             name: 'Tool is not configured',
             location: undefined
         }];
-        if (tool_configuration !== undefined) {
-            if ('vunit' in tool_configuration) {
-                test_list = await this.get_vunit_test_list(this.init_test_list);
-            }
-            else if ('cocotb' in tool_configuration) {
-                test_list = await this.get_cocotb_test_list();
-            }
-            else {
-                test_list = await this.get_edalize_test_list();
-            }
-        }
+
+        test_list = await this.tool_manager.get_test_list();
         // Show the test list
         this.tree.update_super_tree(normalized_prjs, test_list);
 
@@ -1020,99 +923,6 @@ export class Project_manager {
         });
     }
 
-    async get_vunit_test_list(show_error_message = true) {
-        let tests;
-        try {
-            let selected_project = this.edam_project_manager.selected_project;
-            let prj = this.edam_project_manager.get_project(selected_project);
-            let runpy = "";
-            if (prj.relative_path !== "" && prj.relative_path !== undefined) {
-                runpy = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
-            } else {
-                runpy = prj.toplevel_path;
-            }
-
-            if (runpy !== undefined) {
-                tests = await this.vunit.get_test_list(runpy, show_error_message);
-            } else {
-                this.vunit_test_list = [];
-                return [];
-            }
-            let tests_vunit: {}[] = [];
-            for (let i = 0; i < tests.length; i++) {
-                let element = tests[i];
-                element.test_type = "vunit";
-                tests_vunit.push(element);
-            }
-
-            if (tests_vunit.length === 0) {
-                let single_test = {
-                    test_type: "vunit",
-                    name: "Not found.",
-                    location: undefined,
-                };
-                tests_vunit = [single_test];
-            }
-
-            this.vunit_test_list = tests_vunit;
-            return tests_vunit;
-        } catch (e) {
-            let single_test = {
-                name: "Not found.",
-                location: undefined,
-            };
-            return [single_test];
-        }
-    }
-
-    async get_edalize_test_list() {
-        let testname = await this.get_toplevel_selected_prj(false);
-        if (testname === '') {
-            return [];
-        }
-        let toplevel_path = this.get_toplevel_path_selected_prj();
-        let single_test: Edalize.TestItem = {
-            test_type: 'edalize',
-            name: testname,
-            location: {
-                file_name: toplevel_path,
-                length: 0,
-                offset: 0
-            }
-        };
-        return [single_test];
-    }
-
-    async get_cocotb_test_list() {
-        let single_test: Cocotb.TestItem = {
-            attributes: undefined,
-            test_type: undefined,
-            name: 'Cocotb tests not found.',
-            location: undefined
-        };
-
-        try {
-            let selected_project = this.edam_project_manager.selected_project;
-            let prj = this.edam_project_manager.get_project(selected_project);
-            let makefile = "";
-            if (prj.relative_path !== "" && prj.relative_path !== undefined) {
-                makefile = `${prj.relative_path}${path_lib.sep}${prj.toplevel_path}`;
-            } else {
-                makefile = prj.toplevel_path;
-            }
-
-            this.cocotb_test_list = await this.cocotb.get_test_list(makefile);
-
-            if (this.cocotb_test_list.length === 0) {
-                this.cocotb_test_list = [single_test];
-            }
-
-            return this.cocotb_test_list;
-        }
-        catch (e) {
-            return [single_test];
-        }
-    }
 
     load_project_from_edam() { }
 
@@ -1223,279 +1033,3 @@ export class Project_manager {
         this.config_file.set_tool(tool);
     }
 }
-
-class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.TreeItem> {
-    private _onDidChangeTreeData: vscode.EventEmitter<Tree_types.TreeItem | undefined | null | void> = new vscode.EventEmitter<
-        Tree_types.TreeItem | undefined | null | void
-    >();
-    readonly onDidChangeTreeData: vscode.Event<Tree_types.TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
-
-    data: Tree_types.TreeItem[] = [];
-    projects: Tree_types.TreeItem[] = [];
-    test_list_items: Tree_types.Test_item[] = [];
-    build_list_items: Tree_types.Build_item[] = [];
-
-    init_tree() {
-        this.data = [new Tree_types.TreeItem("TerosHDL Projects", []), new Tree_types.TreeItem("Runs list", []),
-        new Tree_types.TreeItem("Output products", [])];
-        this.refresh();
-    }
-
-    update_super_tree(projects, test_list) {
-        this.get_test_list_items(test_list);
-        this.get_build_list_items(test_list);
-        this.projects = [];
-        for (let i = 0; i < projects.length; i++) {
-            const element = projects[i];
-            let prj = new Project(element.name, element.libraries);
-            let prj_data = prj.get_prj();
-            this.projects.push(prj_data);
-        }
-        this.update_tree();
-    }
-
-    set_results(results, force_fail_all) {
-        if (results === undefined) {
-            return;
-        }
-        if (force_fail_all === true) {
-            this.set_fail_all_tests();
-            return;
-        }
-        for (let i = 0; i < this.test_list_items.length; ++i) {
-            const test = this.test_list_items[i];
-            for (let j = 0; j < results.length; j++) {
-                const result = results[j];
-                if (test.label === result.name) {
-                    if (result.pass === false) {
-                        let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "failed.svg");
-                        let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "failed.svg");
-                        test.iconPath = {
-                            light: path_icon_light,
-                            dark: path_icon_dark,
-                        };
-                    } else {
-                        let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "passed.svg");
-                        let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "passed.svg");
-                        test.iconPath = {
-                            light: path_icon_light,
-                            dark: path_icon_dark,
-                        };
-                    }
-                }
-            }
-        }
-        this.get_build_list_items(results);
-        this.update_tree();
-    }
-
-    set_fail_all_tests() {
-        for (let i = 0; i < this.test_list_items.length; ++i) {
-            const test = this.test_list_items[i];
-            let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "failed.svg");
-            let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "failed.svg");
-            test.iconPath = {
-                light: path_icon_light,
-                dark: path_icon_dark,
-            };
-        }
-        this.update_tree();
-    }
-
-    get_test_list_items(test_list) {
-        let test_list_items: Tree_types.Test_item[] = [];
-        for (let i = 0; i < test_list.length; i++) {
-            const element = test_list[i];
-            if (element.name === undefined) {
-                return test_list_items;
-            }
-            let item = new Tree_types.Test_item(element.name, element.location);
-            if ("test_type" in element) {
-                if (element.test_type !== undefined) {
-                    item.contextValue = `test_${element.test_type}`;
-                }
-            }
-            test_list_items.push(item);
-        }
-        this.test_list_items = test_list_items;
-    }
-
-    get_build_list_items(build_list) {
-        if (build_list === undefined || build_list.length === 0 || build_list[0].builds === undefined) {
-            this.build_list_items = [];
-            return;
-        }
-        let build_i = build_list[0].builds;
-        let build_list_items: Tree_types.Build_item[] = [];
-        for (let i = 0; i < build_i.length; i++) {
-            const element = build_i[i];
-            let item = new Tree_types.Build_item(element.location, element.name);
-            build_list_items.push(item);
-        }
-        this.build_list_items = build_list_items;
-    }
-
-    add_project(name: string, sources) {
-        let prj = new Project(name, sources);
-        let prj_data = prj.get_prj();
-        this.projects.push(prj_data);
-        this.update_tree();
-    }
-
-    select_project(project_name) {
-        //Search project
-        for (let i = 0; i < this.projects.length; ++i) {
-            if (this.projects[i].project_name === project_name) {
-                let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "select.svg");
-                let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "select.svg");
-                this.projects[i].iconPath = {
-                    light: path_icon_light,
-                    dark: path_icon_dark,
-                };
-            } else {
-                let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "project.svg");
-                let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "project.svg");
-                this.projects[i].iconPath = {
-                    light: path_icon_light,
-                    dark: path_icon_dark,
-                };
-            }
-        }
-        this.update_tree();
-    }
-
-    set_icon_select_file(item) {
-        let path_icon_light = path.join(__filename, "..", "..", "..", "..", "resources", "light", "select.svg");
-        let path_icon_dark = path.join(__filename, "..", "..", "..", "..", "resources", "dark", "select.svg");
-        item.iconPath = {
-            light: path_icon_light,
-            dark: path_icon_dark,
-        };
-    }
-
-    set_icon_no_select_file(item) {
-        let item_path = item.path;
-        let path_icon_light = utils.get_icon_light(item.path);
-        let path_icon_dark = utils.get_icon_dark(item.path);
-
-        item.iconPath = {
-            light: path_icon_light,
-            dark: path_icon_dark,
-        };
-    }
-
-    select_top(project_name, library, path) {
-        for (let i = 0; i < this.projects.length; ++i) {
-            if (this.projects[i].project_name === project_name) {
-                let libraries_and_files = this.projects[i].children;
-                for (let j = 0; libraries_and_files !== undefined && j < libraries_and_files.length; j++) {
-                    const lib_or_file = libraries_and_files[j];
-                    if (
-                        lib_or_file.contextValue === "hdl_source" &&
-                        lib_or_file.library_name === library &&
-                        lib_or_file.path === path
-                    ) {
-                        this.set_icon_select_file(lib_or_file);
-                    } else if (lib_or_file.contextValue === "hdl_source") {
-                        this.set_icon_no_select_file(lib_or_file);
-                    } else {
-                        let lib_files = lib_or_file.children;
-                        for (let m = 0; lib_files !== undefined && m < lib_files.length; m++) {
-                            let file = lib_files[m];
-                            if (file.contextValue === "hdl_source" && file.library_name === library && file.path === path) {
-                                this.set_icon_select_file(file);
-                            } else if (file.contextValue === "hdl_source") {
-                                this.set_icon_no_select_file(file);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        this.update_tree();
-    }
-
-    update_tree() {
-        this.data = [
-            new Tree_types.TreeItem("TerosHDL Projects", this.projects),
-            new Tree_types.Test_title_item("Runs list", this.test_list_items),
-            new Tree_types.Build_title_item("Output products", this.build_list_items),
-        ];
-        this.refresh();
-    }
-
-    refresh(): void {
-        this._onDidChangeTreeData.fire();
-    }
-
-    getTreeItem(element: Tree_types.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
-        return element;
-    }
-
-    getChildren(element?: Tree_types.TreeItem | undefined): vscode.ProviderResult<Tree_types.TreeItem[]> {
-        if (element === undefined) {
-            return this.data;
-        }
-        return element.children;
-    }
-}
-
-class Project {
-    private name: string = "";
-    data: Tree_types.TreeItem;
-
-    constructor(name: string, libraries) {
-        this.name = name;
-        if (libraries !== undefined) {
-            let sources_items = this.get_sources(libraries);
-            this.data = new Tree_types.Project_item(name, sources_items);
-        } else {
-            this.data = new Tree_types.Project_item(name, []);
-        }
-    }
-
-    get_prj() {
-        return this.data;
-    }
-
-    get_sources(sources) {
-        let libraries: (Tree_types.Library_item | Tree_types.Hdl_item)[] = [];
-        let files_no_lib: (Tree_types.Library_item | Tree_types.Hdl_item)[] = [];
-        for (let i = 0; i < sources.length; ++i) {
-            if (sources[i].name === "") {
-                let sources_no_lib = this.get_no_library(sources[i].name, sources[i].files);
-                for (let i = 0; i < sources_no_lib.length; ++i) {
-                    files_no_lib.push(sources_no_lib[i]);
-                }
-            } else {
-                let library = this.get_library(sources[i].name, sources[i].files);
-                libraries.push(library);
-            }
-        }
-        libraries = libraries.concat(files_no_lib);
-        return libraries;
-    }
-
-    get_library(library_name, sources): Tree_types.Library_item {
-        let tree: Tree_types.Hdl_item[] = [];
-        for (let i = 0; i < sources.length; ++i) {
-            if (sources[i] !== '') {
-                let item_tree = new Tree_types.Hdl_item(sources[i], library_name, this.name);
-                tree.push(item_tree);
-            }
-        }
-        let library = new Tree_types.Library_item(library_name, this.name, tree);
-        return library;
-    }
-
-    get_no_library(library_name, sources): Tree_types.Hdl_item[] {
-        let tree: Tree_types.Hdl_item[] = [];
-        for (let i = 0; i < sources.length; ++i) {
-            let item_tree = new Tree_types.Hdl_item(sources[i], library_name, this.name);
-            tree.push(item_tree);
-        }
-        return tree;
-    }
-}
-
-
