@@ -473,8 +473,8 @@ osvvm:
     title: OSVVM
     description: "Open Source VHDL Verification Methodology (OSVVM)."
     type: framework
-    installation_path:
-        description: "Installation path:"
+    libraries_path:
+        description: "OSVVM libraries path, e.g: /home/user/git/OsvvmLibraries"
         type: input
     simulator:
         description: "Simulator:"

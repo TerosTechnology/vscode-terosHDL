@@ -96,12 +96,20 @@ export class Edam_project_manager {
   }
 
   async create_project_from_edam(edam, relative_path = '') {
+    const resolve = require('path').resolve;
+
     let project_name = edam.name;
     let toplevel_library = edam.toplevel_library;
     let toplevel_path = edam.toplevel_path;
     let toplevel = edam.toplevel;
     if (toplevel_path === undefined) {
       toplevel_path = '';
+    }
+    else {
+      if (toplevel_path !== '' && path_lib.isAbsolute(toplevel_path) === false) {
+        let full_path = path_lib.join(relative_path, toplevel_path);
+        toplevel_path = resolve(full_path);
+      }
     }
     if (toplevel_library === undefined) {
       toplevel_library = '';
@@ -121,7 +129,6 @@ export class Edam_project_manager {
       const file = files[i];
       const filename = files[i].name;
       //Relative path to absolute
-      let resolve = require('path').resolve;
       let absolute_path = filename;
       if (relative_path !== '' && path_lib.isAbsolute(absolute_path) === false) {
         let full_path = relative_path + path_lib.sep + filename;
