@@ -20,6 +20,11 @@ export class TreeDataProvider implements vscode.TreeDataProvider<Tree_types.Tree
         this.refresh();
     }
 
+    set_test_list(test_list) {
+        this.get_test_list_items(test_list);
+        this.update_tree();
+    }
+
     update_super_tree(projects, test_list) {
         this.get_test_list_items(test_list);
         this.get_build_list_items(test_list);

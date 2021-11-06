@@ -102,7 +102,7 @@ export class Project_manager {
 
         vscode.commands.registerCommand("teroshdl_tree_view.run_tool_no_gui", (item) => this.run_tool_no_gui(item));
         vscode.commands.registerCommand("teroshdl_tree_view.run_tool_with_gui", (item) => this.run_tool_with_gui(item));
-        vscode.commands.registerCommand("teroshdl_tree_view.clear", (item) => this.clear(item));
+        vscode.commands.registerCommand("teroshdl_tree_view.clear", (item) => this.clear());
 
         vscode.commands.registerCommand("teroshdl_tree_view.go_to_code", (item) => this.go_to_code(item));
         vscode.commands.registerCommand("teroshdl_tree_view.refresh_tests", () => this.refresh_tests());
@@ -382,6 +382,13 @@ export class Project_manager {
         if (results.length === 0) {
             force_fail_all = true;
         }
+
+        let rerun_get_testlist = this.tool_manager.get_rerun_testlist();
+        if (rerun_get_testlist === true) {
+            let test_list = await this.tool_manager.get_test_list();
+            this.tree.set_test_list(test_list);
+        }
+
         this.set_results(force_fail_all);
     }
 

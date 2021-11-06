@@ -35,10 +35,16 @@ export class Tool_manager {
     constructor(context, output_channel, config_file, config_reader, edam_project_manager){
         this.edam_project_manager = edam_project_manager;
         this.vunit = new Vunit.Vunit(context, output_channel, edam_project_manager, config_file);
-        this.osvvm = new Osvvm.Osvvm(context, output_channel, edam_project_manager, config_file);
+        this.osvvm = new Osvvm.Osvvm(context, output_channel, edam_project_manager, config_file, config_reader);
         this.cocotb = new Cocotb.Cocotb(context, output_channel, edam_project_manager);
         this.edalize = new Edalize.Edalize(context, output_channel, config_reader, config_file, edam_project_manager);
         this.config_file = config_file;
+    }
+
+    get_rerun_testlist() {
+        let tool = this.get_tool();
+        let rerun_testlist = tool.get_rerun_testlist();
+        return rerun_testlist;
     }
 
     clear(){

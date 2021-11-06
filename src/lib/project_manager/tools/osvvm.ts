@@ -36,13 +36,17 @@ export class Osvvm extends tool_base.Tool_base {
     private childp;
     private edam_project_manager;
     private config_file;
+    private config_reader;
     private build_folder;
 
     constructor(context: vscode.ExtensionContext,
-        output_channel: Output_channel_lib.Output_channel, edam_project_manager, config_file) {
+        output_channel: Output_channel_lib.Output_channel, edam_project_manager, config_file, config_reader) {
         super(context, output_channel);
+        this.rerun_testlist = true;
+
         this.edam_project_manager = edam_project_manager;
         this.config_file = config_file;
+        this.config_reader = config_reader;
 
         const homedir = require('os').homedir();
         this.build_folder = path_lib.join(homedir, '.teroshdl', 'osvvm_build');
@@ -58,16 +62,21 @@ export class Osvvm extends tool_base.Tool_base {
     // Get test list
     ////////////////////////////////////////////////////////////////////////////
     async get_test_list() {
-        let test_list = await this.get_result();
-        let tests : any[]= [];
-        for (let i = 0; i < test_list.length; i++) {
-            const test = test_list[i];
-            let single_test = {
-                test_type: "osvvm",
-                name: test['name'],
-                location: undefined,
-            };
-            tests.push(single_test);
+        let tests: any[] = [];
+        try {
+            let test_list = await this.get_result();
+            for (let i = 0; i < test_list.length; i++) {
+                const test = test_list[i];
+                let single_test = {
+                    test_type: "osvvm",
+                    name: test['name'],
+                    location: undefined,
+                };
+                tests.push(single_test);
+            }
+        }
+        catch (e) {
+            tests = [];
         }
 
         return tests;
@@ -85,11 +94,6 @@ export class Osvvm extends tool_base.Tool_base {
 
         let pro_file = prj.toplevel_path;
 
-        //Remove build path
-        // const fs = require('fs');
-        // fs.rmdirSync(build_directory, { recursive: true });
-
-
         let build_directory = this.build_folder;
         let extra_build = 'build /home/carlos/repo/OsvvmLibraries/OsvvmLibraries.pro';
         if (fs.existsSync(build_directory)) {
@@ -99,16 +103,33 @@ export class Osvvm extends tool_base.Tool_base {
             fs.mkdirSync(build_directory, { recursive: true });
         }
 
+        let osvvm_config = this.config_reader.get_config_fields('osvvm');
+        let osvvm_simulator_name = osvvm_config['simulator'];
+        let osvvm_installation_path = osvvm_config['installation_path'];
+        let scripts_base_dir = path_lib.join(osvvm_installation_path, 'Scripts');
+
+        let config_simulator_tcl = path_lib.join(scripts_base_dir, 'StartUp.tcl');
+        if (osvvm_simulator_name === 'ghdl') {
+            config_simulator_tcl = path_lib.join(scripts_base_dir, 'StartUp.tcl');
+        }
+        else if (osvvm_simulator_name === 'modelsim') {
+            config_simulator_tcl = path_lib.join(scripts_base_dir, 'StartUp.tcl');
+        }
+
         let pro_top_file = `
-source /home/carlos/repo/OsvvmLibraries/Scripts/StartUp.tcl
+source ${config_simulator_tcl}
 ${extra_build}
 build ${pro_file}\n
+exit
 `;
 
         let pro_top_path = path_lib.join(this.build_folder, 'teroshdl_project_osvvm.pro');
         fs.writeFileSync(pro_top_path, pro_top_file);
 
         let command = `tclsh ${pro_top_path}`;
+        if (osvvm_simulator_name === 'modelsim') {
+            command = `vsim -c -do ${pro_top_path}`;  
+        }
         let result = await this.run_command(command, '');
         return result;
     }
@@ -146,7 +167,10 @@ build ${pro_file}\n
     async get_result() {
         let result_path = path_lib.join(this.build_folder, 'sim_osvvm_project.yml');
         const yaml = require('js-yaml');
-        let results : any[]= [];
+        let results: any[] = [];
+        if (fs.existsSync(result_path) === false) {
+            return results;
+        }
         try {
             const result_yaml = yaml.load(fs.readFileSync(result_path, 'utf8'));
             const test_suites = result_yaml['TestSuites'];
@@ -171,7 +195,7 @@ build ${pro_file}\n
                 
             }
 
-        } catch (e) {console.log(e);}
+        } catch (e) {}
         return results;
     }
 

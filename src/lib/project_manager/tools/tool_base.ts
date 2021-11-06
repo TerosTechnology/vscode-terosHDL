@@ -39,6 +39,7 @@ export abstract class Tool_base {
     private output_channel : Output_channel_lib.Output_channel;
     private config_reader : config_reader_lib.Config_reader;
     private edam_project_manager;
+    private rerun_testlist: boolean = false;
 
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
             edam_project_manager){
@@ -63,6 +64,10 @@ export abstract class Tool_base {
 
     abstract run();
     abstract stop();
+
+    get_rerun_testlist() {
+        return this.rerun_testlist;
+    }
 
     set_python_path(python_path){
       this.python_path = python_path;
