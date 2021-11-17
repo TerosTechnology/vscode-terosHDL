@@ -16,7 +16,7 @@ jobs:
         id: build
         run: |
           sudo apt-get install python3-sphinx
-          sudo npm install -g vsce
+          npm install -g vsce
           cd ..
           git clone https://github.com/TerosTechnology/colibri.git
           cd vscode-terosHDL
