@@ -110,23 +110,21 @@
             }
         },
         "menus": {
-            "explorer/context": [{
-                "command": "teroshdl.start_vcd",
-                "when": "resourceLangId == vcd",
-                "group": "navigation"
-            }],
-            "view/title": [{
+            "explorer/context": [
+                {
+                    "command": "teroshdl.start_vcd",
+                    "when": "resourceLangId == vcd || resourceLangId == ghw",
+                    "group": "navigation"
+                }
+            ],
+            "view/title": [
+                {
                     "command": "teroshdl_dependencies_tree_view.dependencies_viewer",
                     "when": "view == teroshdl_dependencies_tree_view",
                     "group": "navigation"
                 },
                 {
                     "command": "teroshdl_tree_view.simulate",
-                    "when": "view == teroshdl_tree_view",
-                    "group": "navigation"
-                },
-                {
-                    "command": "teroshdl_tree_view.run_edalize_test_gui",
                     "when": "view == teroshdl_tree_view",
                     "group": "navigation"
                 },
@@ -670,7 +668,15 @@
             },
             {
                 "id": "vcd",
-                "extensions": [".vcd"]
+                "extensions": [
+                    ".vcd"
+                ]
+            },
+            {
+                "id": "ghw",
+                "extensions": [
+                    ".ghw"
+                ]
             },
             {
                 "id": "tcl",
@@ -801,7 +807,8 @@
         "tmp": "0.2.1",
         "vscode-languageclient": "7.0.0-next.6",
         "xml2js": "0.4.23",
-        "open": "8.3.0"
+        "open": "8.3.0",
+        "js-yaml": "^3.13.1"
     },
     "devDependencies": {
         "@types/glob": "^7.1.1",

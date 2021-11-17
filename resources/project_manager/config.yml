@@ -63,6 +63,12 @@ documentation:
     title: Documentation settings
     description: ""
     type: "none"
+    language:
+        description: "Documentation language:"
+        type: select
+        options:
+            english: "English"
+            russian: "Russian"
     symbol_vhdl:
         description: "Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code>"
         type: input
@@ -241,12 +247,6 @@ vsg:
     configuration:
         description: "JSON or YAML configuration file."
         type: input
-
-
-
-
-
-
 
 ascentlint:
     title: Ascentlint
