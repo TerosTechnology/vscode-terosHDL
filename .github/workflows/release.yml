@@ -17,11 +17,6 @@ jobs:
         run: |
           sudo apt-get install python3-sphinx
           npm install -g vsce
-          cd ..
-          git clone https://github.com/TerosTechnology/colibri.git
-          cd colibri
-          npm install
-          cd ../vscode-terosHDL
           sudo rm -rf /usr/local/bin/phantomjs
           npm install
           npm run-script generate-doc
