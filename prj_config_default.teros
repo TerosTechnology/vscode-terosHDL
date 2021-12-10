@@ -35,6 +35,7 @@
             },
             {
                "documentation":{
+                  "language": "english",
                   "symbol_vhdl":"!",
                   "symbol_verilog":"!",
                   "dependency_graph":true,
