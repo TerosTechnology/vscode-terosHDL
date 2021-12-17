@@ -47,7 +47,7 @@ if (simulator == 'modelsim'):
     if (vsim_path == None):
         print('---> Error ModelSim path is not configured!')
         exit(-1)
-    vsim_dir = os.path.dirname(vsim_path)
+    vsim_dir = os.path.dirname(vsim_path).replace("\\", "/")
     os.environ["MODEL_TECH"] = vsim_dir
     print(vsim_dir)
 
