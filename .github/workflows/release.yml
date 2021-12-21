@@ -19,6 +19,7 @@ jobs:
           npm install -g vsce
           sudo rm -rf /usr/local/bin/phantomjs
           npm install
+          npm list
           npm run-script generate-doc
           npm run-script generate-examples
           vsce package
