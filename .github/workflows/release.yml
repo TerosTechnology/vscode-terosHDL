@@ -27,7 +27,7 @@ jobs:
           npm list
           npm run-script generate-doc
           npm run-script generate-examples
-          vsce package
+          vsce package --no-rewrite-relative-links
           now=`date +"%Y-%m-%d__%H:%M"`
           file=`ls *.vsix`
           file_ver="${now}_${file}"
