@@ -16,7 +16,7 @@ jobs:
         id: build
         run: |
           sudo apt-get install python3-sphinx
-          npm install -g vsce
+          npm install -g vsce@1.103.1
           sudo rm -rf /usr/local/bin/phantomjs
           npm install
           npm list
