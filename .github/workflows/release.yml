@@ -17,6 +17,11 @@ jobs:
         run: |
           sudo apt-get install python3-sphinx
           npm install -g vsce@1.103.1
+          cd ..
+          git clone https://github.com/TerosTechnology/netlistsvg.git
+          cd colibri
+          npm install
+          cd ../vscode-terosHDL
           sudo rm -rf /usr/local/bin/phantomjs
           npm install
           npm list
