@@ -1,40 +1,59 @@
-// Copyright (c) 2021 xiaohuyz
-
 {
-    "comments": {
-        "lineComment": "//",
-        "blockComment": [ "/*", "*/" ]
-    },
-    // symbols used as brackets
-    "brackets": [["{", "}"], ["[", "]"], ["(", ")"]],
-    // symbols that are auto closed when typing
-    "autoClosingPairs": [
-      { "open": "{", "close": "}" },
-      { "open": "[", "close": "]" },
-      { "open": "(", "close": ")" },
-      { "open": "\"", "close": "\"", "notIn": ["string", "comment"]},
-      { "open": "/*", "close": "*/", "notIn": ["string"]},
-    ],
-    // symbols that that can be used to surround a selection
-    "surroundingPairs": [
-        ["{", "}"],
-        ["[", "]"],
-        ["(", ")"],
-        ["\"", "\""],
-        ["/* ", " */"]
-    ],
+	"comments": {
+		"lineComment": "//",
+		"blockComment": [ "/*", "*/" ]
+	},
+	"brackets": [
+		["{", "}"],
+		["[", "]"],
+		["(", ")"],
+		["begin", "end"],
+		["case", "endcase"],
+		["casex", "endcase"],
+		["casez", "endcase"],
+		["checker", "endchecker"],
+		["class", "endclass"],
+		["clocking", "endclocking"],
+		["config", "endconfig"],
+		["covergroup", "endgroup"],
+		["fork", "join"],
+		["fork", "join_any"],
+		["fork", "join_none"],
+		["function", "endfunction"],
+		["generate", "endgenerate"],
+		["interface", "endinterface"],
+		["macromodule", "endmodule"],
+		["module", "endmodule"],
+		["package", "endpackage"],
+		["primitive", "endprimitive"],
+		["program", "endprogram"],
+		["property", "endproperty"],
+		["randcase", "endcase"],
+		["specify", "endspecify"],
+		["sequence", "endsequence"],
+		["table", "endtable"],
+		["task", "endtask"]
+	],
+
+	"autoClosingPairs": [
+		{"open":"(", "close":")"},
+		{"open":"[", "close":"]"},
+		{"open":"{", "close":"}"},
+		{"open":"\"", "close":"\"", "notIn":["string"]}
+	],
     "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
-    "indentationRules": {
-        "increaseIndentPattern": "^((?!(--|/\\*)).)*(\\b(begin|else|loop|generate|then)\\b|\\b(component|block|process|is|generic|port)\\b[^;]*$)",
-        "decreaseIndentPattern": "^\\s*(end(case|checker|class|clocking|config|function|generate|group|interface|module|package|primitive|program|property|sequence|specify|task)\\b)|^\\s*end\\b|^\\s*join(_any|_none|)\\b|^\\s*\\}",
-        //  sadly there is no option to include multi lines... so this rule fails on the first unterminated block comment line. Life is cruel. ^^
-        // "indentNextLinePattern": "^(?!.*(begin|end|fork|join|\\`\\w+(\\(.*\\))?|\\;|\\{)\\s*(\\/\\/|\\/\\*)?).*[^\\s;{}]\\s*$",
-        //  unIndented contains: comments, macros, attributes
-        "unIndentedLinePattern": "^\\s*(\\/\\/|\\/\\*|\\`\\w+|\\(\\*).*$"
-    },
-    "folding": {
-        "markers": {
-            "start": "^\\s*(`celldefine|`ifdef|`ifndef|`pragma\\s+protect\\b.*\\b(begin|begin_protected)\\b|`unconnected_drive)\\b|^\\s*(((priority|unique|unique0)\\s+)?(case|casex|casez)|checker|(virtual\\s+)?class|config|covergroup|generate|interface|module|package|primitive|program|property|randcase|randsequence|sequence|specify|(virtual\\s+)?((local|protected|static)\\s+)?(function|task))\\b|^((?!\\/\\/|\\/\\*).)*\\bbegin\\b(?!.*\\bend\\b)|^((?!\\/\\/|\\/\\*|\\bdisable\\b|\\bwait\\b).)*\\bfork\\b(?!.*\\b(join(_any|_none|))\\b)|^((?!\\/\\/|\\/\\*).)*\\{\\s*((\\/\\/|\\/\\*).*|$)|^\\s*((default|global)\\s+)?(clocking\\b).*\\@",
-            "end": "^\\s*(`endcelldefine|`endif|`nounconnected_drive|`pragma\\s+protect\\b.*\\b(end|end_protected)|`resetall)\\b|^\\s*(end(case|checker|class|clocking|config|function|generate|group|interface|module|package|primitive|program|property|sequence|specify|task)\\b)|^\\s*end\\b|^\\s*join(_any|_none|)\\b|^\\s*\\}"
-        }
-    }
+		"indentationRules": {
+			"increaseIndentPattern": "^((?!(//|/\\*)).)*(\\b(begin|else|loop|generate|then)\\b|\\b(component|block|process|is|generic|port)\\b[^;]*$)",
+			"decreaseIndentPattern": "^\\s*(end(case|checker|class|clocking|config|function|generate|group|interface|module|package|primitive|program|property|sequence|specify|task)\\b)|^\\s*end\\b|^\\s*join(_any|_none|)\\b|^\\s*\\}",
+			//  sadly there is no option to include multi lines... so this rule fails on the first unterminated block comment line. Life is cruel. ^^
+			// "indentNextLinePattern": "^(?!.*(begin|end|fork|join|\\`\\w+(\\(.*\\))?|\\;|\\{)\\s*(\\/\\/|\\/\\*)?).*[^\\s;{}]\\s*$",
+			//  unIndented contains: comments, macros, attributes
+			"unIndentedLinePattern": "^\\s*(\\/\\/|\\/\\*|\\`\\w+|\\(\\*).*$"
+		},
+		"folding": {
+			"markers": {
+				"start": "^\\s*(`celldefine|`ifdef|`ifndef|`pragma\\s+protect\\b.*\\b(begin|begin_protected)\\b|`unconnected_drive)\\b|^\\s*(((priority|unique|unique0)\\s+)?(case|casex|casez)|checker|(virtual\\s+)?class|config|covergroup|generate|interface|module|package|primitive|program|property|randcase|randsequence|sequence|specify|(virtual\\s+)?((local|protected|static)\\s+)?(function|task))\\b|^((?!\\/\\/|\\/\\*).)*\\bbegin\\b(?!.*\\bend\\b)|^((?!\\/\\/|\\/\\*|\\bdisable\\b|\\bwait\\b).)*\\bfork\\b(?!.*\\b(join(_any|_none|))\\b)|^((?!\\/\\/|\\/\\*).)*\\{\\s*((\\/\\/|\\/\\*).*|$)|^\\s*((default|global)\\s+)?(clocking\\b).*\\@",
+				"end": "^\\s*(`endcelldefine|`endif|`nounconnected_drive|`pragma\\s+protect\\b.*\\b(end|end_protected)|`resetall)\\b|^\\s*(end(case|checker|class|clocking|config|function|generate|group|interface|module|package|primitive|program|property|sequence|specify|task)\\b)|^\\s*end\\b|^\\s*join(_any|_none|)\\b|^\\s*\\}"
+			}
+		}
+}
