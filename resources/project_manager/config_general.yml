@@ -117,6 +117,9 @@ documentation:
             all: "All"
             only_commented: "Only commented"
             none: "None"
+    magic_config_path:
+        description: "Magic config file path"
+        type: input
             
 linter:
     title: Linters settings
