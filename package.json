@@ -799,7 +799,7 @@
         "abort-controller": "3.0.0",
         "extract-zip": "1.6.2",
         "fs-extra": "8.1.0",
-        "teroshdl": "file:../colibri",
+        "teroshdl": "https://github.com/TerosTechnology/colibri.git#master",
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
         "proper-lockfile": "4.1.1",
         "shelljs": "^0.8.3",
@@ -808,7 +808,8 @@
         "vscode-languageclient": "7.0.0-next.6",
         "xml2js": "0.4.23",
         "open": "8.3.0",
-        "js-yaml": "^3.13.1"
+        "js-yaml": "^3.13.1",
+        "semver": "7.3.5"
     },
     "devDependencies": {
         "@types/glob": "^7.1.1",
