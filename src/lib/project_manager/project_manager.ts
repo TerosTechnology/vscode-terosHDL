@@ -1175,7 +1175,9 @@ export class Project_manager {
                 });
         }
         else if (picker_value === project_add_types[2]) {
-            const project_examples_types = ['Documenter examples', 'State machine examples', 'Xsim', 'GHDL', 'Icarus', 'IceStorm', 'ModelSim', 'Vivado', 'Yosys', 'VUnit', 'cocotb'];
+            const project_examples_types = ['Documenter examples', 'State machine examples',
+                'Xsim', 'GHDL', 'Icarus', 'IceStorm', 'ModelSim',
+                'Vivado', 'Yosys', 'VUnit', 'cocotb', 'SiliconCompiler'];
             let picker_value = await vscode.window.showQuickPick(project_examples_types, {
                 placeHolder: "Choose a example projectt.",
             });
@@ -1186,7 +1188,6 @@ export class Project_manager {
                 if (picker_value === 'State machine examples') {
                     picker_value = 'state_machine';
                 }
-
 
                 let project_path = path.join(__filename, "..", "..", "..", "..", "resources", "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
 

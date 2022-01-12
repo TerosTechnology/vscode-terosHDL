@@ -83,6 +83,15 @@
                }
             },
             {
+               "siliconcompiler":{
+                  "target":"asicflow_freepdk45",
+                  "server_enable":true,
+                  "server_address":"https://server.siliconcompiler.com",
+                  "server_username":"",
+                  "server_password":""
+               }
+            },
+            {
                "ascentlint":{
                   "installation_path":"",
                   "ascentlint_options":[

@@ -21,8 +21,6 @@
 
 import * as vscode from 'vscode';
 // Common libraries
-import * as path from 'path';
-import * as fs from 'fs';
 import * as utils from "./lib/utils/utils";
 import * as config_reader_lib from "./lib/utils/config_reader";
 //Project manager
@@ -47,6 +45,12 @@ import * as rusthdl_lib from './lib/rusthdl/rust_hdl';
 import * as Output_channel_lib from './lib/utils/output_channel';
 //Shutter mode
 import * as Shutter_mode from './lib/formatter/stutter_mode';
+// VHDL completion
+import {
+    VhdlAttributeCompletionItemProvider,
+    VhdlLibraryCompletionItemProvider,
+    VhdlStdPackageCompletionItemProvider
+} from './lib/completions';
 
 let output_channel: Output_channel_lib.Output_channel;
 let rusthdl: rusthdl_lib.Rusthdl_lsp;
@@ -123,6 +127,13 @@ export async function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'vhdl'));
     context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'verilog'));
     context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'systemverilog'));
+
+    /**************************************************************************/
+    // VHDL completion
+    /**************************************************************************/
+    context.subscriptions.push(VhdlAttributeCompletionItemProvider);
+    context.subscriptions.push(VhdlLibraryCompletionItemProvider);
+    context.subscriptions.push(VhdlStdPackageCompletionItemProvider);
 
     /**************************************************************************/
     // Language providers

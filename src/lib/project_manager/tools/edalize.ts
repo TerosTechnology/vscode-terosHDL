@@ -30,7 +30,7 @@ import * as Output_channel_lib from '../../utils/output_channel';
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 const TOOL_NAME_GUI = ['ghdl', 'vivado', 'trellis', 'apicula', 'icestorm', 'nextpnr', 'modelsim', 'xsim',
-    'isum', 'spyglass', 'xcelium', 'trellis'];
+    'isum', 'spyglass', 'xcelium', 'trellis', 'siliconcompiler'];
 
 export interface TestItem {
     test_type: string | undefined,
@@ -240,6 +240,10 @@ export class Edalize extends tool_base.Tool_base {
         }
 
         let python3_edalize_script = `${path_lib.sep}resources${path_lib.sep}project_manager${path_lib.sep}run_edalize.py`;
+        if (simulator === 'siliconcompiler') {
+            python3_edalize_script = `${path_lib.sep}resources${path_lib.sep}project_manager${path_lib.sep}run_siliconcompiler.py`;
+        }
+
         python3_edalize_script = this.context.asAbsolutePath(python3_edalize_script);
         let python3_path_exec = await this.get_python3_path();
         if (python3_path_exec === undefined) {

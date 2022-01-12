@@ -1,3 +1,23 @@
+siliconcompiler:
+    description: "SiliconCompiler is an open source compiler framework that automates translation from source code to silicon. Check the project documentation: <a href=\"https://docs.siliconcompiler.com/en/latest/\">https://docs.siliconcompiler.com/en/latest/</a>"
+    title: SiliconCompiler
+    type: tool
+    target:
+        description: "Compilation target separated by a single underscore, specified as '<process>_<edaflow>' for ASIC compilation and '<partname>_<edaflow>'' for FPGA compilation. The process, edaflow, partname fields must be alphanumeric and cannot contain underscores. E.g: asicflow_freepdk45"
+        type: input      
+    server_enable:
+        description: "Enable remote server."
+        type: checkbox
+    server_address:
+        description: "Remote server address (e.g: https://server.siliconcompiler.com):"
+        type: input
+    server_username:
+        description: "Remote server user:"
+        type: input
+    server_password:
+        description: "Remote server password:"
+        type: input
+
 ascentlint:
     title: Ascentlint
     description: "Ascent Lint performs static source code analysis on HDL code and checks for common coding errors or coding style violations."
