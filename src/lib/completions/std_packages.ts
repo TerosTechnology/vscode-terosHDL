@@ -97,6 +97,7 @@ export const VhdlStdPackageCompletionItemProvider = languages.registerCompletion
                     }
                 }
             }
+            return [];
         }
     },
     '.'

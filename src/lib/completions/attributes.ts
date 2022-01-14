@@ -227,7 +227,7 @@ export const VhdlAttributeCompletionItemProvider = languages.registerCompletionI
                     return item;
                 });
             }
-            return undefined;
+            return [];
         }
     },
     "'"
