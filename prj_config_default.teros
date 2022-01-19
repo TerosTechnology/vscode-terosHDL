@@ -45,6 +45,7 @@
                   "constants":"all",
                   "process":"all",
                   "functions":"all",
+                  "magic_config_path":""
                   "pypath":""
                }
             },
