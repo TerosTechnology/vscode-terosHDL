@@ -113,9 +113,15 @@
             "explorer/context": [
                 {
                     "command": "teroshdl.start_vcd",
-                    "when": "resourceLangId == vcd || resourceLangId == ghw",
+                    "when": "resourceLangId == vcd",
+                    "group": "navigation"
+                },
+                {
+                    "command": "teroshdl.start_gtkwave",
+                    "when": "resourceLangId == gtkw_wavebin || resourceLangId == gtkw_waveconfig",
                     "group": "navigation"
                 }
+
             ],
             "view/title": [
                 {
@@ -205,6 +211,10 @@
                 },
                 {
                     "command": "teroshdl.start_vcd",
+                    "when": "view == teroshdl_tree_view && viewItem == hdl_source"
+                },
+                {
+                    "command": "teroshdl.start_gtkwave",
                     "when": "view == teroshdl_tree_view && viewItem == hdl_source"
                 },
                 {
@@ -364,6 +374,10 @@
             {
                 "command": "teroshdl.start_vcd",
                 "title": "Open with waveform viewer"
+            },
+            {
+                "command": "teroshdl.start_gtkwave",
+                "title": "Open with GTKWave"
             },
             {
                 "command": "teroshdl_tree_view.stop",
@@ -673,8 +687,15 @@
                 ]
             },
             {
-                "id": "ghw",
+                "id": "gtkw_waveconfig",
                 "extensions": [
+                    ".gtkw"
+                ]
+            },
+            {
+                "id": "gtkw_wavebin",
+                "extensions": [
+                    ".fst",
                     ".ghw"
                 ]
             },

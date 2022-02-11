@@ -119,6 +119,7 @@ export class Project_manager {
         vscode.commands.registerCommand("teroshdl_tree_view.help", (item) => this.help());
         vscode.commands.registerCommand("teroshdl_tree_view.netlist_project", (item) => this.netlist(item));
         vscode.commands.registerCommand("teroshdl.start_vcd", (item) => this.start_vcd(item));
+        vscode.commands.registerCommand("teroshdl.start_gtkwave", (item) => this.start_gtkwave(item));
 
         this.hdl_dependencies_provider = new Hdl_dependencies_tree(context, output_channel);
         vscode.window.registerTreeDataProvider('teroshdl_dependencies_tree_view', this.hdl_dependencies_provider);
@@ -136,9 +137,7 @@ export class Project_manager {
 
         let waveform_viewer = this.config_reader.get_waveform_viewer();
         if (waveform_viewer === 'gtkwave') {
-            let shell = require('shelljs');
-            let command = `gtkwave ${waveform_path}`;
-            shell.exec(command, { async: true });
+            this.start_gtkwave(item);
         }
         else if (waveform_viewer === "impulse") {
             let uri = vscode.Uri.file(waveform_path);
@@ -147,6 +146,21 @@ export class Project_manager {
         else {
             let vcdrom_inst = new vcdrom.default(this.context);
             vcdrom_inst.update_waveform(waveform_path);
+        }
+    }
+
+    start_gtkwave(item) {
+        let waveform_path = item.path;
+
+        let waveform_viewer = this.config_reader.get_waveform_viewer();
+        if (waveform_viewer === 'gtkwave') {
+            let shell = require('shelljs');
+            let command = "gtkwave " + waveform_path;
+            this.output_channel.print_message("env | ~/env_vs.txt");
+            shell.exec(command, { async: true });
+        }
+        else {
+            this.output_channel.show_message("You need to have GTKWave configured to use this feature");
         }
     }
 
