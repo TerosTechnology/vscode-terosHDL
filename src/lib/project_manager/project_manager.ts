@@ -156,7 +156,6 @@ export class Project_manager {
         if (waveform_viewer === 'gtkwave') {
             let shell = require('shelljs');
             let command = "gtkwave " + waveform_path;
-            this.output_channel.print_message("env | ~/env_vs.txt");
             shell.exec(command, { async: true });
         }
         else {
