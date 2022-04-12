@@ -246,7 +246,7 @@ export class Project_manager {
             let toml = "[libraries]\n\n";
             toml += 'lib.files = [\n';
             for (let i = 0; i < compile_order.length; i++) {
-                const element = compile_order[i];
+                const element = compile_order[i]['name'];
                 toml += `'${element}'\n,`;
             }
             toml += ']\n';
@@ -499,12 +499,16 @@ export class Project_manager {
     async run_edalize_tests(tests, gui) {
         let selected_project = this.edam_project_manager.selected_project;
         let prj = this.edam_project_manager.get_project(selected_project);
+        let pypath = await this.config_reader.get_python_path_binary(false);
+        await prj.order_project(pypath);
+
         let edam = prj.export_edam_file();
         let tool_configuration = this.config_file.get_config_of_selected_tool();
         edam.tool_options = tool_configuration;
 
         let toplevel = await this.get_toplevel_selected_prj(false);;
         edam.toplevel = toplevel;
+
         let results = <[]>await this.edalize.run_simulation(edam, toplevel, gui);
         this.last_edalize_results = results;
 
