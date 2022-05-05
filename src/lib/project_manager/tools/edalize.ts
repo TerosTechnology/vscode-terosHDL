@@ -57,9 +57,9 @@ export class Edalize extends tool_base.Tool_base {
 
     async run_simulation(edam, testname, gui) {
         let check = await this.check_requisites();
-        //if (check === false) {
-            //return [];
-        //}
+        if (check === false) {
+            return [];
+        }
 
         let normalized_edam = this.normalize_edam(edam);
         let simulator_name = this.get_simulator_from_edam(normalized_edam);
