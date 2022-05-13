@@ -276,8 +276,12 @@ export default class netlist_viewer_manager {
         const script_code = `${cmd_files}; proc; opt; write_json ${output_path_filename}; stat`;
 
         let yosys_path = this.config_reader.get_tool_path('yosys');
+        let plugin = ``;
+        if (backend === 'yosys_ghdl_module') {
+            plugin = `-m ghdl`;
+        }
         let command = `yowasp-yosys -p "${script_code}"`;
-        if (backend === 'yosys' || backend === 'yosys_ghdl') {
+        if (backend === 'yosys' || backend === 'yosys_ghdl' || backend === 'yosys_ghdl_module') {
             if (yosys_path === '') {
                 yosys_path = 'yosys';
             }
@@ -287,7 +291,7 @@ export default class netlist_viewer_manager {
                     yosys_path += '.exe';
                 }
             }
-            command = `${yosys_path} -p "${script_code}"`;
+            command = `${yosys_path} ${plugin} -p "${script_code}"`;
         }
         command += '\n';
 

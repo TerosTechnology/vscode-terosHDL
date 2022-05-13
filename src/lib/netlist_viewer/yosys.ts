@@ -9,7 +9,7 @@ export function get_yosys_read_file(sources, backend, working_directory) {
         const path_lib = require('path');
 
         let relative_path_file = element;
-        if (backend !== 'yosys_ghdl') {
+        if (backend !== 'yosys_ghdl' && backend !== 'yosys_ghdl_module') {
             const fs = require('fs');
             let filename = path_lib.basename(element);
             let dest = path_lib.join(working_directory, filename);
@@ -26,7 +26,7 @@ export function get_yosys_read_file(sources, backend, working_directory) {
         }
 
     }
-    if (vhdl_files.length > 0 && backend !== 'yosys_ghdl') {
+    if (vhdl_files.length > 0 && backend !== 'yosys_ghdl' && backend !== 'yosys_ghdl_module') {
         return undefined;
     }
 
