@@ -115,7 +115,7 @@ export class Vunit extends tool_base.Tool_base{
     }
 
     let simulator_config = this.get_simulator_config(simulator, simulator_install_path);
-    let go_to_dir = `cd ${this.switch} ${runpy_dirname}${this.more}`;
+    let go_to_dir = `cd ${this.switch} ${runpy_dirname} ${this.more} `;
     let vunit_default_options = `--no-color -x teroshdl_out.xml --exit-0 ${gui_cmd} ${list_cmd}`;
     let command = `${simulator_config}${go_to_dir}${python3_path_exec} ${runpy_filename} ${tests_cmd} ${vunit_default_options}${extra_options}`;
 
@@ -123,16 +123,16 @@ export class Vunit extends tool_base.Tool_base{
   }
 
   get_simulator_config(simulator_name, simulator_install_path) {
-    let simulator_name_low = simulator_name.toLowerCase();
+    let simulator_name_low = simulator_name.toLowerCase().trim();
 
     let simulator_path_cmd = '';
 
     //Add simulator install path to system path
     if (os.platform() === "win32" && simulator_install_path !== '') {
-      simulator_path_cmd = `export PATH="$PATH;${simulator_install_path}"${this.more}`;
+      simulator_path_cmd = `${this.exp} PATH="%PATH%;${simulator_install_path}" ${this.more} `;
     }
     else if(simulator_install_path !== ''){
-      simulator_path_cmd = `export PATH="$PATH:${simulator_install_path}"${this.more}`;
+      simulator_path_cmd = `${this.exp} PATH="$PATH:${simulator_install_path}" ${this.more} `;
     }
 
     let simulator_cmd = `${this.exp} VUNIT_SIMULATOR=${simulator_name_low}${this.more} ${simulator_path_cmd} `;
