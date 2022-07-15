@@ -1,0 +1,75 @@
+name: Build and release TerosHDL
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+
+jobs:
+  ##############################################################################
+  # Build
+  ##############################################################################
+  build:
+    name: Build .vsix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set version main
+        if: github.ref == 'refs/heads/main'
+        run: |
+          PACKAGE_VERSION=$(cat package.json \
+            | grep version \
+            | head -1 \
+            | awk -F: '{ print $2 }' \
+            | sed 's/[",]//g')
+
+          echo "::set-env name=version::$PACKAGE_VERSION"
+
+      - name: Set version dev
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          now=`date +"%Y-%m-%d__%H:%M"`
+          echo "::set-env name=version::$now"
+
+      - name: Set version pull request
+        if: github.event == 'pull_request'
+        run: |
+          now=`date +"%Y-%m-%d__%H:%M"`
+          echo "::set-env name=version::$now"
+
+      - name: Build 
+        id: build
+        run: |
+          sudo apt-get install python3-sphinx
+          npm install -g vsce
+          npm install --production
+          npm run-script generate-doc
+          npm run-script generate-examples
+          cd node_modules/teroshdl; npm install; cd ../../
+          cd node_modules/teroshdl2; npm install; cd ../../
+          vsce package --no-rewrite-relative-links
+          file=`ls *.vsix`
+          file_ver="{{ env.app_version }}_${file}"
+          mv $file $file_ver
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        if: github.ref == 'refs/heads/main'
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: "${{ env.version }}"
+          files: |
+            *.vsix
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        if: github.ref == 'refs/heads/dev'
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          automatic_release_tag: latest
+          files: |
+            *.vsix
