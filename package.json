@@ -48,14 +48,17 @@
     "main": "./out/extension.js",
     "contributes": {
         "viewsContainers": {
-            "activitybar": [{
-                "id": "teroshdl_tree_view",
-                "title": "TerosHDL",
-                "icon": "resources/images/teros_logo.svg"
-            }]
+            "activitybar": [
+                {
+                    "id": "teroshdl_tree_view",
+                    "title": "TerosHDL",
+                    "icon": "resources/images/teros_logo.svg"
+                }
+            ]
         },
         "views": {
-            "teroshdl_tree_view": [{
+            "teroshdl_tree_view": [
+                {
                     "id": "teroshdl_tree_view",
                     "name": "TerosHDL: project manager"
                 },
@@ -65,7 +68,8 @@
                 }
             ]
         },
-        "grammars": [{
+        "grammars": [
+            {
                 "language": "vhdl",
                 "scopeName": "source.vhdl",
                 "path": "./syntaxes/vhdl/vhdl.tmLanguage.json"
@@ -121,7 +125,6 @@
                     "when": "resourceLangId == gtkw_wavebin || resourceLangId == gtkw_waveconfig",
                     "group": "navigation"
                 }
-
             ],
             "view/title": [
                 {
@@ -160,7 +163,8 @@
                     "group": "navigation"
                 }
             ],
-            "view/item/context": [{
+            "view/item/context": [
+                {
                     "command": "teroshdl_tree_view.open_file",
                     "when": "view == teroshdl_tree_view && viewItem == hdl_source"
                 },
@@ -336,7 +340,8 @@
                     "group": "inline"
                 }
             ],
-            "editor/title": [{
+            "editor/title": [
+                {
                     "when": "resourceLangId == vhdl || resourceLangId == verilog || resourceLangId == systemverilog",
                     "command": "teroshdl.generate_template",
                     "group": "navigation"
@@ -363,7 +368,8 @@
                 }
             ]
         },
-        "commands": [{
+        "commands": [
+            {
                 "command": "teroshdl.go_to_parent",
                 "title": "Go to parent file"
             },
@@ -660,13 +666,16 @@
                 }
             }
         ],
-        "keybindings": [{
-            "command": "teroshdl.go_to_parent",
-            "key": "alt+backspace",
-            "mac": "command+delete",
-            "when": "editorTextFocus"
-        }],
-        "languages": [{
+        "keybindings": [
+            {
+                "command": "teroshdl.go_to_parent",
+                "key": "alt+backspace",
+                "mac": "command+delete",
+                "when": "editorTextFocus"
+            }
+        ],
+        "languages": [
+            {
                 "id": "vhdl",
                 "aliases": [
                     "VHDL",
@@ -771,7 +780,8 @@
                 "configuration": "./configs/systemverilog.configuration.json"
             }
         ],
-        "snippets": [{
+        "snippets": [
+            {
                 "language": "vhdl",
                 "path": "./snippets/vhdl/vhdl.json"
             },
@@ -820,17 +830,18 @@
         "abort-controller": "3.0.0",
         "extract-zip": "1.6.2",
         "fs-extra": "8.1.0",
-        "teroshdl": "https://github.com/TerosTechnology/colibri.git#master",
+        "js-yaml": "^3.13.1",
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
+        "open": "8.3.0",
         "proper-lockfile": "4.1.1",
+        "semver": "7.3.5",
         "shelljs": "^0.8.3",
         "temp": "^0.9.0",
+        "teroshdl": "https://github.com/TerosTechnology/colibri.git#master",
+        "teroshdl2": "https://github.com/TerosTechnology/colibri2.git#main",
         "tmp": "0.2.1",
         "vscode-languageclient": "7.0.0-next.6",
-        "xml2js": "0.4.23",
-        "open": "8.3.0",
-        "js-yaml": "^3.13.1",
-        "semver": "7.3.5"
+        "xml2js": "0.4.23"
     },
     "devDependencies": {
         "@types/glob": "^7.1.1",

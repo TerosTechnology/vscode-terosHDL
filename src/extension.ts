@@ -74,9 +74,6 @@ let state_machine_viewer_manager: state_machine_viewer.default;
 // Netlist viewer
 import * as netlist_viewer from "./lib/netlist_viewer/netlist_viewer";
 let netlist_viewer_manager: netlist_viewer.default;
-// State machine designer
-import * as state_machine_designer_t from "./lib/state_machine_designer/state_machine_designer";
-let state_machine_designer_manager;
 
 // Language providers
 import VerilogDocumentSymbolProvider from "./lib/language_providers/providers/DocumentSymbolProvider";
@@ -85,6 +82,7 @@ import VerilogDefinitionProvider from "./lib/language_providers/providers/Defini
 import VerilogCompletionItemProvider from "./lib/language_providers/providers/CompletionItemProvider";
 import { CtagsManager } from "./lib/language_providers/ctags";
 import { Logger } from "./lib/language_providers/Logger";
+import * as teroshdl2 from 'teroshdl2';
 
 let logger: Logger = new Logger();
 export let ctagsManager: CtagsManager;
@@ -266,32 +264,9 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.window.onDidChangeVisibleTextEditors((e) => netlist_viewer_manager.update_visible_viewer(e)),
     );
     /**************************************************************************/
-    // State machine designer
-    /**************************************************************************/
-    state_machine_designer_manager = new state_machine_designer_t.default(context, output_channel);
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'teroshdl.state_machine.designer',
-            async () => {
-                await state_machine_designer_manager.open_viewer();
-            }
-        )
-    );
-    /**************************************************************************/
     // Hover Hexa
     /**************************************************************************/
-    let hover_numbers_vhdl = vscode.languages.registerHoverProvider(vhdlSelector, {
-        provideHover(document, position, token) {
-            return number_hover.vhdl_hover(document, position, token);
-        }
-    });
-    let hover_numbers_verilog = vscode.languages.registerHoverProvider(verilogSelector, {
-        provideHover(document, position, token) {
-            return number_hover.verilog_hover(document, position, token);
-        }
-    });
-    context.subscriptions.push(hover_numbers_vhdl);
-    context.subscriptions.push(hover_numbers_verilog);
+    number_hover.init_hover(context, vhdlSelector, verilogSelector);
     // /**************************************************************************/
     // Linter
     /**************************************************************************/
