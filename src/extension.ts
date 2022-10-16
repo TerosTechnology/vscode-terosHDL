@@ -29,8 +29,8 @@ let project_manager;
 //Extension manager
 import * as extension_manager from "./lib/utils/extension_manager";
 import * as release_notes_webview from "./lib/utils/webview/release_notes";
-// Templates
-import * as templates from "./lib/templates/templates";
+// // Templates
+// import * as templates from "./lib/templates/templates";
 // Documenter
 import * as documentation from "./lib/documenter/documenter";
 // Linter
@@ -51,6 +51,13 @@ import {
     VhdlLibraryCompletionItemProvider,
     VhdlStdPackageCompletionItemProvider
 } from './lib/completions';
+
+
+// TerosHDL
+import {Teroshdl} from './teroshdl';
+
+
+
 
 let output_channel: Output_channel_lib.Output_channel;
 let rusthdl: rusthdl_lib.Rusthdl_lsp;
@@ -82,7 +89,6 @@ import VerilogDefinitionProvider from "./lib/language_providers/providers/Defini
 import VerilogCompletionItemProvider from "./lib/language_providers/providers/CompletionItemProvider";
 import { CtagsManager } from "./lib/language_providers/ctags";
 import { Logger } from "./lib/language_providers/Logger";
-import * as teroshdl2 from 'teroshdl2';
 
 let logger: Logger = new Logger();
 export let ctagsManager: CtagsManager;
@@ -111,6 +117,34 @@ export async function activate(context: vscode.ExtensionContext) {
 
     //TerosHDL console
     output_channel = new Output_channel_lib.Output_channel(context);
+
+    const teroshdl = new Teroshdl(context, output_channel);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //Context
     current_context = context;
@@ -203,7 +237,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Templates
     /**************************************************************************/
-    template = new templates.Template(context, config_reader, output_channel);
+    // template = new templates.Template(context, config_reader, output_channel);
     /**************************************************************************/
     // Documenter
     /**************************************************************************/

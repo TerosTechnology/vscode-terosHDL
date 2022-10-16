@@ -1,0 +1,45 @@
+// Copyright 2022
+// Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
+//
+// This file is part of TerosHDL
+//
+// Colibri is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Colibri is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
+
+import * as vscode from 'vscode';
+import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+
+import {Output_channel} from './lib/utils/output_channel';
+
+import { Template_manager } from "./features/templates";
+
+
+export class Teroshdl {
+    private context: vscode.ExtensionContext;
+    private template_manager : Template_manager;
+    private manager : Multi_project_manager;
+
+    constructor(context: vscode.ExtensionContext, output_channgel: Output_channel){
+        this.manager = new Multi_project_manager("");
+        this.context = context;
+        this.template_manager = new Template_manager(context, output_channgel, this.manager);
+    }
+
+
+
+
+
+
+
+
+}
