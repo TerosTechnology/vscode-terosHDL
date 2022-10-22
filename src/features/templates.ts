@@ -20,8 +20,8 @@
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as vscode from 'vscode';
-import * as Output_channel_lib from '../utils/output_channel';
-import * as utils from '../utils/utils';
+import * as Output_channel_lib from '../lib/utils/output_channel';
+import * as utils from '../lib/utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 
@@ -32,16 +32,22 @@ export class Template_manager {
     private manager: Multi_project_manager;
     private output_channel: Output_channel_lib.Output_channel;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Constructor
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context, output_channel: Output_channel_lib.Output_channel, manager: Multi_project_manager) {
         this.output_channel = output_channel;
         this.manager = manager;
         vscode.commands.registerCommand("teroshdl.generate_template", () => this.get_template());
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Templates
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     async get_template() {
         // Get active editor file language. Return if no active editor
-        const document = utils.get_active_editor_lang_and_code();
-        if (document.sucessful === false) {
+        const document = utils.get_vscode_active_document();
+        if (document === undefined) {
             return;
         }
         const lang = document.lang;
@@ -82,6 +88,9 @@ export class Template_manager {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Utils
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private get_indent(general_indent:string, lang: teroshdl2.common.general.LANG): string{
         const indent = general_indent;
         let tab_size = undefined;
@@ -131,7 +140,7 @@ export class Template_manager {
         const c_insert_spaces = <boolean>insert_spaces;
 
         let indent_char = '';
-        if (insert_spaces === true) {
+        if (c_insert_spaces === true) {
             indent_char = ' ';
             indent_char = indent_char.repeat(c_tab_size);
         }

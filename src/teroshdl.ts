@@ -22,24 +22,28 @@ import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_proje
 import {Output_channel} from './lib/utils/output_channel';
 
 import { Template_manager } from "./features/templates";
+import { Documenter_manager } from "./features/documenter";
 
 
 export class Teroshdl {
     private context: vscode.ExtensionContext;
-    private template_manager : Template_manager;
+    // private template_manager : Template_manager;
+    // private documenter_manager : Documenter_manager;
     private manager : Multi_project_manager;
+    private output_channel: Output_channel;
 
     constructor(context: vscode.ExtensionContext, output_channgel: Output_channel){
         this.manager = new Multi_project_manager("");
         this.context = context;
-        this.template_manager = new Template_manager(context, output_channgel, this.manager);
+        this.output_channel = output_channgel;
     }
 
+    public init_template_manager(){
+        new Template_manager(this.context, this.output_channel, this.manager);
+    }
 
-
-
-
-
-
+    public init_documenter(){
+        new Documenter_manager(this.context, this.output_channel, this.manager);
+    }
 
 }

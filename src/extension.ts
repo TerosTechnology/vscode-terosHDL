@@ -32,7 +32,7 @@ import * as release_notes_webview from "./lib/utils/webview/release_notes";
 // // Templates
 // import * as templates from "./lib/templates/templates";
 // Documenter
-import * as documentation from "./lib/documenter/documenter";
+import * as documentation from "./features/documenter";
 // Linter
 import * as linter from "./lib/linter/linter";
 // Formatter
@@ -120,7 +120,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const teroshdl = new Teroshdl(context, output_channel);
 
-
+    teroshdl.init_template_manager();
+    teroshdl.init_documenter();
 
 
 
@@ -241,19 +242,19 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Documenter
     /**************************************************************************/
-    documenter = new documentation.default(context, config_reader, output_channel);
-    await documenter.init();
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'teroshdl.documentation.module',
-            async () => {
-                await documenter.get_documentation_module();
-            }
-        ),
-        vscode.workspace.onDidOpenTextDocument((e) => documenter.update_open_documentation_module(e)),
-        vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
-        vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
-    );
+    // documenter = new documentation.default(context, config_reader, output_channel);
+    // await documenter.init();
+    // context.subscriptions.push(
+    //     vscode.commands.registerCommand(
+    //         'teroshdl.documentation.module',
+    //         async () => {
+    //             await documenter.get_documentation_module();
+    //         }
+    //     ),
+    //     vscode.workspace.onDidOpenTextDocument((e) => documenter.update_open_documentation_module(e)),
+    //     vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
+    //     vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
+    // );
     /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/

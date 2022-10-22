@@ -20,59 +20,160 @@
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 
 
-const fs = require('fs');
-const path_lib = require('path');
+import * as fs from 'fs';
+import * as path_lib from 'path';
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
-import * as config_reader_lib from "./config_reader";
 
-export function check_if_active_editor() :boolean{
-    if (!vscode.window.activeTextEditor) {
+
+/** VSCode text document */
+export type t_vscode_document = {
+    filename: string;
+    is_hdl: boolean;
+    lang: teroshdl2.common.general.HDL_LANG;
+    code: string;
+};
+
+export function get_vscode_document(document: vscode.TextDocument): t_vscode_document {
+    const document_inst: t_vscode_document = {
+        filename: document.fileName,
+        is_hdl: check_if_document_is_hdl(document),
+        lang: get_document_lang(document),
+        code: document.getText()
+    };
+    return document_inst;
+}
+
+export function get_vscode_active_document(): t_vscode_document | undefined {
+    const active_editor = get_active_editor();
+    if (active_editor === undefined) {
+        return undefined;
+    }
+
+    const document = active_editor.document;
+
+    const document_inst: t_vscode_document = {
+        filename: document.fileName,
+        is_hdl: check_if_document_is_hdl(document),
+        lang: get_document_lang(document),
+        code: document.getText()
+    };
+    return document_inst;
+}
+
+
+export function check_if_active_editor(): boolean {
+    const active_editor = get_active_editor();
+    if (active_editor === undefined) {
         return false;
     }
     return true;
 }
 
-export function get_active_editor_lang() : undefined|teroshdl2.common.general.HDL_LANG {
-    const active_editor = check_if_active_editor();
-    if (active_editor === false){
+export function get_active_editor(): undefined | vscode.TextEditor {
+    if (!vscode.window.activeTextEditor) {
         return undefined;
     }
-    const document = vscode.window.activeTextEditor?.document;
-    const language_id: string = <string>document?.languageId;
+    return vscode.window.activeTextEditor;
+}
 
+export function check_if_active_editor_hdl(): boolean {
+    const active_editor = get_active_editor();
+    if (active_editor === undefined) {
+        return false;
+    }
+    return check_if_document_is_hdl(active_editor.document);
+}
+
+
+export function check_if_document_is_hdl(document: vscode.TextDocument): boolean {
+    const lang = get_document_lang(document);
+    if (lang === teroshdl2.common.general.HDL_LANG.NONE) {
+        return false;
+    }
+    return true;
+}
+
+export function get_document_lang(document: vscode.TextDocument): teroshdl2.common.general.HDL_LANG {
+    const language_id: string = document.languageId;
     if (language_id === 'systemverilog') {
         return teroshdl2.common.general.HDL_LANG.VERILOG;
     }
-    else if(language_id === "verilog") {
+    else if (language_id === "verilog") {
         return teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG;
     }
     else if (language_id === "vhdl") {
         return teroshdl2.common.general.HDL_LANG.VHDL;
     }
-    return undefined;
-}
-
-export function get_active_editor_lang_and_code()  {
-    const result = {
-        sucessful: false,
-        lang: teroshdl2.common.general.HDL_LANG.VHDL,
-        code: ''
-    };
-    const lang = get_active_editor_lang();
-    if (lang === undefined){
-        return result;
+    else {
+        return teroshdl2.common.general.HDL_LANG.NONE;
     }
-
-    const document = vscode.window.activeTextEditor?.document;
-    const code: string = <string>document?.getText();
-    result.code = code;
-    result.lang = lang;
-    result.sucessful = true;
-    return result;
 }
 
-export function get_files_from_dir_recursive (dir: any, filelist: any[] = []) {
+export function normalize_path(path: string) {
+    if (path[0] === '/' && require('os').platform() === 'win32') {
+        return path.substring(1);
+    }
+    else {
+        return path;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// export function get_active_editor_lang() : teroshdl2.common.general.HDL_LANG {
+//     const active_editor = check_if_active_editor();
+//     if (active_editor === false){
+//         return undefined;
+//     }
+//     const document = vscode.window.activeTextEditor?.document;
+//     const language_id: string = <string>document?.languageId;
+
+//     if (language_id === 'systemverilog') {
+//         return teroshdl2.common.general.HDL_LANG.VERILOG;
+//     }
+//     else if(language_id === "verilog") {
+//         return teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG;
+//     }
+//     else if (language_id === "vhdl") {
+//         return teroshdl2.common.general.HDL_LANG.VHDL;
+//     }
+//     else{
+//         return teroshdl2.common.general.HDL_LANG.NONE;
+//     }
+// }
+
+// export function get_active_editor_lang_and_code()  {
+//     const result = {
+//         sucessful: false,
+//         lang: teroshdl2.common.general.HDL_LANG.NONE,
+//         code: '',
+//         filename: ''
+//     };
+//     const lang = get_active_editor_lang();
+//     if (lang === teroshdl2.common.general.HDL_LANG.NONE){
+//         return result;
+//     }
+
+//     const document = vscode.window.activeTextEditor?.document;
+//     const code: string = <string>document?.getText();
+//     result.code = code;
+//     result.lang = lang;
+//     result.filename = <string>document?.fileName;
+//     result.sucessful = true;
+//     return result;
+// }
+
+export function get_files_from_dir_recursive(dir: any, filelist: any[] = []) {
     fs.readdirSync(dir).forEach(file => {
         const dirFile = path_lib.join(dir, file);
         try {
@@ -82,8 +183,7 @@ export function get_files_from_dir_recursive (dir: any, filelist: any[] = []) {
             if (err.code === 'ENOTDIR' || err.code === 'EBUSY') {
                 filelist = [...filelist, dirFile];
             }
-            else 
-            {
+            else {
                 throw err;
             }
         }

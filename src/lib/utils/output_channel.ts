@@ -124,6 +124,9 @@ export class Output_channel {
         if (error_message === ERROR_CODE.PYTHON) {
             error_message += `Current Python3 path: ${args}`;
         }
+        if (error_message === ERROR_CODE.DOCUMENTER_SAVE) {
+            error_message += args;
+        }
         if (error_message === ERROR_CODE.FILES_IN_PROJECT_NO_EXIST) {
             let error_files = '';
             for (let i = 0; i < args.length - 1; i++) {
@@ -133,7 +136,6 @@ export class Output_channel {
             error_files += args[args.length - 1];
             error_message += `${error_files}`;
         }
-
         let date = this.get_date();
         let msg = date + ': ' + error_message;
         this.appendLine(msg);
