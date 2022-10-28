@@ -22,7 +22,6 @@
 
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
-import * as util from "util";
 import * as Output_channel_lib from '../lib/utils/output_channel';
 import * as fs from 'fs';
 import * as utils from '../lib/utils/utils';
@@ -32,14 +31,15 @@ import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_proje
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export class Documenter_manager {
+    private context: vscode.ExtensionContext;
+    private output_channel: Output_channel_lib.Output_channel;
     private manager: Multi_project_manager;
+
     private documenter : teroshdl2.documenter.documenter.Documenter | undefined;
     private last_document: utils.t_vscode_document | undefined;
 
-    private output_channel: Output_channel_lib.Output_channel;
     private subscriptions: vscode.Disposable[] | undefined;
     private panel : vscode.WebviewPanel | undefined;
-    private context: vscode.ExtensionContext;
     private html_base: string = '';
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

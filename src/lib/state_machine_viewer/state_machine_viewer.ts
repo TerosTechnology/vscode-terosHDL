@@ -22,7 +22,6 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
-import * as config_reader_lib from "../utils/config_reader";
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export default class State_machine_viewer_manager {

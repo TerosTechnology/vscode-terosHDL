@@ -23,6 +23,7 @@ import {Output_channel} from './lib/utils/output_channel';
 
 import { Template_manager } from "./features/templates";
 import { Documenter_manager } from "./features/documenter";
+import { State_machine_manager } from "./features/state_machine";
 
 
 export class Teroshdl {
@@ -44,6 +45,10 @@ export class Teroshdl {
 
     public init_documenter(){
         new Documenter_manager(this.context, this.output_channel, this.manager);
+    }
+
+    public init_state_machine(){
+        new State_machine_manager(this.context, this.output_channel, this.manager);
     }
 
 }
