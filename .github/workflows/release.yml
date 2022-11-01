@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Upload Release Asset
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
           npm run-script generate-doc
           npm run-script generate-examples
           cd node_modules/teroshdl; npm install; cd ../../
-          vsce package --no-rewrite-relative-links
+          vsce package --no-rewrite-relative-links --allow-star-activation
           now=`date +"%Y-%m-%d__%H:%M"`
           file=`ls *.vsix`
           file_ver="${now}_${file}"

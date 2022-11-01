@@ -246,7 +246,7 @@ export default class netlist_viewer_manager {
         else {
           return path;
         }
-      }
+    }
 
     async generate_from_project(project) {
         let sources = project.get_sources_as_array();

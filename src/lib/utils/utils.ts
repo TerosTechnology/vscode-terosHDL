@@ -30,7 +30,7 @@ export function get_files_from_dir_recursive (dir: any, filelist: any[] = []) {
         try {
             filelist = get_files_from_dir_recursive(dirFile, filelist);
         }
-        catch (err) {
+        catch (err:any) {
             if (err.code === 'ENOTDIR' || err.code === 'EBUSY') {
                 filelist = [...filelist, dirFile];
             }
