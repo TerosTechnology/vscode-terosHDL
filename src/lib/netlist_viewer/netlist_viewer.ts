@@ -138,8 +138,9 @@ export default class netlist_viewer_manager {
             vscode.window.showSaveDialog({ filters: filter }).then(fileInfos => {
                 if (fileInfos?.path !== undefined) {
                     let path_full = fileInfos?.path;
-                    fs.writeFileSync(path_full, svg);
-                    this.output_channel.show_info_message(MSG_CODE.SAVE_NETLIST, path_full);
+                    let path_norm = this.normalize_path(path_full);
+                    fs.writeFileSync(path_norm, svg);
+                    this.output_channel.show_info_message(MSG_CODE.SAVE_NETLIST, path_norm);
                 }
             });
         }
@@ -237,6 +238,15 @@ export default class netlist_viewer_manager {
 
         await this.panel?.webview.postMessage({ command: "update", result: result });
     }
+
+    normalize_path(path: string) {
+        if (path[0] === '/' && require('os').platform() === 'win32') {
+          return path.substring(1);
+        }
+        else {
+          return path;
+        }
+      }
 
     async generate_from_project(project) {
         let sources = project.get_sources_as_array();
