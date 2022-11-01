@@ -33,7 +33,7 @@ function update_graph(svgs, stms_i) {
         return;
     }
     for (let i = 0; i < svgs.length; ++i) {
-        create_graph(svgs[i].svg, `svg_${i}`, i);
+        create_graph(svgs[i].image, `svg_${i}`, i);
     }
 
     // set scroll position in px
@@ -79,6 +79,10 @@ function create_graph(svg, name, index) {
                         if (child_0.tagName === 'polygon' && check_state(state_machine_index_i, state_name) === true) {
                             uncheck_all();
                             child_0.style = "fill:#d0fdf7";
+                            child_0.fill = "fill:#d0fdf7";
+                            child_0.style = "fill:lime;stroke:lime";
+                            child_0.opacity = "1";
+                            console.log(child_0)
                             go_to_code_state(state_machine_index_i, state_name);
                         }
                     }

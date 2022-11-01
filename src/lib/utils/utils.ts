@@ -25,6 +25,15 @@ import * as path_lib from 'path';
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 
+export function get_webview_content(resource_path: string) {
+    const dir_path = path_lib.dirname(resource_path);
+    let html = fs.readFileSync(resource_path, 'utf-8');
+
+    html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
+        return $1 + vscode.Uri.file(path_lib.resolve(dir_path, $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
+    });
+    return html;
+}
 
 /** VSCode text document */
 export type t_vscode_document = {

@@ -75,9 +75,6 @@ let config_reader;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager: dependencies_viewer.default;
-// State machine viewer
-import * as state_machine_viewer from "./lib/state_machine_viewer/state_machine_viewer";
-let state_machine_viewer_manager: state_machine_viewer.default;
 // Netlist viewer
 import * as netlist_viewer from "./lib/netlist_viewer/netlist_viewer";
 let netlist_viewer_manager: netlist_viewer.default;
@@ -122,6 +119,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     teroshdl.init_template_manager();
     teroshdl.init_documenter();
+    teroshdl.init_state_machine();
 
 
 
@@ -236,26 +234,6 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     project_manager = new project_manager_lib.Project_manager(context, output_channel, config_reader);
     /**************************************************************************/
-    // Templates
-    /**************************************************************************/
-    // template = new templates.Template(context, config_reader, output_channel);
-    /**************************************************************************/
-    // Documenter
-    /**************************************************************************/
-    // documenter = new documentation.default(context, config_reader, output_channel);
-    // await documenter.init();
-    // context.subscriptions.push(
-    //     vscode.commands.registerCommand(
-    //         'teroshdl.documentation.module',
-    //         async () => {
-    //             await documenter.get_documentation_module();
-    //         }
-    //     ),
-    //     vscode.workspace.onDidOpenTextDocument((e) => documenter.update_open_documentation_module(e)),
-    //     vscode.workspace.onDidSaveTextDocument((e) => documenter.update_open_documentation_module(e)),
-    //     vscode.window.onDidChangeVisibleTextEditors((e) => documenter.update_visible_documentation_module(e)),
-    // );
-    /**************************************************************************/
     // Dependencies viewer
     /**************************************************************************/
     dependencies_viewer_manager = new dependencies_viewer.default(context, output_channel, config_reader);
@@ -267,21 +245,6 @@ export async function activate(context: vscode.ExtensionContext) {
                 vscode.window.showInformationMessage(msg);
             }
         )
-    );
-    /**************************************************************************/
-    // State machine viewer
-    /**************************************************************************/
-    state_machine_viewer_manager = new state_machine_viewer.default(context, config_reader);
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'teroshdl.state_machine.viewer',
-            async () => {
-                await state_machine_viewer_manager.open_viewer();
-            }
-        ),
-        vscode.workspace.onDidOpenTextDocument((e) => state_machine_viewer_manager.update_viewer()),
-        vscode.workspace.onDidSaveTextDocument((e) => state_machine_viewer_manager.update_viewer()),
-        vscode.window.onDidChangeVisibleTextEditors((e) => state_machine_viewer_manager.update_visible_viewer(e)),
     );
     /**************************************************************************/
     // Netlist viewer

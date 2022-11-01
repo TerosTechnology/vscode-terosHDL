@@ -48,7 +48,8 @@ export class Documenter_manager {
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
         manager: Multi_project_manager) {
 
-        this.html_base = this.get_webview_content(context);
+        const resource_path = path_lib.join(context.extensionPath, 'resources', 'documenter', 'index.html');
+        this.html_base = utils.get_webview_content(resource_path);
 
         this.context = context;
         this.output_channel = output_channel;
@@ -180,19 +181,6 @@ export class Documenter_manager {
         return config;
     }
 
-    private get_webview_content(context: vscode.ExtensionContext) {
-        const index_path = path_lib.join('resources','documenter' , 'index.html');
-        const resource_path = path_lib.join(context.extensionPath, index_path);
-
-        const dir_path = path_lib.dirname(resource_path);
-        let html = fs.readFileSync(resource_path, 'utf-8');
-
-        html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
-            return $1 + vscode.Uri.file(path_lib.resolve(dir_path, $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
-        });
-        return html;
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Log
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,13 +205,13 @@ export class Documenter_manager {
         const documenter = await this.get_documenter();
 
         // /one/two/five.h --> five.h
-        let basename = path_lib.basename(file_path);
+        const basename = path_lib.basename(file_path);
         // five.h --> .h
-        let ext_name = path_lib.extname(basename);
+        const ext_name = path_lib.extname(basename);
         // /one/two/five.h --> five
-        let filename = path_lib.basename(file_path, ext_name);
+        const filename = path_lib.basename(file_path, ext_name);
         // /one/two/five
-        let full_path = path_lib.dirname(file_path) + path_lib.sep + filename;
+        const full_path = path_lib.join(path_lib.dirname(file_path), filename);
 
         let default_path = full_path;
         let filter : any;

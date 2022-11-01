@@ -25,7 +25,6 @@ import { Template_manager } from "./features/templates";
 import { Documenter_manager } from "./features/documenter";
 import { State_machine_manager } from "./features/state_machine";
 
-
 export class Teroshdl {
     private context: vscode.ExtensionContext;
     // private template_manager : Template_manager;
