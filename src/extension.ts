@@ -75,9 +75,7 @@ let config_reader;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
 let dependencies_viewer_manager: dependencies_viewer.default;
-// Netlist viewer
-import * as netlist_viewer from "./lib/netlist_viewer/netlist_viewer";
-let netlist_viewer_manager: netlist_viewer.default;
+
 
 // Language providers
 import VerilogDocumentSymbolProvider from "./lib/language_providers/providers/DocumentSymbolProvider";
@@ -120,6 +118,7 @@ export async function activate(context: vscode.ExtensionContext) {
     teroshdl.init_template_manager();
     teroshdl.init_documenter();
     teroshdl.init_state_machine();
+    teroshdl.init_schematic();
 
 
 
@@ -249,18 +248,18 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     // Netlist viewer
     /**************************************************************************/
-    netlist_viewer_manager = new netlist_viewer.default(context, output_channel, config_reader);
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'teroshdl.netlist.viewer',
-            async () => {
-                await netlist_viewer_manager.open_viewer();
-            }
-        ),
-        vscode.workspace.onDidOpenTextDocument((e) => netlist_viewer_manager.update_viewer()),
-        vscode.workspace.onDidSaveTextDocument((e) => netlist_viewer_manager.update_viewer()),
-        vscode.window.onDidChangeVisibleTextEditors((e) => netlist_viewer_manager.update_visible_viewer(e)),
-    );
+    // netlist_viewer_manager = new netlist_viewer.default(context, output_channel, config_reader);
+    // context.subscriptions.push(
+    //     vscode.commands.registerCommand(
+    //         'teroshdl.netlist.viewer',
+    //         async () => {
+    //             await netlist_viewer_manager.open_viewer();
+    //         }
+    //     ),
+    //     vscode.workspace.onDidOpenTextDocument((e) => netlist_viewer_manager.update_viewer()),
+    //     vscode.workspace.onDidSaveTextDocument((e) => netlist_viewer_manager.update_viewer()),
+    //     vscode.window.onDidChangeVisibleTextEditors((e) => netlist_viewer_manager.update_visible_viewer(e)),
+    // );
     /**************************************************************************/
     // Hover Hexa
     /**************************************************************************/

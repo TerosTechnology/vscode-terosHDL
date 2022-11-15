@@ -24,6 +24,7 @@ import {Output_channel} from './lib/utils/output_channel';
 import { Template_manager } from "./features/templates";
 import { Documenter_manager } from "./features/documenter";
 import { State_machine_manager } from "./features/state_machine";
+import { Schematic_manager } from "./features/schematic";
 
 export class Teroshdl {
     private context: vscode.ExtensionContext;
@@ -48,6 +49,10 @@ export class Teroshdl {
 
     public init_state_machine(){
         new State_machine_manager(this.context, this.output_channel, this.manager);
+    }
+
+    public init_schematic(){
+        new Schematic_manager(this.context, this.output_channel, this.manager, false);
     }
 
 }

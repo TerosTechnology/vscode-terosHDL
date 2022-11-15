@@ -26,19 +26,12 @@ import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as Output_channel_lib from '../lib/utils/output_channel';
 import * as utils from '../lib/utils/utils';
+import {Base_webview} from './base_webview';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
-export class State_machine_manager {
-    private context: vscode.ExtensionContext;
-    private output_channel: Output_channel_lib.Output_channel;
-    private manager: Multi_project_manager;
-    private webcontent : string = "";
+export class State_machine_manager extends Base_webview{
 
-    private subscriptions: vscode.Disposable[] | undefined;
-
-    private panel: vscode.WebviewPanel | undefined = undefined;
     private state_machines;
-    private last_document : utils.t_vscode_document | undefined;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -46,38 +39,18 @@ export class State_machine_manager {
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
         manager: Multi_project_manager) {
 
-        this.context = context;
-        this.output_channel = output_channel;
-        this.manager = manager;
+        const activation_command = 'teroshdl.state_machine.viewer';
+        const id = "state_machine";
 
-        // Get webcontent
         const resource_path = path_lib.join(context.extensionPath, 'resources', 'state_machine_viewer', 'state_machine_viewer.html');
-        this.webcontent = utils.get_webview_content(resource_path);
+        super(context, output_channel, manager, resource_path, activation_command, id);
 
-        vscode.workspace.onDidChangeConfiguration(this.force_update, this, this.subscriptions);
-        vscode.commands.registerCommand("teroshdl.fsm.set_config", () => this.set_config());
-
-        context.subscriptions.push(
-            vscode.commands.registerCommand(
-                'teroshdl.state_machine.viewer',
-                async () => {
-                    await this.create_viewer();
-                }
-            ),
-            vscode.workspace.onDidOpenTextDocument((e) => this.update_open(e)),
-            vscode.workspace.onDidSaveTextDocument((e) => this.update_open(e)),
-            vscode.window.onDidChangeVisibleTextEditors((e) => this.update_visible(e)),
-        );
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Webview creator
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async open_viewer() {
-        this.create_viewer();
-    }
-
-    async create_viewer() {
+    async create_webview() {
         // Get active editor file language. Return if no active editor
         const document = utils.get_vscode_active_document();
         if (document === undefined) {
@@ -120,7 +93,7 @@ export class State_machine_manager {
             this.context.subscriptions
         );
 
-        this.panel.webview.html = this.webcontent;
+        this.panel.webview.html = this.html_base;
 
         this.update(document);
     }
@@ -138,48 +111,13 @@ export class State_machine_manager {
         return state_machines;
     }
 
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Update
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async update_open(document: vscode.TextDocument) {
-        if (this.panel === undefined) {
-            return;
-        }
-        
-        let vscode_document = utils.get_vscode_document(document);
-        if (vscode_document.is_hdl === false) {
-            return;
-        }
-        await this.update(vscode_document);
-    }
-
-    async update_visible(e) {
-        if (e.length === 0) {
-            return;
-        }
-        let document = e[e.length - 1].document;
-        if (this.panel === undefined) {
-            return;
-        }
-
-        this.update_open(document);
-    }
-
-    async force_update() {
-        if (this.panel !== undefined && this.last_document !== undefined) {
-            await this.update(this.last_document);
-        }
-    }
-
     async update(document : utils.t_vscode_document){
         const state_machines = await this.get_state_machines(document);
         this.state_machines = state_machines;
         this.send_state_machines(state_machines);
-    }
-
-    set_config() {
-        this.force_update();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

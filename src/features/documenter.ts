@@ -23,24 +23,16 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as Output_channel_lib from '../lib/utils/output_channel';
-import * as fs from 'fs';
 import * as utils from '../lib/utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { Base_webview } from './base_webview';
 
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
-export class Documenter_manager {
-    private context: vscode.ExtensionContext;
-    private output_channel: Output_channel_lib.Output_channel;
-    private manager: Multi_project_manager;
+export class Documenter_manager extends Base_webview {
 
-    private documenter : teroshdl2.documenter.documenter.Documenter | undefined;
-    private last_document: utils.t_vscode_document | undefined;
-
-    private subscriptions: vscode.Disposable[] | undefined;
-    private panel : vscode.WebviewPanel | undefined;
-    private html_base: string = '';
+    private documenter: teroshdl2.documenter.documenter.Documenter | undefined;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -48,40 +40,22 @@ export class Documenter_manager {
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
         manager: Multi_project_manager) {
 
+        const activation_command = 'teroshdl.documentation.module';
+        const id = "documenter";
+
         const resource_path = path_lib.join(context.extensionPath, 'resources', 'documenter', 'index.html');
-        this.html_base = utils.get_webview_content(resource_path);
-
-        this.context = context;
-        this.output_channel = output_channel;
-        this.manager = manager;
-
-        vscode.workspace.onDidChangeConfiguration(this.force_update_documentation_module, this, this.subscriptions);
-        vscode.commands.registerCommand("teroshdl.documenter.set_config", () => this.set_config());
-
-        context.subscriptions.push(
-            vscode.commands.registerCommand(
-                'teroshdl.documentation.module',
-                async () => {
-                    await this.get_documentation_module();
-                }
-            ),
-            vscode.workspace.onDidOpenTextDocument((e) => this.update_open_documentation_module(e)),
-            vscode.workspace.onDidSaveTextDocument((e) => this.update_open_documentation_module(e)),
-            vscode.window.onDidChangeVisibleTextEditors((e) => this.update_visible_documentation_module(e)),
-        );
+        super(context, output_channel, manager, resource_path, activation_command, id);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Webview creator
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async get_documentation_module() {
+    async create_webview() {
         // Get active editor file language. Return if no active editor
         const document = utils.get_vscode_active_document();
         if (document === undefined) {
             return;
         }
-        const lang = document.lang;
-        const code = document.code;
 
         if (this.panel === undefined) {
             this.panel = vscode.window.createWebviewPanel(
@@ -112,63 +86,26 @@ export class Documenter_manager {
                 this.context.subscriptions
             );
         }
-        await this.update_doc(document);
+        await this.update(document);
     }
 
-    async update_doc(vscode_document : utils.t_vscode_document) {
+    async update(vscode_document: utils.t_vscode_document) {
         this.last_document = vscode_document;
         const documenter = await this.get_documenter();
         const config = this.get_config();
-        const html_document = await documenter.get_document(vscode_document.code, vscode_document.lang, 
+        const html_document = await documenter.get_document(vscode_document.code, vscode_document.lang,
             config, false, vscode_document.filename, '', true,
             teroshdl2.documenter.common.doc_output_type.HTML);
 
-        if (this.panel !== undefined){
+        if (this.panel !== undefined) {
             this.panel.webview.html = this.html_base + html_document.document;
         }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Update
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async update_open_documentation_module(document: vscode.TextDocument) {
-        if (this.panel === undefined) {
-            return;
-        }
-        
-        let vscode_document = utils.get_vscode_document(document);
-        if (vscode_document.is_hdl === false) {
-            return;
-        }
-        await this.update_doc(vscode_document);
-    }
-
-    async update_visible_documentation_module(e) {
-        if (e.length === 0) {
-            return;
-        }
-        let document = e[e.length - 1].document;
-        if (this.panel === undefined) {
-            return;
-        }
-
-        this.update_open_documentation_module(document);
-    }
-
-    async force_update_documentation_module() {
-        if (this.panel !== undefined && this.last_document !== undefined) {
-            await this.update_doc(this.last_document);
-        }
-    }
-
-    set_config() {
-        this.force_update_documentation_module();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Utils
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async get_documenter():Promise<teroshdl2.documenter.documenter.Documenter> {
+    async get_documenter(): Promise<teroshdl2.documenter.documenter.Documenter> {
         if (this.documenter === undefined) {
             this.documenter = new teroshdl2.documenter.documenter.Documenter();
             return this.documenter;
@@ -188,7 +125,7 @@ export class Documenter_manager {
         this.output_channel.print_documenter_configurtion(configuration, file_input, file_output, type);
     }
 
-    private show_export_message(path_exp:string) {
+    private show_export_message(path_exp: string) {
         this.output_channel.show_message(ERROR_CODE.DOCUMENTER_SAVE, path_exp);
     }
 
@@ -196,7 +133,7 @@ export class Documenter_manager {
     // Export
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     async export_as(type: string) {
-        if (this.last_document === undefined){
+        if (this.last_document === undefined) {
             return;
         }
         const code = this.last_document.code;
@@ -214,7 +151,7 @@ export class Documenter_manager {
         const full_path = path_lib.join(path_lib.dirname(file_path), filename);
 
         let default_path = full_path;
-        let filter : any;
+        let filter: any;
         let output_type = teroshdl2.documenter.common.doc_output_type.HTML;
 
         if (type === "markdown") {

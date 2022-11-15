@@ -1,5 +1,4 @@
-import * as Utils from '../project_manager/utils';
-
+import * as Utils from '../lib/project_manager/utils';
 
 export function get_yosys_read_file(sources, backend, working_directory) {
     let vhdl_files: string[] = [];

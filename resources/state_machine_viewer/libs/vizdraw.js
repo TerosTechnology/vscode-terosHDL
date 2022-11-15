@@ -80,9 +80,7 @@ function create_graph(svg, name, index) {
                             uncheck_all();
                             child_0.style = "fill:#d0fdf7";
                             child_0.fill = "fill:#d0fdf7";
-                            child_0.style = "fill:lime;stroke:lime";
-                            child_0.opacity = "1";
-                            console.log(child_0)
+                            // child_0.style = "fill:lime;stroke:lime";
                             go_to_code_state(state_machine_index_i, state_name);
                         }
                     }
