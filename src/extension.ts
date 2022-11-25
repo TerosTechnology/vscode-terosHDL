@@ -119,6 +119,8 @@ export async function activate(context: vscode.ExtensionContext) {
     teroshdl.init_documenter();
     teroshdl.init_state_machine();
     teroshdl.init_schematic();
+    teroshdl.init_linter();
+    teroshdl.init_formattter();
 
 
 
@@ -246,78 +248,29 @@ export async function activate(context: vscode.ExtensionContext) {
         )
     );
     /**************************************************************************/
-    // Netlist viewer
-    /**************************************************************************/
-    // netlist_viewer_manager = new netlist_viewer.default(context, output_channel, config_reader);
-    // context.subscriptions.push(
-    //     vscode.commands.registerCommand(
-    //         'teroshdl.netlist.viewer',
-    //         async () => {
-    //             await netlist_viewer_manager.open_viewer();
-    //         }
-    //     ),
-    //     vscode.workspace.onDidOpenTextDocument((e) => netlist_viewer_manager.update_viewer()),
-    //     vscode.workspace.onDidSaveTextDocument((e) => netlist_viewer_manager.update_viewer()),
-    //     vscode.window.onDidChangeVisibleTextEditors((e) => netlist_viewer_manager.update_visible_viewer(e)),
-    // );
-    /**************************************************************************/
     // Hover Hexa
     /**************************************************************************/
     number_hover.init_hover(context, vhdlSelector, verilogSelector);
-    // /**************************************************************************/
-    // Linter
-    /**************************************************************************/
-    linter_vhdl = new linter.default("vhdl", "linter", context, config_reader);
-    vscode.workspace.onDidOpenTextDocument((e) => linter_vhdl.lint(e));
-    vscode.workspace.onDidSaveTextDocument((e) => linter_vhdl.lint(e));
-    vscode.workspace.onDidCloseTextDocument((e) => linter_vhdl.remove_file_diagnostics(e));
-
-    linter_verilog = new linter.default("verilog", "linter", context, config_reader);
-    vscode.workspace.onDidOpenTextDocument((e) => linter_verilog.lint(e));
-    vscode.workspace.onDidSaveTextDocument((e) => linter_verilog.lint(e));
-    vscode.workspace.onDidCloseTextDocument((e) => linter_verilog.remove_file_diagnostics(e));
-
-    linter_systemverilog = new linter.default("systemverilog", "linter", context, config_reader);
-    vscode.workspace.onDidOpenTextDocument((e) => linter_systemverilog.lint(e));
-    vscode.workspace.onDidSaveTextDocument((e) => linter_systemverilog.lint(e));
-    vscode.workspace.onDidCloseTextDocument((e) => linter_systemverilog.remove_file_diagnostics(e));
-    /**************************************************************************/
-    // Check style
-    /**************************************************************************/
-    linter_vhdl_style = new linter.default("vhdl", "style", context, config_reader);
-    vscode.workspace.onDidOpenTextDocument((e) => linter_vhdl_style.lint(e));
-    vscode.workspace.onDidSaveTextDocument((e) => linter_vhdl_style.lint(e));
-    vscode.workspace.onDidCloseTextDocument((e) => linter_vhdl_style.remove_file_diagnostics(e));
-
-    linter_verilog_style = new linter.default("verilog", "style", context, config_reader);
-    vscode.workspace.onDidOpenTextDocument((e) => linter_verilog_style.lint(e));
-    vscode.workspace.onDidSaveTextDocument((e) => linter_verilog_style.lint(e));
-    vscode.workspace.onDidCloseTextDocument((e) => linter_verilog_style.remove_file_diagnostics(e));
-
-    linter_systemverilog_style = new linter.default("systemverilog", "style", context, config_reader);
-    vscode.workspace.onDidOpenTextDocument((e) => linter_systemverilog_style.lint(e));
-    vscode.workspace.onDidSaveTextDocument((e) => linter_systemverilog_style.lint(e));
-    vscode.workspace.onDidCloseTextDocument((e) => linter_systemverilog_style.remove_file_diagnostics(e));
     /**************************************************************************/
     // Formatter
     /**************************************************************************/
-    formatter_vhdl = new formatter.default("vhdl", config_reader, output_channel);
-    formatter_verilog = new formatter.default("verilog", config_reader, output_channel);
-    // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
-    const disposable = vscode.languages.registerDocumentFormattingEditProvider(
-        [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
-        { scheme: "file", language: "systemverilog" }],
-        { provideDocumentFormattingEdits }
-    );
-    context.subscriptions.push(disposable);
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'teroshdl.format',
-            async () => {
-                vscode.commands.executeCommand("editor.action.format");
-            }
-        )
-    );
+    // formatter_vhdl = new formatter.default("vhdl", config_reader, output_channel);
+    // formatter_verilog = new formatter.default("verilog", config_reader, output_channel);
+    // // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
+    // const disposable = vscode.languages.registerDocumentFormattingEditProvider(
+    //     [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
+    //     { scheme: "file", language: "systemverilog" }],
+    //     { provideDocumentFormattingEdits }
+    // );
+    // context.subscriptions.push(disposable);
+    // context.subscriptions.push(
+    //     vscode.commands.registerCommand(
+    //         'teroshdl.format',
+    //         async () => {
+    //             vscode.commands.executeCommand("editor.action.format");
+    //         }
+    //     )
+    // );
 }
 
 

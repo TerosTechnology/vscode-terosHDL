@@ -1,0 +1,220 @@
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Colibri is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
+
+
+/* eslint-disable @typescript-eslint/class-name-casing */
+import * as vscode from 'vscode';
+import * as teroshdl2 from 'teroshdl2';
+import * as Output_channel_lib from '../lib/utils/output_channel';
+import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import * as utils from '../lib/utils/utils';
+
+const ERROR_CODE = Output_channel_lib.ERROR_CODE;
+
+
+class Formatter{
+
+    private manager: Multi_project_manager;
+    private lang: teroshdl2.common.general.HDL_LANG;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Constructor
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    constructor(lang: teroshdl2.common.general.HDL_LANG, manager: Multi_project_manager) {
+        this.manager = manager;
+        this.lang = lang;
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+export default class Formatter_manager {
+    private config_reader: config_reader_lib.Config_reader;
+    private output_channel: Output_channel_lib.Output_channel;
+
+    constructor(language: string, config_reader, output_channel: Output_channel_lib.Output_channel) {
+        this.config_reader = config_reader;
+        this.lang = language;
+        this.output_channel = output_channel;
+        vscode.commands.registerCommand(`teroshdl.formatter.${language}.set_config`, () => this.config_formatter());
+    }
+
+    public async format(code) {
+        this.config_formatter();
+        const teroshdl = require('teroshdl');
+        let formatter = new teroshdl.Formatter.Formatter(this.formatter_name);
+        if (formatter !== undefined) {
+            if (formatter.update_params !== undefined) {
+                formatter.update_params();
+            }
+            let options = await this.get_options();
+            let options_print = options;
+            if (this.formatter_name === 'standalone') {
+                options_print = options_print['settings'];
+            }
+            if (this.formatter_name === 'vsg') {
+                this.check_vsg();
+            }
+            this.output_channel.print_formatter(this.formatter_name, options_print);
+            let formatted_code = await formatter.format_from_code(code, options);
+            return formatted_code;
+        }
+        else {
+            return code;
+        }
+    }
+
+    async check_vsg() {
+        let check = await this.config_reader.check_configuration(false);
+        let check_vsg = check.vsg;
+        if (check_vsg === false) {
+            this.output_channel.show_message(ERROR_CODE.VSG_NOT_FOUND);
+        }
+        return check.vsg;
+    }
+
+    config_formatter() {
+        let formatter_name: string;
+        formatter_name = this.config_reader.get_formatter_name(this.lang);
+        formatter_name = formatter_name.toLowerCase();
+        this.formatter_name = formatter_name;
+    }
+
+    async get_options() {
+        let configuration = this.config_reader.get_formatter_config();
+
+        let options = {};
+        if (this.formatter_name === "vsg") {
+            let linter_config = this.config_reader.get_config_fields('vsg');
+            if (linter_config !== undefined) {
+                let configuration_file = linter_config.configuration;
+                const fs = require('fs');
+                if (configuration_file !== '' && fs.existsSync(configuration_file)) {
+                    options = { 'file_rules': `${configuration_file}` };
+                }
+            }
+        }
+        else if (this.formatter_name === "verible") {
+            let arguments_array = configuration.verible_format_args;
+            let args = '';
+            for (let i = 0; i < arguments_array.length; i++) {
+                const element = arguments_array[i];
+                args += element + ' ';
+            }
+
+            options = { 'path': configuration.verible_path, 'args': args };
+        }
+        else if (this.formatter_name === "standalone") {
+            options = { 'settings': this.get_standalone_vhdl_config() };
+        }
+        else if (this.formatter_name === "verible") {
+        }
+        else if (this.formatter_name === "istyle") {
+            let style = configuration.istyle_style;
+            options = { 'style': this.get_istyle_style(), 'extra_args': this.get_istyle_extra_args() };
+        }
+        else if (this.formatter_name === "s3sv") {
+            let python = await this.config_reader.get_python_path_binary(true);
+            options = {
+                "python3_path": python,
+                "use_tabs": configuration.s3sv_use_tabs,
+                "indent_size": configuration.s3sv_indentation_size,
+                "one_bind_per_line": configuration.s3sv_one_bind_per_line,
+                "one_decl_per_line": configuration.s3sv_one_declaration_per_line
+            };
+        }
+        return options;
+    }
+
+    get_istyle_style() {
+        let configuration = this.config_reader.get_formatter_config();
+        const style_map: { [style: string]: string } = {
+            "indent_only": "",
+            "kernighan&ritchie": "kr",
+            "gnu": "gnu",
+            "ansi": "ansi"
+        };
+        let style = configuration.istyle_style;
+        const map_style = style_map[style];
+        if (map_style === '') {
+            return '';
+        }
+        else if (map_style === undefined) {
+            return "--style=ansi";
+        } else {
+            return `--style=${map_style}`;
+        }
+    }
+
+    get_istyle_extra_args() {
+        let extra_args = "";
+        let configuration = this.config_reader.get_formatter_config();
+        let number_of_spaces = configuration.istyle_indentation_size;
+        extra_args = "-s" + number_of_spaces + " ";
+        return extra_args;
+    }
+
+    get_standalone_vhdl_config() {
+        let configuration = this.config_reader.get_formatter_config();
+        let settings = {
+            "RemoveComments": false,
+            "RemoveAsserts": false,
+            "CheckAlias": false,
+            "AlignComments": configuration.vhdl_standalone_align_comments,
+            "SignAlignSettings": {
+                "isRegional": configuration.vhdl_standalone_align_generic_port,
+                "isAll": configuration.vhdl_standalone_align_generic_port,
+                "mode": 'local',
+                "keyWords": [
+                    "FUNCTION",
+                    "IMPURE FUNCTION",
+                    "GENERIC",
+                    "PORT",
+                    "PROCEDURE"
+                ]
+            },
+            "KeywordCase": configuration.vhdl_standalone_keyword_case,
+            "TypeNameCase": configuration.vhdl_standalone_name_case,
+            "Indentation": configuration.vhdl_standalone_indentation,
+            "NewLineSettings": {
+                "newLineAfter": [
+                    ";",
+                    "then"
+                ],
+                "noNewLineAfter": []
+            },
+            "EndOfLine": "\n"
+        };
+        return settings;
+    }
+}
+
+export const getDocumentRange = (document: vscode.TextDocument): vscode.Range => {
+    const lastLineId = document.lineCount - 1;
+    return new vscode.Range(
+        0,
+        0,
+        lastLineId,
+        document.lineAt(lastLineId).text.length
+    );
+};
