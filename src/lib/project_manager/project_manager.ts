@@ -752,18 +752,28 @@ export class Project_manager {
                         return;
                     }
                     let file_path = value[0].fsPath;
-                    let file_list = fs.readFileSync(file_path, "utf8");
+                    let file_list = fs.readFileSync(file_path, "utf8").trim();
                     let file_list_array = file_list.split(/\r?\n/);
 
                     for (let i = 0; i < file_list_array.length; ++i) {
                         let element = file_list_array[i];
                         if (element.trim() !== '') {
                             try {
-                                let lib_inst = element.split(',')[0].trim();
-                                let file_inst = element.split(',')[1].trim();
-                                if (lib_inst === "") {
-                                    lib_inst = "";
+                                const split_line = element.split(',');
+
+                                let lib_inst = '';
+                                let file_inst = '';
+
+                                // Only file
+                                if (split_line.length === 1){
+                                    file_inst = split_line[0];
                                 }
+                                // Lib and file
+                                else{
+                                    lib_inst = split_line[0];
+                                    file_inst = split_line[1];
+                                }
+
                                 let complete_file_path = file_inst;
                                 if (path.isAbsolute(file_inst) === false) {
                                     let dirname_csv = path_lib.dirname(file_path);
@@ -772,6 +782,7 @@ export class Project_manager {
                                 this.edam_project_manager.add_file(project_name, complete_file_path, false, "", lib_inst);
                             }
                             catch (e) {
+                                console.log(e);
                                 return;
                             }
                         }
