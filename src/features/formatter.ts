@@ -20,192 +20,164 @@ import * as utils from '../lib/utils/utils';
 
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
+let formatter_vhdl: Formatter | undefined = undefined;
+let formatter_verilog: Formatter | undefined = undefined;
 
-class Formatter{
+class Formatter {
 
     private manager: Multi_project_manager;
     private lang: teroshdl2.common.general.HDL_LANG;
+    private output_channel: Output_channel_lib.Output_channel;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(lang: teroshdl2.common.general.HDL_LANG, manager: Multi_project_manager) {
+    constructor(lang: teroshdl2.common.general.HDL_LANG, manager: Multi_project_manager,
+        output_channel: Output_channel_lib.Output_channel) {
         this.manager = manager;
         this.lang = lang;
+        this.output_channel = output_channel;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Configuration
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private get_config_manager() {
+        const config = this.manager.get_config_manager();
+        return config;
+    }
 
+    private get_formatter_name() {
+        const config_manager = this.get_config_manager();
+        if (this.lang === teroshdl2.common.general.HDL_LANG.VHDL) {
+            return config_manager.get_formatter_name_vhdl();
+        }
+        else {
+            return config_manager.get_formatter_name_verilog();
+        }
+    }
 
-}
+    private get_formatter_config() {
+        const config_manager = this.get_config_manager();
+        if (this.lang === teroshdl2.common.general.HDL_LANG.VHDL) {
+            return config_manager.get_formatter_config_vhdl();
+        }
+        else {
+            return config_manager.get_formatter_config_verilog();
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-export default class Formatter_manager {
-    private config_reader: config_reader_lib.Config_reader;
-    private output_channel: Output_channel_lib.Output_channel;
-
-    constructor(language: string, config_reader, output_channel: Output_channel_lib.Output_channel) {
-        this.config_reader = config_reader;
-        this.lang = language;
-        this.output_channel = output_channel;
-        vscode.commands.registerCommand(`teroshdl.formatter.${language}.set_config`, () => this.config_formatter());
+    private get_pytyon_path() {
+        const config_manager = this.get_config_manager();
+        const python_path = config_manager.get_exec_config().python_path;
+        return python_path;
     }
 
     public async format(code) {
-        this.config_formatter();
-        const teroshdl = require('teroshdl');
-        let formatter = new teroshdl.Formatter.Formatter(this.formatter_name);
-        if (formatter !== undefined) {
-            if (formatter.update_params !== undefined) {
-                formatter.update_params();
-            }
-            let options = await this.get_options();
-            let options_print = options;
-            if (this.formatter_name === 'standalone') {
-                options_print = options_print['settings'];
-            }
-            if (this.formatter_name === 'vsg') {
-                this.check_vsg();
-            }
-            this.output_channel.print_formatter(this.formatter_name, options_print);
-            let formatted_code = await formatter.format_from_code(code, options);
-            return formatted_code;
-        }
-        else {
-            return code;
-        }
+        const formatter_name = this.get_formatter_name();
+        const formater_config = this.get_formatter_config();
+        const python_path = this.get_pytyon_path();
+        const formatter = new teroshdl2.formatter.formatter.Formatter();
+        const result = await formatter.format_from_code(formatter_name, code, formater_config, python_path);
+        return result;
     }
+}
 
-    async check_vsg() {
-        let check = await this.config_reader.check_configuration(false);
-        let check_vsg = check.vsg;
-        if (check_vsg === false) {
-            this.output_channel.show_message(ERROR_CODE.VSG_NOT_FOUND);
-        }
-        return check.vsg;
-    }
+export class Formatter_manager {
+    private output_channel: Output_channel_lib.Output_channel;
+    private manager: Multi_project_manager;
 
-    config_formatter() {
-        let formatter_name: string;
-        formatter_name = this.config_reader.get_formatter_name(this.lang);
-        formatter_name = formatter_name.toLowerCase();
-        this.formatter_name = formatter_name;
-    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Constructor
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
+        manager: Multi_project_manager) {
 
-    async get_options() {
-        let configuration = this.config_reader.get_formatter_config();
+        this.output_channel = output_channel;
+        this.manager = manager;
 
-        let options = {};
-        if (this.formatter_name === "vsg") {
-            let linter_config = this.config_reader.get_config_fields('vsg');
-            if (linter_config !== undefined) {
-                let configuration_file = linter_config.configuration;
-                const fs = require('fs');
-                if (configuration_file !== '' && fs.existsSync(configuration_file)) {
-                    options = { 'file_rules': `${configuration_file}` };
+        formatter_vhdl = new Formatter(teroshdl2.common.general.HDL_LANG.VHDL, manager, output_channel);
+        formatter_verilog = new Formatter(teroshdl2.common.general.HDL_LANG.VERILOG, manager, output_channel);
+
+        const disposable = vscode.languages.registerDocumentFormattingEditProvider(
+            [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
+            { scheme: "file", language: "systemverilog" }],
+            { provideDocumentFormattingEdits }
+        );
+        context.subscriptions.push(disposable);
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                'teroshdl.format',
+                async () => {
+                    vscode.commands.executeCommand("editor.action.format");
                 }
-            }
-        }
-        else if (this.formatter_name === "verible") {
-            let arguments_array = configuration.verible_format_args;
-            let args = '';
-            for (let i = 0; i < arguments_array.length; i++) {
-                const element = arguments_array[i];
-                args += element + ' ';
-            }
+            )
+        );
+    }
+}
 
-            options = { 'path': configuration.verible_path, 'args': args };
-        }
-        else if (this.formatter_name === "standalone") {
-            options = { 'settings': this.get_standalone_vhdl_config() };
-        }
-        else if (this.formatter_name === "verible") {
-        }
-        else if (this.formatter_name === "istyle") {
-            let style = configuration.istyle_style;
-            options = { 'style': this.get_istyle_style(), 'extra_args': this.get_istyle_extra_args() };
-        }
-        else if (this.formatter_name === "s3sv") {
-            let python = await this.config_reader.get_python_path_binary(true);
-            options = {
-                "python3_path": python,
-                "use_tabs": configuration.s3sv_use_tabs,
-                "indent_size": configuration.s3sv_indentation_size,
-                "one_bind_per_line": configuration.s3sv_one_bind_per_line,
-                "one_decl_per_line": configuration.s3sv_one_declaration_per_line
-            };
-        }
-        return options;
+async function provideDocumentFormattingEdits(document: vscode.TextDocument, options: vscode.FormattingOptions,
+    token: vscode.CancellationToken): Promise<vscode.TextEdit[]> {
+
+    const edits: vscode.TextEdit[] = [];
+    if (formatter_verilog === undefined || formatter_vhdl === undefined){
+        return edits;
     }
 
-    get_istyle_style() {
-        let configuration = this.config_reader.get_formatter_config();
-        const style_map: { [style: string]: string } = {
-            "indent_only": "",
-            "kernighan&ritchie": "kr",
-            "gnu": "gnu",
-            "ansi": "ansi"
-        };
-        let style = configuration.istyle_style;
-        const map_style = style_map[style];
-        if (map_style === '') {
-            return '';
-        }
-        else if (map_style === undefined) {
-            return "--style=ansi";
-        } else {
-            return `--style=${map_style}`;
-        }
+    //Get document code
+    let code_document: string = document.getText();
+    let selection_document = getDocumentRange(document);
+
+    //Get selected text
+    let editor = vscode.window.activeTextEditor;
+    let selection_selected_text;
+    let code_selected_text: string = '';
+    if (editor !== undefined) {
+        selection_selected_text = editor.selection;
+        code_selected_text = editor.document.getText(editor.selection);
     }
 
-    get_istyle_extra_args() {
-        let extra_args = "";
-        let configuration = this.config_reader.get_formatter_config();
-        let number_of_spaces = configuration.istyle_indentation_size;
-        extra_args = "-s" + number_of_spaces + " ";
-        return extra_args;
+    //Code to format
+    let format_mode_selection: boolean = false;
+    let code_to_format: string = '';
+    let selection_to_format;
+    if (code_selected_text !== '') {
+        let init: number = utils.line_index_to_character_index(selection_selected_text._start._line,
+            selection_selected_text._start._character, code_document);
+        let end: number = utils.line_index_to_character_index(selection_selected_text._end._line,
+            selection_selected_text._end._character, code_document);
+        let selection_add: string = "#$$#colibri#$$#" + code_selected_text + "%%!!teros!!%%";
+        code_to_format = utils.replace_range(code_document, init, end, selection_add);
+        format_mode_selection = true;
+
+        code_to_format = code_selected_text;
+        selection_to_format = selection_selected_text;
+    }
+    else {
+        code_to_format = code_document;
+        selection_to_format = selection_document;
     }
 
-    get_standalone_vhdl_config() {
-        let configuration = this.config_reader.get_formatter_config();
-        let settings = {
-            "RemoveComments": false,
-            "RemoveAsserts": false,
-            "CheckAlias": false,
-            "AlignComments": configuration.vhdl_standalone_align_comments,
-            "SignAlignSettings": {
-                "isRegional": configuration.vhdl_standalone_align_generic_port,
-                "isAll": configuration.vhdl_standalone_align_generic_port,
-                "mode": 'local',
-                "keyWords": [
-                    "FUNCTION",
-                    "IMPURE FUNCTION",
-                    "GENERIC",
-                    "PORT",
-                    "PROCEDURE"
-                ]
-            },
-            "KeywordCase": configuration.vhdl_standalone_keyword_case,
-            "TypeNameCase": configuration.vhdl_standalone_name_case,
-            "Indentation": configuration.vhdl_standalone_indentation,
-            "NewLineSettings": {
-                "newLineAfter": [
-                    ";",
-                    "then"
-                ],
-                "noNewLineAfter": []
-            },
-            "EndOfLine": "\n"
-        };
-        return settings;
+    let code_format: string;
+    if (document.languageId === "vhdl") {
+        code_format = (await formatter_vhdl.format(code_to_format)).code_formatted;
+    }
+    else {
+        code_format = (await formatter_verilog.format(code_to_format)).code_formatted;
+    }
+    //Error
+    if (code_format === null) {
+        // vscode.window.showErrorMessage('Select a valid file.!');
+        console.log("Error format code.");
+        return edits;
+    }
+    else {
+        const replacement = vscode.TextEdit.replace(
+            selection_to_format,
+            code_format
+        );
+        edits.push(replacement);
+        return edits;
     }
 }
 

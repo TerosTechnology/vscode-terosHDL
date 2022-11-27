@@ -120,7 +120,7 @@ export async function activate(context: vscode.ExtensionContext) {
     teroshdl.init_state_machine();
     teroshdl.init_schematic();
     teroshdl.init_linter();
-    teroshdl.init_formattter();
+    teroshdl.init_formatter();
 
 
 
@@ -274,67 +274,67 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 
-export async function provideDocumentFormattingEdits(
-    document: vscode.TextDocument,
-    options: vscode.FormattingOptions,
-    token: vscode.CancellationToken
-): Promise<vscode.TextEdit[]> {
-    const edits: vscode.TextEdit[] = [];
-    //Get document code
-    let code_document: string = document.getText();
-    let selection_document = formatter.getDocumentRange(document);
-    //Get selected text
-    let editor = vscode.window.activeTextEditor;
-    let selection_selected_text;
-    let code_selected_text: string = '';
-    if (editor !== undefined) {
-        selection_selected_text = editor.selection;
-        code_selected_text = editor.document.getText(editor.selection);
-    }
-    //Code to format
-    let format_mode_selection: boolean = false;
-    let code_to_format: string = '';
-    let selection_to_format;
-    if (code_selected_text !== '') {
-        let init: number = utils.line_index_to_character_index(selection_selected_text._start._line,
-            selection_selected_text._start._character, code_document);
-        let end: number = utils.line_index_to_character_index(selection_selected_text._end._line,
-            selection_selected_text._end._character, code_document);
-        let selection_add: string = "#$$#colibri#$$#" + code_selected_text + "%%!!teros!!%%";
-        code_to_format = utils.replace_range(code_document, init, end, selection_add);
-        format_mode_selection = true;
+// export async function provideDocumentFormattingEdits(
+//     document: vscode.TextDocument,
+//     options: vscode.FormattingOptions,
+//     token: vscode.CancellationToken
+// ): Promise<vscode.TextEdit[]> {
+//     const edits: vscode.TextEdit[] = [];
+//     //Get document code
+//     let code_document: string = document.getText();
+//     let selection_document = formatter.getDocumentRange(document);
+//     //Get selected text
+//     let editor = vscode.window.activeTextEditor;
+//     let selection_selected_text;
+//     let code_selected_text: string = '';
+//     if (editor !== undefined) {
+//         selection_selected_text = editor.selection;
+//         code_selected_text = editor.document.getText(editor.selection);
+//     }
+//     //Code to format
+//     let format_mode_selection: boolean = false;
+//     let code_to_format: string = '';
+//     let selection_to_format;
+//     if (code_selected_text !== '') {
+//         let init: number = utils.line_index_to_character_index(selection_selected_text._start._line,
+//             selection_selected_text._start._character, code_document);
+//         let end: number = utils.line_index_to_character_index(selection_selected_text._end._line,
+//             selection_selected_text._end._character, code_document);
+//         let selection_add: string = "#$$#colibri#$$#" + code_selected_text + "%%!!teros!!%%";
+//         code_to_format = utils.replace_range(code_document, init, end, selection_add);
+//         format_mode_selection = true;
 
-        code_to_format = code_selected_text;
-        selection_to_format = selection_selected_text;
-    }
-    else {
-        code_to_format = code_document;
-        selection_to_format = selection_document;
-    }
+//         code_to_format = code_selected_text;
+//         selection_to_format = selection_selected_text;
+//     }
+//     else {
+//         code_to_format = code_document;
+//         selection_to_format = selection_document;
+//     }
 
-    let opt = options;
-    let code_format: string;
-    if (document.languageId === "vhdl") {
-        code_format = await formatter_vhdl.format(code_to_format);
-    }
-    else {
-        code_format = await formatter_verilog.format(code_to_format);
-    }
-    //Error
-    if (code_format === null) {
-        // vscode.window.showErrorMessage('Select a valid file.!');
-        console.log("Error format code.");
-        return edits;
-    }
-    else {
-        const replacement = vscode.TextEdit.replace(
-            selection_to_format,
-            code_format
-        );
-        edits.push(replacement);
-        return edits;
-    }
-}
+//     let opt = options;
+//     let code_format: string;
+//     if (document.languageId === "vhdl") {
+//         code_format = await formatter_vhdl.format(code_to_format);
+//     }
+//     else {
+//         code_format = await formatter_verilog.format(code_to_format);
+//     }
+//     //Error
+//     if (code_format === null) {
+//         // vscode.window.showErrorMessage('Select a valid file.!');
+//         console.log("Error format code.");
+//         return edits;
+//     }
+//     else {
+//         const replacement = vscode.TextEdit.replace(
+//             selection_to_format,
+//             code_format
+//         );
+//         edits.push(replacement);
+//         return edits;
+//     }
+// }
 
 export function deactivate(): Thenable<void> | undefined {
     console.log("TerosHDL deactivate!");

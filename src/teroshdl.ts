@@ -26,6 +26,7 @@ import { Documenter_manager } from "./features/documenter";
 import { State_machine_manager } from "./features/state_machine";
 import { Schematic_manager } from "./features/schematic";
 import { Linter_manager } from "./features/linter";
+import { Formatter_manager } from "./features/formatter";
 
 export class Teroshdl {
     private context: vscode.ExtensionContext;
@@ -58,6 +59,10 @@ export class Teroshdl {
 
     public init_linter(){
         new Linter_manager(this.context, this.manager);
+    }
+
+    public init_formatter(){
+        new Formatter_manager(this.context, this.output_channel,this.manager);
     }
 
 }
