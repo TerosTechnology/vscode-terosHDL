@@ -21,7 +21,6 @@
 
 import * as vscode from 'vscode';
 // Common libraries
-import * as utils from "./lib/utils/utils";
 import * as config_reader_lib from "./lib/utils/config_reader";
 //Project manager
 import * as project_manager_lib from "./lib/project_manager/project_manager";
@@ -29,28 +28,10 @@ let project_manager;
 //Extension manager
 import * as extension_manager from "./lib/utils/extension_manager";
 import * as release_notes_webview from "./lib/utils/webview/release_notes";
-// // Templates
-// import * as templates from "./lib/templates/templates";
-// Documenter
-import * as documentation from "./features/documenter";
-// Linter
-import * as linter from "./lib/linter/linter";
-// Formatter
-import * as formatter from "./lib/formatter/formatter_manager";
-// Number hover
-import * as number_hover from "./lib/number_hover/number_hover";
 //RustHDL
 import * as rusthdl_lib from './lib/rusthdl/rust_hdl';
 //Utils
 import * as Output_channel_lib from './lib/utils/output_channel';
-//Shutter mode
-import * as Shutter_mode from './lib/formatter/stutter_mode';
-// VHDL completion
-import {
-    VhdlAttributeCompletionItemProvider,
-    VhdlLibraryCompletionItemProvider,
-    VhdlStdPackageCompletionItemProvider
-} from './lib/completions';
 
 
 // TerosHDL
@@ -61,16 +42,6 @@ import {Teroshdl} from './teroshdl';
 
 let output_channel: Output_channel_lib.Output_channel;
 let rusthdl: rusthdl_lib.Rusthdl_lsp;
-let linter_vhdl;
-let linter_verilog;
-let linter_systemverilog;
-let template;
-let linter_vhdl_style;
-let linter_verilog_style;
-let linter_systemverilog_style;
-let formatter_vhdl;
-let formatter_verilog;
-let documenter;
 let config_reader;
 // Dependencies viewer
 import * as dependencies_viewer from "./lib/dependencies_viewer/dependencies_viewer";
@@ -114,13 +85,8 @@ export async function activate(context: vscode.ExtensionContext) {
     output_channel = new Output_channel_lib.Output_channel(context);
 
     const teroshdl = new Teroshdl(context, output_channel);
+    teroshdl.init_teroshdl();
 
-    teroshdl.init_template_manager();
-    teroshdl.init_documenter();
-    teroshdl.init_state_machine();
-    teroshdl.init_schematic();
-    teroshdl.init_linter();
-    teroshdl.init_formatter();
 
 
 
@@ -153,19 +119,6 @@ export async function activate(context: vscode.ExtensionContext) {
     /**************************************************************************/
     config_reader = new config_reader_lib.Config_reader(context, output_channel);
 
-    /**************************************************************************/
-    // Shutter mode
-    /**************************************************************************/
-    context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'vhdl'));
-    context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'verilog'));
-    context.subscriptions.push(Shutter_mode.get_shutter_mode(config_reader, 'systemverilog'));
-
-    /**************************************************************************/
-    // VHDL completion
-    /**************************************************************************/
-    context.subscriptions.push(VhdlAttributeCompletionItemProvider);
-    context.subscriptions.push(VhdlLibraryCompletionItemProvider);
-    context.subscriptions.push(VhdlStdPackageCompletionItemProvider);
 
     /**************************************************************************/
     // Language providers
@@ -216,9 +169,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     //VHDL
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
-    // if (enable_vhdl_provider === true) {
-    // }
-    //Verilog
+
     context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, docProvider));
     if (enable_verilog_provider === true) {
         context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, hoverProvider));
@@ -247,94 +198,9 @@ export async function activate(context: vscode.ExtensionContext) {
             }
         )
     );
-    /**************************************************************************/
-    // Hover Hexa
-    /**************************************************************************/
-    number_hover.init_hover(context, vhdlSelector, verilogSelector);
-    /**************************************************************************/
-    // Formatter
-    /**************************************************************************/
-    // formatter_vhdl = new formatter.default("vhdl", config_reader, output_channel);
-    // formatter_verilog = new formatter.default("verilog", config_reader, output_channel);
-    // // context.subscriptions.push(vscode.commands.registerCommand('teroshdl.format', formatter.format));
-    // const disposable = vscode.languages.registerDocumentFormattingEditProvider(
-    //     [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
-    //     { scheme: "file", language: "systemverilog" }],
-    //     { provideDocumentFormattingEdits }
-    // );
-    // context.subscriptions.push(disposable);
-    // context.subscriptions.push(
-    //     vscode.commands.registerCommand(
-    //         'teroshdl.format',
-    //         async () => {
-    //             vscode.commands.executeCommand("editor.action.format");
-    //         }
-    //     )
-    // );
+
+
 }
-
-
-// export async function provideDocumentFormattingEdits(
-//     document: vscode.TextDocument,
-//     options: vscode.FormattingOptions,
-//     token: vscode.CancellationToken
-// ): Promise<vscode.TextEdit[]> {
-//     const edits: vscode.TextEdit[] = [];
-//     //Get document code
-//     let code_document: string = document.getText();
-//     let selection_document = formatter.getDocumentRange(document);
-//     //Get selected text
-//     let editor = vscode.window.activeTextEditor;
-//     let selection_selected_text;
-//     let code_selected_text: string = '';
-//     if (editor !== undefined) {
-//         selection_selected_text = editor.selection;
-//         code_selected_text = editor.document.getText(editor.selection);
-//     }
-//     //Code to format
-//     let format_mode_selection: boolean = false;
-//     let code_to_format: string = '';
-//     let selection_to_format;
-//     if (code_selected_text !== '') {
-//         let init: number = utils.line_index_to_character_index(selection_selected_text._start._line,
-//             selection_selected_text._start._character, code_document);
-//         let end: number = utils.line_index_to_character_index(selection_selected_text._end._line,
-//             selection_selected_text._end._character, code_document);
-//         let selection_add: string = "#$$#colibri#$$#" + code_selected_text + "%%!!teros!!%%";
-//         code_to_format = utils.replace_range(code_document, init, end, selection_add);
-//         format_mode_selection = true;
-
-//         code_to_format = code_selected_text;
-//         selection_to_format = selection_selected_text;
-//     }
-//     else {
-//         code_to_format = code_document;
-//         selection_to_format = selection_document;
-//     }
-
-//     let opt = options;
-//     let code_format: string;
-//     if (document.languageId === "vhdl") {
-//         code_format = await formatter_vhdl.format(code_to_format);
-//     }
-//     else {
-//         code_format = await formatter_verilog.format(code_to_format);
-//     }
-//     //Error
-//     if (code_format === null) {
-//         // vscode.window.showErrorMessage('Select a valid file.!');
-//         console.log("Error format code.");
-//         return edits;
-//     }
-//     else {
-//         const replacement = vscode.TextEdit.replace(
-//             selection_to_format,
-//             code_format
-//         );
-//         edits.push(replacement);
-//         return edits;
-//     }
-// }
 
 export function deactivate(): Thenable<void> | undefined {
     console.log("TerosHDL deactivate!");

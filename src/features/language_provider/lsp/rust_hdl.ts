@@ -123,19 +123,11 @@ export class Rusthdl_lsp {
         });
     }
 
-    // deactivate(): Thenable<void> | undefined {
-    //     if (!this.client) {
-    //         return undefined;
-    //     }
-    //     return this.client.stop();
-    // }
-
     deactivate(): Thenable<void> | undefined {
         console.log("TerosHDL deactivate!");
         let promises = [this.client.stop()];
         return Promise.all(promises).then(() => undefined);
     }
-
 
     embeddedVersion(languageServerDir: string): string {
         try {

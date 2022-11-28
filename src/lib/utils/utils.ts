@@ -25,6 +25,13 @@ import * as path_lib from 'path';
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 
+export const VERILOG_SELECTOR: vscode.DocumentSelector = [
+    { scheme: 'file', language: teroshdl2.common.general.HDL_LANG.VERILOG },
+    { scheme: 'file', language: teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG }
+];
+export const VHDL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: teroshdl2.common.general.HDL_LANG.VHDL };
+export const TCL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: 'tcl' };
+
 export function get_webview_content(resource_path: string) {
     const dir_path = path_lib.dirname(resource_path);
     let html = fs.readFileSync(resource_path, 'utf-8');
