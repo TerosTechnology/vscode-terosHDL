@@ -4,7 +4,7 @@ node_modules
 *.vsix
 user.teros-hdl.config.json
 prj_config.teros
-server
+resources/rusthdl/*.zip
 config.html
 resources/project_manager/examples
 resources/project_manager/help
