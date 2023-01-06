@@ -818,7 +818,7 @@
         "@types/node-fetch": "2.5.7",
         "@types/semver": "6.2.0",
         "abort-controller": "3.0.0",
-        "extract-zip": "1.6.2",
+        "extract-zip": "1.7.0",
         "fs-extra": "8.1.0",
         "teroshdl": "https://github.com/TerosTechnology/colibri.git#master",
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
