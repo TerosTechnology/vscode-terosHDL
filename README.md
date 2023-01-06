@@ -4,7 +4,7 @@
 [![vscode-TerosHDL documentation](https://img.shields.io/website.svg?label=vscode-TerosHDL%20Documentation&longCache=true&style=flat-square&url=http%3A%2F%2FTerosTechnology.github.io%2FterosHDLdoc%2Findex.html)](https://TerosTechnology.github.io/terosHDLdoc)
 
 
-![TerosHDL](./resources/images/low_res_banner.png)
+![TerosHDL](./media/low_res_banner.png)
 
 **Check the full documentation:** [https://terostechnology.github.io](https://terostechnology.github.io/)
 
@@ -29,7 +29,7 @@ The IDE tries to be as much self-contained as possible and simplify the installa
 - State machine designer.
 - Code snippets and grammar.
 
-![TerosHDL](./resources/images/gui.gif)
+![TerosHDL](./media/gui.gif)
 
 ## Managed by
 

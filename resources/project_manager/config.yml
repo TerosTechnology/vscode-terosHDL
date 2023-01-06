@@ -25,10 +25,10 @@ general:
     go_to_definition_verilog:
         description: "Activate go to definition feature for Verilog/SV (you need to restart VSCode)."
         type: checkbox
-    rusthdl_path:
-        description: "Path to your custom rust_hdl binary"
-        type: input
-        default: ""
+    # rusthdl_path:
+    #     description: "Path to your custom rust_hdl binary"
+    #     type: input
+    #     default: ""
     developer_mode:
         description: "Developer mode: be careful!!"
         type: checkbox

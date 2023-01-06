@@ -12,10 +12,10 @@ import semver = require('semver');
 import vscode = require('vscode');
 import { ExtensionContext, window } from 'vscode';
 import * as config_reader_lib from "../utils/config_reader";
-import Octokit = require('@octokit/rest');
 import util = require('util');
 import AbortController from 'abort-controller';
 import fetch from 'node-fetch';
+import { Octokit } from "@octokit/rest";
 
 const exec = util.promisify(require('child_process').exec);
 
