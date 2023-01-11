@@ -1,0 +1,3406 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        body {
+            background-color: white;
+        }
+
+        /*style the items (options), including the selected item:*/
+        select {
+            width: 60%;
+            padding: 8px 16px;
+            cursor: pointer;
+            padding-right: 29px;
+        }
+
+        /* Style the tab */
+        .tab {
+            float: left;
+            border: 3px solid #ccc;
+            background-color: #f1f1f1;
+            width: 30%;
+            height: 500px;
+            overflow-y: scroll;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current "tab button" class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            float: left;
+            padding: 0px 12px;
+            border: 3px solid #ccc;
+            width: 70%;
+            border-left: none;
+            height: 100%;
+            border-left: 20px;
+            overflow-y: scroll;
+            height: 500px;
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            display: block;
+            background-color: inherit;
+            color: black;
+            padding: 22px 16px;
+            width: 100%;
+            border: none;
+            outline: none;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        #button_apply {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            float: right;
+        }
+
+        #button_apply_close {
+            background-color: #4c7aaf;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            float: right;
+        }
+
+        #button_cancel {
+            outline: none;
+            background-color: #ff5a31;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            float: right;
+        }
+
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current "tab button" class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+        .markdown-body .octicon {
+            display: inline-block;
+            fill: currentColor;
+            vertical-align: text-bottom;
+        }
+
+        input[type='input'] {
+            width: 100%
+        }
+
+        .markdown-body .anchor {
+            float: left;
+            line-height: 1;
+            margin-left: -20px;
+            padding-right: 4px;
+        }
+
+        .markdown-body .anchor:focus {
+            outline: none;
+        }
+
+        .markdown-body h1 .octicon-link,
+        .markdown-body h2 .octicon-link,
+        .markdown-body h3 .octicon-link,
+        .markdown-body h4 .octicon-link,
+        .markdown-body h5 .octicon-link,
+        .markdown-body h6 .octicon-link {
+            color: #1b1f23;
+            vertical-align: middle;
+            visibility: hidden;
+        }
+
+        .markdown-body h1:hover .anchor,
+        .markdown-body h2:hover .anchor,
+        .markdown-body h3:hover .anchor,
+        .markdown-body h4:hover .anchor,
+        .markdown-body h5:hover .anchor,
+        .markdown-body h6:hover .anchor {
+            text-decoration: none;
+        }
+
+        .markdown-body h1:hover .anchor .octicon-link,
+        .markdown-body h2:hover .anchor .octicon-link,
+        .markdown-body h3:hover .anchor .octicon-link,
+        .markdown-body h4:hover .anchor .octicon-link,
+        .markdown-body h5:hover .anchor .octicon-link,
+        .markdown-body h6:hover .anchor .octicon-link {
+            visibility: visible;
+        }
+
+        .markdown-body h1:hover .anchor .octicon-link:before,
+        .markdown-body h2:hover .anchor .octicon-link:before,
+        .markdown-body h3:hover .anchor .octicon-link:before,
+        .markdown-body h4:hover .anchor .octicon-link:before,
+        .markdown-body h5:hover .anchor .octicon-link:before,
+        .markdown-body h6:hover .anchor .octicon-link:before {
+            width: 16px;
+            height: 16px;
+            content: ' ';
+            display: inline-block;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+        .markdown-body {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            line-height: 1.5;
+            color: #24292e;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+            font-size: 16px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .markdown-body details {
+            display: block;
+        }
+
+        .markdown-body summary {
+            display: list-item;
+        }
+
+        .markdown-body a {
+            background-color: initial;
+        }
+
+        .markdown-body a:active,
+        .markdown-body a:hover {
+            outline-width: 0;
+        }
+
+        .markdown-body strong {
+            font-weight: inherit;
+            font-weight: bolder;
+        }
+
+        .markdown-body h1 {
+            font-size: 2em;
+            margin: .67em 0;
+        }
+
+        .markdown-body img {
+            border-style: none;
+        }
+
+        .markdown-body code,
+        .markdown-body kbd,
+        .markdown-body pre {
+            font-family: monospace, monospace;
+            font-size: 1em;
+        }
+
+        .markdown-body hr {
+            box-sizing: initial;
+            height: 0;
+            overflow: visible;
+        }
+
+        .markdown-body input {
+            font: inherit;
+            margin: 0;
+        }
+
+        .markdown-body input {
+            overflow: visible;
+        }
+
+        .markdown-body [type=checkbox] {
+            box-sizing: border-box;
+            padding: 0;
+        }
+
+        .markdown-body * {
+            box-sizing: border-box;
+        }
+
+        .markdown-body input {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
+
+        .markdown-body a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+
+        .markdown-body strong {
+            font-weight: 600;
+        }
+
+        .markdown-body hr {
+            height: 0;
+            margin: 15px 0;
+            overflow: hidden;
+            background: transparent;
+            border: 0;
+            border-bottom: 1px solid #dfe2e5;
+        }
+
+        .markdown-body hr:after,
+        .markdown-body hr:before {
+            display: table;
+            content: "";
+        }
+
+        .markdown-body hr:after {
+            clear: both;
+        }
+
+        .markdown-body table {
+            width: 100%;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        .markdown-body td,
+        .markdown-body th {
+            padding: 0;
+        }
+
+        .markdown-body th {
+            background-color: #ffd78c;
+        }
+
+        .markdown-body details summary {
+            cursor: pointer;
+        }
+
+        .markdown-body kbd {
+            display: inline-block;
+            padding: 3px 5px;
+            font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+            line-height: 10px;
+            color: #444d56;
+            vertical-align: middle;
+            background-color: #fafbfc;
+            border: 1px solid #d1d5da;
+            border-radius: 3px;
+            box-shadow: inset 0 -1px 0 #d1d5da;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .markdown-body h1 {
+            font-size: 32px;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2 {
+            font-weight: 600;
+        }
+
+        .markdown-body h2 {
+            font-size: 24px;
+        }
+
+        .markdown-body h3 {
+            font-size: 20px;
+        }
+
+        .markdown-body h3,
+        .markdown-body h4 {
+            font-weight: 600;
+        }
+
+        .markdown-body h4 {
+            font-size: 16px;
+        }
+
+        .markdown-body h5 {
+            font-size: 14px;
+        }
+
+        .markdown-body h5,
+        .markdown-body h6 {
+            font-weight: 600;
+        }
+
+        .markdown-body h6 {
+            font-size: 12px;
+        }
+
+        .markdown-body p {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .markdown-body blockquote {
+            margin: 0;
+        }
+
+        .markdown-body ol,
+        .markdown-body ul {
+            padding-left: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .markdown-body ol ol,
+        .markdown-body ul ol {
+            list-style-type: lower-roman;
+        }
+
+        .markdown-body ol ol ol,
+        .markdown-body ol ul ol,
+        .markdown-body ul ol ol,
+        .markdown-body ul ul ol {
+            list-style-type: lower-alpha;
+        }
+
+        .markdown-body dd {
+            margin-left: 0;
+        }
+
+        .markdown-body code,
+        .markdown-body pre {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+            font-size: 12px;
+        }
+
+        .markdown-body pre {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .markdown-body input::-webkit-inner-spin-button,
+        .markdown-body input::-webkit-outer-spin-button {
+            margin: 0;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .markdown-body :checked+.radio-label {
+            position: relative;
+            z-index: 1;
+            border-color: #0366d6;
+        }
+
+        .markdown-body .border {
+            border: 1px solid #e1e4e8 !important;
+        }
+
+        .markdown-body .border-0 {
+            border: 0 !important;
+        }
+
+        .markdown-body .border-bottom {
+            border-bottom: 1px solid #e1e4e8 !important;
+        }
+
+        .markdown-body .rounded-1 {
+            border-radius: 3px !important;
+        }
+
+        .markdown-body .bg-white {
+            background-color: #fff !important;
+        }
+
+        .markdown-body .bg-gray-light {
+            background-color: #fafbfc !important;
+        }
+
+        .markdown-body .text-gray-light {
+            color: #6a737d !important;
+        }
+
+        .markdown-body .mb-0 {
+            margin-bottom: 0 !important;
+        }
+
+        .markdown-body .my-2 {
+            margin-top: 8px !important;
+            margin-bottom: 8px !important;
+        }
+
+        .markdown-body .pl-0 {
+            padding-left: 0 !important;
+        }
+
+        .markdown-body .py-0 {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .markdown-body .pl-1 {
+            padding-left: 4px !important;
+        }
+
+        .markdown-body .pl-2 {
+            padding-left: 8px !important;
+        }
+
+        .markdown-body .py-2 {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+        }
+
+        .markdown-body .pl-3,
+        .markdown-body .px-3 {
+            padding-left: 16px !important;
+        }
+
+        .markdown-body .px-3 {
+            padding-right: 16px !important;
+        }
+
+        .markdown-body .pl-4 {
+            padding-left: 24px !important;
+        }
+
+        .markdown-body .pl-5 {
+            padding-left: 32px !important;
+        }
+
+        .markdown-body .pl-6 {
+            padding-left: 40px !important;
+        }
+
+        .markdown-body .f6 {
+            font-size: 12px !important;
+        }
+
+        .markdown-body .lh-condensed {
+            line-height: 1.25 !important;
+        }
+
+        .markdown-body .text-bold {
+            font-weight: 600 !important;
+        }
+
+        .markdown-body .pl-c {
+            color: #6a737d;
+        }
+
+        .markdown-body .pl-c1,
+        .markdown-body .pl-s .pl-v {
+            color: #005cc5;
+        }
+
+        .markdown-body .pl-e,
+        .markdown-body .pl-en {
+            color: #6f42c1;
+        }
+
+        .markdown-body .pl-s .pl-s1,
+        .markdown-body .pl-smi {
+            color: #24292e;
+        }
+
+        .markdown-body .pl-ent {
+            color: #22863a;
+        }
+
+        .markdown-body .pl-k {
+            color: #d73a49;
+        }
+
+        .markdown-body .pl-pds,
+        .markdown-body .pl-s,
+        .markdown-body .pl-s .pl-pse .pl-s1,
+        .markdown-body .pl-sr,
+        .markdown-body .pl-sr .pl-cce,
+        .markdown-body .pl-sr .pl-sra,
+        .markdown-body .pl-sr .pl-sre {
+            color: #032f62;
+        }
+
+        .markdown-body .pl-smw,
+        .markdown-body .pl-v {
+            color: #e36209;
+        }
+
+        .markdown-body .pl-bu {
+            color: #b31d28;
+        }
+
+        .markdown-body .pl-ii {
+            color: #fafbfc;
+            background-color: #b31d28;
+        }
+
+        .markdown-body .pl-c2 {
+            color: #fafbfc;
+            background-color: #d73a49;
+        }
+
+        .markdown-body .pl-c2:before {
+            content: "^M";
+        }
+
+        .markdown-body .pl-sr .pl-cce {
+            font-weight: 700;
+            color: #22863a;
+        }
+
+        .markdown-body .pl-ml {
+            color: #735c0f;
+        }
+
+        .markdown-body .pl-mh,
+        .markdown-body .pl-mh .pl-en,
+        .markdown-body .pl-ms {
+            font-weight: 700;
+            color: #005cc5;
+        }
+
+        .markdown-body .pl-mi {
+            font-style: italic;
+            color: #24292e;
+        }
+
+        .markdown-body .pl-mb {
+            font-weight: 700;
+            color: #24292e;
+        }
+
+        .markdown-body .pl-md {
+            color: #b31d28;
+            background-color: #ffeef0;
+        }
+
+        .markdown-body .pl-mi1 {
+            color: #22863a;
+            background-color: #f0fff4;
+        }
+
+        .markdown-body .pl-mc {
+            color: #e36209;
+            background-color: #ffebda;
+        }
+
+        .markdown-body .pl-mi2 {
+            color: #f6f8fa;
+            background-color: #005cc5;
+        }
+
+        .markdown-body .pl-mdr {
+            font-weight: 700;
+            color: #6f42c1;
+        }
+
+        .markdown-body .pl-ba {
+            color: #586069;
+        }
+
+        .markdown-body .pl-sg {
+            color: #959da5;
+        }
+
+        .markdown-body .pl-corl {
+            text-decoration: underline;
+            color: #032f62;
+        }
+
+        .markdown-body .mb-0 {
+            margin-bottom: 0 !important;
+        }
+
+        .markdown-body .my-2 {
+            margin-bottom: 8px !important;
+        }
+
+        .markdown-body .my-2 {
+            margin-top: 8px !important;
+        }
+
+        .markdown-body .pl-0 {
+            padding-left: 0 !important;
+        }
+
+        .markdown-body .py-0 {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .markdown-body .pl-1 {
+            padding-left: 4px !important;
+        }
+
+        .markdown-body .pl-2 {
+            padding-left: 8px !important;
+        }
+
+        .markdown-body .py-2 {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+        }
+
+        .markdown-body .pl-3 {
+            padding-left: 16px !important;
+        }
+
+        .markdown-body .pl-4 {
+            padding-left: 24px !important;
+        }
+
+        .markdown-body .pl-5 {
+            padding-left: 32px !important;
+        }
+
+        .markdown-body .pl-6 {
+            padding-left: 40px !important;
+        }
+
+        .markdown-body .pl-7 {
+            padding-left: 48px !important;
+        }
+
+        .markdown-body .pl-8 {
+            padding-left: 64px !important;
+        }
+
+        .markdown-body .pl-9 {
+            padding-left: 80px !important;
+        }
+
+        .markdown-body .pl-10 {
+            padding-left: 96px !important;
+        }
+
+        .markdown-body .pl-11 {
+            padding-left: 112px !important;
+        }
+
+        .markdown-body .pl-12 {
+            padding-left: 128px !important;
+        }
+
+        .markdown-body hr {
+            border-bottom-color: #eee;
+        }
+
+        .markdown-body kbd {
+            display: inline-block;
+            padding: 3px 5px;
+            font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+            line-height: 10px;
+            color: #444d56;
+            vertical-align: middle;
+            background-color: #fafbfc;
+            border: 1px solid #d1d5da;
+            border-radius: 3px;
+            box-shadow: inset 0 -1px 0 #d1d5da;
+        }
+
+        .markdown-body:after,
+        .markdown-body:before {
+            display: table;
+            content: "";
+        }
+
+        .markdown-body:after {
+            clear: both;
+        }
+
+        .markdown-body>:first-child {
+            margin-top: 0 !important;
+        }
+
+        .markdown-body>:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .markdown-body a:not([href]) {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .markdown-body blockquote,
+        .markdown-body details,
+        .markdown-body dl,
+        .markdown-body ol,
+        .markdown-body p,
+        .markdown-body pre,
+        .markdown-body table,
+        .markdown-body ul {
+            width: 100%;
+
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        .markdown-body hr {
+            height: .25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #e1e4e8;
+            border: 0;
+        }
+
+        .markdown-body blockquote {
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: .25em solid #dfe2e5;
+        }
+
+        .markdown-body blockquote>:first-child {
+            margin-top: 0;
+        }
+
+        .markdown-body blockquote>:last-child {
+            margin-bottom: 0;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .markdown-body h1 {
+            font-size: 2em;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2 {
+            padding-bottom: .3em;
+            border-bottom: 1px solid #eaecef;
+        }
+
+        .markdown-body h2 {
+            font-size: 1.5em;
+        }
+
+        .markdown-body h3 {
+            font-size: 1.25em;
+        }
+
+        .markdown-body h4 {
+            font-size: 1em;
+        }
+
+        .markdown-body h5 {
+            font-size: .875em;
+        }
+
+        .markdown-body h6 {
+            font-size: .85em;
+            color: #6a737d;
+        }
+
+        .markdown-body ol,
+        .markdown-body ul {
+            padding-left: 2em;
+        }
+
+        .markdown-body ol ol,
+        .markdown-body ol ul,
+        .markdown-body ul ol,
+        .markdown-body ul ul {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .markdown-body li {
+            word-wrap: break-all;
+        }
+
+        .markdown-body li>p {
+            margin-top: 16px;
+        }
+
+        .markdown-body li+li {
+            margin-top: .25em;
+        }
+
+        .markdown-body dl {
+            padding: 0;
+        }
+
+        .markdown-body dl dt {
+            padding: 0;
+            margin-top: 16px;
+            font-size: 1em;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .markdown-body dl dd {
+            padding: 0 16px;
+            margin-bottom: 16px;
+        }
+
+        .markdown-body table {
+            width: 100%;
+        }
+
+        .markdown-body table th {
+            font-weight: 600;
+        }
+
+        .markdown-body table td,
+        .markdown-body table th {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        .markdown-body table tr {
+            background-color: #fff;
+            border-top: 1px solid #c6cbd1;
+        }
+
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            box-sizing: initial;
+            background-color: #fff;
+        }
+
+        .markdown-body img[align=right] {
+            padding-left: 20px;
+        }
+
+        .markdown-body img[align=left] {
+            padding-right: 20px;
+        }
+
+        .markdown-body code {
+            padding: .2em .4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(27, 31, 35, .05);
+            border-radius: 3px;
+        }
+
+        .markdown-body pre {
+            word-wrap: normal;
+        }
+
+        .markdown-body pre>code {
+            padding: 0;
+            margin: 0;
+            font-size: 100%;
+            word-break: normal;
+            white-space: pre;
+            background: transparent;
+            border: 0;
+        }
+
+        .markdown-body .highlight {
+            margin-bottom: 16px;
+        }
+
+        .markdown-body .highlight pre {
+            margin-bottom: 0;
+            word-break: normal;
+        }
+
+        .markdown-body .highlight pre,
+        .markdown-body pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 3px;
+        }
+
+        .markdown-body pre code {
+            display: inline;
+            max-width: auto;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            word-wrap: normal;
+            background-color: initial;
+            border: 0;
+        }
+
+        .markdown-body .commit-tease-sha {
+            display: inline-block;
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+            font-size: 90%;
+            color: #444d56;
+        }
+
+        .markdown-body .full-commit .btn-outline:not(:disabled):hover {
+            color: #005cc5;
+            border-color: #005cc5;
+        }
+
+        .markdown-body .blob-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .markdown-body .blob-wrapper-embedded {
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .markdown-body .blob-num {
+            width: 1%;
+            min-width: 50px;
+            padding-right: 10px;
+            padding-left: 10px;
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            vertical-align: top;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .markdown-body .blob-num:hover {
+            color: rgba(27, 31, 35, .6);
+        }
+
+        .markdown-body .blob-num:before {
+            content: attr(data-line-number);
+        }
+
+        .markdown-body .blob-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            line-height: 20px;
+            vertical-align: top;
+        }
+
+        .markdown-body .blob-code-inner {
+            overflow: visible;
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+            font-size: 12px;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre;
+        }
+
+        .markdown-body .pl-token.active,
+        .markdown-body .pl-token:hover {
+            cursor: pointer;
+            background: #ffea7f;
+        }
+
+        .markdown-body .tab-size[data-tab-size="1"] {
+            -moz-tab-size: 1;
+            tab-size: 1;
+        }
+
+        .markdown-body .tab-size[data-tab-size="2"] {
+            -moz-tab-size: 2;
+            tab-size: 2;
+        }
+
+        .markdown-body .tab-size[data-tab-size="3"] {
+            -moz-tab-size: 3;
+            tab-size: 3;
+        }
+
+        .markdown-body .tab-size[data-tab-size="4"] {
+            -moz-tab-size: 4;
+            tab-size: 4;
+        }
+
+        .markdown-body .tab-size[data-tab-size="5"] {
+            -moz-tab-size: 5;
+            tab-size: 5;
+        }
+
+        .markdown-body .tab-size[data-tab-size="6"] {
+            -moz-tab-size: 6;
+            tab-size: 6;
+        }
+
+        .markdown-body .tab-size[data-tab-size="7"] {
+            -moz-tab-size: 7;
+            tab-size: 7;
+        }
+
+        .markdown-body .tab-size[data-tab-size="8"] {
+            -moz-tab-size: 8;
+            tab-size: 8;
+        }
+
+        .markdown-body .tab-size[data-tab-size="9"] {
+            -moz-tab-size: 9;
+            tab-size: 9;
+        }
+
+        .markdown-body .tab-size[data-tab-size="10"] {
+            -moz-tab-size: 10;
+            tab-size: 10;
+        }
+
+        .markdown-body .tab-size[data-tab-size="11"] {
+            -moz-tab-size: 11;
+            tab-size: 11;
+        }
+
+        .markdown-body .tab-size[data-tab-size="12"] {
+            -moz-tab-size: 12;
+            tab-size: 12;
+        }
+
+        .markdown-body .task-list-item {
+            list-style-type: none;
+        }
+
+        .markdown-body .task-list-item+.task-list-item {
+            margin-top: 3px;
+        }
+
+        .markdown-body .task-list-item input {
+            margin: 0 .2em .25em -1.6em;
+            vertical-align: middle;
+        }
+
+        .markdown-body .description {
+            margin: 0 .2em .25em -1.6em;
+            vertical-align: middle;
+        }
+
+        /* Fixed sidenav, full height */
+        .sidenav {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        /* Style the sidenav links and the dropdown button */
+        .sidenav a,
+        .dropdown-btn {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* On mouse-over */
+        .sidenav a:hover,
+        .dropdown-btn:hover {
+            color: #f1f1f1;
+        }
+
+        /* Main content */
+        .main {
+            margin-left: 200px;
+            /* Same as the width of the sidenav */
+            font-size: 20px;
+            /* Increased text to enable scrolling */
+            padding: 0px 10px;
+        }
+
+        /* Add an active class to the active dropdown button */
+        .active {
+            background-color: green;
+            color: white;
+        }
+
+        /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+        .dropdown-container {
+            display: none;
+            background-color: #262626;
+            padding-left: 8px;
+        }
+
+        /* Optional: Style the caret down icon */
+        .fa-caret-down {
+            float: right;
+            padding-right: 8px;
+        }
+
+        .tab {
+            float: left;
+            border: 3px solid #ccc;
+            background-color: #f1f1f1;
+            width: 30%;
+            height: 500px;
+            overflow-y: scroll;
+        }
+
+
+        /* Some media queries for responsiveness */
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+                background-color: #f1f1f1;
+                border: 3px solid #ccc;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+                background-color: #f1f1f1;
+                border: 3px solid #ccc;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <article class="markdown-body">
+        <br>
+        <h2>
+            TerosHDL configuration</h2>
+
+
+        <div class="sidenav">
+            <a href="#about" >About</a>
+            <a href="#services">Services</a>
+            <a href="#clients" onclick="open_tab(event, 'schematic')">Clients</a>
+            <a href="#contact">Contact</a>
+            <button class="dropdown-btn">Dropdown
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-container">
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+            </div>
+            <a href="#contact">Search</a>
+        </div>
+
+
+
+        <div class="tab">
+            <button class='tablinks' onclick="open_tab(event, 'general')" id='default_open'>General</button>
+            <button class='tablinks' onclick="open_tab(event, 'editor')">Editor</button>
+            <button class='tablinks' onclick="open_tab(event, 'templates')">Templates</button>
+            <button class='tablinks' onclick="open_tab(event, 'schematic')">Schematic viewer</button>
+            <button class='tablinks' onclick="open_tab(event, 'documentation')">Documentation settings</button>
+            <button class='tablinks' onclick="open_tab(event, 'linter')">Linters settings</button>
+            <button class='tablinks' onclick="open_tab(event, 'formatter')">Formatter settings</button>
+            <button class='tablinks' onclick="open_tab(event, 'vsg')">VSG</button>
+            <button class='tablinks' onclick="open_tab(event, 'siliconcompiler')">SiliconCompiler</button>
+            <button class='tablinks' onclick="open_tab(event, 'ascentlint')">Ascentlint</button>
+            <button class='tablinks' onclick="open_tab(event, 'diamond')">Diamond</button>
+            <button class='tablinks' onclick="open_tab(event, 'xsim')">XSim</button>
+            <button class='tablinks' onclick="open_tab(event, 'ghdl')">GHDL</button>
+            <button class='tablinks' onclick="open_tab(event, 'icarus')">Icarus</button>
+            <button class='tablinks' onclick="open_tab(event, 'icestorm')">Icestorm</button>
+            <button class='tablinks' onclick="open_tab(event, 'Ise')">ISE</button>
+            <button class='tablinks' onclick="open_tab(event, 'isim')">Isim</button>
+            <button class='tablinks' onclick="open_tab(event, 'modelsim')">ModelSim</button>
+            <button class='tablinks' onclick="open_tab(event, 'morty')">Morty</button>
+            <button class='tablinks' onclick="open_tab(event, 'quartus')">Quartus</button>
+            <button class='tablinks' onclick="open_tab(event, 'radiant')">Radiant</button>
+            <button class='tablinks' onclick="open_tab(event, 'rivierapro')">Rivierapro</button>
+            <button class='tablinks' onclick="open_tab(event, 'spyglass')">Spyglass</button>
+            <button class='tablinks' onclick="open_tab(event, 'symbiflow')">Symbiflow</button>
+            <button class='tablinks' onclick="open_tab(event, 'symbiyosys')">Symbiyosys</button>
+            <button class='tablinks' onclick="open_tab(event, 'trellis')">Trellis</button>
+            <button class='tablinks' onclick="open_tab(event, 'vcs')">Vcs</button>
+            <button class='tablinks' onclick="open_tab(event, 'veriblelint')">Veriblelint</button>
+            <button class='tablinks' onclick="open_tab(event, 'verilator')">Verilator</button>
+            <button class='tablinks' onclick="open_tab(event, 'vivado')">Vivado</button>
+            <button class='tablinks' onclick="open_tab(event, 'vunit')">Vunit</button>
+            <button class='tablinks' onclick="open_tab(event, 'xcelium')">Xcelium</button>
+            <button class='tablinks' onclick="open_tab(event, 'yosys')">Yosys</button>
+            <button class='tablinks' onclick="open_tab(event, 'cocotb')">Cocotb</button>
+        </div>
+
+
+        <div id='general' class='tabcontent'>
+            <h3>General</h3>
+            <p><i></i></p>
+            <hr>
+            </hr> <label>Enable show TerosHDL console with each message.</label>
+            <input class='radio-button' id='general_logging' type='checkbox'>
+            <br><br>
+            <label>Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path.
+                <strong>Install teroshdl. E.g: pip3 install teroshdl</strong></label>
+            <input type='input' id='general_pypath' class='radio-button'>
+            <br><br>
+            <label>Select a tool, framework, simulator...</label>
+            <br>
+            <select name='select' id='general_select_tool'>
+                <optgroup label='Frameworks'>
+                    <option value='vunit'>Vunit</option>
+                    <option value='cocotb'>Cocotb</option>
+                </optgroup>
+                <optgroup label='Tools'>
+                    <option value='siliconcompiler'>Siliconcompiler</option>
+                    <option value='diamond'>Diamond</option>
+                    <option value='icestorm'>Icestorm</option>
+                    <option value='Ise'>Ise</option>
+                    <option value='quartus'>Quartus</option>
+                    <option value='radiant'>Radiant</option>
+                    <option value='spyglass'>Spyglass</option>
+                    <option value='symbiflow'>Symbiflow</option>
+                    <option value='symbiyosys'>Symbiyosys</option>
+                    <option value='trellis'>Trellis</option>
+                    <option value='vcs'>Vcs</option>
+                    <option value='vivado'>Vivado</option>
+                    <option value='yosys'>Yosys</option>
+                </optgroup>
+                <optgroup label='Simulators'>
+                    <option value='xsim'>Xsim</option>
+                    <option value='ghdl'>Ghdl</option>
+                    <option value='icarus'>Icarus</option>
+                    <option value='isim'>Isim</option>
+                    <option value='modelsim'>Modelsim</option>
+                    <option value='morty'>Morty</option>
+                    <option value='rivierapro'>Rivierapro</option>
+                    <option value='verilator'>Verilator</option>
+                    <option value='xcelium'>Xcelium</option>
+                </optgroup>
+                <optgroup label='Linters/formatters'>
+                    <option value='ascentlint'>Ascentlint</option>
+                    <option value='veriblelint'>Veriblelint</option>
+                </optgroup>
+            </select>
+            <br><br>
+            <label>Select the waveform viewer. For GTKWave you need to install it.</label>
+            <br>
+            <select name='select' id='general_waveform_viewer'>
+                <option value='tool'>Tool GUI</option>
+                <option value='vcdrom'>VCDrom</option>
+                <option value='gtkwave'>GTKWave</option>
+            </select>
+            <br><br>
+            <label>Activate go to definition feature for VHDL (you need to restart VSCode).</label>
+            <input class='radio-button' id='general_go_to_definition_vhdl' type='checkbox'>
+            <br><br>
+            <label>Activate go to definition feature for Verilog/SV (you need to restart VSCode).</label>
+            <input class='radio-button' id='general_go_to_definition_verilog' type='checkbox'>
+            <br><br>
+            <label>Developer mode: be careful!!</label>
+            <input class='radio-button' id='general_developer_mode' type='checkbox'>
+            <br><br>
+        </div>
+
+        <div id='editor' class='tabcontent'>
+            <h3>Editor</h3>
+            <p><i></i></p>
+            <hr>
+            </hr> <label>An enter keypress at the end of a line that contains a non-empty comment will continue the
+                comment on the next line. This can be cancelled by pressing enter again. You must also set
+                <code>"editor.formatOnType": true"</code></label>
+            <input class='radio-button' id='editor_continue_comment' type='checkbox'>
+            <br><br>
+        </div>
+
+        <div id='templates' class='tabcontent'>
+            <h3>Templates</h3>
+            <p><i></i></p>
+            <hr>
+            </hr> <label>File path with your configurable header. E.g. your company license. It will be inserted at the
+                beginning of the template</label>
+            <input type='input' id='templates_header_file_path' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='schematic' class='tabcontent'>
+            <h3>Schematic viewer</h3>
+            <p><i></i></p>
+            <hr>
+            </hr> <label>Select the backend:</label>
+            <br>
+            <select name='select' id='schematic_backend'>
+                <option value='yowasp'>YoWASP</option>
+                <option value='yosys'>Yosys</option>
+                <option value='yosys_ghdl'>GHDL + Yosys</option>
+                <option value='yosys_ghdl_module'>GHDL (module) + Yosys</option>
+            </select>
+            <br><br>
+        </div>
+
+        <div id='documentation' class='tabcontent'>
+            <h3>Documentation settings</h3>
+            <p><i></i></p>
+            <hr>
+            </hr> <label>Documentation language:</label>
+            <br>
+            <select name='select' id='documentation_language'>
+                <option value='english'>English</option>
+                <option value='russian'>Russian</option>
+            </select>
+            <br><br>
+            <label>Special VHDL symbol at the begin of the comment to extract documentation. Example:
+                <code>--! Code comment</code></label>
+            <input type='input' id='documentation_symbol_vhdl' class='radio-button'>
+            <br><br>
+            <label>Special Verilog symbol at the begin of the comment to extract documentation. Example:
+                <code>//! Code comment</code></label>
+            <input type='input' id='documentation_symbol_verilog' class='radio-button'>
+            <br><br>
+            <label>Include dependency graph:</label>
+            <input class='radio-button' id='documentation_dependency_graph' type='checkbox'>
+            <br><br>
+            <label>HTML documentation self contained:</label>
+            <input class='radio-button' id='documentation_self_contained' type='checkbox'>
+            <br><br>
+            <label>Include FSM:</label>
+            <input class='radio-button' id='documentation_fsm' type='checkbox'>
+            <br><br>
+            <label>Include signals:</label>
+            <br>
+            <select name='select' id='documentation_signals'>
+                <option value='all'>All</option>
+                <option value='only_commented'>Only commented</option>
+                <option value='none'>None</option>
+            </select>
+            <br><br>
+            <label>Include consants and types:</label>
+            <br>
+            <select name='select' id='documentation_constants'>
+                <option value='all'>All</option>
+                <option value='only_commented'>Only commented</option>
+                <option value='none'>None</option>
+            </select>
+            <br><br>
+            <label>Include always/processes:</label>
+            <br>
+            <select name='select' id='documentation_process'>
+                <option value='all'>All</option>
+                <option value='only_commented'>Only commented</option>
+                <option value='none'>None</option>
+            </select>
+            <br><br>
+            <label>Include functions:</label>
+            <br>
+            <select name='select' id='documentation_functions'>
+                <option value='all'>All</option>
+                <option value='only_commented'>Only commented</option>
+                <option value='none'>None</option>
+            </select>
+            <br><br>
+            <label>Magic config file path</label>
+            <input type='input' id='documentation_magic_config_path' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='linter' class='tabcontent'>
+            <h3>Linters settings</h3>
+            <p><i></i></p>
+            <hr>
+            </hr> <label>VHDL linter: disable VHDL-LS needs restart VSCode.</label>
+            <br>
+            <select name='select' id='linter_linter_vhdl'>
+                <option value='disabled'>Disabled</option>
+                <option value='ghdl'>GHDL</option>
+                <option value='modelsim'>Modelsim</option>
+                <option value='xvhdl'>Vivado (xvhdl)</option>
+                <option value='none'>VHDL-LS</option>
+            </select>
+            <br><br>
+            <label>Verilog/SV linter:</label>
+            <br>
+            <select name='select' id='linter_linter_verilog'>
+                <option value='disabled'>Disabled</option>
+                <option value='icarus'>Icarus</option>
+                <option value='modelsim'>Modelsim</option>
+                <option value='verilator'>Verilator</option>
+                <option value='xvlog'>Vivado (xvlog)</option>
+            </select>
+            <br><br>
+            <label>Verilog/SV style checker:</label>
+            <br>
+            <select name='select' id='linter_style_verilog'>
+                <option value='verible'>Verible</option>
+                <option value='disabled'>Disabled</option>
+            </select>
+            <br><br>
+            <label>VHDL style checker:</label>
+            <br>
+            <select name='select' id='linter_style_vhdl'>
+                <option value='vsg'>VSG</option>
+                <option value='disabled'>Disabled</option>
+            </select>
+            <br><br>
+        </div>
+
+        <div id='formatter' class='tabcontent'>
+            <h3>Formatter settings</h3>
+            <p><i></i></p>
+            <hr>
+            </hr> <label>Verilog/SV formatter:</label>
+            <br>
+            <select name='select' id='formatter_formatter_verilog'>
+                <option value='istyle'>iStyle</option>
+                <option value='s3sv'>s3sv</option>
+                <option value='verible'>Verible</option>
+            </select>
+            <br><br>
+            <label>VHDL formatter:</label>
+            <br>
+            <select name='select' id='formatter_formatter_vhdl'>
+                <option value='standalone'>Standalone</option>
+                <option value='vsg'>VSG</option>
+            </select>
+            <br><br>
+            <h4>Verilog/SV iStyle formatter</h4>
+            <br>
+            <label>Predefined Styling options.</label>
+            <br>
+            <select name='select' id='formatter_istyle_style'>
+                <option value='ansi'>ANSI</option>
+                <option value='kernighan&ritchie'>Kernighan&Ritchie</option>
+                <option value='gnu'>GNU</option>
+                <option value='indent_only'>Indent only</option>
+            </select>
+            <br><br>
+            <label>Indentation size in number of characters.</label>
+            <input type='input' id='formatter_istyle_indentation_size' class='radio-button'>
+            <br><br>
+            <h4>Verilog/SV S3SV formatter</h4>
+            <br>
+            <label>Force one binding per line in instanciations statements.</label>
+            <input class='radio-button' id='formatter_s3sv_one_bind_per_line' type='checkbox'>
+            <br><br>
+            <label>Force one declaration per line.</label>
+            <input class='radio-button' id='formatter_s3sv_one_declaration_per_line' type='checkbox'>
+            <br><br>
+            <label>Use tabs instead of spaces for indentation.</label>
+            <input class='radio-button' id='formatter_s3sv_use_tabs' type='checkbox'>
+            <br><br>
+            <label>Indentation size in number of characters.</label>
+            <input type='input' id='formatter_s3sv_indentation_size' class='radio-button'>
+            <br><br>
+            <h4>Verilog/SV Verible formatter</h4>
+            <br>
+            <label>Verible formatter binary path. E.g:
+                /home/user/Downloads/verible-v0.0-1296/bin/verible-verilog-format</label>
+            <input type='input' id='formatter_verible_path' class='radio-button'>
+            <br><br>
+            <label>Extra command line arguments passed to the Verible tool <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='formatter_verible_format_args' class='radio-button'>
+            <br><br>
+            <h4>VHDL standalone formatter</h4>
+            <br>
+            <label>Keyword case.</label>
+            <br>
+            <select name='select' id='formatter_vhdl_standalone_keyword_case'>
+                <option value='lowercase'>LowerCase</option>
+                <option value='uppercase'>UpperCase</option>
+            </select>
+            <br><br>
+            <label>Type name case.</label>
+            <br>
+            <select name='select' id='formatter_vhdl_standalone_name_case'>
+                <option value='lowercase'>LowerCase</option>
+                <option value='uppercase'>UpperCase</option>
+            </select>
+            <br><br>
+            <label>Align comments.</label>
+            <input class='radio-button' id='formatter_vhdl_standalone_align_comments' type='checkbox'>
+            <br><br>
+            <label>Indentation.</label>
+            <input type='input' id='formatter_vhdl_standalone_indentation' class='radio-button'>
+            <br><br>
+            <label>Align signs in generics and ports.</label>
+            <input class='radio-button' id='formatter_vhdl_standalone_align_generic_port' type='checkbox'>
+            <br><br>
+        </div>
+
+        <div id='vsg' class='tabcontent'>
+            <h3>VSG</h3>
+            <p><i>VHDL Style Guide. Analyzes VHDL files for style guide violations. Reference documentation is located
+                    at: <a
+                        href="https://terostechnology.github.io/terosHDLdoc/style/configuration.html#vsg-vhdl-style-guide">https://terostechnology.github.io/terosHDLdoc/style/configuration.html#vsg-vhdl-style-guide</a></i>
+            </p>
+            <hr>
+            </hr> <label>JSON or YAML configuration file.</label>
+            <input type='input' id='vsg_configuration' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='siliconcompiler' class='tabcontent'>
+            <h3>SiliconCompiler</h3>
+            <p><i>SiliconCompiler is an open source compiler framework that automates translation from source code to
+                    silicon. Check the project documentation: <a
+                        href="https://docs.siliconcompiler.com/en/latest/">https://docs.siliconcompiler.com/en/latest/</a></i>
+            </p>
+            <hr>
+            </hr> <label>Compilation target separated by a single underscore, specified as '<process>_<edaflow>' for
+                        ASIC compilation and '<partname>_<edaflow>'' for FPGA compilation. The process, edaflow,
+                                partname fields must be alphanumeric and cannot contain underscores. E.g:
+                                asicflow_freepdk45</label>
+            <input type='input' id='siliconcompiler_target' class='radio-button'>
+            <br><br>
+            <label>Enable remote server.</label>
+            <input class='radio-button' id='siliconcompiler_server_enable' type='checkbox'>
+            <br><br>
+            <label>Remote server address (e.g: https://server.siliconcompiler.com):</label>
+            <input type='input' id='siliconcompiler_server_address' class='radio-button'>
+            <br><br>
+            <label>Remote server user:</label>
+            <input type='input' id='siliconcompiler_server_username' class='radio-button'>
+            <br><br>
+            <label>Remote server password:</label>
+            <input type='input' id='siliconcompiler_server_password' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='ascentlint' class='tabcontent'>
+            <h3>Ascentlint</h3>
+            <p><i>Ascent Lint performs static source code analysis on HDL code and checks for common coding errors or
+                    coding style violations.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='ascentlint_installation_path' class='radio-button'>
+            <br><br>
+            <label>Additional run options for ascentlint. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='ascentlint_ascentlint_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='diamond' class='tabcontent'>
+            <h3>Diamond</h3>
+            <p><i>Backend for Lattice Diamond.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='diamond_installation_path' class='radio-button'>
+            <br><br>
+            <label>FPGA part number (e.g. LFE5U-45F-6BG381C).</label>
+            <input type='input' id='diamond_part' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='xsim' class='tabcontent'>
+            <h3>XSim</h3>
+            <p><i>XSim simulator from the Xilinx Vivado suite.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='xsim_installation_path' class='radio-button'>
+            <br><br>
+            <label>Additional options for compilation with xelab. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='xsim_xelab_options' class='radio-button'>
+            <br><br>
+            <label>Additional run options for XSim. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='xsim_xsim_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='ghdl' class='tabcontent'>
+            <h3>GHDL</h3>
+            <p><i>GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE
+                    1076-2002 and partially the 1076-2008 version of VHDL.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='ghdl_installation_path' class='radio-button'>
+            <br><br>
+            <label>Waveform output format:</label>
+            <br>
+            <select name='select' id='ghdl_waveform'>
+                <option value='vcd'>VCD</option>
+                <option value='ghw'>GHW</option>
+            </select>
+            <br><br>
+            <label>analyze options. Extra options used for the GHDL analyze stage (ghdl -a). <b
+                    style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='ghdl_analyze_options' class='radio-button'>
+            <br><br>
+            <label>Run options. Extra options used when running GHDL simulations (ghdl -r). <b
+                    style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='ghdl_run_options' class='radio-button'>
+            <br><br>
+            <label>Additional arguments directly passed to linter. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='ghdl_linter_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='icarus' class='tabcontent'>
+            <h3>Icarus</h3>
+            <p><i>Icarus Verilog is a Verilog simulation and synthesis tool. It operates as a compiler, compiling source
+                    code written in Verilog (IEEE-1364) into some target format.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='icarus_installation_path' class='radio-button'>
+            <br><br>
+            <label>Default timescale.</label>
+            <input type='input' id='icarus_timescale' class='radio-button'>
+            <br><br>
+            <label>Additional options for iverilog. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='icarus_iverilog_options' class='radio-button'>
+            <br><br>
+            <label>Additional arguments directly passed to linter. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='icarus_linter_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='icestorm' class='tabcontent'>
+            <h3>Icestorm</h3>
+            <p><i>Open source toolchain for Lattice iCE40 FPGAs. Uses yosys for synthesis and arachne-pnr or nextpnr for
+                    Place & Route.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='icestorm_installation_path' class='radio-button'>
+            <br><br>
+            <label>Select P&R tool. Valid values are arachne and next. Default is arachne.</label>
+            <br>
+            <select name='select' id='icestorm_pnr'>
+                <option value='arachne'>Arachne-pnr</option>
+                <option value='next'>nextpnr</option>
+                <option value='none'>Only perform synthesis</option>
+            </select>
+            <br><br>
+            <label>Target architecture.</label>
+            <br>
+            <select name='select' id='icestorm_arch'>
+                <option value='xilinx'>Xilinx</option>
+                <option value='ice40'>ICE40</option>
+                <option value='ecp5'>ECP5</option>
+            </select>
+            <br><br>
+            <label>Output file format.</label>
+            <br>
+            <select name='select' id='icestorm_output_format'>
+                <option value='json'>JSON</option>
+                <option value='edif'>EDIF</option>
+                <option value='blif'>BLIF</option>
+            </select>
+            <br><br>
+            <label>Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.</label>
+            <input class='radio-button' id='icestorm_yosys_as_subtool' type='checkbox'>
+            <br><br>
+            <label>Generated makefile name, defaults to $name.mk</label>
+            <input type='input' id='icestorm_makefile_name' class='radio-button'>
+            <br><br>
+            <label>Options for ArachnePNR Place & Route. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='icestorm_arachne_pnr_options' class='radio-button'>
+            <br><br>
+            <label>Options for NextPNR Place & Route. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='icestorm_nextpnr_options' class='radio-button'>
+            <br><br>
+            <label>Additional options for the synth_ice40 command. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='icestorm_yosys_synth_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='Ise' class='tabcontent'>
+            <h3>ISE</h3>
+            <p><i>Xilinx ISE Design Suite.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='Ise_installation_path' class='radio-button'>
+            <br><br>
+            <label>FPGA family (e.g. spartan6).</label>
+            <input type='input' id='Ise_family' class='radio-button'>
+            <br><br>
+            <label>FPGA device (e.g. xc6slx45).</label>
+            <input type='input' id='Ise_device' class='radio-button'>
+            <br><br>
+            <label>FPGA package (e.g. csg324).</label>
+            <input type='input' id='Ise_package' class='radio-button'>
+            <br><br>
+            <label>FPGA speed grade (e.g. -2).</label>
+            <input type='input' id='Ise_speed' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='isim' class='tabcontent'>
+            <h3>Isim</h3>
+            <p><i>Xilinx ISim simulator from ISE design suite.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='isim_installation_path' class='radio-button'>
+            <br><br>
+            <label>Additional options for compilation with FUSE. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='isim_fuse_options' class='radio-button'>
+            <br><br>
+            <label>Additional run options for ISim. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='isim_isim_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='modelsim' class='tabcontent'>
+            <h3>ModelSim</h3>
+            <p><i>ModelSim simulator from Mentor Graphics.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='modelsim_installation_path' class='radio-button'>
+            <br><br>
+            <label>Additional options for compilation with vcom. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='modelsim_vcom_options' class='radio-button'>
+            <br><br>
+            <label>Additional options for compilation with vlog. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='modelsim_vlog_options' class='radio-button'>
+            <br><br>
+            <label>Additional run options for vsim. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='modelsim_vsim_options' class='radio-button'>
+            <br><br>
+            <label>Additional arguments directly passed to linter. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='modelsim_linter_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='morty' class='tabcontent'>
+            <h3>Morty</h3>
+            <p><i>Run the (System-) Verilog pickle tool called morty.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='morty_installation_path' class='radio-button'>
+            <br><br>
+            <label>Run-time options passed to morty.. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='morty_morty_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='quartus' class='tabcontent'>
+            <h3>Quartus</h3>
+            <p><i>The Quartus backend supports Intel Quartus Std and Pro editions to build systems and program the
+                    FPGA.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='quartus_installation_path' class='radio-button'>
+            <br><br>
+            <label>FPGA family (e.g. Cyclone V).</label>
+            <input type='input' id='quartus_family' class='radio-button'>
+            <br><br>
+            <label>FPGA device (e.g. 5CSXFC6D6F31C8ES).</label>
+            <input type='input' id='quartus_device' class='radio-button'>
+            <br><br>
+            <label>Specifies the FPGA’s JTAG programming cable. Use the tool jtagconfig to determine the available
+                cables.</label>
+            <input type='input' id='quartus_cable' class='radio-button'>
+            <br><br>
+            <label>Specifies the FPGA’s device number in the JTAG chain. The device index specifies the device where the
+                flash programmer looks for the Nios® II JTAG debug module. JTAG devices are numbered relative to the
+                JTAG chain, starting at 1. Use the tool jtagconfig to determine the index.</label>
+            <input type='input' id='quartus_board_device_index' class='radio-button'>
+            <br><br>
+            <label>P&R tool. one (to just run synthesis).</label>
+            <br>
+            <select name='select' id='quartus_pnr'>
+                <option value='default'>Default</option>
+                <option value='dse'>Run Design Space Explorer</option>
+                <option value='none'>Run synthesis</option>
+            </select>
+            <br><br>
+            <label>Command-line options for Design Space Explorer. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='quartus_dse_options' class='radio-button'>
+            <br><br>
+            <label>Extra command-line options for Quartus. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='quartus_quartus_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='radiant' class='tabcontent'>
+            <h3>Radiant</h3>
+            <p><i>Backend for Lattice Radiant.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='radiant_installation_path' class='radio-button'>
+            <br><br>
+            <label>FPGA part number (e.g. LIFCL-40-9BG400C).</label>
+            <input type='input' id='radiant_part' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='rivierapro' class='tabcontent'>
+            <h3>Rivierapro</h3>
+            <p><i>Riviera Pro simulator from Aldec.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='rivierapro_installation_path' class='radio-button'>
+            <br><br>
+            <label>Common or separate compilation, sep - for separate compilation, common - for common
+                compilation.</label>
+            <input type='input' id='rivierapro_compilation_mode' class='radio-button'>
+            <br><br>
+            <label>Additional options for compilation with vlog. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='rivierapro_vlog_options' class='radio-button'>
+            <br><br>
+            <label>Additional run options for vsim. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='rivierapro_vsim_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='spyglass' class='tabcontent'>
+            <h3>Spyglass</h3>
+            <p><i>Synopsys (formerly Atrenta) Spyglass Backend. Spyglass performs static source code analysis on HDL
+                    code and checks for common coding errors or coding style violations.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='spyglass_installation_path' class='radio-button'>
+            <br><br>
+            <label></label>
+            <input type='input' id='spyglass_methodology' class='radio-button'>
+            <br><br>
+            <label> <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='spyglass_goals' class='radio-button'>
+            <br><br>
+            <label> <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='spyglass_spyglass_options' class='radio-button'>
+            <br><br>
+            <label> <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='spyglass_rule_parameters' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='symbiflow' class='tabcontent'>
+            <h3>Symbiflow</h3>
+            <p><i>The Symbiflow backend executes Yosys sythesis tool and VPR place and route. It can target multiple
+                    different FPGA vendorss.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='symbiflow_installation_path' class='radio-button'>
+            <br><br>
+            <label>FPGA chip package (e.g. clg400-1).</label>
+            <input type='input' id='symbiflow_package' class='radio-button'>
+            <br><br>
+            <label>FPGA part type (e.g. xc7a50t).</label>
+            <input type='input' id='symbiflow_part' class='radio-button'>
+            <br><br>
+            <label>Target architecture. Currently only “xilinx” is supported.</label>
+            <input type='input' id='symbiflow_vendor' class='radio-button'>
+            <br><br>
+            <label>Place and Route tool. Currently only “vpr” is supported.</label>
+            <br>
+            <select name='select' id='symbiflow_pnr'>
+                <option value='vpr'>VPR</option>
+            </select>
+            <br><br>
+            <label>Additional vpr tool options. If not used, default options for the tool will be used.</label>
+            <input type='input' id='symbiflow_vpr_options' class='radio-button'>
+            <br><br>
+            <label>Optional bash script that will be sourced before each build step..</label>
+            <input type='input' id='symbiflow_environment_script' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='symbiyosys' class='tabcontent'>
+            <h3>Symbiyosys</h3>
+            <p><i>SymbiYosys formal verification wrapper for Yosys.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='symbiyosys_installation_path' class='radio-button'>
+            <br><br>
+            <label>A list of the .sby file’s tasks to run. Passed on the sby command line.. <b
+                    style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='symbiyosys_tasknames' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='trellis' class='tabcontent'>
+            <h3>Trellis</h3>
+            <p><i>Project Trellis enables a fully open-source flow for ECP5 FPGAs using Yosys for Verilog synthesis and
+                    nextpnr for place and route.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='trellis_installation_path' class='radio-button'>
+            <br><br>
+            <label>Target architecture.</label>
+            <br>
+            <select name='select' id='trellis_arch'>
+                <option value='xilinx'>Xilinx</option>
+                <option value='ice40'>ICE40</option>
+                <option value='ecp5'>ECP5</option>
+            </select>
+            <br><br>
+            <label>Output file format.</label>
+            <br>
+            <select name='select' id='trellis_output_format'>
+                <option value='json'>JSON</option>
+                <option value='edif'>EDIF</option>
+                <option value='blif'>BLIF</option>
+            </select>
+            <br><br>
+            <label>Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.</label>
+            <input class='radio-button' id='trellis_yosys_as_subtool' type='checkbox'>
+            <br><br>
+            <label>Generated makefile name, defaults to $name.mk</label>
+            <input type='input' id='trellis_makefile_name' class='radio-button'>
+            <br><br>
+            <label>Generated tcl script filename, defaults to $name.mk</label>
+            <input type='input' id='trellis_script_name' class='radio-button'>
+            <br><br>
+            <label>Options for NextPNR Place & Route. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='trellis_nextpnr_options' class='radio-button'>
+            <br><br>
+            <label>Additional options for the synth_ice40 command. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='trellis_yosys_synth_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='vcs' class='tabcontent'>
+            <h3>Vcs</h3>
+            <p><i>Synopsys VCS Backend</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='vcs_installation_path' class='radio-button'>
+            <br><br>
+            <label> <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='vcs_vcs_options' class='radio-button'>
+            <br><br>
+            <label> <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='vcs_run_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='veriblelint' class='tabcontent'>
+            <h3>Veriblelint</h3>
+            <p><i>Verible lint backend (verible-verilog-lint).</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='veriblelint_installation_path' class='radio-button'>
+            <br><br>
+            <label>Ruleset.</label>
+            <br>
+            <select name='select' id='veriblelint_ruleset'>
+                <option value='default'>Default</option>
+                <option value='all'>All</option>
+                <option value='none'>None</option>
+            </select>
+            <br><br>
+            <label>Extra command line arguments passed to the Verible tool. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='veriblelint_verible_lint_args' class='radio-button'>
+            <br><br>
+            <label>What rules to use. Prefix a rule name with “-” to disable it. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='veriblelint_rules' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='verilator' class='tabcontent'>
+            <h3>Verilator</h3>
+            <p><i>Verible lint backend (verible-verilog-lint).</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='verilator_installation_path' class='radio-button'>
+            <br><br>
+            <label>Select compilation mode. Legal values are cc for C++ testbenches, sc for SystemC testbenches or
+                lint-only to only perform linting on the Verilog code.</label>
+            <br>
+            <select name='select' id='verilator_mode'>
+                <option value='cc'>cc</option>
+                <option value='sc'>sc</option>
+                <option value='lint-only'>lint-only</option>
+            </select>
+            <br><br>
+            <label>Extra libraries for the verilated model to link against. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='verilator_libs' class='radio-button'>
+            <br><br>
+            <label>Additional options for verilator. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='verilator_verilator_options' class='radio-button'>
+            <br><br>
+            <label>Additional arguments passed to make when compiling the simulation. This is commonly used to set
+                OPT/OPT_FAST/OPT_SLOW. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='verilator_make_options' class='radio-button'>
+            <br><br>
+            <label>Additional arguments directly passed to the verilated model. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='verilator_run_options' class='radio-button'>
+            <br><br>
+            <label>Additional arguments directly passed to linter. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='verilator_linter_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='vivado' class='tabcontent'>
+            <h3>Vivado</h3>
+            <p><i>The Vivado backend executes Xilinx Vivado to build systems and program the FPGA.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='vivado_installation_path' class='radio-button'>
+            <br><br>
+            <label>Part. Device identifier. e.g. xc7a35tcsg324-1.</label>
+            <input type='input' id='vivado_part' class='radio-button'>
+            <br><br>
+            <label>Synthesis tool. Allowed values are vivado (default) and yosys..</label>
+            <input type='input' id='vivado_synth' class='radio-button'>
+            <br><br>
+            <label>Choose only synthesis or place and route and bitstream generation:</label>
+            <br>
+            <select name='select' id='vivado_pnr'>
+                <option value='vivado'>Place and route</option>
+                <option value='none'>Only synthesis</option>
+            </select>
+            <br><br>
+            <label>The frequency for jtag communication.</label>
+            <input type='number' id='vivado_jtag_freq' class='radio-button'>
+            <br><br>
+            <label>Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A.</label>
+            <input type='input' id='vivado_hw_target' class='radio-button'>
+            <br><br>
+            <label>Additional arguments directly passed to linter (xvlog). <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='vivado_linter_options_xvlog' class='radio-button'>
+            <br><br>
+            <label>Additional arguments directly passed to linter (xvhdl). <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='vivado_linter_options_xvhdl' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='vunit' class='tabcontent'>
+            <h3>Vunit</h3>
+            <p><i>VUnit testing framework.</i></p>
+            <hr>
+            </hr> <label>VUnit simulator:</label>
+            <br>
+            <select name='select' id='vunit_vunit_simulator'>
+                <option value='rivierapro'>Aldec Riviera-PRO</option>
+                <option value='activehdl'>Aldec Active-HDL</option>
+                <option value='ghdl'>GHDL</option>
+                <option value='modelsim'>Mentor Graphics ModelSim/Questa</option>
+                <option value='xsim'>XSIM (Not supported in official VUnit)</option>
+            </select>
+            <br><br>
+            <label>VUnit options. Extra options for the VUnit test runner. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='vunit_vunit_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='xcelium' class='tabcontent'>
+            <h3>Xcelium</h3>
+            <p><i>Xcelium simulator from Cadence Design Systems.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='xcelium_installation_path' class='radio-button'>
+            <br><br>
+            <label>Additional options for compilation with xmvhdl. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='xcelium_xmvhdl_options' class='radio-button'>
+            <br><br>
+            <label>Additional options for compilation with xmvlog. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='xcelium_xmvlog_options' class='radio-button'>
+            <br><br>
+            <label>Additional run options for xmsim. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='xcelium_xmsim_options' class='radio-button'>
+            <br><br>
+            <label>Additional run options for xrun. <b style="color:#c22200">(Comma separated).</b></label>
+            <input type='input' id='xcelium_xrun_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='yosys' class='tabcontent'>
+            <h3>Yosys</h3>
+            <p><i>Open source synthesis tool targeting many different FPGAs.</i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='yosys_installation_path' class='radio-button'>
+            <br><br>
+            <label>Target architecture.</label>
+            <br>
+            <select name='select' id='yosys_arch'>
+                <option value='xilinx'>Xilinx</option>
+                <option value='ice40'>ICE40</option>
+                <option value='ecp5'>ECP5</option>
+            </select>
+            <br><br>
+            <label>Output file format.</label>
+            <br>
+            <select name='select' id='yosys_output_format'>
+                <option value='json'>JSON</option>
+                <option value='edif'>EDIF</option>
+                <option value='blif'>BLIF</option>
+            </select>
+            <br><br>
+            <label>Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.</label>
+            <input class='radio-button' id='yosys_yosys_as_subtool' type='checkbox'>
+            <br><br>
+            <label>Generated makefile name, defaults to $name.mk</label>
+            <input type='input' id='yosys_makefile_name' class='radio-button'>
+            <br><br>
+            <label>Generated tcl script filename, defaults to $name.mk</label>
+            <input type='input' id='yosys_script_name' class='radio-button'>
+            <br><br>
+            <label>Additional options for the synth_ice40 command. <b style="color:#c22200">(Comma
+                    separated).</b></label>
+            <input type='input' id='yosys_yosys_synth_options' class='radio-button'>
+            <br><br>
+        </div>
+
+        <div id='cocotb' class='tabcontent'>
+            <h3>Cocotb</h3>
+            <p><i></i></p>
+            <hr>
+            </hr> <label>Installation path: <strong>directory</strong> to the location where tool binary is
+                located.</label>
+            <input type='input' id='cocotb_installation_path' class='radio-button'>
+            <br><br>
+        </div>
+
+        <button id="button_cancel" class="button" type="button" onclick="close_panel(event)">Close</button><button
+            id="button_apply" class="button" type="button" onclick="send_config(event)">Apply</button><button
+            id="button_apply_close" class="button" type="button" onclick="send_config_and_close(event)">Apply and
+            close</button>
+        <script>
+            const vscode = acquireVsCodeApi();
+
+            function open_tab(evt, cityName) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById(cityName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+
+            // Get the element with id="default_open" and click on it
+            document.getElementById("default_open").click();
+
+
+            function send_config_and_close() {
+                let config = get_config();
+
+                vscode.postMessage({
+                    command: 'set_config_and_close',
+                    config: config
+                });
+            }
+
+            function send_config() {
+                let config = get_config();
+
+                vscode.postMessage({
+                    command: 'set_config',
+                    config: config
+                });
+            }
+
+            function close_panel() {
+                vscode.postMessage({
+                    command: 'close'
+                });
+            }
+
+            function get_config() {
+                let all_radios = document.getElementsByName('re');
+                let selected_tool = '';
+                for (i = 0; i < all_radios.length; i++) {
+                    if (all_radios[i].checked === true) {
+                        selected_tool = all_radios[i].getAttribute('tool');
+                    }
+                }
+
+                let config = {
+                    'selected_tool': selected_tool,
+                    'config':
+                        [
+                            get_general_options(),
+                            get_editor_options(),
+                            get_templates_options(),
+                            get_schematic_options(),
+                            get_documentation_options(),
+                            get_linter_options(),
+                            get_formatter_options(),
+                            get_vsg_options(),
+                            get_siliconcompiler_options(),
+                            get_ascentlint_options(),
+                            get_diamond_options(),
+                            get_xsim_options(),
+                            get_ghdl_options(),
+                            get_icarus_options(),
+                            get_icestorm_options(),
+                            get_Ise_options(),
+                            get_isim_options(),
+                            get_modelsim_options(),
+                            get_morty_options(),
+                            get_quartus_options(),
+                            get_radiant_options(),
+                            get_rivierapro_options(),
+                            get_spyglass_options(),
+                            get_symbiflow_options(),
+                            get_symbiyosys_options(),
+                            get_trellis_options(),
+                            get_vcs_options(),
+                            get_veriblelint_options(),
+                            get_verilator_options(),
+                            get_vivado_options(),
+                            get_vunit_options(),
+                            get_xcelium_options(),
+                            get_yosys_options(),
+                            get_cocotb_options(),
+
+                        ]
+                }
+                return config;
+            }
+
+            function get_general_options() {
+                let options = {
+                    'general': {
+                        'logging': document.getElementById("general_logging").checked,
+                        'pypath': document.getElementById("general_pypath").value,
+                        'select_tool': document.getElementById("general_select_tool").value,
+                        'waveform_viewer': document.getElementById("general_waveform_viewer").value,
+                        'go_to_definition_vhdl': document.getElementById("general_go_to_definition_vhdl").checked,
+                        'go_to_definition_verilog': document.getElementById("general_go_to_definition_verilog").checked,
+                        'developer_mode': document.getElementById("general_developer_mode").checked,
+                    }
+                };
+                return options;
+            }
+            function get_editor_options() {
+                let options = {
+                    'editor': {
+                        'continue_comment': document.getElementById("editor_continue_comment").checked,
+                    }
+                };
+                return options;
+            }
+            function get_templates_options() {
+                let options = {
+                    'templates': {
+                        'header_file_path': document.getElementById("templates_header_file_path").value,
+                    }
+                };
+                return options;
+            }
+            function get_schematic_options() {
+                let options = {
+                    'schematic': {
+                        'backend': document.getElementById("schematic_backend").value,
+                    }
+                };
+                return options;
+            }
+            function get_documentation_options() {
+                let options = {
+                    'documentation': {
+                        'language': document.getElementById("documentation_language").value,
+                        'symbol_vhdl': document.getElementById("documentation_symbol_vhdl").value,
+                        'symbol_verilog': document.getElementById("documentation_symbol_verilog").value,
+                        'dependency_graph': document.getElementById("documentation_dependency_graph").checked,
+                        'self_contained': document.getElementById("documentation_self_contained").checked,
+                        'fsm': document.getElementById("documentation_fsm").checked,
+                        'signals': document.getElementById("documentation_signals").value,
+                        'constants': document.getElementById("documentation_constants").value,
+                        'process': document.getElementById("documentation_process").value,
+                        'functions': document.getElementById("documentation_functions").value,
+                        'magic_config_path': document.getElementById("documentation_magic_config_path").value,
+                    }
+                };
+                return options;
+            }
+            function get_linter_options() {
+                let options = {
+                    'linter': {
+                        'linter_vhdl': document.getElementById("linter_linter_vhdl").value,
+                        'linter_verilog': document.getElementById("linter_linter_verilog").value,
+                        'style_verilog': document.getElementById("linter_style_verilog").value,
+                        'style_vhdl': document.getElementById("linter_style_vhdl").value,
+                    }
+                };
+                return options;
+            }
+            function get_formatter_options() {
+                let options = {
+                    'formatter': {
+                        'formatter_verilog': document.getElementById("formatter_formatter_verilog").value,
+                        'formatter_vhdl': document.getElementById("formatter_formatter_vhdl").value,
+                        'istyle_style': document.getElementById("formatter_istyle_style").value,
+                        'istyle_indentation_size': document.getElementById("formatter_istyle_indentation_size").value,
+                        's3sv_one_bind_per_line': document.getElementById("formatter_s3sv_one_bind_per_line").checked,
+                        's3sv_one_declaration_per_line': document.getElementById("formatter_s3sv_one_declaration_per_line").checked,
+                        's3sv_use_tabs': document.getElementById("formatter_s3sv_use_tabs").checked,
+                        's3sv_indentation_size': document.getElementById("formatter_s3sv_indentation_size").value,
+                        'verible_path': document.getElementById("formatter_verible_path").value,
+                        'verible_format_args': document.getElementById("formatter_verible_format_args").value.split(','),
+                        'vhdl_standalone_keyword_case': document.getElementById("formatter_vhdl_standalone_keyword_case").value,
+                        'vhdl_standalone_name_case': document.getElementById("formatter_vhdl_standalone_name_case").value,
+                        'vhdl_standalone_align_comments': document.getElementById("formatter_vhdl_standalone_align_comments").checked,
+                        'vhdl_standalone_indentation': document.getElementById("formatter_vhdl_standalone_indentation").value,
+                        'vhdl_standalone_align_generic_port': document.getElementById("formatter_vhdl_standalone_align_generic_port").checked,
+                    }
+                };
+                return options;
+            }
+            function get_vsg_options() {
+                let options = {
+                    'vsg': {
+                        'configuration': document.getElementById("vsg_configuration").value,
+                    }
+                };
+                return options;
+            }
+            function get_siliconcompiler_options() {
+                let options = {
+                    'siliconcompiler': {
+                        'target': document.getElementById("siliconcompiler_target").value,
+                        'server_enable': document.getElementById("siliconcompiler_server_enable").checked,
+                        'server_address': document.getElementById("siliconcompiler_server_address").value,
+                        'server_username': document.getElementById("siliconcompiler_server_username").value,
+                        'server_password': document.getElementById("siliconcompiler_server_password").value,
+                    }
+                };
+                return options;
+            }
+            function get_ascentlint_options() {
+                let options = {
+                    'ascentlint': {
+                        'installation_path': document.getElementById("ascentlint_installation_path").value,
+                        'ascentlint_options': document.getElementById("ascentlint_ascentlint_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_diamond_options() {
+                let options = {
+                    'diamond': {
+                        'installation_path': document.getElementById("diamond_installation_path").value,
+                        'part': document.getElementById("diamond_part").value,
+                    }
+                };
+                return options;
+            }
+            function get_xsim_options() {
+                let options = {
+                    'xsim': {
+                        'installation_path': document.getElementById("xsim_installation_path").value,
+                        'xelab_options': document.getElementById("xsim_xelab_options").value.split(','),
+                        'xsim_options': document.getElementById("xsim_xsim_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_ghdl_options() {
+                let options = {
+                    'ghdl': {
+                        'installation_path': document.getElementById("ghdl_installation_path").value,
+                        'waveform': document.getElementById("ghdl_waveform").value,
+                        'analyze_options': document.getElementById("ghdl_analyze_options").value.split(','),
+                        'run_options': document.getElementById("ghdl_run_options").value.split(','),
+                        'linter_options': document.getElementById("ghdl_linter_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_icarus_options() {
+                let options = {
+                    'icarus': {
+                        'installation_path': document.getElementById("icarus_installation_path").value,
+                        'timescale': document.getElementById("icarus_timescale").value,
+                        'iverilog_options': document.getElementById("icarus_iverilog_options").value.split(','),
+                        'linter_options': document.getElementById("icarus_linter_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_icestorm_options() {
+                let options = {
+                    'icestorm': {
+                        'installation_path': document.getElementById("icestorm_installation_path").value,
+                        'pnr': document.getElementById("icestorm_pnr").value,
+                        'arch': document.getElementById("icestorm_arch").value,
+                        'output_format': document.getElementById("icestorm_output_format").value,
+                        'yosys_as_subtool': document.getElementById("icestorm_yosys_as_subtool").checked,
+                        'makefile_name': document.getElementById("icestorm_makefile_name").value,
+                        'arachne_pnr_options': document.getElementById("icestorm_arachne_pnr_options").value.split(','),
+                        'nextpnr_options': document.getElementById("icestorm_nextpnr_options").value.split(','),
+                        'yosys_synth_options': document.getElementById("icestorm_yosys_synth_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_Ise_options() {
+                let options = {
+                    'Ise': {
+                        'installation_path': document.getElementById("Ise_installation_path").value,
+                        'family': document.getElementById("Ise_family").value,
+                        'device': document.getElementById("Ise_device").value,
+                        'package': document.getElementById("Ise_package").value,
+                        'speed': document.getElementById("Ise_speed").value,
+                    }
+                };
+                return options;
+            }
+            function get_isim_options() {
+                let options = {
+                    'isim': {
+                        'installation_path': document.getElementById("isim_installation_path").value,
+                        'fuse_options': document.getElementById("isim_fuse_options").value.split(','),
+                        'isim_options': document.getElementById("isim_isim_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_modelsim_options() {
+                let options = {
+                    'modelsim': {
+                        'installation_path': document.getElementById("modelsim_installation_path").value,
+                        'vcom_options': document.getElementById("modelsim_vcom_options").value.split(','),
+                        'vlog_options': document.getElementById("modelsim_vlog_options").value.split(','),
+                        'vsim_options': document.getElementById("modelsim_vsim_options").value.split(','),
+                        'linter_options': document.getElementById("modelsim_linter_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_morty_options() {
+                let options = {
+                    'morty': {
+                        'installation_path': document.getElementById("morty_installation_path").value,
+                        'morty_options': document.getElementById("morty_morty_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_quartus_options() {
+                let options = {
+                    'quartus': {
+                        'installation_path': document.getElementById("quartus_installation_path").value,
+                        'family': document.getElementById("quartus_family").value,
+                        'device': document.getElementById("quartus_device").value,
+                        'cable': document.getElementById("quartus_cable").value,
+                        'board_device_index': document.getElementById("quartus_board_device_index").value,
+                        'pnr': document.getElementById("quartus_pnr").value,
+                        'dse_options': document.getElementById("quartus_dse_options").value.split(','),
+                        'quartus_options': document.getElementById("quartus_quartus_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_radiant_options() {
+                let options = {
+                    'radiant': {
+                        'installation_path': document.getElementById("radiant_installation_path").value,
+                        'part': document.getElementById("radiant_part").value,
+                    }
+                };
+                return options;
+            }
+            function get_rivierapro_options() {
+                let options = {
+                    'rivierapro': {
+                        'installation_path': document.getElementById("rivierapro_installation_path").value,
+                        'compilation_mode': document.getElementById("rivierapro_compilation_mode").value,
+                        'vlog_options': document.getElementById("rivierapro_vlog_options").value.split(','),
+                        'vsim_options': document.getElementById("rivierapro_vsim_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_spyglass_options() {
+                let options = {
+                    'spyglass': {
+                        'installation_path': document.getElementById("spyglass_installation_path").value,
+                        'methodology': document.getElementById("spyglass_methodology").value,
+                        'goals': document.getElementById("spyglass_goals").value.split(','),
+                        'spyglass_options': document.getElementById("spyglass_spyglass_options").value.split(','),
+                        'rule_parameters': document.getElementById("spyglass_rule_parameters").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_symbiflow_options() {
+                let options = {
+                    'symbiflow': {
+                        'installation_path': document.getElementById("symbiflow_installation_path").value,
+                        'package': document.getElementById("symbiflow_package").value,
+                        'part': document.getElementById("symbiflow_part").value,
+                        'vendor': document.getElementById("symbiflow_vendor").value,
+                        'pnr': document.getElementById("symbiflow_pnr").value,
+                        'vpr_options': document.getElementById("symbiflow_vpr_options").value,
+                        'environment_script': document.getElementById("symbiflow_environment_script").value,
+                    }
+                };
+                return options;
+            }
+            function get_symbiyosys_options() {
+                let options = {
+                    'symbiyosys': {
+                        'installation_path': document.getElementById("symbiyosys_installation_path").value,
+                        'tasknames': document.getElementById("symbiyosys_tasknames").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_trellis_options() {
+                let options = {
+                    'trellis': {
+                        'installation_path': document.getElementById("trellis_installation_path").value,
+                        'arch': document.getElementById("trellis_arch").value,
+                        'output_format': document.getElementById("trellis_output_format").value,
+                        'yosys_as_subtool': document.getElementById("trellis_yosys_as_subtool").checked,
+                        'makefile_name': document.getElementById("trellis_makefile_name").value,
+                        'script_name': document.getElementById("trellis_script_name").value,
+                        'nextpnr_options': document.getElementById("trellis_nextpnr_options").value.split(','),
+                        'yosys_synth_options': document.getElementById("trellis_yosys_synth_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_vcs_options() {
+                let options = {
+                    'vcs': {
+                        'installation_path': document.getElementById("vcs_installation_path").value,
+                        'vcs_options': document.getElementById("vcs_vcs_options").value.split(','),
+                        'run_options': document.getElementById("vcs_run_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_veriblelint_options() {
+                let options = {
+                    'veriblelint': {
+                        'installation_path': document.getElementById("veriblelint_installation_path").value,
+                        'ruleset': document.getElementById("veriblelint_ruleset").value,
+                        'verible_lint_args': document.getElementById("veriblelint_verible_lint_args").value.split(','),
+                        'rules': document.getElementById("veriblelint_rules").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_verilator_options() {
+                let options = {
+                    'verilator': {
+                        'installation_path': document.getElementById("verilator_installation_path").value,
+                        'mode': document.getElementById("verilator_mode").value,
+                        'libs': document.getElementById("verilator_libs").value.split(','),
+                        'verilator_options': document.getElementById("verilator_verilator_options").value.split(','),
+                        'make_options': document.getElementById("verilator_make_options").value.split(','),
+                        'run_options': document.getElementById("verilator_run_options").value.split(','),
+                        'linter_options': document.getElementById("verilator_linter_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_vivado_options() {
+                let options = {
+                    'vivado': {
+                        'installation_path': document.getElementById("vivado_installation_path").value,
+                        'part': document.getElementById("vivado_part").value,
+                        'synth': document.getElementById("vivado_synth").value,
+                        'pnr': document.getElementById("vivado_pnr").value,
+                        'jtag_freq': document.getElementById("vivado_jtag_freq").value,
+                        'hw_target': document.getElementById("vivado_hw_target").value,
+                        'linter_options_xvlog': document.getElementById("vivado_linter_options_xvlog").value.split(','),
+                        'linter_options_xvhdl': document.getElementById("vivado_linter_options_xvhdl").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_vunit_options() {
+                let options = {
+                    'vunit': {
+                        'vunit_simulator': document.getElementById("vunit_vunit_simulator").value,
+                        'vunit_options': document.getElementById("vunit_vunit_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_xcelium_options() {
+                let options = {
+                    'xcelium': {
+                        'installation_path': document.getElementById("xcelium_installation_path").value,
+                        'xmvhdl_options': document.getElementById("xcelium_xmvhdl_options").value.split(','),
+                        'xmvlog_options': document.getElementById("xcelium_xmvlog_options").value.split(','),
+                        'xmsim_options': document.getElementById("xcelium_xmsim_options").value.split(','),
+                        'xrun_options': document.getElementById("xcelium_xrun_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_yosys_options() {
+                let options = {
+                    'yosys': {
+                        'installation_path': document.getElementById("yosys_installation_path").value,
+                        'arch': document.getElementById("yosys_arch").value,
+                        'output_format': document.getElementById("yosys_output_format").value,
+                        'yosys_as_subtool': document.getElementById("yosys_yosys_as_subtool").checked,
+                        'makefile_name': document.getElementById("yosys_makefile_name").value,
+                        'script_name': document.getElementById("yosys_script_name").value,
+                        'yosys_synth_options': document.getElementById("yosys_yosys_synth_options").value.split(','),
+                    }
+                };
+                return options;
+            }
+            function get_cocotb_options() {
+                let options = {
+                    'cocotb': {
+                        'installation_path': document.getElementById("cocotb_installation_path").value,
+                    }
+                };
+                return options;
+            }
+
+            window.addEventListener('message', event => {
+                const message = event.data;
+                switch (message.command) {
+                    case 'set_config':
+                        set_config(message.config);
+                        break;
+                }
+            });
+            function set_config(config) {
+                for (let i = 0; i < config.tool_config.length; i++) {
+                    let element = config.tool_config[i];
+                    let config_tool = '';
+                    let options;
+                    let installation_path = '';
+                    for (var attributename in element) {
+                        config_tool = attributename;
+                        options = element[attributename];
+                        installation_path = element[attributename].installation_path;
+                    }
+                    if (config_tool === 'general') {
+                        set_general_options(options, installation_path);
+                    }
+                    else if (config_tool === 'editor') {
+                        set_editor_options(options, installation_path);
+                    }
+                    else if (config_tool === 'templates') {
+                        set_templates_options(options, installation_path);
+                    }
+                    else if (config_tool === 'schematic') {
+                        set_schematic_options(options, installation_path);
+                    }
+                    else if (config_tool === 'documentation') {
+                        set_documentation_options(options, installation_path);
+                    }
+                    else if (config_tool === 'linter') {
+                        set_linter_options(options, installation_path);
+                    }
+                    else if (config_tool === 'formatter') {
+                        set_formatter_options(options, installation_path);
+                    }
+                    else if (config_tool === 'vsg') {
+                        set_vsg_options(options, installation_path);
+                    }
+                    else if (config_tool === 'siliconcompiler') {
+                        set_siliconcompiler_options(options, installation_path);
+                    }
+                    else if (config_tool === 'ascentlint') {
+                        set_ascentlint_options(options, installation_path);
+                    }
+                    else if (config_tool === 'diamond') {
+                        set_diamond_options(options, installation_path);
+                    }
+                    else if (config_tool === 'xsim') {
+                        set_xsim_options(options, installation_path);
+                    }
+                    else if (config_tool === 'ghdl') {
+                        set_ghdl_options(options, installation_path);
+                    }
+                    else if (config_tool === 'icarus') {
+                        set_icarus_options(options, installation_path);
+                    }
+                    else if (config_tool === 'icestorm') {
+                        set_icestorm_options(options, installation_path);
+                    }
+                    else if (config_tool === 'Ise') {
+                        set_Ise_options(options, installation_path);
+                    }
+                    else if (config_tool === 'isim') {
+                        set_isim_options(options, installation_path);
+                    }
+                    else if (config_tool === 'modelsim') {
+                        set_modelsim_options(options, installation_path);
+                    }
+                    else if (config_tool === 'morty') {
+                        set_morty_options(options, installation_path);
+                    }
+                    else if (config_tool === 'quartus') {
+                        set_quartus_options(options, installation_path);
+                    }
+                    else if (config_tool === 'radiant') {
+                        set_radiant_options(options, installation_path);
+                    }
+                    else if (config_tool === 'rivierapro') {
+                        set_rivierapro_options(options, installation_path);
+                    }
+                    else if (config_tool === 'spyglass') {
+                        set_spyglass_options(options, installation_path);
+                    }
+                    else if (config_tool === 'symbiflow') {
+                        set_symbiflow_options(options, installation_path);
+                    }
+                    else if (config_tool === 'symbiyosys') {
+                        set_symbiyosys_options(options, installation_path);
+                    }
+                    else if (config_tool === 'trellis') {
+                        set_trellis_options(options, installation_path);
+                    }
+                    else if (config_tool === 'vcs') {
+                        set_vcs_options(options, installation_path);
+                    }
+                    else if (config_tool === 'veriblelint') {
+                        set_veriblelint_options(options, installation_path);
+                    }
+                    else if (config_tool === 'verilator') {
+                        set_verilator_options(options, installation_path);
+                    }
+                    else if (config_tool === 'vivado') {
+                        set_vivado_options(options, installation_path);
+                    }
+                    else if (config_tool === 'vunit') {
+                        set_vunit_options(options, installation_path);
+                    }
+                    else if (config_tool === 'xcelium') {
+                        set_xcelium_options(options, installation_path);
+                    }
+                    else if (config_tool === 'yosys') {
+                        set_yosys_options(options, installation_path);
+                    }
+                    else if (config_tool === 'cocotb') {
+                        set_cocotb_options(options, installation_path);
+                    }
+
+                }
+            }
+            function set_general_options(options) {
+                let logging_value_i = options.logging;
+                if (logging_value_i === undefined) { logging_value_i = false; }
+                document.getElementById('general_logging').checked = logging_value_i;
+                let pypath_value_i = options.pypath;
+                if (pypath_value_i === undefined) { pypath_value_i = ''; }
+                document.getElementById('general_pypath').value = pypath_value_i;
+                let select_tool_value_i = options.select_tool;
+                if (select_tool_value_i === undefined) { select_tool_value_i = ''; }
+                document.getElementById('general_select_tool').value = select_tool_value_i;
+                let waveform_viewer_value_i = options.waveform_viewer;
+                if (waveform_viewer_value_i === undefined) { waveform_viewer_value_i = ''; }
+                document.getElementById('general_waveform_viewer').value = waveform_viewer_value_i;
+                let go_to_definition_vhdl_value_i = options.go_to_definition_vhdl;
+                if (go_to_definition_vhdl_value_i === undefined) { go_to_definition_vhdl_value_i = false; }
+                document.getElementById('general_go_to_definition_vhdl').checked = go_to_definition_vhdl_value_i;
+                let go_to_definition_verilog_value_i = options.go_to_definition_verilog;
+                if (go_to_definition_verilog_value_i === undefined) { go_to_definition_verilog_value_i = false; }
+                document.getElementById('general_go_to_definition_verilog').checked = go_to_definition_verilog_value_i;
+                let developer_mode_value_i = options.developer_mode;
+                if (developer_mode_value_i === undefined) { developer_mode_value_i = false; }
+                document.getElementById('general_developer_mode').checked = developer_mode_value_i;
+            }
+            function set_editor_options(options) {
+                let continue_comment_value_i = options.continue_comment;
+                if (continue_comment_value_i === undefined) { continue_comment_value_i = false; }
+                document.getElementById('editor_continue_comment').checked = continue_comment_value_i;
+            }
+            function set_templates_options(options) {
+                let header_file_path_value_i = options.header_file_path;
+                if (header_file_path_value_i === undefined) { header_file_path_value_i = ''; }
+                document.getElementById('templates_header_file_path').value = header_file_path_value_i;
+            }
+            function set_schematic_options(options) {
+                let backend_value_i = options.backend;
+                if (backend_value_i === undefined) { backend_value_i = ''; }
+                document.getElementById('schematic_backend').value = backend_value_i;
+            }
+            function set_documentation_options(options) {
+                let language_value_i = options.language;
+                if (language_value_i === undefined) { language_value_i = ''; }
+                document.getElementById('documentation_language').value = language_value_i;
+                let symbol_vhdl_value_i = options.symbol_vhdl;
+                if (symbol_vhdl_value_i === undefined) { symbol_vhdl_value_i = ''; }
+                document.getElementById('documentation_symbol_vhdl').value = symbol_vhdl_value_i;
+                let symbol_verilog_value_i = options.symbol_verilog;
+                if (symbol_verilog_value_i === undefined) { symbol_verilog_value_i = ''; }
+                document.getElementById('documentation_symbol_verilog').value = symbol_verilog_value_i;
+                let dependency_graph_value_i = options.dependency_graph;
+                if (dependency_graph_value_i === undefined) { dependency_graph_value_i = false; }
+                document.getElementById('documentation_dependency_graph').checked = dependency_graph_value_i;
+                let self_contained_value_i = options.self_contained;
+                if (self_contained_value_i === undefined) { self_contained_value_i = false; }
+                document.getElementById('documentation_self_contained').checked = self_contained_value_i;
+                let fsm_value_i = options.fsm;
+                if (fsm_value_i === undefined) { fsm_value_i = false; }
+                document.getElementById('documentation_fsm').checked = fsm_value_i;
+                let signals_value_i = options.signals;
+                if (signals_value_i === undefined) { signals_value_i = ''; }
+                document.getElementById('documentation_signals').value = signals_value_i;
+                let constants_value_i = options.constants;
+                if (constants_value_i === undefined) { constants_value_i = ''; }
+                document.getElementById('documentation_constants').value = constants_value_i;
+                let process_value_i = options.process;
+                if (process_value_i === undefined) { process_value_i = ''; }
+                document.getElementById('documentation_process').value = process_value_i;
+                let functions_value_i = options.functions;
+                if (functions_value_i === undefined) { functions_value_i = ''; }
+                document.getElementById('documentation_functions').value = functions_value_i;
+                let magic_config_path_value_i = options.magic_config_path;
+                if (magic_config_path_value_i === undefined) { magic_config_path_value_i = ''; }
+                document.getElementById('documentation_magic_config_path').value = magic_config_path_value_i;
+            }
+            function set_linter_options(options) {
+                let linter_vhdl_value_i = options.linter_vhdl;
+                if (linter_vhdl_value_i === undefined) { linter_vhdl_value_i = ''; }
+                document.getElementById('linter_linter_vhdl').value = linter_vhdl_value_i;
+                let linter_verilog_value_i = options.linter_verilog;
+                if (linter_verilog_value_i === undefined) { linter_verilog_value_i = ''; }
+                document.getElementById('linter_linter_verilog').value = linter_verilog_value_i;
+                let style_verilog_value_i = options.style_verilog;
+                if (style_verilog_value_i === undefined) { style_verilog_value_i = ''; }
+                document.getElementById('linter_style_verilog').value = style_verilog_value_i;
+                let style_vhdl_value_i = options.style_vhdl;
+                if (style_vhdl_value_i === undefined) { style_vhdl_value_i = ''; }
+                document.getElementById('linter_style_vhdl').value = style_vhdl_value_i;
+            }
+            function set_formatter_options(options) {
+                let formatter_verilog_value_i = options.formatter_verilog;
+                if (formatter_verilog_value_i === undefined) { formatter_verilog_value_i = ''; }
+                document.getElementById('formatter_formatter_verilog').value = formatter_verilog_value_i;
+                let formatter_vhdl_value_i = options.formatter_vhdl;
+                if (formatter_vhdl_value_i === undefined) { formatter_vhdl_value_i = ''; }
+                document.getElementById('formatter_formatter_vhdl').value = formatter_vhdl_value_i;
+                let subtitle_0_value_i = options.subtitle_0;
+                let istyle_style_value_i = options.istyle_style;
+                if (istyle_style_value_i === undefined) { istyle_style_value_i = ''; }
+                document.getElementById('formatter_istyle_style').value = istyle_style_value_i;
+                let istyle_indentation_size_value_i = options.istyle_indentation_size;
+                if (istyle_indentation_size_value_i === undefined) { istyle_indentation_size_value_i = ''; }
+                document.getElementById('formatter_istyle_indentation_size').value = istyle_indentation_size_value_i;
+                let subtitle_1_value_i = options.subtitle_1;
+                let s3sv_one_bind_per_line_value_i = options.s3sv_one_bind_per_line;
+                if (s3sv_one_bind_per_line_value_i === undefined) { s3sv_one_bind_per_line_value_i = false; }
+                document.getElementById('formatter_s3sv_one_bind_per_line').checked = s3sv_one_bind_per_line_value_i;
+                let s3sv_one_declaration_per_line_value_i = options.s3sv_one_declaration_per_line;
+                if (s3sv_one_declaration_per_line_value_i === undefined) { s3sv_one_declaration_per_line_value_i = false; }
+                document.getElementById('formatter_s3sv_one_declaration_per_line').checked = s3sv_one_declaration_per_line_value_i;
+                let s3sv_use_tabs_value_i = options.s3sv_use_tabs;
+                if (s3sv_use_tabs_value_i === undefined) { s3sv_use_tabs_value_i = false; }
+                document.getElementById('formatter_s3sv_use_tabs').checked = s3sv_use_tabs_value_i;
+                let s3sv_indentation_size_value_i = options.s3sv_indentation_size;
+                if (s3sv_indentation_size_value_i === undefined) { s3sv_indentation_size_value_i = ''; }
+                document.getElementById('formatter_s3sv_indentation_size').value = s3sv_indentation_size_value_i;
+                let subtitle_2_value_i = options.subtitle_2;
+                let verible_path_value_i = options.verible_path;
+                if (verible_path_value_i === undefined) { verible_path_value_i = ''; }
+                document.getElementById('formatter_verible_path').value = verible_path_value_i;
+                let verible_format_args_value_i = options.verible_format_args;
+                if (verible_format_args_value_i === undefined) { verible_format_args_value_i = []; }
+                document.getElementById('formatter_verible_format_args').value = verible_format_args_value_i.join(',');
+                let subtitle_3_value_i = options.subtitle_3;
+                let vhdl_standalone_keyword_case_value_i = options.vhdl_standalone_keyword_case;
+                if (vhdl_standalone_keyword_case_value_i === undefined) { vhdl_standalone_keyword_case_value_i = ''; }
+                document.getElementById('formatter_vhdl_standalone_keyword_case').value = vhdl_standalone_keyword_case_value_i;
+                let vhdl_standalone_name_case_value_i = options.vhdl_standalone_name_case;
+                if (vhdl_standalone_name_case_value_i === undefined) { vhdl_standalone_name_case_value_i = ''; }
+                document.getElementById('formatter_vhdl_standalone_name_case').value = vhdl_standalone_name_case_value_i;
+                let vhdl_standalone_align_comments_value_i = options.vhdl_standalone_align_comments;
+                if (vhdl_standalone_align_comments_value_i === undefined) { vhdl_standalone_align_comments_value_i = false; }
+                document.getElementById('formatter_vhdl_standalone_align_comments').checked = vhdl_standalone_align_comments_value_i;
+                let vhdl_standalone_indentation_value_i = options.vhdl_standalone_indentation;
+                if (vhdl_standalone_indentation_value_i === undefined) { vhdl_standalone_indentation_value_i = ''; }
+                document.getElementById('formatter_vhdl_standalone_indentation').value = vhdl_standalone_indentation_value_i;
+                let vhdl_standalone_align_generic_port_value_i = options.vhdl_standalone_align_generic_port;
+                if (vhdl_standalone_align_generic_port_value_i === undefined) { vhdl_standalone_align_generic_port_value_i = false; }
+                document.getElementById('formatter_vhdl_standalone_align_generic_port').checked = vhdl_standalone_align_generic_port_value_i;
+            }
+            function set_vsg_options(options) {
+                let configuration_value_i = options.configuration;
+                if (configuration_value_i === undefined) { configuration_value_i = ''; }
+                document.getElementById('vsg_configuration').value = configuration_value_i;
+            }
+            function set_siliconcompiler_options(options) {
+                let target_value_i = options.target;
+                if (target_value_i === undefined) { target_value_i = ''; }
+                document.getElementById('siliconcompiler_target').value = target_value_i;
+                let server_enable_value_i = options.server_enable;
+                if (server_enable_value_i === undefined) { server_enable_value_i = false; }
+                document.getElementById('siliconcompiler_server_enable').checked = server_enable_value_i;
+                let server_address_value_i = options.server_address;
+                if (server_address_value_i === undefined) { server_address_value_i = ''; }
+                document.getElementById('siliconcompiler_server_address').value = server_address_value_i;
+                let server_username_value_i = options.server_username;
+                if (server_username_value_i === undefined) { server_username_value_i = ''; }
+                document.getElementById('siliconcompiler_server_username').value = server_username_value_i;
+                let server_password_value_i = options.server_password;
+                if (server_password_value_i === undefined) { server_password_value_i = ''; }
+                document.getElementById('siliconcompiler_server_password').value = server_password_value_i;
+            }
+            function set_ascentlint_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('ascentlint_installation_path').value = installation_path_value_i;
+                let ascentlint_options_value_i = options.ascentlint_options;
+                if (ascentlint_options_value_i === undefined) { ascentlint_options_value_i = []; }
+                document.getElementById('ascentlint_ascentlint_options').value = ascentlint_options_value_i.join(',');
+            }
+            function set_diamond_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('diamond_installation_path').value = installation_path_value_i;
+                let part_value_i = options.part;
+                if (part_value_i === undefined) { part_value_i = ''; }
+                document.getElementById('diamond_part').value = part_value_i;
+            }
+            function set_xsim_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('xsim_installation_path').value = installation_path_value_i;
+                let xelab_options_value_i = options.xelab_options;
+                if (xelab_options_value_i === undefined) { xelab_options_value_i = []; }
+                document.getElementById('xsim_xelab_options').value = xelab_options_value_i.join(',');
+                let xsim_options_value_i = options.xsim_options;
+                if (xsim_options_value_i === undefined) { xsim_options_value_i = []; }
+                document.getElementById('xsim_xsim_options').value = xsim_options_value_i.join(',');
+            }
+            function set_ghdl_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('ghdl_installation_path').value = installation_path_value_i;
+                let waveform_value_i = options.waveform;
+                if (waveform_value_i === undefined) { waveform_value_i = ''; }
+                document.getElementById('ghdl_waveform').value = waveform_value_i;
+                let analyze_options_value_i = options.analyze_options;
+                if (analyze_options_value_i === undefined) { analyze_options_value_i = []; }
+                document.getElementById('ghdl_analyze_options').value = analyze_options_value_i.join(',');
+                let run_options_value_i = options.run_options;
+                if (run_options_value_i === undefined) { run_options_value_i = []; }
+                document.getElementById('ghdl_run_options').value = run_options_value_i.join(',');
+                let linter_options_value_i = options.linter_options;
+                if (linter_options_value_i === undefined) { linter_options_value_i = []; }
+                document.getElementById('ghdl_linter_options').value = linter_options_value_i.join(',');
+            }
+            function set_icarus_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('icarus_installation_path').value = installation_path_value_i;
+                let timescale_value_i = options.timescale;
+                if (timescale_value_i === undefined) { timescale_value_i = ''; }
+                document.getElementById('icarus_timescale').value = timescale_value_i;
+                let iverilog_options_value_i = options.iverilog_options;
+                if (iverilog_options_value_i === undefined) { iverilog_options_value_i = []; }
+                document.getElementById('icarus_iverilog_options').value = iverilog_options_value_i.join(',');
+                let linter_options_value_i = options.linter_options;
+                if (linter_options_value_i === undefined) { linter_options_value_i = []; }
+                document.getElementById('icarus_linter_options').value = linter_options_value_i.join(',');
+            }
+            function set_icestorm_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('icestorm_installation_path').value = installation_path_value_i;
+                let pnr_value_i = options.pnr;
+                if (pnr_value_i === undefined) { pnr_value_i = ''; }
+                document.getElementById('icestorm_pnr').value = pnr_value_i;
+                let arch_value_i = options.arch;
+                if (arch_value_i === undefined) { arch_value_i = ''; }
+                document.getElementById('icestorm_arch').value = arch_value_i;
+                let output_format_value_i = options.output_format;
+                if (output_format_value_i === undefined) { output_format_value_i = ''; }
+                document.getElementById('icestorm_output_format').value = output_format_value_i;
+                let yosys_as_subtool_value_i = options.yosys_as_subtool;
+                if (yosys_as_subtool_value_i === undefined) { yosys_as_subtool_value_i = false; }
+                document.getElementById('icestorm_yosys_as_subtool').checked = yosys_as_subtool_value_i;
+                let makefile_name_value_i = options.makefile_name;
+                if (makefile_name_value_i === undefined) { makefile_name_value_i = ''; }
+                document.getElementById('icestorm_makefile_name').value = makefile_name_value_i;
+                let arachne_pnr_options_value_i = options.arachne_pnr_options;
+                if (arachne_pnr_options_value_i === undefined) { arachne_pnr_options_value_i = []; }
+                document.getElementById('icestorm_arachne_pnr_options').value = arachne_pnr_options_value_i.join(',');
+                let nextpnr_options_value_i = options.nextpnr_options;
+                if (nextpnr_options_value_i === undefined) { nextpnr_options_value_i = []; }
+                document.getElementById('icestorm_nextpnr_options').value = nextpnr_options_value_i.join(',');
+                let yosys_synth_options_value_i = options.yosys_synth_options;
+                if (yosys_synth_options_value_i === undefined) { yosys_synth_options_value_i = []; }
+                document.getElementById('icestorm_yosys_synth_options').value = yosys_synth_options_value_i.join(',');
+            }
+            function set_Ise_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('Ise_installation_path').value = installation_path_value_i;
+                let family_value_i = options.family;
+                if (family_value_i === undefined) { family_value_i = ''; }
+                document.getElementById('Ise_family').value = family_value_i;
+                let device_value_i = options.device;
+                if (device_value_i === undefined) { device_value_i = ''; }
+                document.getElementById('Ise_device').value = device_value_i;
+                let package_value_i = options.package;
+                if (package_value_i === undefined) { package_value_i = ''; }
+                document.getElementById('Ise_package').value = package_value_i;
+                let speed_value_i = options.speed;
+                if (speed_value_i === undefined) { speed_value_i = ''; }
+                document.getElementById('Ise_speed').value = speed_value_i;
+            }
+            function set_isim_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('isim_installation_path').value = installation_path_value_i;
+                let fuse_options_value_i = options.fuse_options;
+                if (fuse_options_value_i === undefined) { fuse_options_value_i = []; }
+                document.getElementById('isim_fuse_options').value = fuse_options_value_i.join(',');
+                let isim_options_value_i = options.isim_options;
+                if (isim_options_value_i === undefined) { isim_options_value_i = []; }
+                document.getElementById('isim_isim_options').value = isim_options_value_i.join(',');
+            }
+            function set_modelsim_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('modelsim_installation_path').value = installation_path_value_i;
+                let vcom_options_value_i = options.vcom_options;
+                if (vcom_options_value_i === undefined) { vcom_options_value_i = []; }
+                document.getElementById('modelsim_vcom_options').value = vcom_options_value_i.join(',');
+                let vlog_options_value_i = options.vlog_options;
+                if (vlog_options_value_i === undefined) { vlog_options_value_i = []; }
+                document.getElementById('modelsim_vlog_options').value = vlog_options_value_i.join(',');
+                let vsim_options_value_i = options.vsim_options;
+                if (vsim_options_value_i === undefined) { vsim_options_value_i = []; }
+                document.getElementById('modelsim_vsim_options').value = vsim_options_value_i.join(',');
+                let linter_options_value_i = options.linter_options;
+                if (linter_options_value_i === undefined) { linter_options_value_i = []; }
+                document.getElementById('modelsim_linter_options').value = linter_options_value_i.join(',');
+            }
+            function set_morty_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('morty_installation_path').value = installation_path_value_i;
+                let morty_options_value_i = options.morty_options;
+                if (morty_options_value_i === undefined) { morty_options_value_i = []; }
+                document.getElementById('morty_morty_options').value = morty_options_value_i.join(',');
+            }
+            function set_quartus_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('quartus_installation_path').value = installation_path_value_i;
+                let family_value_i = options.family;
+                if (family_value_i === undefined) { family_value_i = ''; }
+                document.getElementById('quartus_family').value = family_value_i;
+                let device_value_i = options.device;
+                if (device_value_i === undefined) { device_value_i = ''; }
+                document.getElementById('quartus_device').value = device_value_i;
+                let cable_value_i = options.cable;
+                if (cable_value_i === undefined) { cable_value_i = ''; }
+                document.getElementById('quartus_cable').value = cable_value_i;
+                let board_device_index_value_i = options.board_device_index;
+                if (board_device_index_value_i === undefined) { board_device_index_value_i = ''; }
+                document.getElementById('quartus_board_device_index').value = board_device_index_value_i;
+                let pnr_value_i = options.pnr;
+                if (pnr_value_i === undefined) { pnr_value_i = ''; }
+                document.getElementById('quartus_pnr').value = pnr_value_i;
+                let dse_options_value_i = options.dse_options;
+                if (dse_options_value_i === undefined) { dse_options_value_i = []; }
+                document.getElementById('quartus_dse_options').value = dse_options_value_i.join(',');
+                let quartus_options_value_i = options.quartus_options;
+                if (quartus_options_value_i === undefined) { quartus_options_value_i = []; }
+                document.getElementById('quartus_quartus_options').value = quartus_options_value_i.join(',');
+            }
+            function set_radiant_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('radiant_installation_path').value = installation_path_value_i;
+                let part_value_i = options.part;
+                if (part_value_i === undefined) { part_value_i = ''; }
+                document.getElementById('radiant_part').value = part_value_i;
+            }
+            function set_rivierapro_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('rivierapro_installation_path').value = installation_path_value_i;
+                let compilation_mode_value_i = options.compilation_mode;
+                if (compilation_mode_value_i === undefined) { compilation_mode_value_i = ''; }
+                document.getElementById('rivierapro_compilation_mode').value = compilation_mode_value_i;
+                let vlog_options_value_i = options.vlog_options;
+                if (vlog_options_value_i === undefined) { vlog_options_value_i = []; }
+                document.getElementById('rivierapro_vlog_options').value = vlog_options_value_i.join(',');
+                let vsim_options_value_i = options.vsim_options;
+                if (vsim_options_value_i === undefined) { vsim_options_value_i = []; }
+                document.getElementById('rivierapro_vsim_options').value = vsim_options_value_i.join(',');
+            }
+            function set_spyglass_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('spyglass_installation_path').value = installation_path_value_i;
+                let methodology_value_i = options.methodology;
+                if (methodology_value_i === undefined) { methodology_value_i = ''; }
+                document.getElementById('spyglass_methodology').value = methodology_value_i;
+                let goals_value_i = options.goals;
+                if (goals_value_i === undefined) { goals_value_i = []; }
+                document.getElementById('spyglass_goals').value = goals_value_i.join(',');
+                let spyglass_options_value_i = options.spyglass_options;
+                if (spyglass_options_value_i === undefined) { spyglass_options_value_i = []; }
+                document.getElementById('spyglass_spyglass_options').value = spyglass_options_value_i.join(',');
+                let rule_parameters_value_i = options.rule_parameters;
+                if (rule_parameters_value_i === undefined) { rule_parameters_value_i = []; }
+                document.getElementById('spyglass_rule_parameters').value = rule_parameters_value_i.join(',');
+            }
+            function set_symbiflow_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('symbiflow_installation_path').value = installation_path_value_i;
+                let package_value_i = options.package;
+                if (package_value_i === undefined) { package_value_i = ''; }
+                document.getElementById('symbiflow_package').value = package_value_i;
+                let part_value_i = options.part;
+                if (part_value_i === undefined) { part_value_i = ''; }
+                document.getElementById('symbiflow_part').value = part_value_i;
+                let vendor_value_i = options.vendor;
+                if (vendor_value_i === undefined) { vendor_value_i = ''; }
+                document.getElementById('symbiflow_vendor').value = vendor_value_i;
+                let pnr_value_i = options.pnr;
+                if (pnr_value_i === undefined) { pnr_value_i = ''; }
+                document.getElementById('symbiflow_pnr').value = pnr_value_i;
+                let vpr_options_value_i = options.vpr_options;
+                if (vpr_options_value_i === undefined) { vpr_options_value_i = ''; }
+                document.getElementById('symbiflow_vpr_options').value = vpr_options_value_i;
+                let environment_script_value_i = options.environment_script;
+                if (environment_script_value_i === undefined) { environment_script_value_i = ''; }
+                document.getElementById('symbiflow_environment_script').value = environment_script_value_i;
+            }
+            function set_symbiyosys_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('symbiyosys_installation_path').value = installation_path_value_i;
+                let tasknames_value_i = options.tasknames;
+                if (tasknames_value_i === undefined) { tasknames_value_i = []; }
+                document.getElementById('symbiyosys_tasknames').value = tasknames_value_i.join(',');
+            }
+            function set_trellis_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('trellis_installation_path').value = installation_path_value_i;
+                let arch_value_i = options.arch;
+                if (arch_value_i === undefined) { arch_value_i = ''; }
+                document.getElementById('trellis_arch').value = arch_value_i;
+                let output_format_value_i = options.output_format;
+                if (output_format_value_i === undefined) { output_format_value_i = ''; }
+                document.getElementById('trellis_output_format').value = output_format_value_i;
+                let yosys_as_subtool_value_i = options.yosys_as_subtool;
+                if (yosys_as_subtool_value_i === undefined) { yosys_as_subtool_value_i = false; }
+                document.getElementById('trellis_yosys_as_subtool').checked = yosys_as_subtool_value_i;
+                let makefile_name_value_i = options.makefile_name;
+                if (makefile_name_value_i === undefined) { makefile_name_value_i = ''; }
+                document.getElementById('trellis_makefile_name').value = makefile_name_value_i;
+                let script_name_value_i = options.script_name;
+                if (script_name_value_i === undefined) { script_name_value_i = ''; }
+                document.getElementById('trellis_script_name').value = script_name_value_i;
+                let nextpnr_options_value_i = options.nextpnr_options;
+                if (nextpnr_options_value_i === undefined) { nextpnr_options_value_i = []; }
+                document.getElementById('trellis_nextpnr_options').value = nextpnr_options_value_i.join(',');
+                let yosys_synth_options_value_i = options.yosys_synth_options;
+                if (yosys_synth_options_value_i === undefined) { yosys_synth_options_value_i = []; }
+                document.getElementById('trellis_yosys_synth_options').value = yosys_synth_options_value_i.join(',');
+            }
+            function set_vcs_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('vcs_installation_path').value = installation_path_value_i;
+                let vcs_options_value_i = options.vcs_options;
+                if (vcs_options_value_i === undefined) { vcs_options_value_i = []; }
+                document.getElementById('vcs_vcs_options').value = vcs_options_value_i.join(',');
+                let run_options_value_i = options.run_options;
+                if (run_options_value_i === undefined) { run_options_value_i = []; }
+                document.getElementById('vcs_run_options').value = run_options_value_i.join(',');
+            }
+            function set_veriblelint_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('veriblelint_installation_path').value = installation_path_value_i;
+                let ruleset_value_i = options.ruleset;
+                if (ruleset_value_i === undefined) { ruleset_value_i = ''; }
+                document.getElementById('veriblelint_ruleset').value = ruleset_value_i;
+                let verible_lint_args_value_i = options.verible_lint_args;
+                if (verible_lint_args_value_i === undefined) { verible_lint_args_value_i = []; }
+                document.getElementById('veriblelint_verible_lint_args').value = verible_lint_args_value_i.join(',');
+                let rules_value_i = options.rules;
+                if (rules_value_i === undefined) { rules_value_i = []; }
+                document.getElementById('veriblelint_rules').value = rules_value_i.join(',');
+            }
+            function set_verilator_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('verilator_installation_path').value = installation_path_value_i;
+                let mode_value_i = options.mode;
+                if (mode_value_i === undefined) { mode_value_i = ''; }
+                document.getElementById('verilator_mode').value = mode_value_i;
+                let libs_value_i = options.libs;
+                if (libs_value_i === undefined) { libs_value_i = []; }
+                document.getElementById('verilator_libs').value = libs_value_i.join(',');
+                let verilator_options_value_i = options.verilator_options;
+                if (verilator_options_value_i === undefined) { verilator_options_value_i = []; }
+                document.getElementById('verilator_verilator_options').value = verilator_options_value_i.join(',');
+                let make_options_value_i = options.make_options;
+                if (make_options_value_i === undefined) { make_options_value_i = []; }
+                document.getElementById('verilator_make_options').value = make_options_value_i.join(',');
+                let run_options_value_i = options.run_options;
+                if (run_options_value_i === undefined) { run_options_value_i = []; }
+                document.getElementById('verilator_run_options').value = run_options_value_i.join(',');
+                let linter_options_value_i = options.linter_options;
+                if (linter_options_value_i === undefined) { linter_options_value_i = []; }
+                document.getElementById('verilator_linter_options').value = linter_options_value_i.join(',');
+            }
+            function set_vivado_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('vivado_installation_path').value = installation_path_value_i;
+                let part_value_i = options.part;
+                if (part_value_i === undefined) { part_value_i = ''; }
+                document.getElementById('vivado_part').value = part_value_i;
+                let synth_value_i = options.synth;
+                if (synth_value_i === undefined) { synth_value_i = ''; }
+                document.getElementById('vivado_synth').value = synth_value_i;
+                let pnr_value_i = options.pnr;
+                if (pnr_value_i === undefined) { pnr_value_i = ''; }
+                document.getElementById('vivado_pnr').value = pnr_value_i;
+                let jtag_freq_value_i = options.jtag_freq;
+                if (jtag_freq_value_i === undefined) { jtag_freq_value_i = ''; }
+                document.getElementById('vivado_jtag_freq').value = jtag_freq_value_i;
+                let hw_target_value_i = options.hw_target;
+                if (hw_target_value_i === undefined) { hw_target_value_i = ''; }
+                document.getElementById('vivado_hw_target').value = hw_target_value_i;
+                let linter_options_xvlog_value_i = options.linter_options_xvlog;
+                if (linter_options_xvlog_value_i === undefined) { linter_options_xvlog_value_i = []; }
+                document.getElementById('vivado_linter_options_xvlog').value = linter_options_xvlog_value_i.join(',');
+                let linter_options_xvhdl_value_i = options.linter_options_xvhdl;
+                if (linter_options_xvhdl_value_i === undefined) { linter_options_xvhdl_value_i = []; }
+                document.getElementById('vivado_linter_options_xvhdl').value = linter_options_xvhdl_value_i.join(',');
+            }
+            function set_vunit_options(options) {
+                let vunit_simulator_value_i = options.vunit_simulator;
+                if (vunit_simulator_value_i === undefined) { vunit_simulator_value_i = ''; }
+                document.getElementById('vunit_vunit_simulator').value = vunit_simulator_value_i;
+                let vunit_options_value_i = options.vunit_options;
+                if (vunit_options_value_i === undefined) { vunit_options_value_i = []; }
+                document.getElementById('vunit_vunit_options').value = vunit_options_value_i.join(',');
+            }
+            function set_xcelium_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('xcelium_installation_path').value = installation_path_value_i;
+                let xmvhdl_options_value_i = options.xmvhdl_options;
+                if (xmvhdl_options_value_i === undefined) { xmvhdl_options_value_i = []; }
+                document.getElementById('xcelium_xmvhdl_options').value = xmvhdl_options_value_i.join(',');
+                let xmvlog_options_value_i = options.xmvlog_options;
+                if (xmvlog_options_value_i === undefined) { xmvlog_options_value_i = []; }
+                document.getElementById('xcelium_xmvlog_options').value = xmvlog_options_value_i.join(',');
+                let xmsim_options_value_i = options.xmsim_options;
+                if (xmsim_options_value_i === undefined) { xmsim_options_value_i = []; }
+                document.getElementById('xcelium_xmsim_options').value = xmsim_options_value_i.join(',');
+                let xrun_options_value_i = options.xrun_options;
+                if (xrun_options_value_i === undefined) { xrun_options_value_i = []; }
+                document.getElementById('xcelium_xrun_options').value = xrun_options_value_i.join(',');
+            }
+            function set_yosys_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('yosys_installation_path').value = installation_path_value_i;
+                let arch_value_i = options.arch;
+                if (arch_value_i === undefined) { arch_value_i = ''; }
+                document.getElementById('yosys_arch').value = arch_value_i;
+                let output_format_value_i = options.output_format;
+                if (output_format_value_i === undefined) { output_format_value_i = ''; }
+                document.getElementById('yosys_output_format').value = output_format_value_i;
+                let yosys_as_subtool_value_i = options.yosys_as_subtool;
+                if (yosys_as_subtool_value_i === undefined) { yosys_as_subtool_value_i = false; }
+                document.getElementById('yosys_yosys_as_subtool').checked = yosys_as_subtool_value_i;
+                let makefile_name_value_i = options.makefile_name;
+                if (makefile_name_value_i === undefined) { makefile_name_value_i = ''; }
+                document.getElementById('yosys_makefile_name').value = makefile_name_value_i;
+                let script_name_value_i = options.script_name;
+                if (script_name_value_i === undefined) { script_name_value_i = ''; }
+                document.getElementById('yosys_script_name').value = script_name_value_i;
+                let yosys_synth_options_value_i = options.yosys_synth_options;
+                if (yosys_synth_options_value_i === undefined) { yosys_synth_options_value_i = []; }
+                document.getElementById('yosys_yosys_synth_options').value = yosys_synth_options_value_i.join(',');
+            }
+            function set_cocotb_options(options) {
+                let installation_path_value_i = options.installation_path;
+                if (installation_path_value_i === undefined) { installation_path_value_i = ''; }
+                document.getElementById('cocotb_installation_path').value = installation_path_value_i;
+            }
+        </script>
+</body>
+
+</html>

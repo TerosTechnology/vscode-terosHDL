@@ -1,10 +1,10 @@
-[![Current Version](https://img.shields.io/visual-studio-marketplace/v/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
-[![Install Count](https://img.shields.io/visual-studio-marketplace/i/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
-[![Download Count](https://img.shields.io/visual-studio-marketplace/d/teros-technology.teroshdl.svg)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
+[![Current Version](https://img.shields.io/visual-studio-marketplace/v/teros-technology.teroshdl.png)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
+[![Install Count](https://img.shields.io/visual-studio-marketplace/i/teros-technology.teroshdl.png)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
+[![Download Count](https://img.shields.io/visual-studio-marketplace/d/teros-technology.teroshdl.png)](https://marketplace.visualstudio.com/items?itemName=teros-technology.teroshdl)
 [![vscode-TerosHDL documentation](https://img.shields.io/website.svg?label=vscode-TerosHDL%20Documentation&longCache=true&style=flat-square&url=http%3A%2F%2FTerosTechnology.github.io%2FterosHDLdoc%2Findex.html)](https://TerosTechnology.github.io/terosHDLdoc)
 
 
-![TerosHDL](./media/low_res_banner.png)
+![TerosHDL](./resources/images/low_res_banner.png)
 
 **Check the full documentation:** [https://terostechnology.github.io](https://terostechnology.github.io/)
 
@@ -29,9 +29,18 @@ The IDE tries to be as much self-contained as possible and simplify the installa
 - State machine designer.
 - Code snippets and grammar.
 
-![TerosHDL](./media/gui.gif)
+![TerosHDL](./resources/images/gui.gif)
 
 ## Managed by
 
 - [Carlos Alberto Ruiz](https://www.linkedin.com/in/carlos-alberto-ruiz-fpga/): carlosruiznaranjo@gmail.com 
 - [Ismael Pérez](https://www.linkedin.com/in/ispero/): ismaelprojo@gmail.com
+
+## Sponsor
+
+This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from 
+the European Commission's Next Generation Internet programme, under the aegis of DG Communications Networks, 
+Content and Technology under grant agreement No 957073.
+
+
+<img border=0 src="./doc/nlnet-fundation-150x150.png" width="150" height="150"><img border=0 src="./doc/logo.png" width="400" height="120">

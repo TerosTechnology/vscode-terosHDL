@@ -1,0 +1,96 @@
+name: Build and release TerosHDL
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+
+jobs:
+  ##############################################################################
+  # Build
+  ##############################################################################
+  build:
+    name: Build .vsix
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set version main
+        if: github.ref == 'refs/heads/main'
+        run: |
+          PACKAGE_VERSION=$(cat package.json \
+            | grep version \
+            | head -1 \
+            | awk -F: '{ print $2 }' \
+            | sed 's/[",]//g')
+
+          echo "version=$PACKAGE_VERSION" >> $GITHUB_ENV
+
+      - name: Set version dev
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          now=`date +"%Y-%m-%d__%H:%M"`
+          echo "version=$now" >> $GITHUB_ENV
+
+      - name: Set version pull request
+        if: github.event == 'pull_request'
+        run: |
+          now=`date +"%Y-%m-%d__%H:%M"`
+          echo "version=$now" >> $GITHUB_ENV
+
+      - name: Prepare teroshdl-vscode
+        run: |
+          npm install
+
+      - name: Prepare colibri2
+        run: |
+          git clone https://github.com/TerosTechnology/colibri2.git -b main
+          cd colibri2
+          npm install
+          cp -R out ../node_modules/teroshdl2/
+          cd ..
+          rm -rf colibri2
+
+      - name: Build 
+        id: build
+        run: |
+          # sudo apt-get install python3-sphinx
+          npm install -g vsce
+          # npm run-script generate-doc
+          # npm run-script generate-examples
+          # # cd node_modules/teroshdl; npm install; cd ../../
+          # npm install
+          # cd node_modules/teroshdl2; npm install; cd ../../
+          vsce package --allow-star-activation
+          file=`ls *.vsix`
+          echo ${{ env.version }}
+          file_ver="${{ env.version }}_${file}"
+          file_ver="${file_ver/:/"_"}"
+          mv $file $file_ver
+
+      - name: Archive vsix
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            *.vsix
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        if: github.ref == 'refs/heads/main'
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: "${{ env.version }}"
+          files: |
+            *.vsix
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        if: github.ref == 'refs/heads/dev'
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          automatic_release_tag: latest
+          files: |
+            *.vsix
