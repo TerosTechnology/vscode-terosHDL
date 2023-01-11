@@ -1,0 +1,107 @@
+"languages": [
+    {
+        "id": "vhdl",
+        "aliases": [
+            "VHDL",
+            "vhdl"
+        ],
+        "extensions": [
+            ".vhd",
+            ".vho",
+            ".vhdl",
+            ".vhd"
+        ],
+        "configuration": "./configs/vhdl.configuration.json"
+    },
+    {
+        "id": "vcd",
+        "extensions": [
+            ".vcd"
+        ]
+    },
+    {
+        "id": "gtkw_waveconfig",
+        "extensions": [
+            ".gtkw"
+        ]
+    },
+    {
+        "id": "gtkw_wavebin",
+        "extensions": [
+            ".fst",
+            ".ghw"
+        ]
+    },
+    {
+        "id": "tcl",
+        "aliases": [
+            "TCL",
+            "tcl"
+        ],
+        "extensions": [
+            ".tcl",
+            ".pro"
+        ],
+        "configuration": "./configs/tcl.configuration.json"
+    },
+    {
+        "id": "ucf",
+        "aliases": [
+            "vivado ucf",
+            "ucf constraints"
+        ],
+        "extensions": [
+            ".ucf"
+        ],
+        "configuration": "./configs/ucfconstraints.configuration.json"
+    },
+    {
+        "id": "xdc",
+        "aliases": [
+            "vivado xdc",
+            "xdc constraints"
+        ],
+        "extensions": [
+            ".xdc",
+            ".sdc"
+        ],
+        "configuration": "./configs/xdcconstraints.configuration.json"
+    },
+    {
+        "id": "ldc",
+        "aliases": [
+            "lattice constraints"
+        ],
+        "extensions": [
+            ".ldc",
+            ".pdc"
+        ],
+        "configuration": "./configs/xdcconstraints.configuration.json"
+    },
+    {
+        "id": "verilog",
+        "aliases": [
+            "Verilog",
+            "verilog"
+        ],
+        "extensions": [
+            ".v",
+            ".vh",
+            ".vl"
+        ],
+        "configuration": "./configs/verilog.configuration.json"
+    },
+    {
+        "id": "systemverilog",
+        "aliases": [
+            "System Verilog",
+            "systemverilog"
+        ],
+        "extensions": [
+            ".sv",
+            ".svh",
+            ".SV"
+        ],
+        "configuration": "./configs/systemverilog.configuration.json"
+    }
+]

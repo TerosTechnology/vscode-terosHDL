@@ -1,0 +1,34 @@
+"languages": [
+{% set ns = namespace(counter = 0) %}
+{%- for language in language_list %}
+{%- if ns.counter == 0 %}
+{
+            {%- else %}
+,{
+            {%- endif %}
+    "id": "{{language["id"]}}",
+    {%- if "aliases" in language != "" %}
+    "aliases": {{language["aliases"] | replace("'", '"')}},
+    {%- endif %}
+    {%- if "configuration" in language %}
+    "configuration": "{{language["configuration"]}}",
+    {%- endif %}
+    "extensions": {{language["extensions"] | replace("'", '"')}}
+}
+{% set ns.counter = ns.counter + 1 %}
+{%- endfor %}
+],
+"snippets": [
+{%- for language in language_list %}
+    {%- if "snippets" in language != "" %}
+    {
+        "language": "{{language["id"]}}",
+        "path": "{{language["snippets"]}}"
+    },
+    {%- endif %}
+{%- endfor %}
+    {
+        "language": "systemverilog",
+        "path": "./snippets/verilog/verilog.json"
+    }
+]

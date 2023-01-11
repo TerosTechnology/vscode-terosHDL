@@ -1,0 +1,4 @@
+- view: teroshdl-project
+  content:
+    - description: No TerosHDL project are open.
+      command: 

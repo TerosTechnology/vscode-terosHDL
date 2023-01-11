@@ -1,0 +1,125 @@
+################################################################################
+# Others
+################################################################################
+
+- name: go_to_parent
+  title: Go to parent file
+
+- name: open
+  title: Open file with TerosHDL
+
+################################################################################
+# Project manager
+################################################################################
+
+## Project
+- name: view.project.add
+  title: "Add project"
+  icon: add
+  where: ["view/title"]
+  when: "view == teroshdl-project"
+
+- name: view.project.delete
+  title: "Delete project"
+  icon: chrome-close
+  where: ["view/item/context"]
+  when: "viewItem == project"
+  group: "inline"
+
+## Source
+- name: view.source.add
+  title: "Add"
+  icon: add
+  where: ["view/title"]
+  when: "view == teroshdl-view-source"
+
+- name: view.source.add_source_to_library
+  title: "Add to library"
+  icon: add
+  where: ["view/item/context"]
+  when: "viewItem == library"
+  group: "inline"
+
+- name: view.source.delete_library
+  title: "Delete library"
+  icon: dash
+  where: ["view/item/context"]
+  when: "viewItem == library"
+  group: "inline"
+
+- name: view.source.delete_source
+  title: "Delete source"
+  icon: dash
+  where: ["view/item/context"]
+  when: "viewItem == source"
+  group: "inline"
+
+- name: view.source.select_toplevel
+  title: "Select source as toplevel"
+  icon: check
+  where: ["view/item/context"]
+  when: "viewItem == source"
+  group: "inline"
+
+## Runs
+- name: view.runs.run_all
+  title: "Run all"
+  icon: run-all
+  where: ["view/title"]
+  when: "view == teroshdl-view-runs"
+
+- name: view.runs.refresh
+  title: "Refresh"
+  icon: refresh
+  where: ["view/title"]
+  when: "view == teroshdl-view-runs"
+
+- name: view.runs.run
+  title: "Run"
+  icon: run
+  where: ["view/item/context"]
+  when: "viewItem == run"
+  group: "inline"
+
+## Watcher
+- name: view.watcher.add
+  title: "Add"
+  icon: add
+  where: ["view/title"]
+  when: "view == teroshdl-view-watcher"
+
+- name: view.watcher.delete
+  title: "Delete watcher"
+  icon: dash
+  where: ["view/item/context"]
+  when: "viewItem == watcher"
+  group: "inline"
+
+################################################################################
+# Editor
+################################################################################
+- name: generate_template
+  title: "TerosHDL: Generate template"
+  icon: file-code
+  where: ["editor/title"]
+
+- name: state_machine.viewer
+  title: State machine viewer
+  icon: state-machine
+  where: ["editor/title"]
+
+- name: netlist.viewer
+  title: Netlist viewer
+  icon: list-tree
+  where: ["editor/title"]
+
+- name: format
+  title: Format
+  icon: check
+  where: ["editor/title"]
+
+- name: documentation.module
+  title: Module documentation preview
+  icon: book
+  where: ["editor/title"]
+

@@ -47,12 +47,13 @@ jobs:
 
       - name: Prepare colibri2
         run: |
-          git clone https://github.com/TerosTechnology/colibri2.git -b main
-          cd colibri2
-          npm install
-          cp -R out ../node_modules/teroshdl2/
           cd ..
-          rm -rf colibri2
+          git clone https://github.com/TerosTechnology/colibri.git -b main
+          cd colibri
+          npm install
+          ./copy.sh
+          cd ..
+          rm -rf colibri
 
       - name: Build 
         id: build
@@ -63,7 +64,7 @@ jobs:
           # npm run-script generate-examples
           # # cd node_modules/teroshdl; npm install; cd ../../
           # npm install
-          # cd node_modules/teroshdl2; npm install; cd ../../
+          # cd node_modules/teroshdl; npm install; cd ../../
           vsce package --allow-star-activation
           file=`ls *.vsix`
           echo ${{ env.version }}

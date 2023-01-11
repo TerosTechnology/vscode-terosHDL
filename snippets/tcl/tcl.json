@@ -138,5 +138,418 @@
             "tk_messageBox ${-message msg}"
         ],
         "description": "Message Box"
+    },
+    "osvvm_SetLibraryDirectory": {
+        "prefix": "osvvm_SetLibraryDirectory",
+        "body": [
+            "SetLibraryDirectory ${0:LibraryDirectory}"
+        ],
+        "description": "Set the directory in which the libraries will be created to ``LibraryDirectory``.If ``LibraryDirectory`` is not specified, use the CurrentSimulationDirectory.By default, libraries are created in ``<LibraryDirectory>/VHDL_LIBS/<tool version>/``."
+    },
+    "osvvm_GetLibraryDirectory": {
+        "prefix": "osvvm_GetLibraryDirectory",
+        "body": [
+            "GetLibraryDirectory"
+        ],
+        "description": "Get the Library Directory."
+    },
+    "osvvm_library": {
+        "prefix": "osvvm_library",
+        "body": [
+            "library ${0:LibraryName} ${0:path}"
+        ],
+        "description": "Make LibraryName found in library directory specified by path the active library.Create the LibraryName if it does not exist.If path is not specified, use the library directory specified by SetLibraryDirectory."
+    },
+    "osvvm_LinkLibrary": {
+        "prefix": "osvvm_LinkLibrary",
+        "body": [
+            "LinkLibrary ${0:library} ${0:path}"
+        ],
+        "description": "Create a mapping to a library that is in the library directory specified by path.If path is not specified, use the library directory specified by SetLibraryDirectory."
+    },
+    "osvvm_LinkLibraryDirectory": {
+        "prefix": "osvvm_LinkLibraryDirectory",
+        "body": [
+            "LinkLibraryDirectory ${0:LibraryDirectory}"
+        ],
+        "description": "Map all of the libraries in the specified ``LibraryDirectory``.If ``LibraryDirectory`` is not specified, use the library directory specified by SetLibraryDirectory."
+    },
+    "osvvm_LinkCurrentLibraries": {
+        "prefix": "osvvm_LinkCurrentLibraries",
+        "body": [
+            "LinkCurrentLibraries"
+        ],
+        "description": "If you use ``cd``, then use LinkCurrentLibraries immediately afterto map all current visible libraries to the new CurrentSimulationDirectory."
+    },
+    "osvvm_RemoveLibrary": {
+        "prefix": "osvvm_RemoveLibrary",
+        "body": [
+            "RemoveLibrary LibraryName ${0:path}"
+        ],
+        "description": "Remove the named library.Path is only used to find and delete libraries that have not been mapped in OSVVM."
+    },
+    "osvvm_RemoveLibraryDirectory": {
+        "prefix": "osvvm_RemoveLibraryDirectory",
+        "body": [
+            "RemoveLibraryDirectory ${0:path}"
+        ],
+        "description": "Remove the Library specified in path.If path is not specified, the library directory specified by SetLibraryDirectory is used."
+    },
+    "osvvm_RemoveAllLibraries": {
+        "prefix": "osvvm_RemoveAllLibraries",
+        "body": [
+            "RemoveAllLibraries"
+        ],
+        "description": "Call RemoveLibraryDirectory on all library directories known to OSVVM."
+    },
+    "osvvm_analyze": {
+        "prefix": "osvvm_analyze",
+        "body": [
+            "analyze ${0:path}/}${0:name} ${0:options}"
+        ],
+        "description": "Analyze (aka compile) the design into the active library.Name must be a file with an extension that is *.vhd or *.vhdl for vhdl, *.v for verilog, or *.sv for SystemVerilog.Paths are relative to CurrentWorkingDirectory."
+    },
+    "osvvm_simulate": {
+        "prefix": "osvvm_simulate",
+        "body": [
+            "simulate ${0:TestName} ${0:options}"
+        ],
+        "description": "Simulate (aka elaborate + run) the design using the active library.TestName is a library unit (entity or configuration)options may be one or more options to the simulator or see generic."
+    },
+    "osvvm_generic": {
+        "prefix": "osvvm_generic",
+        "body": [
+            "generic ${0:name} ${0:value}"
+        ],
+        "description": "Called in the options part of simulate as ``simulate tb1 [generic width 5]``"
+    },
+    "osvvm_DoWaves": {
+        "prefix": "osvvm_DoWaves",
+        "body": [
+            "DoWaves ${0:wave1.do} ..."
+        ],
+        "description": "Called in the options part of simulate as ``simulate tb1 [DoWaves wave1.do wave2.do]``Paths used with wave files are relative to CurrentSimulationDirectory."
+    },
+    "osvvm_SetSecondSimulationTopLevel": {
+        "prefix": "osvvm_SetSecondSimulationTopLevel",
+        "body": [
+            "SetSecondSimulationTopLevel ${0:library}.${0:TestName}"
+        ],
+        "description": "Sets the name of a second library unit to use during simulation.Called before simulate."
+    },
+    "osvvm_TestCase": {
+        "prefix": "osvvm_TestCase",
+        "body": [
+            "TestCase ${0:test-name}"
+        ],
+        "description": "Identify the TestCase that is active.Must match name in the testbench call to SetTestName (aka SetAlertLogName)."
+    },
+    "osvvm_RunTest": {
+        "prefix": "osvvm_RunTest",
+        "body": [
+            "RunTest ${0:path}/}${0:name} "
+        ],
+        "description": "Combines analyze, TestCase, and simulate into one step.TestCase and simulate are set to the base name of ``file``.Paths are relative to CurrentWorkingDirectory."
+    },
+    "osvvm_SkipTest": {
+        "prefix": "osvvm_SkipTest",
+        "body": [
+            "SkipTest ${0:test-name} Reason"
+        ],
+        "description": "Add Skip test to the Build Summary Reports with ``Reason`` as part of the report."
+    },
+    "osvvm_TestSuite": {
+        "prefix": "osvvm_TestSuite",
+        "body": [
+            "TestSuite ${0:test-suite-name}"
+        ],
+        "description": "Identify the current TestSuite.  If not specified the name is `default`."
+    },
+    "osvvm_include": {
+        "prefix": "osvvm_include",
+        "body": [
+            "include ${0:path}/}${0:name}"
+        ],
+        "description": "Include another project script.If ``name`` is a file and its extension is .pro, .tcl, or .do, it will be sourced.If ``name`` is a directory then any file whose name is ``name`` andextension is .pro, .tcl, or .do will be sourced.Paths are relative to CurrentWorkingDirectory."
+    },
+    "osvvm_build": {
+        "prefix": "osvvm_build",
+        "body": [
+            "build ${0:path}/}${0:name}"
+        ],
+        "description": "Start a script from the simulator.  It is include + start a new log file for this script.Paths are relative to CurrentWorkingDirectory."
+    },
+    "osvvm_SetTranscriptType": {
+        "prefix": "osvvm_SetTranscriptType",
+        "body": [
+            "SetTranscriptType ${0:html|log}"
+        ],
+        "description": "Select the Transcript file to be either html or log.  The default is html."
+    },
+    "osvvm_GetTranscriptType": {
+        "prefix": "osvvm_GetTranscriptType",
+        "body": [
+            "GetTranscriptType"
+        ],
+        "description": "Get the Transcript file type (either html or log)."
+    },
+    "osvvm_ChangeWorkingDirectory": {
+        "prefix": "osvvm_ChangeWorkingDirectory",
+        "body": [
+            "ChangeWorkingDirectory ${0:RelativePath}"
+        ],
+        "description": "Changes CurrentWorkingDirectory to ``file join $CurrentWorkingDirectory $RelativePath``"
+    },
+    "osvvm_JoinWorkingDirectory": {
+        "prefix": "osvvm_JoinWorkingDirectory",
+        "body": [
+            "JoinWorkingDirectory ${0:RelativePath}"
+        ],
+        "description": "Returns ``file join $CurrentWorkingDirectory $RelativePath``"
+    },
+    "osvvm_SetVHDLVersion": {
+        "prefix": "osvvm_SetVHDLVersion",
+        "body": [
+            "SetVHDLVersion ${0:2008 | 2019 | 1993 | 2002}"
+        ],
+        "description": "Set VHDL analyze version.  OSVVM libraries require 2008 or newer."
+    },
+    "osvvm_GetVHDLVersion": {
+        "prefix": "osvvm_GetVHDLVersion",
+        "body": [
+            "GetVHDLVersion"
+        ],
+        "description": "Return the current VHDL Version."
+    },
+    "osvvm_SetSimulatorResolution": {
+        "prefix": "osvvm_SetSimulatorResolution",
+        "body": [
+            "SetSimulatorResolution ${0:value}"
+        ],
+        "description": "Set Simulator Resolution. Any value supported by the simulator is ok."
+    },
+    "osvvm_GetSimulatorResolution": {
+        "prefix": "osvvm_GetSimulatorResolution",
+        "body": [
+            "GetSimulatorResolution"
+        ],
+        "description": "Return the current Simulator Resolution."
+    },
+    "osvvm_SetCoverageAnalyzeEnable": {
+        "prefix": "osvvm_SetCoverageAnalyzeEnable",
+        "body": [
+            "SetCoverageAnalyzeEnable ${0:true|false}"
+        ],
+        "description": "To collect coverage for a design, SetCoverageEnable and SetCoverageAnalyzeEnable must be enabled when it is analyzed.If true, enable coverage during analyze,If false, disable coverage during analyze.If not specified, true is the default.Initialized to false (so simulations run faster)"
+    },
+    "osvvm_GetCoverageAnalyzeEnable": {
+        "prefix": "osvvm_GetCoverageAnalyzeEnable",
+        "body": [
+            "GetCoverageAnalyzeEnable"
+        ],
+        "description": "Returns the setting for coverage during analyze."
+    },
+    "osvvm_SetCoverageAnalyzeOptions": {
+        "prefix": "osvvm_SetCoverageAnalyzeOptions",
+        "body": [
+            "SetCoverageAnalyzeOptions ${0:options}"
+        ],
+        "description": "Use the string specified in ``options`` as the coverage options during analyze."
+    },
+    "osvvm_GetCoverageAnalyzeOptions": {
+        "prefix": "osvvm_GetCoverageAnalyzeOptions",
+        "body": [
+            "GetCoverageAnalyzeOptions "
+        ],
+        "description": "Return the coverage options for analyze."
+    },
+    "osvvm_SetCoverageSimulateEnable": {
+        "prefix": "osvvm_SetCoverageSimulateEnable",
+        "body": [
+            "SetCoverageSimulateEnable ${0:true|false}"
+        ],
+        "description": "To collect coverage during a simulation, SetCoverageEnable and SetCoverageSimulateEnable must be enabled the simulation is started.If true, enable coverage during simulate,If false, disable coverage during simulate.If not specified, true is the default.Initialized to false (so simulations run faster)"
+    },
+    "osvvm_GetCoverageSimulateEnable": {
+        "prefix": "osvvm_GetCoverageSimulateEnable",
+        "body": [
+            "GetCoverageSimulateEnable"
+        ],
+        "description": "Returns the setting for coverage during simulate."
+    },
+    "osvvm_SetCoverageSimulateOptions": {
+        "prefix": "osvvm_SetCoverageSimulateOptions",
+        "body": [
+            "SetCoverageSimulateOptions ${0:options}"
+        ],
+        "description": "Use the string specified in ``options`` as the coverage options during simulate."
+    },
+    "osvvm_GetCoverageSimulateOptions": {
+        "prefix": "osvvm_GetCoverageSimulateOptions",
+        "body": [
+            "GetCoverageSimulateOptions "
+        ],
+        "description": "Return the coverage options for simulate."
+    },
+    "osvvm_SetCoverageEnable": {
+        "prefix": "osvvm_SetCoverageEnable",
+        "body": [
+            "SetCoverageEnable ${0:true|false}"
+        ],
+        "description": "If true, set coverage enable to true.If false, set coverage enable to false.If not specified, true is the default.Initialized to true."
+    },
+    "osvvm_GetCoverageEnable": {
+        "prefix": "osvvm_GetCoverageEnable",
+        "body": [
+            "GetCoverageEnable"
+        ],
+        "description": "Get the CoverageEnable value."
+    },
+    "osvvm_SetVhdlAnalyzeOptions": {
+        "prefix": "osvvm_SetVhdlAnalyzeOptions",
+        "body": [
+            "SetVhdlAnalyzeOptions ${0:options}"
+        ],
+        "description": "Set the VHDL options for analyze to ``options``."
+    },
+    "osvvm_GetVhdlAnalyzeOptions": {
+        "prefix": "osvvm_GetVhdlAnalyzeOptions",
+        "body": [
+            "GetVhdlAnalyzeOptions "
+        ],
+        "description": "Get the VHDL options for analyze."
+    },
+    "osvvm_SetVerilogAnalyzeOptions": {
+        "prefix": "osvvm_SetVerilogAnalyzeOptions",
+        "body": [
+            "SetVerilogAnalyzeOptions ${0:options}"
+        ],
+        "description": "Set the Verilog options for analyze to ``options``."
+    },
+    "osvvm_GetVerilogAnalyzeOptions": {
+        "prefix": "osvvm_GetVerilogAnalyzeOptions",
+        "body": [
+            "GetVerilogAnalyzeOptions "
+        ],
+        "description": "Get the Verilog options for analyze."
+    },
+    "osvvm_SetExtendedAnalyzeOptions": {
+        "prefix": "osvvm_SetExtendedAnalyzeOptions",
+        "body": [
+            "SetExtendedAnalyzeOptions ${0:options} "
+        ],
+        "description": "Set extended (additional) options for analyze to ``options``."
+    },
+    "osvvm_GetExtendedAnalyzeOptions": {
+        "prefix": "osvvm_GetExtendedAnalyzeOptions",
+        "body": [
+            "GetExtendedAnalyzeOptions"
+        ],
+        "description": "Get extended (additional) options for analyze."
+    },
+    "osvvm_SetExtendedSimulateOptions": {
+        "prefix": "osvvm_SetExtendedSimulateOptions",
+        "body": [
+            "SetExtendedSimulateOptions ${0:options}"
+        ],
+        "description": "Set extended (additional) options for simulate to ``options``."
+    },
+    "osvvm_GetExtendedSimulateOptions": {
+        "prefix": "osvvm_GetExtendedSimulateOptions",
+        "body": [
+            "GetExtendedSimulateOptions"
+        ],
+        "description": "Get extended (additional) options for simulate."
+    },
+    "osvvm_SetDebugMode": {
+        "prefix": "osvvm_SetDebugMode",
+        "body": [
+            "SetDebugMode ${0:true|false}"
+        ],
+        "description": "If true, add debugging options during analyze and simulate.If false, do not add debugging options during analyze and simulate.If not specified, true is the default.Initialized to false (so simulations run faster)"
+    },
+    "osvvm_GetDebugMode": {
+        "prefix": "osvvm_GetDebugMode",
+        "body": [
+            "GetDebugMode"
+        ],
+        "description": "Returns the state of DebugMode."
+    },
+    "osvvm_SetLogSignals": {
+        "prefix": "osvvm_SetLogSignals",
+        "body": [
+            "SetLogSignals ${0:true|false}"
+        ],
+        "description": "If true, log signals during simulate.If false, do not log signals during simulate.If not specified, true is the default.Initialized to false (so simulations run faster)"
+    },
+    "osvvm_GetLogSignals": {
+        "prefix": "osvvm_GetLogSignals",
+        "body": [
+            "GetLogSignals"
+        ],
+        "description": "Returns the state of LogSignals."
+    },
+    "osvvm_SetInteractiveMode": {
+        "prefix": "osvvm_SetInteractiveMode",
+        "body": [
+            "SetInteractiveMode ${0:true|false}"
+        ],
+        "description": "If DebugMode was not set with SetDebugMode, then set it using this valueIf LogSignals was not set with SetLogSignals, then set it using this value.If true, sets variables AnalyzeErrorStopCount and SimulateErrorStopCount to 1If false, sets variables AnalyzeErrorStopCount and SimulateErrorStopCount to previous valueIf not specified, true is the default.Initialized to false (so simulations run faster)"
+    },
+    "osvvm_GetInteractiveMode": {
+        "prefix": "osvvm_GetInteractiveMode",
+        "body": [
+            "GetInteractiveMode"
+        ],
+        "description": "Returns the state of InteractiveMode."
+    },
+    "osvvm_SetExtendedElaborateOptions": {
+        "prefix": "osvvm_SetExtendedElaborateOptions",
+        "body": [
+            "SetExtendedElaborateOptions ${0:options}"
+        ],
+        "description": "Set extended (additional) options for simulate to ``options``."
+    },
+    "osvvm_GetExtendedElaborateOptions": {
+        "prefix": "osvvm_GetExtendedElaborateOptions",
+        "body": [
+            "GetExtendedElaborateOptions"
+        ],
+        "description": "Get extended (additional) options for simulate."
+    },
+    "osvvm_SetExtendedRunOptions": {
+        "prefix": "osvvm_SetExtendedRunOptions",
+        "body": [
+            "SetExtendedRunOptions ${0:options}"
+        ],
+        "description": "Set extended (additional) options for simulate to ``options``."
+    },
+    "osvvm_GetExtendedRunOptions": {
+        "prefix": "osvvm_GetExtendedRunOptions",
+        "body": [
+            "GetExtendedRunOptions"
+        ],
+        "description": "Get extended (additional) options for simulate."
+    },
+    "osvvm_SetSaveWaves": {
+        "prefix": "osvvm_SetSaveWaves",
+        "body": [
+            "SetSaveWaves ${0:true|false}"
+        ],
+        "description": "If true, save waveforms during simulate.If not specified, true is the default.Initialized to false (so simulations run faster)"
+    },
+    "osvvm_GetSaveWaves": {
+        "prefix": "osvvm_GetSaveWaves",
+        "body": [
+            "GetSaveWaves"
+        ],
+        "description": "Returns the state of LogSignals."
+    },
+    "osvvm_FileExists": {
+        "prefix": "osvvm_FileExists",
+        "body": [
+            "FileExists ${0:name}"
+        ],
+        "description": "if file name exists, return true otherwise false."
     }
 }

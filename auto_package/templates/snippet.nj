@@ -1,0 +1,30 @@
+"snippets": [
+    {
+        "language": "vhdl",
+        "path": "./snippets/vhdl/vhdl.json"
+    },
+    {
+        "language": "verilog",
+        "path": "./snippets/verilog/verilog.json"
+    },
+    {
+        "language": "systemverilog",
+        "path": "./snippets/systemverilog/systemverilog.json"
+    },
+    {
+        "language": "systemverilog",
+        "path": "./snippets/verilog/verilog.json"
+    },
+    {
+        "language": "xdc",
+        "path": "./snippets/xdc/xdc.json"
+    },
+    {
+        "language": "tcl",
+        "path": "./snippets/tcl/tcl.json"
+    },
+    {
+        "language": "ldc",
+        "path": "./snippets/xdc/xdc.json"
+    }
+]

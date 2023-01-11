@@ -1,0 +1,37 @@
+"grammars": [
+    {
+        "language": "vhdl",
+        "scopeName": "source.vhdl",
+        "path": "./syntaxes/vhdl/vhdl.tmLanguage.json"
+    },
+    {
+        "language": "verilog",
+        "scopeName": "source.verilog",
+        "path": "./syntaxes/verilog.tmLanguage"
+    },
+    {
+        "language": "systemverilog",
+        "scopeName": "source.systemverilog",
+        "path": "./syntaxes/systemverilog.tmLanguage"
+    },
+    {
+        "language": "tcl",
+        "scopeName": "source.tcl",
+        "path": "./syntaxes/tcl/tcl.tmLanguage.json"
+    },
+    {
+        "language": "xdc",
+        "scopeName": "source.xdcconstraints",
+        "path": "./syntaxes/xdc.tmLanguage"
+    },
+    {
+        "language": "ldc",
+        "scopeName": "source.xdcconstraints",
+        "path": "./syntaxes/xdc.tmLanguage"
+    },
+    {
+        "language": "ucf",
+        "scopeName": "source.ucfconstraints",
+        "path": "./syntaxes/ucf.tmLanguage"
+    }
+]

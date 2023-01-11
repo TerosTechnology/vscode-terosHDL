@@ -33,20 +33,30 @@ import { Completions_manager } from "./features/completions/completions";
 import { Number_hover_manager } from "./features/number_hover";
 import { Shutter_mode_manager } from "./features/shutter_mode";
 import { Config_manager } from "./features/config";
-import { Project_manager } from "./features/project/project_manager";
+import { Tree_view_manager } from "./features/tree_views/manager";
 import * as teroshdl2 from 'teroshdl2';
+import * as events from "events";
+import * as cmd from "./utils/commands";
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
+const PRJ_FILENAME = '.teroshdl2_prj.json';
 
 export class Teroshdl {
     private context: vscode.ExtensionContext;
     private manager: Multi_project_manager;
     private output_channel: Output_channel;
+    private emitter : events.EventEmitter = new events.EventEmitter();
 
     constructor(context: vscode.ExtensionContext, output_channgel: Output_channel) {
+        vscode.commands.registerCommand("teroshdl.open", (ags) => cmd.open_file(ags) );
+
+
+
         const homedir = teroshdl2.utils.common.get_home_directory();
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);
-        this.manager = new Multi_project_manager("", file_config_path);
+        const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
+
+        this.manager = new Multi_project_manager("", file_config_path, file_prj_path, this.emitter);
         this.context = context;
         this.output_channel = output_channgel;
     }
@@ -62,7 +72,7 @@ export class Teroshdl {
         this.init_number_hover();
         this.init_shutter_mode();
         this.init_config();
-        this.init_project();
+        this.init_tree_views();
     }
 
     private init_template_manager() {
@@ -105,8 +115,8 @@ export class Teroshdl {
         new Config_manager(this.context, this.output_channel, this.manager);
     }
 
-    private init_project() {
-        new Project_manager(this.context);
+    private init_tree_views() {
+        new Tree_view_manager(this.context, this.manager, this.emitter);
     }
 
 }

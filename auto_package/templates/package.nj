@@ -1,0 +1,86 @@
+{
+{%- filter indent(width=4) %}
+{% include 'info.nj' %}
+{% endfilter %}
+    "activationEvents": [
+        "*",
+        "onCommand:teroshdl.go_to_parent",
+        "onCommand:teroshdl.generate_template",
+        "onCommand:teroshdl.format",
+        "onCommand:teroshdl.documentation.module",
+        "onCommand:teroshdl.dependencies.viewer",
+        "onCommand:teroshdl.state_machine.viewer",
+        "onCommand:teroshdl.netlist.viewer",
+        "onLanguage:verilog",
+        "onLanguage:systemverilog",
+        "onLanguage:vhdl"
+    ],
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "teroshdl-project",
+                    "title": "TerosHDL",
+                    "icon": "resources/images/teros_logo.svg"
+                }
+            ]
+        },
+        "views": {
+            "teroshdl-project": [
+                {
+                    "id": "teroshdl-project",
+                    "name": "Projects"
+                },
+                {
+                    "id": "teroshdl-view-source",
+                    "name": "Sources"
+                },
+                {
+                    "id": "teroshdl-view-watcher",
+                    "name": "Watchers"
+                },
+                {
+                    "id": "teroshdl-view-runs",
+                    "name": "Runs"
+                },
+                {
+                    "id": "teroshdl-view-output",
+                    "name": "Outputs"
+                },
+                {
+                    "id": "teroshdl-view-actions",
+                    "name": "Actions"
+                }
+            ]
+        },
+        "viewsWelcome": [
+            {
+                "view": "teroshdl-project",
+                "contents": "No TerosHDL project are open.\n[Add Project](command:teroshdl.view.project.add)\nTo learn more about how to use TerosHDL [read the documentation](https://terostechnology.github.io/terosHDLdoc/)."
+            },
+            {
+                "view": "teroshdl-view-actions",
+                "contents": "[Open Configuration Menu](command:teroshdl.view.project.configuration)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n\n[Documentation](command:teroshdl.documentation)"
+            }
+      ],
+{% filter indent(width=8) %}
+{% include 'grammar.nj' %},
+{% include 'menu.nj' %},
+{% include 'command.nj' %},
+{% include 'language_and_snippet.nj' %},
+{% endfilter %}
+        "keybindings": [
+            {
+                "command": "teroshdl.go_to_parent",
+                "key": "alt+backspace",
+                "mac": "command+delete",
+                "when": "editorTextFocus"
+            }
+        ]
+    },
+{% filter indent(width=4) %}
+{% include 'script.nj' %},
+{% include 'dependencie.nj' %},
+{% include 'devDependencie.nj' %}
+{% endfilter %}
+}

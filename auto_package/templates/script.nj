@@ -1,0 +1,5 @@
+"scripts": {
+{%- for script in script_list %}
+    "{{ script["name"] }}": "{{script["command"] }}"{{ ", " if not loop.last else "" }}
+{%- endfor %}
+}

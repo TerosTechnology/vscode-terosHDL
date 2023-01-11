@@ -3,7 +3,7 @@
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
     "description": "Powerful IDE for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
-    "version": "3.4.0",
+    "version": "3.3.0",
     "engines": {
         "vscode": "^1.45.0"
     },
@@ -60,40 +60,10 @@
             "teroshdl-project": [
                 {
                     "id": "teroshdl-project",
-                    "name": "Projects"
-                },
-                {
-                    "id": "teroshdl-view-source",
-                    "name": "Sources"
-                },
-                {
-                    "id": "teroshdl-view-watcher",
-                    "name": "Watchers"
-                },
-                {
-                    "id": "teroshdl-view-runs",
-                    "name": "Runs"
-                },
-                {
-                    "id": "teroshdl-view-output",
-                    "name": "Outputs"
-                },
-                {
-                    "id": "teroshdl-view-actions",
-                    "name": "Actions"
+                    "name": "Project manager"
                 }
             ]
         },
-        "viewsWelcome": [
-            {
-                "view": "teroshdl-project",
-                "contents": "No TerosHDL project are open.\n[Add Project](command:teroshdl.view.project.add)\nTo learn more about how to use TerosHDL [read the documentation](https://terostechnology.github.io/terosHDLdoc/)."
-            },
-            {
-                "view": "teroshdl-view-actions",
-                "contents": "[Open Configuration Menu](command:teroshdl.view.project.configuration)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n\n[Documentation](command:teroshdl.documentation)"
-            }
-      ],
 
         "grammars": [
             {
@@ -140,83 +110,12 @@
                 {
                     "when": "view == teroshdl-project",
 
-                    "command": "teroshdl.view.project.add",
-                    "group": "navigation"
-                }
-                        
-                ,{
-                    "when": "view == teroshdl-view-source",
-
-                    "command": "teroshdl.view.source.add",
-                    "group": "navigation"
-                }
-                        
-                ,{
-                    "when": "view == teroshdl-view-runs",
-
-                    "command": "teroshdl.view.runs.run_all",
-                    "group": "navigation"
-                }
-                        
-                ,{
-                    "when": "view == teroshdl-view-runs",
-
-                    "command": "teroshdl.view.runs.refresh",
-                    "group": "navigation"
-                }
-                        
-                ,{
-                    "when": "view == teroshdl-view-watcher",
-
-                    "command": "teroshdl.view.watcher.add",
+                    "command": "teroshdl.project.configuration",
                     "group": "navigation"
                 }
                         
             ],
             "view/item/context": [
-            
-                    {
-                        "when": "viewItem == project",
-                        "command": "teroshdl.view.project.delete",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == library",
-                        "command": "teroshdl.view.source.add_source_to_library",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == library",
-                        "command": "teroshdl.view.source.delete_library",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == source",
-                        "command": "teroshdl.view.source.delete_source",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == source",
-                        "command": "teroshdl.view.source.select_toplevel",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == run",
-                        "command": "teroshdl.view.runs.run",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == watcher",
-                        "command": "teroshdl.view.watcher.delete",
-                        "group": "inline"
-                    }
-                            
             ],
             "editor/title": [
 
@@ -258,104 +157,12 @@
                 "title": "Go to parent file"
             }, 
             {
-                "command": "teroshdl.open",
-                "title": "Open file with TerosHDL"
-            }, 
-            {
-                "command": "teroshdl.view.project.add",
+                "command": "teroshdl.project.configuration",
                 "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
+                    "light": "resources/light/settings-gear.svg",
+                    "dark": "resources/dark/settings-gear.svg"
                 },
-                "title": "Add project"
-            }, 
-            {
-                "command": "teroshdl.view.project.delete",
-                "icon": {
-                    "light": "resources/light/chrome-close.svg",
-                    "dark": "resources/dark/chrome-close.svg"
-                },
-                "title": "Delete project"
-            }, 
-            {
-                "command": "teroshdl.view.source.add",
-                "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
-                },
-                "title": "Add"
-            }, 
-            {
-                "command": "teroshdl.view.source.add_source_to_library",
-                "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
-                },
-                "title": "Add to library"
-            }, 
-            {
-                "command": "teroshdl.view.source.delete_library",
-                "icon": {
-                    "light": "resources/light/dash.svg",
-                    "dark": "resources/dark/dash.svg"
-                },
-                "title": "Delete library"
-            }, 
-            {
-                "command": "teroshdl.view.source.delete_source",
-                "icon": {
-                    "light": "resources/light/dash.svg",
-                    "dark": "resources/dark/dash.svg"
-                },
-                "title": "Delete source"
-            }, 
-            {
-                "command": "teroshdl.view.source.select_toplevel",
-                "icon": {
-                    "light": "resources/light/check.svg",
-                    "dark": "resources/dark/check.svg"
-                },
-                "title": "Select source as toplevel"
-            }, 
-            {
-                "command": "teroshdl.view.runs.run_all",
-                "icon": {
-                    "light": "resources/light/run-all.svg",
-                    "dark": "resources/dark/run-all.svg"
-                },
-                "title": "Run all"
-            }, 
-            {
-                "command": "teroshdl.view.runs.refresh",
-                "icon": {
-                    "light": "resources/light/refresh.svg",
-                    "dark": "resources/dark/refresh.svg"
-                },
-                "title": "Refresh"
-            }, 
-            {
-                "command": "teroshdl.view.runs.run",
-                "icon": {
-                    "light": "resources/light/run.svg",
-                    "dark": "resources/dark/run.svg"
-                },
-                "title": "Run"
-            }, 
-            {
-                "command": "teroshdl.view.watcher.add",
-                "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
-                },
-                "title": "Add"
-            }, 
-            {
-                "command": "teroshdl.view.watcher.delete",
-                "icon": {
-                    "light": "resources/light/dash.svg",
-                    "dark": "resources/dark/dash.svg"
-                },
-                "title": "Delete watcher"
+                "title": "TerosHDL: Open configuration menu"
             }, 
             {
                 "command": "teroshdl.generate_template",
@@ -440,7 +247,7 @@
             "id": "tcl",
             "aliases": ["TCL", "tcl"],
             "configuration": "./configs/tcl.configuration.json",
-            "extensions": [".tcl", ".pro"]
+            "extensions": [".tcl"]
         }
 
         ,{
@@ -507,15 +314,16 @@
     },
 
     "scripts": {
-        "clean": "shx rm -rf out", 
-        "vscode:prepublish": "npm run build-prepare & npm run generate-examples & npm run build:syntax & npm run compile", 
-        "compile": "tsc -p ./", 
-        "lint": "eslint src --ext ts", 
-        "watch": "npm run build-prepare & npm run generate-examples & tsc -watch -p ./", 
-        "pretest": "npm run compile && npm run lint", 
-        "test": "node ./out/test/runTest.js", 
-        "generate-doc": "cd ./resources/project_manager; ./copy_documentation.sh", 
-        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
+        "clean": "shx rm -rf out",
+        "vscode:prepublish": "npm run build-prepare & npm run build:syntax & npm run compile",
+        "build:syntax": "js-yaml ./syntaxes/vhdl/vhdl.tmLanguage.yml > ./syntaxes/vhdl/vhdl.tmLanguage.json; js-yaml ./syntaxes/tcl/tcl.tmLanguage.yml > ./syntaxes/tcl/tcl.tmLanguage.json",
+        "compile": "tsc -p ./",
+        "lint": "eslint src --ext ts",
+        "watch": "npm run build-prepare & tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "test": "node ./out/test/runTest.js",
+        "generate-doc": "cd ./resources/project_manager; ./copy_documentation.sh",
+        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh",
         "build-prepare": "cd ./resources/project_manager; ./generate_html.py;"
     },
     "dependencies": {
@@ -527,6 +335,7 @@
         "fs-extra": "8.1.0",
         "js-yaml": "^3.13.1",
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
+        "open": "8.3.0",
         "proper-lockfile": "4.1.1",
         "semver": "7.3.5",
         "shelljs": "^0.8.3",
@@ -535,8 +344,7 @@
         "teroshdl2": "https://github.com/TerosTechnology/colibri2.git#main",
         "tmp": "0.2.1",
         "vscode-languageclient": "7.0.0-next.6",
-        "xml2js": "0.4.23",
-        "open": "8.4.0"
+        "xml2js": "0.4.23"
     },
     "devDependencies": {
         "@types/glob": "^7.1.1",

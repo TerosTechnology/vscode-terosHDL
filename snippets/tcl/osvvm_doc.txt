@@ -1,0 +1,167 @@
+- SetLibraryDirectory [LibraryDirectory]
+   - Set the directory in which the libraries will be created to ``LibraryDirectory``.
+   - If ``LibraryDirectory`` is not specified, use the CurrentSimulationDirectory.
+   - By default, libraries are created in ``<LibraryDirectory>/VHDL_LIBS/<tool version>/``.
+- GetLibraryDirectory
+   - Get the Library Directory.
+- library <LibraryName> [<path>]
+   - Make LibraryName found in library directory specified by path the active library. 
+   - Create the LibraryName if it does not exist.
+   - If path is not specified, use the library directory specified by SetLibraryDirectory.
+- LinkLibrary <library> [<path>]
+   - Create a mapping to a library that is in the library directory specified by path.
+   - If path is not specified, use the library directory specified by SetLibraryDirectory.
+- LinkLibraryDirectory [LibraryDirectory]
+   - Map all of the libraries in the specified ``LibraryDirectory``.
+     If ``LibraryDirectory`` is not specified, use the library directory specified by SetLibraryDirectory.
+- LinkCurrentLibraries
+   - If you use ``cd``, then use LinkCurrentLibraries immediately after
+     to map all current visible libraries to the new CurrentSimulationDirectory.
+- RemoveLibrary LibraryName [<path>]
+   - Remove the named library.
+     Path is only used to find and delete libraries that have not been mapped in OSVVM.
+- RemoveLibraryDirectory [<path>]
+   - Remove the Library specified in path.
+   - If path is not specified, the library directory specified by SetLibraryDirectory is used.
+- RemoveAllLibraries
+   - Call RemoveLibraryDirectory on all library directories known to OSVVM.
+- analyze [<path>/]<name> [options]
+   - Analyze (aka compile) the design into the active library.
+   - Name must be a file with an extension that is *.vhd or *.vhdl for vhdl, *.v for verilog, or *.sv for SystemVerilog.
+   - Paths are relative to CurrentWorkingDirectory.
+- simulate <TestName> [options]
+   - Simulate (aka elaborate + run) the design using the active library.
+   - TestName is a library unit (entity or configuration)
+   - options may be one or more options to the simulator or see generic.
+- generic <name> <value>
+   - Called in the options part of simulate as ``simulate tb1 [generic width 5]``
+- DoWaves <wave1.do> ...
+   - Called in the options part of simulate as ``simulate tb1 [DoWaves wave1.do wave2.do]``
+   - Paths used with wave files are relative to CurrentSimulationDirectory.
+- SetSecondSimulationTopLevel <library>.<TestName>
+   - Sets the name of a second library unit to use during simulation. 
+   - Called before simulate.   
+- TestCase <test-name>
+   - Identify the TestCase that is active. 
+   - Must match name in the testbench call to SetTestName (aka SetAlertLogName).
+- RunTest [<path>/]<name> 
+   - Combines analyze, TestCase, and simulate into one step.
+   - TestCase and simulate are set to the base name of ``file``.
+   - Paths are relative to CurrentWorkingDirectory.
+- SkipTest <test-name> Reason
+   - Add Skip test to the Build Summary Reports with ``Reason`` as part of the report. 
+- TestSuite <test-suite-name>
+   - Identify the current TestSuite.  If not specified the name is `default`.
+- include [<path>/]<name>
+   - Include another project script.
+     If ``name`` is a file and its extension is .pro, .tcl, or .do, it will be sourced. 
+     If ``name`` is a directory then any file whose name is ``name`` and 
+     extension is .pro, .tcl, or .do will be sourced. 
+   - Paths are relative to CurrentWorkingDirectory.
+- build [<path>/]<name>
+   - Start a script from the simulator.  It is include + start a new log file for this script.
+   - Paths are relative to CurrentWorkingDirectory.
+- SetTranscriptType [html|log]
+   - Select the Transcript file to be either html or log.  The default is html.
+- GetTranscriptType
+   - Get the Transcript file type (either html or log).
+- ChangeWorkingDirectory <RelativePath>
+   - Changes CurrentWorkingDirectory to ``file join $CurrentWorkingDirectory $RelativePath``
+- JoinWorkingDirectory <RelativePath>
+   - Returns ``file join $CurrentWorkingDirectory $RelativePath``
+- SetVHDLVersion [2008 | 2019 | 1993 | 2002]
+   - Set VHDL analyze version.  OSVVM libraries require 2008 or newer.
+- GetVHDLVersion
+   - Return the current VHDL Version.
+- SetSimulatorResolution <value>
+   - Set Simulator Resolution. Any value supported by the simulator is ok.
+- GetSimulatorResolution
+   - Return the current Simulator Resolution.
+- SetCoverageAnalyzeEnable [true|false]
+   - To collect coverage for a design, SetCoverageEnable and SetCoverageAnalyzeEnable must be enabled when it is analyzed. 
+   - If true, enable coverage during analyze,
+   - If false, disable coverage during analyze.
+   - If not specified, true is the default.
+   - Initialized to false (so simulations run faster)
+- GetCoverageAnalyzeEnable
+   - Returns the setting for coverage during analyze.
+- SetCoverageAnalyzeOptions <options>
+   - Use the string specified in ``options`` as the coverage options during analyze. 
+- GetCoverageAnalyzeOptions 
+   - Return the coverage options for analyze.
+- SetCoverageSimulateEnable [true|false]
+   - To collect coverage during a simulation, SetCoverageEnable and SetCoverageSimulateEnable must be enabled the simulation is started. 
+   - If true, enable coverage during simulate,
+   - If false, disable coverage during simulate.
+   - If not specified, true is the default.
+   - Initialized to false (so simulations run faster)
+- GetCoverageSimulateEnable
+   - Returns the setting for coverage during simulate.
+- SetCoverageSimulateOptions <options>
+   - Use the string specified in ``options`` as the coverage options during simulate. 
+- GetCoverageSimulateOptions 
+   - Return the coverage options for simulate.
+- SetCoverageEnable [true|false]
+   - If true, set coverage enable to true.
+   - If false, set coverage enable to false.
+   - If not specified, true is the default.
+   - Initialized to true.
+- GetCoverageEnable
+   - Get the CoverageEnable value. 
+- SetVhdlAnalyzeOptions <options>
+   - Set the VHDL options for analyze to ``options``.
+- GetVhdlAnalyzeOptions 
+   - Get the VHDL options for analyze.
+- SetVerilogAnalyzeOptions <options>
+   - Set the Verilog options for analyze to ``options``.
+- GetVerilogAnalyzeOptions 
+   - Get the Verilog options for analyze.
+- SetExtendedAnalyzeOptions <options> 
+   - Set extended (additional) options for analyze to ``options``.
+- GetExtendedAnalyzeOptions
+   - Get extended (additional) options for analyze.
+- SetExtendedSimulateOptions <options>
+   - Set extended (additional) options for simulate to ``options``.
+- GetExtendedSimulateOptions
+   - Get extended (additional) options for simulate.
+- SetDebugMode [true|false]
+   - If true, add debugging options during analyze and simulate.
+   - If false, do not add debugging options during analyze and simulate.
+   - If not specified, true is the default.
+   - Initialized to false (so simulations run faster)
+- GetDebugMode
+   - Returns the state of DebugMode.
+- SetLogSignals [true|false]
+   - If true, log signals during simulate.
+   - If false, do not log signals during simulate.
+   - If not specified, true is the default.
+   - Initialized to false (so simulations run faster)
+- GetLogSignals
+   - Returns the state of LogSignals.
+- SetInteractiveMode [true|false]
+   - If DebugMode was not set with SetDebugMode, then set it using this value
+   - If LogSignals was not set with SetLogSignals, then set it using this value.
+   - If true, sets variables AnalyzeErrorStopCount and SimulateErrorStopCount to 1
+   - If false, sets variables AnalyzeErrorStopCount and SimulateErrorStopCount to previous value
+   - If not specified, true is the default.
+   - Initialized to false (so simulations run faster)
+- GetInteractiveMode
+   - Returns the state of InteractiveMode.
+- SetExtendedElaborateOptions <options>
+   - Set extended (additional) options for simulate to ``options``.
+- GetExtendedElaborateOptions
+   - Get extended (additional) options for simulate.
+- SetExtendedRunOptions <options>
+   - Set extended (additional) options for simulate to ``options``.
+- GetExtendedRunOptions
+   - Get extended (additional) options for simulate.
+- SetSaveWaves [true|false]
+   - If true, save waveforms during simulate.
+     If not specified, true is the default.
+     Initialized to false (so simulations run faster)
+- GetSaveWaves
+   - Returns the state of LogSignals.
+- FileExists <name>
+   - if file name exists, return true otherwise false.
+- DirectoryExists <name>
+   - if directory name exists, return true otherwise false.

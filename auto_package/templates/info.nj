@@ -1,0 +1,33 @@
+"name": "teroshdl",
+"displayName": "TerosHDL",
+"publisher": "teros-technology",
+"description": "Powerful IDE for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
+"version": "3.3.0",
+"engines": {
+    "vscode": "^1.45.0"
+},
+"keywords": [
+    "tcl",
+    "tk",
+    "vhdl",
+    "verilog",
+    "systemverilog",
+    "asic",
+    "fpga"
+],
+"categories": [
+    "Programming Languages",
+    "Snippets",
+    "Formatters",
+    "Linters"
+],
+"icon": "resources/images/icon_128_128_circle.png",
+"homepage": "https://terostechnology.github.io/",
+"repository": {
+    "type": "git",
+    "url": "https://github.com/TerosTechnology/vscode-terosHDL"
+},
+"bugs": {
+    "url": "https://github.com/TerosTechnology/vscode-terosHDL/issues"
+},
+"main": "./out/extension.js",

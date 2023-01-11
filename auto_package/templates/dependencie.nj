@@ -1,0 +1,21 @@
+"dependencies": {
+    "@octokit/rest": "16.36.0",
+    "@types/node-fetch": "2.5.7",
+    "@types/semver": "6.2.0",
+    "abort-controller": "3.0.0",
+    "extract-zip": "1.6.2",
+    "fs-extra": "8.1.0",
+    "js-yaml": "^3.13.1",
+    "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
+    "open": "8.3.0",
+    "proper-lockfile": "4.1.1",
+    "semver": "7.3.5",
+    "shelljs": "^0.8.3",
+    "temp": "^0.9.0",
+    "teroshdl": "https://github.com/TerosTechnology/colibri.git#master",
+    "teroshdl2": "https://github.com/TerosTechnology/colibri2.git#main",
+    "tmp": "0.2.1",
+    "vscode-languageclient": "7.0.0-next.6",
+    "xml2js": "0.4.23",
+    "open": "8.4.0"
+}
