@@ -79,7 +79,7 @@ export class Template_manager {
         const template = await template_manager.generate(code, select_id, options);
 
         //Error
-        if (template === undefined) {
+        if (template === undefined || template === '') {
             this.output_channel.show_message(ERROR_CODE.TEMPLATE_NOT_VALID_FILE, '');
         }
         else {
