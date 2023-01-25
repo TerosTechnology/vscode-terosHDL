@@ -106,7 +106,7 @@ export class State_machine_manager extends Base_webview{
 
         const config = this.get_config();
         const documenter = new teroshdl2.documenter.documenter.Documenter();
-        const state_machines = documenter.get_fsm(document.code, document.lang, config);
+        const state_machines = await documenter.get_fsm(document.code, document.lang, config);
 
         return state_machines;
     }
