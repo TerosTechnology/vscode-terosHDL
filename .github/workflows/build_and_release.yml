@@ -48,7 +48,7 @@ jobs:
       - name: Prepare colibri2
         run: |
           cd ..
-          git clone https://github.com/TerosTechnology/colibri.git -b main
+          git clone https://github.com/TerosTechnology/colibri.git -b dev
           cd colibri
           npm install
           ./copy.sh
