@@ -1,0 +1,29 @@
+<html>
+
+<head>
+    {# <meta http-equiv="Content-Security-Policy" content="default-src {{cspSource}}; font-src {{cspSource}}; style-src {{cspSource}};"> #}
+    <link rel="stylesheet" href="{{css_path}}" type="text/css" />
+     <script src="{{js_path}}"></script> 
+</head>
+
+<body id="body_element">
+    <div>
+        <div class="toolbar">
+            <div class="center-panel">
+                <label class="fancy-checkbox">
+                    <input id="export-as-markdown" name="zoom-mode" type="radio" value="fixed" />
+                    <div class="button">Export markdown</div>
+                </label>
+                <label class="fancy-checkbox">
+                    <input id="export-as-html" name="zoom-mode" type="radio" value="fit" />
+                    <div class="button">Export HTML</div>
+                </label>
+                <label class="fancy-checkbox">
+                    <input id="export-as-image" name="zoom-mode" type="radio" value="fit" />
+                    <div class="button">Export as SVG</div>
+                </label>
+            </div>
+        </div>
+</body>
+
+</html>

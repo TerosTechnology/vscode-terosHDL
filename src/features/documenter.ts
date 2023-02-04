@@ -25,6 +25,7 @@ import * as path_lib from 'path';
 import * as Output_channel_lib from '../utils/output_channel';
 import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
+import * as nunjucks from 'nunjucks';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import { Base_webview } from './base_webview';
 
@@ -45,6 +46,18 @@ export class Documenter_manager extends Base_webview {
 
         const resource_path = path_lib.join(context.extensionPath, 'resources', 'documenter', 'index.html');
         super(context, output_channel, manager, resource_path, activation_command, id);
+        this.context = context;
+    }
+
+    get_webview_content(webview: vscode.Webview){
+        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'documenter', 'index.html.nj');
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'documenter', 
+            'style.css'));
+        const js_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'documenter', 
+            'script.js'));
+        const html = nunjucks.render(template_path, {"css_path": css_path, "cspSource": webview.cspSource, 
+            "js_path": js_path});
+        return html;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +111,8 @@ export class Documenter_manager extends Base_webview {
             teroshdl2.documenter.common.doc_output_type.HTML);
 
         if (this.panel !== undefined) {
-            this.panel.webview.html = this.html_base + html_document.document;
+            // this.panel.webview.html = this.get_webview_content(this.panel.webview);
+            this.panel.webview.html = this.get_webview_content(this.panel.webview) + html_document.document;
         }
     }
 

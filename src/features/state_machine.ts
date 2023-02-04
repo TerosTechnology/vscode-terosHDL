@@ -26,6 +26,7 @@ import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as Output_channel_lib from '../utils/output_channel';
 import * as utils from '../utils/utils';
+import * as nunjucks from 'nunjucks';
 import {Base_webview} from './base_webview';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
@@ -45,6 +46,31 @@ export class State_machine_manager extends Base_webview{
         const resource_path = path_lib.join(context.extensionPath, 'resources', 'state_machine_viewer', 'state_machine_viewer.html');
         super(context, output_channel, manager, resource_path, activation_command, id);
 
+    }
+
+    get_webview_content(webview: vscode.Webview){
+        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'state_machine_viewer', 'index.html.nj');
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'state_machine_viewer', 
+            'style.css'));
+        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'state_machine_viewer', 'libs', 'jquery-2.2.4.min.js'));
+        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'state_machine_viewer', 'libs', 'svg-pan-zoom.min.js'));
+        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'state_machine_viewer', 'libs', 'vizdraw.js'));
+        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'state_machine_viewer', 'libs', 'full.render.js'));
+        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'state_machine_viewer', 'libs', 'viz.js'));
+
+        const html = nunjucks.render(template_path, {
+            "css_path": css_path, "cspSource": webview.cspSource, 
+            "js_path_0": js_path_0,
+            "js_path_1": js_path_1,
+            "js_path_2": js_path_2,
+            "js_path_3": js_path_3,
+        });
+        return html;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +119,7 @@ export class State_machine_manager extends Base_webview{
             this.context.subscriptions
         );
 
-        this.panel.webview.html = this.html_base;
+        this.panel.webview.html = this.get_webview_content(this.panel.webview);
 
         this.update(document);
     }

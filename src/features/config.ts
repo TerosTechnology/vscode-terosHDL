@@ -74,20 +74,20 @@ export class Config_manager {
                     switch (message.command) {
                         case 'set_config':
                             this.set_config(message.config);
+                            this.send_change_config_command();
                             return;
                         case 'set_config_and_close':
                             this.set_config_and_close(message.config);
+                            this.send_change_config_command();
                             return;
                         case 'close':
                             this.close_panel();
-                            return;
                         case 'export':
                             this.export_config();
-                            return;
                         case 'load':
                             this.load_config_from_file();
-                            return;
                     }
+                    return;
                 },
                 undefined,
                 this.context.subscriptions
@@ -98,6 +98,10 @@ export class Config_manager {
         else {
         }
         // await this.update(document);
+    }
+
+    send_change_config_command(){
+        vscode.commands.executeCommand("teroshdl.config.change_config");
     }
 
     export_config(){

@@ -31,6 +31,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as yosys from './yosys';
 import * as shell from 'shelljs';
+import * as nunjucks from 'nunjucks';
 
 const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 const MSG_CODE = Output_channel_lib.MSG_CODE;
@@ -57,6 +58,35 @@ export class Schematic_manager extends Base_webview {
 
         this.working_directory = os.tmpdir();
         this.output_path = path_lib.join(this.working_directory, 'teroshdl_yosys_output.json');
+    }
+
+    get_webview_content(webview: vscode.Webview){
+        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'netlist_viewer', 'index.html.nj');
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'netlist_viewer', 
+            'style.css'));
+        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'netlist_viewer', 'libs', 'elk.bundled.js'));
+        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'netlist_viewer', 'libs', 'netlistsvg.bundle.js'));
+        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'netlist_viewer', 'libs', 'jquery-2.2.4.min.js'));
+        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'netlist_viewer', 'libs', 'svg-pan-zoom.min.js'));
+        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'netlist_viewer', 'libs', 'viz.js'));
+        const js_path_5 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'netlist_viewer', 'libs', 'main.js'));
+
+        const html = nunjucks.render(template_path, {
+            "css_path": css_path, "cspSource": webview.cspSource, 
+            "js_path_0": js_path_0,
+            "js_path_1": js_path_1,
+            "js_path_2": js_path_2,
+            "js_path_3": js_path_3,
+            "js_path_4": js_path_4,
+            "js_path_5": js_path_5,
+        });
+        return html;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +125,7 @@ export class Schematic_manager extends Base_webview {
             this.context.subscriptions
         );
 
-        this.panel.webview.html = this.html_base;
+        this.panel.webview.html = this.get_webview_content(this.panel.webview);
 
         if (this.mode_project === false) {
             const document = utils.get_vscode_active_document();
