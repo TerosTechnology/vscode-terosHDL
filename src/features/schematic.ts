@@ -62,6 +62,8 @@ export class Schematic_manager extends Base_webview {
 
     get_webview_content(webview: vscode.Webview){
         const template_path = path_lib.join(this.context.extensionPath, 'resources', 'netlist_viewer', 'index.html.nj');
+        const template_str = fs.readFileSync(template_path, 'utf-8');
+
         const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'netlist_viewer', 
             'style.css'));
         const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
@@ -77,7 +79,7 @@ export class Schematic_manager extends Base_webview {
         const js_path_5 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
             'netlist_viewer', 'libs', 'main.js'));
 
-        const html = nunjucks.render(template_path, {
+        const html = nunjucks.renderString(template_str, {
             "css_path": css_path, "cspSource": webview.cspSource, 
             "js_path_0": js_path_0,
             "js_path_1": js_path_1,

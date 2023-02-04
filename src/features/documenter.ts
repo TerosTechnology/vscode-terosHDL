@@ -26,6 +26,7 @@ import * as Output_channel_lib from '../utils/output_channel';
 import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import * as nunjucks from 'nunjucks';
+import * as fs from 'fs';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import { Base_webview } from './base_webview';
 
@@ -51,11 +52,13 @@ export class Documenter_manager extends Base_webview {
 
     get_webview_content(webview: vscode.Webview){
         const template_path = path_lib.join(this.context.extensionPath, 'resources', 'documenter', 'index.html.nj');
+        const template_str = fs.readFileSync(template_path, 'utf-8');
+
         const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'documenter', 
             'style.css'));
         const js_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'documenter', 
             'script.js'));
-        const html = nunjucks.render(template_path, {"css_path": css_path, "cspSource": webview.cspSource, 
+        const html = nunjucks.renderString(template_str, {"css_path": css_path, "cspSource": webview.cspSource, 
             "js_path": js_path});
         return html;
     }
