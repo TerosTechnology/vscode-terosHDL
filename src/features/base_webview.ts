@@ -29,7 +29,6 @@ export abstract class Base_webview {
     protected subscriptions: vscode.Disposable[] | undefined;
 
     protected panel : vscode.WebviewPanel | undefined;
-    protected html_base = "";
 
     protected last_document: utils.t_vscode_document | undefined;
 
@@ -42,8 +41,6 @@ export abstract class Base_webview {
             this.context = context;
             this.output_channel = output_channel;
             this.manager = manager;
-
-            this.html_base = utils.get_webview_content(webview_html_path);
     
             vscode.workspace.onDidChangeConfiguration(this.force_update, this, this.subscriptions);
             vscode.commands.registerCommand(`teroshdl.${id}.set_config`, () => this.set_config());
@@ -66,6 +63,7 @@ export abstract class Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     abstract create_webview(): void;
     abstract update(vscode_document : utils.t_vscode_document): void;
+    abstract get_webview_content(webview: vscode.Webview): string;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Update

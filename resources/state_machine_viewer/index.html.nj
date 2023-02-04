@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>State machine viewer</title>
+
+    {# <meta http-equiv="Content-Security-Policy" content="default-src {{cspSource}}; font-src {{cspSource}}; style-src {{cspSource}};"> #}
+    
+    <script type="text/javascript" src="{{js_path_0}}"></script> 
+    <script type="text/javascript" src="{{js_path_1}}"></script> 
+    <script type="text/javascript" src="{{js_path_3}}"></script> 
+    <script type="text/javascript" src="{{js_path_4}}"></script> 
+
+    <div id="svg" style="text-align: center;"></div>
+    
+    <link rel="stylesheet" href="{{css_path}}" type="text/css" />
+</head>
+
+<body>
+    <div class="toolbar">
+        <div class="center-panel">
+            <label class="fancy-checkbox">
+                <input id="export-as-svg" name="zoom-mode" type="radio" value="fit"/>
+                <div class="button">Save as SVG</div>
+            </label>
+        </div>
+    </div>
+    <div id="error-info" class="trontron"><div id="inner" class="fuck"></div></div>
+    <div class="config">
+        <p><br><br>You can click nodes or conditions to navigate to the corresponding HDL code.</p>
+        <p id="message"></p>
+    </div>
+    <div class="column">
+        <div id="container"></div>
+      </div>
+</body>
+    <script type="text/javascript" src="{{js_path_2}}"></script> 
+</html>

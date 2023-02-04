@@ -1,12 +1,16 @@
 <html>
 
 <head>
-    <script type="text/javascript" src="libs/elk.bundled.js"></script>
-    <script type="text/javascript" src="libs/netlistsvg.bundle.js"></script>
-    <script type="text/javascript" src="libs/jquery-2.2.4.min.js"></script>
-    <script type="text/javascript" src="libs/svg-pan-zoom.min.js"></script>
-    <script type="text/javascript" src="libs/viz.js"></script>
-    <script type="text/javascript" src="libs/main.js"></script>
+    <meta charset="utf-8" />
+    <title>Schematic viewer</title>
+
+    <script type="text/javascript" src="{{js_path_0}}"></script> 
+    <script type="text/javascript" src="{{js_path_1}}"></script> 
+    <script type="text/javascript" src="{{js_path_2}}"></script> 
+    <script type="text/javascript" src="{{js_path_3}}"></script> 
+    <script type="text/javascript" src="{{js_path_4}}"></script> 
+    <script type="text/javascript" src="{{js_path_5}}"></script> 
+    <script type="text/javascript" src="{{js_path_6}}"></script> 
 
     <link rel="stylesheet" href="netlist_viewer.css" type="text/css" />
     <style type="text/css">

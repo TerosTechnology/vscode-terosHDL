@@ -74,9 +74,49 @@ class Linter {
     }
 
     private get_options(): teroshdl2.linter.common.l_options {
+        let path = "";
+        let argument = "";
+        const linter_name = this.get_linter_name();
+
+        if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.ghdl){
+            path = this.get_config().tools.ghdl.installation_path;
+            argument = this.get_config().linter.ghdl.arguments;
+        }
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.modelsim){
+            path = this.get_config().tools.modelsim.installation_path;
+            argument = this.get_config().linter.modelsim.vhdl_arguments;
+        }
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.vivado){
+            path = this.get_config().tools.vivado.installation_path;
+            argument = this.get_config().linter.vivado.vhdl_arguments;
+        }
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.icarus){
+            path = this.get_config().tools.icarus.installation_path;
+            argument = this.get_config().linter.icarus.arguments;
+        }
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.modelsim){
+            path = this.get_config().tools.modelsim.installation_path;
+            argument = this.get_config().linter.vivado.verilog_arguments;
+        }
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.verilator){
+            path = this.get_config().tools.verilator.installation_path;
+            argument = this.get_config().linter.verilator.arguments;
+        }
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.vivado){
+            path = this.get_config().tools.vivado.installation_path;
+            argument = this.get_config().linter.vivado.verilog_arguments;
+        }
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_lstyle_vhdl.vsg){
+            argument = this.get_config().linter.vsg.arguments;
+        }
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_lstyle_verilog.verible){
+            path = this.get_config().tools.veriblelint.installation_path;
+            argument = this.get_config().linter.verible.arguments;
+        }
+
         const options: teroshdl2.linter.common.l_options = {
-            path: '',
-            argument: ''
+            path: path,
+            argument: argument
         };
         return options;
     }
@@ -155,7 +195,10 @@ class Linter {
 
         let errors = await this.linter.lint_from_file(linter_name, current_path, this.get_options());
         let diagnostics: vscode.Diagnostic[] = [];
-        if (empty === true) {
+        if (empty === true 
+            || linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.none
+            || linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.disabled
+        ) {
             this.diagnostic_collection.set(uri, diagnostics);
             return;
         }
@@ -240,7 +283,7 @@ export class Linter_manager {
         this.manager = manager;
 
         vscode.commands.registerCommand(`teroshdl.linter.refresh`, () => this.refresh_lint());
-        vscode.commands.registerCommand(`teroshdl.linter.set_config`, () => this.refresh_lint());
+        vscode.commands.registerCommand(`teroshdl.config.change_config`, () => this.refresh_lint());
 
         vscode.workspace.onDidOpenTextDocument((e) => this.lint(e));
         vscode.workspace.onDidSaveTextDocument((e) => this.lint(e));
@@ -255,6 +298,12 @@ export class Linter_manager {
         this.linter_list.push(linter_verilog);
         this.linter_list.push(linter_style_vhdl);
         this.linter_list.push(linter_style_verilog);
+
+        this.lint_active_document();
+
+        // this.linter_list.forEach(linter_inst => {
+        //     linter_inst.refresh_lint();
+        // });
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,5 +328,14 @@ export class Linter_manager {
         this.linter_list.forEach(linter => {
             linter.refresh_lint();
         }); 
+    }
+
+    lint_active_document() {
+        let open_files = vscode.workspace.textDocuments;
+
+        for (let i = 0; i < open_files.length; i++) {
+            const document = open_files[i];
+            this.lint(document);
+        }
     }
 }
