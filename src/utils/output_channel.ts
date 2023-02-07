@@ -11,8 +11,8 @@ const MSG_FILE_NOT_FOUND = "File not found.";
 const MSG_DOCUMENTER_NOT_VALID_FILE = "Select a valid file. (https://terostechnology.github.io/terosHDLdoc/documenter/configuration.html)";
 const MSG_DOCUMENTER_SAVE = "Document saved in ";
 const MSG_COPIED_TO_CLIPBOARD = "Code copied to clipboard.";
-const MSG_SELECT_TOPLEVELPATH = "Select a toplvel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
-const MSG_SELECT_TOPLEVEL = "Select a toplvel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
+const MSG_SELECT_TOPLEVELPATH = "Select a toplevel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
+const MSG_SELECT_TOPLEVEL = "Select a toplevel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
 const MSG_SELECT_PROJECT_TREE_VIEW = "Select a project (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
 const MSG_SELECT_PROJECT_SIMULATION = "Select a project (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
 const NETLIST_VIEWER = "Configure (https://terostechnology.github.io/terosHDLdoc/netlist/configuration.html) Yosys or install YoWASP: pip install yowasp-yosys";
@@ -226,7 +226,7 @@ export class Output_channel {
             msg = `Install ${errors} manually or install teroshdl python libraries: pip install teroshdl`;
             this.appendLine(msg);
         }
-        msg = 'Check the documenatation: https://terostechnology.github.io/terosHDLdoc/about/requirements.html';
+        msg = 'Check the documentation: https://terostechnology.github.io/terosHDLdoc/about/requirements.html';
         this.appendLine(msg);
         if (python3_error === true || errors !== '') {
             this.print_separator();
