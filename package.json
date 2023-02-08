@@ -3,7 +3,7 @@
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
     "description": "Powerful IDE for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
-    "version": "3.3.1",
+    "version": "3.3.2",
     "engines": {
         "vscode": "^1.45.0"
     },
