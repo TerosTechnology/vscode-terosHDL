@@ -25,6 +25,7 @@ import * as Output_channel_lib from '../utils/output_channel';
 import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as utils from '../utils/utils';
+import * as nunjucks from 'nunjucks';
 
 export class Config_manager {
 
@@ -55,7 +56,7 @@ export class Config_manager {
             this.panel = vscode.window.createWebviewPanel(
                 'catCoding',
                 'TerosHDL configuration',
-                vscode.ViewColumn.Two,
+                vscode.ViewColumn.One,
                 {
                     enableScripts: true,
                     retainContextWhenHidden: true
@@ -82,23 +83,40 @@ export class Config_manager {
                             return;
                         case 'close':
                             this.close_panel();
+                            return;
                         case 'export':
                             this.export_config();
+                            return;
                         case 'load':
                             this.load_config_from_file();
+                            return;
                     }
-                    return;
                 },
                 undefined,
                 this.context.subscriptions
             );
-            this.panel.webview.html = this.web_content;
+            this.panel.webview.html = this.get_webview_content(this.panel.webview);
             await this.update_web_config();
         }
         else {
         }
-        // await this.update(document);
     }
+
+    get_webview_content(webview: vscode.Webview){
+        const template_str = this.web_content;
+
+        const css_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'project_manager', 'bootstrap.min.css'));
+            const css_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'project_manager', 'sidebars.css'));
+        const js_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'project_manager', 'bootstrap.bundle.min.js'));
+
+        const html = nunjucks.renderString(template_str, {"css_0": css_0, "css_1": css_1, "js_0": js_0,
+            "cspSource": webview.cspSource});
+        return html;
+    }
+
 
     send_change_config_command(){
         vscode.commands.executeCommand("teroshdl.config.change_config");
