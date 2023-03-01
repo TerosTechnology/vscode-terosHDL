@@ -54,30 +54,183 @@ export class Shutter_mode_manager {
         context.subscriptions.push(this.get_shutter_mode(teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG));
     }
 
-    private is_enable(): boolean {
-        const is_enable = this.manager.get_config_manager().get_config().editor.general.continue_comment;
-        return is_enable;
-    }
-
     private get_shutter_mode(lang: teroshdl2.common.general.HDL_LANG) {
         let shutter;
-
-        if (this.is_enable() === false) {
-            return [];
-        }
+        const element = this;
 
         if (lang === teroshdl2.common.general.HDL_LANG.VHDL) {
             shutter = languages.registerOnTypeFormattingEditProvider(
-                { scheme: '*', language: lang },
+                { scheme: '*', language: 'vhdl' },
                 {
                     provideOnTypeFormattingEdits(
                         document: TextDocument,
                         position: Position,
                         ch: string
                     ): ProviderResult<TextEdit[]> {
+                        const shutter_delimiters = element.manager.get_config_manager().get_config().editor.general.shutter_delimiters;
+                        const shutter_bracket_shortcuts = element.manager.get_config_manager().get_config().editor.general.shutter_bracket_shortcuts;
+                        const shutter_comment_shortcuts = element.manager.get_config_manager().get_config().editor.general.shutter_comment_shortcuts;
+                        const shutter_block_width = element.manager.get_config_manager().get_config().editor.general.shutter_block_width;
+                        const shutter_max_width = element.manager.get_config_manager().get_config().editor.general.shutter_max_width;
+
+                        let inComment = document.lineAt(position).text.match(/^.*--.*$/);
                         let linePrefix = document.lineAt(position).text.substr(0, position.character);
+
                         switch (ch) {
+                            case "'":
+                                if (!shutter_delimiters) break;
+                                if (inComment) break;
+                                if (linePrefix.endsWith("''")) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            '"'
+                                        )
+                                    ];
+                                }
+                                break;
+
+                            case ';':
+                                if (!shutter_delimiters) break;
+                                if (inComment) break;
+                                if (linePrefix.endsWith(': ;')) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            '= '
+                                        )
+                                    ];
+                                } else if (linePrefix.match(/\s;;/)) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            ': '
+                                        )
+                                    ];
+                                } else if (linePrefix.endsWith(';;')) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            ' : '
+                                        )
+                                    ];
+                                }
+                                break;
+
+                            case '.':
+                                if (!shutter_delimiters) break;
+                                if (inComment) break;
+                                if (linePrefix.match(/\s\.\./)) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            '=> '
+                                        )
+                                    ];
+                                } else if (linePrefix.endsWith('..')) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            ' => '
+                                        )
+                                    ];
+                                }
+                                break;
+
+                            case ',':
+                                if (!shutter_delimiters) break;
+                                if (inComment) break;
+                                if (linePrefix.match(/\s,,/)) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            '<= '
+                                        )
+                                    ];
+                                } else if (linePrefix.endsWith(',,')) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            ' <= '
+                                        )
+                                    ];
+                                }
+                                break;
+
+                            case '[':
+                                if (!shutter_bracket_shortcuts) break;
+                                if (inComment) break;
+                                if (linePrefix.endsWith('([')) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            '['
+                                        )
+                                    ];
+                                } else if (linePrefix.endsWith('[')) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -1), position.with()),
+                                            '('
+                                        )
+                                    ];
+                                }
+                                break;
+
+                            case ']':
+                                if (!shutter_bracket_shortcuts) break;
+                                if (inComment) break;
+                                if (linePrefix.endsWith(')]')) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -2), position.with()),
+                                            ']'
+                                        )
+                                    ];
+                                } else if (linePrefix.endsWith(']')) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -1), position.with()),
+                                            ')'
+                                        )
+                                    ];
+                                }
+                                break;
+
+                            case '-':
+                                if (!shutter_comment_shortcuts) break;
+                                let max: number = shutter_max_width;
+                                let width: number = shutter_block_width;
+
+                                const intd = linePrefix.match(/^(\s*).*$/);
+                                let indent = "";
+                                if (intd !== null){
+                                    indent = intd[1];
+                                }
+
+                                // Adjust width if max is set
+                                if (max > 0) {
+                                    width = Math.min(width, max - indent.length);
+                                }
+
+                                if (linePrefix.match(/^\s*----+$/)) {
+                                    return [
+                                        TextEdit.replace(
+                                            new Range(position.translate(0, -1), position.with()),
+                                            (document.eol == 1 ? '\n' : '\r\n') + indent + '-- '
+                                        ),
+                                        TextEdit.insert(
+                                            new Position(position.line + 1, 0),
+                                            indent + '-'.repeat(width) + (document.eol == 1 ? '\n' : '\r\n')
+                                        )
+                                    ];
+                                } else if (linePrefix.match(/^\s*---$/)) {
+                                    return [TextEdit.insert(position.with(), '-'.repeat(width - 3))];
+                                }
+                                break;
+
                             case '\n':
+                                if (!shutter_comment_shortcuts) break;
                                 if (linePrefix.match(/^\s*$/)) {
                                     let prevLineIsComment = document
                                         .lineAt(position.line - 1)
@@ -113,9 +266,12 @@ export class Shutter_mode_manager {
                         position: Position,
                         ch: string
                     ): ProviderResult<TextEdit[]> {
+                        const shutter_comment_shortcuts = element.manager.get_config_manager().get_config().editor.general.shutter_comment_shortcuts;
+
                         let linePrefix = document.lineAt(position).text.substr(0, position.character);
                         switch (ch) {
                             case '\n':
+                                if (!shutter_comment_shortcuts) break;
                                 if (linePrefix.match(/^\s*$/)) {
                                     let prevLineIsComment = document
                                         .lineAt(position.line - 1)
