@@ -31,7 +31,7 @@ import { Linter_manager } from "./features/linter";
 import { Formatter_manager } from "./features/formatter";
 import { Completions_manager } from "./features/completions/completions";
 import { Number_hover_manager } from "./features/number_hover";
-import { Shutter_mode_manager } from "./features/shutter_mode";
+import { Stutter_mode_manager } from "./features/stutter_mode";
 import { Config_manager } from "./features/config";
 import { Tree_view_manager } from "./features/tree_views/manager";
 import * as teroshdl2 from 'teroshdl2';
@@ -108,7 +108,7 @@ export class Teroshdl {
     }
 
     private init_shutter_mode() {
-        new Shutter_mode_manager(this.context, this.output_channel, this.manager);
+        new Stutter_mode_manager(this.context, this.output_channel, this.manager);
     }
 
     private init_config() {

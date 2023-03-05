@@ -9,7 +9,7 @@ export class Number_hover_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, _output_channel: Output_channel_lib.Output_channel){
+    constructor(context: vscode.ExtensionContext, _output_channel: Output_channel_lib.Output_channel) {
         // VHDL
         let hover_numbers_vhdl = vscode.languages.registerHoverProvider(utils.VHDL_SELECTOR, {
             provideHover(document, position, token) {
@@ -33,11 +33,20 @@ function hover(document, position, lang: teroshdl2.common.general.HDL_LANG) {
     if (wordRange !== undefined) {
         let leadingText = document.getText(new vscode.Range(wordRange.start, wordRange.end));
         result = teroshdl2.utils.numbers.hdl_hover(leadingText, lang);
+
+        const content = new vscode.MarkdownString();
+        content.supportHtml = true;
+        content.isTrusted = true;
+        content.appendMarkdown(`Number conversion of **${leadingText}**:<br>`);
+
         if (result.is_multi === false) {
-            return new vscode.Hover(`${leadingText} = ${result.unsigned_n}`);
+            content.appendMarkdown(`- <span style="color:#569cd6;">Unsigned</span>:&nbsp;<span style="color:#b5cea8;">${result.unsigned_n}</span>`);
         } else {
-            return new vscode.Hover(`${leadingText} = ${result.unsigned_n} (unsigned) || ${result.signed_n} (signed)`);
+            content.appendMarkdown(`- <span style="color:#569cd6;">Unsigned</span>:&nbsp;<span style="color:#b5cea8;">${result.unsigned_n}</span><br>`);
+            content.appendMarkdown(`- <span style="color:#569cd6;">Signed&nbsp;&nbsp;&nbsp;&nbsp;</span>:&nbsp;<span style="color:#b5cea8;">${result.signed_n}</span>`);
         }
+
+        return new vscode.Hover(content);
     }
 }
 
