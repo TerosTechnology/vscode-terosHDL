@@ -38,7 +38,7 @@ import * as teroshdl2 from 'teroshdl2';
 const TRIGGER_CHARACTERS = [';', '.', "'", ',', '[', ']', '-', '\n'];
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
-export class Shutter_mode_manager {
+export class Stutter_mode_manager {
     private manager: Multi_project_manager;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,17 +49,17 @@ export class Shutter_mode_manager {
 
         this.manager = manager;
 
-        context.subscriptions.push(this.get_shutter_mode(teroshdl2.common.general.HDL_LANG.VHDL));
-        context.subscriptions.push(this.get_shutter_mode(teroshdl2.common.general.HDL_LANG.VERILOG));
-        context.subscriptions.push(this.get_shutter_mode(teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG));
+        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.HDL_LANG.VHDL));
+        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.HDL_LANG.VERILOG));
+        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG));
     }
 
-    private get_shutter_mode(lang: teroshdl2.common.general.HDL_LANG) {
-        let shutter;
+    private get_stutter_mode(lang: teroshdl2.common.general.HDL_LANG) {
+        let stutter;
         const element = this;
 
         if (lang === teroshdl2.common.general.HDL_LANG.VHDL) {
-            shutter = languages.registerOnTypeFormattingEditProvider(
+            stutter = languages.registerOnTypeFormattingEditProvider(
                 { scheme: '*', language: 'vhdl' },
                 {
                     provideOnTypeFormattingEdits(
@@ -67,19 +67,19 @@ export class Shutter_mode_manager {
                         position: Position,
                         ch: string
                     ): ProviderResult<TextEdit[]> {
-                        const shutter_delimiters = element.manager.get_config_manager().get_config().editor.general.shutter_delimiters;
-                        const shutter_bracket_shortcuts = element.manager.get_config_manager().get_config().editor.general.shutter_bracket_shortcuts;
-                        const shutter_comment_shortcuts = element.manager.get_config_manager().get_config().editor.general.shutter_comment_shortcuts;
-                        const shutter_block_width = element.manager.get_config_manager().get_config().editor.general.shutter_block_width;
-                        const shutter_max_width = element.manager.get_config_manager().get_config().editor.general.shutter_max_width;
+                        const stutter_delimiters = element.manager.get_config_manager().get_config().editor.general.stutter_delimiters;
+                        const stutter_bracket_shortcuts = element.manager.get_config_manager().get_config().editor.general.stutter_bracket_shortcuts;
+                        const stutter_comment_shortcuts = element.manager.get_config_manager().get_config().editor.general.stutter_comment_shortcuts;
+                        const stutter_block_width = element.manager.get_config_manager().get_config().editor.general.stutter_block_width;
+                        const stutter_max_width = element.manager.get_config_manager().get_config().editor.general.stutter_max_width;
 
                         let inComment = document.lineAt(position).text.match(/^.*--.*$/);
                         let linePrefix = document.lineAt(position).text.substr(0, position.character);
 
                         switch (ch) {
                             case "'":
-                                if (!shutter_delimiters) break;
-                                if (inComment) break;
+                                if (!stutter_delimiters) {break;}
+                                if (inComment) {break;}
                                 if (linePrefix.endsWith("''")) {
                                     return [
                                         TextEdit.replace(
@@ -91,8 +91,8 @@ export class Shutter_mode_manager {
                                 break;
 
                             case ';':
-                                if (!shutter_delimiters) break;
-                                if (inComment) break;
+                                if (!stutter_delimiters) {break;}
+                                if (inComment) {break;}
                                 if (linePrefix.endsWith(': ;')) {
                                     return [
                                         TextEdit.replace(
@@ -118,8 +118,8 @@ export class Shutter_mode_manager {
                                 break;
 
                             case '.':
-                                if (!shutter_delimiters) break;
-                                if (inComment) break;
+                                if (!stutter_delimiters) {break;}
+                                if (inComment) {break;}
                                 if (linePrefix.match(/\s\.\./)) {
                                     return [
                                         TextEdit.replace(
@@ -138,8 +138,8 @@ export class Shutter_mode_manager {
                                 break;
 
                             case ',':
-                                if (!shutter_delimiters) break;
-                                if (inComment) break;
+                                if (!stutter_delimiters) {break;}
+                                if (inComment) {break;}
                                 if (linePrefix.match(/\s,,/)) {
                                     return [
                                         TextEdit.replace(
@@ -158,8 +158,8 @@ export class Shutter_mode_manager {
                                 break;
 
                             case '[':
-                                if (!shutter_bracket_shortcuts) break;
-                                if (inComment) break;
+                                if (!stutter_bracket_shortcuts) {break;}
+                                if (inComment) {break;}
                                 if (linePrefix.endsWith('([')) {
                                     return [
                                         TextEdit.replace(
@@ -178,8 +178,8 @@ export class Shutter_mode_manager {
                                 break;
 
                             case ']':
-                                if (!shutter_bracket_shortcuts) break;
-                                if (inComment) break;
+                                if (!stutter_bracket_shortcuts) {break;}
+                                if (inComment) {break;}
                                 if (linePrefix.endsWith(')]')) {
                                     return [
                                         TextEdit.replace(
@@ -198,9 +198,9 @@ export class Shutter_mode_manager {
                                 break;
 
                             case '-':
-                                if (!shutter_comment_shortcuts) break;
-                                let max: number = shutter_max_width;
-                                let width: number = shutter_block_width;
+                                if (!stutter_comment_shortcuts) {break;}
+                                let max: number = stutter_max_width;
+                                let width: number = stutter_block_width;
 
                                 const intd = linePrefix.match(/^(\s*).*$/);
                                 let indent = "";
@@ -230,7 +230,7 @@ export class Shutter_mode_manager {
                                 break;
 
                             case '\n':
-                                if (!shutter_comment_shortcuts) break;
+                                if (!stutter_comment_shortcuts) {break;}
                                 if (linePrefix.match(/^\s*$/)) {
                                     let prevLineIsComment = document
                                         .lineAt(position.line - 1)
@@ -258,7 +258,7 @@ export class Shutter_mode_manager {
             );
         }
         else {
-            shutter = languages.registerOnTypeFormattingEditProvider(
+            stutter = languages.registerOnTypeFormattingEditProvider(
                 { scheme: '*', language: lang },
                 {
                     provideOnTypeFormattingEdits(
@@ -266,12 +266,12 @@ export class Shutter_mode_manager {
                         position: Position,
                         ch: string
                     ): ProviderResult<TextEdit[]> {
-                        const shutter_comment_shortcuts = element.manager.get_config_manager().get_config().editor.general.shutter_comment_shortcuts;
+                        const stutter_comment_shortcuts = element.manager.get_config_manager().get_config().editor.general.stutter_comment_shortcuts;
 
                         let linePrefix = document.lineAt(position).text.substr(0, position.character);
                         switch (ch) {
                             case '\n':
-                                if (!shutter_comment_shortcuts) break;
+                                if (!stutter_comment_shortcuts) {break;}
                                 if (linePrefix.match(/^\s*$/)) {
                                     let prevLineIsComment = document
                                         .lineAt(position.line - 1)
@@ -298,6 +298,6 @@ export class Shutter_mode_manager {
                 ...TRIGGER_CHARACTERS.slice(1)
             );
         }
-        return shutter;
+        return stutter;
     }
 }
