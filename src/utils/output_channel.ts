@@ -1,28 +1,38 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
-import * as config_reader_lib from "../utils/config_reader_simple";
 
-const MSG_PYTHON = "Error Python3 path (https://terostechnology.github.io/terosHDLdoc/configuration/python.html). ";
-const MSG_COCOTB_INSTALLATION = "Install cocotb itself to run tests (https://terostechnology.github.io/terosHDLdoc/configuration/python.html).";
-const MSG_COCOTB_DEPS = "Error testing deps (https://terostechnology.github.io/terosHDLdoc/configuration/python.html).";
+const MSG_PYTHON = 'Error Python3 path (https://terostechnology.github.io/terosHDLdoc/configuration/python.html). ';
+const MSG_COCOTB_INSTALLATION =
+    'Install cocotb itself to run tests (https://terostechnology.github.io/terosHDLdoc/configuration/python.html).';
+const MSG_COCOTB_DEPS = 'Error testing deps (https://terostechnology.github.io/terosHDLdoc/configuration/python.html).';
 const MSG_COCOTB_TEST_NOT_FOUND = "Found module in Makefile's MODULE variable but no python file found.";
-const MSG_EDALIZE_GUI_ERROR = "GUI option not supported for your current simulator. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/project_manager/gui.html).";
-const MSG_FILE_NOT_FOUND = "File not found.";
-const MSG_DOCUMENTER_NOT_VALID_FILE = "Select a valid file. (https://terostechnology.github.io/terosHDLdoc/documenter/configuration.html)";
-const MSG_DOCUMENTER_SAVE = "Document saved in ";
-const MSG_COPIED_TO_CLIPBOARD = "Code copied to clipboard.";
-const MSG_SELECT_TOPLEVELPATH = "Select a toplevel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
-const MSG_SELECT_TOPLEVEL = "Select a toplevel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
-const MSG_SELECT_PROJECT_TREE_VIEW = "Select a project (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
-const MSG_SELECT_PROJECT_SIMULATION = "Select a project (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).";
-const NETLIST_VIEWER = "Configure (https://terostechnology.github.io/terosHDLdoc/netlist/configuration.html) Yosys or install YoWASP: pip install yowasp-yosys";
-const MSG_NOT_PARENT = "This file hasn't parent (https://terostechnology.github.io/terosHDLdoc/editor/go_to_parent.html).";
+const MSG_EDALIZE_GUI_ERROR =
+    'GUI option not supported for your current simulator. Check [TerosHDL documentation](https://terostechnology.github.io/terosHDLdoc/project_manager/gui.html).';
+const MSG_FILE_NOT_FOUND = 'File not found.';
+const MSG_DOCUMENTER_NOT_VALID_FILE =
+    'Select a valid file. (https://terostechnology.github.io/terosHDLdoc/documenter/configuration.html)';
+const MSG_DOCUMENTER_SAVE = 'Document saved in ';
+const MSG_COPIED_TO_CLIPBOARD = 'Code copied to clipboard.';
+const MSG_SELECT_TOPLEVELPATH =
+    'Select a toplevel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).';
+const MSG_SELECT_TOPLEVEL =
+    'Select a toplevel (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).';
+const MSG_SELECT_PROJECT_TREE_VIEW =
+    'Select a project (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).';
+const MSG_SELECT_PROJECT_SIMULATION =
+    'Select a project (https://terostechnology.github.io/terosHDLdoc/project_manager/start.html#selecting-project-and-toplevel).';
+const NETLIST_VIEWER =
+    'Configure (https://terostechnology.github.io/terosHDLdoc/netlist/configuration.html) Yosys or install YoWASP: pip install yowasp-yosys';
+const MSG_NOT_PARENT =
+    "This file hasn't parent (https://terostechnology.github.io/terosHDLdoc/editor/go_to_parent.html).";
 const MSG_FILES_IN_PROJECT_NO_EXIST = "The following files doesn't exist (maybe the name has been changed): ";
-const MSG_SAVE_DEP_GRAPH = "Dependency graph saved in";
-const MSG_ERROR_SAVE_DEP_GRAPH = "Dependency graph not defined.";
-const MSG_INFO_DEP_GRAPH = "TerosHDL is creating the diagram.";
-const NETLIST_VHDL_ERROR = "Your project/file includes 1 or more VHDL files, but it's not configured the backend GHDL+Yosys (https://terostechnology.github.io/terosHDLdoc/netlist/configuration.html).";
-const VSG_NOT_FOUND = "Your formatter for VHDL is VSG, but VSG isn't installed in the system (https://terostechnology.github.io/terosHDLdoc/style/configuration.html#vsg-vhdl-style-guide).";
+const MSG_SAVE_DEP_GRAPH = 'Dependency graph saved in';
+const MSG_ERROR_SAVE_DEP_GRAPH = 'Dependency graph not defined.';
+const MSG_INFO_DEP_GRAPH = 'TerosHDL is creating the diagram.';
+const NETLIST_VHDL_ERROR =
+    "Your project/file includes 1 or more VHDL files, but it's not configured the backend GHDL+Yosys (https://terostechnology.github.io/terosHDLdoc/netlist/configuration.html).";
+const VSG_NOT_FOUND =
+    "Your formatter for VHDL is VSG, but VSG isn't installed in the system (https://terostechnology.github.io/terosHDLdoc/style/configuration.html#vsg-vhdl-style-guide).";
 
 export const ERROR_CODE = {
     PYTHON: MSG_PYTHON,
@@ -35,7 +45,7 @@ export const ERROR_CODE = {
     EDALIZE_GUI_ERROR: MSG_EDALIZE_GUI_ERROR,
     FILE_NOT_FOUND: MSG_FILE_NOT_FOUND,
     DOCUMENTER_NOT_VALID_FILE: MSG_DOCUMENTER_NOT_VALID_FILE,
-    DOCUMENTER_SAVE: MSG_DOCUMENTER_SAVE, //argument path 
+    DOCUMENTER_SAVE: MSG_DOCUMENTER_SAVE, //argument path
     COPIED_TO_CLIPBOARD: MSG_COPIED_TO_CLIPBOARD,
     TEMPLATE_NOT_VALID_FILE: MSG_DOCUMENTER_NOT_VALID_FILE,
     SELECT_TOPLEVELPATH: MSG_SELECT_TOPLEVELPATH,
@@ -46,19 +56,19 @@ export const ERROR_CODE = {
     ERROR_SAVE_DEP_GRAPH: MSG_ERROR_SAVE_DEP_GRAPH,
     INFO_DEP_GRAPH: MSG_INFO_DEP_GRAPH,
     NETLIST_VHDL_ERROR: NETLIST_VHDL_ERROR,
-    VSG_NOT_FOUND: VSG_NOT_FOUND,
+    VSG_NOT_FOUND: VSG_NOT_FOUND
 };
 
-const SAVE_PROJECT = "Project saved in: ";
-const SAVE_NETLIST = "Schematic saved in ";
+const SAVE_PROJECT = 'Project saved in: ';
+const SAVE_NETLIST = 'Schematic saved in ';
 export const MSG_CODE = {
     SAVE_NETLIST: SAVE_NETLIST,
     SAVE_PROJECT: SAVE_PROJECT
 };
 
 export class Output_channel {
-
-    separator: string = "****************************************************************************************************************************************";
+    separator: string =
+        '****************************************************************************************************************************************';
 
     private output_channel: vscode.OutputChannel;
     private context: vscode.ExtensionContext | undefined;
@@ -83,25 +93,20 @@ export class Output_channel {
     show(force = false) {
         if (this.context === undefined || force === true) {
             this.output_channel.show();
-        }
-        else {
-            let config_reader = new config_reader_lib.Config_reader(this.context);
-            let enable_console = config_reader.get_enable_console();
-            if (enable_console === true) {
-                this.output_channel.show();
-            }
+        } else {
+            this.output_channel.show();
         }
     }
 
     get_date() {
         let date_ob = new Date();
-        let date = ("0" + date_ob.getDate()).slice(-2);
-        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+        let date = ('0' + date_ob.getDate()).slice(-2);
+        let month = ('0' + (date_ob.getMonth() + 1)).slice(-2);
         let year = date_ob.getFullYear();
         let hours = date_ob.getHours().toString().padStart(2, '0');
         let minutes = date_ob.getMinutes().toString().padStart(2, '0');
         let seconds = date_ob.getSeconds().toString().padStart(2, '0');
-        let date_str = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+        let date_str = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds;
         return date_str.padEnd(19);
     }
 
@@ -149,11 +154,9 @@ export class Output_channel {
         this.appendLine(msg);
     }
 
-
     print_separator() {
         this.appendLine(this.separator);
     }
-
 
     print_check_configuration(check_configuration, edalize_checking = false) {
         this.show(true);
@@ -174,44 +177,39 @@ export class Output_channel {
 
         if (check_configuration.vunit === true) {
             this.appendLine('---> VUnit is installed.');
-        }
-        else {
+        } else {
             errors += 'VUnit';
             this.appendLine('---> VUnit is NOT installed.');
         }
 
         if (check_configuration.cocotb === true) {
             this.appendLine('---> Cocotb is installed.');
-        }
-        else if (edalize_checking === false) {
+        } else if (edalize_checking === false) {
             this.appendLine('---> Cocotb is NOT installed.');
         }
 
         if (check_configuration.yowasp_yosys === true) {
             this.appendLine('---> yowasp-yosys is installed.');
-        }
-        else if (edalize_checking === false) {
+        } else if (edalize_checking === false) {
             errors += ', yowasp-yosys';
             this.appendLine('---> yowasp-yosys is NOT installed.');
         }
 
         if (check_configuration.edalize === true) {
             this.appendLine('---> Edalize is installed.');
-        }
-        else {
+        } else {
             errors += ', Edalize';
             this.appendLine('---> Edalize is NOT installed.');
         }
 
         if (check_configuration.make === true) {
             this.appendLine('---> Make is installed.');
-        }
-        else {
+        } else {
             errors += ', Make';
-            let url = "https://www.gnu.org/software/make/";
-            let is_win = process.platform === "win32";
+            let url = 'https://www.gnu.org/software/make/';
+            let is_win = process.platform === 'win32';
             if (is_win === true) {
-                url = "http://gnuwin32.sourceforge.net/packages/make.htm";
+                url = 'http://gnuwin32.sourceforge.net/packages/make.htm';
             }
 
             this.appendLine('---> Make is NOT installed: ' + url);
@@ -231,12 +229,11 @@ export class Output_channel {
         if (python3_error === true || errors !== '') {
             this.print_separator();
         }
-
     }
 
     print_project_documenter_configurtion(configuration, file_input: string, file_output: string, type_output: string) {
         this.print_documenter_configurtion(configuration, file_input, file_output, type_output);
-        this.appendLine("• Files processed: ");
+        this.appendLine('• Files processed: ');
     }
 
     print_project_documenter_result(result) {
@@ -272,7 +269,6 @@ export class Output_channel {
         this.print_separator();
     }
 
-
     print_documenter_configurtion(configuration, file_input: string, file_output: string, type_output: string) {
         this.show();
         this.print_separator();
@@ -291,7 +287,9 @@ export class Output_channel {
         this.appendLine(`• Input file: ${file_input}`);
         this.appendLine(`• Output file: ${file_output}`);
         this.appendLine(`• Output type: ${type_output.toLocaleUpperCase()}`);
-        this.appendLine("• Learn how to configure your documentation: https://terostechnology.github.io/terosHDLdoc/configuration/documenter.html");
+        this.appendLine(
+            '• Learn how to configure your documentation: https://terostechnology.github.io/terosHDLdoc/configuration/documenter.html'
+        );
         this.print_separator();
     }
 
@@ -306,5 +304,4 @@ export class Output_channel {
         }
         this.print_separator();
     }
-
 }

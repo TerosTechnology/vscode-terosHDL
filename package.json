@@ -3,7 +3,7 @@
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
     "description": "Powerful IDE for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
-    "version": "3.3.3",
+    "version": "3.3.0",
     "engines": {
         "vscode": "^1.45.0"
     },
@@ -177,6 +177,12 @@
             
                     {
                         "when": "viewItem == project",
+                        "command": "teroshdl.view.project.rename",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == project",
                         "command": "teroshdl.view.project.delete",
                         "group": "inline"
                     }
@@ -268,6 +274,14 @@
                     "dark": "resources/dark/add.svg"
                 },
                 "title": "Add project"
+            }, 
+            {
+                "command": "teroshdl.view.project.rename",
+                "icon": {
+                    "light": "resources/light/edit.svg",
+                    "dark": "resources/dark/edit.svg"
+                },
+                "title": "Rename project"
             }, 
             {
                 "command": "teroshdl.view.project.delete",
@@ -527,15 +541,15 @@
         "fs-extra": "8.1.0",
         "js-yaml": "^3.13.1",
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
+        "open": "8.3.0",
         "proper-lockfile": "4.1.1",
         "semver": "7.3.5",
         "shelljs": "^0.8.3",
         "temp": "^0.9.0",
-        "teroshdl2": "https://github.com/TerosTechnology/colibri.git#main",
+        "teroshdl": "https://github.com/TerosTechnology/colibri.git#master",
         "tmp": "0.2.1",
         "vscode-languageclient": "7.0.0-next.6",
         "xml2js": "0.4.23",
-        "open": "8.4.0",
         "nunjucks": "^3.2.0",
         "@types/nunjucks": "^3.1.4"
     },

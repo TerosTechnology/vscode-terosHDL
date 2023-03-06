@@ -41,6 +41,7 @@ export class Language_provider_manager {
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
         manager: Multi_project_manager) {
         
+        this.context = context;
         this.manager = manager;
         this.output_channel = output_channel;
 
@@ -50,17 +51,35 @@ export class Language_provider_manager {
         this.ctagsManager = new CtagsManager(logger, context);
         this.ctagsManager.configure();
 
-        const doc_provider = new VerilogDocumentSymbolProvider(logger, context);
+        // const doc_provider = new VerilogDocumentSymbolProvider(logger, context);
+
+        // VHDL
+        this.configure_vhdl();
+
+        // Verilog/SV
+
+        // TCL
+
 
     }
 
-    private configure_vhdl(){
-
+    private configure_vhdl(context: vscode.ExtensionContext){
+        const vhdlSelector: vscode.DocumentSelector = { scheme: 'file', language: 'vhdl' };
+        context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, docProvider));
     }
 
     private configure_verilog(logger: Logger, context: vscode.ExtensionContext){
+        let verilogSelector: vscode.DocumentSelector = [
+            { scheme: 'file', language: 'verilog' },
+            { scheme: 'file', language: 'systemverilog' }
+        ];
+    }
+
+    private configure_tcl(logger: Logger, context: vscode.ExtensionContext){
+        let tcl_selector: vscode.DocumentSelector = { scheme: 'file', language: 'tcl' };
 
     }
+
 
 
 

@@ -19,6 +19,13 @@
   where: ["view/title"]
   when: "view == teroshdl-project"
 
+- name: view.project.rename
+  title: "Rename project"
+  icon: edit
+  where: ["view/item/context"]
+  when: "viewItem == project"
+  group: "inline"
+
 - name: view.project.delete
   title: "Delete project"
   icon: chrome-close

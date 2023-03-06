@@ -23,6 +23,7 @@ import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_proje
 
 import { Output_channel } from './utils/output_channel';
 
+import { Language_provider_manager } from "./features/language_provider/language_provider";
 import { Template_manager } from "./features/templates";
 import { Documenter_manager } from "./features/documenter";
 import { State_machine_manager } from "./features/state_machine";
@@ -50,8 +51,6 @@ export class Teroshdl {
     constructor(context: vscode.ExtensionContext, output_channgel: Output_channel) {
         vscode.commands.registerCommand("teroshdl.open", (ags) => cmd.open_file(ags) );
 
-
-
         const homedir = teroshdl2.utils.common.get_home_directory();
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
@@ -62,6 +61,7 @@ export class Teroshdl {
     }
 
     public init_teroshdl(){
+        this.init_language_provider();
         this.init_template_manager();
         this.init_documenter();
         this.init_state_machine();
@@ -73,6 +73,10 @@ export class Teroshdl {
         this.init_shutter_mode();
         this.init_config();
         this.init_tree_views();
+    }
+
+    private init_language_provider() {
+        new Language_provider_manager(this.context, this.output_channel, this.manager);
     }
 
     private init_template_manager() {

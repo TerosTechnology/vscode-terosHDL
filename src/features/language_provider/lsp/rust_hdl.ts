@@ -5,13 +5,14 @@
  * Full license text can be found in /LICENSE or at https://opensource.org/licenses/MIT.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
-import extract = require('extract-zip');
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import semver = require('semver');
 import vscode = require('vscode');
-import { ExtensionContext, window } from 'vscode';
-import * as config_reader_lib from "../../../utils/config_reader";
+import { ExtensionContext } from 'vscode';
+import util = require('util');
+
+const exec = util.promisify(require('child_process').exec);
 
 import {
     LanguageClient,
@@ -23,7 +24,7 @@ import {
 const isWindows = process.platform === 'win32';
 const languageServerName = isWindows
     ? 'vhdl_ls-x86_64-pc-windows-msvc'
-    : 'vhdl_ls-x86_64-unknown-linux-gnu';
+    : 'vhdl_ls-x86_64-unknown-linux-musl';
 const languageServerBinaryName = 'vhdl_ls';
 let languageServer: string;
 
@@ -44,15 +45,19 @@ export class Rusthdl_lsp {
         const languageServerDir = this.context.asAbsolutePath(
             path.join('server', 'vhdl_ls')
         );
-        let languageServerVersion = this.embeddedVersion(languageServerDir);
-        if (languageServerVersion === '0.0.0') {
-            await this.getLatestLanguageServer(60000, this.context);
-            languageServerVersion = this.embeddedVersion(languageServerDir);
+        let current_language_server_version = this.embeddedVersion(languageServerDir);
+        
+        current_language_server_version = this.embeddedVersion(languageServerDir);
+
+        // Use embedded version
+        if (current_language_server_version === '0.0.0') {
+
         }
+
         languageServer = path.join(
             'server',
             'vhdl_ls',
-            languageServerVersion,
+            current_language_server_version,
             languageServerName,
             'bin',
             languageServerBinaryName + (isWindows ? '.exe' : '')
@@ -153,8 +158,9 @@ export class Rusthdl_lsp {
         let linter_name = this.config_reader.get_linter_name('vhdl', 'error');
         let args: string[] = [];
         if (linter_name === 'none') {
-            args = ['enable_linter'];
+            args = ['--no-lint'];
         }
+        args.push("--silent");
 
         let serverCommand = context.asAbsolutePath(languageServer);
         let serverOptions: ServerOptions = {
@@ -168,47 +174,5 @@ export class Rusthdl_lsp {
             },
         };
         return serverOptions;
-    }
-
-    async getLatestLanguageServer(
-        timeoutMs: number,
-        ctx: ExtensionContext
-    ) {
-        let latest: string = 'v0.1.8';
-
-        const languageServerAssetName = languageServerName + '.zip';
-        const languageServerAsset = ctx.asAbsolutePath(
-            path.join('resources', 'rusthdl', 'install', latest, languageServerAssetName)
-        );
-        if (!fs.existsSync(path.dirname(languageServerAsset))) {
-            fs.mkdirSync(path.dirname(languageServerAsset), {
-                recursive: true,
-            });
-        }
-
-        await new Promise<void>((resolve, reject) => {
-            const targetDir = ctx.asAbsolutePath(
-                path.join('server', 'vhdl_ls', latest)
-            );
-            if (!fs.existsSync(targetDir)) {
-                fs.mkdirSync(targetDir, { recursive: true });
-            }
-            extract(languageServerAsset, { dir: targetDir }, (err) => {
-                try {
-                    fs.removeSync(
-                        ctx.asAbsolutePath(path.join('server', 'install'))
-                    );
-                } catch { }
-                if (err) {
-                    try {
-                        fs.removeSync(targetDir);
-                    } catch { }
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-        return Promise.resolve();
     }
 }
