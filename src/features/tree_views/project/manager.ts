@@ -152,7 +152,13 @@ export class Project_manager {
         this.refresh();
     }
 
-    rename_project(item: element.Project){}
+    async rename_project(item: element.Project){
+        const new_project_name = await utils.get_from_input_box("New project name", "Project name");
+        if (new_project_name !== undefined) {
+            this.project_manager.rename_project(item.get_project_name(), new_project_name);
+            this.refresh();
+        }
+    }
 
     refresh(){
         this.emitter.emit('refresh');
