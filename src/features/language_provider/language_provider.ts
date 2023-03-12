@@ -27,13 +27,20 @@ import { Logger } from "./ctags/Logger";
 import * as vscode from 'vscode';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as Output_channel_lib from '../../utils/output_channel';
-import * as utils from '../../utils/utils';
+import * as rusthdl_lib from './lsp/rust_hdl';
 
+export type e_provider = {
+    'completion': any,
+    'doc': any,
+    'hover': any,
+    'def': any
+};
 export class Language_provider_manager {
-    private output_channel: Output_channel_lib.Output_channel;
     private manager: Multi_project_manager;
     private ctagsManager: CtagsManager | undefined;
 
+    private provider_list: e_provider;
+    private context : vscode.ExtensionContext;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -41,27 +48,109 @@ export class Language_provider_manager {
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
         manager: Multi_project_manager) {
         
+        this.context = context;
         this.manager = manager;
-        this.output_channel = output_channel;
-
-        const logger: Logger = new Logger();
 
         // Configure ctags
-        this.ctagsManager = new CtagsManager(logger, context);
+        const logger: Logger = new Logger();
+
+        this.ctagsManager = new CtagsManager(logger, this.context);
         this.ctagsManager.configure();
 
-        const doc_provider = new VerilogDocumentSymbolProvider(logger, context);
+        const comp_item_provider = new VerilogCompletionItemProvider(logger);
+        const doc_provider = new VerilogDocumentSymbolProvider(logger, this.context);
+        const hover_provider = new VerilogHoverProvider(logger);
+        const def_provider = new VerilogDefinitionProvider(logger);
 
+        const provider_list : e_provider = {
+            'completion': comp_item_provider,
+            'doc': doc_provider,
+            'hover': hover_provider,
+            'def': def_provider
+        }
+        this.provider_list = provider_list;
     }
 
-    private configure_vhdl(){
+    public async configure(){
+        // VHDL
+        this.configure_vhdl();
 
+        // Verilog/SV
+        this.configure_verilog();
+
+        // TCL
+        this.configure_tcl();
+
+        this.context.subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc) => { this.provider_list.doc.onSave(doc); }));
     }
 
-    private configure_verilog(logger: Logger, context: vscode.ExtensionContext){
-
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // TCL
+    /////////////////////////////////////////////////////////////////////////////////////////
+    private configure_tcl(){
+        const tcl_selector: vscode.DocumentSelector = { scheme: 'file', language: 'tcl' };
+        this.context.subscriptions.push(vscode.languages.registerCompletionItemProvider(tcl_selector, this.provider_list.completion, ".", "(", "="));
+        this.context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(tcl_selector, this.provider_list.doc));
+        this.context.subscriptions.push(vscode.languages.registerHoverProvider(tcl_selector, this.provider_list.doc));
+        this.context.subscriptions.push(vscode.languages.registerDefinitionProvider(tcl_selector, this.provider_list.doc));
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // VHDL
+    /////////////////////////////////////////////////////////////////////////////////////////
+    private async configure_vhdl(){
+        const vhdlSelector: vscode.DocumentSelector = { scheme: 'file', language: 'vhdl' };
+        this.context.subscriptions.push(vscode.languages.registerCompletionItemProvider(vhdlSelector, this.provider_list.completion, ".", "(", "="));
+        // Symbol provider
+        this.context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(vhdlSelector, this.provider_list.doc));
 
+        // Language server
+        let is_alive = false;
+        let rusthdl; 
 
+        const enable_vhdl_provider = this.get_config().general.general.go_to_definition_vhdl;
+        if (enable_vhdl_provider === true) {
+            rusthdl = new rusthdl_lib.Rusthdl_lsp(this.context, this.manager);
+            is_alive = await rusthdl.run_rusthdl();
+        }
+        else {
+            this.context.subscriptions.push(
+                vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
+                })
+            );
+        }
+
+        if (is_alive === false && enable_vhdl_provider === true) {
+            this.context.subscriptions.push(vscode.languages.registerHoverProvider(vhdlSelector, this.provider_list.hover));
+            this.context.subscriptions.push(vscode.languages.registerDefinitionProvider(vhdlSelector, this.provider_list.def));
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // Verilog
+    /////////////////////////////////////////////////////////////////////////////////////////
+    private configure_verilog(){
+        let verilogSelector: vscode.DocumentSelector = [
+            { scheme: 'file', language: 'verilog' },
+            { scheme: 'file', language: 'systemverilog' }
+        ];
+        // Completion
+        this.context.subscriptions.push(vscode.languages.registerCompletionItemProvider(verilogSelector, 
+            this.provider_list.completion, ".", "(", "="));
+        // Symbol
+        this.context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, 
+            this.provider_list.doc));
+
+        const enable_verilog_provider = this.get_config().general.general.go_to_definition_verilog;
+        if (enable_verilog_provider === true) {
+            this.context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, 
+                this.provider_list.hover));
+            this.context.subscriptions.push(vscode.languages.registerDefinitionProvider(verilogSelector, 
+                this.provider_list.def));
+        }
+    }
+
+    private get_config(){
+        return this.manager.get_config_manager().get_config();
+    }
 }

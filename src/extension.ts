@@ -20,45 +20,24 @@
 // along with Colibri.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as vscode from 'vscode';
-// Common libraries
-import * as config_reader_lib from "./utils/config_reader";
 //Extension manager
-import * as extension_manager from "./utils/extension_manager";
 import * as release_notes_webview from "./utils/webview/release_notes";
 //Utils
 import * as Output_channel_lib from './utils/output_channel';
 
-
 // TerosHDL
 import {Teroshdl} from './teroshdl';
 
-
 let output_channel: Output_channel_lib.Output_channel;
-let config_reader;
-
-
 
 export async function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "TerosHDL" is now active!');
 
-
     //TerosHDL console
     output_channel = new Output_channel_lib.Output_channel(context);
 
     const teroshdl = new Teroshdl(context, output_channel);
     teroshdl.init_teroshdl();
-
-
-
-
-
-
-
-
 }
-
-
-
-

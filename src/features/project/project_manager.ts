@@ -21,8 +21,6 @@
 
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from "vscode";
-import * as Output_channel_lib from '../../utils/output_channel';
-import * as config_reader_lib from '../../utils/config_reader';
 
 export class Project_manager {
     private treeview;
