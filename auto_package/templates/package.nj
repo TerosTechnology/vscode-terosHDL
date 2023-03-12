@@ -36,6 +36,10 @@
                     "name": "Sources"
                 },
                 {
+                    "id": "teroshdl-view-tree",
+                    "name": "Tree"
+                },
+                {
                     "id": "teroshdl-view-watcher",
                     "name": "Watchers"
                 },

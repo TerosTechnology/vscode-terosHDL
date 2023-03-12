@@ -19,6 +19,7 @@
 
 import {Project_manager} from "./project/manager";
 import {Source_manager} from "./source/manager";
+import {Tree_manager} from "./tree/manager";
 import {Runs_manager} from "./runs/manager";
 import {Actions_manager} from "./actions/manager";
 import {Run_output_manager} from "./run_output";
@@ -32,6 +33,7 @@ import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_proje
 
 let project_manager : Project_manager;
 let source_manager : Source_manager;
+let tree_manager : Tree_manager;
 let runs_manager : Runs_manager;
 let run_output : Run_output_manager = new Run_output_manager();
 let actions_manager : Actions_manager;
@@ -65,6 +67,7 @@ export class Tree_view_manager{
 
         project_manager = new Project_manager(context, manager, emitter, run_output);
         source_manager = new Source_manager(context, manager, emitter);
+        tree_manager = new Tree_manager(context, manager, emitter);
         runs_manager = new Runs_manager(context, manager, emitter, run_output, this.logger);
         actions_manager = new Actions_manager(context, manager, emitter, run_output);
         watcher_manager = new Watcher_manager(context, manager, emitter);
@@ -79,6 +82,7 @@ export class Tree_view_manager{
         runs_manager.refresh_tree();
         watcher_manager.refresh_tree();
         output_manager.refresh_tree();
+        tree_manager.refresh_tree();
     }
 
     // prj_loading(slm: any){
