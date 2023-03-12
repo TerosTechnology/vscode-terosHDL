@@ -26,6 +26,13 @@
   when: "viewItem == project"
   group: "inline"
 
+- name: view.project.rename
+  title: "Rename project"
+  icon: edit
+  where: ["view/item/context"]
+  when: "viewItem == project"
+  group: "inline"
+
 ## Source
 - name: view.source.add
   title: "Add"
