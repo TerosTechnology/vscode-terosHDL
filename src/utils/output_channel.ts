@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
-import * as config_reader_lib from "../utils/config_reader_simple";
 
 const MSG_PYTHON = "Error Python3 path (https://terostechnology.github.io/terosHDLdoc/configuration/python.html). ";
 const MSG_COCOTB_INSTALLATION = "Install cocotb itself to run tests (https://terostechnology.github.io/terosHDLdoc/configuration/python.html).";
@@ -85,8 +84,7 @@ export class Output_channel {
             this.output_channel.show();
         }
         else {
-            let config_reader = new config_reader_lib.Config_reader(this.context);
-            let enable_console = config_reader.get_enable_console();
+            const enable_console = true;
             if (enable_console === true) {
                 this.output_channel.show();
             }
