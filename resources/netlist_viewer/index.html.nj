@@ -12,7 +12,7 @@
     <script type="text/javascript" src="{{js_path_5}}"></script> 
     <script type="text/javascript" src="{{js_path_6}}"></script> 
 
-    <link rel="stylesheet" href="netlist_viewer.css" type="text/css" />
+    <link rel="stylesheet" href="{{css_path}}" type="text/css" />
     <style type="text/css">
         .noedit {
             color: #666;

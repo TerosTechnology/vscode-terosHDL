@@ -64,8 +64,8 @@ export class Schematic_manager extends Base_webview {
         const template_path = path_lib.join(this.context.extensionPath, 'resources', 'netlist_viewer', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'netlist_viewer', 
-            'style.css'));
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+            'netlist_viewer', 'style.css'));
         const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
             'netlist_viewer', 'libs', 'elk.bundled.js'));
         const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
@@ -80,7 +80,8 @@ export class Schematic_manager extends Base_webview {
             'netlist_viewer', 'libs', 'main.js'));
 
         const html = nunjucks.renderString(template_str, {
-            "css_path": css_path, "cspSource": webview.cspSource, 
+            "css_path": css_path, 
+            "cspSource": webview.cspSource, 
             "js_path_0": js_path_0,
             "js_path_1": js_path_1,
             "js_path_2": js_path_2,
@@ -324,8 +325,6 @@ export class Schematic_manager extends Base_webview {
 
         return output_yosys;
     }
-
-
 }
 
 
