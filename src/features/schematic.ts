@@ -95,7 +95,7 @@ export class Schematic_manager extends Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Webview creator
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async create_webview() {
+    async create_webview(mode_project = false) {
         // Create panel
         this.panel = vscode.window.createWebviewPanel(
             'netlist_viewer',
@@ -130,12 +130,15 @@ export class Schematic_manager extends Base_webview {
 
         this.panel.webview.html = this.get_webview_content(this.panel.webview);
 
-        if (this.mode_project === false) {
+        if (mode_project === false) {
             const document = utils.get_vscode_active_document();
             if (document === undefined) {
                 return;
             }
             await this.update(document);
+        }
+        else{
+            await this.generate_project_netlist();
         }
     }
 
@@ -156,7 +159,7 @@ export class Schematic_manager extends Base_webview {
         await this.panel?.webview.postMessage({ command: "update", result: result });
 
     }
-
+    
     //////////////////////////////////////////////////////////////////////////////
     // Export
     //////////////////////////////////////////////////////////////////////////////
@@ -183,10 +186,10 @@ export class Schematic_manager extends Base_webview {
         } catch (err) { }
     }
 
-    // async generate_project_netlist(project) {
-    //     let result = await this.generate_from_project(project);
-    //     await this.update_svg_in_html(result);
-    // }
+    async generate_project_netlist() {        
+        const result = await this.generate_from_project();
+        await this.update_svg_in_html(result);
+    }
 
     async generate_file_netlist(path) {
         let result = await this.generate_from_file(path);
@@ -207,14 +210,24 @@ export class Schematic_manager extends Base_webview {
         await this.panel?.webview.postMessage({ command: "update", result: result });
     }
 
-    // async generate_from_project(project) {
-    //     let sources = project.get_sources_as_array();
+    async generate_from_project() {
+        const selected_project = this.manager.get_select_project();
+        if (selected_project.successful === false) {
+            return "";
+        }
 
-    //     const tmpdir = require('os').homedir();
-    //     this.clear_enviroment(this.output_path);
+        const sources = (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
+            .get_project_definition().file_manager.get()
 
-    //     return await this.run_yosys_script(sources, this.output_path);
-    // }
+        const file_array : string[] = [];
+        sources.forEach(source_inst => {
+            file_array.push(source_inst.name);
+        });
+
+        this.clear_enviroment(this.output_path);
+
+        return await this.run_yosys_script(file_array, this.output_path);
+    }
 
     async generate_from_file(file_path: string) {
         this.clear_enviroment(this.output_path);
@@ -241,7 +254,7 @@ export class Schematic_manager extends Base_webview {
             return netlist;
         }
         let output_path_filename = path_lib.basename(output_path);
-        const script_code = `${cmd_files}; proc; opt; write_json ${output_path_filename}; stat`;
+        const script_code = `${cmd_files}; proc; write_json ${output_path_filename}; stat`;
 
         let plugin = ``;
         if (backend === 'yosys_ghdl_module') {

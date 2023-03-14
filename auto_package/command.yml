@@ -68,6 +68,19 @@
   when: "viewItem == source"
   group: "inline"
 
+## Dependency
+- name: view.dependency.refresh
+  title: "Refresh"
+  icon: refresh
+  where: ["view/title"]
+  when: "view == teroshdl-view-dependency"
+
+- name: view.dependency.schematic
+  title: "Schematic viewer"
+  icon: list-tree
+  where: ["view/title"]
+  when: "view == teroshdl-view-dependency"
+
 ## Runs
 - name: view.runs.run_all
   title: "Run all"

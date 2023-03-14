@@ -36,8 +36,8 @@
                     "name": "Sources"
                 },
                 {
-                    "id": "teroshdl-view-tree",
-                    "name": "Tree"
+                    "id": "teroshdl-view-dependency",
+                    "name": "Dependencies tree"
                 },
                 {
                     "id": "teroshdl-view-watcher",
