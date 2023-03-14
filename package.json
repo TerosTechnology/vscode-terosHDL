@@ -67,8 +67,8 @@
                     "name": "Sources"
                 },
                 {
-                    "id": "teroshdl-view-tree",
-                    "name": "Tree"
+                    "id": "teroshdl-view-dependency",
+                    "name": "Dependencies tree"
                 },
                 {
                     "id": "teroshdl-view-watcher",
@@ -152,6 +152,20 @@
                     "when": "view == teroshdl-view-source",
 
                     "command": "teroshdl.view.source.add",
+                    "group": "navigation"
+                }
+                        
+                ,{
+                    "when": "view == teroshdl-view-dependency",
+
+                    "command": "teroshdl.view.dependency.refresh",
+                    "group": "navigation"
+                }
+                        
+                ,{
+                    "when": "view == teroshdl-view-dependency",
+
+                    "command": "teroshdl.view.dependency.schematic",
                     "group": "navigation"
                 }
                         
@@ -334,6 +348,22 @@
                     "dark": "resources/dark/check.svg"
                 },
                 "title": "Select source as toplevel"
+            }, 
+            {
+                "command": "teroshdl.view.dependency.refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                },
+                "title": "Refresh"
+            }, 
+            {
+                "command": "teroshdl.view.dependency.schematic",
+                "icon": {
+                    "light": "resources/light/list-tree.svg",
+                    "dark": "resources/dark/list-tree.svg"
+                },
+                "title": "Schematic viewer"
             }, 
             {
                 "command": "teroshdl.view.runs.run_all",

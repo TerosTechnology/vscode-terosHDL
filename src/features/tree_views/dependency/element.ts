@@ -21,15 +21,15 @@ import * as vscode from "vscode";
 import { get_icon } from "../utils";
 import * as teroshdl2 from 'teroshdl2';
 
-export const VIEW_ID = "teroshdl-view-tree";
+export const VIEW_ID = "teroshdl-view-dependency";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elements
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export class Dependency extends vscode.TreeItem {
     public children: any[] | undefined;
-    public iconPath = get_icon("file");
-    public contextValue = "tree";
+    public iconPath = get_icon("verilog");
+    public contextValue = "dependency";
     // Element
     private path: string;
     // private entity_name: string;

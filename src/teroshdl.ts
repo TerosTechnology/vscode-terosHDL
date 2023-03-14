@@ -65,14 +65,14 @@ export class Teroshdl {
         this.init_template_manager();
         this.init_documenter();
         this.init_state_machine();
-        this.init_schematic();
+        const schematic = this.init_schematic();
         this.init_linter();
         this.init_formatter();
         this.init_completions();
         this.init_number_hover();
         this.init_shutter_mode();
         this.init_config();
-        this.init_tree_views();
+        this.init_tree_views(schematic);
     }
 
     private init_language_provider() {
@@ -93,7 +93,7 @@ export class Teroshdl {
     }
 
     private init_schematic() {
-        new Schematic_manager(this.context, this.output_channel, this.manager, false);
+        return new Schematic_manager(this.context, this.output_channel, this.manager, false);
     }
 
     private init_linter() {
@@ -120,8 +120,8 @@ export class Teroshdl {
         new Config_manager(this.context, this.output_channel, this.manager);
     }
 
-    private init_tree_views() {
-        new Tree_view_manager(this.context, this.manager, this.emitter);
+    private init_tree_views(schematic_manager : Schematic_manager) {
+        new Tree_view_manager(this.context, this.manager, this.emitter, schematic_manager);
     }
 
 }
