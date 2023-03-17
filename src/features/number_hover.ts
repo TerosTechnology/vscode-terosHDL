@@ -33,6 +33,9 @@ function hover(document, position, lang: teroshdl2.common.general.HDL_LANG) {
     if (wordRange !== undefined) {
         let leadingText = document.getText(new vscode.Range(wordRange.start, wordRange.end));
         result = teroshdl2.utils.numbers.hdl_hover(leadingText, lang);
+        if (result.is_ok === false){
+            return;
+        }
 
         const content = new vscode.MarkdownString();
         content.supportHtml = true;
@@ -40,10 +43,10 @@ function hover(document, position, lang: teroshdl2.common.general.HDL_LANG) {
         content.appendMarkdown(`Number conversion of **${leadingText}**:<br>`);
 
         if (result.is_multi === false) {
-            content.appendMarkdown(`- <span style="color:#569cd6;">Unsigned</span>:&nbsp;<span style="color:#b5cea8;">${result.unsigned_n}</span>`);
+            content.appendMarkdown(`- <span style="color:#569cd6;">Unsigned</span> &nbsp;<span style="color:#b5cea8;">${result.unsigned_n}</span>`);
         } else {
-            content.appendMarkdown(`- <span style="color:#569cd6;">Unsigned</span>:&nbsp;<span style="color:#b5cea8;">${result.unsigned_n}</span><br>`);
-            content.appendMarkdown(`- <span style="color:#569cd6;">Signed&nbsp;&nbsp;&nbsp;&nbsp;</span>:&nbsp;<span style="color:#b5cea8;">${result.signed_n}</span>`);
+            content.appendMarkdown(`- <span style="color:#569cd6;">Unsigned</span> &nbsp;<span style="color:#b5cea8;">${result.unsigned_n}</span><br>`);
+            content.appendMarkdown(`- <span style="color:#569cd6;">Signed&nbsp;&nbsp;&nbsp;&nbsp;</span> &nbsp;<span style="color:#b5cea8;">${result.signed_n}</span>`);
         }
 
         return new vscode.Hover(content);
