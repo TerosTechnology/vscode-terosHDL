@@ -62,17 +62,29 @@ export class Teroshdl {
 
     public init_teroshdl(){
         this.init_language_provider();
+        console.log("activated language provider")
         this.init_template_manager();
+        console.log("activated template manager")
         this.init_documenter();
+        console.log("activated documenter")
         this.init_state_machine();
+        console.log("activated state machine")
         const schematic = this.init_schematic();
+        console.log("activated schematic")
         this.init_linter();
+        console.log("activated linter")
         this.init_formatter();
+        console.log("activated formatter")
         this.init_completions();
+        console.log("activated completions")
         this.init_number_hover();
+        console.log("activated hover")
         this.init_shutter_mode();
+        console.log("activated shutter mode")
         this.init_config();
+        console.log("activated config viewer")
         this.init_tree_views(schematic);
+        console.log("activated views")
     }
 
     private init_language_provider() {
