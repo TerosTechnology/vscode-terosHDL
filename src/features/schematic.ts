@@ -245,6 +245,7 @@ export class Schematic_manager extends Base_webview {
         const config = this.manager.get_config_manager().get_config();
 
         const backend = config.schematic.general.backend;
+        const custom_argumens = config.schematic.general.args;
         let yosys_path = config.tools.yosys.installation_path;
 
         let cmd_files = yosys.get_yosys_read_file(sources, backend, this.working_directory);
@@ -254,7 +255,7 @@ export class Schematic_manager extends Base_webview {
             return netlist;
         }
         let output_path_filename = path_lib.basename(output_path);
-        const script_code = `${cmd_files}; proc; write_json ${output_path_filename}; stat`;
+        const script_code = `${cmd_files}; proc; ${custom_argumens} ; write_json ${output_path_filename}; stat`;
 
         let plugin = ``;
         if (backend === 'yosys_ghdl_module') {
@@ -278,7 +279,7 @@ export class Schematic_manager extends Base_webview {
         let element = this;
         element.output_channel.clear();
         element.output_channel.append(command);
-        element.output_channel.show();
+        // element.output_channel.show();
 
         return new Promise(resolve => {
             element.childp = shell.exec(command, { async: true, cwd: this.working_directory }, async function (code, stdout, stderr) {
