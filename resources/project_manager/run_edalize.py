@@ -1,8 +1,8 @@
 # import os
 import shutil
-import edalize
 import json
 import sys
+from edalize.edatool import get_edatool
 from distutils.spawn import find_executable
 from os.path import expanduser
 import os
@@ -57,7 +57,7 @@ f = open(edam_file,)
 # returns JSON object as
 # a dictionary
 edam = json.load(f)
-backend = edalize.get_edatool(simulator)(edam=edam,
+backend = get_edatool(simulator)(edam=edam,
                                          work_root=work_root)
 os.makedirs(work_root)
 
