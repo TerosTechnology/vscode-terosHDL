@@ -5,6 +5,9 @@
 	"tasks": [
 		{
 			"type": "npm",
+			"options": {
+				"cwd": "packages/teroshdl"
+			},
 			"script": "watch",
 			"problemMatcher": "$tsc-watch",
 			"isBackground": true,

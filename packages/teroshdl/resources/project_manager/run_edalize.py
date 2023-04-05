@@ -1,6 +1,5 @@
 # import os
 import shutil
-import edalize
 import json
 import sys
 from distutils.spawn import find_executable
@@ -8,6 +7,11 @@ from os.path import expanduser
 import os
 import platform
 import subprocess
+
+try:
+    from edalize import get_edatool
+except ImportError:
+    from edalize.edatool import get_edatool
 
 home_dir = expanduser("~")
 work_root = os.path.join(home_dir, '.teroshdl', 'build')
@@ -57,8 +61,7 @@ f = open(edam_file,)
 # returns JSON object as
 # a dictionary
 edam = json.load(f)
-backend = edalize.get_edatool(simulator)(edam=edam,
-                                         work_root=work_root)
+backend = get_edatool(simulator)(edam=edam, work_root=work_root)
 os.makedirs(work_root)
 
 build_gui_tools = ['vivado', 'trellis', 'apicula', 'icestorm', 'nextpnr']

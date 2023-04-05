@@ -9,7 +9,7 @@ on:
 
 jobs:
   ##############################################################################
-  # Build
+  # Build TerosHDL
   ##############################################################################
   build:
     name: Build .vsix
@@ -43,11 +43,12 @@ jobs:
 
       - name: Prepare teroshdl-vscode
         run: |
+          cd packages/teroshdl
           npm install
 
-      - name: Prepare colibri2
+      - name: Prepare colibri
         run: |
-          cd ..
+          cd packages
           git clone https://github.com/TerosTechnology/colibri.git -b dev
           cd colibri
           npm install
@@ -58,6 +59,7 @@ jobs:
       - name: Build 
         id: build
         run: |
+          cd packages/teroshdl
           # sudo apt-get install python3-sphinx
           npm install -g vsce
           # npm run-script generate-doc
@@ -70,7 +72,7 @@ jobs:
           echo ${{ env.version }}
           file_ver="${{ env.version }}_${file}"
           file_ver="${file_ver/:/"_"}"
-          mv $file $file_ver
+          mv $file ../../$file_ver
 
       - name: Archive vsix
         uses: actions/upload-artifact@v3
