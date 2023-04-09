@@ -5,7 +5,6 @@ node_modules
 user.teros-hdl.config.json
 prj_config.teros
 package-lock.json
-server
 config.html
 resources/project_manager/examples
 resources/project_manager/help
