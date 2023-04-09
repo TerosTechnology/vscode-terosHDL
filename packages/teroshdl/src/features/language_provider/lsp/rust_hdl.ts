@@ -135,10 +135,6 @@ export class Rusthdl_lsp {
                 .readdirSync(languageServerDir)
                 .reduce((version: string, dir: string) => {
                     if (semver.gt(dir, version)) {
-                        fs.remove(path.join(languageServerDir, version)).catch(
-                            (err: any) => {
-                            }
-                        );
                         return dir;
                     } else {
                         return version;
@@ -152,7 +148,7 @@ export class Rusthdl_lsp {
     getServerOptionsEmbedded(context: ExtensionContext) {
         const linter_name = this.manager.get_config_manager().get_config().linter.general.linter_vhdl;
         let args: string[] = [];
-        if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.none) {
+        if (linter_name !== teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.none) {
             args = ['--no-lint'];
         }
         args.push("--silent");
