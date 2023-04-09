@@ -159,14 +159,19 @@ async function provideDocumentFormattingEdits(document: vscode.TextDocument, opt
     }
 
     let code_format: string;
+    let sucessful = false;
     if (document.languageId === "vhdl") {
-        code_format = (await formatter_vhdl.format(code_to_format)).code_formatted;
+        const result = await formatter_vhdl.format(code_to_format);
+        code_format = result.code_formatted;
+        sucessful = result.successful;
     }
     else {
-        code_format = (await formatter_verilog.format(code_to_format)).code_formatted;
+        const result = await formatter_verilog.format(code_to_format);
+        code_format = result.code_formatted;
+        sucessful = result.successful;
     }
     //Error
-    if (code_format === null) {
+    if (sucessful === false) {
         // vscode.window.showErrorMessage('Select a valid file.!');
         console.log("Error format code.");
         return edits;
