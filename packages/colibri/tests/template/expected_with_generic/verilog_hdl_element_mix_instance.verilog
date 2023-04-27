@@ -1,0 +1,13 @@
+test_entity_name_inst : entity work.test_entity_name
+  generic map (
+    PARAM_CNT_0 => PARAM_CNT_0,
+    PARAM_CNT_1 => PARAM_CNT_1
+  )
+  port map (
+    a => a,
+    b => b,
+    c => c,
+    d => d,
+    e => e
+  );
+

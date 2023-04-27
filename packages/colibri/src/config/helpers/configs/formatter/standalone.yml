@@ -1,0 +1,110 @@
+keyword_case:
+  description: "Keyword case. e.g. begin, case, when "
+  type: select
+  options:
+    lowercase: "LowerCase"
+    uppercase: "UpperCase"
+  value: "lowercase"
+
+name_case:
+  description: "Type name case. e.g. boolean, natural, string "
+  type: select
+  options:
+    lowercase: "LowerCase"
+    uppercase: "UpperCase"
+  value: "lowercase"
+
+indentation:
+  description: "Indentation."
+  type: string
+  value: "  "
+
+align_port_generic:
+  description: "Align signs in ports and generics."
+  type: boolean
+  value: true
+
+# align_port:
+#   description: "Align signs in ports."
+#   type: boolean
+#   value: true
+
+# align_generic:
+#   description: "Align signs in generics."
+#   type: boolean
+#   value: true
+
+# align_procedure:
+#   description: "Align procedure."
+#   type: boolean
+#   value: true
+
+# align_function:
+#   description: "Align function."
+#   type: boolean
+#   value: true
+
+align_comment:
+  description: "Align comments."
+  type: boolean
+  value: false
+
+remove_comments:
+  description: "Remove comments."
+  type: boolean
+  value: false
+
+remove_reports:
+  description: "Remove reports."
+  type: boolean
+  value: false
+
+check_alias:
+  description: "All long names will be replaced by ALIAS names."
+  type: boolean
+  value: false
+
+new_line_after_then:
+  description: "New line after THEN."
+  type: select
+  options:
+    new_line: "New line"
+    no_new_line: "No new line"
+    none: "None"
+  value: "new_line"
+
+new_line_after_semicolon:
+  description: "New line after semicolon ';'."
+  type: select
+  options:
+    new_line: "New line"
+    no_new_line: "No new line"
+    none: "None"
+  value: "new_line"
+
+new_line_after_else:
+  description: "New line after ELSE."
+  type: select
+  options:
+    new_line: "New line"
+    no_new_line: "No new line"
+    none: "None"
+  value: "new_line"
+
+new_line_after_port:
+  description: "New line after PORT | PORT MAP."
+  type: select
+  options:
+    new_line: "New line"
+    no_new_line: "No new line"
+    none: "None"
+  value: "new_line"
+
+new_line_after_generic:
+  description: "New line after GENERIC."
+  type: select
+  options:
+    new_line: "New line"
+    no_new_line: "No new line"
+    none: "None"
+  value: "new_line"

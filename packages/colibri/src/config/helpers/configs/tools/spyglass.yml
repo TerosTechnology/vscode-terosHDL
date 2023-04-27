@@ -1,0 +1,20 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+methodology:
+  description: ""
+  type: string
+  value: ""
+goals:
+  description: ""
+  type: array
+  value: []
+spyglass_options:
+  description: ""
+  type: array
+  value: []
+rule_parameters:
+  description: ""
+  type: array
+  value: []

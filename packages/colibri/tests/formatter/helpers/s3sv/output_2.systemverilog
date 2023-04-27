@@ -1,0 +1,10 @@
+module mux_using_assign (
+	input  wire din_0  , // Mux first input
+	input  wire din_1  , // Mux Second input
+	input  wire sel    , // Select input
+	output wire mux_out, sample_0, sample_1  // Mux output
+);
+
+	assign mux_out = (sel) ? din_1 : din_0;
+
+endmodule //End Of Module mux

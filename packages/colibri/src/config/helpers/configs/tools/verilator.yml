@@ -1,0 +1,33 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+mode:
+  description: "Select compilation mode. Legal values are cc for C++ testbenches, sc for SystemC testbenches or lint-only to only perform linting on the Verilog code."
+  type: select
+  options:
+    cc: "cc"
+    sc: "sc"
+    lint-only: "lint-only"
+  value: "lint-only"
+
+libs:
+  description: "Extra libraries for the verilated model to link against."
+  type: array
+  value: []
+
+verilator_options:
+  description: "Additional options for verilator."
+  type: array
+  value: []
+
+make_options:
+  description: "Additional arguments passed to make when compiling the simulation. This is commonly used to set OPT/OPT_FAST/OPT_SLOW."
+  type: array
+  value: []
+
+run_options:
+  description: "Additional arguments directly passed to the verilated model."
+  type: array
+  value: []

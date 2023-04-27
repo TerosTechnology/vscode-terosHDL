@@ -1,0 +1,25 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+# gui_mode:
+#     description: "Graphical user interface."
+#     type: select
+#     options:
+#         modelsim: "ModelSim"
+#         external: "External waveform viewer"
+
+vcom_options:
+  description: "Additional options for compilation with vcom."
+  type: array
+  value: []
+
+vlog_options:
+  description: "Additional options for compilation with vlog."
+  type: array
+  value: []
+
+vsim_options:
+  description: "Additional run options for vsim."
+  type: array
+  value: []

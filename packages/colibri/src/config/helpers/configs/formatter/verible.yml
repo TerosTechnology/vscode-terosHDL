@@ -1,0 +1,9 @@
+path:
+  description: "Verible formatter binary path. E.g: /home/user/Downloads/verible-v0.0-1296/bin/verible-verilog-format"
+  type: string
+  value: ""
+
+format_args:
+  description: "Extra command line arguments passed to the Verible tool"
+  type: string
+  value: ""

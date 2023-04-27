@@ -1,0 +1,38 @@
+from pathlib import Path
+from vunit import VUnit
+
+ROOT = Path(__file__).parent
+
+vu = VUnit.from_argv()
+
+{% if config.enable_array_util_lib == true -%}
+vu.add_array_util()
+{% endif -%}
+
+{% if config.enable_com_lib == true -%}
+vu.add_com()
+{% endif -%}
+
+{% if config.enable_json4vhdl_lib == true -%}
+vu.add_json4vhdl()
+{% endif -%}
+
+{% if config.enable_osvvm_lib == true -%}
+vu.add_osvvm()
+{% endif -%}
+
+{% if config.enable_random_lib == true -%}
+vu.add_random()
+{% endif -%}
+
+{% if config.enable_verification_components_lib == true -%}
+vu.add_verification_components()
+{% endif -%}
+
+lib = vu.add_library("lib")
+
+{% for file_inst in file_list -%}
+lib.add_source_files("{{file_inst["name"]}}")
+{% endfor -%}
+
+vu.main()

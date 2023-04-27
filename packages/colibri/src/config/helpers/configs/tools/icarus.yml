@@ -1,0 +1,14 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+timescale:
+  description: "Default timescale."
+  type: string
+  value: ""
+
+iverilog_options:
+  description: "Additional options for iverilog."
+  type: array
+  value: []

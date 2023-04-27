@@ -1,0 +1,24 @@
+logging:
+  description: "Enable show TerosHDL console with each message."
+  type: boolean
+  value: true
+
+pypath:
+  description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong>"
+  type: string
+  value: ""
+
+go_to_definition_vhdl:
+  description: "Activate go to definition feature for VHDL (you need to restart VSCode)."
+  type: boolean
+  value: true
+
+go_to_definition_verilog:
+  description: "Activate go to definition feature for Verilog/SV (you need to restart VSCode)."
+  type: boolean
+  value: true
+
+developer_mode:
+  description: "Developer mode: be careful!!"
+  type: boolean
+  value: false

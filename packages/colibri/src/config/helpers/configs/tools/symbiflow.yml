@@ -1,0 +1,30 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+package:
+  description: "FPGA chip package (e.g. clg400-1)."
+  type: string
+  value: ""
+part:
+  description: "FPGA part type (e.g. xc7a50t)."
+  type: string
+  value: ""
+vendor:
+  description: "Target architecture. Currently only “xilinx” is supported."
+  type: string
+  value: ""
+pnr:
+  description: "Place and Route tool. Currently only “vpr” is supported."
+  type: select
+  options:
+    vpr: "VPR"
+  value: "vpr"
+vpr_options:
+  description: "Additional vpr tool options. If not used, default options for the tool will be used."
+  type: string
+  value: ""
+environment_script:
+  description: "Optional bash script that will be sourced before each build step.."
+  type: string
+  value: ""

@@ -1,0 +1,36 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+# vivado-settings:
+#     description: "Path to vivado settings (e.g. /opt/Xilinx/Vivado/2017.2/settings64.sh)."
+#     type: input
+
+part:
+  description: "Part. Device identifier. e.g. xc7a35tcsg324-1."
+  type: string
+  value: ""
+
+synth:
+  description: "Synthesis tool. Allowed values are vivado (default) and yosys.."
+  type: string
+  value: ""
+
+pnr:
+  description: "Choose only synthesis or place and route and bitstream generation:"
+  type: select
+  options:
+    vivado: "Place and route"
+    none: "Only synthesis"
+  value: "vivado"
+
+jtag_freq:
+  description: "The frequency for jtag communication."
+  type: number
+  value: 10000
+
+hw_target:
+  description: "Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A."
+  type: string
+  value: ""

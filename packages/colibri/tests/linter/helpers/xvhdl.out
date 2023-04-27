@@ -1,0 +1,5 @@
+INFO: [VRFC 10-163] Analyzing VHDL file "/home/carlos/repo/colibri2/tests/linter/aux/xvhdl.vhdl" into library work
+INFO: [VRFC 10-3107] analyzing entity 'xvhdl'
+ERROR: [VRFC 10-3255] deferred constant 'cnt_sample' is allowed only in package declaration [/home/carlos/repo/colibri2/tests/linter/aux/xvhdl.vhdl:14]
+ERROR: [VRFC 10-3782] unit 'xvhdl_arch' ignored due to previous errors [/home/carlos/repo/colibri2/tests/linter/aux/xvhdl.vhdl:13]
+INFO: [VRFC 10-3070] VHDL file '/home/carlos/repo/colibri2/tests/linter/aux/xvhdl.vhdl' ignored due to errors

@@ -1,0 +1,60 @@
+<div class="sidenav">
+{%- for tp0 in type_declaration %}
+    <button class="dropdown-btn" onclick="open_submenu_icon(this)">{{type_declaration[tp0]["title"]}} 
+      <div class="container" onclick="open_submenu_icon(this)">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </div>
+    </button>
+    <div class="dropdown-container">
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+        <a style="color:black" id="btn-{{tp0}}-{{tp1}}">{{type_declaration[tp0]["pages"][tp1]["title"]}}</a>
+    {%- endfor %}
+    </div>
+{%- endfor %}
+</div>
+
+<article class="markdown-body">
+
+{%- for tp0 in type_declaration %}
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+  <div id="{{tp0}}-{{tp1}}" class='main'>
+    <h3>{{type_declaration[tp0]["title"]}}: {{type_declaration[tp0]["pages"][tp1]["title"]}}</h3>
+    <hr></hr>
+    <p><i>{{type_declaration[tp0]["pages"][tp1]["description"]}}</i></p>
+      {%- for tp2 in type_declaration[tp0]["pages"][tp1] %}
+    <label>{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}</label>
+        {%- if "options" in type_declaration[tp0]["pages"][tp1][tp2] %}
+        <br>
+        <select name='select' id='{{tp0}}-{{tp1}}-{{tp2}}'>
+              {%- for option in type_declaration[tp0]["pages"][tp1][tp2]["options"] %}
+                <option value='{{option}}'>{{type_declaration[tp0]["pages"][tp1][tp2]["options"][option]}}</option>
+              {%- endfor %}
+        </select>
+        {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "boolean" %}
+      <input class='radio-button' id='{{tp0}}-{{tp1}}-{{tp2}}' type='checkbox'>
+        {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "string" %}
+      <br>
+      <input type='input' id='{{tp0}}-{{tp1}}-{{tp2}}' class='radio-button'>
+        {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "number" %}
+      <input type='number' id='{{tp0}}-{{tp1}}-{{tp2}}' class='radio-button'>
+        {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
+      <input type='input' id='{{tp0}}-{{tp1}}-{{tp2}}' class='radio-button'>
+        {%- else %}
+        {%- endif %}
+      <br><br>
+      {%- endfor %}
+  </div>
+    {%- endfor %}
+{%- endfor %}
+
+</article> 
+
+<div id="div_button">
+  <button id="button_cancel" class="button" type="button" onclick="close_panel(event)">Close</button>
+  <button id="button_apply" class="button" type="button" onclick="send_config(event)">Apply</button>
+  <button id="button_apply_close" class="button" type="button" onclick="send_config_and_close(event)">Apply and close</button>
+  {# <button id="button_load" class="button" type="button" onclick="load_config(event)">Load</button> #}
+  {# <button id="button_export" class="button" type="button" onclick="export_config(event)">Export</button> #}
+</div>

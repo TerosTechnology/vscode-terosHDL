@@ -1,0 +1,14 @@
+module icarus_v(y,a);
+  output y;
+  input a;
+
+               assign y=~a;
+
+
+
+               always begin  
+
+               end  
+
+
+endmodule

@@ -1,0 +1,15 @@
+toplevel: "half_adder_process_tb"
+name: project_ghdl
+files: 
+  - name: "half_adder_tb.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+  - name: "half_adder.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+tool_options: 
+  ghdl: 
+    installation_path: ""
+    waveform: ""
+    analyze_options: ""
+    run_options: ""

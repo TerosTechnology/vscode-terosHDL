@@ -1,0 +1,20 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+family:
+  description: "FPGA family (e.g. spartan6)."
+  type: string
+  value: ""
+device:
+  description: "FPGA device (e.g. xc6slx45)."
+  type: string
+  value: ""
+package:
+  description: "FPGA package (e.g. csg324)."
+  type: string
+  value: ""
+speed:
+  description: "FPGA speed grade (e.g. -2)."
+  type: string
+  value: ""

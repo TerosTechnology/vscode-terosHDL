@@ -1,0 +1,58 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+simulator_name:
+  description: "VUnit simulator:"
+  type: select
+  options:
+    rivierapro: "Aldec Riviera-PRO"
+    activehdl: "Aldec Active-HDL"
+    ghdl: "GHDL"
+    modelsim: "Mentor Graphics ModelSim/Questa"
+    xsim: "XSIM (Not supported in official VUnit)"
+  value: ghdl
+
+runpy_mode:
+  description: "runpy mode:"
+  type: select
+  options:
+    standalone: "Standalone"
+    creation: "Creation"
+  value: standalone
+
+extra_options:
+  description: "VUnit options. Extra options for the VUnit test runner."
+  type: array
+  value: []
+
+enable_array_util_lib:
+  description: "Enable array util library in non standalone mode."
+  type: boolean
+  value: false
+
+enable_com_lib:
+  description: "Enable com library in non standalone mode."
+  type: boolean
+  value: false
+
+enable_json4vhdl_lib:
+  description: "Enable json4vhdl library in non standalone mode."
+  type: boolean
+  value: false
+
+enable_osvvm_lib:
+  description: "Enable OSVVM library in non standalone mode."
+  type: boolean
+  value: false
+
+enable_random_lib:
+  description: "Enable random library in non standalone mode."
+  type: boolean
+  value: false
+
+enable_verification_components_lib:
+  description: "Enable verification components library in non standalone mode."
+  type: boolean
+  value: false

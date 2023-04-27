@@ -1,0 +1,14 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+arch:
+  description: "FPGA architecture e.g. sofa-hd, sofa-chd, sofa-qlhd and sofa-plus-hd"
+  type: string
+  value: ""
+
+task_options:
+  description: "Extra options for running the task simulation with OpenFPGA framework (see the OpenFPGA documentation)."
+  type: array
+  value: []

@@ -1,0 +1,8 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+part:
+  description: "FPGA part number (e.g. LIFCL-40-9BG400C)."
+  type: string
+  value: ""

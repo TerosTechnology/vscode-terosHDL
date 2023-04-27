@@ -1,0 +1,11 @@
+{% for element in generic -%}
+{% if element['default_value'] != "" -%}
+{{ indent[1] }}constant {{element['info']['name']}} : {{element['type']}} := {{element['default_value']|safe}};
+{% else -%}
+{{ indent[1] }}constant {{element['info']['name']}} : {{element['type']}};
+{% endif -%}
+{% endfor -%}
+
+{% for element in port -%}
+{{ indent[1] }}signal {{element['info']['name']}} : {{element['type']}};
+{% endfor -%}

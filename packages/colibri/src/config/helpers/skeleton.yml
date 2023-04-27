@@ -1,0 +1,272 @@
+############################################
+# General
+############################################
+general:
+  title: General
+  description:
+  general: ./configs/general.yml
+
+############################################
+# Documentation
+############################################
+documentation:
+  title: Documentation
+  description:
+  general: ./configs/documentation.yml
+
+############################################
+# Editor
+############################################
+editor:
+  title: Editor
+  description:
+  general: ./configs/editor.yml
+
+############################################
+# Formatter
+############################################
+formatter:
+  title: Formatter
+  description:
+  general: ./configs/formatter/general.yml
+  secondary:
+    istyle:
+      title: iStyle
+      description: Verilog/SV iStyle formatter
+      page: ./configs/formatter/istyle.yml
+
+    s3sv:
+      title: s3sv
+      description: Verilog/SV S3SV formatter
+      page: ./configs/formatter/s3sv.yml
+
+    verible:
+      title: Verible
+      description: Verilog/SV Verible formatter
+      page: ./configs/formatter/verible.yml
+
+    standalone:
+      title: VHDL standalone
+      description: VHDL standalone formatter
+      page: ./configs/formatter/standalone.yml
+
+    svg:
+      title: VHDL VSG
+      description: "VHDL Style Guide. Analyzes VHDL files for style guide violations."
+      page: ./configs/formatter/vsg.yml
+
+############################################
+# Linter
+############################################
+linter:
+  title: Linter settings
+  description:
+  general: ./configs/linter/general.yml
+  secondary:
+    ghdl:
+      title: GHDL linter
+      description: ""
+      page: ./configs/linter/ghdl.yml
+    icarus:
+      title: Icarus linter
+      description: ""
+      page: ./configs/linter/icarus.yml
+    modelsim:
+      title: ModelSim linter
+      description: ""
+      page: ./configs/linter/modelsim.yml
+    verible:
+      title: Verible linter
+      description: ""
+      page: ./configs/linter/verible.yml
+    verilator:
+      title: Verilator linter
+      description: ""
+      page: ./configs/linter/verilator.yml
+    vivado:
+      title: Vivado linter
+      description: ""
+      page: ./configs/linter/vivado.yml
+    vsg:
+      title: VSG linter
+      description: ""
+      page: ./configs/linter/vsg.yml
+
+############################################
+# Schematic
+############################################
+schematic:
+  title: Schematic viewer
+  description:
+  general: ./configs/schematic.yml
+
+############################################
+# Templates
+############################################
+templates:
+  title: Templates
+  description:
+  general: ./configs/templates.yml
+
+############################################
+# Tools
+############################################
+tools:
+  title: Tools
+  description:
+  general: ./configs/tools/general.yml
+  secondary:
+    osvvm:
+      title: OSVVM
+      description: "OSVVM is an advanced verification methodology that defines a VHDL verification framework, verification utility library, verification component library, and a scripting flow that simplifies your FPGA or ASIC verification project from start to finish. Using these libraries you can create a simple, readable, and powerful testbench that is suitable for either a simple FPGA block or a complex ASIC."
+      page: ./configs/tools/osvvm.yml
+
+    ascenlint:
+      title: Ascenlint
+      description: "Ascent Lint performs static source code analysis on HDL code and checks for common coding errors or coding style violations."
+      page: ./configs/tools/ascentlint.yml
+
+    cocotb:
+      title: Cocotb
+      description: ""
+      page: ./configs/tools/cocotb.yml
+
+    diamond:
+      title: Diamond
+      description: "Backend for Lattice Diamond."
+      page: ./configs/tools/diamond.yml
+
+    ghdl:
+      title: GHDL
+      description: "GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL."
+      page: ./configs/tools/ghdl.yml
+
+    icarus:
+      title: Icarus
+      description: "Icarus Verilog is a Verilog simulation and synthesis tool. It operates as a compiler, compiling source code written in Verilog (IEEE-1364) into some target format."
+      page: ./configs/tools/icarus.yml
+
+    icestorm:
+      title: Icestorm
+      description: "Open source toolchain for Lattice iCE40 FPGAs. Uses yosys for synthesis and arachne-pnr or nextpnr for Place & Route."
+      page: ./configs/tools/icestorm.yml
+
+    ise:
+      title: ISE
+      description: "Xilinx ISE Design Suite."
+      page: ./configs/tools/ise.yml
+
+    isem:
+      title: ISIM
+      description: "Xilinx ISim simulator from ISE design suite."
+      page: ./configs/tools/isim.yml
+
+    modelsim:
+      title: ModelSim
+      description: "ModelSim simulator from Mentor Graphics."
+      page: ./configs/tools/modelsim.yml
+
+    morty:
+      title: Morty
+      description: "Run the (System-) Verilog pickle tool called morty."
+      page: ./configs/tools/morty.yml
+
+    quartus:
+      title: Quartus
+      description: "The Quartus backend supports Intel Quartus Std and Pro editions to build systems and program the FPGA."
+      page: ./configs/tools/quartus.yml
+
+    radiant:
+      title: Radiant
+      description: "Backend for Lattice Radiant."
+      page: ./configs/tools/radiant.yml
+
+    rivierapro:
+      title: Rivierapro
+      description: "Riviera Pro simulator from Aldec."
+      page: ./configs/tools/rivierapro.yml
+
+    siliconcompiler:
+      title: SiliconCompiler
+      description: 'SiliconCompiler is an open source compiler framework that automates translation from source code to silicon. Check the project documentation: <a href="https://docs.siliconcompiler.com/en/latest/">https://docs.siliconcompiler.com/en/latest/</a>'
+      page: ./configs/tools/siliconcompiler.yml
+
+    spyglass:
+      title: Spyglass
+      description: "Synopsys (formerly Atrenta) Spyglass Backend. Spyglass performs static source code analysis on HDL code and checks for common coding errors or coding style violations."
+      page: ./configs/tools/spyglass.yml
+
+    symbiyosys:
+      title: SymbiYosys
+      description: "SymbiYosys formal verification wrapper for Yosys."
+      page: ./configs/tools/symbiyosys.yml
+
+    symbiflow:
+      title: Symbiflow
+      description: "VHDL Style Guide. Analyzes VHDL files for style guide violations."
+      page: ./configs/tools/symbiflow.yml
+
+    trellis:
+      title: Trellis
+      description: "Project Trellis enables a fully open-source flow for ECP5 FPGAs using Yosys for Verilog synthesis and nextpnr for place and route."
+      page: ./configs/tools/trellis.yml
+
+    vcs:
+      title: VCS
+      description: "Synopsys VCS Backend"
+      page: ./configs/tools/vcs.yml
+
+    veriblelint:
+      title: VeribleLint
+      description: "Verible lint backend (verible-verilog-lint)."
+      page: ./configs/tools/veriblelint.yml
+
+    verilator:
+      title: Verilator
+      description: "Verible lint backend (verible-verilog-lint)."
+      page: ./configs/tools/verilator.yml
+
+    vivado:
+      title: Vivado
+      description: "The Vivado backend executes Xilinx Vivado to build systems and program the FPGA."
+      page: ./configs/tools/vivado.yml
+
+    vunit:
+      title: VUnit
+      description: "VUnit testing framework."
+      page: ./configs/tools/vunit.yml
+
+    xcelium:
+      title: Xcelium
+      description: "Xcelium simulator from Cadence Design Systems."
+      page: ./configs/tools/xcelium.yml
+
+    xsim:
+      title: XSIM
+      description: "XSim simulator from the Xilinx Vivado suite."
+      page: ./configs/tools/xsim.yml
+
+    yosys:
+      title: Yosys
+      description: "Open source synthesis tool targeting many different FPGAs."
+      page: ./configs/tools/yosys.yml
+
+    openfpga:
+      title: OpenFPGA
+      description: "The award-winning OpenFPGA framework is the first open-source FPGA IP generator with silicon proofs supporting highly-customizable FPGA architectures."
+      page: ./configs/tools/yosys.yml
+
+    activehdl:
+      title: Active-HDL
+      description: "Active-HDL™ is a Windows based, integrated FPGA Design Creation and Simulation solution for team-based environments."
+      page: ./configs/tools/activehdl.yml
+
+    nvc:
+      title: NVC
+      description: "NVC is a VHDL compiler and simulator. NVC supports almost all of VHDL-2002 and it has been successfully used to simulate several real-world designs."
+      page: ./configs/tools/nvc.yml
+
+    questa:
+      title: Questa Advanced Simulator
+      description: "The Questa advanced simulator is the core simulation and debug engine of the Questa verification solution."
+      page: ./configs/tools/questa.yml

@@ -1,0 +1,36 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+simulator_name:
+  description: "Selects which simulator Makefile to use. Attempts to include a simulator specific makefile from cocotb/share/makefiles/simulators/makefile.$(SIM)"
+  type: select
+  options:
+    icarus: "icarus"
+    verilator: "Verilator"
+    vcs: "Synopsys VCS"
+    riviera: "Aldec Riviera-PRO"
+    activehdl: "Aldec Active-HDL"
+    questa: "Mentor/Siemens EDA Questa"
+    modelsim: "Mentor/Siemens EDA ModelSim"
+    ius: "Cadence Incisive"
+    xcelium: "Cadence Xcelium"
+    ghdl: "GHDL"
+    cvc: "Tachyon DA CVC"
+  value: "ghdl"
+
+compile_args:
+  description: "Any arguments or flags to pass to the compile stage of the simulation."
+  type: string
+  value: ""
+
+run_args:
+  description: "Any argument to be passed to the “first” invocation of a simulator that runs via a TCL script. One motivating usage is to pass -noautoldlibpath to Questa to prevent it from loading the out-of-date libraries it ships with. Used by Aldec Riviera-PRO and Mentor Graphics Questa simulator."
+  type: string
+  value: ""
+
+plusargs:
+  description: "They are options that are starting with a plus (+) sign. They are passed to the simulator and are also available within cocotb as cocotb.plusargs. In the simulator, they can be read by the Verilog/SystemVerilog system functions $test$plusargs and $value$plusargs. The special plusargs +ntb_random_seed and +seed, if present, are evaluated to set the random seed value if RANDOM_SEED is not set. If both +ntb_random_seed and +seed are set, +ntb_random_seed is used."
+  type: string
+  value: ""

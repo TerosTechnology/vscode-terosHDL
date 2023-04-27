@@ -1,0 +1,23 @@
+# Example configuration Standalone VHDL formatter
+
+[general]
+remove_comments = false
+remove_asserts = false
+remove_report = false
+check_alias = false
+align_comments = false
+keyword_case = "lowercase"
+type_name_case = "lowercase"
+indentation = "  "
+end_of_line = "\n"
+
+[sign_align_settings]
+is_regional = false
+is_all =  false
+mode = "local"
+keyWords = []
+
+[new_line_settings]
+new_line_after = []
+no_new_line_after = []
+

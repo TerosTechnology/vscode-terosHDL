@@ -1,0 +1,27 @@
+module test_entity_name_tb;
+
+  // Parameters
+
+  //Ports
+  reg [3:0] a;
+  reg  b;
+  wire [3:0];
+  wire ;
+  wire ;
+
+  test_entity_name
+  test_entity_name_inst (
+    .a(a),
+    .b(b),
+    .c(c),
+    .d(d),
+    .e(e)
+  );
+
+//  initial begin
+//    begin
+//      $finish;
+//    end
+//  end
+
+endmodule

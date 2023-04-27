@@ -1,0 +1,48 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+pnr:
+  description: "Select P&R tool. Valid values are arachne and next. Default is arachne."
+  type: select
+  options:
+    arachne: "Arachne-pnr"
+    next: "nextpnr"
+    none: "Only perform synthesis"
+  value: "none"
+arch:
+  description: "Target architecture."
+  type: select
+  options:
+    xilinx: "Xilinx"
+    ice40: "ICE40"
+    ecp5: "ECP5"
+  value: "xilinx"
+output_format:
+  description: "Output file format."
+  type: select
+  options:
+    json: "JSON"
+    edif: "EDIF"
+    blif: "BLIF"
+  value: "json"
+yosys_as_subtool:
+  description: "Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool."
+  type: boolean
+  value: false
+makefile_name:
+  description: "Generated makefile name, defaults to $name.mk"
+  type: string
+  value: ""
+arachne_pnr_options:
+  description: "Options for ArachnePNR Place & Route."
+  type: array
+  value: []
+nextpnr_options:
+  description: "Options for NextPNR Place & Route."
+  type: array
+  value: []
+yosys_synth_options:
+  description: "Additional options for the synth_ice40 command."
+  type: array
+  value: []

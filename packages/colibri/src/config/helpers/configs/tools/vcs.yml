@@ -1,0 +1,12 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+vcs_options:
+  description: "Compile time options passed to vcs"
+  type: array
+  value: []
+run_options:
+  description: "Runtime options passed to the simulation"
+  type: array
+  value: []

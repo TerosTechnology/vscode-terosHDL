@@ -1,0 +1,4 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "/home/carlos/repo/colibri2/tests/linter/aux/xvlog.v" into library work
+INFO: [VRFC 10-311] analyzing module vodelsim_v
+ERROR: [VRFC 10-4982] syntax error near 'assign' [/home/carlos/repo/colibri2/tests/linter/aux/xvlog.v:5]
+ERROR: [VRFC 10-2790] Verilog 2000 keyword assign used in incorrect context [/home/carlos/repo/colibri2/tests/linter/aux/xvlog.v:5]

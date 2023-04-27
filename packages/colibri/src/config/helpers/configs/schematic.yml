@@ -1,0 +1,14 @@
+backend:
+  description: "Select the backend:"
+  type: select
+  options:
+    yowasp: "YoWASP"
+    yosys: "Yosys"
+    yosys_ghdl: "GHDL + Yosys"
+    yosys_ghdl_module: "GHDL (module) + Yosys"
+  value: "yowasp"
+
+args:
+  description: "Arguments passed to Yosys"
+  type: string
+  value: ""

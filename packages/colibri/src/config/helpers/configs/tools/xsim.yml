@@ -1,0 +1,14 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+xelab_options:
+  description: "Additional options for compilation with xelab."
+  type: array
+  value: []
+
+xsim_options:
+  description: "Additional run options for XSim."
+  type: array
+  value: []

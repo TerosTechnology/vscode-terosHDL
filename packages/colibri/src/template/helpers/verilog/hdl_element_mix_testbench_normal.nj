@@ -1,0 +1,1 @@
+{% include "../vhdl/testbench_normal.nj" %}

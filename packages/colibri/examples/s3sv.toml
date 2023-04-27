@@ -1,0 +1,7 @@
+# Example configuration s3sv formatter
+
+[general]
+use_tabs = false
+indent_size = 2
+one_bind_per_line = false
+one_decl_per_line = false

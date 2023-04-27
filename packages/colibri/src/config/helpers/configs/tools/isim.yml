@@ -1,0 +1,12 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+fuse_options:
+  description: "Additional options for compilation with FUSE."
+  type: array
+  value: []
+isim_options:
+  description: "Additional run options for ISim."
+  type: array
+  value: []
