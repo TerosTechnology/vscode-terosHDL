@@ -1,0 +1,33 @@
+<tr class="f-<%= parentIndex %> hidden">
+	<td colspan="5">
+		<ul class="nav-tabs" role="tablist">
+			<li role="presentation" class="active">
+				<button data-parent=".f-<%= parentIndex %>"
+								data-content="detailSummary-<%= parentIndex %>"
+								aria-controls="detailSummary-<%= parentIndex %>"
+								type="button"
+								role="tab">
+					Summary
+				</button>
+			</li>
+			<li role="presentation">
+				<button data-parent=".f-<%= parentIndex %>"
+								data-content="sourceCode-<%= parentIndex %>"
+								aria-controls="sourceCode-<%= parentIndex %>"
+								type="button"
+								role="tab">
+					SourceCode
+				</button>
+			</li>
+		</ul>
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane" id="detailSummary-<%= parentIndex %>">
+				<%= detailSummary %>
+			</div>
+			<div role="tabpanel" class="tab-pane hidden" id="sourceCode-<%= parentIndex %>">
+				<%= sourceCode %>
+			</div>
+		</div>
+	</td>
+</tr>

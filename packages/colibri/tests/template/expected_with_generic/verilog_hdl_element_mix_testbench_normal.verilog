@@ -1,0 +1,43 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity test_entity_name_tb is
+end;
+
+architecture bench of test_entity_name_tb is
+  -- Clock period
+  constant clk_period : time := 5 ns;
+  -- Generics
+  constant PARAM_CNT_0 : integer;
+  constant PARAM_CNT_1 : integer;
+  -- Ports
+  signal a : std_logic_vector (3 downto 0);
+  signal b : std_logic;
+  signal c : std_logic_vector (3 downto 0);
+  signal d : std_logic;
+  signal e : std_logic;
+begin
+
+  test_entity_name_inst : entity work.test_entity_name
+  generic map (
+    PARAM_CNT_0 => PARAM_CNT_0,
+    PARAM_CNT_1 => PARAM_CNT_1
+  )
+  port map (
+    a => a,
+    b => b,
+    c => c,
+    d => d,
+    e => e
+  );
+
+--   clk_process : process
+--   begin
+--     clk <= '1';
+--     wait for clk_period/2;
+--     clk <= '0';
+--     wait for clk_period/2;
+--   end process clk_process;
+
+end;

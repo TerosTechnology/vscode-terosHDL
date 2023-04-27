@@ -1,0 +1,135 @@
+/* eslint-disable max-len */
+// Copyright 2022
+// Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
+//
+// This file is part of colibri2
+//
+// Colibri is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Colibri is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
+
+export type e_config = {
+{%- for tp0 in type_declaration %}
+    "{{tp0}}" : {
+    {%- for tp1 in type_declaration[tp0] %}
+        "{{tp1}}" : e_{{tp0}}_{{tp1}},
+    {%- endfor %}
+    }
+{%- endfor %}
+};
+
+{%- for tp0 in type_declaration -%}
+    {%- for tp1 in type_declaration[tp0] %}
+export type e_{{tp0}}_{{tp1}} = {
+        {%- for tp2 in type_declaration[tp0][tp1] %}
+            {%- if type_declaration[tp0][tp1][tp2]["type"] == "boolean" %}
+    {{tp2}} : boolean,
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "number" %}
+    {{tp2}} : number,
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "array" %}
+    {{tp2}} : any[],
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "string" %}
+    {{tp2}} : string,
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "select" %}
+    {{tp2}} : e_{{tp0}}_{{tp1}}_{{tp2}},
+            {%- endif %}
+        {%- endfor %}
+};
+    {% endfor %}
+{%- endfor %}
+
+{%- for tp0 in type_declaration %}
+    {%- for tp1 in type_declaration[tp0] %}
+        {%- for tp2 in type_declaration[tp0][tp1] %}
+            {%- if "options" in type_declaration[tp0][tp1][tp2] %}
+export enum e_{{tp0}}_{{tp1}}_{{tp2}} {
+                {%- for tp4 in type_declaration[tp0][tp1][tp2]["options"] %}
+    {{tp4|replace("-", "_")|replace("&", "_")}} = "{{tp4}}",
+                {%- endfor %}
+}
+            {%- endif %}
+        {%- endfor %}
+    {%- endfor %}
+{%- endfor %}
+
+export function get_default_config(): e_config {
+    return {
+{%- for tp0 in type_declaration %}
+        {{tp0}}: {
+    {%- for tp1 in type_declaration[tp0] %}
+            {{tp1}}: {
+        {%- for tp2 in type_declaration[tp0][tp1] %}
+            {%- if "options" in type_declaration[tp0][tp1][tp2] %}
+                {{tp2}} : e_{{tp0}}_{{tp1}}_{{tp2}}.{{type_declaration[tp0][tp1][tp2]["value"]|replace("-", "_")|replace("&", "_")}},
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "boolean" %}
+                {%- if type_declaration[tp0][tp1][tp2]["value"] == True %}
+                {{tp2}} : true,
+                {%- else %}
+                {{tp2}} : false,
+                {%- endif %}
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "string" %}
+                {{tp2}} : "{{type_declaration[tp0][tp1][tp2]["value"]}}",
+            {%- else %}
+                {{tp2}} : {{type_declaration[tp0][tp1][tp2]["value"]}},
+            {%- endif %}
+        {%- endfor %}
+            },
+    {%- endfor %}
+        },
+{%- endfor %}
+    };
+}
+
+
+export function get_config_from_json(json_config: any): e_config {
+    const default_config = get_default_config();
+{% set ns = namespace(counter = 0) %}
+{%- for tp0 in type_declaration %}
+    {%- for tp1 in type_declaration[tp0] %}
+        {%- for tp2 in type_declaration[tp0][tp1] %}
+    // {{ tp0 }} -> {{ tp1 }} -> {{ tp2 }}
+    const current_value_{{ns.counter}} = json_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'];
+
+            {%- if "options" in type_declaration[tp0][tp1][tp2] %}
+                {%- for option_inst in type_declaration[tp0][tp1][tp2]["options"] %}
+    if ( current_value_{{ns.counter}} === "{{ option_inst }}"){
+        default_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'] = e_{{tp0}}_{{tp1}}_{{tp2}}.{{option_inst|replace("-", "_")|replace("&", "_")}};
+    }
+                {%- endfor %}
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "boolean" %}
+    if (current_value_{{ns.counter}} === true || current_value_{{ns.counter}} === false){
+        default_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'] = current_value_{{ns.counter}};
+    }
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "string" %}
+    if (typeof current_value_{{ns.counter}} === 'string'){
+        default_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'] = current_value_{{ns.counter}};
+    }
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "number" %}
+    if (typeof current_value_{{ns.counter}} === 'number'){
+        default_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'] = current_value_{{ns.counter}};
+    }
+
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "array" %}
+    if (Array.isArray(current_value_{{ns.counter}})){
+        default_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'] = current_value_{{ns.counter}};
+    }
+
+            {%- else %}
+                asdfasdf
+            {%- endif %}
+            {% set ns.counter = ns.counter + 1 %}
+        {%- endfor %}
+    {%- endfor %}
+{%- endfor %}
+
+    return default_config;
+}

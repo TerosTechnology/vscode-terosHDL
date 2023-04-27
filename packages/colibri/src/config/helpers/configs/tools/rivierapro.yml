@@ -1,0 +1,16 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+compilation_mode:
+  description: "Common or separate compilation, sep - for separate compilation, common - for common compilation."
+  type: string
+  value: ""
+vlog_options:
+  description: "Additional options for compilation with vlog."
+  type: array
+  value: []
+vsim_options:
+  description: "Additional run options for vsim."
+  type: array
+  value: []

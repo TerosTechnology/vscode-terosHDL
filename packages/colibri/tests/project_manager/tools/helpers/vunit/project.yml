@@ -1,0 +1,66 @@
+toplevel_path: "run.py"
+name: project_vunit
+files: 
+  - name: "run.py"
+    file_type: python
+    is_include_file: false
+    include_path: ""
+    logical_name: ""
+
+  - name: "tb_counting_errors.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "tb_magic_paths.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "tb_minimal.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "tb_many_ways_to_fail.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "tb_running_test_case.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "tb_standalone.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "tb_with_lower_level_control.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "tb_with_test_cases.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "tb_with_watchdog.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+  - name: "test_control.vhd"
+    file_type: "vhdlSource-2008"
+    is_include_file: false
+    logical_name: ""
+
+tool_options: 
+  vunit: 
+    installation_path: ""
+    simulator: ghdl
+    options: "--verbose"
+    add_libraries: ""
+    runner: ""

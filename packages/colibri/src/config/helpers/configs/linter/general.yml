@@ -1,0 +1,37 @@
+linter_vhdl:
+  description: "VHDL linter: disable VHDL-LS needs restart VSCode."
+  type: select
+  options:
+    disabled: "Disabled"
+    ghdl: "GHDL"
+    modelsim: "Modelsim"
+    vivado: "Vivado (xvhdl)"
+    none: "VHDL-LS"
+  value: "ghdl"
+
+linter_verilog:
+  description: "Verilog/SV linter:"
+  type: select
+  options:
+    disabled: "Disabled"
+    icarus: "Icarus"
+    modelsim: "Modelsim"
+    verilator: "Verilator"
+    vivado: "Vivado (xvlog)"
+  value: "modelsim"
+
+lstyle_verilog:
+  description: "Verilog/SV style checker:"
+  type: select
+  options:
+    verible: "Verible"
+    disabled: "Disabled"
+  value: "disabled"
+
+lstyle_vhdl:
+  description: "VHDL style checker:"
+  type: select
+  options:
+    vsg: "VSG"
+    disabled: "Disabled"
+  value: "disabled"

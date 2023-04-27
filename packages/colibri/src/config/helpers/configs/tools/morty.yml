@@ -1,0 +1,8 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+morty_options:
+  description: "Run-time options passed to morty.."
+  type: array
+  value: []

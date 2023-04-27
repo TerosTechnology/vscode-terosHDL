@@ -1,0 +1,16 @@
+formatter_verilog:
+  description: "Verilog/SV formatter:"
+  type: select
+  options:
+    istyle: "iStyle"
+    s3sv: "s3sv"
+    verible: "Verible"
+  value: "istyle"
+
+formatter_vhdl:
+  description: "VHDL formatter:"
+  type: select
+  options:
+    standalone: "Standalone"
+    vsg: "VSG"
+  value: "standalone"

@@ -1,0 +1,9 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+ascentlint_options:
+  description: "Additional run options for ascentlint."
+  type: array
+  value: []

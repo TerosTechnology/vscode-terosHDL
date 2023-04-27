@@ -1,0 +1,2 @@
+** Error: (vlog-13069) /home/carlos/repo/colibri2/tests/linter/aux/modelsim.v(5): near "assign": syntax error, unexpected assign.
+** Error: /home/carlos/repo/colibri2/tests/linter/aux/modelsim.v(3): (vlog-13205) Syntax error found in the scope following 's'. Is there a missing '::'?

@@ -1,0 +1,19 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+waveform:
+  description: "Waveform output format:"
+  type: select
+  options:
+    vcd: "VCD"
+    ghw: "GHW"
+  value: "vcd"
+analyze_options:
+  description: "analyze options. Extra options used for the GHDL analyze stage (ghdl -a)."
+  type: array
+  value: []
+run_options:
+  description: "Run options. Extra options used when running GHDL simulations (ghdl -r)."
+  type: array
+  value: []

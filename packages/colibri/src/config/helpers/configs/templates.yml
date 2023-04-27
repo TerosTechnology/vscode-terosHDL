@@ -1,0 +1,25 @@
+header_file_path:
+  description: "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template"
+  type: string
+  value: ""
+
+indent:
+  description: "Indent"
+  type: string
+  value: "  "
+
+clock_generation_style:
+  description: "Clock generation style:"
+  type: select
+  options:
+    inline: "Inline"
+    ifelse: "if/else"
+  value: "inline"
+
+instance_style:
+  description: "Instantiation style:"
+  type: select
+  options:
+    inline: "Inline"
+    separate: "Separate"
+  value: "inline"

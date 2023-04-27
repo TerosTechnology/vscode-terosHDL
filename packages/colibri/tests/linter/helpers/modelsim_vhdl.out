@@ -1,0 +1,4 @@
+** Error: /home/carlos/repo/colibri2/tests/linter/aux/modelsim.vhdl(14): Deferred constants are allowed only in a package declaration.
+** Error: /home/carlos/repo/colibri2/tests/linter/aux/modelsim.vhdl(15): (vcom-1360) Array type of "s_sample" does not have an index constraint.
+** Error: /home/carlos/repo/colibri2/tests/linter/aux/modelsim.vhdl(15): Integer literal 8 is not of type ieee.std_logic_1164.STD_LOGIC_VECTOR.
+** Note: /home/carlos/repo/colibri2/tests/linter/aux/modelsim.vhdl(18): VHDL Compiler exiting

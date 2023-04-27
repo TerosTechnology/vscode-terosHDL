@@ -1,0 +1,4 @@
+configuration:
+  description: "JSON or YAML configuration file."
+  type: string
+  value: ""

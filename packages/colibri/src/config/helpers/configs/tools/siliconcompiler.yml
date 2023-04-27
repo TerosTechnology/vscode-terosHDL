@@ -1,0 +1,24 @@
+installation_path:
+  description: ""
+  type: string
+  value: ""
+target:
+  description: "Compilation target separated by a single underscore, specified as '<process>_<edaflow>' for ASIC compilation and '<partname>_<edaflow>'' for FPGA compilation. The process, edaflow, partname fields must be alphanumeric and cannot contain underscores. E.g: asicflow_freepdk45"
+  type: string
+  value: ""
+server_enable:
+  description: "Enable remote server."
+  type: boolean
+  value: false
+server_address:
+  description: "Remote server address (e.g: https://server.siliconcompiler.com):"
+  type: string
+  value: ""
+server_username:
+  description: "Remote server user:"
+  type: string
+  value: ""
+server_password:
+  description: "Remote server password:"
+  type: string
+  value: ""

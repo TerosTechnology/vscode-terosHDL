@@ -1,0 +1,137 @@
+    
+  function enable_tab(tp0, tp1){
+    const complete = tp0 + "-" + tp1;
+{%- for tp0 in type_declaration %}
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+  if ("{{tp0}}" == tp0 && "{{tp1}}" == tp1){
+    document.getElementById("{{tp0}}-{{tp1}}").classList.remove('d-none');
+  }
+  else{
+    document.getElementById("{{tp0}}-{{tp1}}").classList.remove('d-none');
+    document.getElementById("{{tp0}}-{{tp1}}").classList.add('d-none');
+  }
+    {%- endfor %}
+{%- endfor %}
+  }
+
+  enable_tab('general', 'general');
+
+{%- for tp0 in type_declaration %}
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+
+  document.getElementById("btn-{{tp0}}-{{tp1}}").addEventListener("click", function() {
+    enable_tab("{{tp0}}","{{tp1}}")
+  });
+
+    {%- endfor %}
+{%- endfor %}
+
+  /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - 
+  This allows the user to have multiple dropdowns without any conflict */
+  var dropdown = document.getElementsByClassName("dropdown-btn");
+  var i;
+
+  for (i = 0; i < dropdown.length; i++) {
+    dropdown[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var dropdownContent = this.nextElementSibling;
+      if (dropdownContent.style.display === "block") {
+        dropdownContent.style.display = "none";
+      } else {
+        dropdownContent.style.display = "block";
+      }
+    });
+  }
+  
+  const vscode = acquireVsCodeApi();
+
+  function send_config_and_close(){
+    const config = get_config();
+
+    vscode.postMessage({
+        command: 'set_config_and_close',
+        config : config
+    });
+  }
+
+  function send_config(){
+    const config = get_config();
+
+    vscode.postMessage({
+        command: 'set_config',
+        config : config
+    });
+  }
+
+  function close_panel(){
+    vscode.postMessage({
+        command: 'close'
+    });
+  }
+
+  function export_config(){
+    vscode.postMessage({
+        command: 'export'
+    });
+  }
+
+  function load_config(){
+    vscode.postMessage({
+        command: 'load'
+    });
+  }
+
+  window.addEventListener('message', event => {
+      const message = event.data;
+      switch (message.command) {
+          case 'set_config':
+              set_config(message.config);
+              break;
+      }
+  });
+
+  function get_config(){
+    const config = {};
+    let element_value;
+{%- for tp0 in type_declaration %}
+    config["{{tp0}}"] = {}
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+    config["{{tp0}}"]["{{tp1}}"] = {}
+        {%- for tp2 in type_declaration[tp0]["pages"][tp1] %}
+            {%- if tp2 != "title" and tp2 != "description"%}
+                {%- if type_declaration[tp0]["pages"][tp1][tp2]["type"] == "boolean" %}
+    element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").checked;
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
+    element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value.split(',');
+                {%- else %}
+    element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value;
+                {%- endif %}
+    config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] = element_value
+            {%- endif %}
+        {%- endfor %}
+    {%- endfor %}
+{%- endfor %}
+    return config;
+  }
+
+  function set_config(config){
+{%- for tp0 in type_declaration %}
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+        {%- for tp2 in type_declaration[tp0]["pages"][tp1] %}
+            {%- if tp2 != "title" and tp2 != "description"%}
+                {%- if type_declaration[tp0]["pages"][tp1][tp2]["type"] == "boolean" %}
+    document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").checked = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
+    element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = String(config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"]);
+                {%- else %}
+    document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
+                {%- endif %}
+            {%- endif %}
+        {%- endfor %}
+    {%- endfor %}
+{%- endfor %}
+  }
+
+  function open_submenu_icon(x) {
+    x.classList.toggle("change");
+  }

@@ -1,0 +1,19 @@
+one_bind_per_line:
+  description: "Force one binding per line in instanciations statements."
+  type: boolean
+  value: false
+
+one_declaration_per_line:
+  description: "Force one declaration per line."
+  type: boolean
+  value: false
+
+use_tabs:
+  description: "Use tabs instead of spaces for indentation."
+  type: boolean
+  value: false
+
+indentation_size:
+  description: "Indentation size in number of characters."
+  type: number
+  value: 2

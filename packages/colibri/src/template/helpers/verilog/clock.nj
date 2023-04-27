@@ -1,0 +1,11 @@
+{% if clock_style == "inline" -%}
+//{{ indent[1] }}always #5  clk = ! clk ;
+{% else -%}
+//{{ indent[1] }}initial begin
+//{{ indent[2] }}begin
+//{{ indent[3] }}$finish;
+//{{ indent[2] }}end
+//{{ indent[1] }}end
+{% endif -%}
+
+

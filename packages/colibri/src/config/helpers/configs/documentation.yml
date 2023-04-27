@@ -1,0 +1,109 @@
+language:
+  description: "Documentation language:"
+  type: select
+  options:
+    english: "English"
+    russian: "Russian"
+  value: "english"
+
+symbol_vhdl:
+  description: "Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code>"
+  type: string
+  value: ""
+
+symbol_verilog:
+  description: "Special Verilog symbol at the begin of the comment to extract documentation. Example: <code>//! Code comment</code>"
+  type: string
+  value: ""
+
+dependency_graph:
+  description: "Include dependency graph:"
+  type: boolean
+  value: true
+
+self_contained:
+  description: "HTML documentation self contained:"
+  type: boolean
+  value: true
+
+fsm:
+  description: "Include FSM:"
+  type: boolean
+  value: true
+
+ports:
+  description: "Include ports:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
+generics:
+  description: "Include generics:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
+instantiations:
+  description: "Include instantiations:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
+signals:
+  description: "Include signals:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
+constants:
+  description: "Include consants:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
+types:
+  description: "Include types:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
+process:
+  description: "Include always/processes:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
+functions:
+  description: "Include functions:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
+magic_config_path:
+  description: "Magic config file path"
+  type: string
+  value: ""

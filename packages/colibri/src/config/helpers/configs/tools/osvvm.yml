@@ -1,0 +1,25 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+tclsh_binary:
+  description: "tclsh binary path. E.g: /usr/bin/tclsh8.6"
+  type: string
+  value: ""
+
+simulator_name:
+  description: "Selects which simulator to use."
+  type: select
+  options:
+    activehdl: "Aldec Active-HDL"
+    ghdl: "GHDL"
+    nvc: "NVC"
+    rivierapro: "Aldec Riviera-PRO"
+    questa: "Mentor/Siemens EDA Questa"
+    modelsim: "Mentor/Siemens EDA ModelSim"
+    vcs: "VCS"
+    xsim: "XSIM"
+    xcelium: "Xcelium"
+
+  value: "ghdl"

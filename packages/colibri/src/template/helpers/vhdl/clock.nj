@@ -1,0 +1,13 @@
+{% if clock_style == "inline" -%}
+-- {{ indent[1] }}clk <= not clk after clk_period/2;
+{% else -%}
+-- {{ indent[1] }}clk_process : process
+-- {{ indent[1] }}begin
+-- {{ indent[2] }}clk <= '1';
+-- {{ indent[2] }}wait for clk_period/2;
+-- {{ indent[2] }}clk <= '0';
+-- {{ indent[2] }}wait for clk_period/2;
+-- {{ indent[1] }}end process clk_process;
+{% endif -%}
+
+

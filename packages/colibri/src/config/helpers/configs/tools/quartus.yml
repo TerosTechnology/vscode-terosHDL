@@ -1,0 +1,36 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+family:
+  description: "FPGA family (e.g. Cyclone V)."
+  type: string
+  value: ""
+device:
+  description: "FPGA device (e.g. 5CSXFC6D6F31C8ES)."
+  type: string
+  value: ""
+cable:
+  description: "Specifies the FPGA’s JTAG programming cable. Use the tool jtagconfig to determine the available cables."
+  type: string
+  value: ""
+board_device_index:
+  description: "Specifies the FPGA’s device number in the JTAG chain. The device index specifies the device where the flash programmer looks for the Nios® II JTAG debug module. JTAG devices are numbered relative to the JTAG chain, starting at 1. Use the tool jtagconfig to determine the index."
+  type: string
+  value: ""
+pnr:
+  description: "P&R tool. one (to just run synthesis)."
+  type: select
+  options:
+    default: "Default"
+    dse: "Run Design Space Explorer"
+    none: "Run synthesis"
+  value: "none"
+dse_options:
+  description: "Command-line options for Design Space Explorer."
+  type: array
+  value: []
+quartus_options:
+  description: "Extra command-line options for Quartus."
+  type: array
+  value: []

@@ -1,0 +1,7 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/carlos/repo/colibri2/tests/linter/aux/xvlog.sv" into library work
+INFO: [VRFC 10-311] analyzing module vodelsim_v
+ERROR: [VRFC 10-4982] syntax error near 'always_ff' [/home/carlos/repo/colibri2/tests/linter/aux/xvlog.sv:5]
+ERROR: [VRFC 10-2790] SystemVerilog keyword always_ff used in incorrect context [/home/carlos/repo/colibri2/tests/linter/aux/xvlog.sv:5]
+ERROR: [VRFC 10-4982] syntax error near '<=' [/home/carlos/repo/colibri2/tests/linter/aux/xvlog.sv:10]
+ERROR: [VRFC 10-2989] 'enable' is not declared [/home/carlos/repo/colibri2/tests/linter/aux/xvlog.sv:10]
+ERROR: [VRFC 10-2865] module 'vodelsim_v' ignored due to previous errors [/home/carlos/repo/colibri2/tests/linter/aux/xvlog.sv:1]

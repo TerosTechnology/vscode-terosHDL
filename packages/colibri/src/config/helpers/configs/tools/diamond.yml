@@ -1,0 +1,9 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+part:
+  description: "FPGA part number (e.g. LFE5U-45F-6BG381C)."
+  type: string
+  value: ""

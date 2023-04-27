@@ -1,0 +1,24 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+xmvhdl_options:
+  description: "Additional options for compilation with xmvhdl."
+  type: array
+  value: []
+
+xmvlog_options:
+  description: "Additional options for compilation with xmvlog."
+  type: array
+  value: []
+
+xmsim_options:
+  description: "Additional run options for xmsim."
+  type: array
+  value: []
+
+xrun_options:
+  description: "Additional run options for xrun."
+  type: array
+  value: []

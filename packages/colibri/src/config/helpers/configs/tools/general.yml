@@ -1,0 +1,42 @@
+select_tool:
+  description: "Select a tool, framework, simulator..."
+  type: select
+  options:
+    osvvm: "OSVVM"
+    vunit: "VUnit"
+    ghdl: "GHDL"
+    cocotb: "cocotb"
+    icarus: "Icarus"
+    icestorm: "Icestorm"
+    ise: "ISE"
+    isim: "ISIM"
+    modelsim: "ModelSim"
+    openfpga: "OpenFPGA"
+    quartus: "Quartus"
+    rivierapro: "Riviera-PRO"
+    spyglass: "SpyGlass"
+    trellis: "Trellis"
+    vcs: "VCS"
+    verilator: "Verilator"
+    vivado: "Vivado"
+    xcelium: "Xcelium"
+    xsim: "XSIM"
+
+  value: "ghdl"
+
+execution_mode:
+  description: "Select the execution mode."
+  type: select
+  options:
+    gui: "GUI"
+    cmd: "Command line"
+  value: "cmd"
+
+waveform_viewer:
+  description: "Select the waveform viewer. For GTKWave you need to install it."
+  type: select
+  options:
+    tool: "Tool GUI"
+    vcdrom: "VCDrom"
+    gtkwave: "GTKWave"
+  value: "tool"

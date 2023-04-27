@@ -1,0 +1,11 @@
+toplevel: "Makefile"
+name: project_cocotb
+files: 
+  - name: Makefile
+    file_type: ""
+    is_include_file: false
+    include_path: ""
+    logical_name: ""
+tool_options: 
+  cocotb: 
+    installation_path: ""

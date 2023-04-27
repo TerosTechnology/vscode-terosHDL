@@ -1,0 +1,13 @@
+style:
+  description: "Predefined Styling options."
+  type: select
+  options:
+    ansi: "ANSI"
+    kr: "Kernighan&Ritchie"
+    gnu: "GNU"
+    indent_only: "Indent only"
+  value: "ansi"
+indentation_size:
+  description: "Indentation size in number of characters."
+  type: number
+  value: 2

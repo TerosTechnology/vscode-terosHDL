@@ -1,0 +1,22 @@
+$date
+	Thu Sep 29 20:03:46 2022
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module adder $end
+$var wire 4 ! A [3:0] $end
+$var wire 4 " B [3:0] $end
+$var wire 5 # X [4:0] $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+b1111 #
+b1010 "
+b101 !
+$end
+#2001
