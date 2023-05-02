@@ -2,3 +2,8 @@ configuration:
   description: "JSON or YAML configuration file."
   type: string
   value: ""
+
+core_number:
+  description: "Number of parallel jobs to use, default is the number of cpu cores."
+  type: number
+  value: 2

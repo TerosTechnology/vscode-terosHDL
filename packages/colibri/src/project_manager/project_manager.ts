@@ -27,7 +27,7 @@ import * as  manager_parameter from "./list_manager/parameter";
 import * as  manager_toplevel_path from "./list_manager/toplevel_path";
 import * as  manager_dependency from "./dependency/dependency";
 import { Tool_manager } from "./tool/tools_manager";
-import { t_test_declaration, t_test_result } from "./tool/common";
+import { t_test_declaration, t_test_result, e_clean_step } from "./tool/common";
 import { t_project_definition } from "./project_definition";
 import * as file_utils from "../utils/file_utils";
 import { Config_manager, merge_configs } from "../config/config_manager";
@@ -430,6 +430,17 @@ export class Project_manager {
 
         return this.tools_manager.run(this.get_project_definition(n_config_manager),
             test_list, callback, callback_stream);
+    }
+
+    public clean(general_config: e_config | undefined,
+        clean_mode : e_clean_step,
+        callback_stream: (stream_c: any) => void): any {
+
+        const n_config = merge_configs(general_config, this.config_manager.get_config());
+        const n_config_manager = new Config_manager();
+        n_config_manager.set_config(n_config);
+
+        return this.tools_manager.clean(this.get_project_definition(n_config_manager), clean_mode, callback_stream);
     }
 
     public async get_test_list(general_config: e_config | undefined = undefined): Promise<t_test_declaration[]> {

@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_test_declaration, t_test_result } from "./common";
+import { t_test_declaration, t_test_result, e_clean_step } from "./common";
 import { e_tools_general_select_tool } from "../../config/config_declaration";
 import { t_project_definition } from "../project_definition";
 import * as file_utils from "../../utils/file_utils";
@@ -57,7 +57,6 @@ export abstract class Generic_tool_handler {
         } catch (error) { }
     }
 
-    // public clean_working_directory() {
-
-    // }
+    public abstract clean(prj: t_project_definition, working_directory: string, clean_mode: e_clean_step,
+        callback_stream: (stream_c: any) => void): void;
 }

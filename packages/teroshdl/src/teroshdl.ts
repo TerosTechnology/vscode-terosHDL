@@ -38,6 +38,7 @@ import { Tree_view_manager } from "./features/tree_views/manager";
 import * as teroshdl2 from 'teroshdl2';
 import * as events from "events";
 import * as cmd from "./utils/commands";
+import {Base_webview} from "./utils/web";
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -47,9 +48,15 @@ export class Teroshdl {
     private manager: Multi_project_manager;
     private output_channel: Output_channel;
     private emitter : events.EventEmitter = new events.EventEmitter();
+    private report_webview : Base_webview;
 
     constructor(context: vscode.ExtensionContext, output_channgel: Output_channel) {
-        vscode.commands.registerCommand("teroshdl.open", (ags) => cmd.open_file(ags) );
+
+        this.report_webview = new Base_webview(context);
+
+        vscode.commands.registerCommand("teroshdl.open", (ags) => cmd.open_file(ags));
+        vscode.commands.registerCommand("teroshdl.waveform", (ags) => cmd.open_waveform(ags));
+        vscode.commands.registerCommand("teroshdl.openwebview", (ags) => cmd.open_webview(ags, this.report_webview) );
 
         const homedir = teroshdl2.utils.common.get_home_directory();
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);

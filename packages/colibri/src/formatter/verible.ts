@@ -24,7 +24,7 @@ import * as file_utils from "../utils/file_utils";
 import * as utils from "../process/utils";
 import { Process } from "../process/process";
 import * as common from "./common";
-import * as cfg from "../config/config_declaration";
+import * as logger from "../logger/logger";
 
 export class Verible extends Base_formatter {
     private binary = 'verible-verilog-format';
@@ -33,7 +33,7 @@ export class Verible extends Base_formatter {
         super();
     }
 
-    async format_from_code(code: string, opt: cfg.e_formatter_verible): Promise<common.f_result> {
+    async format_from_code(code: string, opt: common.e_formatter_verible_full): Promise<common.f_result> {
         const temp_file = await utils.create_temp_file(code);
         const formatted_code = await this.format(temp_file, opt);
         file_utils.remove_file(temp_file);
@@ -56,13 +56,19 @@ export class Verible extends Base_formatter {
         return '';
     }
 
-    public async format(file: string, opt: cfg.e_formatter_verible) {
+    public async format(file: string, opt: common.e_formatter_verible_full) {
         const path_bin = await this.get_path(opt.path);
         const command = `${path_bin} ${opt.format_args} ${file}`;
 
         const P = new Process();
         const exec_result = await P.exec_wait(command);
-        const code_formatted = fs.readFileSync(file, "utf8");
+        let code_formatted = fs.readFileSync(file, "utf8");
+        if (exec_result.successful === true){
+            code_formatted = exec_result.stdout;
+        }
+
+        const msg = `Formatting with command: ${command} `;
+        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
 
         const result: common.f_result = {
             code_formatted: code_formatted,

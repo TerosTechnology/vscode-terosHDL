@@ -21,6 +21,7 @@ select_tool:
     vivado: "Vivado"
     xcelium: "Xcelium"
     xsim: "XSIM"
+    raptor: "Raptor Design Suite"
 
   value: "ghdl"
 

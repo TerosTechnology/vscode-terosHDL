@@ -216,14 +216,14 @@ tools:
       description: "Synopsys VCS Backend"
       page: ./configs/tools/vcs.yml
 
-    veriblelint:
-      title: VeribleLint
-      description: "Verible lint backend (verible-verilog-lint)."
-      page: ./configs/tools/veriblelint.yml
+    verible:
+      title: Verible
+      description: "Verible."
+      page: ./configs/tools/verible.yml
 
     verilator:
       title: Verilator
-      description: "Verible lint backend (verible-verilog-lint)."
+      description: Verilator."
       page: ./configs/tools/verilator.yml
 
     vivado:
@@ -270,3 +270,8 @@ tools:
       title: Questa Advanced Simulator
       description: "The Questa advanced simulator is the core simulation and debug engine of the Questa verification solution."
       page: ./configs/tools/questa.yml
+
+    raptor:
+      title: Raptor Design Suite
+      description: "Raptor Design Suite."
+      page: ./configs/tools/raptor.yml

@@ -20,8 +20,9 @@ import { Cocotb } from "./cocotb/cocotb";
 import { Edalize } from "./edalize/edalize";
 import { Vunit } from "./vunit/vunit";
 import { Osvvm } from "./osvvm/osvvm";
+import { Raptor } from "./raptor/raptor";
 import { t_project_definition } from "../project_definition";
-import { t_test_declaration, t_test_result } from "./common";
+import { t_test_declaration, t_test_result, e_clean_step } from "./common";
 import { e_tools_general_select_tool } from "../../config/config_declaration";
 import * as os from "os";
 import * as path_lib from "path";
@@ -31,6 +32,7 @@ export class Tool_manager {
     private vunit: Vunit;
     private cocotb: Cocotb;
     private osvvm: Osvvm;
+    private raptor: Raptor;
     private working_directory = "";
 
     constructor(working_directory: string | undefined) {
@@ -38,6 +40,7 @@ export class Tool_manager {
         this.vunit = new Vunit();
         this.cocotb = new Cocotb();
         this.osvvm = new Osvvm();
+        this.raptor = new Raptor();
         this.set_working_directory(working_directory);
     }
 
@@ -66,7 +69,13 @@ export class Tool_manager {
         return tool_handler.run(prj, test_list, this.working_directory, callback, callback_stream);
     }
 
-    private get_tool_handler(tool_name: e_tools_general_select_tool): Edalize | Vunit | Cocotb | Osvvm {
+    public clean(prj: t_project_definition, clean_mode: e_clean_step, callback_stream: (stream_c: any) => void) {
+        const tool_name = prj.config_manager.get_config().tools.general.select_tool;
+        const tool_handler = this.get_tool_handler(tool_name);
+        return tool_handler.clean(prj, this.working_directory, clean_mode, callback_stream);
+    }
+
+    private get_tool_handler(tool_name: e_tools_general_select_tool): Edalize | Vunit | Cocotb | Osvvm | Raptor{
 
         if (this.vunit.get_supported_tools().includes(tool_name)) {
             return this.vunit;
@@ -79,6 +88,9 @@ export class Tool_manager {
         }
         else if (this.osvvm.get_supported_tools().includes(tool_name)) {
             return this.osvvm;
+        }
+        else if (this.raptor.get_supported_tools().includes(tool_name)) {
+            return this.raptor;
         }
         return this.edalize;
     }

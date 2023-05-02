@@ -8,3 +8,4 @@ package-lock.json
 config.html
 resources/project_manager/examples
 resources/project_manager/help
+yarn.lock

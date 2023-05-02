@@ -107,7 +107,7 @@ export class Config_manager {
 
         const css_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
             'project_manager', 'bootstrap.min.css'));
-            const css_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const css_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
             'project_manager', 'sidebars.css'));
         const js_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
             'project_manager', 'bootstrap.bundle.min.js'));

@@ -78,6 +78,8 @@ export function get_default_config(): e_config {
                 {%- endif %}
             {%- elif type_declaration[tp0][tp1][tp2]["type"] == "string" %}
                 {{tp2}} : "{{type_declaration[tp0][tp1][tp2]["value"]}}",
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "divider" %}
+
             {%- else %}
                 {{tp2}} : {{type_declaration[tp0][tp1][tp2]["value"]}},
             {%- endif %}
@@ -97,7 +99,9 @@ export function get_config_from_json(json_config: any): e_config {
     {%- for tp1 in type_declaration[tp0] %}
         {%- for tp2 in type_declaration[tp0][tp1] %}
     // {{ tp0 }} -> {{ tp1 }} -> {{ tp2 }}
+            {%- if type_declaration[tp0][tp1][tp2]["type"] != "divider" %}
     const current_value_{{ns.counter}} = json_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'];
+            {%- endif %}
 
             {%- if "options" in type_declaration[tp0][tp1][tp2] %}
                 {%- for option_inst in type_declaration[tp0][tp1][tp2]["options"] %}
@@ -122,6 +126,9 @@ export function get_config_from_json(json_config: any): e_config {
     if (Array.isArray(current_value_{{ns.counter}})){
         default_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'] = current_value_{{ns.counter}};
     }
+
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "divider" %}
+
 
             {%- else %}
                 asdfasdf

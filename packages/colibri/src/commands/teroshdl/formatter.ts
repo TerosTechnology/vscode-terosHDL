@@ -24,6 +24,7 @@ import * as formatter_common from '../../formatter/common';
 import { Formatter } from '../../formatter/formatter';
 import * as logger from '../../logger/logger';
 import * as cfg from '../../config/config_declaration';
+import {e_formatter_verible_full} from '../../formatter/common';
 
 function get_formatters(): string[] {
     const key_list = [
@@ -120,7 +121,7 @@ function get_s3sv_options(_config_path: string, _python_path: string): cfg.e_for
 }
 
 function get_verible_options(_config_path: string) {
-    const config: cfg.e_formatter_verible = {
+    const config: e_formatter_verible_full = {
         path: '',
         format_args: ""
     };

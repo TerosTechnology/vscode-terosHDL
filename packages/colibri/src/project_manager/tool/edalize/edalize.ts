@@ -18,7 +18,7 @@
 
 import { t_project_definition } from "../../project_definition";
 import { Generic_tool_handler } from "../generic_handler";
-import { t_test_declaration, t_test_result } from "../common";
+import { e_clean_step, t_test_declaration, t_test_result } from "../common";
 import { e_tools_general_select_tool } from "../../../config/config_declaration";
 import { get_edam_json } from "../../utils/utils";
 import * as path_lib from "path";
@@ -29,6 +29,11 @@ import * as file_utils from "../../../utils/file_utils";
 import { p_result } from "../../../process/common";
 
 export class Edalize extends Generic_tool_handler {
+
+    public clean(_prj: t_project_definition, _working_directory: string, _clean_mode: e_clean_step, 
+        _callback_stream: (_stream_c: any) => void): void {
+        throw new Error("Method not implemented.");
+    }
 
     constructor() {
         const supported_tools = [e_tools_general_select_tool.ghdl];

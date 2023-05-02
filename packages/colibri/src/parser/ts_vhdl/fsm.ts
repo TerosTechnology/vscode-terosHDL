@@ -613,13 +613,24 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             if (cursor.nodeType === 'relation' || cursor.nodeType === 'logical_expression' ||
                 cursor.nodeType === 'parenthesized_expression' || cursor.nodeType === 'conditional_expression') {
                 if (cursor.nodeType === 'conditional_expression') {
-                    const ch = this.get_item_from_childs(cursor.currentNode(), 'parenthesized_expression');
-                    if (ch !== undefined) {
-                        condition = this.get_relation_of_parenthesized_expression(ch);
+                    const relation = this.get_item_from_childs(cursor.currentNode(), 'relation');
+                    if (relation !== undefined){
+                        condition = relation.text;
                     }
-                    else {
-                        const simple_name = this.get_item_from_childs(cursor.currentNode(), 'simple_name');
-                        condition = simple_name.text;
+                    else{                        
+                        const ch = this.get_item_from_childs(cursor.currentNode(), 'parenthesized_expression');
+                        if (ch !== undefined) {
+                            condition = this.get_relation_of_parenthesized_expression(ch);
+                        }
+                        else {
+                            const simple_name = this.get_item_from_childs(cursor.currentNode(), 'simple_name');
+                            if (simple_name !== undefined){
+                                condition = simple_name.text;
+                            }
+                            else{
+                                condition = cursor.nodeText;
+                            }
+                        }
                     }
                 } else {
                     condition = this.get_relation_of_parenthesized_expression(cursor.currentNode());

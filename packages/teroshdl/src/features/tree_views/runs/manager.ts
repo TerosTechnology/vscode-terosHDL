@@ -24,6 +24,7 @@ import * as events from "events";
 import * as teroshdl2 from 'teroshdl2';
 import {Run_output_manager} from "../run_output";
 import {Logger} from "../logger";
+import * as tree_kill from 'tree-kill';
 
 export class Runs_manager {
     private tree : element.ProjectProvider;
@@ -31,6 +32,7 @@ export class Runs_manager {
     private run_output_manager : Run_output_manager;
     private logger : Logger;
     private emitter : events.EventEmitter;
+    private last_run : any;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -52,6 +54,7 @@ export class Runs_manager {
 
     set_commands(){
         vscode.commands.registerCommand("teroshdl.view.runs.run_all", () => this.run(undefined));
+        vscode.commands.registerCommand("teroshdl.view.runs.stop", () => this.stop(undefined));
         vscode.commands.registerCommand("teroshdl.view.runs.run", (item) => this.run(item));
         vscode.commands.registerCommand("teroshdl.view.runs.refresh", () => this.refresh([]));
     }
@@ -64,6 +67,20 @@ export class Runs_manager {
         }
         else {
             return (<teroshdl2.project_manager.project_manager.Project_manager>selected_prj.result).get_name();
+        }
+    }
+
+    async stop(item: element.Run | undefined){
+        try {
+            const pid = this.last_run.pid;
+            tree_kill(pid, 'SIGTERM', (err) => {
+                if (err) {
+                  console.error(err);
+                } else {
+                }
+              });
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -109,7 +126,8 @@ export class Runs_manager {
                         progress.report({ increment: 100 });
                         resolve();
                     }),
-                    (function(stream_c: any) { 
+                    (function(stream_c: any) {
+                        selfm.last_run = stream_c;
                         stream_c.stdout.on('data', function (data: any) {
                             selfm.logger.log(data);
                         });

@@ -29,3 +29,8 @@ export type f_result = {
     successful: boolean;
     message: string;
 };
+
+export type e_formatter_verible_full = {
+    format_args : string;
+    path: string;
+};

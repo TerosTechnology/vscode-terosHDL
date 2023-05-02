@@ -37,6 +37,7 @@ export class Output extends vscode.TreeItem {
     constructor(name: string, path: string, successful: boolean | undefined,
         artifact_type: teroshdl2.project_manager.tool_common.e_artifact_type | undefined,
         element_type: teroshdl2.project_manager.tool_common.e_element_type | undefined,
+        content: string | undefined,
         time: number | undefined,
         children?: any[]) {
 
@@ -74,11 +75,28 @@ export class Output extends vscode.TreeItem {
                 arguments: [vscode.Uri.file(path)]
             };
         }
+        else if (artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY &&
+            element_type === teroshdl2.project_manager.tool_common.e_element_type.HTML) {
+            this.iconPath = get_icon("note");
+            this.command = {
+                title: 'Open webview',
+                command: 'teroshdl.openwebview',
+                arguments: [content]
+            };
+        }
         else if (artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY) {
             this.iconPath = get_icon("note");
             this.command = {
                 title: 'Open file',
                 command: 'teroshdl.open',
+                arguments: [vscode.Uri.file(path)]
+            };
+        }
+        else if (artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.WAVEFORM) {
+            this.iconPath = get_icon("pulse");
+            this.command = {
+                title: 'Open waveform',
+                command: 'teroshdl.waveform',
                 arguments: [vscode.Uri.file(path)]
             };
         }
@@ -159,13 +177,15 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             const artifact_list: Output[] = [];
             result.artifact.forEach(artifact => {
                 artifact_list.push(new Output(artifact.name, artifact.path, undefined, artifact.artifact_type, 
-                    artifact.element_type, undefined));
+                    artifact.element_type, artifact.content, undefined));
             });
             if (artifact_list.length !== 0){
-                runs_view.push(new Output(result.name, result.name, result.successful, undefined, undefined, result.time, artifact_list));
+                runs_view.push(new Output(result.name, result.name, result.successful, undefined, undefined, 
+                    "", result.time, artifact_list));
             }
             else{
-                runs_view.push(new Output(result.name, result.name, result.successful, undefined, undefined, result.time));
+                runs_view.push(new Output(result.name, result.name, result.successful, undefined, undefined, "",
+                    result.time));
             }
         });
 

@@ -22,11 +22,13 @@ import * as cfg from "../config/config_declaration";
 
 export abstract class Base_formatter {
     abstract format_from_code(code: string, opt: cfg.e_formatter_istyle |
-        cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_formatter_verible, python_path: string
+        cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_formatter_svg | 
+        common.e_formatter_verible_full, python_path: string
     ): Promise<common.f_result>;
 
     abstract format(file: string, opt: cfg.e_formatter_istyle |
-        cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_formatter_verible, python_path: string
+        cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_formatter_svg | 
+        common.e_formatter_verible_full, python_path: string
     ): Promise<common.f_result>;
 }
 

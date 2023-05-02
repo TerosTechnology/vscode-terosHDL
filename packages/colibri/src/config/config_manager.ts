@@ -142,7 +142,7 @@ export class Config_manager {
     public get_style_linter_config_vhdl(): string {
         const linter_name = this.config.linter.general.lstyle_vhdl;
         if (linter_name === e_linter_general_lstyle_vhdl.vsg) {
-            return this.config.linter.vsg.arguments;
+            return this.config.linter.vsg.configuration;
         }
         else {
             return "";
@@ -192,7 +192,11 @@ export class Config_manager {
             return this.config.formatter.s3sv;
         }
         else if (formatter_name === e_formatter_general_formatter_verilog.verible) {
-            return this.config.formatter.verible;
+            const config = {
+                format_args : this.config.formatter.verible.format_args,
+                path: this.config.tools.verible.installation_path
+            };
+            return config;
         }
         else {
             return this.config.formatter.istyle;

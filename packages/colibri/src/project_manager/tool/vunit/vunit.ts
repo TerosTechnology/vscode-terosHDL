@@ -20,7 +20,7 @@ import { t_project_definition } from "../../project_definition";
 import { Generic_tool_handler } from "../generic_handler";
 import {
     t_test_declaration, t_test_result, t_location, e_artifact_type, e_element_type,
-    t_test_artifact
+    t_test_artifact, e_clean_step
 } from "../common";
 import { get_edam_json } from "../../utils/utils";
 import * as path_lib from "path";
@@ -40,6 +40,11 @@ export class Vunit extends Generic_tool_handler {
     constructor() {
         const supported_tools = [e_tools_general_select_tool.vunit];
         super(supported_tools);
+    }
+
+    public clean(_prj: t_project_definition, _working_directory: string, _clean_mode: e_clean_step,
+        _callback_stream: (_stream_c: any) => void): void {
+        throw new Error("Method not implemented.");
     }
 
     private create_runpy(prj: t_project_definition): string {
@@ -142,6 +147,7 @@ export class Vunit extends Generic_tool_handler {
                         log_artifact.push({
                             name: `Output log`,
                             path: tst.log,
+                            content: "",
                             command: "",
                             artifact_type: e_artifact_type.CONSOLE_LOG,
                             element_type: e_element_type.TEXT_FILE

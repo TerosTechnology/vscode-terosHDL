@@ -107,10 +107,10 @@ class Linter {
             argument = this.get_config().linter.vivado.verilog_arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_lstyle_vhdl.vsg){
-            argument = this.get_config().linter.vsg.arguments;
+            argument = this.get_config().linter.vsg.configuration;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_lstyle_verilog.verible){
-            path = this.get_config().tools.veriblelint.installation_path;
+            path = this.get_config().tools.verible.installation_path;
             argument = this.get_config().linter.verible.arguments;
         }
 
