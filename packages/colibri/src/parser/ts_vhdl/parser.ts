@@ -299,7 +299,7 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
         }
 
         const cursor = top_declaration.declaration.walk();
-        let comments = top_declaration.comment;
+        let comments = top_declaration.comment_init;
 
         cursor.gotoFirstChild();
         do {
@@ -307,6 +307,10 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                 const elements: common_hdl.Type_hdl[] = elements_hdl.get_full_type_declaration(cursor.currentNode());
                 for (let i = 0; i < elements.length; ++i) {
                     elements[i].info.description = comments;
+                    if (top_declaration.comment_end_line === elements[0].info.position.line 
+                        && top_declaration.comment_end !== ""){
+                            elements[i].info.description = top_declaration.comment_end;
+                    }
                     types_array.push(elements[i]);
                 }
                 comments = '';
@@ -315,7 +319,10 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                 const elements: common_hdl.Signal_hdl[] = elements_hdl.get_signal_declaration(cursor.currentNode());
                 for (let i = 0; i < elements.length; ++i) {
                     elements[i].info.description = comments;
-                    signals_array.push(elements[i]);
+                    if (top_declaration.comment_end_line === elements[0].info.position.line 
+                        && top_declaration.comment_end !== ""){
+                            elements[i].info.description = top_declaration.comment_end;
+                    }                    signals_array.push(elements[i]);
                 }
                 comments = '';
             }
@@ -324,7 +331,10 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                 const elements: common_hdl.Function_hdl[] = elements_hdl.get_function_body(cursor.currentNode());
                 for (let i = 0; i < elements.length; ++i) {
                     elements[i].info.description = comments;
-                    functions_array.push(elements[i]);
+                    if (top_declaration.comment_end_line === elements[0].info.position.line 
+                        && top_declaration.comment_end !== ""){
+                            elements[i].info.description = top_declaration.comment_end;
+                    }                    functions_array.push(elements[i]);
                 }
                 comments = '';
             }
@@ -332,7 +342,10 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                 const elements: common_hdl.Constant_hdl[] = elements_hdl.get_constant_declaration(cursor.currentNode());
                 for (let i = 0; i < elements.length; ++i) {
                     elements[i].info.description = comments;
-                    constants_array.push(elements[i]);
+                    if (top_declaration.comment_end_line === elements[0].info.position.line 
+                        && top_declaration.comment_end !== ""){
+                            elements[i].info.description = top_declaration.comment_end;
+                    }                    constants_array.push(elements[i]);
                 }
                 comments = '';
             }
@@ -412,6 +425,11 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
     private get_architecture_declaration(code: string) {
         const tree = this.parse(code);
 
+        let comment_init = "";
+        let comment_end_line = 0;
+
+        let is_init = true;
+
         let description = "";
         let break_p = false;
         let counter = 0;
@@ -428,17 +446,25 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                             cursor.gotoFirstChild();
                             do {
                                 if (cursor.nodeType === 'declarative_part') {
-                                    arch_declaration = cursor.currentNode();
+                                    if (break_p === false){
+                                        arch_declaration = cursor.currentNode();
+                                    }
                                     break_p = true;
                                 }
                                 else if (cursor.nodeType === 'comment') {
                                     description += this.get_comment(cursor.nodeText);
+                                    comment_end_line = cursor.startPosition.row;
                                 }
-                                else {
-                                    description = "";
+
+                                if (cursor.nodeType !== 'comment') {
+                                    if (is_init === true && break_p === true){
+                                        comment_init = description;
+                                        is_init = false;
+                                        description = "";
+                                    }
                                 }
                             }
-                            while (cursor.gotoNextSibling() === true && break_p === false);
+                            while (cursor.gotoNextSibling() === true);
                         }
                     }
                     while (cursor.gotoNextSibling() === true && break_p === false);
@@ -446,7 +472,8 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
             }
         }
         while (cursor.gotoNextSibling() === true && break_p === false);
-        return { "declaration": arch_declaration, "comment": description };
+        return { "declaration": arch_declaration, "comment": description, "comment_init": comment_init, 
+            "comment_end": description, "comment_end_line": comment_end_line};
     }
 
     //**************************************************************************
@@ -505,6 +532,12 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                 }
                 while (cursor.gotoNextSibling() === true && break_p === false);
             }
+            else if (cursor.nodeType === 'comment') {
+                description += this.get_comment(cursor.nodeText);
+            }
+            else {
+                description = '';
+            }
         }
         while (cursor.gotoNextSibling() === true && break_p === false);
 
@@ -514,6 +547,11 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
 
     get_package_top_declaration(code: string) {
         const tree = this.parse(code);
+
+        let comment_init = "";
+        let comment_end_line = 0;
+
+        let is_init = true;
 
         let declaration = undefined;
         let description = "";
@@ -534,12 +572,18 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                             }
                             else if (cursor.nodeType === 'comment') {
                                 description += this.get_comment(cursor.nodeText);
+                                comment_end_line = cursor.startPosition.row;
                             }
-                            else {
-                                description = "";
+
+                            if (cursor.nodeType !== 'comment') {
+                                if (is_init === true && break_p === true){
+                                    comment_init = description;
+                                    is_init = false;
+                                    description = "";
+                                }
                             }
                         }
-                        while (cursor.gotoNextSibling() === true && break_p === false);
+                        while (cursor.gotoNextSibling() === true);
                     }
                 }
                 while (cursor.gotoNextSibling() === true && break_p === false);
@@ -548,15 +592,30 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                 cursor.gotoFirstChild();
                 do {
                     if (cursor.nodeType === 'declarative_part') {
-                        declaration = cursor.currentNode();
+                        if (break_p === false){
+                            declaration = cursor.currentNode();
+                        }
                         break_p = true;
                     }
+                    else if (cursor.nodeType === 'comment') {
+                        description += this.get_comment(cursor.nodeText);
+                        comment_end_line = cursor.startPosition.row;
+                    }
+
+                    if (cursor.nodeType !== 'comment') {
+                        if (is_init === true && break_p === true){
+                            comment_init = description;
+                            is_init = false;
+                            description = "";
+                        }
+                    }
                 }
-                while (cursor.gotoNextSibling() === true && break_p === false);
+                while (cursor.gotoNextSibling() === true);
             }
         }
         while (cursor.gotoNextSibling() === true && break_p === false);
-        return { "declaration": declaration, "comment": description };
+        return { "declaration": declaration, "comment": description, "comment_init": comment_init, 
+        "comment_end": description, comment_end_line: comment_end_line };
     }
 }
 

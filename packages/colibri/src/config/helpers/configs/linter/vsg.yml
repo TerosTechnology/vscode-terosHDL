@@ -1,4 +1,4 @@
 arguments:
-  description: "Arguments."
+  description: "JSON or YAML configuration file."
   type: string
   value: ""

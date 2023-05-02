@@ -314,7 +314,7 @@ export const WEB_CONFIG = `
                             <li><a id="btn-tools-symbiflow" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Symbiflow</a></li>
                             <li><a id="btn-tools-trellis" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Trellis</a></li>
                             <li><a id="btn-tools-vcs" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VCS</a></li>
-                            <li><a id="btn-tools-veriblelint" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VeribleLint</a></li>
+                            <li><a id="btn-tools-verible" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verible</a></li>
                             <li><a id="btn-tools-verilator" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verilator</a></li>
                             <li><a id="btn-tools-vivado" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Vivado</a></li>
                             <li><a id="btn-tools-vunit" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VUnit</a></li>
@@ -325,6 +325,7 @@ export const WEB_CONFIG = `
                             <li><a id="btn-tools-activehdl" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Active-HDL</a></li>
                             <li><a id="btn-tools-nvc" href="#" class="link-dark d-inline-flex text-decoration-none rounded">NVC</a></li>
                             <li><a id="btn-tools-questa" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Questa Advanced Simulator</a></li>
+                            <li><a id="btn-tools-raptor" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Raptor Design Suite</a></li>
                         </ul>
                     </div>
                 </li>
@@ -337,7 +338,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">General: General</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -355,7 +356,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="general-general-pypath" class="form-label">Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong></label>
-              <input class="form-control" id="general-general-pypath" rows="3"></input>
+              <input class="form-control" id="general-general-pypath" rows="3"  value=""></input>
             </div>
           
           
@@ -410,7 +411,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Documentation: General</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -427,7 +428,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="documentation-general-symbol_vhdl" class="form-label">Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code></label>
-              <input class="form-control" id="documentation-general-symbol_vhdl" rows="3"></input>
+              <input class="form-control" id="documentation-general-symbol_vhdl" rows="3"  value=""></input>
             </div>
           
           
@@ -435,7 +436,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="documentation-general-symbol_verilog" class="form-label">Special Verilog symbol at the begin of the comment to extract documentation. Example: <code>//! Code comment</code></label>
-              <input class="form-control" id="documentation-general-symbol_verilog" rows="3"></input>
+              <input class="form-control" id="documentation-general-symbol_verilog" rows="3"  value=""></input>
             </div>
           
           
@@ -575,7 +576,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="documentation-general-magic_config_path" class="form-label">Magic config file path</label>
-              <input class="form-control" id="documentation-general-magic_config_path" rows="3"></input>
+              <input class="form-control" id="documentation-general-magic_config_path" rows="3"  value=""></input>
             </div>
           
           
@@ -594,7 +595,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Editor: General</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -663,7 +664,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Formatter: General</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -703,7 +704,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Formatter: iStyle</h1>
         <h6 class="card-subtitle mb-2 text-muted">Verilog/SV iStyle formatter</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -741,7 +742,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Formatter: s3sv</h1>
         <h6 class="card-subtitle mb-2 text-muted">Verilog/SV S3SV formatter</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -802,21 +803,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Formatter: Verible</h1>
         <h6 class="card-subtitle mb-2 text-muted">Verilog/SV Verible formatter</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
-              <label for="formatter-verible-path" class="form-label">Verible formatter binary path. E.g: /home/user/Downloads/verible-v0.0-1296/bin/verible-verilog-format</label>
-              <input class="form-control" id="formatter-verible-path" rows="3"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
               <label for="formatter-verible-format_args" class="form-label">Extra command line arguments passed to the Verible tool</label>
-              <input class="form-control" id="formatter-verible-format_args" rows="3"></input>
+              <input class="form-control" id="formatter-verible-format_args" rows="3"  value=""></input>
             </div>
           
           
@@ -835,7 +828,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Formatter: VHDL standalone</h1>
         <h6 class="card-subtitle mb-2 text-muted">VHDL standalone formatter</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -863,7 +856,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="formatter-standalone-indentation" class="form-label">Indentation.</label>
-              <input class="form-control" id="formatter-standalone-indentation" rows="3"></input>
+              <input class="form-control" id="formatter-standalone-indentation" rows="3"  value="  "></input>
             </div>
           
           
@@ -1002,13 +995,21 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Formatter: VHDL VSG</h1>
         <h6 class="card-subtitle mb-2 text-muted">VHDL Style Guide. Analyzes VHDL files for style guide violations.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="formatter-svg-configuration" class="form-label">JSON or YAML configuration file.</label>
-              <input class="form-control" id="formatter-svg-configuration" rows="3"></input>
+              <input class="form-control" id="formatter-svg-configuration" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="formatter-svg-core_number" class="form-label">Number of parallel jobs to use, default is the number of cpu cores.</label>
+              <input type='number' class="form-control" id="formatter-svg-core_number" rows="3"></input>
             </div>
           
           
@@ -1027,7 +1028,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Linter settings: General</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -1094,13 +1095,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Linter settings: GHDL linter</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="linter-ghdl-arguments" class="form-label">Arguments.</label>
-              <input class="form-control" id="linter-ghdl-arguments" rows="3"></input>
+              <input class="form-control" id="linter-ghdl-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1119,13 +1120,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Linter settings: Icarus linter</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="linter-icarus-arguments" class="form-label">Arguments.</label>
-              <input class="form-control" id="linter-icarus-arguments" rows="3"></input>
+              <input class="form-control" id="linter-icarus-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1144,13 +1145,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Linter settings: ModelSim linter</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="linter-modelsim-vhdl_arguments" class="form-label">VHDL linter arguments.</label>
-              <input class="form-control" id="linter-modelsim-vhdl_arguments" rows="3"></input>
+              <input class="form-control" id="linter-modelsim-vhdl_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1158,7 +1159,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="linter-modelsim-verilog_arguments" class="form-label">Verilog linter arguments.</label>
-              <input class="form-control" id="linter-modelsim-verilog_arguments" rows="3"></input>
+              <input class="form-control" id="linter-modelsim-verilog_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1177,13 +1178,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Linter settings: Verible linter</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="linter-verible-arguments" class="form-label">Arguments.</label>
-              <input class="form-control" id="linter-verible-arguments" rows="3"></input>
+              <input class="form-control" id="linter-verible-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1202,13 +1203,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Linter settings: Verilator linter</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="linter-verilator-arguments" class="form-label">Arguments.</label>
-              <input class="form-control" id="linter-verilator-arguments" rows="3"></input>
+              <input class="form-control" id="linter-verilator-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1227,13 +1228,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Linter settings: Vivado linter</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="linter-vivado-vhdl_arguments" class="form-label">VHDL linter arguments.</label>
-              <input class="form-control" id="linter-vivado-vhdl_arguments" rows="3"></input>
+              <input class="form-control" id="linter-vivado-vhdl_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1241,7 +1242,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="linter-vivado-verilog_arguments" class="form-label">Verilog linter arguments.</label>
-              <input class="form-control" id="linter-vivado-verilog_arguments" rows="3"></input>
+              <input class="form-control" id="linter-vivado-verilog_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1260,13 +1261,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Linter settings: VSG linter</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
-              <label for="linter-vsg-arguments" class="form-label">Arguments.</label>
-              <input class="form-control" id="linter-vsg-arguments" rows="3"></input>
+              <label for="linter-vsg-configuration" class="form-label">JSON or YAML configuration file.</label>
+              <input class="form-control" id="linter-vsg-configuration" rows="3"  value=""></input>
             </div>
           
           
@@ -1285,7 +1286,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Schematic viewer: General</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -1304,7 +1305,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="schematic-general-args" class="form-label">Arguments passed to Yosys</label>
-              <input class="form-control" id="schematic-general-args" rows="3"></input>
+              <input class="form-control" id="schematic-general-args" rows="3"  value=""></input>
             </div>
           
           
@@ -1323,13 +1324,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Templates: General</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="templates-general-header_file_path" class="form-label">File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template</label>
-              <input class="form-control" id="templates-general-header_file_path" rows="3"></input>
+              <input class="form-control" id="templates-general-header_file_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1337,7 +1338,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="templates-general-indent" class="form-label">Indent</label>
-              <input class="form-control" id="templates-general-indent" rows="3"></input>
+              <input class="form-control" id="templates-general-indent" rows="3"  value="  "></input>
             </div>
           
           
@@ -1378,7 +1379,7 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: General</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
@@ -1404,6 +1405,7 @@ export const WEB_CONFIG = `
                       <option value='vivado'>Vivado</option>
                       <option value='xcelium'>Xcelium</option>
                       <option value='xsim'>XSIM</option>
+                      <option value='raptor'>Raptor Design Suite</option>
               </select>
             </div>
           
@@ -1446,13 +1448,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: OSVVM</h1>
         <h6 class="card-subtitle mb-2 text-muted">OSVVM is an advanced verification methodology that defines a VHDL verification framework, verification utility library, verification component library, and a scripting flow that simplifies your FPGA or ASIC verification project from start to finish. Using these libraries you can create a simple, readable, and powerful testbench that is suitable for either a simple FPGA block or a complex ASIC.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-osvvm-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-osvvm-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-osvvm-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1460,7 +1462,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-osvvm-tclsh_binary" class="form-label">tclsh binary path. E.g: /usr/bin/tclsh8.6</label>
-              <input class="form-control" id="tools-osvvm-tclsh_binary" rows="3"></input>
+              <input class="form-control" id="tools-osvvm-tclsh_binary" rows="3"  value=""></input>
             </div>
           
           
@@ -1497,13 +1499,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Ascenlint</h1>
         <h6 class="card-subtitle mb-2 text-muted">Ascent Lint performs static source code analysis on HDL code and checks for common coding errors or coding style violations.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-ascenlint-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-ascenlint-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-ascenlint-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1529,13 +1531,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Cocotb</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-cocotb-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-cocotb-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-cocotb-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1563,7 +1565,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-cocotb-compile_args" class="form-label">Any arguments or flags to pass to the compile stage of the simulation.</label>
-              <input class="form-control" id="tools-cocotb-compile_args" rows="3"></input>
+              <input class="form-control" id="tools-cocotb-compile_args" rows="3"  value=""></input>
             </div>
           
           
@@ -1571,7 +1573,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-cocotb-run_args" class="form-label">Any argument to be passed to the “first” invocation of a simulator that runs via a TCL script. One motivating usage is to pass -noautoldlibpath to Questa to prevent it from loading the out-of-date libraries it ships with. Used by Aldec Riviera-PRO and Mentor Graphics Questa simulator.</label>
-              <input class="form-control" id="tools-cocotb-run_args" rows="3"></input>
+              <input class="form-control" id="tools-cocotb-run_args" rows="3"  value=""></input>
             </div>
           
           
@@ -1579,7 +1581,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-cocotb-plusargs" class="form-label">They are options that are starting with a plus (+) sign. They are passed to the simulator and are also available within cocotb as cocotb.plusargs. In the simulator, they can be read by the Verilog/SystemVerilog system functions $test$plusargs and $value$plusargs. The special plusargs +ntb_random_seed and +seed, if present, are evaluated to set the random seed value if RANDOM_SEED is not set. If both +ntb_random_seed and +seed are set, +ntb_random_seed is used.</label>
-              <input class="form-control" id="tools-cocotb-plusargs" rows="3"></input>
+              <input class="form-control" id="tools-cocotb-plusargs" rows="3"  value=""></input>
             </div>
           
           
@@ -1598,13 +1600,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Diamond</h1>
         <h6 class="card-subtitle mb-2 text-muted">Backend for Lattice Diamond.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-diamond-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-diamond-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-diamond-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1612,7 +1614,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-diamond-part" class="form-label">FPGA part number (e.g. LFE5U-45F-6BG381C).</label>
-              <input class="form-control" id="tools-diamond-part" rows="3"></input>
+              <input class="form-control" id="tools-diamond-part" rows="3"  value=""></input>
             </div>
           
           
@@ -1631,13 +1633,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: GHDL</h1>
         <h6 class="card-subtitle mb-2 text-muted">GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-ghdl-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-ghdl-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-ghdl-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1681,13 +1683,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Icarus</h1>
         <h6 class="card-subtitle mb-2 text-muted">Icarus Verilog is a Verilog simulation and synthesis tool. It operates as a compiler, compiling source code written in Verilog (IEEE-1364) into some target format.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-icarus-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-icarus-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-icarus-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1695,7 +1697,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-icarus-timescale" class="form-label">Default timescale.</label>
-              <input class="form-control" id="tools-icarus-timescale" rows="3"></input>
+              <input class="form-control" id="tools-icarus-timescale" rows="3"  value=""></input>
             </div>
           
           
@@ -1721,13 +1723,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Icestorm</h1>
         <h6 class="card-subtitle mb-2 text-muted">Open source toolchain for Lattice iCE40 FPGAs. Uses yosys for synthesis and arachne-pnr or nextpnr for Place & Route.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-icestorm-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-icestorm-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-icestorm-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1783,7 +1785,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-icestorm-makefile_name" class="form-label">Generated makefile name, defaults to $name.mk</label>
-              <input class="form-control" id="tools-icestorm-makefile_name" rows="3"></input>
+              <input class="form-control" id="tools-icestorm-makefile_name" rows="3"  value=""></input>
             </div>
           
           
@@ -1823,13 +1825,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: ISE</h1>
         <h6 class="card-subtitle mb-2 text-muted">Xilinx ISE Design Suite.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-ise-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-ise-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-ise-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1837,7 +1839,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-ise-family" class="form-label">FPGA family (e.g. spartan6).</label>
-              <input class="form-control" id="tools-ise-family" rows="3"></input>
+              <input class="form-control" id="tools-ise-family" rows="3"  value=""></input>
             </div>
           
           
@@ -1845,7 +1847,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-ise-device" class="form-label">FPGA device (e.g. xc6slx45).</label>
-              <input class="form-control" id="tools-ise-device" rows="3"></input>
+              <input class="form-control" id="tools-ise-device" rows="3"  value=""></input>
             </div>
           
           
@@ -1853,7 +1855,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-ise-package" class="form-label">FPGA package (e.g. csg324).</label>
-              <input class="form-control" id="tools-ise-package" rows="3"></input>
+              <input class="form-control" id="tools-ise-package" rows="3"  value=""></input>
             </div>
           
           
@@ -1861,7 +1863,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-ise-speed" class="form-label">FPGA speed grade (e.g. -2).</label>
-              <input class="form-control" id="tools-ise-speed" rows="3"></input>
+              <input class="form-control" id="tools-ise-speed" rows="3"  value=""></input>
             </div>
           
           
@@ -1880,13 +1882,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: ISIM</h1>
         <h6 class="card-subtitle mb-2 text-muted">Xilinx ISim simulator from ISE design suite.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-isem-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-isem-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-isem-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1919,13 +1921,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: ModelSim</h1>
         <h6 class="card-subtitle mb-2 text-muted">ModelSim simulator from Mentor Graphics.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-modelsim-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-modelsim-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-modelsim-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1965,13 +1967,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Morty</h1>
         <h6 class="card-subtitle mb-2 text-muted">Run the (System-) Verilog pickle tool called morty.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-morty-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-morty-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-morty-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1997,13 +1999,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Quartus</h1>
         <h6 class="card-subtitle mb-2 text-muted">The Quartus backend supports Intel Quartus Std and Pro editions to build systems and program the FPGA.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-quartus-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-quartus-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-quartus-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2011,7 +2013,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-quartus-family" class="form-label">FPGA family (e.g. Cyclone V).</label>
-              <input class="form-control" id="tools-quartus-family" rows="3"></input>
+              <input class="form-control" id="tools-quartus-family" rows="3"  value=""></input>
             </div>
           
           
@@ -2019,7 +2021,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-quartus-device" class="form-label">FPGA device (e.g. 5CSXFC6D6F31C8ES).</label>
-              <input class="form-control" id="tools-quartus-device" rows="3"></input>
+              <input class="form-control" id="tools-quartus-device" rows="3"  value=""></input>
             </div>
           
           
@@ -2027,7 +2029,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-quartus-cable" class="form-label">Specifies the FPGA’s JTAG programming cable. Use the tool jtagconfig to determine the available cables.</label>
-              <input class="form-control" id="tools-quartus-cable" rows="3"></input>
+              <input class="form-control" id="tools-quartus-cable" rows="3"  value=""></input>
             </div>
           
           
@@ -2035,7 +2037,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-quartus-board_device_index" class="form-label">Specifies the FPGA’s device number in the JTAG chain. The device index specifies the device where the flash programmer looks for the Nios® II JTAG debug module. JTAG devices are numbered relative to the JTAG chain, starting at 1. Use the tool jtagconfig to determine the index.</label>
-              <input class="form-control" id="tools-quartus-board_device_index" rows="3"></input>
+              <input class="form-control" id="tools-quartus-board_device_index" rows="3"  value=""></input>
             </div>
           
           
@@ -2080,13 +2082,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Radiant</h1>
         <h6 class="card-subtitle mb-2 text-muted">Backend for Lattice Radiant.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-radiant-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-radiant-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-radiant-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2094,7 +2096,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-radiant-part" class="form-label">FPGA part number (e.g. LIFCL-40-9BG400C).</label>
-              <input class="form-control" id="tools-radiant-part" rows="3"></input>
+              <input class="form-control" id="tools-radiant-part" rows="3"  value=""></input>
             </div>
           
           
@@ -2113,13 +2115,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Rivierapro</h1>
         <h6 class="card-subtitle mb-2 text-muted">Riviera Pro simulator from Aldec.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-rivierapro-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-rivierapro-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-rivierapro-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2127,7 +2129,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-rivierapro-compilation_mode" class="form-label">Common or separate compilation, sep - for separate compilation, common - for common compilation.</label>
-              <input class="form-control" id="tools-rivierapro-compilation_mode" rows="3"></input>
+              <input class="form-control" id="tools-rivierapro-compilation_mode" rows="3"  value=""></input>
             </div>
           
           
@@ -2160,13 +2162,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: SiliconCompiler</h1>
         <h6 class="card-subtitle mb-2 text-muted">SiliconCompiler is an open source compiler framework that automates translation from source code to silicon. Check the project documentation: <a href="https://docs.siliconcompiler.com/en/latest/">https://docs.siliconcompiler.com/en/latest/</a></h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-siliconcompiler-installation_path" class="form-label"></label>
-              <input class="form-control" id="tools-siliconcompiler-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-siliconcompiler-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2174,7 +2176,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-siliconcompiler-target" class="form-label">Compilation target separated by a single underscore, specified as '<process>_<edaflow>' for ASIC compilation and '<partname>_<edaflow>'' for FPGA compilation. The process, edaflow, partname fields must be alphanumeric and cannot contain underscores. E.g: asicflow_freepdk45</label>
-              <input class="form-control" id="tools-siliconcompiler-target" rows="3"></input>
+              <input class="form-control" id="tools-siliconcompiler-target" rows="3"  value=""></input>
             </div>
           
           
@@ -2194,7 +2196,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-siliconcompiler-server_address" class="form-label">Remote server address (e.g: https://server.siliconcompiler.com):</label>
-              <input class="form-control" id="tools-siliconcompiler-server_address" rows="3"></input>
+              <input class="form-control" id="tools-siliconcompiler-server_address" rows="3"  value=""></input>
             </div>
           
           
@@ -2202,7 +2204,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-siliconcompiler-server_username" class="form-label">Remote server user:</label>
-              <input class="form-control" id="tools-siliconcompiler-server_username" rows="3"></input>
+              <input class="form-control" id="tools-siliconcompiler-server_username" rows="3"  value=""></input>
             </div>
           
           
@@ -2210,7 +2212,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-siliconcompiler-server_password" class="form-label">Remote server password:</label>
-              <input class="form-control" id="tools-siliconcompiler-server_password" rows="3"></input>
+              <input class="form-control" id="tools-siliconcompiler-server_password" rows="3"  value=""></input>
             </div>
           
           
@@ -2229,13 +2231,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Spyglass</h1>
         <h6 class="card-subtitle mb-2 text-muted">Synopsys (formerly Atrenta) Spyglass Backend. Spyglass performs static source code analysis on HDL code and checks for common coding errors or coding style violations.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-spyglass-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-spyglass-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-spyglass-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2243,7 +2245,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-spyglass-methodology" class="form-label"></label>
-              <input class="form-control" id="tools-spyglass-methodology" rows="3"></input>
+              <input class="form-control" id="tools-spyglass-methodology" rows="3"  value=""></input>
             </div>
           
           
@@ -2283,13 +2285,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: SymbiYosys</h1>
         <h6 class="card-subtitle mb-2 text-muted">SymbiYosys formal verification wrapper for Yosys.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-symbiyosys-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-symbiyosys-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-symbiyosys-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2315,13 +2317,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Symbiflow</h1>
         <h6 class="card-subtitle mb-2 text-muted">VHDL Style Guide. Analyzes VHDL files for style guide violations.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-symbiflow-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-symbiflow-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-symbiflow-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2329,7 +2331,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-symbiflow-package" class="form-label">FPGA chip package (e.g. clg400-1).</label>
-              <input class="form-control" id="tools-symbiflow-package" rows="3"></input>
+              <input class="form-control" id="tools-symbiflow-package" rows="3"  value=""></input>
             </div>
           
           
@@ -2337,7 +2339,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-symbiflow-part" class="form-label">FPGA part type (e.g. xc7a50t).</label>
-              <input class="form-control" id="tools-symbiflow-part" rows="3"></input>
+              <input class="form-control" id="tools-symbiflow-part" rows="3"  value=""></input>
             </div>
           
           
@@ -2345,7 +2347,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-symbiflow-vendor" class="form-label">Target architecture. Currently only “xilinx” is supported.</label>
-              <input class="form-control" id="tools-symbiflow-vendor" rows="3"></input>
+              <input class="form-control" id="tools-symbiflow-vendor" rows="3"  value=""></input>
             </div>
           
           
@@ -2363,7 +2365,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-symbiflow-vpr_options" class="form-label">Additional vpr tool options. If not used, default options for the tool will be used.</label>
-              <input class="form-control" id="tools-symbiflow-vpr_options" rows="3"></input>
+              <input class="form-control" id="tools-symbiflow-vpr_options" rows="3"  value=""></input>
             </div>
           
           
@@ -2371,7 +2373,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-symbiflow-environment_script" class="form-label">Optional bash script that will be sourced before each build step..</label>
-              <input class="form-control" id="tools-symbiflow-environment_script" rows="3"></input>
+              <input class="form-control" id="tools-symbiflow-environment_script" rows="3"  value=""></input>
             </div>
           
           
@@ -2390,13 +2392,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Trellis</h1>
         <h6 class="card-subtitle mb-2 text-muted">Project Trellis enables a fully open-source flow for ECP5 FPGAs using Yosys for Verilog synthesis and nextpnr for place and route.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-trellis-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-trellis-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-trellis-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2440,7 +2442,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-trellis-makefile_name" class="form-label">Generated makefile name, defaults to $name.mk</label>
-              <input class="form-control" id="tools-trellis-makefile_name" rows="3"></input>
+              <input class="form-control" id="tools-trellis-makefile_name" rows="3"  value=""></input>
             </div>
           
           
@@ -2448,7 +2450,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-trellis-script_name" class="form-label">Generated tcl script filename, defaults to $name.mk</label>
-              <input class="form-control" id="tools-trellis-script_name" rows="3"></input>
+              <input class="form-control" id="tools-trellis-script_name" rows="3"  value=""></input>
             </div>
           
           
@@ -2481,13 +2483,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: VCS</h1>
         <h6 class="card-subtitle mb-2 text-muted">Synopsys VCS Backend</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-vcs-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-vcs-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-vcs-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2515,18 +2517,18 @@ export const WEB_CONFIG = `
         <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
       </div>
   </div>
-    <div class="card h-100" id="tools-veriblelint">
+    <div class="card h-100" id="tools-verible">
       <div class="card-header">
-        <h1 class="card-title">Tools: VeribleLint</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Verible lint backend (verible-verilog-lint).</h6>
+        <h1 class="card-title">Tools: Verible</h1>
+        <h6 class="card-subtitle mb-2 text-muted">Verible.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
-              <label for="tools-veriblelint-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-veriblelint-installation_path" rows="3"></input>
+              <label for="tools-verible-installation_path" class="form-label">Installation path:</label>
+              <input class="form-control" id="tools-verible-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2543,15 +2545,15 @@ export const WEB_CONFIG = `
     <div class="card h-100" id="tools-verilator">
       <div class="card-header">
         <h1 class="card-title">Tools: Verilator</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Verible lint backend (verible-verilog-lint).</h6>
+        <h6 class="card-subtitle mb-2 text-muted">Verilator."</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-verilator-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-verilator-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-verilator-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2610,13 +2612,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Vivado</h1>
         <h6 class="card-subtitle mb-2 text-muted">The Vivado backend executes Xilinx Vivado to build systems and program the FPGA.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-vivado-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-vivado-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-vivado-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2624,7 +2626,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-vivado-part" class="form-label">Part. Device identifier. e.g. xc7a35tcsg324-1.</label>
-              <input class="form-control" id="tools-vivado-part" rows="3"></input>
+              <input class="form-control" id="tools-vivado-part" rows="3"  value=""></input>
             </div>
           
           
@@ -2632,7 +2634,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-vivado-synth" class="form-label">Synthesis tool. Allowed values are vivado (default) and yosys..</label>
-              <input class="form-control" id="tools-vivado-synth" rows="3"></input>
+              <input class="form-control" id="tools-vivado-synth" rows="3"  value=""></input>
             </div>
           
           
@@ -2659,7 +2661,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-vivado-hw_target" class="form-label">Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A.</label>
-              <input class="form-control" id="tools-vivado-hw_target" rows="3"></input>
+              <input class="form-control" id="tools-vivado-hw_target" rows="3"  value=""></input>
             </div>
           
           
@@ -2678,13 +2680,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: VUnit</h1>
         <h6 class="card-subtitle mb-2 text-muted">VUnit testing framework.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-vunit-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-vunit-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-vunit-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2807,13 +2809,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Xcelium</h1>
         <h6 class="card-subtitle mb-2 text-muted">Xcelium simulator from Cadence Design Systems.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-xcelium-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-xcelium-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-xcelium-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2860,13 +2862,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: XSIM</h1>
         <h6 class="card-subtitle mb-2 text-muted">XSim simulator from the Xilinx Vivado suite.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-xsim-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-xsim-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-xsim-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2899,13 +2901,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Yosys</h1>
         <h6 class="card-subtitle mb-2 text-muted">Open source synthesis tool targeting many different FPGAs.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-yosys-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-yosys-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-yosys-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2949,7 +2951,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-yosys-makefile_name" class="form-label">Generated makefile name, defaults to $name.mk</label>
-              <input class="form-control" id="tools-yosys-makefile_name" rows="3"></input>
+              <input class="form-control" id="tools-yosys-makefile_name" rows="3"  value=""></input>
             </div>
           
           
@@ -2957,7 +2959,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-yosys-script_name" class="form-label">Generated tcl script filename, defaults to $name.mk</label>
-              <input class="form-control" id="tools-yosys-script_name" rows="3"></input>
+              <input class="form-control" id="tools-yosys-script_name" rows="3"  value=""></input>
             </div>
           
           
@@ -2983,13 +2985,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: OpenFPGA</h1>
         <h6 class="card-subtitle mb-2 text-muted">The award-winning OpenFPGA framework is the first open-source FPGA IP generator with silicon proofs supporting highly-customizable FPGA architectures.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-openfpga-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-openfpga-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-openfpga-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3033,7 +3035,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-openfpga-makefile_name" class="form-label">Generated makefile name, defaults to $name.mk</label>
-              <input class="form-control" id="tools-openfpga-makefile_name" rows="3"></input>
+              <input class="form-control" id="tools-openfpga-makefile_name" rows="3"  value=""></input>
             </div>
           
           
@@ -3041,7 +3043,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="tools-openfpga-script_name" class="form-label">Generated tcl script filename, defaults to $name.mk</label>
-              <input class="form-control" id="tools-openfpga-script_name" rows="3"></input>
+              <input class="form-control" id="tools-openfpga-script_name" rows="3"  value=""></input>
             </div>
           
           
@@ -3067,13 +3069,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Active-HDL</h1>
         <h6 class="card-subtitle mb-2 text-muted">Active-HDL™ is a Windows based, integrated FPGA Design Creation and Simulation solution for team-based environments.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-activehdl-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-activehdl-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-activehdl-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3092,13 +3094,13 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: NVC</h1>
         <h6 class="card-subtitle mb-2 text-muted">NVC is a VHDL compiler and simulator. NVC supports almost all of VHDL-2002 and it has been successfully used to simulate several real-world designs.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-nvc-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-nvc-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-nvc-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3117,13 +3119,324 @@ export const WEB_CONFIG = `
         <h1 class="card-title">Tools: Questa Advanced Simulator</h1>
         <h6 class="card-subtitle mb-2 text-muted">The Questa advanced simulator is the core simulation and debug engine of the Questa verification solution.</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       
           
           
             <div class="mb-3">
               <label for="tools-questa-installation_path" class="form-label">Installation path:</label>
-              <input class="form-control" id="tools-questa-installation_path" rows="3"></input>
+              <input class="form-control" id="tools-questa-installation_path" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+      </div>
+      
+      <div class="card-footer">
+        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
+        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
+        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
+      </div>
+  </div>
+    <div class="card h-100" id="tools-raptor">
+      <div class="card-header">
+        <h1 class="card-title">Tools: Raptor Design Suite</h1>
+        <h6 class="card-subtitle mb-2 text-muted">Raptor Design Suite.</h6>
+      </div>
+      <div class="card-body overflow-auto">
+      
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-installation_path" class="form-label">Installation path:</label>
+              <input class="form-control" id="tools-raptor-installation_path" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-target_device" class="form-label">Target device</label>
+              <input class="form-control" id="tools-raptor-target_device" rows="3"  value="1GE100"></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-vhdl_version" class="form-label">VHDL version</label>
+              <select class="form-select" aria-label="VHDL version" id="tools-raptor-vhdl_version">
+                      <option value='VHDL_1987'>1987</option>
+                      <option value='VHDL_1993'>1993</option>
+                      <option value='VHDL_2000'>2000</option>
+                      <option value='VHDL_2008'>2008</option>
+                      <option value='VHDL_2019'>2019</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-verilog_version" class="form-label">Verilog version</label>
+              <select class="form-select" aria-label="Verilog version" id="tools-raptor-verilog_version">
+                      <option value='V_1995'>1995</option>
+                      <option value='V_2001'>2001</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-sv_version" class="form-label">SV version</label>
+              <select class="form-select" aria-label="SV version" id="tools-raptor-sv_version">
+                      <option value='SV_2005'>2005</option>
+                      <option value='SV_2009'>2009</option>
+                      <option value='SV_2012'>2012</option>
+                      <option value='SV_2017'>2017</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <hr class="hr hr-blurry" />
+            <h4 class="card-subtitle text-muted">Synthesis</h4>
+            <hr class="hr hr-blurry" />
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-optimization" class="form-label">Optimization</label>
+              <select class="form-select" aria-label="Optimization" id="tools-raptor-optimization">
+                      <option value='area'>Area</option>
+                      <option value='delay'>Delay</option>
+                      <option value='mixed'>Mixed</option>
+                      <option value='none'>None</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-effort" class="form-label">Effort</label>
+              <select class="form-select" aria-label="Effort" id="tools-raptor-effort">
+                      <option value='high'>High</option>
+                      <option value='medium'>Medium</option>
+                      <option value='low'>Low</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-fsm_encoding" class="form-label">FSM encoding</label>
+              <select class="form-select" aria-label="FSM encoding" id="tools-raptor-fsm_encoding">
+                      <option value='binary'>Binary</option>
+                      <option value='one_hot'>One Hot</option>
+                      <option value='low'>Low</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-carry" class="form-label">Carry</label>
+              <select class="form-select" aria-label="Carry" id="tools-raptor-carry">
+                      <option value='auto'>Auto</option>
+                      <option value='all'>All</option>
+                      <option value='none'>None</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-pnr_netlist_language" class="form-label">Pnr netlist language</label>
+              <select class="form-select" aria-label="Pnr netlist language" id="tools-raptor-pnr_netlist_language">
+                      <option value='blif'>Blif</option>
+                      <option value='edif'>edif</option>
+                      <option value='verilog'>Verilog</option>
+                      <option value='vhdl'>VHDL</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-no_dsp_blocks">
+                <label class="form-check-label" for="tools-raptor-no_dsp_blocks">
+                  No DSP blocks
+                </label>
+              </div>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-no_block_ram">
+                <label class="form-check-label" for="tools-raptor-no_block_ram">
+                  No Block Ram
+                </label>
+              </div>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-fast_synthesis">
+                <label class="form-check-label" for="tools-raptor-fast_synthesis">
+                  Fast Synthesis
+                </label>
+              </div>
+            </div>
+          
+          
+          
+          
+            <hr class="hr hr-blurry" />
+            <h4 class="card-subtitle text-muted">Simulation</h4>
+            <hr class="hr hr-blurry" />
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-top_level" class="form-label">Simulation top level:</label>
+              <input class="form-control" id="tools-raptor-top_level" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-simulate_rtl">
+                <label class="form-check-label" for="tools-raptor-simulate_rtl">
+                  Simulate RTL
+                </label>
+              </div>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-waveform_rtl" class="form-label">RTL waveform simulation</label>
+              <input class="form-control" id="tools-raptor-waveform_rtl" rows="3"  value="syn_tb_rtl.fst"></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-simulator_rtl" class="form-label">RTL Simulator</label>
+              <select class="form-select" aria-label="RTL Simulator" id="tools-raptor-simulator_rtl">
+                      <option value='verilator'>Verilator</option>
+                      <option value='ghdl'>GHDL</option>
+                      <option value='icarus'>Icarus</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-simulation_options_rtl" class="form-label">Simulation options</label>
+              <input class="form-control" id="tools-raptor-simulation_options_rtl" rows="3"  value="--stop-time=1000ns"></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-simulate_gate">
+                <label class="form-check-label" for="tools-raptor-simulate_gate">
+                  Simulate Gate
+                </label>
+              </div>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-waveform_gate" class="form-label">Gate waveform simulation</label>
+              <input class="form-control" id="tools-raptor-waveform_gate" rows="3"  value="syn_tb_gate.fst"></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-simulator_gate" class="form-label">Gate Simulator</label>
+              <select class="form-select" aria-label="Gate Simulator" id="tools-raptor-simulator_gate">
+                      <option value='verilator'>Verilator</option>
+                      <option value='ghdl'>GHDL</option>
+                      <option value='icarus'>Icarus</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-simulation_options_gate" class="form-label">Simulation options</label>
+              <input class="form-control" id="tools-raptor-simulation_options_gate" rows="3"  value="--stop-time=1000ns"></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-simulate_pnr">
+                <label class="form-check-label" for="tools-raptor-simulate_pnr">
+                  Simulate PNR
+                </label>
+              </div>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-waveform_pnr" class="form-label">PNR waveform simulation</label>
+              <input class="form-control" id="tools-raptor-waveform_pnr" rows="3"  value="sim_pnr.fst"></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-simulator_pnr" class="form-label">PNR Simulator</label>
+              <select class="form-select" aria-label="PNR Simulator" id="tools-raptor-simulator_pnr">
+                      <option value='verilator'>Verilator</option>
+                      <option value='ghdl'>GHDL</option>
+                      <option value='icarus'>Icarus</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-simulation_options_pnr" class="form-label">Simulation options</label>
+              <input class="form-control" id="tools-raptor-simulation_options_pnr" rows="3"  value="--stop-time=1000ns"></input>
             </div>
           
           
@@ -3427,12 +3740,12 @@ export const WEB_CONFIG = `
     document.getElementById("tools-vcs").classList.remove('d-none');
     document.getElementById("tools-vcs").classList.add('d-none');
   }
-  if ("tools" == tp0 && "veriblelint" == tp1){
-    document.getElementById("tools-veriblelint").classList.remove('d-none');
+  if ("tools" == tp0 && "verible" == tp1){
+    document.getElementById("tools-verible").classList.remove('d-none');
   }
   else{
-    document.getElementById("tools-veriblelint").classList.remove('d-none');
-    document.getElementById("tools-veriblelint").classList.add('d-none');
+    document.getElementById("tools-verible").classList.remove('d-none');
+    document.getElementById("tools-verible").classList.add('d-none');
   }
   if ("tools" == tp0 && "verilator" == tp1){
     document.getElementById("tools-verilator").classList.remove('d-none');
@@ -3503,6 +3816,13 @@ export const WEB_CONFIG = `
   else{
     document.getElementById("tools-questa").classList.remove('d-none');
     document.getElementById("tools-questa").classList.add('d-none');
+  }
+  if ("tools" == tp0 && "raptor" == tp1){
+    document.getElementById("tools-raptor").classList.remove('d-none');
+  }
+  else{
+    document.getElementById("tools-raptor").classList.remove('d-none');
+    document.getElementById("tools-raptor").classList.add('d-none');
   }
   }
 
@@ -3668,8 +3988,8 @@ export const WEB_CONFIG = `
     enable_tab("tools","vcs")
   });
 
-  document.getElementById("btn-tools-veriblelint").addEventListener("click", function() {
-    enable_tab("tools","veriblelint")
+  document.getElementById("btn-tools-verible").addEventListener("click", function() {
+    enable_tab("tools","verible")
   });
 
   document.getElementById("btn-tools-verilator").addEventListener("click", function() {
@@ -3710,6 +4030,10 @@ export const WEB_CONFIG = `
 
   document.getElementById("btn-tools-questa").addEventListener("click", function() {
     enable_tab("tools","questa")
+  });
+
+  document.getElementById("btn-tools-raptor").addEventListener("click", function() {
+    enable_tab("tools","raptor")
   });
 
   /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - 
@@ -3856,8 +4180,6 @@ export const WEB_CONFIG = `
     element_value = document.getElementById("formatter-s3sv-indentation_size").value;
     config["formatter"]["s3sv"]["indentation_size"] = element_value
     config["formatter"]["verible"] = {}
-    element_value = document.getElementById("formatter-verible-path").value;
-    config["formatter"]["verible"]["path"] = element_value
     element_value = document.getElementById("formatter-verible-format_args").value;
     config["formatter"]["verible"]["format_args"] = element_value
     config["formatter"]["standalone"] = {}
@@ -3890,6 +4212,8 @@ export const WEB_CONFIG = `
     config["formatter"]["svg"] = {}
     element_value = document.getElementById("formatter-svg-configuration").value;
     config["formatter"]["svg"]["configuration"] = element_value
+    element_value = document.getElementById("formatter-svg-core_number").value;
+    config["formatter"]["svg"]["core_number"] = element_value
     config["linter"] = {}
     config["linter"]["general"] = {}
     element_value = document.getElementById("linter-general-linter_vhdl").value;
@@ -3923,8 +4247,8 @@ export const WEB_CONFIG = `
     element_value = document.getElementById("linter-vivado-verilog_arguments").value;
     config["linter"]["vivado"]["verilog_arguments"] = element_value
     config["linter"]["vsg"] = {}
-    element_value = document.getElementById("linter-vsg-arguments").value;
-    config["linter"]["vsg"]["arguments"] = element_value
+    element_value = document.getElementById("linter-vsg-configuration").value;
+    config["linter"]["vsg"]["configuration"] = element_value
     config["schematic"] = {}
     config["schematic"]["general"] = {}
     element_value = document.getElementById("schematic-general-backend").value;
@@ -4143,9 +4467,9 @@ export const WEB_CONFIG = `
     config["tools"]["vcs"]["vcs_options"] = element_value
     element_value = document.getElementById("tools-vcs-run_options").value.split(',');
     config["tools"]["vcs"]["run_options"] = element_value
-    config["tools"]["veriblelint"] = {}
-    element_value = document.getElementById("tools-veriblelint-installation_path").value;
-    config["tools"]["veriblelint"]["installation_path"] = element_value
+    config["tools"]["verible"] = {}
+    element_value = document.getElementById("tools-verible-installation_path").value;
+    config["tools"]["verible"]["installation_path"] = element_value
     config["tools"]["verilator"] = {}
     element_value = document.getElementById("tools-verilator-installation_path").value;
     config["tools"]["verilator"]["installation_path"] = element_value
@@ -4250,6 +4574,61 @@ export const WEB_CONFIG = `
     config["tools"]["questa"] = {}
     element_value = document.getElementById("tools-questa-installation_path").value;
     config["tools"]["questa"]["installation_path"] = element_value
+    config["tools"]["raptor"] = {}
+    element_value = document.getElementById("tools-raptor-installation_path").value;
+    config["tools"]["raptor"]["installation_path"] = element_value
+    element_value = document.getElementById("tools-raptor-target_device").value;
+    config["tools"]["raptor"]["target_device"] = element_value
+    element_value = document.getElementById("tools-raptor-vhdl_version").value;
+    config["tools"]["raptor"]["vhdl_version"] = element_value
+    element_value = document.getElementById("tools-raptor-verilog_version").value;
+    config["tools"]["raptor"]["verilog_version"] = element_value
+    element_value = document.getElementById("tools-raptor-sv_version").value;
+    config["tools"]["raptor"]["sv_version"] = element_value
+    config["tools"]["raptor"]["div_0"] = element_value
+    element_value = document.getElementById("tools-raptor-optimization").value;
+    config["tools"]["raptor"]["optimization"] = element_value
+    element_value = document.getElementById("tools-raptor-effort").value;
+    config["tools"]["raptor"]["effort"] = element_value
+    element_value = document.getElementById("tools-raptor-fsm_encoding").value;
+    config["tools"]["raptor"]["fsm_encoding"] = element_value
+    element_value = document.getElementById("tools-raptor-carry").value;
+    config["tools"]["raptor"]["carry"] = element_value
+    element_value = document.getElementById("tools-raptor-pnr_netlist_language").value;
+    config["tools"]["raptor"]["pnr_netlist_language"] = element_value
+    element_value = document.getElementById("tools-raptor-no_dsp_blocks").checked;
+    config["tools"]["raptor"]["no_dsp_blocks"] = element_value
+    element_value = document.getElementById("tools-raptor-no_block_ram").checked;
+    config["tools"]["raptor"]["no_block_ram"] = element_value
+    element_value = document.getElementById("tools-raptor-fast_synthesis").checked;
+    config["tools"]["raptor"]["fast_synthesis"] = element_value
+    config["tools"]["raptor"]["div_1"] = element_value
+    element_value = document.getElementById("tools-raptor-top_level").value;
+    config["tools"]["raptor"]["top_level"] = element_value
+    element_value = document.getElementById("tools-raptor-simulate_rtl").checked;
+    config["tools"]["raptor"]["simulate_rtl"] = element_value
+    element_value = document.getElementById("tools-raptor-waveform_rtl").value;
+    config["tools"]["raptor"]["waveform_rtl"] = element_value
+    element_value = document.getElementById("tools-raptor-simulator_rtl").value;
+    config["tools"]["raptor"]["simulator_rtl"] = element_value
+    element_value = document.getElementById("tools-raptor-simulation_options_rtl").value;
+    config["tools"]["raptor"]["simulation_options_rtl"] = element_value
+    element_value = document.getElementById("tools-raptor-simulate_gate").checked;
+    config["tools"]["raptor"]["simulate_gate"] = element_value
+    element_value = document.getElementById("tools-raptor-waveform_gate").value;
+    config["tools"]["raptor"]["waveform_gate"] = element_value
+    element_value = document.getElementById("tools-raptor-simulator_gate").value;
+    config["tools"]["raptor"]["simulator_gate"] = element_value
+    element_value = document.getElementById("tools-raptor-simulation_options_gate").value;
+    config["tools"]["raptor"]["simulation_options_gate"] = element_value
+    element_value = document.getElementById("tools-raptor-simulate_pnr").checked;
+    config["tools"]["raptor"]["simulate_pnr"] = element_value
+    element_value = document.getElementById("tools-raptor-waveform_pnr").value;
+    config["tools"]["raptor"]["waveform_pnr"] = element_value
+    element_value = document.getElementById("tools-raptor-simulator_pnr").value;
+    config["tools"]["raptor"]["simulator_pnr"] = element_value
+    element_value = document.getElementById("tools-raptor-simulation_options_pnr").value;
+    config["tools"]["raptor"]["simulation_options_pnr"] = element_value
     return config;
   }
 
@@ -4287,7 +4666,6 @@ export const WEB_CONFIG = `
     document.getElementById("formatter-s3sv-one_declaration_per_line").checked = config["formatter"]["s3sv"]["one_declaration_per_line"];
     document.getElementById("formatter-s3sv-use_tabs").checked = config["formatter"]["s3sv"]["use_tabs"];
     document.getElementById("formatter-s3sv-indentation_size").value = config["formatter"]["s3sv"]["indentation_size"];
-    document.getElementById("formatter-verible-path").value = config["formatter"]["verible"]["path"];
     document.getElementById("formatter-verible-format_args").value = config["formatter"]["verible"]["format_args"];
     document.getElementById("formatter-standalone-keyword_case").value = config["formatter"]["standalone"]["keyword_case"];
     document.getElementById("formatter-standalone-name_case").value = config["formatter"]["standalone"]["name_case"];
@@ -4303,6 +4681,7 @@ export const WEB_CONFIG = `
     document.getElementById("formatter-standalone-new_line_after_port").value = config["formatter"]["standalone"]["new_line_after_port"];
     document.getElementById("formatter-standalone-new_line_after_generic").value = config["formatter"]["standalone"]["new_line_after_generic"];
     document.getElementById("formatter-svg-configuration").value = config["formatter"]["svg"]["configuration"];
+    document.getElementById("formatter-svg-core_number").value = config["formatter"]["svg"]["core_number"];
     document.getElementById("linter-general-linter_vhdl").value = config["linter"]["general"]["linter_vhdl"];
     document.getElementById("linter-general-linter_verilog").value = config["linter"]["general"]["linter_verilog"];
     document.getElementById("linter-general-lstyle_verilog").value = config["linter"]["general"]["lstyle_verilog"];
@@ -4315,7 +4694,7 @@ export const WEB_CONFIG = `
     document.getElementById("linter-verilator-arguments").value = config["linter"]["verilator"]["arguments"];
     document.getElementById("linter-vivado-vhdl_arguments").value = config["linter"]["vivado"]["vhdl_arguments"];
     document.getElementById("linter-vivado-verilog_arguments").value = config["linter"]["vivado"]["verilog_arguments"];
-    document.getElementById("linter-vsg-arguments").value = config["linter"]["vsg"]["arguments"];
+    document.getElementById("linter-vsg-configuration").value = config["linter"]["vsg"]["configuration"];
     document.getElementById("schematic-general-backend").value = config["schematic"]["general"]["backend"];
     document.getElementById("schematic-general-args").value = config["schematic"]["general"]["args"];
     document.getElementById("templates-general-header_file_path").value = config["templates"]["general"]["header_file_path"];
@@ -4412,7 +4791,7 @@ export const WEB_CONFIG = `
     document.getElementById("tools-vcs-installation_path").value = config["tools"]["vcs"]["installation_path"];
     element_value = document.getElementById("tools-vcs-vcs_options").value = String(config["tools"]["vcs"]["vcs_options"]);
     element_value = document.getElementById("tools-vcs-run_options").value = String(config["tools"]["vcs"]["run_options"]);
-    document.getElementById("tools-veriblelint-installation_path").value = config["tools"]["veriblelint"]["installation_path"];
+    document.getElementById("tools-verible-installation_path").value = config["tools"]["verible"]["installation_path"];
     document.getElementById("tools-verilator-installation_path").value = config["tools"]["verilator"]["installation_path"];
     document.getElementById("tools-verilator-mode").value = config["tools"]["verilator"]["mode"];
     element_value = document.getElementById("tools-verilator-libs").value = String(config["tools"]["verilator"]["libs"]);
@@ -4460,6 +4839,32 @@ export const WEB_CONFIG = `
     document.getElementById("tools-activehdl-installation_path").value = config["tools"]["activehdl"]["installation_path"];
     document.getElementById("tools-nvc-installation_path").value = config["tools"]["nvc"]["installation_path"];
     document.getElementById("tools-questa-installation_path").value = config["tools"]["questa"]["installation_path"];
+    document.getElementById("tools-raptor-installation_path").value = config["tools"]["raptor"]["installation_path"];
+    document.getElementById("tools-raptor-target_device").value = config["tools"]["raptor"]["target_device"];
+    document.getElementById("tools-raptor-vhdl_version").value = config["tools"]["raptor"]["vhdl_version"];
+    document.getElementById("tools-raptor-verilog_version").value = config["tools"]["raptor"]["verilog_version"];
+    document.getElementById("tools-raptor-sv_version").value = config["tools"]["raptor"]["sv_version"];
+    document.getElementById("tools-raptor-optimization").value = config["tools"]["raptor"]["optimization"];
+    document.getElementById("tools-raptor-effort").value = config["tools"]["raptor"]["effort"];
+    document.getElementById("tools-raptor-fsm_encoding").value = config["tools"]["raptor"]["fsm_encoding"];
+    document.getElementById("tools-raptor-carry").value = config["tools"]["raptor"]["carry"];
+    document.getElementById("tools-raptor-pnr_netlist_language").value = config["tools"]["raptor"]["pnr_netlist_language"];
+    document.getElementById("tools-raptor-no_dsp_blocks").checked = config["tools"]["raptor"]["no_dsp_blocks"];
+    document.getElementById("tools-raptor-no_block_ram").checked = config["tools"]["raptor"]["no_block_ram"];
+    document.getElementById("tools-raptor-fast_synthesis").checked = config["tools"]["raptor"]["fast_synthesis"];
+    document.getElementById("tools-raptor-top_level").value = config["tools"]["raptor"]["top_level"];
+    document.getElementById("tools-raptor-simulate_rtl").checked = config["tools"]["raptor"]["simulate_rtl"];
+    document.getElementById("tools-raptor-waveform_rtl").value = config["tools"]["raptor"]["waveform_rtl"];
+    document.getElementById("tools-raptor-simulator_rtl").value = config["tools"]["raptor"]["simulator_rtl"];
+    document.getElementById("tools-raptor-simulation_options_rtl").value = config["tools"]["raptor"]["simulation_options_rtl"];
+    document.getElementById("tools-raptor-simulate_gate").checked = config["tools"]["raptor"]["simulate_gate"];
+    document.getElementById("tools-raptor-waveform_gate").value = config["tools"]["raptor"]["waveform_gate"];
+    document.getElementById("tools-raptor-simulator_gate").value = config["tools"]["raptor"]["simulator_gate"];
+    document.getElementById("tools-raptor-simulation_options_gate").value = config["tools"]["raptor"]["simulation_options_gate"];
+    document.getElementById("tools-raptor-simulate_pnr").checked = config["tools"]["raptor"]["simulate_pnr"];
+    document.getElementById("tools-raptor-waveform_pnr").value = config["tools"]["raptor"]["waveform_pnr"];
+    document.getElementById("tools-raptor-simulator_pnr").value = config["tools"]["raptor"]["simulator_pnr"];
+    document.getElementById("tools-raptor-simulation_options_pnr").value = config["tools"]["raptor"]["simulation_options_pnr"];
   }
 
   function open_submenu_icon(x) {

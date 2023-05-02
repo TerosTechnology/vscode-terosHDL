@@ -24,6 +24,7 @@ import { Standalone_vhdl } from "./standalone_vhdl";
 import { Istyle } from "./istyle";
 import { S3sv } from "./s3sv";
 import { Verible } from "./verible";
+import { Vsg } from "./vsg";
 
 /**
  * Formatter
@@ -33,6 +34,9 @@ export class Formatter {
     get_formatter(formatter_name: common.t_formatter_name) {
         if (formatter_name === cfg.e_formatter_general_formatter_vhdl.standalone) {
             return new Standalone_vhdl();
+        }
+        if (formatter_name === cfg.e_formatter_general_formatter_vhdl.vsg) {
+            return new Vsg();
         }
         else if (formatter_name === cfg.e_formatter_general_formatter_verilog.istyle) {
             return new Istyle();

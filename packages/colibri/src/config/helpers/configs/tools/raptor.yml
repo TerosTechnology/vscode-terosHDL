@@ -1,0 +1,199 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+target_device:
+  description: "Target device"
+  type: string
+  value: "1GE100"
+
+vhdl_version:
+  description: "VHDL version"
+  type: select
+  options:
+    VHDL_1987: "1987"
+    VHDL_1993: "1993"
+    VHDL_2000: "2000"
+    VHDL_2008: "2008"
+    VHDL_2019: "2019"
+  value: "VHDL_1993"
+
+verilog_version:
+  description: "Verilog version"
+  type: select
+  options:
+    V_1995: "1995"
+    V_2001: "2001"
+  value: "V_2001"
+
+sv_version:
+  description: "SV version"
+  type: select
+  options:
+    SV_2005: "2005"
+    SV_2009: "2009"
+    SV_2012: "2012"
+    SV_2017: "2017"
+  value: "SV_2012"
+
+# target_device:
+#   description: "FPGA part"
+#   type: select
+#   options:
+#     target_1GE100: "1GE100"
+#     target_GEMINI: "GEMINI"
+#   value: "target_1GE100"
+
+div_0:
+  description: "Synthesis"
+  type: divider
+  value: ""
+
+optimization:
+  description: "Optimization"
+  type: select
+  options:
+    area: "Area"
+    delay: "Delay"
+    mixed: "Mixed"
+    none: "None"
+  value: "none"
+
+effort:
+  description: "Effort"
+  type: select
+  options:
+    high: "High"
+    medium: "Medium"
+    low: "Low"
+  value: "high"
+
+fsm_encoding:
+  description: "FSM encoding"
+  type: select
+  options:
+    binary: "Binary"
+    one_hot: "One Hot"
+    low: "Low"
+  value: "one_hot"
+
+carry:
+  description: "Carry"
+  type: select
+  options:
+    auto: "Auto"
+    all: "All"
+    none: "None"
+  value: "auto"
+
+pnr_netlist_language:
+  description: "Pnr netlist language"
+  type: select
+  options:
+    blif: "Blif"
+    edif: "edif"
+    verilog: "Verilog"
+    vhdl: "VHDL"
+  value: "verilog"
+
+no_dsp_blocks:
+  description: "No DSP blocks"
+  type: boolean
+  value: false
+
+no_block_ram:
+  description: "No Block Ram"
+  type: boolean
+  value: false
+
+fast_synthesis:
+  description: "Fast Synthesis"
+  type: boolean
+  value: false
+
+###################################################################
+# Simulation
+###################################################################
+
+div_1:
+  description: "Simulation"
+  type: divider
+  value: ""
+
+top_level:
+  description: "Simulation top level:"
+  type: string
+  value: ""
+
+simulate_rtl:
+  description: "Simulate RTL"
+  type: boolean
+  value: false
+
+waveform_rtl:
+  description: "RTL waveform simulation"
+  type: string
+  value: "syn_tb_rtl.fst"
+
+simulator_rtl:
+  description: "RTL Simulator"
+  type: select
+  options:
+    verilator: "Verilator"
+    ghdl: "GHDL"
+    icarus: "Icarus"
+  value: "ghdl"
+
+simulation_options_rtl:
+  description: "Simulation options"
+  type: string
+  value: "--stop-time=1000ns"
+
+simulate_gate:
+  description: "Simulate Gate"
+  type: boolean
+  value: false
+
+waveform_gate:
+  description: "Gate waveform simulation"
+  type: string
+  value: "syn_tb_gate.fst"
+
+simulator_gate:
+  description: "Gate Simulator"
+  type: select
+  options:
+    verilator: "Verilator"
+    ghdl: "GHDL"
+    icarus: "Icarus"
+  value: "ghdl"
+
+simulation_options_gate:
+  description: "Simulation options"
+  type: string
+  value: "--stop-time=1000ns"
+
+simulate_pnr:
+  description: "Simulate PNR"
+  type: boolean
+  value: false
+
+waveform_pnr:
+  description: "PNR waveform simulation"
+  type: string
+  value: "sim_pnr.fst"
+
+simulator_pnr:
+  description: "PNR Simulator"
+  type: select
+  options:
+    verilator: "Verilator"
+    ghdl: "GHDL"
+    icarus: "Icarus"
+  value: "ghdl"
+
+simulation_options_pnr:
+  description: "Simulation options"
+  type: string
+  value: "--stop-time=1000ns"

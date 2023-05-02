@@ -18,72 +18,50 @@
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
 const fs = require("fs");
-const path_lib = require("path");
 import { Base_formatter } from "./base_formatter";
-import * as utils from "../process/utils";
 import * as file_utils from "../utils/file_utils";
-import { OS } from "../process/common";
+import * as utils from "../process/utils";
 import { Process } from "../process/process";
 import * as common from "./common";
-import * as cfg from "../config/config_declaration";
 import * as logger from "../logger/logger";
+import * as cfg from "../config/config_declaration";
 
-export class Istyle extends Base_formatter {
-    private binary_linux = 'istyle-linux';
-    private binary_windows = 'istyle-win32.exe';
-    private binary_mac = 'istyle-darwin';
+export class Vsg extends Base_formatter {
+    private binary = 'vsg';
 
     constructor() {
         super();
     }
 
-    public async format_from_code(code: string, opt: cfg.e_formatter_istyle): Promise<common.f_result> {
+    async format_from_code(code: string, opt: cfg.e_formatter_svg): Promise<common.f_result> {
         const temp_file = await utils.create_temp_file(code);
         const formatted_code = await this.format(temp_file, opt);
         file_utils.remove_file(temp_file);
         return formatted_code;
     }
 
-    private get_binary(): string {
-        const os = utils.get_os();
-        if (os === OS.MAC) {
-            return this.binary_mac;
+    public async format(file: string, opt: cfg.e_formatter_svg) {
+        let command = `${this.binary} -p ${opt.core_number} --fix -f ${file}`;
+        if (opt.configuration !== ""){
+            command = `${this.binary} -p ${opt.core_number} --fix -c ${opt.configuration} -f ${file}`;
         }
-        else if (os === OS.LINUX) {
-            return this.binary_linux;
-        }
-        else {
-            return this.binary_windows;
-        }
-    }
 
-    public async format(file: string, opt: cfg.e_formatter_istyle) {
-        const binary_name = this.get_binary();
-        const path_bin = path_lib.join(__dirname, 'bin', 'svistyle', binary_name);
-
-        let command = "";
-        if (opt.style === cfg.e_formatter_istyle_style.indent_only) {
-            command = `${path_bin} --style=ansi -s${opt.indentation_size} `;
+        const P = new Process();
+        const exec_result = await P.exec_wait(command);
+        let code_formatted = fs.readFileSync(file, "utf8");
+        if (exec_result.successful === true){
+            code_formatted = exec_result.stdout;
         }
-        else {
-            command = `${path_bin} --style=${opt.style} -s${opt.indentation_size} `;
-        }
-        command += file;
 
         const msg = `Formatting with command: ${command} `;
         logger.Logger.log(msg, logger.T_SEVERITY.INFO);
 
-        const P = new Process();
-        const exec_result = await P.exec_wait(command);
-        const code_formatted = fs.readFileSync(file, "utf8");
-
         const result: common.f_result = {
             code_formatted: code_formatted,
             command: command,
-            successful: exec_result.successful,
+            successful: true,
             message: exec_result.stderr,
         };
-
         return result;
     }
 }

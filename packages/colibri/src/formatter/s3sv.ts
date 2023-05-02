@@ -25,6 +25,7 @@ import * as utils from "../process/utils";
 import * as python from "../process/python";
 import * as common from "./common";
 import * as cfg from "../config/config_declaration";
+import * as logger from "../logger/logger";
 
 export class S3sv extends Base_formatter {
     constructor() {
@@ -56,6 +57,10 @@ export class S3sv extends Base_formatter {
             args += "--oneDeclPerLine ";
         }
         args += `-i ${file}`;
+
+        const command = `python_path ${python_script} ${args}`;
+        const msg = `Formatting with command: ${command} `;
+        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
 
         const result_p = await python.exec_python_script(python_path, python_script, args);
 

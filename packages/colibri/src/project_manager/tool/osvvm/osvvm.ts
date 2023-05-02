@@ -18,7 +18,9 @@
 
 import { t_project_definition } from "../../project_definition";
 import { Generic_tool_handler } from "../generic_handler";
-import { e_artifact_type, e_element_type, t_test_declaration, t_test_result, t_test_artifact } from "../common";
+import {
+    e_artifact_type, e_element_type, t_test_declaration, t_test_result, t_test_artifact, e_clean_step
+} from "../common";
 import { e_tools_general_select_tool, e_tools_osvvm_simulator_name } from "../../../config/config_declaration";
 import * as path_lib from "path";
 import * as process_utils from "../../../process/utils";
@@ -47,6 +49,11 @@ export class Osvvm extends Generic_tool_handler {
     constructor() {
         const supported_tools = [e_tools_general_select_tool.osvvm];
         super(supported_tools);
+    }
+
+    public clean(_prj: t_project_definition, _working_directory: string, _clean_mode: e_clean_step,
+        _callback_stream: (_stream_c: any) => void): void {
+        throw new Error("Method not implemented.");
     }
 
     public get_test_list(prj: t_project_definition): t_test_declaration[] {
@@ -115,6 +122,7 @@ export class Osvvm extends Generic_tool_handler {
                         name: `Run summary`,
                         path: result_inst.run_summary,
                         command: "",
+                        content: "",
                         artifact_type: e_artifact_type.SUMMARY,
                         element_type: e_element_type.HTML_FILE
                     };
@@ -123,6 +131,7 @@ export class Osvvm extends Generic_tool_handler {
                         name: `Run HTML log`,
                         path: result_inst.run_html_log,
                         command: "",
+                        content: "",
                         artifact_type: e_artifact_type.CONSOLE_LOG,
                         element_type: e_element_type.HTML_FILE
                     };
@@ -131,6 +140,7 @@ export class Osvvm extends Generic_tool_handler {
                         name: `Run text log`,
                         path: result_inst.run_text_log,
                         command: "",
+                        content: "",
                         artifact_type: e_artifact_type.CONSOLE_LOG,
                         element_type: e_element_type.TEXT_FILE
                     };
@@ -139,6 +149,7 @@ export class Osvvm extends Generic_tool_handler {
                         name: `Test summary`,
                         path: result_inst.test_html_summary,
                         command: "",
+                        content: "",
                         artifact_type: e_artifact_type.SUMMARY,
                         element_type: e_element_type.HTML_FILE
                     };

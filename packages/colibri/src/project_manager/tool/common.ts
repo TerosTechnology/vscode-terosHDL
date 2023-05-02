@@ -53,6 +53,7 @@ export enum e_artifact_type {
     CONSOLE_LOG = "console_log",
     SUMMARY = "summary",
     OTHER = "other",
+    WAVEFORM = "waveform"
 }
 
 /** File type */
@@ -63,6 +64,7 @@ export enum e_element_type {
     TEXT = "text",
     FILE = "file",
     FOLDER = "folder",
+    FST = "fst",
 }
 
 /** Test artifact */
@@ -77,6 +79,7 @@ export type t_test_artifact = {
     artifact_type: e_artifact_type,
     /** Type of file */
     element_type: e_element_type,
+    content: string | undefined
 }
 
 /** Test result */
@@ -96,4 +99,14 @@ export type t_test_result = {
     stderr: string;
     time: number;
     test_path: string;
+}
+
+export enum e_clean_step {
+    Analyze = "Analyze",
+    Synthesize = "Synthesize",
+    Packing = "Packing",
+    Place = "Place",
+    Route = "Route",
+    Sta = "Sta",
+    Bitstream = "Bitstream"
 }

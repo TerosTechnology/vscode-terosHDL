@@ -7,7 +7,7 @@
         <h1 class="card-title">{{type_declaration[tp0]["title"]}}: {{type_declaration[tp0]["pages"][tp1]["title"]}}</h1>
         <h6 class="card-subtitle mb-2 text-muted">{{type_declaration[tp0]["pages"][tp1]["description"]}}</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body overflow-auto">
       {# <ul class="list-group overflow-auto h-100"> #}
         {%- for tp2 in type_declaration[tp0]["pages"][tp1] %}
           {# Options #}
@@ -39,7 +39,7 @@
           {# <li class="list-group-item"> #}
             <div class="mb-3">
               <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}</label>
-              <input class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"></input>
+              <input class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"  value="{{type_declaration[tp0]['pages'][tp1][tp2]['value']}}"></input>
             </div>
           {# </li> #}
           {# Number #}
@@ -49,6 +49,13 @@
               <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}</label>
               <input type='number' class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"></input>
             </div>
+          {# </li> #}
+          {# Divider #}
+          {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
+          {# <li class="list-group-item"> #}
+            <hr class="hr hr-blurry" />
+            <h4 class="card-subtitle text-muted">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}</h4>
+            <hr class="hr hr-blurry" />
           {# </li> #}
           {# Array #}
           {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}

@@ -18,6 +18,7 @@
 
 import { t_file_reduced, t_script, t_parameter, e_script_stage, t_action_result, t_watcher, } from "./common";
 import { Config_manager } from "../config/config_manager";
+import { e_clean_step } from "./tool/common";
 import { Project_manager } from "./project_manager";
 import { t_test_declaration, t_test_result } from "./tool/common";
 import { e_config } from "../config/config_declaration";
@@ -585,6 +586,16 @@ export class Multi_project_manager {
             return this.get_project_not_exist();
         }
         const exec_i = prj.run(general_config, test_list, callback, callback_stream);
+        return this.get_sucessful_result(exec_i);
+    }
+
+    public clean(prj_name: string, general_config: e_config | undefined, clean_mode: e_clean_step,
+        callback_stream: (stream_c: t_action_result) => void): t_action_result {
+        const prj = this.get_project_by_name(prj_name);
+        if (prj === undefined) {
+            return this.get_project_not_exist();
+        }
+        const exec_i = prj.clean(general_config, clean_mode, callback_stream);
         return this.get_sucessful_result(exec_i);
     }
 

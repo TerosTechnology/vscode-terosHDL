@@ -103,6 +103,7 @@
     element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").checked;
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
     element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value.split(',');
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
                 {%- else %}
     element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value;
                 {%- endif %}
@@ -123,6 +124,7 @@
     document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").checked = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
     element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = String(config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"]);
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
                 {%- else %}
     document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
                 {%- endif %}

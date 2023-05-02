@@ -36,9 +36,9 @@ export class Vsg extends Base_linter {
         return true;
     }
 
-    async lint(file: string, _options: common.l_options): Promise<common.l_error[]> {
+    async lint(file: string, options: common.l_options): Promise<common.l_error[]> {
         const temp_file_json = await create_temp_file("");
-        const output_json = await this.vsg_exec(file, temp_file_json);
+        const output_json = await this.vsg_exec(file, temp_file_json, options);
         let errors: common.l_error[] = [];
         if (output_json !== "") {
             errors = await this.parse_junit(file, output_json);
@@ -76,11 +76,16 @@ export class Vsg extends Base_linter {
         }
     }
 
-    private async vsg_exec(file_path: string, junit_file: string): Promise<string> {
+    private async vsg_exec(file_path: string, junit_file: string, options: common.l_options): Promise<string> {
 
         const code_file_normalized = file_path.replace(' ', '\\ ');
         const json_file_file_normalized = junit_file.replace(' ', '\\ ');
-        const command = `vsg -f ${code_file_normalized} --all_phases --js ${json_file_file_normalized}`;
+
+        let command = `vsg -f ${code_file_normalized} --all_phases --js ${json_file_file_normalized}`;
+        if (options.argument !== ""){
+            // eslint-disable-next-line max-len
+            command = `vsg -f ${code_file_normalized} --all_phases -c ${options.argument} --js ${json_file_file_normalized}`;
+        }
 
         const msg = `Linting with command: ${command} `;
         logger.Logger.log(msg, logger.T_SEVERITY.INFO);

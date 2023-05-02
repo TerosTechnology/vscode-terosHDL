@@ -74,7 +74,7 @@ export class Tree_view_manager{
         runs_manager = new Runs_manager(context, manager, emitter, run_output, this.logger);
         actions_manager = new Actions_manager(context, manager, emitter, run_output);
         watcher_manager = new Watcher_manager(context, manager, emitter);
-        output_manager = new Output_manager(context, manager, run_output);
+        output_manager = new Output_manager(context, manager, run_output, this.logger);
 
         this.refresh();
     }

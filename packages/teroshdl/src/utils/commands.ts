@@ -16,7 +16,19 @@
 // You should have received a copy of the GNU General Public License
 import * as opn from 'open';
 import * as vscode from 'vscode';
+import * as shelljs from 'shelljs';
+import {Base_webview} from './web';
 
 export function open_file(args: vscode.Uri){
     opn(`${'file://'}${args.fsPath}`);
+}
+
+export function open_waveform(args: vscode.Uri){
+    const file_path = args.fsPath;
+    let command = `gtkwave ${file_path}`;
+    shelljs.exec(command, { async: true });
+}
+
+export function open_webview(args: string, webview: Base_webview){
+    webview.create_webview(args)
 }

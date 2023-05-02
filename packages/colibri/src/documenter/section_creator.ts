@@ -112,7 +112,7 @@ export class Creator extends Section_creator_interface {
             hdl_element.name, output_type);
         // Generate section
         const section_header = this.transform(`\n## ${translator.get_str('Description')}\n\n`, output_type);
-        return section_header + description;
+        return section_header + this.transform(description, output_type);
     }
 
     get_description(description: string, svg_path_dir: string,
@@ -720,7 +720,7 @@ export class Creator extends Section_creator_interface {
     get_doc_constants(constants: common_hdl.Constant_hdl[], translator: translator_lib.Translator) {
         const table = [];
         table.push([translator.get_str("Name"), translator.get_str("Type"), translator.get_str("Value"),
-        translator.get_str("Description")
+            translator.get_str("Description")
         ]);
 
         for (let i = 0; i < constants.length; ++i) {

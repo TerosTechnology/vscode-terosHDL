@@ -4,7 +4,7 @@ import os
 import jinja2
 import yaml
 
-AUXILIAR_FIELDS = ["description", "title"]
+AUXILIAR_FIELDS = ["description", "title", "divider"]
 
 
 def get_type_declaration(field):

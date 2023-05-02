@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css_0" rel="stylesheet">
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container-fluid h-100">
+        <p>
+        <p>
+        <p>
+        <div class="row">
+{%- for item in data %}
+    {%- for key_0, item_0 in item %}
+            {# <h1 class="text-left">{{key_0}}</h1>
+            <hr class="hr hr-blurry" /> #}
+            <table class="table table-hover">
+            <thead bgcolor="#dcdcdc">
+                <tr>
+
+        {%- for header_name in item_0["header"] %}
+                <th class="w-25" scope="col">{{header_name}}</th>
+        {%- endfor %}
+
+                </tr>
+            </thead>
+            <tbody>
+
+        {%- for item_1 in item_0["data"] %}
+                <tr>
+                    <td>{{item_1[0] | replace(" ", "teroshdlspace") }}</td>
+                    <td>{{item_1[1] | replace(" ", "teroshdlspace") }}</td>
+                    <td>{{item_1[2] | replace(" ", "teroshdlspace") }}</td>
+                    <td>{{item_1[3] | replace(" ", "teroshdlspace") }}</td>
+                </tr>
+        {%- endfor %}
+
+            </tbody>
+            </table>
+
+    {%- endfor %}
+{%- endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

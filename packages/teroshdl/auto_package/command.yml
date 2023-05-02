@@ -88,6 +88,12 @@
   where: ["view/title"]
   when: "view == teroshdl-view-runs"
 
+- name: view.runs.stop
+  title: "Stop"
+  icon: stop
+  where: ["view/title"]
+  when: "view == teroshdl-view-runs"
+
 - name: view.runs.refresh
   title: "Refresh"
   icon: refresh
@@ -114,6 +120,13 @@
   where: ["view/item/context"]
   when: "viewItem == watcher"
   group: "inline"
+
+## Outputs
+- name: view.outputs.clean
+  title: "Clean project"
+  icon: trash
+  where: ["view/title"]
+  when: "view == teroshdl-view-output"
 
 ################################################################################
 # Editor

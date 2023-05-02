@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - monorepo
   pull_request:
 
 jobs:
@@ -45,16 +46,6 @@ jobs:
         run: |
           cd packages/teroshdl
           npm install
-
-      - name: Prepare colibri
-        run: |
-          cd packages
-          git clone https://github.com/TerosTechnology/colibri.git -b dev
-          cd colibri
-          npm install
-          ./copy.sh
-          cd ..
-          rm -rf colibri
 
       - name: Build 
         id: build
