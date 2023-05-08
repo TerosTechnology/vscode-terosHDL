@@ -52,7 +52,8 @@ export class Schematic_manager extends Base_webview {
     constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
         manager: Multi_project_manager, mode_project: boolean) {
 
-        super(context, output_channel, manager, path_lib.join(context.extensionPath, 'resources', 'netlist_viewer', 'netlist_viewer.html'), activation_command, id);
+        super(context, output_channel, manager, path_lib.join(context.extensionPath, 'resources', 'webviews', 
+            'netlist_viewer', 'netlist_viewer.html'), activation_command, id);
         
         this.mode_project = mode_project;
 
@@ -61,22 +62,22 @@ export class Schematic_manager extends Base_webview {
     }
 
     get_webview_content(webview: vscode.Webview){
-        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'netlist_viewer', 'index.html.nj');
+        const template_path = path_lib.join(this.context.extensionPath, 'resources','webviews', 'netlist_viewer', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'netlist_viewer', 'style.css'));
-        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'netlist_viewer', 'libs', 'elk.bundled.js'));
-        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'netlist_viewer', 'libs', 'netlistsvg.bundle.js'));
-        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'netlist_viewer', 'libs', 'jquery-2.2.4.min.js'));
-        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews',
             'netlist_viewer', 'libs', 'svg-pan-zoom.min.js'));
-        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews',
             'netlist_viewer', 'libs', 'viz.js'));
-        const js_path_5 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_5 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews',
             'netlist_viewer', 'libs', 'main.js'));
 
         const html = nunjucks.renderString(template_str, {

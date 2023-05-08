@@ -42,23 +42,24 @@ jobs:
           now=`date +"%Y-%m-%d__%H:%M"`
           echo "version=$now" >> $GITHUB_ENV
 
-      - name: Prepare teroshdl-vscode
+      - name: Prepare colibri
+        run: |
+          cd packages/colibri
+          yarn install
+          yarn build
+
+      - name: Prepare teroshdl
         run: |
           cd packages/teroshdl
-          npm install
+          yarn install
 
       - name: Build 
         id: build
         run: |
+          npm install -g @vscode/vsce
           cd packages/teroshdl
-          # sudo apt-get install python3-sphinx
-          npm install -g vsce
-          # npm run-script generate-doc
-          # npm run-script generate-examples
-          # # cd node_modules/teroshdl; npm install; cd ../../
-          # npm install
-          # cd node_modules/teroshdl; npm install; cd ../../
-          vsce package --allow-star-activation
+          yarn package
+
           file=`ls *.vsix`
           echo ${{ env.version }}
           file_ver="${{ env.version }}_${file}"

@@ -3,7 +3,6 @@
     "@types/node-fetch": "2.5.7",
     "@types/semver": "6.2.0",
     "abort-controller": "3.0.0",
-    "extract-zip": "1.6.2",
     "fs-extra": "8.1.0",
     "js-yaml": "^3.13.1",
     "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",

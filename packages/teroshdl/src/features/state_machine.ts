@@ -43,26 +43,26 @@ export class State_machine_manager extends Base_webview{
         const activation_command = 'teroshdl.state_machine.viewer';
         const id = "state_machine";
 
-        const resource_path = path_lib.join(context.extensionPath, 'resources', 'state_machine_viewer', 'state_machine_viewer.html');
+        const resource_path = path_lib.join(context.extensionPath, 'resources','webviews', 'state_machine_viewer', 'state_machine_viewer.html');
         super(context, output_channel, manager, resource_path, activation_command, id);
 
     }
 
     get_webview_content(webview: vscode.Webview){
-        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'state_machine_viewer', 'index.html.nj');
+        const template_path = path_lib.join(this.context.extensionPath, 'resources','webviews', 'state_machine_viewer', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'state_machine_viewer', 
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 'state_machine_viewer', 
             'style.css'));
-        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'state_machine_viewer', 'libs', 'jquery-2.2.4.min.js'));
-        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'state_machine_viewer', 'libs', 'svg-pan-zoom.min.js'));
-        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'state_machine_viewer', 'libs', 'vizdraw.js'));
-        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'state_machine_viewer', 'libs', 'full.render.js'));
-        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
+        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'state_machine_viewer', 'libs', 'viz.js'));
 
         const html = nunjucks.renderString(template_str, {
