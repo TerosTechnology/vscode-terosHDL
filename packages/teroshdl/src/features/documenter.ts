@@ -45,18 +45,18 @@ export class Documenter_manager extends Base_webview {
         const activation_command = 'teroshdl.documentation.module';
         const id = "documenter";
 
-        const resource_path = path_lib.join(context.extensionPath, 'resources', 'documenter', 'index.html');
+        const resource_path = path_lib.join(context.extensionPath, 'resources', 'webviews', 'documenter', 'index.html');
         super(context, output_channel, manager, resource_path, activation_command, id);
         this.context = context;
     }
 
     get_webview_content(webview: vscode.Webview){
-        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'documenter', 'index.html.nj');
+        const template_path = path_lib.join(this.context.extensionPath, 'resources','webviews', 'documenter', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'documenter', 
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 'documenter', 
             'style.css'));
-        const js_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'documenter', 
+        const js_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 'documenter', 
             'script.js'));
         const html = nunjucks.renderString(template_str, {"css_path": css_path, "cspSource": webview.cspSource, 
             "js_path": js_path});

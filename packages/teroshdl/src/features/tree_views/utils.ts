@@ -22,7 +22,7 @@ import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as utils from "./utils";
 
-const BASE_PATH_ICON = path_lib.join(__filename, "..", "..", "..", "..", "resources");
+const BASE_PATH_ICON = path_lib.join(__filename, "..", "..", "..", "..", "resources", "icon");
 
 export function get_icon(name: string) {
     const icon_path = {

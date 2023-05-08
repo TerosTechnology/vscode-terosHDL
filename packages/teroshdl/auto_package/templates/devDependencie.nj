@@ -1,6 +1,5 @@
 "devDependencies": {
     "@types/glob": "^7.1.1",
-    "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
     "@types/vscode": "^1.45.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
@@ -8,8 +7,6 @@
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
     "js-yaml": "^3.13.1",
-    "mocha": "^7.1.2",
     "typescript": "4.5.5",
-    "vscode-test": "^1.3.0",
     "shx": "^0.3.3"
 }

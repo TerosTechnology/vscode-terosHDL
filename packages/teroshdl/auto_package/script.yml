@@ -2,7 +2,7 @@
   command: "shx rm -rf out"
 
 - name: "vscode:prepublish"
-  command: "npm run build-prepare & npm run generate-examples & npm run build:syntax & npm run compile"
+  command: "yarn run generate-examples & yarn run compile"
 
 - name: "compile"
   command: "tsc -p ./"
@@ -11,19 +11,10 @@
   command: "eslint src --ext ts"
 
 - name: "watch"
-  command: "npm run build-prepare & npm run generate-examples & tsc -watch -p ./"
-
-- name: "pretest"
-  command: "npm run compile && npm run lint"
-
-- name: "test"
-  command: "node ./out/test/runTest.js"
-
-- name: "generate-doc"
-  command: "cd ./resources/project_manager; ./copy_documentation.sh"
+  command: "yarn run build-prepare & yarn run generate-examples & tsc -watch -p ./"
 
 - name: "generate-examples"
   command: "cd ./resources/project_manager; ./copy_examples.sh"
 
-- name: "build-prepare"
-  command: "cd ./resources/project_manager; ./generate_html.py;"
+- name: "package"
+  command: "vsce package --yarn --allow-star-activation"
