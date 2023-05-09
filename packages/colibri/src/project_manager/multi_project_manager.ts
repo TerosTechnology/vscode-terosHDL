@@ -229,6 +229,15 @@ export class Multi_project_manager {
 
                 prj.add_file(file_definition);
             });
+
+            if (prj_info.toplevel !== undefined){
+                const toplevel_path = file_utils.get_absolute_path(file_utils.get_directory(base_path), 
+                    prj_info.toplevel);
+                if (file_utils.check_if_path_exist(toplevel_path)){
+                    prj.add_toplevel_path(toplevel_path);
+                }
+            }
+
             // // Add watchers
             // const watcher_list = prj_info.watchers;
             // watcher_list.forEach((watcher: any) => {

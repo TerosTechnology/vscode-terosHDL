@@ -31,10 +31,10 @@
     "scripts": {
         "clean": "shx rm -rf out",
         "generate-doc": "npx typedoc && shx cp -R ./docs out_doc_api",
-        "prepublish": "yarn run compile",
-        "build": "yarn run compile",
+        "prepublish": "npm run compile",
+        "build": "npm run compile",
         "postpack": "shx rm -f oclif.manifest.json",
-        "compile": "shx rm -rf out && tsc -b tsconfig.json && yarn run copy-files",
+        "compile": "shx rm -rf out && tsc -b tsconfig.json && npm run copy-files",
         "copy-parser": "shx cp -R ./src/parser/parsers ./out/parser",
         "copy-documenter": "shx cp -R ./src/documenter/*.json ./out/documenter/",
         "copy-dependency": "shx cp -R ./src/project_manager/dependency/*.py ./out/project_manager/dependency",
@@ -45,7 +45,7 @@
         "copy-project-manager-vunit": "shx cp -R ./src/project_manager/tool/vunit ./out/project_manager/tool",
         "copy-project-manager-raptor": "shx cp -R ./src/project_manager/tool/raptor ./out/project_manager/tool",
         "copy-project-manager-loaders": "shx cp -R ./src/project_manager/prj_loaders/ ./out/project_manager/",
-        "copy-files": "yarn run copy-parser && yarn run copy-formatter && yarn run copy-dependency && yarn run copy-templates && yarn run copy-reporter && yarn run copy-documenter && yarn run copy-project-manager-raptor && yarn run copy-project-manager-edalize && yarn run copy-project-manager-vunit && yarn run copy-project-manager-loaders",
+        "copy-files": "npm run copy-parser && npm run copy-formatter && npm run copy-dependency && npm run copy-templates && npm run copy-reporter && npm run copy-documenter && npm run copy-project-manager-raptor && npm run copy-project-manager-edalize && npm run copy-project-manager-vunit && npm run copy-project-manager-loaders",
         "lint": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' eslint . --quiet --ext .ts",
         "test": "jest --detectOpenHandles --forceExit"
     },
@@ -80,8 +80,7 @@
         "temp": "0.9.4",
         "tiny-glob": "^0.2.9",
         "wavedrom": "2.6.8",
-        "web-tree-sitter": "^0.20.7",
-        "tree-kill": "1.2.2"
+        "web-tree-sitter": "^0.20.7"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.21.0",

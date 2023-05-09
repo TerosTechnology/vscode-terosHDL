@@ -413,8 +413,17 @@ export class Project_manager {
         return return_value;
     }
 
-    public get_edam_json() {
-        return utils.get_edam_json(this.get_project_definition(), undefined);
+    public get_edam_json(reference_path?: string) {
+        return utils.get_edam_json(this.get_project_definition(), undefined, reference_path);
+    }
+
+    public get_edam_yaml(reference_path?: string) {
+        return utils.get_edam_yaml(this.get_project_definition(), undefined, reference_path);
+    }
+
+    public save_edam_yaml(output_path: string){
+        const edam_yaml = this.get_edam_yaml(output_path);
+        file_utils.save_file_sync(output_path, edam_yaml);
     }
 
     ////////////////////////////////////////////////////////////////////////////

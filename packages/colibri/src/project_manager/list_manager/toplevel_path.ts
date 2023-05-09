@@ -18,6 +18,7 @@
 
 import { t_action_result } from "../common";
 import { Manager } from "./manager";
+import * as file_utils from "../../utils/file_utils";
 
 /** Toplevel path(s) for the project. */
 export class Toplevel_path_manager extends Manager<string, undefined, string, undefined>{
@@ -29,9 +30,18 @@ export class Toplevel_path_manager extends Manager<string, undefined, string, un
         this.toplevel_paths = [];
     }
 
-    get(): string[] {
-        return this.toplevel_paths;
+
+    get(reference_path?: string): string[] {
+        if (reference_path !== undefined){
+            const new_files =  [...this.toplevel_paths];
+            for (let i = 0; i < new_files.length; i++) {
+                new_files[i] = file_utils.get_relative_path(new_files[i], reference_path);
+            }
+            return new_files;
+        }
+        return this.toplevel_paths;  
     }
+
 
     add(toplevel_path: string): t_action_result {
         const result: t_action_result = {

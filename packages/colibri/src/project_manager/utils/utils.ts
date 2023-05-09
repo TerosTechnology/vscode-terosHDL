@@ -16,17 +16,20 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
+import { file_utils } from "../../utils/export_t";
 import { t_project_definition } from "../project_definition";
 import { convert_to_yaml } from "./json2yaml";
 
-export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[]) {
+export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[], 
+    refrence_path? : string) {
+
     const tool_name = prj.config_manager.get_tool_name();
     const tool_options = prj.config_manager.get_tool_options();
     const tmp_edam_0 = `{ "${tool_name}" : ${JSON.stringify(tool_options)} }`;
     const tmp_edam_1 = JSON.parse(tmp_edam_0);
 
     if (top_level_list === undefined) {
-        top_level_list = prj.toplevel_path_manager.get();
+        top_level_list = prj.toplevel_path_manager.get(refrence_path);
     }
 
     let top_level = "";
@@ -35,9 +38,9 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
     }
 
     const edam_json = {
-        files: prj.file_manager.get(),
+        files: prj.file_manager.get(refrence_path),
         hooks: prj.hook_manager.get(),
-        watchers: prj.watcher_manager.get(),
+        watchers: prj.watcher_manager.get(refrence_path),
         name: prj.name,
         // parameters: prj.parameter_manager.get(),
         tool_options: tmp_edam_1,
@@ -47,8 +50,10 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
     return edam_json;
 }
 
-export function get_edam_yaml(prj: t_project_definition, top_level_list: undefined | string[]) {
-    const edam_json = get_edam_json(prj, top_level_list);
+export function get_edam_yaml(prj: t_project_definition, top_level_list: undefined | string[], 
+    reference_path?: string) {
+    const edam_json = get_edam_json(prj, top_level_list, reference_path);
+    file_utils.save_file_sync("/home/carlos/Desktop/pepe2.json", JSON.stringify(edam_json))
     const edam_yaml = convert_to_yaml(edam_json);
     return edam_yaml;
 }

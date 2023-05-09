@@ -27,6 +27,7 @@ import { p_result } from "../../../process/common";
 import { Process } from "../../../process/process";
 import * as prj_creator from "./prj_creator";
 import * as out_getter from "./artifacts";
+import { e_tools_raptor } from "../../../config/config_declaration";
 
 // import { get_edam_json } from "../../utils/utils";
 
@@ -93,19 +94,13 @@ export class Raptor extends Generic_tool_handler {
         const config_edalize_json = JSON.stringify(config_edalize, null, 4);
         process_utils.create_temp_file(config_edalize_json);
 
-        // const toplevel = top_level_list[0];
-
         // Project script
         const tcl_content = prj_creator.get_tcl_script(prj, false, undefined);
         
-        const exec_i = this.run_command(installation_path, tcl_content, working_directory, false,
+        const exec_i = this.run_command(config.tools.raptor, tcl_content, working_directory, false,
             (result: p_result) => {
 
                 const base_path = path_lib.join(working_directory, prj.name);
-
-                // Save config summary
-                // this.save_config_summary(path_f, final_result);
-
                 const result_list = out_getter.get_results(config, base_path, working_directory, result);
 
                 callback(result_list);
@@ -136,13 +131,13 @@ export class Raptor extends Generic_tool_handler {
         // Project script
         const tcl_content = prj_creator.get_tcl_script(prj, true, clean_mode);
         
-        const exec_i = this.run_command(installation_path, tcl_content, working_directory, true,
+        const exec_i = this.run_command(config.tools.raptor, tcl_content, working_directory, true,
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             (_result: p_result) => {}, callback_stream);
         return exec_i;
     }
 
-    run_command(installation_path: string, prj_script_content: string, working_directory: string, clean_mode: boolean,
+    run_command(config: e_tools_raptor, prj_script_content: string, working_directory: string, clean_mode: boolean,
         callback: (result: p_result) => void, callback_stream: (stream_c: any) => void) {
 
         // Create working directory
@@ -161,7 +156,8 @@ export class Raptor extends Generic_tool_handler {
         file_utils.save_file_sync(tcl_path, prj_script_content);
 
         // Create cmd
-        const cmd = `${installation_path} --script ${tcl_path} --batch`;
+        const installation_cmd = this.get_installation_path_cmd(config);
+        const cmd = `${installation_cmd} --script ${tcl_path} --batch`;
 
         const opt_exec = { cwd: working_directory };
         const p = new Process();
@@ -170,5 +166,14 @@ export class Raptor extends Generic_tool_handler {
             callback(result);
         });
         callback_stream(exec_i);
+    }
+
+    get_installation_path_cmd(config: e_tools_raptor): string{
+        if (config.installation_path === ""){
+            return "raptor";
+        }
+        else{
+            return path_lib.join(config.installation_path, 'raptor');
+        }
     }
 }

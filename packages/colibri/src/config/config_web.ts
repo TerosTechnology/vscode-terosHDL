@@ -1266,8 +1266,8 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <label for="linter-vsg-configuration" class="form-label">JSON or YAML configuration file.</label>
-              <input class="form-control" id="linter-vsg-configuration" rows="3"  value=""></input>
+              <label for="linter-vsg-arguments" class="form-label">JSON or YAML configuration file.</label>
+              <input class="form-control" id="linter-vsg-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1413,6 +1413,14 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
+              <label for="tools-general-gtkwave_installation_path" class="form-label">GTKWave installation directory.</label>
+              <input class="form-control" id="tools-general-gtkwave_installation_path" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
               <label for="tools-general-execution_mode" class="form-label">Select the execution mode.</label>
               <select class="form-select" aria-label="Select the execution mode." id="tools-general-execution_mode">
                       <option value='gui'>GUI</option>
@@ -1427,7 +1435,6 @@ export const WEB_CONFIG = `
               <label for="tools-general-waveform_viewer" class="form-label">Select the waveform viewer. For GTKWave you need to install it.</label>
               <select class="form-select" aria-label="Select the waveform viewer. For GTKWave you need to install it." id="tools-general-waveform_viewer">
                       <option value='tool'>Tool GUI</option>
-                      <option value='vcdrom'>VCDrom</option>
                       <option value='gtkwave'>GTKWave</option>
               </select>
             </div>
@@ -3315,7 +3322,7 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <label for="tools-raptor-top_level" class="form-label">Simulation top level:</label>
+              <label for="tools-raptor-top_level" class="form-label">Simulation top level path:</label>
               <input class="form-control" id="tools-raptor-top_level" rows="3"  value=""></input>
             </div>
           
@@ -4247,8 +4254,8 @@ export const WEB_CONFIG = `
     element_value = document.getElementById("linter-vivado-verilog_arguments").value;
     config["linter"]["vivado"]["verilog_arguments"] = element_value
     config["linter"]["vsg"] = {}
-    element_value = document.getElementById("linter-vsg-configuration").value;
-    config["linter"]["vsg"]["configuration"] = element_value
+    element_value = document.getElementById("linter-vsg-arguments").value;
+    config["linter"]["vsg"]["arguments"] = element_value
     config["schematic"] = {}
     config["schematic"]["general"] = {}
     element_value = document.getElementById("schematic-general-backend").value;
@@ -4269,6 +4276,8 @@ export const WEB_CONFIG = `
     config["tools"]["general"] = {}
     element_value = document.getElementById("tools-general-select_tool").value;
     config["tools"]["general"]["select_tool"] = element_value
+    element_value = document.getElementById("tools-general-gtkwave_installation_path").value;
+    config["tools"]["general"]["gtkwave_installation_path"] = element_value
     element_value = document.getElementById("tools-general-execution_mode").value;
     config["tools"]["general"]["execution_mode"] = element_value
     element_value = document.getElementById("tools-general-waveform_viewer").value;
@@ -4694,7 +4703,7 @@ export const WEB_CONFIG = `
     document.getElementById("linter-verilator-arguments").value = config["linter"]["verilator"]["arguments"];
     document.getElementById("linter-vivado-vhdl_arguments").value = config["linter"]["vivado"]["vhdl_arguments"];
     document.getElementById("linter-vivado-verilog_arguments").value = config["linter"]["vivado"]["verilog_arguments"];
-    document.getElementById("linter-vsg-configuration").value = config["linter"]["vsg"]["configuration"];
+    document.getElementById("linter-vsg-arguments").value = config["linter"]["vsg"]["arguments"];
     document.getElementById("schematic-general-backend").value = config["schematic"]["general"]["backend"];
     document.getElementById("schematic-general-args").value = config["schematic"]["general"]["args"];
     document.getElementById("templates-general-header_file_path").value = config["templates"]["general"]["header_file_path"];
@@ -4702,6 +4711,7 @@ export const WEB_CONFIG = `
     document.getElementById("templates-general-clock_generation_style").value = config["templates"]["general"]["clock_generation_style"];
     document.getElementById("templates-general-instance_style").value = config["templates"]["general"]["instance_style"];
     document.getElementById("tools-general-select_tool").value = config["tools"]["general"]["select_tool"];
+    document.getElementById("tools-general-gtkwave_installation_path").value = config["tools"]["general"]["gtkwave_installation_path"];
     document.getElementById("tools-general-execution_mode").value = config["tools"]["general"]["execution_mode"];
     document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
     document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];

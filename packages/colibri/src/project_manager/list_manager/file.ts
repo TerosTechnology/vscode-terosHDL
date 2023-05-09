@@ -39,8 +39,15 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
         this.files = new_files;
     }
 
-    get(): t_file[] {
-        return this.files;
+    get(reference_path?: string): t_file[] {
+        if (reference_path !== undefined){
+            const new_files =  [...this.files];
+            for (let i = 0; i < new_files.length; i++) {
+                new_files[i].name = file_utils.get_relative_path(new_files[i].name, reference_path);
+            }
+            return new_files;
+        }
+        return this.files;  
     }
 
     get_by_logical_name(): t_logical[] {

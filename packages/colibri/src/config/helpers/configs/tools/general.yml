@@ -25,6 +25,11 @@ select_tool:
 
   value: "ghdl"
 
+gtkwave_installation_path:
+  description: "GTKWave installation directory."
+  type: string
+  value: ""
+
 execution_mode:
   description: "Select the execution mode."
   type: select
@@ -38,6 +43,6 @@ waveform_viewer:
   type: select
   options:
     tool: "Tool GUI"
-    vcdrom: "VCDrom"
+    # vcdrom: "VCDrom"
     gtkwave: "GTKWave"
   value: "tool"

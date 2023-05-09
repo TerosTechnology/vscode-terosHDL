@@ -122,7 +122,7 @@ div_1:
   value: ""
 
 top_level:
-  description: "Simulation top level:"
+  description: "Simulation top level path:"
   type: string
   value: ""
 
