@@ -2,7 +2,7 @@
   command: "shx rm -rf out"
 
 - name: "vscode:prepublish"
-  command: "yarn run generate-examples & yarn run compile"
+  command: "npm run generate-examples & npm run compile"
 
 - name: "compile"
   command: "tsc -p ./"
@@ -11,7 +11,7 @@
   command: "eslint src --ext ts"
 
 - name: "watch"
-  command: "yarn run build-prepare & yarn run generate-examples & tsc -watch -p ./"
+  command: "npm run build-prepare & npm run generate-examples & tsc -watch -p ./"
 
 - name: "generate-examples"
   command: "cd ./resources/project_manager; ./copy_examples.sh"

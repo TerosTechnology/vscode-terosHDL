@@ -27,6 +27,11 @@ export function get_full_path(path: string): string {
     return path_lib.resolve(path);
 }
 
+export function get_relative_path(path: string, reference_path: string): string {
+    const reference_dir = get_directory(reference_path);
+    return path_lib.relative(reference_dir, path);
+}
+
 /**
  * Get full path
  * @param  {string} path

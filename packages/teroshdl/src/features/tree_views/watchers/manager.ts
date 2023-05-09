@@ -72,7 +72,7 @@ export class Watcher_manager {
         else{
             return;
         }
-        const path_list = await utils.get_from_open_dialog(false, true, true, 
+        const path_list = await utils.get_from_open_dialog("Add watcher", false, true, true, 
             "Select watcher files", {'File (*.*)': ['*']});
         
         path_list.forEach(path_inst => {

@@ -29,6 +29,6 @@ export abstract class Manager
 
     public abstract add(element_0: A, element_1: B): t_action_result;
     public abstract delete(element_0: C, element_1: D): t_action_result;
-    public abstract get(): t_watcher[] | t_stage_script | t_parameter[] | string[] | t_file[];
+    public abstract get(reference_path?: string): t_watcher[] | t_stage_script | t_parameter[] | string[] | t_file[];
     public abstract clear(): void;
 }

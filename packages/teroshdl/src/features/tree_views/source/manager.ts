@@ -23,6 +23,7 @@ import * as utils from "../utils";
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as teroshdl2 from 'teroshdl2';
 import * as events from "events";
+import { file_utils } from "teroshdl2/out/utils/export_t";
 
 export class Source_manager {
     private tree: element.ProjectProvider;
@@ -43,6 +44,7 @@ export class Source_manager {
     }
 
     set_commands() {
+        vscode.commands.registerCommand("teroshdl.view.source.save_project", () => this.save_project());
         vscode.commands.registerCommand("teroshdl.view.source.select_toplevel", (item) => this.select_top(item));
         vscode.commands.registerCommand("teroshdl.view.source.add", () => this.add());
         vscode.commands.registerCommand("teroshdl.view.source.add_source_to_library", (item) => this.add_source_to_library(item));
@@ -53,6 +55,20 @@ export class Source_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    async save_project() {
+        const prj_name = this.get_selected_project_name();
+        if (prj_name === undefined) {
+            return;
+        }
+        const output_path = await utils.get_save_dialog("Save project", "Save", []);
+        if (output_path !== ""){
+            const prj = this.project_manager.get_project_by_name(prj_name);
+            const prj_edam = prj?.save_edam_yaml(output_path);
+            // file_utils.save_file_sync()
+            // console.log("")
+        }
+    }
+
     async add() {
         const prj_name = this.get_selected_project_name();
         if (prj_name === undefined) {
@@ -73,7 +89,7 @@ export class Source_manager {
             }
             // Add from CSV
             else if (picker_value === element_types[1]) {
-                const csv_path = await utils.get_from_open_dialog(false, true, false, 
+                const csv_path = await utils.get_from_open_dialog("Add from CSV", false, true, false, 
                     "Select CSV file", {'CSV file (*.csv, *.CSV)': ['csv', 'CSV']});
                 if (csv_path.length !== 0) {
                     this.project_manager.add_file_from_csv(prj_name, csv_path[0], true);

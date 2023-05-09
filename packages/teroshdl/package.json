@@ -151,6 +151,13 @@
                 ,{
                     "when": "view == teroshdl-view-source",
 
+                    "command": "teroshdl.view.source.save_project",
+                    "group": "navigation"
+                }
+                        
+                ,{
+                    "when": "view == teroshdl-view-source",
+
                     "command": "teroshdl.view.source.add",
                     "group": "navigation"
                 }
@@ -302,176 +309,184 @@
             {
                 "command": "teroshdl.view.project.add",
                 "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
+                    "light": "resources/icon/light/add.svg",
+                    "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add project"
             }, 
             {
                 "command": "teroshdl.view.project.delete",
                 "icon": {
-                    "light": "resources/light/chrome-close.svg",
-                    "dark": "resources/dark/chrome-close.svg"
+                    "light": "resources/icon/light/chrome-close.svg",
+                    "dark": "resources/icon/dark/chrome-close.svg"
                 },
                 "title": "Delete project"
             }, 
             {
                 "command": "teroshdl.view.project.rename",
                 "icon": {
-                    "light": "resources/light/edit.svg",
-                    "dark": "resources/dark/edit.svg"
+                    "light": "resources/icon/light/edit.svg",
+                    "dark": "resources/icon/dark/edit.svg"
                 },
                 "title": "Rename project"
             }, 
             {
+                "command": "teroshdl.view.source.save_project",
+                "icon": {
+                    "light": "resources/icon/light/save.svg",
+                    "dark": "resources/icon/dark/save.svg"
+                },
+                "title": "Save Project"
+            }, 
+            {
                 "command": "teroshdl.view.source.add",
                 "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
+                    "light": "resources/icon/light/add.svg",
+                    "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add"
             }, 
             {
                 "command": "teroshdl.view.source.add_source_to_library",
                 "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
+                    "light": "resources/icon/light/add.svg",
+                    "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add to library"
             }, 
             {
                 "command": "teroshdl.view.source.delete_library",
                 "icon": {
-                    "light": "resources/light/dash.svg",
-                    "dark": "resources/dark/dash.svg"
+                    "light": "resources/icon/light/dash.svg",
+                    "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete library"
             }, 
             {
                 "command": "teroshdl.view.source.delete_source",
                 "icon": {
-                    "light": "resources/light/dash.svg",
-                    "dark": "resources/dark/dash.svg"
+                    "light": "resources/icon/light/dash.svg",
+                    "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete source"
             }, 
             {
                 "command": "teroshdl.view.source.select_toplevel",
                 "icon": {
-                    "light": "resources/light/check.svg",
-                    "dark": "resources/dark/check.svg"
+                    "light": "resources/icon/light/check.svg",
+                    "dark": "resources/icon/dark/check.svg"
                 },
                 "title": "Select source as toplevel"
             }, 
             {
                 "command": "teroshdl.view.dependency.refresh",
                 "icon": {
-                    "light": "resources/light/refresh.svg",
-                    "dark": "resources/dark/refresh.svg"
+                    "light": "resources/icon/light/refresh.svg",
+                    "dark": "resources/icon/dark/refresh.svg"
                 },
                 "title": "Refresh"
             }, 
             {
                 "command": "teroshdl.view.dependency.schematic",
                 "icon": {
-                    "light": "resources/light/list-tree.svg",
-                    "dark": "resources/dark/list-tree.svg"
+                    "light": "resources/icon/light/list-tree.svg",
+                    "dark": "resources/icon/dark/list-tree.svg"
                 },
                 "title": "Schematic viewer"
             }, 
             {
                 "command": "teroshdl.view.runs.run_all",
                 "icon": {
-                    "light": "resources/light/run-all.svg",
-                    "dark": "resources/dark/run-all.svg"
+                    "light": "resources/icon/light/run-all.svg",
+                    "dark": "resources/icon/dark/run-all.svg"
                 },
                 "title": "Run all"
             }, 
             {
                 "command": "teroshdl.view.runs.stop",
                 "icon": {
-                    "light": "resources/light/stop.svg",
-                    "dark": "resources/dark/stop.svg"
+                    "light": "resources/icon/light/stop.svg",
+                    "dark": "resources/icon/dark/stop.svg"
                 },
                 "title": "Stop"
             }, 
             {
                 "command": "teroshdl.view.runs.refresh",
                 "icon": {
-                    "light": "resources/light/refresh.svg",
-                    "dark": "resources/dark/refresh.svg"
+                    "light": "resources/icon/light/refresh.svg",
+                    "dark": "resources/icon/dark/refresh.svg"
                 },
                 "title": "Refresh"
             }, 
             {
                 "command": "teroshdl.view.runs.run",
                 "icon": {
-                    "light": "resources/light/run.svg",
-                    "dark": "resources/dark/run.svg"
+                    "light": "resources/icon/light/run.svg",
+                    "dark": "resources/icon/dark/run.svg"
                 },
                 "title": "Run"
             }, 
             {
                 "command": "teroshdl.view.watcher.add",
                 "icon": {
-                    "light": "resources/light/add.svg",
-                    "dark": "resources/dark/add.svg"
+                    "light": "resources/icon/light/add.svg",
+                    "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add"
             }, 
             {
                 "command": "teroshdl.view.watcher.delete",
                 "icon": {
-                    "light": "resources/light/dash.svg",
-                    "dark": "resources/dark/dash.svg"
+                    "light": "resources/icon/light/dash.svg",
+                    "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete watcher"
             }, 
             {
                 "command": "teroshdl.view.outputs.clean",
                 "icon": {
-                    "light": "resources/light/trash.svg",
-                    "dark": "resources/dark/trash.svg"
+                    "light": "resources/icon/light/trash.svg",
+                    "dark": "resources/icon/dark/trash.svg"
                 },
                 "title": "Clean project"
             }, 
             {
                 "command": "teroshdl.generate_template",
                 "icon": {
-                    "light": "resources/light/file-code.svg",
-                    "dark": "resources/dark/file-code.svg"
+                    "light": "resources/icon/light/file-code.svg",
+                    "dark": "resources/icon/dark/file-code.svg"
                 },
                 "title": "TerosHDL: Generate template"
             }, 
             {
                 "command": "teroshdl.state_machine.viewer",
                 "icon": {
-                    "light": "resources/light/state-machine.svg",
-                    "dark": "resources/dark/state-machine.svg"
+                    "light": "resources/icon/light/state-machine.svg",
+                    "dark": "resources/icon/dark/state-machine.svg"
                 },
                 "title": "State machine viewer"
             }, 
             {
                 "command": "teroshdl.netlist.viewer",
                 "icon": {
-                    "light": "resources/light/list-tree.svg",
-                    "dark": "resources/dark/list-tree.svg"
+                    "light": "resources/icon/light/list-tree.svg",
+                    "dark": "resources/icon/dark/list-tree.svg"
                 },
                 "title": "Netlist viewer"
             }, 
             {
                 "command": "teroshdl.format",
                 "icon": {
-                    "light": "resources/light/check.svg",
-                    "dark": "resources/dark/check.svg"
+                    "light": "resources/icon/light/check.svg",
+                    "dark": "resources/icon/dark/check.svg"
                 },
                 "title": "Format"
             }, 
             {
                 "command": "teroshdl.documentation.module",
                 "icon": {
-                    "light": "resources/light/book.svg",
-                    "dark": "resources/dark/book.svg"
+                    "light": "resources/icon/light/book.svg",
+                    "dark": "resources/icon/dark/book.svg"
                 },
                 "title": "Module documentation preview"
             }
@@ -586,10 +601,10 @@
 
     "scripts": {
         "clean": "shx rm -rf out", 
-        "vscode:prepublish": "yarn run generate-examples & yarn run compile", 
+        "vscode:prepublish": "npm run generate-examples & npm run compile", 
         "compile": "tsc -p ./", 
         "lint": "eslint src --ext ts", 
-        "watch": "yarn run build-prepare & yarn run generate-examples & tsc -watch -p ./", 
+        "watch": "npm run build-prepare & npm run generate-examples & tsc -watch -p ./", 
         "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
         "package": "vsce package --yarn --allow-star-activation"
     },
@@ -611,7 +626,8 @@
         "vscode-languageclient": "7.0.0-next.6",
         "xml2js": "0.4.23",
         "nunjucks": "^3.2.0",
-        "@types/nunjucks": "^3.1.4"
+        "@types/nunjucks": "^3.1.4",
+        "tree-kill": "1.2.2"
     },
     "devDependencies": {
         "@types/glob": "^7.1.1",

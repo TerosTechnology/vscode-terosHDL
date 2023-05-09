@@ -85,7 +85,7 @@ export class Project_manager {
         }
         // Load from JSON EDAM
         else if(picker_value === PROJECT_ADD_TYPES[1]){
-            const path_list = await utils.get_from_open_dialog(false, true, true, 
+            const path_list = await utils.get_from_open_dialog("Load project", false, true, true, 
                 "Select JSON EDAM files", {'JSON files (*.json, *.JSON)': ['json', 'JSON']});
             path_list.forEach(path => {
                 this.create_project_from_json(path);
@@ -93,7 +93,7 @@ export class Project_manager {
         }
         // Load from YAML EDAM
         else if(picker_value === PROJECT_ADD_TYPES[2]){
-            const path_list = await utils.get_from_open_dialog(false, true, true, 
+            const path_list = await utils.get_from_open_dialog("Load project", false, true, true, 
                 "Select YAML EDAM files", {'YAML files (*.yaml, *.yml)': ['yaml', 'yml']});
             path_list.forEach(path => {
                 this.create_project_from_yaml(path);
@@ -113,7 +113,8 @@ export class Project_manager {
         else if(picker_value === PROJECT_ADD_TYPES[4]){
             const project_examples_types = ['Documenter examples', 'State machine examples',
                 'Xsim', 'GHDL', 'Icarus', 'IceStorm', 'ModelSim',
-                'Vivado', 'Yosys', 'VUnit', 'cocotb', 'SiliconCompiler'];
+                'Vivado', 'Yosys', 'VUnit', 'cocotb', 'raptor_counter', 'raptor_counter_vhdl', 
+                'raptor_aes_decrypt_fpga', 'raptor_and2_gemini'];
             let picker_value = await vscode.window.showQuickPick(project_examples_types, {
                 placeHolder: "Choose an example project.",
             });

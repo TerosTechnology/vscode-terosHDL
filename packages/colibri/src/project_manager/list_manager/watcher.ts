@@ -20,6 +20,7 @@ import { t_watcher, t_action_result } from "../common";
 import { Manager } from "./manager";
 import * as chokidar from "chokidar";
 import * as events from "events";
+import * as file_utils from "../../utils/file_utils";
 
 export class Watcher_manager extends Manager<t_watcher, undefined, string, string> {
     private watchers: t_watcher[] = [];
@@ -49,9 +50,17 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
         this.watchers = [];
     }
 
-    get(): t_watcher[] {
-        return this.watchers;
+    get(reference_path?: string): t_watcher[] {
+        if (reference_path !== undefined){
+            const new_files =  [...this.watchers];
+            for (let i = 0; i < new_files.length; i++) {
+                new_files[i].path = file_utils.get_relative_path(new_files[i].path, reference_path);
+            }
+            return new_files;
+        }
+        return this.watchers;  
     }
+
 
     add(watcher: t_watcher): t_action_result {
         const result: t_action_result = {

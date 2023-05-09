@@ -34,6 +34,12 @@
   group: "inline"
 
 ## Source
+- name: view.source.save_project
+  title: "Save Project"
+  icon: save
+  where: ["view/title"]
+  when: "view == teroshdl-view-source"
+
 - name: view.source.add
   title: "Add"
   icon: add

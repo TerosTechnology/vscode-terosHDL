@@ -4,8 +4,8 @@
         "command": "teroshdl.{{ command["name"] }}",
         {%- if "icon" in command %}
         "icon": {
-            "light": "resources/light/{{ command["icon"] }}.svg",
-            "dark": "resources/dark/{{ command["icon"] }}.svg"
+            "light": "resources/icon/light/{{ command["icon"] }}.svg",
+            "dark": "resources/icon/dark/{{ command["icon"] }}.svg"
         },
         {%- endif %}
         "title": "{{ command["title"] }}"
