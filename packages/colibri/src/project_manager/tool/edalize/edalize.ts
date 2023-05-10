@@ -18,8 +18,11 @@
 
 import { t_project_definition } from "../../project_definition";
 import { Generic_tool_handler } from "../generic_handler";
-import { e_clean_step, t_test_declaration, t_test_result } from "../common";
-import { e_tools_general_select_tool } from "../../../config/config_declaration";
+import { e_artifact_type, e_clean_step, e_element_type, t_test_artifact, 
+    t_test_declaration, t_test_result } from "../common";
+import { e_config, e_tools_general_execution_mode, 
+    e_tools_general_select_tool, e_tools_ghdl_waveform
+    } from "../../../config/config_declaration";
 import { get_edam_json } from "../../utils/utils";
 import * as path_lib from "path";
 import * as python from "../../../process/python";
@@ -70,13 +73,16 @@ export class Edalize extends Generic_tool_handler {
         test_list.forEach(test => {
             top_level_list.push(test.name);
         });
+        const config = prj.config_manager.get_config();
 
         // Save EDAM project in JSON file
-        const edam_json = get_edam_json(prj, top_level_list);
-        const edam_json_str = JSON.stringify(get_edam_json(prj, top_level_list));
+        let edam_json = get_edam_json(prj, top_level_list);
+        // Set waveform
+        edam_json = this.set_waveform(config, edam_json);
+
+        const edam_json_str = JSON.stringify(edam_json, null, 4);
         const edam_path = process_utils.create_temp_file(edam_json_str);
 
-        const config = prj.config_manager.get_config();
         const tool_name = config.tools.general.select_tool;
         const installation_path = (<any>config.tools)[tool_name].installation_path;
         const execution_mode = config.tools.general.execution_mode;
@@ -102,13 +108,30 @@ export class Edalize extends Generic_tool_handler {
                 file_utils.remove_file(edam_path);
 
                 const path_f = path_lib.join(working_directory, 'config_summary.txt');
+
+                let suite_name = "";
+                const artifact_list: t_test_artifact[] = [];
+                if (this.is_waveform(config)){
+                    // Simulation Artifact
+                    const artifact_inst: t_test_artifact = {
+                        name: "Waveform",
+                        path: this.get_waveform_path(config),
+                        content: "",
+                        command: "",
+                        artifact_type: e_artifact_type.WAVEFORM,
+                        element_type: e_element_type.FST
+                    };
+                    artifact_list.push(artifact_inst);
+                    suite_name = "Simulation";
+                }
+
                 const test_result: t_test_result = {
-                    suite_name: "",
+                    suite_name: suite_name,
                     name: top_level_list[0],
                     edam: edam_json,
                     config_summary_path: path_f,
                     config: config,
-                    artifact: [],
+                    artifact: artifact_list,
                     build_path: working_directory,
                     successful: result.successful,
                     stdout: result.stdout,
@@ -127,6 +150,32 @@ export class Edalize extends Generic_tool_handler {
         return exec_i;
     }
 
+    set_waveform(config: e_config, edam_json: any) : any{
+        const waveform_path = this.get_waveform_path(config);
+        if (config.tools.general.execution_mode === e_tools_general_execution_mode.gui){
+            if (config.tools.general.select_tool === e_tools_general_select_tool.ghdl){
+                let cmd = "--wave";
+                if (config.tools.ghdl.waveform === e_tools_ghdl_waveform.vcd){
+                    cmd = "--vcd";
+                }
+                edam_json["tool_options"]["ghdl"]["config"]["run_options"].push(`${cmd}=${waveform_path}`);
+                edam_json["tool_options"]["ghdl"]["config"]["run_options"] = 
+                edam_json["tool_options"]["ghdl"]["config"]["run_options"].
+                    filter((element: string) => element !== "");
+            }
+        }
+        return edam_json;
+    }
+
+    get_waveform_path(config: e_config): string{
+        if (config.tools.general.select_tool === e_tools_general_select_tool.ghdl){
+            const extension = config.tools.ghdl.waveform;
+            const waveform_path = path_lib.join(this.working_directory, `wave.${extension}`);
+            return waveform_path;
+        }
+        return path_lib.join(this.working_directory, 'wave.vcd');
+    }
+
     run_command(edam_path: string, config_edalize_path: string, python_path: string,
         callback: (result: p_result) => void, callback_stream: (stream_c: any) => void) {
 
@@ -138,5 +187,14 @@ export class Edalize extends Generic_tool_handler {
                 callback(result);
             }, callback_stream);
         return exec_i;
+    }
+
+    is_waveform(config: e_config){
+        if (config.tools.general.execution_mode === e_tools_general_execution_mode.gui){
+            if (config.tools.general.select_tool === e_tools_general_select_tool.ghdl){
+                return true;
+            }
+        }
+        return false;
     }
 }

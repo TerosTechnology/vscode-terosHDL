@@ -4,9 +4,12 @@ import platform
 import shutil
 import subprocess
 import sys
-from distutils.spawn import find_executable
+from shutil import which
 
-import edalize
+try:
+    from edalize import get_edatool
+except ImportError:
+    from edalize.edatool import get_edatool
 
 
 def print_info(working_directory, developer_mode, edam_file, config_exec_file):
@@ -79,7 +82,7 @@ if installation_path != "":
 
 # Configure ModelSim variables
 if tool_name == "modelsim":
-    vsim_path = find_executable("vsim")
+    vsim_path = which("vsim")
     if vsim_path == None:
         print("---> Error ModelSim path is not configured!")
         exit(-1)
@@ -94,13 +97,17 @@ f = open(
     edam_file,
 )
 edam = json.load(f)
-backend = edalize.get_edatool(tool_name)(edam=edam, work_root=working_directory)
+
+tool_options = {tool_name: edam["tool_options"][tool_name]["config"]}
+edam["tool_options"] = tool_options
+
+backend = get_edatool(tool_name)(edam=edam, work_root=working_directory)
 
 ################################################################################
 # Configure GUI support
 ################################################################################
 build_gui_tools = ["vivado", "trellis", "apicula", "icestorm", "nextpnr"]
-simulator_gui_tools = ["modelsim", "xsim", "isum", "spyglass", "xcelium", "trellis"]
+simulator_gui_tools = ["modelsim", "xsim", "isim", "spyglass", "xcelium", "trellis"]
 try:
     backend.configure()
     if execution_mode == "gui" and (tool_name in build_gui_tools):
@@ -125,6 +132,5 @@ run-gui-external: work $(VPI_MODULES)\n\
         backend.run()
 
 except Exception as e:
-    if developer_mode == "developer":
-        print("Error: " + str(e))
+    print("Error: " + str(e))
     exit(-1)
