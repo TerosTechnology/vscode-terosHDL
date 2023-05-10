@@ -3,7 +3,7 @@
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
     "description": "Powerful IDE for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
-    "version": "3.3.0",
+    "version": "5.0.0",
     "engines": {
         "vscode": "^1.45.0"
     },
@@ -606,7 +606,8 @@
         "lint": "eslint src --ext ts", 
         "watch": "npm run build-prepare & npm run generate-examples & tsc -watch -p ./", 
         "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
-        "package": "vsce package --yarn --allow-star-activation"
+        "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib",
+        "package": "npm run pre-package & vsce package --yarn --allow-star-activation"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",
