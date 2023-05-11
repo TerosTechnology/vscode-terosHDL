@@ -462,6 +462,7 @@ export type e_tools_raptor = {
     no_block_ram : boolean,
     fast_synthesis : boolean,
     top_level : string,
+    sim_source_list : any[],
     simulate_rtl : boolean,
     waveform_rtl : string,
     simulator_rtl : e_tools_raptor_simulator_rtl,
@@ -765,8 +766,7 @@ export enum e_tools_raptor_effort {
 }
 export enum e_tools_raptor_fsm_encoding {
     binary = "binary",
-    one_hot = "one_hot",
-    low = "low",
+    onehot = "onehot",
 }
 export enum e_tools_raptor_carry {
     auto = "auto",
@@ -809,8 +809,8 @@ export function get_default_config(): e_config {
         documentation: {
             general: {
                 language : e_documentation_general_language.english,
-                symbol_vhdl : "",
-                symbol_verilog : "",
+                symbol_vhdl : "!",
+                symbol_verilog : "!",
                 dependency_graph : true,
                 self_contained : true,
                 fsm : true,
@@ -1129,13 +1129,14 @@ export function get_default_config(): e_config {
                 sv_version : e_tools_raptor_sv_version.SV_2012,
                 optimization : e_tools_raptor_optimization.none,
                 effort : e_tools_raptor_effort.high,
-                fsm_encoding : e_tools_raptor_fsm_encoding.one_hot,
+                fsm_encoding : e_tools_raptor_fsm_encoding.onehot,
                 carry : e_tools_raptor_carry.auto,
                 pnr_netlist_language : e_tools_raptor_pnr_netlist_language.verilog,
                 no_dsp_blocks : false,
                 no_block_ram : false,
                 fast_synthesis : false,
                 top_level : "",
+                sim_source_list : [],
                 simulate_rtl : false,
                 waveform_rtl : "syn_tb_rtl.fst",
                 simulator_rtl : e_tools_raptor_simulator_rtl.ghdl,
@@ -2841,11 +2842,8 @@ export function get_config_from_json(json_config: any): e_config {
     if ( current_value_215 === "binary"){
         default_config['tools']['raptor']['fsm_encoding'] = e_tools_raptor_fsm_encoding.binary;
     }
-    if ( current_value_215 === "one_hot"){
-        default_config['tools']['raptor']['fsm_encoding'] = e_tools_raptor_fsm_encoding.one_hot;
-    }
-    if ( current_value_215 === "low"){
-        default_config['tools']['raptor']['fsm_encoding'] = e_tools_raptor_fsm_encoding.low;
+    if ( current_value_215 === "onehot"){
+        default_config['tools']['raptor']['fsm_encoding'] = e_tools_raptor_fsm_encoding.onehot;
     }
             
     // tools -> raptor -> carry
@@ -2901,94 +2899,100 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['tools']['raptor']['top_level'] = current_value_222;
     }
             
+    // tools -> raptor -> sim_source_list
+    const current_value_223 = json_config['tools']['raptor']['sim_source_list'];
+    if (Array.isArray(current_value_223)){
+        default_config['tools']['raptor']['sim_source_list'] = current_value_223;
+    }
+            
     // tools -> raptor -> simulate_rtl
-    const current_value_223 = json_config['tools']['raptor']['simulate_rtl'];
-    if (current_value_223 === true || current_value_223 === false){
-        default_config['tools']['raptor']['simulate_rtl'] = current_value_223;
+    const current_value_224 = json_config['tools']['raptor']['simulate_rtl'];
+    if (current_value_224 === true || current_value_224 === false){
+        default_config['tools']['raptor']['simulate_rtl'] = current_value_224;
     }
             
     // tools -> raptor -> waveform_rtl
-    const current_value_224 = json_config['tools']['raptor']['waveform_rtl'];
-    if (typeof current_value_224 === 'string'){
-        default_config['tools']['raptor']['waveform_rtl'] = current_value_224;
+    const current_value_225 = json_config['tools']['raptor']['waveform_rtl'];
+    if (typeof current_value_225 === 'string'){
+        default_config['tools']['raptor']['waveform_rtl'] = current_value_225;
     }
             
     // tools -> raptor -> simulator_rtl
-    const current_value_225 = json_config['tools']['raptor']['simulator_rtl'];
-    if ( current_value_225 === "verilator"){
+    const current_value_226 = json_config['tools']['raptor']['simulator_rtl'];
+    if ( current_value_226 === "verilator"){
         default_config['tools']['raptor']['simulator_rtl'] = e_tools_raptor_simulator_rtl.verilator;
     }
-    if ( current_value_225 === "ghdl"){
+    if ( current_value_226 === "ghdl"){
         default_config['tools']['raptor']['simulator_rtl'] = e_tools_raptor_simulator_rtl.ghdl;
     }
-    if ( current_value_225 === "icarus"){
+    if ( current_value_226 === "icarus"){
         default_config['tools']['raptor']['simulator_rtl'] = e_tools_raptor_simulator_rtl.icarus;
     }
             
     // tools -> raptor -> simulation_options_rtl
-    const current_value_226 = json_config['tools']['raptor']['simulation_options_rtl'];
-    if (typeof current_value_226 === 'string'){
-        default_config['tools']['raptor']['simulation_options_rtl'] = current_value_226;
+    const current_value_227 = json_config['tools']['raptor']['simulation_options_rtl'];
+    if (typeof current_value_227 === 'string'){
+        default_config['tools']['raptor']['simulation_options_rtl'] = current_value_227;
     }
             
     // tools -> raptor -> simulate_gate
-    const current_value_227 = json_config['tools']['raptor']['simulate_gate'];
-    if (current_value_227 === true || current_value_227 === false){
-        default_config['tools']['raptor']['simulate_gate'] = current_value_227;
+    const current_value_228 = json_config['tools']['raptor']['simulate_gate'];
+    if (current_value_228 === true || current_value_228 === false){
+        default_config['tools']['raptor']['simulate_gate'] = current_value_228;
     }
             
     // tools -> raptor -> waveform_gate
-    const current_value_228 = json_config['tools']['raptor']['waveform_gate'];
-    if (typeof current_value_228 === 'string'){
-        default_config['tools']['raptor']['waveform_gate'] = current_value_228;
+    const current_value_229 = json_config['tools']['raptor']['waveform_gate'];
+    if (typeof current_value_229 === 'string'){
+        default_config['tools']['raptor']['waveform_gate'] = current_value_229;
     }
             
     // tools -> raptor -> simulator_gate
-    const current_value_229 = json_config['tools']['raptor']['simulator_gate'];
-    if ( current_value_229 === "verilator"){
+    const current_value_230 = json_config['tools']['raptor']['simulator_gate'];
+    if ( current_value_230 === "verilator"){
         default_config['tools']['raptor']['simulator_gate'] = e_tools_raptor_simulator_gate.verilator;
     }
-    if ( current_value_229 === "ghdl"){
+    if ( current_value_230 === "ghdl"){
         default_config['tools']['raptor']['simulator_gate'] = e_tools_raptor_simulator_gate.ghdl;
     }
-    if ( current_value_229 === "icarus"){
+    if ( current_value_230 === "icarus"){
         default_config['tools']['raptor']['simulator_gate'] = e_tools_raptor_simulator_gate.icarus;
     }
             
     // tools -> raptor -> simulation_options_gate
-    const current_value_230 = json_config['tools']['raptor']['simulation_options_gate'];
-    if (typeof current_value_230 === 'string'){
-        default_config['tools']['raptor']['simulation_options_gate'] = current_value_230;
+    const current_value_231 = json_config['tools']['raptor']['simulation_options_gate'];
+    if (typeof current_value_231 === 'string'){
+        default_config['tools']['raptor']['simulation_options_gate'] = current_value_231;
     }
             
     // tools -> raptor -> simulate_pnr
-    const current_value_231 = json_config['tools']['raptor']['simulate_pnr'];
-    if (current_value_231 === true || current_value_231 === false){
-        default_config['tools']['raptor']['simulate_pnr'] = current_value_231;
+    const current_value_232 = json_config['tools']['raptor']['simulate_pnr'];
+    if (current_value_232 === true || current_value_232 === false){
+        default_config['tools']['raptor']['simulate_pnr'] = current_value_232;
     }
             
     // tools -> raptor -> waveform_pnr
-    const current_value_232 = json_config['tools']['raptor']['waveform_pnr'];
-    if (typeof current_value_232 === 'string'){
-        default_config['tools']['raptor']['waveform_pnr'] = current_value_232;
+    const current_value_233 = json_config['tools']['raptor']['waveform_pnr'];
+    if (typeof current_value_233 === 'string'){
+        default_config['tools']['raptor']['waveform_pnr'] = current_value_233;
     }
             
     // tools -> raptor -> simulator_pnr
-    const current_value_233 = json_config['tools']['raptor']['simulator_pnr'];
-    if ( current_value_233 === "verilator"){
+    const current_value_234 = json_config['tools']['raptor']['simulator_pnr'];
+    if ( current_value_234 === "verilator"){
         default_config['tools']['raptor']['simulator_pnr'] = e_tools_raptor_simulator_pnr.verilator;
     }
-    if ( current_value_233 === "ghdl"){
+    if ( current_value_234 === "ghdl"){
         default_config['tools']['raptor']['simulator_pnr'] = e_tools_raptor_simulator_pnr.ghdl;
     }
-    if ( current_value_233 === "icarus"){
+    if ( current_value_234 === "icarus"){
         default_config['tools']['raptor']['simulator_pnr'] = e_tools_raptor_simulator_pnr.icarus;
     }
             
     // tools -> raptor -> simulation_options_pnr
-    const current_value_234 = json_config['tools']['raptor']['simulation_options_pnr'];
-    if (typeof current_value_234 === 'string'){
-        default_config['tools']['raptor']['simulation_options_pnr'] = current_value_234;
+    const current_value_235 = json_config['tools']['raptor']['simulation_options_pnr'];
+    if (typeof current_value_235 === 'string'){
+        default_config['tools']['raptor']['simulation_options_pnr'] = current_value_235;
     }
             
 

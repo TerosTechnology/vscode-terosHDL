@@ -44,11 +44,16 @@ export class Project_manager {
         this.run_output_manager = run_output_manager;
         
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as element.BaseTreeDataProvider<element.Project>));
+        vscode.commands.registerCommand("teroshdl.documentation", () => this.open_doc());
         vscode.commands.registerCommand("teroshdl.view.project.configuration", () => this.config());
     }
 
     async config() {
         vscode.commands.executeCommand("teroshdl.configuration");
+    }
+
+    open_doc(){
+        vscode.env.openExternal(vscode.Uri.parse('https://terostechnology.github.io/teroshdl-docusaurus-doc/'));
     }
 
     set_commands(){

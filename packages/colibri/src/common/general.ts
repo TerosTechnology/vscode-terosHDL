@@ -21,6 +21,7 @@ export enum HDL_LANG {
     VHDL = "vhdl",
     VERILOG = "verilog",
     SYSTEMVERILOG = "systemverilog",
+    CPP = "cpp",
     NONE = "none"
 }
 
@@ -38,4 +39,9 @@ export const HDL_EXTENSIONS = {
     VHDL: ['.vhd', '.vho', '.vhdl'],
     VERILOG: ['.v', '.vh', '.vl'],
     SYSTEMVERILOG: ['.sv', '.svh']
+};
+
+/** Other extensions */
+export const OTHER_EXTENSIONS = {
+    CPP: ['.cpp', '.cc', '.cp', '.CPP'],
 };

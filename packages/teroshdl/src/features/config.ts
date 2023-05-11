@@ -46,6 +46,10 @@ export class Config_manager {
 
         const activation_command = 'teroshdl.configuration';
         vscode.commands.registerCommand(activation_command, () => this.create_webview());
+
+
+        vscode.commands.registerCommand("teroshdl.view.project.export_configuration", () => this.export_config());
+        vscode.commands.registerCommand("teroshdl.view.project.load_configuration", () => this.load_config_from_file());
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +127,7 @@ export class Config_manager {
     }
 
     export_config(){
-        vscode.window.showSaveDialog().then(fileInfos => {
+        vscode.window.showSaveDialog({title: "Export TerosHDL configuration"}).then(fileInfos => {
             if (fileInfos?.path !== undefined) {
                 const path_norm = utils.normalize_path(fileInfos?.path);
                 const config = this.manager.get_config_global_config();
@@ -134,7 +138,7 @@ export class Config_manager {
     }
 
     async load_config_from_file(){
-        vscode.window.showOpenDialog({ canSelectMany: false }).then((value) => {
+        vscode.window.showOpenDialog({title: "Load TerosHDL configuration", canSelectMany: false }).then((value) => {
             if (value === undefined) {
                 return;
             }

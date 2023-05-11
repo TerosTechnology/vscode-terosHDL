@@ -9,12 +9,12 @@ language:
 symbol_vhdl:
   description: "Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code>"
   type: string
-  value: ""
+  value: "!"
 
 symbol_verilog:
   description: "Special Verilog symbol at the begin of the comment to extract documentation. Example: <code>//! Code comment</code>"
   type: string
-  value: ""
+  value: "!"
 
 dependency_graph:
   description: "Include dependency graph:"

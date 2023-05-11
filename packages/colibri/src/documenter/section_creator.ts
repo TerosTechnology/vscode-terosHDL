@@ -112,7 +112,7 @@ export class Creator extends Section_creator_interface {
             hdl_element.name, output_type);
         // Generate section
         const section_header = this.transform(`\n## ${translator.get_str('Description')}\n\n`, output_type);
-        return section_header + this.transform(description, output_type);
+        return section_header + description;
     }
 
     get_description(description: string, svg_path_dir: string,
@@ -137,7 +137,7 @@ export class Creator extends Section_creator_interface {
         // Parse wavedrom
         const wavedrom_description = this.get_wavedrom_svg(description);
         let wavedrom_description_norm = wavedrom_description.description;
-        // wavedrom_description_norm = this.transform(wavedrom_description_norm, output_type);
+        wavedrom_description_norm = this.transform(wavedrom_description_norm, output_type);
         for (let i = 0; i < wavedrom_description.wavedrom.length; ++i) {
             const random_id = common_utils.makeid(4);
             if (output_type === common_documenter.doc_output_type.MARKDOWN) {
