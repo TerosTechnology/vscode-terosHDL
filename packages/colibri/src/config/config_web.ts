@@ -428,7 +428,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="documentation-general-symbol_vhdl" class="form-label">Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code></label>
-              <input class="form-control" id="documentation-general-symbol_vhdl" rows="3"  value=""></input>
+              <input class="form-control" id="documentation-general-symbol_vhdl" rows="3"  value="!"></input>
             </div>
           
           
@@ -436,7 +436,7 @@ export const WEB_CONFIG = `
           
             <div class="mb-3">
               <label for="documentation-general-symbol_verilog" class="form-label">Special Verilog symbol at the begin of the comment to extract documentation. Example: <code>//! Code comment</code></label>
-              <input class="form-control" id="documentation-general-symbol_verilog" rows="3"  value=""></input>
+              <input class="form-control" id="documentation-general-symbol_verilog" rows="3"  value="!"></input>
             </div>
           
           
@@ -3245,8 +3245,7 @@ export const WEB_CONFIG = `
               <label for="tools-raptor-fsm_encoding" class="form-label">FSM encoding</label>
               <select class="form-select" aria-label="FSM encoding" id="tools-raptor-fsm_encoding">
                       <option value='binary'>Binary</option>
-                      <option value='one_hot'>One Hot</option>
-                      <option value='low'>Low</option>
+                      <option value='onehot'>One Hot</option>
               </select>
             </div>
           
@@ -3326,6 +3325,13 @@ export const WEB_CONFIG = `
               <input class="form-control" id="tools-raptor-top_level" rows="3"  value=""></input>
             </div>
           
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-raptor-sim_source_list" class="form-label">Other simulation sources (comma separed):</label>
+              <input class="form-control" id="tools-raptor-sim_source_list" rows="3"></input>
+            </div>
           
           
           
@@ -4614,6 +4620,8 @@ export const WEB_CONFIG = `
     config["tools"]["raptor"]["div_1"] = element_value
     element_value = document.getElementById("tools-raptor-top_level").value;
     config["tools"]["raptor"]["top_level"] = element_value
+    element_value = document.getElementById("tools-raptor-sim_source_list").value.split(',');
+    config["tools"]["raptor"]["sim_source_list"] = element_value
     element_value = document.getElementById("tools-raptor-simulate_rtl").checked;
     config["tools"]["raptor"]["simulate_rtl"] = element_value
     element_value = document.getElementById("tools-raptor-waveform_rtl").value;
@@ -4863,6 +4871,7 @@ export const WEB_CONFIG = `
     document.getElementById("tools-raptor-no_block_ram").checked = config["tools"]["raptor"]["no_block_ram"];
     document.getElementById("tools-raptor-fast_synthesis").checked = config["tools"]["raptor"]["fast_synthesis"];
     document.getElementById("tools-raptor-top_level").value = config["tools"]["raptor"]["top_level"];
+    element_value = document.getElementById("tools-raptor-sim_source_list").value = String(config["tools"]["raptor"]["sim_source_list"]);
     document.getElementById("tools-raptor-simulate_rtl").checked = config["tools"]["raptor"]["simulate_rtl"];
     document.getElementById("tools-raptor-waveform_rtl").value = config["tools"]["raptor"]["waveform_rtl"];
     document.getElementById("tools-raptor-simulator_rtl").value = config["tools"]["raptor"]["simulator_rtl"];

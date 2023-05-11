@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { HDL_LANG, HDL_EXTENSIONS } from "../common/general";
+import { HDL_LANG, HDL_EXTENSIONS, OTHER_EXTENSIONS } from "../common/general";
 import * as fs from 'fs';
 import * as path_lib from 'path';
 
@@ -30,6 +30,9 @@ export function get_lang_from_extension(extension: string): HDL_LANG {
     }
     else if (HDL_EXTENSIONS.SYSTEMVERILOG.includes(extension) === true) {
         return HDL_LANG.SYSTEMVERILOG;
+    }
+    else if (OTHER_EXTENSIONS.CPP.includes(extension) === true) {
+        return HDL_LANG.CPP;
     }
     else {
         return HDL_LANG.NONE;
@@ -45,7 +48,7 @@ export function get_lang_from_path(file_path: string): HDL_LANG {
 export function check_if_hdl_file(file_path: string): boolean {
     const lang = get_lang_from_path(file_path);
     let check = false;
-    if (lang !== HDL_LANG.NONE) {
+    if (lang !== HDL_LANG.NONE && lang !== HDL_LANG.CPP) {
         check = true;
     }
     return check;

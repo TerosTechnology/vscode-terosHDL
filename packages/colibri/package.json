@@ -34,7 +34,7 @@
         "prepublish": "npm run compile",
         "build": "npm run compile",
         "postpack": "shx rm -f oclif.manifest.json",
-        "compile": "shx rm -rf out && tsc -b tsconfig.json && npm run copy-files",
+        "compile": "tsc -b tsconfig.json && npm run copy-files",
         "copy-parser": "shx cp -R ./src/parser/parsers ./out/parser",
         "copy-documenter": "shx cp -R ./src/documenter/*.json ./out/documenter/",
         "copy-dependency": "shx cp -R ./src/project_manager/dependency/*.py ./out/project_manager/dependency",

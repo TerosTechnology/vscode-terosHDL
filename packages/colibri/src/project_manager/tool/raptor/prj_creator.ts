@@ -101,22 +101,37 @@ function get_simulation_file(config: e_tools_raptor){
         return "";
     }
 
-    const lang = get_lang_from_path(top_level_path);
-    let cmd_lang = `-${config.vhdl_version}`;
-    if (lang === HDL_LANG.VERILOG){
-        cmd_lang = `-${config.verilog_version}`;
-    }
-    else {
-        cmd_lang = `-${config.sv_version}`;
-    }
+    let cmd = "";
+    const simulation_file_list = [...config.sim_source_list];
+    simulation_file_list.push(top_level_path);
 
-    let cmd = `add_simulation_file ${cmd_lang} ${top_level_path}\n`;
+    simulation_file_list.forEach((file_tb: string) => {
+        if (file_tb !== ""){
+            const lang = get_lang_from_path(file_tb);
+            let cmd_lang = `-${config.vhdl_version}`;
+            if (lang === HDL_LANG.VERILOG){
+                cmd_lang = `-${config.verilog_version}`;
+            }
+            else if (lang === HDL_LANG.SYSTEMVERILOG){
+                cmd_lang = `-${config.sv_version}`;
+            }
+            else {
+                cmd_lang = "";
+            }
+        
+            cmd += `add_simulation_file ${cmd_lang} ${file_tb}\n`;
+        }
+    });
+
     cmd += `set_top_testbench ${top_level}\n`;
 
     return cmd;
 }
 
+
 function get_compile_steps(config: e_tools_raptor){
+    let pnr_netlist_lang = "";
+
     // RTL simulation
     let rtl_simulation = "";
     if (config.simulate_rtl === true){
@@ -128,8 +143,17 @@ function get_compile_steps(config: e_tools_raptor){
     // Gate simulation
     let gate_simulation = "";
     if (config.simulate_gate === true){
+        const top_level_path = config.top_level;
+        const lang = get_lang_from_path(top_level_path);
+        if (lang === HDL_LANG.VHDL){
+            pnr_netlist_lang = "pnr_netlist_lang vhdl";
+        }
+        if (lang === HDL_LANG.SYSTEMVERILOG){
+            pnr_netlist_lang = "pnr_netlist_lang verilog";
+        }
+
         if (config.simulation_options_gate !== ""){
-            gate_simulation = `simulation_options "${config.simulation_options_gate}" "simulation" "${config.simulation_options_gate}"\n`;
+            gate_simulation = `simulation_options "${config.simulator_gate}" "simulation" "${config.simulation_options_gate}"\n`;
         }
         gate_simulation += `simulate "gate" "${config.simulator_gate}" ${config.waveform_gate}`;
     }
@@ -137,7 +161,7 @@ function get_compile_steps(config: e_tools_raptor){
     let pnr_simulation = "";
     if (config.simulate_pnr === true){
         if (config.simulation_options_gate !== ""){
-            pnr_simulation = `simulation_options "${config.simulation_options_pnr}" "simulation" "${config.simulation_options_pnr}"\n`;
+            pnr_simulation = `simulation_options "${config.simulator_pnr}" "simulation" "${config.simulation_options_pnr}"\n`;
         }
         pnr_simulation += `simulate "pnr" "${config.simulator_pnr}" ${config.waveform_pnr}`;
     }
@@ -145,6 +169,7 @@ function get_compile_steps(config: e_tools_raptor){
     const steps = `
 analyze
 ${rtl_simulation}
+${pnr_netlist_lang}
 synthesize ${config.optimization}
 ${gate_simulation}
 packing
@@ -168,6 +193,9 @@ function get_design_files(config: e_tools_raptor, file_list: t_file[]){
         }
         else if (element.file_type === "systemVerilogSource") {
             design_file_list += `add_design_file -${config.sv_version} ${element.name}\n`;
+        }
+        else{
+            design_file_list += `add_design_file ${element.name}\n`;
         }
     });
     return design_file_list;
@@ -199,7 +227,7 @@ function get_clean_steps(clean_step: e_clean_step){
 }
 
 function get_synthesize_args(config: e_tools_raptor) {
-    let synt_args = `synth_options -effort ${config.effort} -carry ${config.carry}`;
+    let synt_args = `synth_options -effort ${config.effort} -carry ${config.carry} -fsm_encoding ${config.fsm_encoding}`;
     if (config.no_dsp_blocks) {
         synt_args += " -no_dsp";
     }

@@ -74,9 +74,8 @@ fsm_encoding:
   type: select
   options:
     binary: "Binary"
-    one_hot: "One Hot"
-    low: "Low"
-  value: "one_hot"
+    onehot: "One Hot"
+  value: "onehot"
 
 carry:
   description: "Carry"
@@ -125,6 +124,11 @@ top_level:
   description: "Simulation top level path:"
   type: string
   value: ""
+
+sim_source_list:
+  description: "Other simulation sources (comma separed):"
+  type: array
+  value: []
 
 simulate_rtl:
   description: "Simulate RTL"

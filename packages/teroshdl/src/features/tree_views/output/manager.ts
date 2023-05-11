@@ -66,6 +66,11 @@ export class Output_manager {
     }
 
     async clean() {
+        const tool_name = this.project_manager.get_config_global_config().tools.general.select_tool;
+        if (tool_name !== teroshdl2.config.config_declaration.e_tools_general_select_tool.raptor){
+            return;
+        }
+
         const step_list = Object.values(teroshdl2.project_manager.tool_common.e_clean_step)
         const picker_value = await vscode.window.showQuickPick(step_list, {
             placeHolder: "Select stage.",
