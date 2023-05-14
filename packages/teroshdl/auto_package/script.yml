@@ -11,10 +11,13 @@
   command: "eslint src --ext ts"
 
 - name: "watch"
-  command: "npm run build-prepare & npm run generate-examples & tsc -watch -p ./"
+  command: "npm run generate-examples & tsc -watch -p ./"
 
 - name: "generate-examples"
   command: "cd ./resources/project_manager; ./copy_examples.sh"
 
+- name: "pre-package"
+  command: "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib"
+
 - name: "package"
-  command: "vsce package --yarn --allow-star-activation"
+  command: "npm run pre-package & vsce package --yarn --allow-star-activation"

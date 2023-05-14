@@ -24,7 +24,7 @@ import {e_clean_step} from 'teroshdl2/out/project_manager/tool/common';
 
 import * as teroshdl2 from 'teroshdl2';
 import { Run_output_manager } from "../run_output";
-import {Logger} from "../logger";
+import {Logger} from "../../../logger";
 
 export class Output_manager {
     private tree: element.ProjectProvider;

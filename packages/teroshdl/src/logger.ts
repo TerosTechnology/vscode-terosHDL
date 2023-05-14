@@ -19,7 +19,15 @@
 import * as vscode from "vscode";
 
 export class Logger {
-    private output_channel: vscode.OutputChannel = vscode.window.createOutputChannel('TerosHDL: Tool manager');
+    private output_channel: vscode.LogOutputChannel;
+
+    constructor(name = ""){
+        if (name === ""){
+            name = 'TerosHDL: Tool manager';
+        }
+        this.output_channel = vscode.window.createOutputChannel(name, {log: true});
+        // this.output_channel.logLevel = vscode.LogLevel.Debug;
+    }
 
     clear() {
         this.output_channel.clear();
@@ -33,11 +41,31 @@ export class Logger {
         this.output_channel.appendLine(msg);
     }
 
-    show() {
-        this.output_channel.show();
+    show(enable = true) {
+        if (enable) {
+            this.output_channel.show();
+        }
     }
 
     log(msg: string){
-        this.appendLine(msg);
+        this.info(msg);
     }
+
+    debug(msg: string, enable_show = false){
+        this.show(enable_show);
+        this.output_channel.debug(msg);
+    }
+    warn(msg: string, enable_show = false){
+        this.show(enable_show);
+        this.output_channel.warn(msg);
+    }
+    info(msg: string, enable_show = false){
+        this.show(enable_show);
+        this.output_channel.info(msg);
+    }
+    trace(msg: string, enable_show = false){
+        this.show(enable_show);
+        this.output_channel.trace(msg);
+    }
+
 }

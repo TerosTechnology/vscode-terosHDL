@@ -25,7 +25,7 @@ import {Actions_manager} from "./actions/manager";
 import {Run_output_manager} from "./run_output";
 import {Watcher_manager} from "./watchers/manager";
 import {Output_manager} from "./output/manager";
-import {Logger} from "./logger";
+import {Logger} from "../../logger";
 
 import * as events from "events";
 import * as vscode from "vscode";
