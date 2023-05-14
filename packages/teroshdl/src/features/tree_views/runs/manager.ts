@@ -116,7 +116,7 @@ export class Runs_manager {
                 };
                 test_list = [test];
             }
-
+            this.logger.show();
             const selfm = this;
 			const p = new Promise<void>(resolve => {
                 this.project_manager.run(prj_name, this.project_manager.get_config_global_config(), test_list, 
