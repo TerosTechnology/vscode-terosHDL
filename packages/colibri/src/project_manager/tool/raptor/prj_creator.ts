@@ -185,17 +185,24 @@ bitstream
 function get_design_files(config: e_tools_raptor, file_list: t_file[]){
     let design_file_list = "";
     file_list.forEach(element => {
+        let library_cmd = "";
+        if (element.logical_name !== ""){
+            library_cmd = `-L ${element.logical_name}`;
+        }
+
+        let version_cmd = "";
         if (element.file_type === "vhdlSource-2008") {
-            design_file_list += `add_design_file -${config.vhdl_version} ${element.name}\n`;
+            version_cmd = `-${config.vhdl_version}`;
         }
         else if (element.file_type === "verilogSource-2005") {
-            design_file_list += `add_design_file -${config.verilog_version} ${element.name}\n`;
+            version_cmd = `-${config.verilog_version}`;
         }
         else if (element.file_type === "systemVerilogSource") {
-            design_file_list += `add_design_file -${config.sv_version} ${element.name}\n`;
+            version_cmd = `-${config.sv_version}`;
         }
-        else{
-            design_file_list += `add_design_file ${element.name}\n`;
+
+        if (element.file_type !== "xdc" && element.file_type !== "pin" && element.file_type !== "sdc"){
+            design_file_list += `add_design_file ${version_cmd} ${library_cmd} ${element.name}\n`;
         }
     });
     return design_file_list;
