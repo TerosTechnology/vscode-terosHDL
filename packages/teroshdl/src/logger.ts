@@ -67,5 +67,8 @@ export class Logger {
         this.show(enable_show);
         this.output_channel.trace(msg);
     }
-
+    error(msg: string, enable_show = false){
+        this.show(enable_show);
+        this.output_channel.error(msg);
+    }
 }

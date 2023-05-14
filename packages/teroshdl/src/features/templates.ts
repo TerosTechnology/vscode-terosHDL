@@ -24,19 +24,18 @@ import * as Output_channel_lib from '../utils/output_channel';
 import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
-
-const ERROR_CODE = Output_channel_lib.ERROR_CODE;
+import { Logger } from '../logger';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Template_manager {
     private manager: Multi_project_manager;
-    private output_channel: Output_channel_lib.Output_channel;
+    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context, output_channel: Output_channel_lib.Output_channel, manager: Multi_project_manager) {
-        this.output_channel = output_channel;
+    constructor(context, logger: Logger, manager: Multi_project_manager) {
+        this.logger = logger;
         this.manager = manager;
         vscode.commands.registerCommand("teroshdl.generate_template", () => this.get_template());
     }
@@ -80,10 +79,10 @@ export class Template_manager {
 
         //Error
         if (template === undefined || template === '') {
-            this.output_channel.show_message(ERROR_CODE.TEMPLATE_NOT_VALID_FILE, '');
+            this.logger.error("Make sure that the cursor is in the active document and select a valid file.", true)
         }
         else {
-            this.output_channel.show_message(ERROR_CODE.COPIED_TO_CLIPBOARD, '');
+            this.logger.info("Template copied to clipboard.", true);
             vscode.env.clipboard.writeText(template);
         }
     }

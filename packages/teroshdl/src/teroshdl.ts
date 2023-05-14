@@ -97,7 +97,7 @@ export class Teroshdl {
     }
 
     private init_template_manager() {
-        new Template_manager(this.context, this.output_channel, this.manager);
+        new Template_manager(this.context, this.logger, this.manager);
     }
 
     private init_documenter() {
