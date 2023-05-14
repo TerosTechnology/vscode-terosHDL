@@ -38,6 +38,7 @@ import { Tree_view_manager } from "./features/tree_views/manager";
 import * as teroshdl2 from 'teroshdl2';
 import * as events from "events";
 import {Comander} from "./features/comander/run";
+import {Logger} from "./logger";
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -47,8 +48,9 @@ export class Teroshdl {
     private manager: Multi_project_manager;
     private output_channel: Output_channel;
     private emitter : events.EventEmitter = new events.EventEmitter();
+    private logger : Logger;
 
-    constructor(context: vscode.ExtensionContext, output_channgel: Output_channel) {
+    constructor(context: vscode.ExtensionContext, output_channgel: Output_channel, logger: Logger) {
 
         const homedir = teroshdl2.utils.common.get_home_directory();
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);
@@ -57,35 +59,36 @@ export class Teroshdl {
         this.manager = new Multi_project_manager("", file_config_path, file_prj_path, this.emitter);
         this.context = context;
         this.output_channel = output_channgel;
+        this.logger = logger;
     }
 
     public init_teroshdl(){
         this.init_language_provider();
-        console.log("activated language provider")
+        this.logger.debug("activated language provider")
         this.init_template_manager();
-        console.log("activated template manager")
+        this.logger.debug("activated template manager")
         this.init_documenter();
-        console.log("activated documenter")
+        this.logger.debug("activated documenter")
         this.init_state_machine();
-        console.log("activated state machine")
+        this.logger.debug("activated state machine")
         const schematic = this.init_schematic();
-        console.log("activated schematic")
+        this.logger.debug("activated schematic")
         this.init_linter();
-        console.log("activated linter")
+        this.logger.debug("activated linter")
         this.init_formatter();
-        console.log("activated formatter")
+        this.logger.debug("activated formatter")
         this.init_completions();
-        console.log("activated completions")
+        this.logger.debug("activated completions")
         this.init_number_hover();
-        console.log("activated hover")
+        this.logger.debug("activated hover")
         this.init_shutter_mode();
-        console.log("activated shutter mode")
+        this.logger.debug("activated shutter mode")
         this.init_config();
-        console.log("activated config viewer")
+        this.logger.debug("activated config viewer")
         this.init_tree_views(schematic);
-        console.log("activated views")
+        this.logger.debug("activated views")
         this.init_comander();
-        console.log("activated comander")
+        this.logger.debug("activated comander")
     }
 
     private init_language_provider() {

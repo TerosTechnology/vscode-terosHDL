@@ -27,6 +27,7 @@ import * as Output_channel_lib from './utils/output_channel';
 
 // TerosHDL
 import {Teroshdl} from './teroshdl';
+import {Logger} from './logger';
 
 let output_channel: Output_channel_lib.Output_channel;
 
@@ -38,6 +39,8 @@ export async function activate(context: vscode.ExtensionContext) {
     //TerosHDL console
     output_channel = new Output_channel_lib.Output_channel(context);
 
-    const teroshdl = new Teroshdl(context, output_channel);
+    const logger = new Logger("TerosHDL: Global");
+
+    const teroshdl = new Teroshdl(context, output_channel, logger);
     teroshdl.init_teroshdl();
 }

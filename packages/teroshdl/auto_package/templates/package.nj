@@ -64,7 +64,7 @@
             },
             {
                 "view": "teroshdl-view-actions",
-                "contents": "[Open Configuration Menu](command:teroshdl.view.project.configuration)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n\n[Documentation](command:teroshdl.documentation)"
+                "contents": "[Open Configuration Menu](command:teroshdl.view.project.configuration)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)"
             }
       ],
 {% filter indent(width=8) %}
