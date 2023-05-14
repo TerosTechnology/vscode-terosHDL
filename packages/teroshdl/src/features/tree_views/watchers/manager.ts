@@ -57,7 +57,8 @@ export class Watcher_manager {
             return;
         }
 
-        const element_types = ["VUnit", "CSV", "Vivado project"];
+        // const element_types = ["VUnit", "CSV", "Vivado project"];
+        const element_types = ["VUnit", "CSV"];
         const picker_value = await utils.get_picker_value(element_types, "Choose file watcher type");
         let watcher_type = teroshdl2.project_manager.common.e_watcher_type.CSV;
         if (picker_value === element_types[0]){
@@ -66,9 +67,9 @@ export class Watcher_manager {
         else if(picker_value === element_types[1]){
             watcher_type = teroshdl2.project_manager.common.e_watcher_type.CSV;
         }
-        else if(picker_value === element_types[2]){
-            watcher_type = teroshdl2.project_manager.common.e_watcher_type.VIVADO;
-        }
+        // else if(picker_value === element_types[2]){
+        //     watcher_type = teroshdl2.project_manager.common.e_watcher_type.VIVADO;
+        // }
         else{
             return;
         }

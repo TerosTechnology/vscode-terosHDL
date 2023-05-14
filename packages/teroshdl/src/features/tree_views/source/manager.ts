@@ -80,7 +80,8 @@ export class Source_manager {
 
         // Add source
         if (picker_value === element_types[0]) {
-            const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py", "Load from Vivado .xpr"];
+            // const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py", "Load from Vivado .xpr"];
+            const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py"];
             const picker_value = await utils.get_picker_value(element_types, "Add from:");
 
             // Add from browser
@@ -99,10 +100,10 @@ export class Source_manager {
             else if (picker_value === element_types[2]) {
                 await utils.add_sources_from_vunit(this.project_manager, prj_name, true);
             }
-            // Add from Vivado
-            else if (picker_value === element_types[3]) {
-                await utils.add_sources_from_vivado(this.project_manager, prj_name, true);
-            }
+            // // Add from Vivado
+            // else if (picker_value === element_types[3]) {
+            //     await utils.add_sources_from_vivado(this.project_manager, prj_name, true);
+            // }
         }
         // Add library
         else {

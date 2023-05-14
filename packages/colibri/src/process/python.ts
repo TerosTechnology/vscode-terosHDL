@@ -136,14 +136,15 @@ export async function check_python_package(python_path: string, package_name: st
  * @param  {string} python_script_path Python script to execute
  * @param  {string} args Arguments for the script
  */
-export async function exec_python_script(python_path: string, python_script_path: string, args: string) {
+export async function exec_python_script(python_path: string, python_script_path: string, args: string,
+    pre_script = "") {
     const opt: python_options = {
         path: python_path
     };
 
     const python_script_dir = get_directory(python_script_path);
     const python_result = await get_python_path(opt);
-    const cmd = `${python_result.python_path} "${python_script_path}" ${args}`;
+    const cmd = `${pre_script} ${python_result.python_path} "${python_script_path}" ${args}`;
     const p = new Process();
     const result = await p.exec_wait(cmd, { "cwd": python_script_dir });
     return result;

@@ -41,6 +41,7 @@ import * as process from "../process/process";
 import { l_error } from "../linter/common";
 import { Linter } from "../linter/linter";
 import { t_linter_name, l_options } from "../linter/common";
+import { Vunit } from "./tool/vunit/vunit";
 
 export class Project_manager {
     /**  Name of the project */
@@ -217,11 +218,17 @@ export class Project_manager {
         const n_config_manager = new Config_manager();
         n_config_manager.set_config(n_config);
 
+        const vunit = new Vunit();
+        const simulator_name = n_config.tools.vunit.simulator_name;
+        const simulator_install_path = vunit.get_simulator_installation_path(n_config);
+
+        const simulator_conf = vunit.get_simulator_config(simulator_name, simulator_install_path);
+
         const py_path = n_config_manager.get_config().general.general.pypath;
         const json_path = process_utils.create_temp_file("");
         const args = `--export-json ${json_path}`;
         console.log(`${py_path} ${vunit_path} ${args}`);
-        const result = await python.exec_python_script(py_path, vunit_path, args);
+        const result = await python.exec_python_script(py_path, vunit_path, args, simulator_conf);
         console.log(result.stderr);
         console.log(result.stdout);
 

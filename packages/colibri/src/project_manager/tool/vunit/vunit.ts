@@ -181,9 +181,8 @@ export class Vunit extends Generic_tool_handler {
         return exec_i;
     }
 
-    get_simulator_installation_path(prj: t_project_definition): string {
-        const config = prj.config_manager.get_config();
-        const simulator_name = prj.config_manager.get_config().tools.vunit.simulator_name;
+    get_simulator_installation_path(config: t_config.e_config): string {
+        const simulator_name = config.tools.vunit.simulator_name;
 
         let installation_path = "";
         try {
@@ -213,7 +212,7 @@ export class Vunit extends Generic_tool_handler {
 
         // Simulator config
         const simulator_name = config.tools.vunit.simulator_name;
-        const simulator_install_path = this.get_simulator_installation_path(prj);
+        const simulator_install_path = this.get_simulator_installation_path(prj.config_manager.get_config());
         const simulator_config = this.get_simulator_config(simulator_name, simulator_install_path);
 
         let python_script = prj.toplevel_path_manager.get()[0];
