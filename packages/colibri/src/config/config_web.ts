@@ -3278,24 +3278,16 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-no_dsp_blocks">
-                <label class="form-check-label" for="tools-raptor-no_dsp_blocks">
-                  No DSP blocks
-                </label>
-              </div>
+              <label for="tools-raptor-dsp_limit" class="form-label">DSP limit</label>
+              <input type='number' class="form-control" id="tools-raptor-dsp_limit" rows="3"></input>
             </div>
           
           
           
           
             <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-no_block_ram">
-                <label class="form-check-label" for="tools-raptor-no_block_ram">
-                  No Block Ram
-                </label>
-              </div>
+              <label for="tools-raptor-block_ram_limit" class="form-label">Block RAM limit</label>
+              <input type='number' class="form-control" id="tools-raptor-block_ram_limit" rows="3"></input>
             </div>
           
           
@@ -4611,10 +4603,10 @@ export const WEB_CONFIG = `
     config["tools"]["raptor"]["carry"] = element_value
     element_value = document.getElementById("tools-raptor-pnr_netlist_language").value;
     config["tools"]["raptor"]["pnr_netlist_language"] = element_value
-    element_value = document.getElementById("tools-raptor-no_dsp_blocks").checked;
-    config["tools"]["raptor"]["no_dsp_blocks"] = element_value
-    element_value = document.getElementById("tools-raptor-no_block_ram").checked;
-    config["tools"]["raptor"]["no_block_ram"] = element_value
+    element_value = document.getElementById("tools-raptor-dsp_limit").value;
+    config["tools"]["raptor"]["dsp_limit"] = element_value
+    element_value = document.getElementById("tools-raptor-block_ram_limit").value;
+    config["tools"]["raptor"]["block_ram_limit"] = element_value
     element_value = document.getElementById("tools-raptor-fast_synthesis").checked;
     config["tools"]["raptor"]["fast_synthesis"] = element_value
     config["tools"]["raptor"]["div_1"] = element_value
@@ -4867,8 +4859,8 @@ export const WEB_CONFIG = `
     document.getElementById("tools-raptor-fsm_encoding").value = config["tools"]["raptor"]["fsm_encoding"];
     document.getElementById("tools-raptor-carry").value = config["tools"]["raptor"]["carry"];
     document.getElementById("tools-raptor-pnr_netlist_language").value = config["tools"]["raptor"]["pnr_netlist_language"];
-    document.getElementById("tools-raptor-no_dsp_blocks").checked = config["tools"]["raptor"]["no_dsp_blocks"];
-    document.getElementById("tools-raptor-no_block_ram").checked = config["tools"]["raptor"]["no_block_ram"];
+    document.getElementById("tools-raptor-dsp_limit").value = config["tools"]["raptor"]["dsp_limit"];
+    document.getElementById("tools-raptor-block_ram_limit").value = config["tools"]["raptor"]["block_ram_limit"];
     document.getElementById("tools-raptor-fast_synthesis").checked = config["tools"]["raptor"]["fast_synthesis"];
     document.getElementById("tools-raptor-top_level").value = config["tools"]["raptor"]["top_level"];
     element_value = document.getElementById("tools-raptor-sim_source_list").value = String(config["tools"]["raptor"]["sim_source_list"]);

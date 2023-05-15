@@ -458,8 +458,8 @@ export type e_tools_raptor = {
     fsm_encoding : e_tools_raptor_fsm_encoding,
     carry : e_tools_raptor_carry,
     pnr_netlist_language : e_tools_raptor_pnr_netlist_language,
-    no_dsp_blocks : boolean,
-    no_block_ram : boolean,
+    dsp_limit : number,
+    block_ram_limit : number,
     fast_synthesis : boolean,
     top_level : string,
     sim_source_list : any[],
@@ -1132,8 +1132,8 @@ export function get_default_config(): e_config {
                 fsm_encoding : e_tools_raptor_fsm_encoding.onehot,
                 carry : e_tools_raptor_carry.auto,
                 pnr_netlist_language : e_tools_raptor_pnr_netlist_language.verilog,
-                no_dsp_blocks : false,
-                no_block_ram : false,
+                dsp_limit : 154,
+                block_ram_limit : 154,
                 fast_synthesis : false,
                 top_level : "",
                 sim_source_list : [],
@@ -2873,16 +2873,16 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['tools']['raptor']['pnr_netlist_language'] = e_tools_raptor_pnr_netlist_language.vhdl;
     }
             
-    // tools -> raptor -> no_dsp_blocks
-    const current_value_218 = json_config['tools']['raptor']['no_dsp_blocks'];
-    if (current_value_218 === true || current_value_218 === false){
-        default_config['tools']['raptor']['no_dsp_blocks'] = current_value_218;
+    // tools -> raptor -> dsp_limit
+    const current_value_218 = json_config['tools']['raptor']['dsp_limit'];
+    if (typeof current_value_218 === 'number'){
+        default_config['tools']['raptor']['dsp_limit'] = current_value_218;
     }
             
-    // tools -> raptor -> no_block_ram
-    const current_value_219 = json_config['tools']['raptor']['no_block_ram'];
-    if (current_value_219 === true || current_value_219 === false){
-        default_config['tools']['raptor']['no_block_ram'] = current_value_219;
+    // tools -> raptor -> block_ram_limit
+    const current_value_219 = json_config['tools']['raptor']['block_ram_limit'];
+    if (typeof current_value_219 === 'number'){
+        default_config['tools']['raptor']['block_ram_limit'] = current_value_219;
     }
             
     // tools -> raptor -> fast_synthesis
