@@ -17,13 +17,11 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 import * as vscode from 'vscode';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
-import * as Output_channel_lib from '../utils/output_channel';
 import * as utils from '../utils/utils';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export abstract class Base_webview {
     protected context: vscode.ExtensionContext;
-    protected output_channel: Output_channel_lib.Output_channel;
     protected manager: Multi_project_manager;
 
     protected subscriptions: vscode.Disposable[] | undefined;
@@ -35,11 +33,10 @@ export abstract class Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
+    constructor(context: vscode.ExtensionContext,
         manager: Multi_project_manager, webview_html_path: string, activation_command: string, id: string) {
 
             this.context = context;
-            this.output_channel = output_channel;
             this.manager = manager;
     
             vscode.workspace.onDidChangeConfiguration(this.force_update, this, this.subscriptions);

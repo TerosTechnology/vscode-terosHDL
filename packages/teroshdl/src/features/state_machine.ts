@@ -24,28 +24,28 @@ import * as path_lib from 'path';
 import * as fs from 'fs';
 import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
-import * as Output_channel_lib from '../utils/output_channel';
 import * as utils from '../utils/utils';
 import * as nunjucks from 'nunjucks';
 import {Base_webview} from './base_webview';
+import { Logger } from '../logger';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export class State_machine_manager extends Base_webview{
 
     private state_machines;
+    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
-        manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, logger: Logger, manager: Multi_project_manager) {
 
         const activation_command = 'teroshdl.state_machine.viewer';
         const id = "state_machine";
 
         const resource_path = path_lib.join(context.extensionPath, 'resources','webviews', 'state_machine_viewer', 'state_machine_viewer.html');
-        super(context, output_channel, manager, resource_path, activation_command, id);
-
+        super(context, manager, resource_path, activation_command, id);
+        this.logger = logger;
     }
 
     get_webview_content(webview: vscode.Webview){
@@ -255,12 +255,13 @@ export class State_machine_manager extends Base_webview{
                     for (let i = 0; i < this.state_machines.svg.length; ++i) {
                         let custom_path = `${dir_name}${path_lib.sep}${file_name}_${i}.svg`;
                         fs.writeFileSync(custom_path, this.state_machines.svg[i].svg);
+                        this.logger.error(`State machine image saved in: ${custom_path}`, true);
                     }
                 }
             });
         }
         else {
-            console.log("Error export documentation.");
+            this.logger.error("Error saving state machine images.", true);
         }
     }
 

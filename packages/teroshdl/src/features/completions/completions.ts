@@ -1,7 +1,6 @@
 import { VhdlAttributeCompletionItemProvider} from './attributes';
 import { VhdlLibraryCompletionItemProvider} from './libraries';
 import { VhdlStdPackageCompletionItemProvider} from './std_packages';
-import * as Output_channel_lib from '../../utils/output_channel';
 
 import * as vscode from 'vscode';
 
@@ -11,7 +10,7 @@ export class Completions_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, _output_channel: Output_channel_lib.Output_channel){
+    constructor(context: vscode.ExtensionContext){
         context.subscriptions.push(VhdlAttributeCompletionItemProvider);
         context.subscriptions.push(VhdlLibraryCompletionItemProvider);
         context.subscriptions.push(VhdlStdPackageCompletionItemProvider);

@@ -22,44 +22,46 @@
 
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
-import * as Output_channel_lib from '../utils/output_channel';
 import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import * as nunjucks from 'nunjucks';
 import * as fs from 'fs';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import { Base_webview } from './base_webview';
+import { Logger } from '../logger';
 
-const ERROR_CODE = Output_channel_lib.ERROR_CODE;
 
 export class Documenter_manager extends Base_webview {
 
     private documenter: teroshdl2.documenter.documenter.Documenter | undefined;
+    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
-        manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, logger: Logger, manager: Multi_project_manager) {
 
         const activation_command = 'teroshdl.documentation.module';
         const id = "documenter";
 
         const resource_path = path_lib.join(context.extensionPath, 'resources', 'webviews', 'documenter', 'index.html');
-        super(context, output_channel, manager, resource_path, activation_command, id);
+        super(context, manager, resource_path, activation_command, id);
         this.context = context;
+        this.logger = logger
     }
 
-    get_webview_content(webview: vscode.Webview){
-        const template_path = path_lib.join(this.context.extensionPath, 'resources','webviews', 'documenter', 'index.html.nj');
+    get_webview_content(webview: vscode.Webview) {
+        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', 'documenter', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 'documenter', 
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'documenter',
             'style.css'));
-        const js_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 'documenter', 
+        const js_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'documenter',
             'script.js'));
-        const html = nunjucks.renderString(template_str, {"css_path": css_path, "cspSource": webview.cspSource, 
-            "js_path": js_path});
+        const html = nunjucks.renderString(template_str, {
+            "css_path": css_path, "cspSource": webview.cspSource,
+            "js_path": js_path
+        });
         return html;
     }
 
@@ -138,12 +140,12 @@ export class Documenter_manager extends Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Log
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    print_documenter_log(configuration, file_input, file_output, type) {
-        this.output_channel.print_documenter_configurtion(configuration, file_input, file_output, type);
-    }
+    // print_documenter_log(configuration, file_input, file_output, type) {
+    //     this.output_channel.print_documenter_configurtion(configuration, file_input, file_output, type);
+    // }
 
     private show_export_message(path_exp: string) {
-        this.output_channel.show_message(ERROR_CODE.DOCUMENTER_SAVE, path_exp);
+        this.logger.info(`Document saved in the path: ${path_exp}`, true);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
