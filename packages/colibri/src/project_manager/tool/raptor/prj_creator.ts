@@ -170,6 +170,8 @@ function get_compile_steps(config: e_tools_raptor){
 analyze
 ${rtl_simulation}
 ${pnr_netlist_lang}
+set_limits bram ${config.block_ram_limit}
+set_limits dsp ${config.dsp_limit}
 synthesize ${config.optimization}
 ${gate_simulation}
 packing
@@ -235,12 +237,6 @@ function get_clean_steps(clean_step: e_clean_step){
 
 function get_synthesize_args(config: e_tools_raptor) {
     let synt_args = `synth_options -effort ${config.effort} -carry ${config.carry} -fsm_encoding ${config.fsm_encoding}`;
-    if (config.no_dsp_blocks) {
-        synt_args += " -no_dsp";
-    }
-    if (config.no_block_ram) {
-        synt_args += " -no_bram";
-    }
     if (config.fast_synthesis) {
         synt_args += " -fast";
     }

@@ -96,15 +96,15 @@ pnr_netlist_language:
     vhdl: "VHDL"
   value: "verilog"
 
-no_dsp_blocks:
-  description: "No DSP blocks"
-  type: boolean
-  value: false
+dsp_limit:
+  description: "DSP limit"
+  type: number
+  value: 154
 
-no_block_ram:
-  description: "No Block Ram"
-  type: boolean
-  value: false
+block_ram_limit:
+  description: "Block RAM limit"
+  type: number
+  value: 154
 
 fast_synthesis:
   description: "Fast Synthesis"
