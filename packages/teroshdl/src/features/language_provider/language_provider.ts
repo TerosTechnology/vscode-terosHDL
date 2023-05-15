@@ -26,7 +26,6 @@ import { Logger } from "./ctags/Logger";
 
 import * as vscode from 'vscode';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
-import * as Output_channel_lib from '../../utils/output_channel';
 import * as rusthdl_lib from './lsp/rust_hdl';
 
 export type e_provider = {
@@ -45,8 +44,7 @@ export class Language_provider_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
-        manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager) {
         
         this.context = context;
         this.manager = manager;

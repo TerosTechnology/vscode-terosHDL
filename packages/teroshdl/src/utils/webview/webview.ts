@@ -97,10 +97,15 @@ export abstract class WebviewController<TBootstrap> extends Disposable {
     if (this.panel === undefined) {
       return '';
     }
+
+    const banner_path = this.panel.webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, 'resources', 
+    'release_notes', 'low_res_banner.png')).toString();
+
     // Replace placeholders in html content for assets and adding configurations as `window.bootstrap`
     const fullHtml = html
       .replace(/{{root}}/g, this.panel.webview.asWebviewUri(Uri.file(this.context.asAbsolutePath('./resources/release_notes'))).toString())
       .replace(/{{cspSource}}/g, this.panel.webview.cspSource)
+      .replace(/{{banner}}/g, banner_path)
       .replace('\'{{bootstrap}}\'', JSON.stringify(this.getBootstrap()));
 
     return fullHtml;

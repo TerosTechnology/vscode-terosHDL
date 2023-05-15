@@ -22,25 +22,33 @@
 import * as vscode from 'vscode';
 //Extension manager
 import * as release_notes_webview from "./utils/webview/release_notes";
+import { Extension_manager } from "./utils/webview/utils";
 //Utils
-import * as Output_channel_lib from './utils/output_channel';
 
 // TerosHDL
-import {Teroshdl} from './teroshdl';
-import {Logger} from './logger';
-
-let output_channel: Output_channel_lib.Output_channel;
+import { Teroshdl } from './teroshdl';
+import { Logger } from './logger';
 
 export async function activate(context: vscode.ExtensionContext) {
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
+
     console.log('Congratulations, your extension "TerosHDL" is now active!');
 
-    //TerosHDL console
-    output_channel = new Output_channel_lib.Output_channel(context);
+    const extension_manager = new Extension_manager();
 
     const logger = new Logger("TerosHDL: Global");
+    try {
+        await extension_manager.init();
+        const releaseNotesView = new release_notes_webview.ReleaseNotesWebview(context);
+        const installationType = extension_manager.get_installation_type();
 
-    const teroshdl = new Teroshdl(context, output_channel, logger);
+        if (installationType.firstInstall || installationType.update) {
+            await releaseNotesView.show();
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+    const teroshdl = new Teroshdl(context, logger);
     teroshdl.init_teroshdl();
 }

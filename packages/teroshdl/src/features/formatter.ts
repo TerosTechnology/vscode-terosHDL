@@ -14,11 +14,9 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
-import * as Output_channel_lib from '../utils/output_channel';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as utils from '../utils/utils';
-
-const ERROR_CODE = Output_channel_lib.ERROR_CODE;
+import { Logger } from '../logger';
 
 let formatter_vhdl: Formatter | undefined = undefined;
 let formatter_verilog: Formatter | undefined = undefined;
@@ -27,16 +25,15 @@ class Formatter {
 
     private manager: Multi_project_manager;
     private lang: teroshdl2.common.general.HDL_LANG;
-    private output_channel: Output_channel_lib.Output_channel;
+    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(lang: teroshdl2.common.general.HDL_LANG, manager: Multi_project_manager,
-        output_channel: Output_channel_lib.Output_channel) {
+    constructor(lang: teroshdl2.common.general.HDL_LANG, manager: Multi_project_manager, logger: Logger) {
         this.manager = manager;
         this.lang = lang;
-        this.output_channel = output_channel;
+        this.logger = logger;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,25 +76,31 @@ class Formatter {
         const python_path = this.get_pytyon_path();
         const formatter = new teroshdl2.formatter.formatter.Formatter();
         const result = await formatter.format_from_code(formatter_name, code, formater_config, python_path);
+        if (result.successful === false){
+            this.logger.error("Error format code.");
+            this.logger.debug(result.command);
+        }
+        else{
+            this.logger.error("The code has been formatted successfully.");
+        }
         return result;
     }
 }
 
 export class Formatter_manager {
-    private output_channel: Output_channel_lib.Output_channel;
+    private logger: Logger;
     private manager: Multi_project_manager;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
-        manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, logger: Logger, manager: Multi_project_manager) {
 
-        this.output_channel = output_channel;
+        this.logger = logger;
         this.manager = manager;
 
-        formatter_vhdl = new Formatter(teroshdl2.common.general.HDL_LANG.VHDL, manager, output_channel);
-        formatter_verilog = new Formatter(teroshdl2.common.general.HDL_LANG.VERILOG, manager, output_channel);
+        formatter_vhdl = new Formatter(teroshdl2.common.general.HDL_LANG.VHDL, manager, logger);
+        formatter_verilog = new Formatter(teroshdl2.common.general.HDL_LANG.VERILOG, manager, logger);
 
         const disposable = vscode.languages.registerDocumentFormattingEditProvider(
             [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
@@ -172,8 +175,6 @@ async function provideDocumentFormattingEdits(document: vscode.TextDocument, opt
     }
     //Error
     if (sucessful === false) {
-        // vscode.window.showErrorMessage('Select a valid file.!');
-        console.log("Error format code.");
         return edits;
     }
     else {

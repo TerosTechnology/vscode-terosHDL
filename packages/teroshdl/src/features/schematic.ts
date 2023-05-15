@@ -22,7 +22,6 @@
 
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
-import * as Output_channel_lib from '../utils/output_channel';
 import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
@@ -32,9 +31,7 @@ import * as fs from 'fs';
 import * as yosys from './yosys';
 import * as shell from 'shelljs';
 import * as nunjucks from 'nunjucks';
-
-const ERROR_CODE = Output_channel_lib.ERROR_CODE;
-const MSG_CODE = Output_channel_lib.MSG_CODE;
+import { Logger } from '../logger';
 
 const activation_command = 'teroshdl.netlist.viewer';
 const id = "netlist";
@@ -45,20 +42,22 @@ export class Schematic_manager extends Base_webview {
     private working_directory = "";
     private output_path = "";
     private childp;
+    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, output_channel: Output_channel_lib.Output_channel,
-        manager: Multi_project_manager, mode_project: boolean) {
+    constructor(context: vscode.ExtensionContext, logger: Logger, manager: Multi_project_manager, 
+        mode_project: boolean) {
 
-        super(context, output_channel, manager, path_lib.join(context.extensionPath, 'resources', 'webviews', 
+        super(context, manager, path_lib.join(context.extensionPath, 'resources', 'webviews', 
             'netlist_viewer', 'netlist_viewer.html'), activation_command, id);
         
         this.mode_project = mode_project;
 
         this.working_directory = os.tmpdir();
         this.output_path = path_lib.join(this.working_directory, 'teroshdl_yosys_output.json');
+        this.logger = logger;
     }
 
     get_webview_content(webview: vscode.Webview){
@@ -172,7 +171,7 @@ export class Schematic_manager extends Base_webview {
                     let path_norm = utils.normalize_path(fileInfos?.path);
 
                     fs.writeFileSync(path_norm, svg);
-                    this.output_channel.show_info_message(MSG_CODE.SAVE_NETLIST, path_norm);
+                    this.logger.info(`Schematic saved in: ${path_norm}`, true)
                 }
             });
         }
@@ -251,7 +250,7 @@ export class Schematic_manager extends Base_webview {
 
         let cmd_files = yosys.get_yosys_read_file(sources, backend, this.working_directory);
         if (cmd_files === undefined) {
-            this.output_channel.show_message(ERROR_CODE.NETLIST_VHDL_ERROR);
+            this.logger.error(`Error procesing the schematic`, true)
             netlist.empty = true;
             return netlist;
         }
@@ -278,9 +277,8 @@ export class Schematic_manager extends Base_webview {
         command += '\n';
 
         let element = this;
-        element.output_channel.clear();
-        element.output_channel.append(command);
-        // element.output_channel.show();
+        this.logger.clear();
+        this.logger.info(command);
 
         return new Promise(resolve => {
             element.childp = shell.exec(command, { async: true, cwd: this.working_directory }, async function (code, stdout, stderr) {
@@ -298,17 +296,20 @@ export class Schematic_manager extends Base_webview {
                     resolve(netlist_svg);
                 }
                 else {
-                    element.output_channel.show_message(ERROR_CODE.NETLIST_VIEWER, '');
+                    selfm.logger.error(
+                        "Configure Yosys or install YoWASP: pip install yowasp-yosys", true);
                     netlist.empty = true;
                     resolve(netlist);
                 }
             });
 
+            const selfm = this;
+
             element.childp.stdout.on('data', function (data) {
-                element.output_channel.append(data);
+                selfm.logger.info(data);
             });
             element.childp.stderr.on('data', function (data) {
-                element.output_channel.append(data);
+                selfm.logger.append(data);
             });
         });
     }
