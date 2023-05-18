@@ -1,0 +1,10 @@
+1. Formatter
+2. Linter error
+3. Linter style
+4. Documenter
+5. Schematic
+6. State machine
+7. Template
+8. Shutter mode
+9. Number hover
+10. Tool manager

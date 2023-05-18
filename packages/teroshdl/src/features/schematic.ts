@@ -38,7 +38,6 @@ const id = "netlist";
 
 export class Schematic_manager extends Base_webview {
 
-    private mode_project = false;
     private working_directory = "";
     private output_path = "";
     private childp;
@@ -53,8 +52,6 @@ export class Schematic_manager extends Base_webview {
         super(context, manager, path_lib.join(context.extensionPath, 'resources', 'webviews', 
             'netlist_viewer', 'netlist_viewer.html'), activation_command, id);
         
-        this.mode_project = mode_project;
-
         this.working_directory = os.tmpdir();
         this.output_path = path_lib.join(this.working_directory, 'teroshdl_yosys_output.json');
         this.logger = logger;
@@ -186,14 +183,34 @@ export class Schematic_manager extends Base_webview {
         } catch (err) { }
     }
 
-    async generate_project_netlist() {        
-        const result = await this.generate_from_project();
-        await this.update_svg_in_html(result);
+    async generate_project_netlist() {  
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Window,
+            cancellable: false,
+            title: 'TerosHDL: Creating schematic viewer...'
+        }, async (progress) => {
+
+            progress.report({ increment: 0 });
+            const result = await this.generate_from_project();
+            progress.report({ increment: 100 });
+
+            await this.update_svg_in_html(result);
+        });
     }
 
     async generate_file_netlist(path) {
-        let result = await this.generate_from_file(path);
-        await this.update_svg_in_html(result);
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Window,
+            cancellable: false,
+            title: 'TerosHDL: Creating schematic viewer...'
+        }, async (progress) => {
+
+            progress.report({ increment: 0 });
+            const result = await this.generate_from_file(path);
+            progress.report({ increment: 100 });
+
+            await this.update_svg_in_html(result);
+        });
     }
 
     private async update_svg_in_html(netlist) {
@@ -277,7 +294,6 @@ export class Schematic_manager extends Base_webview {
         command += '\n';
 
         let element = this;
-        this.logger.clear();
         this.logger.info(command);
 
         return new Promise(resolve => {
@@ -296,8 +312,7 @@ export class Schematic_manager extends Base_webview {
                     resolve(netlist_svg);
                 }
                 else {
-                    selfm.logger.error(
-                        "Configure Yosys or install YoWASP: pip install yowasp-yosys", true);
+                    selfm.logger.error("Yosys failed.", true);
                     netlist.empty = true;
                     resolve(netlist);
                 }
@@ -317,7 +332,8 @@ export class Schematic_manager extends Base_webview {
     async get_svg_from_json(output_yosys) {
         output_yosys.result = yosys.normalize_netlist(output_yosys.result);
         const netlistsvg = require("netlistsvg");
-        const skinPath = path_lib.join(this.context.extensionPath, "resources", "netlist_viewer", "default.svg");
+        const skinPath = path_lib.join(this.context.extensionPath, "resources", 
+            "webviews", "netlist_viewer", "default.svg");
         const skin = fs.readFileSync(skinPath);
 
         const config = {
