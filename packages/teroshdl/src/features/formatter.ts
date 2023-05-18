@@ -77,7 +77,7 @@ class Formatter {
         const formatter = new teroshdl2.formatter.formatter.Formatter();
         const result = await formatter.format_from_code(formatter_name, code, formater_config, python_path);
         if (result.successful === false){
-            this.logger.error("Error format code.");
+            this.logger.info("Error format code.");
             this.logger.debug(result.command);
         }
         else{
