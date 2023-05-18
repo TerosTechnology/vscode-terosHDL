@@ -196,3 +196,44 @@ export function read_directory(dirname: string): string[] {
     }
     return result;
 }
+
+
+export function find_files_by_extensions(directoryPath: string, validExtensions: string[]): string[] {
+    const results: string[] = [];
+
+    function traverseDirectory(dir: string): void {
+        const files = fs.readdirSync(dir);
+
+        for (const file of files) {
+            const filePath = path_lib.join(dir, file);
+            const stat = fs.statSync(filePath);
+
+            if (stat.isDirectory()) {
+                traverseDirectory(filePath); // Recursivamente explorar subdirectorios
+            } else {
+                const fileExtension = path_lib.extname(file).toLowerCase();
+                if (validExtensions.includes(fileExtension)) {
+                    results.push(filePath);
+                }
+            }
+        }
+    }
+
+    traverseDirectory(directoryPath);
+    return results;
+}
+
+export function getFilesInDirectory(directoryPath: string): string[] {
+    const files: string[] = [];
+
+    const fileNames = fs.readdirSync(directoryPath);
+    for (const fileName of fileNames) {
+        const filePath = path_lib.join(directoryPath, fileName);
+        const stat = fs.statSync(filePath);
+        if (stat.isFile()) {
+            files.push(filePath);
+        }
+    }
+
+    return files;
+}

@@ -23,7 +23,7 @@ import * as utils from "../utils";
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as teroshdl2 from 'teroshdl2';
 import * as events from "events";
-import { file_utils } from "teroshdl2/out/utils/export_t";
+import * as file_utils from "teroshdl2/out/utils/file_utils";
 
 export class Source_manager {
     private tree: element.ProjectProvider;
@@ -81,7 +81,10 @@ export class Source_manager {
         // Add source
         if (picker_value === element_types[0]) {
             // const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py", "Load from Vivado .xpr"];
-            const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py"];
+            const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py",
+                "Add all HDL files from a directory and subdirectories",
+                "Add all files from a directory"
+            ];
             const picker_value = await utils.get_picker_value(element_types, "Add from:");
 
             // Add from browser
@@ -99,6 +102,14 @@ export class Source_manager {
             // Add from VUnit
             else if (picker_value === element_types[2]) {
                 await utils.add_sources_from_vunit(this.project_manager, prj_name, true);
+            }
+            // Add from directory and subirectories
+            else if (picker_value === element_types[3]) {
+                await utils.add_sources_from_directory_and_subdirectories(this.project_manager, prj_name, true);
+            }
+            // Add from directory and subirectories
+            else if (picker_value === element_types[4]) {
+                await utils.add_sources_from_directory_and_subdirectories(this.project_manager, prj_name, false);
             }
             // // Add from Vivado
             // else if (picker_value === element_types[3]) {
