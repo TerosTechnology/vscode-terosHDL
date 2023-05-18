@@ -101,6 +101,39 @@ export async function add_sources_from_open_dialog(project_manager: Multi_projec
     });
 }
 
+export async function add_sources_from_directory_and_subdirectories(project_manager: Multi_project_manager, 
+    prj_name: string, allow_subdirectories: boolean) {
+
+    const directory_list = await get_from_open_dialog("Select directory", true, false, true,
+        "Select", []);
+    directory_list.forEach(directory_inst => {
+
+        let hdl_extension_list : string[ ]= [];
+        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.HDL_EXTENSIONS.SYSTEMVERILOG);
+        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.HDL_EXTENSIONS.VERILOG);
+        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.HDL_EXTENSIONS.VHDL);
+
+        let file_list : string[] = []
+        if (allow_subdirectories){
+            file_list = teroshdl2.utils.file_utils.find_files_by_extensions(directory_inst, hdl_extension_list);
+        }
+        else{
+            file_list = teroshdl2.utils.file_utils.getFilesInDirectory(directory_inst);
+        }
+
+        file_list.forEach(file_inst => {            
+            const f: teroshdl2.project_manager.common.t_file_reduced = {
+                name: file_inst,
+                is_include_file: false,
+                include_path: "",
+                logical_name: "",
+                is_manual: true
+            };
+            project_manager.add_file(prj_name, f);
+        });
+    });
+}
+
 export async function add_sources_from_vunit(project_manager: Multi_project_manager, prj_name: string, is_manual: boolean) {
     const path_list = await utils.get_from_open_dialog("Select run.py", false, true, true,
         "Select VUnit run.py files", { 'Python files (*.py)': ['py'] });

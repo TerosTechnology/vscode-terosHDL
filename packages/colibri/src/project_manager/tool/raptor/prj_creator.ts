@@ -45,7 +45,7 @@ export function get_tcl_script(prj: t_project_definition, is_clean_mode: boolean
     const module = `set_top_module ${entity_name}\n`;
 
     ////////////////////////////////////////////////////////////////////////////
-    // Constraints
+    // Simulation
     ////////////////////////////////////////////////////////////////////////////
     const simulation = get_simulation_file(config);
 
