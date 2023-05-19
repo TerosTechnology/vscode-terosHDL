@@ -25,7 +25,9 @@ import { e_config, e_tools_raptor } from "../../../config/config_declaration";
 import { p_result } from "../../../process/common";
 import * as file_utils from "../../../utils/file_utils";
 
-export function get_results(config: e_config, base_path: string, working_directory: string, result: p_result) {
+export function get_results(project_name: string, config: e_config, base_path: string, 
+    working_directory: string, result: p_result) {
+
     const result_list: t_test_result[] = [];
 
     const result_definition = get_result_definition(config.tools.raptor);
@@ -100,13 +102,22 @@ export function get_results(config: e_config, base_path: string, working_directo
         artifact_type: e_artifact_type.SUMMARY,
         element_type: e_element_type.TEXT_FILE
     };
+    const artifact_build: t_test_artifact = {
+        name: "Build folder",
+        path: path_lib.join(working_directory, project_name),
+        content: "",
+        command: "",
+        artifact_type: e_artifact_type.BUILD,
+        element_type: e_element_type.FOLDER
+    };
+
     const test_result: t_test_result = {
         suite_name: "Summary",
         name: "Summary",
         edam: "edam_json",
         config_summary_path: "path_f",
         config: config,
-        artifact: [artifact],
+        artifact: [artifact, artifact_build],
         build_path: working_directory,
         successful: result.successful,
         stdout: result.stdout,

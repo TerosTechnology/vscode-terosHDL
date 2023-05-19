@@ -101,7 +101,7 @@ export class Raptor extends Generic_tool_handler {
             (result: p_result) => {
 
                 const base_path = path_lib.join(working_directory, prj.name);
-                const result_list = out_getter.get_results(config, base_path, working_directory, result);
+                const result_list = out_getter.get_results(prj.name, config, base_path, working_directory, result);
 
                 callback(result_list);
             }, callback_stream);
