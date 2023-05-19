@@ -42,9 +42,12 @@ export function get_results(config: e_config, base_path: string, working_directo
             }
 
             // eslint-disable-next-line no-console
-            console.log(`Artifact: ${artifact_path}`);
+            console.log(`[teroshdl] Artifact: ${artifact_path}`);
 
             if (file_utils.check_if_path_exist(artifact_path)) {
+                // eslint-disable-next-line no-console
+                console.log(`[teroshdl] it's ok`);
+
                 let artifact_type = e_artifact_type.SUMMARY;
                 let element_type = e_element_type.HTML;
                 let content = "";
