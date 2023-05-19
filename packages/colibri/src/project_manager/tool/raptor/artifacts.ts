@@ -41,6 +41,9 @@ export function get_results(config: e_config, base_path: string, working_directo
                 artifact_path = path_lib.join(base_path, 'reports', report_inst.path);
             }
 
+            // eslint-disable-next-line no-console
+            console.log(`Artifact: ${artifact_path}`);
+
             if (file_utils.check_if_path_exist(artifact_path)) {
                 let artifact_type = e_artifact_type.SUMMARY;
                 let element_type = e_element_type.HTML;
