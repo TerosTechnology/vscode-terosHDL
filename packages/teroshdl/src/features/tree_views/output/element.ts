@@ -100,6 +100,14 @@ export class Output extends vscode.TreeItem {
                 arguments: [vscode.Uri.file(path)]
             };
         }
+        else if (element_type === teroshdl2.project_manager.tool_common.e_element_type.FOLDER) {
+            this.iconPath = get_icon("folder");
+            this.command = {
+                title: 'Open folder',
+                command: 'revealFileInOS',
+                arguments: [vscode.Uri.file(path)]
+            };
+        }
         else {
             this.iconPath = get_icon("file");
             this.command = {
@@ -108,7 +116,6 @@ export class Output extends vscode.TreeItem {
                 arguments: [vscode.Uri.file(path)]
             };
         }
-
     }
 
     get_name() {

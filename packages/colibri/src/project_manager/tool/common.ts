@@ -53,7 +53,8 @@ export enum e_artifact_type {
     CONSOLE_LOG = "console_log",
     SUMMARY = "summary",
     OTHER = "other",
-    WAVEFORM = "waveform"
+    WAVEFORM = "waveform",
+    BUILD = "folder"
 }
 
 /** File type */
