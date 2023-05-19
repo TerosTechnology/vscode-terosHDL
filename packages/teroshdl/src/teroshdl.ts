@@ -149,6 +149,6 @@ export class Teroshdl {
     }
 
     private init_comander() {
-        new Comander(this.context, this.manager).init();
+        new Comander(this.context, this.manager, this.logger).init();
     }
 }

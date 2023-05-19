@@ -127,9 +127,6 @@ function get_webview(path: string): string {
         const regex = new RegExp('teroshdlspace', 'g');
         const new_template = template.replace(regex, '&nbsp;');
 
-        file_utils.save_file_sync("/home/carlos/Desktop/index.html",new_template)
-
-
         return new_template;
     } catch (error) {
         return content;
