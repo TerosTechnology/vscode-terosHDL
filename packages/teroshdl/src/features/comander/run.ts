@@ -23,15 +23,18 @@ import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_proje
 import { OS } from "teroshdl2/out/process/common";
 import { get_os } from "teroshdl2/out/process/utils";
 import * as path_lib from 'path';
+import { Logger } from '../../logger';
 
 export class Comander {
 
     private manager: Multi_project_manager;
     private report_webview: Base_webview;
+    private logger: Logger;
 
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, logger: Logger) {
         this.manager = manager;
         this.report_webview = new Base_webview(context);
+        this.logger = logger;
     }
 
     public init() {
@@ -41,11 +44,16 @@ export class Comander {
     }
 
     private open_file(args: vscode.Uri) {
-        opn(`${'file://'}${args.fsPath}`);
+        this.logger.warn(`Opening the file: ${args.fsPath}`);
+        // opn(`${'file://'}${args.fsPath}`);
+        vscode.workspace.openTextDocument(args).then(doc => {
+            vscode.window.showTextDocument(doc);
+        });
     }
 
     private open_waveform(args: vscode.Uri) {
         const file_path = args.fsPath;
+        this.logger.warn(`Opening the waveform: ${file_path}`);
 
         let gtkwave_binary = "gtkwave";
         const os_i = get_os();
@@ -55,10 +63,10 @@ export class Comander {
 
         let gtkwave_path = "";
         let base_path = this.manager.get_config_manager().get_config().tools.general.gtkwave_installation_path;
-        if (base_path !== ""){
+        if (base_path !== "") {
             gtkwave_path = path_lib.join(base_path, gtkwave_binary)
         }
-        else{
+        else {
             gtkwave_path = gtkwave_binary;
         }
 
