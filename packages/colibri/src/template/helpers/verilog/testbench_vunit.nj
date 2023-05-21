@@ -12,7 +12,7 @@ module {{ name }}_tb;
 {% if port_inst['direction'] == "input" -%}
 {{ indent[1] }}reg {{port_inst['type']}} {{port_inst['info']['name']}};
 {% else -%}
-{{ indent[1] }}wire {{port_inst['type']}};
+{{ indent[1] }}wire {{port_inst['type']}} {{port_inst['info']['name']}};
 {% endif -%}
 {% endfor %}
 {{ indent[1] }}{% include "./hdl_element_instance.nj" %}
