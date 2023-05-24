@@ -626,6 +626,7 @@ export enum e_tools_general_select_tool {
     xcelium = "xcelium",
     xsim = "xsim",
     raptor = "raptor",
+    radiant = "radiant",
 }
 export enum e_tools_general_execution_mode {
     gui = "gui",
@@ -1777,6 +1778,9 @@ export function get_config_from_json(json_config: any): e_config {
     }
     if ( current_value_68 === "raptor"){
         default_config['tools']['general']['select_tool'] = e_tools_general_select_tool.raptor;
+    }
+    if ( current_value_68 === "radiant"){
+        default_config['tools']['general']['select_tool'] = e_tools_general_select_tool.radiant;
     }
             
     // tools -> general -> gtkwave_installation_path

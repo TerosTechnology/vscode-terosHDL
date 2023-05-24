@@ -1406,6 +1406,7 @@ export const WEB_CONFIG = `
                       <option value='xcelium'>Xcelium</option>
                       <option value='xsim'>XSIM</option>
                       <option value='raptor'>Raptor Design Suite</option>
+                      <option value='radiant'>Radiant</option>
               </select>
             </div>
           
