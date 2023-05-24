@@ -22,6 +22,7 @@ select_tool:
     xcelium: "Xcelium"
     xsim: "XSIM"
     raptor: "Raptor Design Suite"
+    radiant: "Radiant"
 
   value: "ghdl"
 
