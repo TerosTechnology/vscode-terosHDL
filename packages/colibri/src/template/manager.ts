@@ -17,13 +17,11 @@
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as fs from 'fs';
-import * as paht_lib from 'path';
-import * as nunjucks from 'nunjucks';
-
 import { HDL_LANG } from "../common/general";
 import * as parser_lib from "../parser/factory";
 import * as common_hdl from "../parser/common";
 import { t_template_options } from "../config/auxiliar_config";
+import { get_template } from "./helpers/template";
 
 /** Template */
 export class Template_manager {
@@ -125,7 +123,6 @@ export class Template_manager {
         if (this.language === HDL_LANG.SYSTEMVERILOG) {
             norm_language = HDL_LANG.VERILOG;
         }
-        const template_path = paht_lib.join(__dirname, 'helpers', norm_language, `${template_type}.nj`);
 
         const name = code_tree.name;
         const generic = this.adapt_port(code_tree.get_generic_array(), template_type, true);
@@ -155,13 +152,14 @@ export class Template_manager {
             }
         }
         const port = this.adapt_port(code_tree.get_port_array(), template_type, false);
-
-        template = nunjucks.render(template_path, {
-            indent: indent, header: header, name: name,
+        
+        
+        const template_options = {
+            indent: indent, name: name,
             generic: generic, port: port,
-            clock_style: options.clock_generation_style,
-            instance_style: options.instance_style
-        });
+            instance_style: options.instance_style,
+        };
+        template = get_template(norm_language, template_type, template_options, header, options.clock_generation_style);
 
         return template;
     }
@@ -238,14 +236,14 @@ export class Template_manager {
             //Adapt type
             const type = port_inst.type;
             if (type === '' || type === 'std_logic') {
-                port_inst.type = 'reg';
+                port_inst.type = '';
             } else if (type.includes('(')) {
                 port_inst.type = type.replace('(', '[').replace(')', ']');
-                port_inst.type = port_inst.type.replace('std_logic', '');
                 port_inst.type = port_inst.type.replace('std_logic_vector', '');
+                port_inst.type = port_inst.type.replace('std_logic', '');
                 port_inst.type = port_inst.type.replace('signed', '');
                 port_inst.type = port_inst.type.replace('unsigned', '');
-                port_inst.type = `reg ${port_inst.type.replace('downto', ':')}`;
+                port_inst.type = `${port_inst.type.replace('downto', ':')}`;
             } else {
                 port_inst.type = type;
             }
