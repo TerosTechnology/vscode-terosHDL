@@ -30,7 +30,7 @@ export function get_template(language: HDL_LANG, template_name: string, template
     // Special charactrs
     template_options["special_char_0"] = ">";
     template_options["special_char_1"] = " ";
-
+    template_options["special_char_2"] = "\n";
 
     //Global
     template_options["header"] = nunjucks.renderString(template_definition_general.header, { "header": header });

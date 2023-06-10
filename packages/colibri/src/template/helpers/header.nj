@@ -1,4 +1,0 @@
-{% if header != "" -%}
-{{ header }}
-
-{% endif -%}
