@@ -1,7 +1,0 @@
-{% for element in port -%}
-{% if element['type'] == "" -%}
-{{ indent[1] }}reg r_{{element['info']['name']}};
-{% else -%}
-{{ indent[1] }}reg r_{{element['type']}} {{element['info']['name']}};
-{% endif -%}
-{% endfor -%}

@@ -108,7 +108,7 @@ export class TEMPLATE_NAME_VERILOG {
     };
     static readonly HDL_ELEMENT_INSTANCE = {
         name: "instance",
-        id: "testbench_vunit",
+        id: "hdl_element_instance",
         description: "Copy as instance",
         lang: LANG.VERILOG
     };
