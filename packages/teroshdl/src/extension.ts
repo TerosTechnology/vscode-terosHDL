@@ -36,6 +36,8 @@ export async function activate(context: vscode.ExtensionContext) {
     const extension_manager = new Extension_manager();
 
     const logger = new Logger("TerosHDL: Global");
+    logger.clear();
+    
     try {
         await extension_manager.init();
         const releaseNotesView = new release_notes_webview.ReleaseNotesWebview(context);
