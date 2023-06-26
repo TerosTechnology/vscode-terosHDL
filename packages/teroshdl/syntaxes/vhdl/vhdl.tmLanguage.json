@@ -1,6 +1,6 @@
 {
   "scopeName": "source.vhdl",
-  "name": "VHDL",
+  "name": "vhdl",
   "patterns": [
     {
       "include": "#design_file"
@@ -159,7 +159,7 @@
       "patterns": [
         {
           "name": "meta.block.context_declaration.vhdl",
-          "begin": "(?xi) \\b(context)\\s+ ([a-z][a-z0-9_]*)\\s+ (is)",
+          "begin": "(?xi)\n\\b(context)\\s+\n([a-z][a-z0-9_]*)\\s+\n(is)",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -171,7 +171,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end)\\s* (context)?\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end)\\b\\s*\n(context)?\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -180,7 +180,7 @@
               "name": "keyword.reserved.vhdl"
             },
             "3": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "4": {
               "name": "keyword.operator.vhdl"
@@ -207,7 +207,7 @@
       "patterns": [
         {
           "name": "meta.block.entity_declaration.vhdl",
-          "begin": "(?xi) \\b(entity)\\s+ ([a-z][a-z0-9_]*)\\s+ (is)",
+          "begin": "(?xi)\n\\b(entity)\\s+\n([a-z][a-z0-9_]*)\\s+\n(is)",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -219,7 +219,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end)\\s* (entity)?\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end)\\b\\s*\n(entity)?\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -228,7 +228,7 @@
               "name": "keyword.reserved.vhdl"
             },
             "3": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "4": {
               "name": "keyword.operator.vhdl"
@@ -246,7 +246,7 @@
       "patterns": [
         {
           "name": "meta.block.configuration_declaration.vhdl",
-          "begin": "(?xi) \\b(configuration)\\s+ ([a-z][a-z0-9_]*)\\s+ (of)\\s+ ([a-z][a-z0-9_]*)\\s+ (is)",
+          "begin": "(?xi)\n\\b(configuration)\\s+\n([a-z][a-z0-9_]*)\\s+\n(of)\\s+\n([a-z][a-z0-9_]*)\\s+\n(is)",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -264,7 +264,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end)\\s* (configuration)?\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end)\\b\\s*\n(configuration)?\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -273,7 +273,7 @@
               "name": "keyword.reserved.vhdl"
             },
             "3": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "4": {
               "name": "keyword.operator.vhdl"
@@ -291,7 +291,7 @@
       "patterns": [
         {
           "name": "meta.block.package_declaration.vhdl",
-          "begin": "(?xi) \\b(package(?i:\\s+body)?)\\s+ ([a-z][a-z0-9_]*)\\s+ (is)",
+          "begin": "(?xi)\n\\b(package(?i:\\s+body)?)\\s+\n([a-z][a-z0-9_]*)\\s+\n(is)",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -303,7 +303,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end)\\s* (package(?i:\\s+body)?)?\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end)\\b\\s*\n(package(?i:\\s+body)?)?\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -330,7 +330,7 @@
       "patterns": [
         {
           "name": "meta.block.package_instantiation_declaration.vhdl",
-          "begin": "(?xi) \\b(package)\\s+ ([a-z][a-z0-9_]*)\\s+ (is\\s+new)\\s+ (?i:[a-z][a-z0-9_]*\\.)* ([a-z][a-z0-9_]*)",
+          "begin": "(?xi)\n\\b(package)\\s+\n([a-z][a-z0-9_]*)\\s+\n(is\\s+new)\\s+\n(?i:[a-z][a-z0-9_]*\\.)*\n([a-z][a-z0-9_]*)",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -366,7 +366,7 @@
       "patterns": [
         {
           "name": "meta.block.architecture_body.vhdl",
-          "begin": "(?xi) \\b(architecture)\\s+ ([a-z][a-z0-9_]*)\\s+ (of)\\s+ ([a-z][a-z0-9_]*)\\s+ (is)",
+          "begin": "(?xi)\n\\b(architecture)\\s+\n([a-z][a-z0-9_]*)\\s+\n(of)\\s+\n([a-z][a-z0-9_]*)\\s+\n(is)",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -384,7 +384,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end)\\s* (architecture)?\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end)\\b\\s*\n(architecture)?\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -393,7 +393,7 @@
               "name": "keyword.reserved.vhdl"
             },
             "3": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "4": {
               "name": "keyword.operator.vhdl"
@@ -487,7 +487,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end\\s+block)\\s* ([a-z][a-z0-9_]*)? (;)",
+          "end": "(?xi)\n\\b(end\\s+block)\\s*\n([a-z][a-z0-9_]*)?\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -525,7 +525,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end\\s+(?i:case|generate))\\s* (\\?)?\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end\\s+(?i:case|generate))\\s*\n(\\?)?\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -560,7 +560,7 @@
       "patterns": [
         {
           "name": "meta.block.component_declaration.vhdl",
-          "begin": "(?xi) \\b(component)\\s+ ([a-z][a-z0-9_]*)\\s* (is)?",
+          "begin": "(?xi)\n\\b(component)\\s+\n([a-z][a-z0-9_]*)\\s*\n(is)?",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -572,13 +572,13 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end\\s+component)\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end\\s+component)\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
             },
             "2": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "3": {
               "name": "keyword.operator.vhdl"
@@ -602,7 +602,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(?i:(?=loop|use|generic_port)| (?i:(end\\s+generate)(\\s*[a-z][a-z0-9_]*)?\\s*(;)) )",
+          "end": "(?xi)\n\\b(?i:(?=loop|use|generic_port)|\n  (?i:(end\\s+generate)(\\s*[a-z][a-z0-9_]*)?\\s*(;))\n)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -632,7 +632,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end\\s+(?i:if|generate))\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end\\s+(?i:if|generate))\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -655,7 +655,7 @@
     "label": {
       "patterns": [
         {
-          "match": "(?xi) ^\\s*([a-z][a-z0-9_]*)\\s*(?=:(?!\\=))",
+          "match": "(?xi)\n^\\s*([a-z][a-z0-9_]*)\\s*(?=:(?!\\=))",
           "name": "meta.block.label.vhdl",
           "captures": {
             "1": {
@@ -684,13 +684,13 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end\\s+loop)\\s* ([a-z][a-z0-9_]*)? (;)",
+          "end": "(?xi)\n\\b(end\\s+loop)\\s*\n([a-z][a-z0-9_]*)?\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
             },
             "2": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "3": {
               "name": "keyword.operator.vhdl"
@@ -714,7 +714,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end)\\s+ ((?i:postponed\\s+)?process)\\s* ([a-z][a-z0-9_]*)? (;)",
+          "end": "(?xi)\n\\b(end)\\b\\s+\n((?i:postponed\\s+)?process)\\s*\n([a-z][a-z0-9_]*)?\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -755,13 +755,13 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end\\s+protected(?i:\\s+body)?)\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end\\s+protected(?i:\\s+body)?)\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
             },
             "2": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "3": {
               "name": "keyword.operator.vhdl"
@@ -785,13 +785,13 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end\\s+record)\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end\\s+record)\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
             },
             "2": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "3": {
               "name": "keyword.operator.vhdl"
@@ -827,7 +827,7 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end)\\s* (pure|impure)?\\s* (function|procedure)?\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end)\\b\\s*\n(pure|impure)?\\s*\n(function|procedure)?\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -857,7 +857,7 @@
       "patterns": [
         {
           "name": "meta.block.subprogram_specification.vhdl",
-          "begin": "(?xi) \\b(pure|impure)?\\s* \\b(procedure|function)\\s+ ([a-z][a-z0-9_]*)\\s*",
+          "begin": "(?xi)\n\\b(pure|impure)?\\s*\n\\b(procedure|function)\\s+\n([a-z][a-z0-9_]*)\\s*",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -878,7 +878,7 @@
           "patterns": [
             {
               "name": "meta.block.subprogram_specification_return.vhdl",
-              "match": "(?xi) \\b(return)\\s+ (?i:[a-z][a-z0-9_]*\\.)* ([a-z][a-z0-9_]*)",
+              "match": "(?xi)\n\\b(return)\\s+\n(?i:[a-z][a-z0-9_]*\\.)*\n([a-z][a-z0-9_]*)",
               "captures": {
                 "1": {
                   "name": "keyword.reserved.vhdl"
@@ -908,13 +908,13 @@
               "name": "keyword.reserved.vhdl"
             }
           },
-          "end": "(?xi) \\b(end\\s+units)\\s* ([a-z][a-z0-9_]*)?\\s* (;)",
+          "end": "(?xi)\n\\b(end\\s+units)\\s*\n([a-z][a-z0-9_]*)?\\s*\n(;)",
           "endCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
             },
             "2": {
-              "name": "entity.name.type.vhdl"
+              "name": "entity.name.endlabel.type.vhdl"
             },
             "3": {
               "name": "keyword.operator.vhdl"
@@ -1028,7 +1028,7 @@
       "patterns": [
         {
           "name": "meta.block.alternative_label.vhdl",
-          "match": "(?xi) \\b(when|elsif)\\s+ ([a-z][a-z0-9_]*)\\s* (:)",
+          "match": "(?xi)\n\\b(when|elsif)\\s+\n([a-z][a-z0-9_]*)\\s*\n(:)",
           "captures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -1047,7 +1047,7 @@
       "patterns": [
         {
           "name": "meta.block.object_declaration.vhdl",
-          "match": "(?xi) \\b(constant)\\s+ ([a-z][a-z0-9_]*)\\s* (:)\\s* (?i:[a-z][a-z0-9_]*\\.)* ([a-z][a-z0-9_]*)",
+          "match": "(?xi)\n\\b(constant)\\s+\n([a-z][a-z0-9_]*)\\s*\n(:)\\s*\n(?i:[a-z][a-z0-9_]*\\.)*\n([a-z][a-z0-9_]*)",
           "captures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -1069,7 +1069,7 @@
       "patterns": [
         {
           "name": "meta.block.enum_statement.vhdl",
-          "begin": "(?i)(?<=is)\\s*(\\()",
+          "begin": "(?i)(?<=\\bis)\\s*(\\()",
           "beginCaptures": {
             "1": {
               "name": "keyword.operator.vhdl"
@@ -1109,7 +1109,7 @@
       "patterns": [
         {
           "name": "meta.block.file_declaration.vhdl",
-          "begin": "(?xi) \\b(file)\\s+ ([a-z][a-z0-9_]*)\\s* (:)\\s*",
+          "begin": "(?xi)\n\\b(file)\\s+\n([a-z][a-z0-9_]*)\\s*\n(:)\\s*",
           "beginCaptures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -1166,7 +1166,7 @@
       "patterns": [
         {
           "name": "meta.block.type_statement.vhdl",
-          "match": "(?xi) \\b(subtype)\\s+ ([a-z][a-z0-9_]*)\\s+ (is)\\s+ ([a-z][a-z0-9_]*)",
+          "match": "(?xi)\n\\b(subtype)\\s+\n([a-z][a-z0-9_]*)\\s+\n(is)\\s+\n([a-z][a-z0-9_]*)",
           "captures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -1188,7 +1188,7 @@
       "patterns": [
         {
           "name": "meta.block.variable_declaration.vhdl",
-          "match": "(?xi) \\b(shared)?\\s* \\b(signal|variable)\\s+ ([a-z][a-z0-9_]*)\\s* (:)\\s* (?i:[a-z][a-z0-9_]*\\.)* ([a-z][a-z0-9_]*)",
+          "match": "(?xi)\n\\b(shared)?\\s*\n\\b(signal|variable)\\s+\n([a-z][a-z0-9_]*)\\s*\n(:)\\s*\n(?i:[a-z][a-z0-9_]*\\.)*\n([a-z][a-z0-9_]*)",
           "captures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -1213,7 +1213,7 @@
       "patterns": [
         {
           "name": "meta.block.when_constant.vhdl",
-          "match": "(?xi) \\b(when)\\s+ (?!others) ([a-z][a-z0-9_]*)\\s* (\\=\\>)",
+          "match": "(?xi)\n\\b(when)\\s+\n(?!others)\n([a-z][a-z0-9_]*)\\s*\n(\\=\\>)",
           "captures": {
             "1": {
               "name": "keyword.reserved.vhdl"
@@ -1262,7 +1262,7 @@
       "patterns": [
         {
           "name": "meta.block.subtype_indication.vhdl",
-          "match": "(?xi) (:)\\s* (?i:\\b(in|out|inout|buffer|linkage)\\b)?\\s* (?i:[a-z][a-z0-9_]*\\.)* ([a-z][a-z0-9_]*)",
+          "match": "(?xi)\n(:)\\s*\n(?i:\\b(in|out|inout|buffer|linkage)\\b)?\\s*\n(?i:[a-z][a-z0-9_]*\\.)*\n([a-z][a-z0-9_]*)",
           "captures": {
             "1": {
               "name": "keyword.operator.vhdl"
@@ -1483,13 +1483,37 @@
     "comments": {
       "patterns": [
         {
-          "match": "--.*$",
-          "name": "comment.line.vhdl"
+          "begin": "\\-\\-",
+          "beginCaptures": {
+            "0": {"name": "punctuation.definition.comment.vhdl"}
+          },
+          "end": "$\\n?",
+          "name": "comment.line.vhdl",
+          "patterns": [
+            {"include": "#comment_highlight"}
+          ]
         },
         {
           "begin": "\\/\\*",
+          "beginCaptures": {
+            "0": {"name": "punctuation.definition.comment.begin.vhdl"}
+          },
           "end": "\\*\\/",
-          "name": "comment.block.vhdl"
+          "endCaptures": {
+            "0": {"name": "punctuation.definition.comment.end.vhdl"}
+          },
+          "name": "comment.block.vhdl",
+          "patterns": [
+            {"include": "#comment_highlight"}
+          ]
+        }
+      ]
+    },
+    "comment_highlight": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(hack|note|todo|xxx|hint|fixme)\\b",
+          "name": "invalid.illegal.comment-highlight.vhdl"
         }
       ]
     },
@@ -1520,7 +1544,7 @@
     "reserved": {
       "patterns": [
         {
-          "match": "(?x) \\b(?i:abs|access|after|alias|all|and|architecture|array|assert|assume|assume_guarantee|attribute| begin|block|body|buffer|bus| case|component|configuration|constant|context|cover| default|disconnect|downto| else|elsif|end|entity|exit| fairness|file|for|force|function| generate|generic|group|guarded| if|impure|in|inertial|inout|is| label|library|linkage|literal|loop| map|mod| nand|new|next|nor|not|null| of|on|open|or|others|out| package|parameter|port|postponed|procedure|process|property|protected|pure| range|record|register|reject|release|rem|report|restrict|restrict_guarantee|return|rol|ror| select|sequence|severity|signal|shared|sla|sll|sra|srl|strong|subtype| then|to|transport|type| unaffected|units|until|use| variable|vmode|vprop|vunit| wait|when|while|with| xnor|xor)\\b",
+          "match": "(?x)\n\\b(?i:abs|access|after|alias|all|and|architecture|array|assert|assume|assume_guarantee|attribute|\nbegin|block|body|buffer|bus|\ncase|component|configuration|constant|context|cover|\ndefault|disconnect|downto|\nelse|elsif|end|entity|exit|\nfairness|file|for|force|function|\ngenerate|generic|group|guarded|\nif|impure|in|inertial|inout|is|\nlabel|library|linkage|literal|loop|\nmap|mod|\nnand|new|next|nor|not|null|\nof|on|open|or|others|out|\npackage|parameter|port|postponed|procedure|process|property|protected|pure|\nrange|record|register|reject|release|rem|report|restrict|restrict_guarantee|return|rol|ror|\nselect|sequence|severity|signal|shared|sla|sll|sra|srl|strong|subtype|\nthen|to|transport|type|\nunaffected|units|until|use|\nvariable|vmode|vprop|vunit|\nwait|when|while|with|\nxnor|xor)\\b",
           "name": "keyword.reserved.vhdl"
         }
       ]
@@ -1528,7 +1552,7 @@
     "delimiters": {
       "patterns": [
         {
-          "match": "(?x) (\\?\\/=|\\?<=|\\?>=)| (=>|\\*\\*|:=|\\/=|>=|<=|<>|\\?\\?|\\?=|\\?<|\\?>|<<|>>)| (&|'|\\(|\\)|\\*|\\+|,|-|\\.|\\/|:|;|<|=|>|`|\\||\\[|\\]|\\?|@){1}",
+          "match": "(?x)\n(\\?\\/=|\\?<=|\\?>=)|\n(=>|\\*\\*|:=|\\/=|>=|<=|<>|\\?\\?|\\?=|\\?<|\\?>|<<|>>)|\n(&|'|\\(|\\)|\\*|\\+|,|-|\\.|\\/|:|;|<|=|>|`|\\||\\[|\\]|\\?|@){1}",
           "name": "keyword.operator.vhdl"
         }
       ]
@@ -1569,7 +1593,7 @@
       "patterns": [
         {
           "name": "entity.name.type.std_standard.vhdl",
-          "match": "(?ix) \\b(boolean|bit|character|severity_level|file_open_kind|file_open_status| integer|real|time|delay_length|natural|positive|string|bit_vector| boolean_vector|integer_vector|real_vector|time_vector)\\b"
+          "match": "(?ix)\n\\b(boolean|bit|character|severity_level|file_open_kind|file_open_status|\ninteger|real|time|delay_length|natural|positive|string|bit_vector|\nboolean_vector|integer_vector|real_vector|time_vector)\\b"
         }
       ]
     },
@@ -1577,7 +1601,7 @@
       "patterns": [
         {
           "name": "support.constant.std_standard.vhdl",
-          "match": "(?ix) \\b(false|true| nul|soh|stx|etx|eot|enq|ack|bel| bs|ht|lf|vt|ff|cr|so|si| dle|dc1|dc2|dc3|dc4|nak|syn|etb| can|em|sub|esc|fsp|gsp|rsp|usp|del| note|warning|error|failure| read_mode|write_mode|append_mode| open_ok|status_error|name_error|mode_error| fs|ps|ns|us|ms|sec|min|hr)\\s*(?!\\()\\b"
+          "match": "(?ix)\n\\b(false|true|\nnul|soh|stx|etx|eot|enq|ack|bel|\nbs|ht|lf|vt|ff|cr|so|si|\ndle|dc1|dc2|dc3|dc4|nak|syn|etb|\ncan|em|sub|esc|fsp|gsp|rsp|usp|del|\nnote|warning|error|failure|\nread_mode|write_mode|append_mode|\nopen_ok|status_error|name_error|mode_error|\nfs|ps|ns|us|ms|sec|min|hr)\\s*(?!\\()\\b"
         }
       ]
     },
@@ -1601,7 +1625,7 @@
       "patterns": [
         {
           "name": "entity.name.type.std_textio.vhdl",
-          "match": "(?ix) \\b(line|text|side|width)\\b"
+          "match": "(?ix)\n\\b(line|text|side|width)\\b"
         }
       ]
     },
@@ -1609,7 +1633,7 @@
       "patterns": [
         {
           "name": "support.constant.std_textio.vhdl",
-          "match": "(?ix) \\b(right|left|input|output)\\s*(?!\\()\\b"
+          "match": "(?ix)\n\\b(right|left|input|output)\\s*(?!\\()\\b"
         }
       ]
     },
@@ -1617,7 +1641,7 @@
       "patterns": [
         {
           "name": "support.function.std_textio.vhdl",
-          "match": "(?ix) \\b(justify|readline|read|sread|string_read| bread|binary_read|oread|octal_read|hread|hex_read| writeline|write|swrite|string_write|bwrite|binary_write| owrite|octal_write|hwrite|hex_write|synthesis_return)\\b"
+          "match": "(?ix)\n\\b(justify|readline|read|sread|string_read|\nbread|binary_read|oread|octal_read|hread|hex_read|\nwriteline|write|swrite|string_write|bwrite|binary_write|\nowrite|octal_write|hwrite|hex_write|synthesis_return)\\b"
         }
       ]
     },
@@ -1625,7 +1649,7 @@
       "patterns": [
         {
           "name": "entity.name.type.ieee_std_logic_1164.vhdl",
-          "match": "(?ix) \\b(std_ulogic|std_ulogic_vector|std_logic|std_logic_vector| x01|x01z|ux01|ux01Z)\\b"
+          "match": "(?ix)\n\\b(std_ulogic|std_ulogic_vector|std_logic|std_logic_vector|\nx01|x01z|ux01|ux01Z)\\b"
         }
       ]
     },
@@ -1633,7 +1657,7 @@
       "patterns": [
         {
           "name": "support.function.ieee_std_logic_1164.vhdl",
-          "match": "(?ix) \\b(resolved|logic_type_encoding|is_signed| to_bit|to_bitvector|to_stdulogic|to_stdlogicvector|to_stdulogicvector| to_bit_vector|to_bv|to_std_logic_vector|to_slv|to_std_ulogic_vector| to_sulv|to_01|to_x01|to_x01z|to_ux01| rising_edge|falling_edge|is_x| to_bstring|to_string|to_binary_string|to_ostring|to_octal_string| to_hstring|to_hex_string)\\b"
+          "match": "(?ix)\n\\b(resolved|logic_type_encoding|is_signed|\nto_bit|to_bitvector|to_stdulogic|to_stdlogicvector|to_stdulogicvector|\nto_bit_vector|to_bv|to_std_logic_vector|to_slv|to_std_ulogic_vector|\nto_sulv|to_01|to_x01|to_x01z|to_ux01|\nrising_edge|falling_edge|is_x|\nto_bstring|to_string|to_binary_string|to_ostring|to_octal_string|\nto_hstring|to_hex_string)\\b"
         }
       ]
     },
@@ -1641,7 +1665,7 @@
       "patterns": [
         {
           "name": "entity.name.type.ieee_numeric_std.vhdl",
-          "match": "(?ix) \\b(unresolved_unsigned|unresolved_signed|u_unsigned|u_signed|unsigned|signed)\\b"
+          "match": "(?ix)\n\\b(unresolved_unsigned|unresolved_signed|u_unsigned|u_signed|unsigned|signed)\\b"
         }
       ]
     },
@@ -1649,7 +1673,7 @@
       "patterns": [
         {
           "name": "support.function.ieee_numeric_std.vhdl",
-          "match": "(?ix) \\b(find_leftmost|find_rightmost|minimum|maximum|shift_left|shift_right| rotate_left|rotate_right|resize|to_integer|to_signed|to_unsigned|std_match)\\b"
+          "match": "(?ix)\n\\b(find_leftmost|find_rightmost|minimum|maximum|shift_left|shift_right|\nrotate_left|rotate_right|resize|to_integer|to_signed|to_unsigned|std_match)\\b"
         }
       ]
     },
@@ -1657,7 +1681,7 @@
       "patterns": [
         {
           "name": "support.constant.ieee_math_real.vhdl",
-          "match": "(?ix) \\b(math_e|math_1_over_e|math_pi|math_2_pi|math_1_over_pi|math_pi_over_2| math_pi_over_3|math_pi_over_4|math_3_pi_over_2|math_log_of_2|math_log_of_10| math_log2_of_e|math_log10_of_e|math_sqrt_2|math_1_over_sqrt_2|math_sqrt_pi| math_deg_to_rad|math_rad_to_deg)\\s*(?!\\()\\b"
+          "match": "(?ix)\n\\b(math_e|math_1_over_e|math_pi|math_2_pi|math_1_over_pi|math_pi_over_2|\nmath_pi_over_3|math_pi_over_4|math_3_pi_over_2|math_log_of_2|math_log_of_10|\nmath_log2_of_e|math_log10_of_e|math_sqrt_2|math_1_over_sqrt_2|math_sqrt_pi|\nmath_deg_to_rad|math_rad_to_deg)\\s*(?!\\()\\b"
         }
       ]
     },
@@ -1665,7 +1689,7 @@
       "patterns": [
         {
           "name": "support.function.ieee_math_real.vhdl",
-          "match": "(?ix) \\b(sign|ceil|floor|round|trunc|realmax|realmin|uniform|sqrt|cbrt|exp| log|log2|log10|(arc)?sin(h)?|(arc)?cos(h)?|(arc)?tan(h)?)\\b"
+          "match": "(?ix)\n\\b(sign|ceil|floor|round|trunc|realmax|realmin|uniform|sqrt|cbrt|exp|\nlog|log2|log10|(arc)?sin(h)?|(arc)?cos(h)?|(arc)?tan(h)?)\\b"
         }
       ]
     },
@@ -1673,7 +1697,7 @@
       "patterns": [
         {
           "name": "entity.name.type.ieee_math_complex.vhdl",
-          "match": "(?ix) \\b(complex|positive_real|principal_value|complex_polar)\\b"
+          "match": "(?ix)\n\\b(complex|positive_real|principal_value|complex_polar)\\b"
         }
       ]
     },
@@ -1681,7 +1705,7 @@
       "patterns": [
         {
           "name": "support.constant.ieee_math_complex.vhdl",
-          "match": "(?ix) \\b(math_cbase_1|math_cbase_j|math_czero)\\s*(?!\\()\\b"
+          "match": "(?ix)\n\\b(math_cbase_1|math_cbase_j|math_czero)\\s*(?!\\()\\b"
         }
       ]
     },
@@ -1689,7 +1713,7 @@
       "patterns": [
         {
           "name": "support.function.ieee_math_complex.vhdl",
-          "match": "(?ix) \\b(cmplx|get_principal_value|complex_to_polar|polar_to_complex|arg|conj)\\b"
+          "match": "(?ix)\n\\b(cmplx|get_principal_value|complex_to_polar|polar_to_complex|arg|conj)\\b"
         }
       ]
     },
@@ -1697,7 +1721,7 @@
       "patterns": [
         {
           "name": "entity.name.type.ieee_float_pkg.vhdl",
-          "match": "(?ix) \\b(unresolved_float|u_float|float|unresolved_float32|u_float32|float32| unresolved_float64|u_float64|float64|unresolved_float128|u_float128| float128|valid_fpstate|fphdlsynth_or_real|round_type)\\b"
+          "match": "(?ix)\n\\b(unresolved_float|u_float|float|unresolved_float32|u_float32|float32|\nunresolved_float64|u_float64|float64|unresolved_float128|u_float128|\nfloat128|valid_fpstate|fphdlsynth_or_real|round_type)\\b"
         }
       ]
     },
@@ -1705,7 +1729,7 @@
       "patterns": [
         {
           "name": "support.constant.ieee_float_pkg.vhdl",
-          "match": "(?ix) \\b(nan|quiet_nan|neg_inf|neg_normal|neg_denormal|neg_zero|pos_zero| pos_denormal|pos_normal|pos_inf|isx|round_nearest|round_inf|round_neginf| round_zero)\\s*(?!\\()\\b"
+          "match": "(?ix)\n\\b(nan|quiet_nan|neg_inf|neg_normal|neg_denormal|neg_zero|pos_zero|\npos_denormal|pos_normal|pos_inf|isx|round_nearest|round_inf|round_neginf|\nround_zero)\\s*(?!\\()\\b"
         }
       ]
     },
@@ -1713,7 +1737,7 @@
       "patterns": [
         {
           "name": "support.function.ieee_float_pkg.vhdl",
-          "match": "(?ix) \\b(add|subtract|multiply|divide|remainder|modulo|reciprocal|dividebyp2| mac|eq|ne|lt|gt|le|ge|to_float|to_float32|to_float64|to_float128| to_ufixed|to_sfixed|to_real|realtobits|bitstoreal|break_number| normalize|copysign|scalb|logb|nextafter|unordered|finite|isnan|zerofp| nanfp|qnanfp|pos_inffp|neg_inffp|neg_zerofp|from_string|from_bstring| from_binary_string|from_ostring|from_octal_string|from_hstring| from_hex_string)\\b"
+          "match": "(?ix)\n\\b(add|subtract|multiply|divide|remainder|modulo|reciprocal|dividebyp2|\nmac|eq|ne|lt|gt|le|ge|to_float|to_float32|to_float64|to_float128|\nto_ufixed|to_sfixed|to_real|realtobits|bitstoreal|break_number|\nnormalize|copysign|scalb|logb|nextafter|unordered|finite|isnan|zerofp|\nnanfp|qnanfp|pos_inffp|neg_inffp|neg_zerofp|from_string|from_bstring|\nfrom_binary_string|from_ostring|from_octal_string|from_hstring|\nfrom_hex_string)\\b"
         }
       ]
     },
@@ -1721,7 +1745,7 @@
       "patterns": [
         {
           "name": "entity.name.type.ieee_fixed_pkg.vhdl",
-          "match": "(?ix) \\b(unresolved_ufixed|unresolved_sfixed|u_ufixed|u_sfixed|ufixed|sfixed| fixed_overflow_style_type|fixed_round_style_type)\\b"
+          "match": "(?ix)\n\\b(unresolved_ufixed|unresolved_sfixed|u_ufixed|u_sfixed|ufixed|sfixed|\nfixed_overflow_style_type|fixed_round_style_type)\\b"
         }
       ]
     },
@@ -1729,7 +1753,7 @@
       "patterns": [
         {
           "name": "support.constant.ieee_fixed_pkg.vhdl",
-          "match": "(?ix) \\b(fixed_round|fixed_truncate|fixed_saturate|fixed_wrap)\\s*(?!\\()\\b"
+          "match": "(?ix)\n\\b(fixed_round|fixed_truncate|fixed_saturate|fixed_wrap)\\s*(?!\\()\\b"
         }
       ]
     },
@@ -1737,7 +1761,7 @@
       "patterns": [
         {
           "name": "support.function.ieee_fixed_pkg.vhdl",
-          "match": "(?ix) \\b(add_carry|ufixed_high|ufixed_low|sfixed_high|sfixed_low|saturate| to_ufix|to_sfix|ufix_high|ufix_low|sfix_high|sfix_low)\\b"
+          "match": "(?ix)\n\\b(add_carry|ufixed_high|ufixed_low|sfixed_high|sfixed_low|saturate|\nto_ufix|to_sfix|ufix_high|ufix_low|sfix_high|sfix_low)\\b"
         }
       ]
     }
