@@ -7,3 +7,8 @@ core_number:
   description: "Number of parallel jobs to use, default is the number of cpu cores."
   type: number
   value: 2
+
+aditional_arguments:
+  description: "Additional arguments to pass to the VSG command."
+  type: string
+  value: ""

@@ -1015,6 +1015,14 @@ export const WEB_CONFIG = `
           
           
           
+            <div class="mb-3">
+              <label for="formatter-svg-aditional_arguments" class="form-label">Additional arguments to pass to the VSG command.</label>
+              <input class="form-control" id="formatter-svg-aditional_arguments" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
       </div>
       
       <div class="card-footer">
@@ -4220,6 +4228,8 @@ export const WEB_CONFIG = `
     config["formatter"]["svg"]["configuration"] = element_value
     element_value = document.getElementById("formatter-svg-core_number").value;
     config["formatter"]["svg"]["core_number"] = element_value
+    element_value = document.getElementById("formatter-svg-aditional_arguments").value;
+    config["formatter"]["svg"]["aditional_arguments"] = element_value
     config["linter"] = {}
     config["linter"]["general"] = {}
     element_value = document.getElementById("linter-general-linter_vhdl").value;
@@ -4692,6 +4702,7 @@ export const WEB_CONFIG = `
     document.getElementById("formatter-standalone-new_line_after_generic").value = config["formatter"]["standalone"]["new_line_after_generic"];
     document.getElementById("formatter-svg-configuration").value = config["formatter"]["svg"]["configuration"];
     document.getElementById("formatter-svg-core_number").value = config["formatter"]["svg"]["core_number"];
+    document.getElementById("formatter-svg-aditional_arguments").value = config["formatter"]["svg"]["aditional_arguments"];
     document.getElementById("linter-general-linter_vhdl").value = config["linter"]["general"]["linter_vhdl"];
     document.getElementById("linter-general-linter_verilog").value = config["linter"]["general"]["linter_verilog"];
     document.getElementById("linter-general-lstyle_verilog").value = config["linter"]["general"]["lstyle_verilog"];

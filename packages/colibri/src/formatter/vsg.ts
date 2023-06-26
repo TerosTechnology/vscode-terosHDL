@@ -41,17 +41,15 @@ export class Vsg extends Base_formatter {
     }
 
     public async format(file: string, opt: cfg.e_formatter_svg) {
-        let command = `${this.binary} -p ${opt.core_number} --fix -f ${file}`;
+        let command = `${this.binary} ${opt.aditional_arguments} -p ${opt.core_number} --fix -f ${file}`;
         if (opt.configuration !== ""){
-            command = `${this.binary} -p ${opt.core_number} --fix -c ${opt.configuration} -f ${file}`;
+            // eslint-disable-next-line max-len
+            command = `${this.binary} ${opt.aditional_arguments} -p ${opt.core_number} --fix -c ${opt.configuration} -f ${file}`;
         }
 
         const P = new Process();
         const exec_result = await P.exec_wait(command);
-        let code_formatted = fs.readFileSync(file, "utf8");
-        if (exec_result.successful === true){
-            code_formatted = exec_result.stdout;
-        }
+        const code_formatted = fs.readFileSync(file, "utf8");
 
         const msg = `Formatting with command: ${command} `;
         logger.Logger.log(msg, logger.T_SEVERITY.INFO);
