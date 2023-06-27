@@ -266,7 +266,7 @@ export class Project_manager {
 
     add_file_from_csv(csv_path: string, is_manual: boolean): t_action_result {
         const csv_content = file_utils.read_file_sync(csv_path);
-        const file_list_array = csv_content.split('\n');
+        const file_list_array = csv_content.split(/\r?\n|\r/);
         for (let i = 0; i < file_list_array.length; ++i) {
             const element = file_list_array[i].trim();
             if (element !== '') {
@@ -290,7 +290,7 @@ export class Project_manager {
                         if (lib_inst === "") {
                             lib_inst = "";
                         }
-                        const dirname_csv = file_utils.get_directory(file_inst);
+                        const dirname_csv = file_utils.get_directory(csv_path);
                         const complete_file_path = file_utils.get_absolute_path(dirname_csv, file_inst);
 
                         const file_edam: t_file_reduced = {
