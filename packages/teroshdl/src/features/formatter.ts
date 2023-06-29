@@ -81,7 +81,7 @@ class Formatter {
             this.logger.debug(result.command);
         }
         else{
-            this.logger.error("The code has been formatted successfully.");
+            this.logger.info("The code has been formatted successfully.");
         }
         return result;
     }

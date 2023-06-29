@@ -104,6 +104,8 @@
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
     element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value.split(',');
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "number" %}
+    element_value = parseInt(document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value, 10);
                 {%- else %}
     element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value;
                 {%- endif %}
