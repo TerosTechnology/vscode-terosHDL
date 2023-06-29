@@ -4145,9 +4145,9 @@
     config["editor"]["general"] = {}
     element_value = document.getElementById("editor-general-stutter_comment_shortcuts").checked;
     config["editor"]["general"]["stutter_comment_shortcuts"] = element_value
-    element_value = document.getElementById("editor-general-stutter_block_width").value;
+    element_value = parseInt(document.getElementById("editor-general-stutter_block_width").value, 10);
     config["editor"]["general"]["stutter_block_width"] = element_value
-    element_value = document.getElementById("editor-general-stutter_max_width").value;
+    element_value = parseInt(document.getElementById("editor-general-stutter_max_width").value, 10);
     config["editor"]["general"]["stutter_max_width"] = element_value
     element_value = document.getElementById("editor-general-stutter_delimiters").checked;
     config["editor"]["general"]["stutter_delimiters"] = element_value
@@ -4162,7 +4162,7 @@
     config["formatter"]["istyle"] = {}
     element_value = document.getElementById("formatter-istyle-style").value;
     config["formatter"]["istyle"]["style"] = element_value
-    element_value = document.getElementById("formatter-istyle-indentation_size").value;
+    element_value = parseInt(document.getElementById("formatter-istyle-indentation_size").value, 10);
     config["formatter"]["istyle"]["indentation_size"] = element_value
     config["formatter"]["s3sv"] = {}
     element_value = document.getElementById("formatter-s3sv-one_bind_per_line").checked;
@@ -4171,7 +4171,7 @@
     config["formatter"]["s3sv"]["one_declaration_per_line"] = element_value
     element_value = document.getElementById("formatter-s3sv-use_tabs").checked;
     config["formatter"]["s3sv"]["use_tabs"] = element_value
-    element_value = document.getElementById("formatter-s3sv-indentation_size").value;
+    element_value = parseInt(document.getElementById("formatter-s3sv-indentation_size").value, 10);
     config["formatter"]["s3sv"]["indentation_size"] = element_value
     config["formatter"]["verible"] = {}
     element_value = document.getElementById("formatter-verible-format_args").value;
@@ -4206,7 +4206,7 @@
     config["formatter"]["svg"] = {}
     element_value = document.getElementById("formatter-svg-configuration").value;
     config["formatter"]["svg"]["configuration"] = element_value
-    element_value = document.getElementById("formatter-svg-core_number").value;
+    element_value = parseInt(document.getElementById("formatter-svg-core_number").value, 10);
     config["formatter"]["svg"]["core_number"] = element_value
     element_value = document.getElementById("formatter-svg-aditional_arguments").value;
     config["formatter"]["svg"]["aditional_arguments"] = element_value
@@ -4490,7 +4490,7 @@
     config["tools"]["vivado"]["synth"] = element_value
     element_value = document.getElementById("tools-vivado-pnr").value;
     config["tools"]["vivado"]["pnr"] = element_value
-    element_value = document.getElementById("tools-vivado-jtag_freq").value;
+    element_value = parseInt(document.getElementById("tools-vivado-jtag_freq").value, 10);
     config["tools"]["vivado"]["jtag_freq"] = element_value
     element_value = document.getElementById("tools-vivado-hw_target").value;
     config["tools"]["vivado"]["hw_target"] = element_value
@@ -4594,9 +4594,9 @@
     config["tools"]["raptor"]["carry"] = element_value
     element_value = document.getElementById("tools-raptor-pnr_netlist_language").value;
     config["tools"]["raptor"]["pnr_netlist_language"] = element_value
-    element_value = document.getElementById("tools-raptor-dsp_limit").value;
+    element_value = parseInt(document.getElementById("tools-raptor-dsp_limit").value, 10);
     config["tools"]["raptor"]["dsp_limit"] = element_value
-    element_value = document.getElementById("tools-raptor-block_ram_limit").value;
+    element_value = parseInt(document.getElementById("tools-raptor-block_ram_limit").value, 10);
     config["tools"]["raptor"]["block_ram_limit"] = element_value
     element_value = document.getElementById("tools-raptor-fast_synthesis").checked;
     config["tools"]["raptor"]["fast_synthesis"] = element_value
