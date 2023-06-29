@@ -26,11 +26,11 @@ import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import * as utils from '../utils/utils';
 import * as nunjucks from 'nunjucks';
-import {Base_webview} from './base_webview';
+import { Base_webview } from './base_webview';
 import { Logger } from '../logger';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
-export class State_machine_manager extends Base_webview{
+export class State_machine_manager extends Base_webview {
 
     private state_machines;
     private logger: Logger;
@@ -43,30 +43,30 @@ export class State_machine_manager extends Base_webview{
         const activation_command = 'teroshdl.state_machine.viewer';
         const id = "state_machine";
 
-        const resource_path = path_lib.join(context.extensionPath, 'resources','webviews', 'state_machine_viewer', 'state_machine_viewer.html');
+        const resource_path = path_lib.join(context.extensionPath, 'resources', 'webviews', 'state_machine_viewer', 'state_machine_viewer.html');
         super(context, manager, resource_path, activation_command, id);
         this.logger = logger;
     }
 
-    get_webview_content(webview: vscode.Webview){
-        const template_path = path_lib.join(this.context.extensionPath, 'resources','webviews', 'state_machine_viewer', 'index.html.nj');
+    get_webview_content(webview: vscode.Webview) {
+        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', 'state_machine_viewer', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 'state_machine_viewer', 
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'state_machine_viewer',
             'style.css'));
-        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'state_machine_viewer', 'libs', 'jquery-2.2.4.min.js'));
-        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'state_machine_viewer', 'libs', 'svg-pan-zoom.min.js'));
-        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'state_machine_viewer', 'libs', 'vizdraw.js'));
-        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'state_machine_viewer', 'libs', 'full.render.js'));
-        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'state_machine_viewer', 'libs', 'viz.js'));
 
         const html = nunjucks.renderString(template_str, {
-            "css_path": css_path, "cspSource": webview.cspSource, 
+            "css_path": css_path, "cspSource": webview.cspSource,
             "js_path_0": js_path_0,
             "js_path_1": js_path_1,
             "js_path_2": js_path_2,
@@ -142,7 +142,7 @@ export class State_machine_manager extends Base_webview{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Update
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async update(document : utils.t_vscode_document){
+    async update(document: utils.t_vscode_document) {
         const state_machines = await this.get_state_machines(document);
         this.state_machines = state_machines;
         this.send_state_machines(state_machines);
@@ -245,20 +245,32 @@ export class State_machine_manager extends Base_webview{
 
     async export_as(type: string) {
         if (type === "svg") {
-            let filter = { 'svg': ['svg'] };
-            vscode.window.showSaveDialog({ filters: filter }).then(fileInfos => {
-                if (fileInfos?.path !== undefined) {
-                    let path_full = utils.normalize_path(fileInfos?.path);
-                    let dir_name = path_lib.dirname(path_full);
-                    let file_name = path_lib.basename(path_full).split('.')[0];
-
-                    for (let i = 0; i < this.state_machines.svg.length; ++i) {
-                        let custom_path = `${dir_name}${path_lib.sep}${file_name}_${i}.svg`;
-                        fs.writeFileSync(custom_path, this.state_machines.svg[i].svg);
-                        this.logger.error(`State machine image saved in: ${custom_path}`, true);
-                    }
-                }
+            const inputName = await vscode.window.showInputBox({
+                prompt: "Output base file name.",
+                value: "my_fsm",
             });
+
+            if (inputName === undefined) {
+                return;
+            }
+
+            const result = await vscode.window.showOpenDialog(
+                {
+                    title: "Select output folder",
+                    canSelectFiles: false,
+                    canSelectFolders: true,
+                    canSelectMany: false,
+                    openLabel: "Select",
+                });
+            if (result !== undefined) {
+                const dir_name = result[0].fsPath;
+
+                for (let i = 0; i < this.state_machines.svg.length; ++i) {
+                    let custom_path = path_lib.join(dir_name, `${inputName}_${i}.svg`);
+                    fs.writeFileSync(custom_path, this.state_machines.svg[i].image);
+                    this.logger.info(`State machine image saved in: ${custom_path}`, true);
+                }
+            }
         }
         else {
             this.logger.error("Error saving state machine images.", true);
