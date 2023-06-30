@@ -28,10 +28,8 @@ import { Base_linter } from "./base_linter";
 import * as common from "./common";
 
 export class Vivado extends Base_linter {
-    binary_linux = "xvhdl -nolog";
-    binary_mac = "xvhdl -nolog";
-    binary_windows = "xvhdl -nolog";
-
+    binary = "";
+    extra_cmd = "-nolog";
     sv_options = "--sv";
 
     constructor() {
@@ -40,19 +38,17 @@ export class Vivado extends Base_linter {
 
     public set_binary(file: string) {
         const file_lang = get_language(file);
-        let cmd = "";
+        let binary = "";
         if (file_lang === HDL_LANG.VHDL) {
-            cmd = `xvhdl -nolog`;
+            binary = "xvhdl";
         }
         else if (file_lang === HDL_LANG.SYSTEMVERILOG) {
-            cmd = `xvlog -nolog`;
+            binary = "xvlog";
         }
         else {
-            cmd = ``;
+            binary = "xvlog";
         }
-        this.binary_linux = cmd;
-        this.binary_mac = cmd;
-        this.binary_windows = cmd;
+        this.binary = binary;
     }
 
     async delete_previus_lint() {

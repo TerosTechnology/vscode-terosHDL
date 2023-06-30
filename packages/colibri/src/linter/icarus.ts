@@ -21,9 +21,9 @@ import { Base_linter } from "./base_linter";
 import * as common from "./common";
 
 export class Icarus extends Base_linter {
-    binary_linux = "iverilog -Wall";
-    binary_mac = "iverilog -Wall";
-    binary_windows = "iverilog.exe -Wall";
+    binary = "iverilog";
+    extra_cmd = "-Wall";
+
 
     constructor() {
         super();

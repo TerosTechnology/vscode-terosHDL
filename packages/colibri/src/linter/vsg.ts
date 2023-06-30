@@ -24,9 +24,8 @@ import { read_file_sync, remove_file } from "../utils/file_utils";
 import { Process } from "../process/process";
 
 export class Vsg extends Base_linter {
-    binary_linux = "vsg ";
-    binary_mac = "vsg ";
-    binary_windows = "vsg ";
+    binary = "vsg";
+    extra_cmd = "";
 
     constructor() {
         super();

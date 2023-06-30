@@ -24,9 +24,8 @@ import * as common from "./common";
 import { get_random_folder_in_home_directory, rm_directory } from "../process/utils";
 
 export class Modelsim extends Base_linter {
-    binary_linux = "";
-    binary_mac = "";
-    binary_windows = "";
+    binary = "";
+    extra_cmd = "";
 
     constructor() {
         super();
@@ -39,20 +38,22 @@ export class Modelsim extends Base_linter {
     set_binary(file: string): string {
         const work_directory = get_random_folder_in_home_directory();
         const file_lang = get_language(file);
-        let cmd = "";
+        let extra_cmd = "";
+        let binary = "";
         if (file_lang === HDL_LANG.VHDL) {
-            cmd = `vcom -quiet -nologo -2008 -work ${work_directory}`;
-
+            binary = "vcom";
+            extra_cmd = `-quiet -nologo -2008 -work ${work_directory}`;
         }
         else if (file_lang === HDL_LANG.SYSTEMVERILOG) {
-            cmd = `vlog -quiet -nologo -sv -work ${work_directory}`;
+            binary = "vlog";
+            extra_cmd = `-quiet -nologo -sv -work ${work_directory}`;
         }
         else {
-            cmd = `vlog -quiet -nologo -work ${work_directory}`;
+            binary = "vlog";
+            extra_cmd = `-quiet -nologo -work ${work_directory}`;
         }
-        this.binary_linux = cmd;
-        this.binary_mac = cmd;
-        this.binary_windows = cmd;
+        this.binary = binary;
+        this.extra_cmd = extra_cmd;
         return work_directory;
     }
 
