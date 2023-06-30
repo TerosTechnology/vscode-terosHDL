@@ -1312,6 +1312,14 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
+              <label for="schematic-general-extra" class="form-label">Extra options passed before to run yowasp-yosys. Eg: conda activate base & </label>
+              <input class="form-control" id="schematic-general-extra" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
               <label for="schematic-general-args" class="form-label">Arguments passed to Yosys</label>
               <input class="form-control" id="schematic-general-args" rows="3"  value=""></input>
             </div>
@@ -4269,6 +4277,8 @@ export const WEB_CONFIG = `
     config["schematic"]["general"] = {}
     element_value = document.getElementById("schematic-general-backend").value;
     config["schematic"]["general"]["backend"] = element_value
+    element_value = document.getElementById("schematic-general-extra").value;
+    config["schematic"]["general"]["extra"] = element_value
     element_value = document.getElementById("schematic-general-args").value;
     config["schematic"]["general"]["args"] = element_value
     config["templates"] = {}
@@ -4717,6 +4727,7 @@ export const WEB_CONFIG = `
     document.getElementById("linter-vivado-verilog_arguments").value = config["linter"]["vivado"]["verilog_arguments"];
     document.getElementById("linter-vsg-arguments").value = config["linter"]["vsg"]["arguments"];
     document.getElementById("schematic-general-backend").value = config["schematic"]["general"]["backend"];
+    document.getElementById("schematic-general-extra").value = config["schematic"]["general"]["extra"];
     document.getElementById("schematic-general-args").value = config["schematic"]["general"]["args"];
     document.getElementById("templates-general-header_file_path").value = config["templates"]["general"]["header_file_path"];
     document.getElementById("templates-general-indent").value = config["templates"]["general"]["indent"];

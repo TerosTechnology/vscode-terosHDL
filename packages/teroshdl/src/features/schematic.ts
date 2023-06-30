@@ -263,6 +263,8 @@ export class Schematic_manager extends Base_webview {
 
         const backend = config.schematic.general.backend;
         const custom_argumens = config.schematic.general.args;
+        const extra = config.schematic.general.extra;
+
         let yosys_path = config.tools.yosys.installation_path;
 
         let cmd_files = yosys.get_yosys_read_file(sources, backend, this.working_directory);
@@ -278,7 +280,7 @@ export class Schematic_manager extends Base_webview {
         if (backend === 'yosys_ghdl_module') {
             plugin = `-m ghdl`;
         }
-        let command = `yowasp-yosys -p "${script_code}"`;
+        let command = `${extra} yowasp-yosys -p "${script_code}"`;
         if (backend === 'yosys' || backend === 'yosys_ghdl' || backend === 'yosys_ghdl_module') {
             if (yosys_path === '') {
                 yosys_path = 'yosys';
