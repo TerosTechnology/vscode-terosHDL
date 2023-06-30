@@ -30,6 +30,7 @@ export class Project_manager {
     private project_manager : Multi_project_manager;
     private emitter : events.EventEmitter;
     private run_output_manager : Run_output_manager;
+    private context : vscode.ExtensionContext;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -42,6 +43,8 @@ export class Project_manager {
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
         this.run_output_manager = run_output_manager;
+
+        this.context = context;
         
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as element.BaseTreeDataProvider<element.Project>));
         vscode.commands.registerCommand("teroshdl.documentation", () => this.open_doc());
@@ -131,7 +134,8 @@ export class Project_manager {
                     picker_value = 'state_machine';
                 }
 
-                const project_path = path_lib.join(__filename, "..", "..", "..", "..", "..", "resources", "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
+                const project_path = path_lib.join(this.context.extensionUri.fsPath, "resources", 
+                    "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
                 this.create_project_from_yaml(project_path);
             }
         }
