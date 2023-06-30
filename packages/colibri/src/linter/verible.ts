@@ -21,10 +21,9 @@ import { Base_linter } from "./base_linter";
 import * as common from "./common";
 
 export class Verible extends Base_linter {
-    binary_linux = "verible-verilog-lint ";
-    binary_mac = "verible-verilog-lint ";
-    binary_windows = "verible-verilog-lint ";
-
+    binary = "verible-verilog-lint";
+    extra_cmd = "";
+    
     constructor() {
         super();
     }

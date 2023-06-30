@@ -21,9 +21,8 @@ import { Base_linter } from "./base_linter";
 import * as common from "./common";
 
 export class Ghdl extends Base_linter {
-    binary_linux = "ghdl -s -fno-color-diagnostics";
-    binary_mac = "ghdl -s -fno-color-diagnostics";
-    binary_windows = "ghdl -s -fno-color-diagnostics";
+    binary = "ghdl";
+    extra_cmd = "-s -fno-color-diagnostics";
 
     constructor() {
         super();

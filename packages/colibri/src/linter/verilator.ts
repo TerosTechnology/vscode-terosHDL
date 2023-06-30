@@ -23,9 +23,8 @@ import { Base_linter } from "./base_linter";
 import * as common from "./common";
 
 export class Verilator extends Base_linter {
-    binary_linux = "verilator --lint-only -Wall -bbox-sys --bbox-unsup -DGLBL";
-    binary_mac = "verilator --lint-only -Wall -bbox-sys --bbox-unsup -DGLBL";
-    binary_windows = "verilator.exe --lint-only -Wall -bbox-sys --bbox-unsup -DGLBL";
+    binary = "verilator";
+    extra_cmd = "--lint-only -Wall -bbox-sys --bbox-unsup -DGLBL";
 
     sv_options = "-sv";
 
@@ -43,7 +42,7 @@ export class Verilator extends Base_linter {
             options.argument += ` ${this.sv_options} `;
         }
         const result = await this.exec_linter(file, options);
-        return this.parse_output(result.stderr, file)
+        return this.parse_output(result.stderr, file);
     }
 
     split_terms(line: string) {

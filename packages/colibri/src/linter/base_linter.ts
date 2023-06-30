@@ -20,16 +20,14 @@
 import { create_temp_file } from "../process/utils";
 import { Process } from "../process/process";
 import * as common from "./common";
-import { get_os } from "../process/utils";
-import { OS } from "../process/common";
+import { check_if_path_exist } from "../utils/file_utils"
 import * as path_lib from "path";
 import * as logger from "../logger/logger";
 import { t_file } from "../project_manager/common";
 
 export abstract class Base_linter {
-    abstract binary_linux: string;
-    abstract binary_mac: string;
-    abstract binary_windows: string;
+    abstract binary: string;
+    abstract extra_cmd: string;
 
     parse_output(_result: string, _file: string): common.l_error[] {
         const errors: common.l_error[] = [];
@@ -48,30 +46,26 @@ export abstract class Base_linter {
         return errors;
     }
 
-    get_binary(): string {
-        const os_i = get_os();
-        if (os_i === OS.LINUX) {
-            return this.binary_linux;
-        }
-        else if (os_i === OS.WINDOWS) {
-            return this.binary_windows;
-        }
-        else {
-            return this.binary_mac;
-        }
-    }
-
     get_command(file: string, options: common.l_options) {
-        const binary = this.get_binary();
         let complete_path = '';
         if (options.path === '') {
-            complete_path = binary;
+            complete_path = this.binary;
         }
         else {
-            complete_path = path_lib.join(options.path, binary);
+            // Unix path
+            const unix_path = path_lib.join(options.path, this.binary);
+            // Windows path
+            const windows_path = path_lib.join(options.path, this.binary + ".exe");
+
+            if (check_if_path_exist(windows_path)) {
+                complete_path = windows_path;
+            }
+            else {
+                complete_path = unix_path;
+            }
         }
 
-        const command = `${complete_path} ${options.argument} "${file}"`;
+        const command = `${complete_path} ${this.extra_cmd} ${options.argument} "${file}"`;
         return command;
     }
 
