@@ -8,6 +8,11 @@ backend:
     yosys_ghdl_module: "GHDL (module) + Yosys"
   value: "yowasp"
 
+extra:
+  description: "Extra options passed before to run yowasp-yosys. Eg: conda activate base & "
+  type: string
+  value: ""
+
 args:
   description: "Arguments passed to Yosys"
   type: string
