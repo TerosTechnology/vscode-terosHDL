@@ -243,16 +243,24 @@ export class Schematic_manager extends Base_webview {
 
         this.clear_enviroment(this.output_path);
 
-        return await this.run_yosys_script(file_array, this.output_path);
+        const top_level_path = (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
+        .get_project_definition().toplevel_path_manager.get();
+
+        let top_level = "";
+        if (top_level_path.length === 1){
+            top_level = teroshdl2.utils.hdl.get_toplevel_from_path(top_level_path[0]);
+        }
+
+        return await this.run_yosys_script(top_level, file_array, this.output_path);
     }
 
     async generate_from_file(file_path: string) {
         this.clear_enviroment(this.output_path);
 
-        return await this.run_yosys_script([file_path], this.output_path);
+        return await this.run_yosys_script("", [file_path], this.output_path);
     }
 
-    async run_yosys_script(sources: string[], output_path: string) {
+    async run_yosys_script(top_level: string, sources: string[], output_path: string) {
         let netlist = {
             'result': '',
             'error': false,
@@ -274,7 +282,11 @@ export class Schematic_manager extends Base_webview {
             return netlist;
         }
         let output_path_filename = path_lib.basename(output_path);
-        const script_code = `${cmd_files}; proc; ${custom_argumens} ; write_json ${output_path_filename}; stat`;
+        let top_level_cmd = "";
+        if (top_level !== ""){
+            top_level_cmd = `hierarchy -top ${top_level}`;
+        }
+        const script_code = `${cmd_files}; ${top_level_cmd}; proc; ${custom_argumens} ; write_json ${output_path_filename}; stat`;
 
         let plugin = ``;
         if (backend === 'yosys_ghdl_module') {
