@@ -31,6 +31,11 @@ gtkwave_installation_path:
   type: string
   value: ""
 
+gtkwave_extra_arguments:
+  description: "Extra arguments passed to GTKwave. E.g: --script=script.tcl"
+  type: string
+  value: ""
+
 execution_mode:
   description: "Select the execution mode."
   type: select
