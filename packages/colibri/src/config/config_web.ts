@@ -1438,6 +1438,14 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
+              <label for="tools-general-gtkwave_extra_arguments" class="form-label">Extra arguments passed to GTKwave. E.g: --script=script.tcl</label>
+              <input class="form-control" id="tools-general-gtkwave_extra_arguments" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
               <label for="tools-general-execution_mode" class="form-label">Select the execution mode.</label>
               <select class="form-select" aria-label="Select the execution mode." id="tools-general-execution_mode">
                       <option value='gui'>GUI</option>
@@ -4297,6 +4305,8 @@ export const WEB_CONFIG = `
     config["tools"]["general"]["select_tool"] = element_value
     element_value = document.getElementById("tools-general-gtkwave_installation_path").value;
     config["tools"]["general"]["gtkwave_installation_path"] = element_value
+    element_value = document.getElementById("tools-general-gtkwave_extra_arguments").value;
+    config["tools"]["general"]["gtkwave_extra_arguments"] = element_value
     element_value = document.getElementById("tools-general-execution_mode").value;
     config["tools"]["general"]["execution_mode"] = element_value
     element_value = document.getElementById("tools-general-waveform_viewer").value;
@@ -4735,6 +4745,7 @@ export const WEB_CONFIG = `
     document.getElementById("templates-general-instance_style").value = config["templates"]["general"]["instance_style"];
     document.getElementById("tools-general-select_tool").value = config["tools"]["general"]["select_tool"];
     document.getElementById("tools-general-gtkwave_installation_path").value = config["tools"]["general"]["gtkwave_installation_path"];
+    document.getElementById("tools-general-gtkwave_extra_arguments").value = config["tools"]["general"]["gtkwave_extra_arguments"];
     document.getElementById("tools-general-execution_mode").value = config["tools"]["general"]["execution_mode"];
     document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
     document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];

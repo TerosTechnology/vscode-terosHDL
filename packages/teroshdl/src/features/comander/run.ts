@@ -69,8 +69,9 @@ export class Comander {
         else {
             gtkwave_path = gtkwave_binary;
         }
+        const extra_arguments = this.manager.get_config_manager().get_config().tools.general.gtkwave_extra_arguments;
 
-        let command = `${gtkwave_path} ${file_path}`;
+        let command = `${gtkwave_path} ${file_path} ${extra_arguments}`;
         shelljs.exec(command, { async: true });
     }
 
