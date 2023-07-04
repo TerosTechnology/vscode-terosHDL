@@ -214,7 +214,7 @@ export class Multi_project_manager {
                 if (file.logical_name !== undefined) {
                     logical_name = file.logical_name;
                 }
-                let is_manual = false;
+                let is_manual = true;
                 if (file.is_manual !== undefined) {
                     is_manual = file.is_manual;
                 }
