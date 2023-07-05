@@ -72,6 +72,13 @@ jobs:
           path: |
             *.vsix
 
+      - uses: dev-drprasad/delete-tag-and-release@v1.0
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: latest
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          delete_release: true
+
       - uses: "marvinpinto/action-automatic-releases@latest"
         if: github.ref == 'refs/heads/main'
         with:
@@ -82,7 +89,7 @@ jobs:
             *.vsix
 
       - uses: "marvinpinto/action-automatic-releases@latest"
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: true
