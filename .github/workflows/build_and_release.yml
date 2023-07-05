@@ -64,7 +64,6 @@ jobs:
           file_ver="${{ env.version }}_${file}"
           file_ver="${file_ver/:/"_"}"
           file_ver="${file_ver/ /""}"
-          ls
           echo "${{ github.workspace }}/$file_ver"
           ls ${{ github.workspace }}
           mv $file ${{ github.workspace }}/$file_ver
@@ -76,13 +75,6 @@ jobs:
           path: |
             *.vsix
 
-      - uses: dev-drprasad/delete-tag-and-release@v1.0
-        if: github.ref == 'refs/heads/main'
-        with:
-          tag_name: latest
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          delete_release: true
-
       - uses: "marvinpinto/action-automatic-releases@latest"
         if: github.ref == 'refs/heads/main'
         with:
@@ -91,9 +83,9 @@ jobs:
           automatic_release_tag: "${{ env.version }}"
           files: |
             *.vsix
-
+    
       - uses: "marvinpinto/action-automatic-releases@latest"
-        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/dev'
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: true
