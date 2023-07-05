@@ -21,7 +21,7 @@ jobs:
       - name: Set version main
         if: github.ref == 'refs/heads/main'
         run: |
-          PACKAGE_VERSION=$(cat package.json \
+          PACKAGE_VERSION=$(cat packages/teroshdl/package.json \
             | grep version \
             | head -1 \
             | awk -F: '{ print $2 }' \
