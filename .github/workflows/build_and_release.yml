@@ -3,9 +3,9 @@ name: Build and release TerosHDL
 on:
   push:
     branches:
-      - main
       - dev
   pull_request:
+  workflow_dispatch:
 
 jobs:
   ##############################################################################
@@ -18,8 +18,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
   
-      - name: Set version main
-        if: github.ref == 'refs/heads/main'
+      - name: Set version stable
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/dev'
         run: |
           PACKAGE_VERSION=$(cat packages/teroshdl/package.json \
             | grep version \
@@ -76,7 +76,7 @@ jobs:
             *.vsix
 
       - uses: "marvinpinto/action-automatic-releases@latest"
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/dev'
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
