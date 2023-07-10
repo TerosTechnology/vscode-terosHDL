@@ -58,14 +58,11 @@ export class Verible extends Base_formatter {
 
     public async format(file: string, opt: common.e_formatter_verible_full) {
         const path_bin = await this.get_path(opt.path);
-        const command = `${path_bin} ${opt.format_args} ${file}`;
+        const command = `${path_bin} --inplace ${opt.format_args} ${file}`;
 
         const P = new Process();
         const exec_result = await P.exec_wait(command);
-        let code_formatted = fs.readFileSync(file, "utf8");
-        if (exec_result.successful === true){
-            code_formatted = exec_result.stdout;
-        }
+        const code_formatted = fs.readFileSync(file, "utf8");
 
         const msg = `Formatting with command: ${command} `;
         logger.Logger.log(msg, logger.T_SEVERITY.INFO);
