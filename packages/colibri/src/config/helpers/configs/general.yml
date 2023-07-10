@@ -8,6 +8,11 @@ pypath:
   type: string
   value: ""
 
+# makepath:
+#   description: "make binary path (e.g.: /usr/bin/make). Empty if you want to use the system path."
+#   type: string
+#   value: ""
+
 go_to_definition_vhdl:
   description: "Activate go to definition feature for VHDL (you need to restart VSCode)."
   type: boolean

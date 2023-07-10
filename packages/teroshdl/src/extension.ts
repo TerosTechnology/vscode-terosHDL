@@ -35,8 +35,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const extension_manager = new Extension_manager();
 
-    const logger = new Logger("TerosHDL: Global");
-    logger.clear();
+    const global_logger = new Logger("TerosHDL: Global");
+    global_logger.clear();
     
     try {
         await extension_manager.init();
@@ -51,6 +51,6 @@ export async function activate(context: vscode.ExtensionContext) {
         console.log(e);
     }
 
-    const teroshdl = new Teroshdl(context, logger);
+    const teroshdl = new Teroshdl(context, global_logger);
     teroshdl.init_teroshdl();
 }

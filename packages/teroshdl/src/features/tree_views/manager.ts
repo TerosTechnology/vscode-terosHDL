@@ -46,7 +46,7 @@ export class Tree_view_manager{
     private statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
     constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, emitter : events.EventEmitter,
-        schematic_manager : Schematic_manager){
+        schematic_manager : Schematic_manager, global_logger : Logger){
 
         context.subscriptions.push(this.statusbar);
 
@@ -68,7 +68,7 @@ export class Tree_view_manager{
             })
         );
 
-        project_manager = new Project_manager(context, manager, emitter, run_output);
+        project_manager = new Project_manager(context, manager, emitter, run_output, global_logger);
         source_manager = new Source_manager(context, manager, emitter);
         tree_manager = new Tree_manager(context, manager, schematic_manager);
         runs_manager = new Runs_manager(context, manager, emitter, run_output, this.logger);

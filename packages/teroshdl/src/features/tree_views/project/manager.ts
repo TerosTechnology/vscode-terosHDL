@@ -21,9 +21,11 @@ import * as vscode from "vscode";
 import * as element from "./element";
 import * as path_lib from "path";
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import * as teroshdl2 from 'teroshdl2';
 import * as events from "events";
 import * as utils from "../utils";
 import {Run_output_manager} from "../run_output";
+import {Logger} from "../../../logger";
 
 export class Project_manager {
     private tree : element.ProjectProvider;
@@ -31,14 +33,16 @@ export class Project_manager {
     private emitter : events.EventEmitter;
     private run_output_manager : Run_output_manager;
     private context : vscode.ExtensionContext;
+    private global_logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, emitter : events.EventEmitter,
-        run_output_manager: Run_output_manager) {
+        run_output_manager: Run_output_manager, global_logger : Logger) {
         this.set_commands();
 
+        this.global_logger = global_logger;
         this.emitter = emitter;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
@@ -49,6 +53,7 @@ export class Project_manager {
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as element.BaseTreeDataProvider<element.Project>));
         vscode.commands.registerCommand("teroshdl.documentation", () => this.open_doc());
         vscode.commands.registerCommand("teroshdl.view.project.configuration", () => this.config());
+        vscode.commands.registerCommand("teroshdl.check_dependencies", () => this.check_dependencies());
     }
 
     async config() {
@@ -56,7 +61,7 @@ export class Project_manager {
     }
 
     open_doc(){
-        vscode.env.openExternal(vscode.Uri.parse('https://terostechnology.github.io/teroshdl-docusaurus-doc/'));
+        vscode.env.openExternal(vscode.Uri.parse('https://terostechnology.github.io/terosHDLdoc/'));
     }
 
     set_commands(){
@@ -176,6 +181,48 @@ export class Project_manager {
 
     refresh_tree(){
         this.tree.refresh();
+    }
+
+    async check_dependencies(){
+        const options : teroshdl2.process.python.python_options = {
+            path: this.project_manager.get_config_global_config().general.general.pypath
+        };
+
+        const intro = "---> ";
+        const intro_short = "---> ";
+
+        this.global_logger.info('Checking dependencies...', true);
+        
+        // Check python
+        const python_result = await teroshdl2.process.python.get_python_path(options)
+        if (python_result.successful === false){
+            this.global_logger.error(`${intro_short}Python not found`);
+        }
+        else{
+            this.global_logger.info(`${intro} Python found: ${python_result.python_path}`);
+
+            const package_list = ["vunit", "cocotb", "edalize"];
+            for (const package_name of package_list) {
+                const package_result = await teroshdl2.process.python.check_python_package(python_result.python_path,
+                    package_name);
+                if (!package_result){
+                    this.global_logger.error(`${intro_short} ${package_name} not found`);
+                }
+                else{
+                    this.global_logger.info(`${intro} ${package_name} found`);
+                }
+            }
+        }
+
+        // Check make
+        const proc = new teroshdl2.process.process.Process();
+        const make_result = await proc.exec_wait("make --version");
+        if (!make_result.successful){
+            this.global_logger.error(`${intro_short}Make not found`);
+        }
+        else{
+            this.global_logger.info(`${intro_short} Make found`);
+        }
     }
 }
 
