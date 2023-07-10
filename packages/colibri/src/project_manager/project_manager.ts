@@ -72,21 +72,23 @@ export class Project_manager {
         this.watchers = new manager_watcher.Watcher_manager((function () {
             selfm.files.clear_automatic_files();
             selfm.watchers.get().forEach(async (watcher: any) => {
-                if (selfm.emitter !== undefined) {
-                    selfm.emitter.emit('loading');
-                }
-                if (watcher.watcher_type === e_watcher_type.CSV) {
-                    selfm.add_file_from_csv(watcher.path, false);
-                }
-                else if (watcher.watcher_type === e_watcher_type.VUNIT) {
-                    await selfm.add_file_from_vunit(selfm.config_manager.get_config(), watcher.path, false);
-                }
-                else if (watcher.watcher_type === e_watcher_type.VIVADO) {
-                    await selfm.add_file_from_vivado(selfm.config_manager.get_config(), watcher.path, false);
-                }
-                if (selfm.emitter !== undefined) {
-                    selfm.emitter.emit('loaded');
-                    selfm.emitter.emit('refresh');
+                if (file_utils.check_if_path_exist(watcher.path)){
+                    if (selfm.emitter !== undefined) {
+                        selfm.emitter.emit('loading');
+                    }
+                    if (watcher.watcher_type === e_watcher_type.CSV) {
+                        selfm.add_file_from_csv(watcher.path, false);
+                    }
+                    else if (watcher.watcher_type === e_watcher_type.VUNIT) {
+                        await selfm.add_file_from_vunit(selfm.config_manager.get_config(), watcher.path, false);
+                    }
+                    else if (watcher.watcher_type === e_watcher_type.VIVADO) {
+                        await selfm.add_file_from_vivado(selfm.config_manager.get_config(), watcher.path, false);
+                    }
+                    if (selfm.emitter !== undefined) {
+                        selfm.emitter.emit('loaded');
+                        selfm.emitter.emit('refresh');
+                    }
                 }
             });
         }), emitter);

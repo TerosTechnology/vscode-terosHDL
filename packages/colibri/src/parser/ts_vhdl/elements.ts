@@ -88,6 +88,10 @@ export function get_full_type_declaration(p: any): common_hdl.Type_hdl[] {
             const type_definition = cursor.nodeText;
             type = utils_hdl.remove_break_line(utils_hdl.remove_comments(type_definition));
         }
+        else if (cursor.nodeType === 'record_type_definition') {
+            const type_definition = cursor.nodeText;
+            type = utils_hdl.remove_break_line(utils_hdl.remove_comments(type_definition));
+        }
     }
     while (cursor.gotoNextSibling() === true && break_p === false);
 

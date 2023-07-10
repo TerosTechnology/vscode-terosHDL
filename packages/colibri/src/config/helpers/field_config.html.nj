@@ -61,7 +61,7 @@
           {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
           {# <li class="list-group-item"> #}
             <div class="mb-3">
-              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}</label>
+              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}} <b>(Comma separed)</b></label>
               <input class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"></input>
             </div>
           {# </li> #}

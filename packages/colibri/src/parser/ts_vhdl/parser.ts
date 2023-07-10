@@ -327,6 +327,7 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                 comments = '';
             }
             else if (cursor.nodeType === 'function_body' || cursor.nodeType === 'subprogram_body'
+                || cursor.nodeType === 'function_declaration'
                 || cursor.nodeType === 'subprogram_declaration' || cursor.nodeType === 'procedure_declaration') {
                 const elements: common_hdl.Function_hdl[] = elements_hdl.get_function_body(cursor.currentNode());
                 for (let i = 0; i < elements.length; ++i) {
