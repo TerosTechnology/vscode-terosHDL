@@ -3010,60 +3010,16 @@
           
           
             <div class="mb-3">
-              <label for="tools-openfpga-arch" class="form-label">Target architecture.</label>
-              <select class="form-select" aria-label="Target architecture." id="tools-openfpga-arch">
-                      <option value='xilinx'>Xilinx</option>
-                      <option value='ice40'>ICE40</option>
-                      <option value='ecp5'>ECP5</option>
-              </select>
+              <label for="tools-openfpga-arch" class="form-label">FPGA architecture e.g. sofa-hd, sofa-chd, sofa-qlhd and sofa-plus-hd</label>
+              <input class="form-control" id="tools-openfpga-arch" rows="3"  value=""></input>
             </div>
           
           
           
           
             <div class="mb-3">
-              <label for="tools-openfpga-output_format" class="form-label">Output file format.</label>
-              <select class="form-select" aria-label="Output file format." id="tools-openfpga-output_format">
-                      <option value='json'>JSON</option>
-                      <option value='edif'>EDIF</option>
-                      <option value='blif'>BLIF</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-openfpga-yosys_as_subtool">
-                <label class="form-check-label" for="tools-openfpga-yosys_as_subtool">
-                  Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-openfpga-makefile_name" class="form-label">Generated makefile name, defaults to $name.mk</label>
-              <input class="form-control" id="tools-openfpga-makefile_name" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-openfpga-script_name" class="form-label">Generated tcl script filename, defaults to $name.mk</label>
-              <input class="form-control" id="tools-openfpga-script_name" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-openfpga-yosys_synth_options" class="form-label">Additional options for the synth_ice40 command. <b>(Comma separed)</b></label>
-              <input class="form-control" id="tools-openfpga-yosys_synth_options" rows="3"></input>
+              <label for="tools-openfpga-task_options" class="form-label">Extra options for running the task simulation with OpenFPGA framework (see the OpenFPGA documentation). <b>(Comma separed)</b></label>
+              <input class="form-control" id="tools-openfpga-task_options" rows="3"></input>
             </div>
           
           
@@ -4573,16 +4529,8 @@
     config["tools"]["openfpga"]["installation_path"] = element_value
     element_value = document.getElementById("tools-openfpga-arch").value;
     config["tools"]["openfpga"]["arch"] = element_value
-    element_value = document.getElementById("tools-openfpga-output_format").value;
-    config["tools"]["openfpga"]["output_format"] = element_value
-    element_value = document.getElementById("tools-openfpga-yosys_as_subtool").checked;
-    config["tools"]["openfpga"]["yosys_as_subtool"] = element_value
-    element_value = document.getElementById("tools-openfpga-makefile_name").value;
-    config["tools"]["openfpga"]["makefile_name"] = element_value
-    element_value = document.getElementById("tools-openfpga-script_name").value;
-    config["tools"]["openfpga"]["script_name"] = element_value
-    element_value = document.getElementById("tools-openfpga-yosys_synth_options").value.split(',');
-    config["tools"]["openfpga"]["yosys_synth_options"] = element_value
+    element_value = document.getElementById("tools-openfpga-task_options").value.split(',');
+    config["tools"]["openfpga"]["task_options"] = element_value
     config["tools"]["activehdl"] = {}
     element_value = document.getElementById("tools-activehdl-installation_path").value;
     config["tools"]["activehdl"]["installation_path"] = element_value
@@ -4855,11 +4803,7 @@
     element_value = document.getElementById("tools-yosys-yosys_synth_options").value = String(config["tools"]["yosys"]["yosys_synth_options"]);
     document.getElementById("tools-openfpga-installation_path").value = config["tools"]["openfpga"]["installation_path"];
     document.getElementById("tools-openfpga-arch").value = config["tools"]["openfpga"]["arch"];
-    document.getElementById("tools-openfpga-output_format").value = config["tools"]["openfpga"]["output_format"];
-    document.getElementById("tools-openfpga-yosys_as_subtool").checked = config["tools"]["openfpga"]["yosys_as_subtool"];
-    document.getElementById("tools-openfpga-makefile_name").value = config["tools"]["openfpga"]["makefile_name"];
-    document.getElementById("tools-openfpga-script_name").value = config["tools"]["openfpga"]["script_name"];
-    element_value = document.getElementById("tools-openfpga-yosys_synth_options").value = String(config["tools"]["openfpga"]["yosys_synth_options"]);
+    element_value = document.getElementById("tools-openfpga-task_options").value = String(config["tools"]["openfpga"]["task_options"]);
     document.getElementById("tools-activehdl-installation_path").value = config["tools"]["activehdl"]["installation_path"];
     document.getElementById("tools-nvc-installation_path").value = config["tools"]["nvc"]["installation_path"];
     document.getElementById("tools-questa-installation_path").value = config["tools"]["questa"]["installation_path"];

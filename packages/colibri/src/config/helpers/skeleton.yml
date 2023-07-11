@@ -254,7 +254,7 @@ tools:
     openfpga:
       title: OpenFPGA
       description: "The award-winning OpenFPGA framework is the first open-source FPGA IP generator with silicon proofs supporting highly-customizable FPGA architectures."
-      page: ./configs/tools/yosys.yml
+      page: ./configs/tools/openfpga.yml
 
     activehdl:
       title: Active-HDL
