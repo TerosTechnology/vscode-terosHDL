@@ -59,7 +59,7 @@ export class Tree_manager {
     }
 
     open_dependencies_viewer(){
-        this.dependency_manager.update();
+        this.dependency_manager.create_webview();
     }
 }
 
