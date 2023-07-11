@@ -6,10 +6,10 @@
     <meta charset="utf-8" />
     <title>Dependencies viewer</title>
 
-    <script src="libs/jquery-2.2.4.min.js"></script>
-    <script src="libs/svg-pan-zoom.min.js"></script>
-    <script src="libs/viz.js"></script>
-    <script src="libs/full.render.js"></script>
+    <script src="{{ js_path_0 }}"></script>
+    <script src="{{ js_path_1 }}"></script>
+    <script src="{{ js_path_4 }}"></script>
+    <script src="{{ js_path_3 }}"></script>
     
     <div id="svg" style="text-align: center;"></div>
     
@@ -249,6 +249,6 @@
     </div>
 </div>
 
-<script src="libs/vizdraw.js"></script>
+<script src="{{ js_path_2 }}"></script>
 
 </html>

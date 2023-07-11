@@ -44,7 +44,7 @@ export class Comander {
     }
 
     private open_file(args: vscode.Uri) {
-        this.logger.warn(`Opening the file: ${args.fsPath}`);
+        this.logger.info(`Opening the file: ${args.fsPath}`);
         // opn(`${'file://'}${args.fsPath}`);
         vscode.workspace.openTextDocument(args).then(doc => {
             vscode.window.showTextDocument(doc);
@@ -53,7 +53,7 @@ export class Comander {
 
     private open_waveform(args: vscode.Uri) {
         const file_path = args.fsPath;
-        this.logger.warn(`Opening the waveform: ${file_path}`);
+        this.logger.info(`Opening the waveform: ${file_path}`);
 
         let gtkwave_binary = "gtkwave";
         const os_i = get_os();

@@ -1,5 +1,30 @@
 "menus": {
     "explorer/context": [
+{% set ns = namespace(counter = 0) %}
+{%- for command in command_list %}
+        {%- if "where" in command %}
+            {%- for command_where in command["where"] %}
+                {%- if command_where == "explorer/context"%}
+                    {%- if ns.counter == 0 %}
+        {
+                    {%- else %}
+        ,{
+                    {%- endif %}
+
+                    {%- if "when" in command %}
+            "when": "{{ command["when"] }}",
+                    {%- else %}
+            "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
+                    {%- endif %}
+
+            "command": "teroshdl.{{ command["name"] }}",
+            "group": "navigation"
+        }
+                {% set ns.counter = ns.counter + 1 %}
+                {%- endif %}
+            {%- endfor %}
+        {%- endif %}
+{%- endfor %}
     ],
     "view/title": [
 {% set ns = namespace(counter = 0) %}

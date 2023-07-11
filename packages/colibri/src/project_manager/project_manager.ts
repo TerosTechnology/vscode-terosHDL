@@ -356,7 +356,7 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     async get_dependency_graph(python_path: string): Promise<t_action_result> {
         const m_dependency = new manager_dependency.Dependency_graph();
-        const result = m_dependency.get_dependency_graph_svg(this.files.get(), python_path);
+        const result = await m_dependency.get_dependency_graph_svg(this.files.get(), python_path);
         return result;
     }
     async get_compile_order(python_path: string): Promise<t_action_result> {

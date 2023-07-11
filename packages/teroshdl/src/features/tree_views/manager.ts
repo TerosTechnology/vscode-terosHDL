@@ -31,6 +31,7 @@ import * as events from "events";
 import * as vscode from "vscode";
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
 import {Schematic_manager} from "../schematic";
+import {Dependency_manager} from "../dependency";
 
 let project_manager : Project_manager;
 let source_manager : Source_manager;
@@ -46,7 +47,7 @@ export class Tree_view_manager{
     private statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
     constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, emitter : events.EventEmitter,
-        schematic_manager : Schematic_manager, global_logger : Logger){
+        schematic_manager : Schematic_manager, dependency_manager : Dependency_manager, global_logger : Logger){
 
         context.subscriptions.push(this.statusbar);
 
@@ -70,7 +71,7 @@ export class Tree_view_manager{
 
         project_manager = new Project_manager(context, manager, emitter, run_output, global_logger);
         source_manager = new Source_manager(context, manager, emitter);
-        tree_manager = new Tree_manager(context, manager, schematic_manager);
+        tree_manager = new Tree_manager(context, manager, schematic_manager, dependency_manager);
         runs_manager = new Runs_manager(context, manager, emitter, run_output, this.logger);
         actions_manager = new Actions_manager(context, manager, emitter, run_output);
         watcher_manager = new Watcher_manager(context, manager, emitter);

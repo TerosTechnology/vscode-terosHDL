@@ -230,6 +230,7 @@ export class Schematic_manager extends Base_webview {
     async generate_from_project() {
         const selected_project = this.manager.get_select_project();
         if (selected_project.successful === false) {
+            this.logger.error("Selecte a project first.", true);
             return "";
         }
 
@@ -289,11 +290,13 @@ export class Schematic_manager extends Base_webview {
         const script_code = `${cmd_files}; ${top_level_cmd}; proc; ${custom_argumens} ; write_json ${output_path_filename}; stat`;
 
         let plugin = ``;
-        if (backend === 'yosys_ghdl_module') {
+        if (backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl_module) {
             plugin = `-m ghdl`;
         }
         let command = `${extra} yowasp-yosys -p "${script_code}"`;
-        if (backend === 'yosys' || backend === 'yosys_ghdl' || backend === 'yosys_ghdl_module') {
+        if (backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys 
+            || backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl 
+            || backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl_module) {
             if (yosys_path === '') {
                 yosys_path = 'yosys';
             }

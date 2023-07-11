@@ -37,6 +37,7 @@ import * as teroshdl2 from 'teroshdl2';
 import * as events from "events";
 import {Comander} from "./features/comander/run";
 import {Logger} from "./logger";
+import { Dependency_manager } from './features/dependency';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -92,7 +93,8 @@ export class Teroshdl {
         this.init_config();
         this.global_logger.debug("activated config viewer")
 
-        this.init_tree_views(schematic);
+        const dependency = this.init_dependency();
+        this.init_tree_views(schematic, dependency);
         this.global_logger.debug("activated views")
 
         this.init_comander();
@@ -120,6 +122,10 @@ export class Teroshdl {
         return new Schematic_manager(this.context, this.global_logger, this.manager, false);
     }
 
+    private init_dependency() {
+        return new Dependency_manager(this.context, this.global_logger, this.manager);
+    }
+
     private init_linter() {
         new Linter_manager(this.context, this.manager);
     }
@@ -144,8 +150,9 @@ export class Teroshdl {
         new Config_manager(this.context, this.manager);
     }
 
-    private init_tree_views(schematic_manager : Schematic_manager) {
-        new Tree_view_manager(this.context, this.manager, this.emitter, schematic_manager, this.global_logger);
+    private init_tree_views(schematic_manager : Schematic_manager, dependency_manager : Dependency_manager) {
+        new Tree_view_manager(this.context, this.manager, this.emitter, schematic_manager,
+            dependency_manager, this.global_logger);
     }
 
     private init_comander() {

@@ -1,13 +1,15 @@
 "use strict";
 // default
 const vscode = acquireVsCodeApi();
+let last_svg = "";
 
 document.getElementById("export-as-image").onclick = function() {export_message("image")};
 
 function export_message(message) {
+    console.log(last_svg.outerHTML)
     vscode.postMessage({
         command: 'export',
-        text: message
+        text: last_svg.outerHTML
     });
 }
 
@@ -34,6 +36,7 @@ function update_graph(dot) {
             }
             document.body.appendChild(element);
             graph = element;
+            last_svg = element;
 
             panZoom = svgPanZoom(element, panConfig);
             panZoom.zoom(0.8);

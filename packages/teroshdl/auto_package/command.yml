@@ -9,6 +9,16 @@
   title: Open file with TerosHDL
 
 ################################################################################
+# VSCode tree
+################################################################################
+
+- name: waveform
+  title: "Open waveform viewer"
+  where: ["explorer/context"]
+  group: "navigation"
+  when: "resourceLangId == gtkw_wavebin || resourceLangId == gtkw_waveconfig || resourceLangId == vcd"
+
+################################################################################
 # Project manager
 ################################################################################
 
@@ -87,6 +97,12 @@
   where: ["view/title"]
   when: "view == teroshdl-view-dependency"
 
+- name: view.dependency.viewer
+  title: "Dependencies viewer"
+  icon: dep
+  where: ["view/title"]
+  when: "view == teroshdl-view-dependency"
+
 ## Runs
 - name: view.runs.run_all
   title: "Run all"
@@ -148,7 +164,7 @@
   where: ["editor/title"]
 
 - name: netlist.viewer
-  title: Netlist viewer
+  title: Schematic viewer
   icon: list-tree
   where: ["editor/title"]
 

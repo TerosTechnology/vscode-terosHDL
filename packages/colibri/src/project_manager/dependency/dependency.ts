@@ -31,6 +31,7 @@ export class Dependency_graph {
     public async get_dependency_graph_svg(file_list: t_file[], python_path: string)
         : Promise<t_action_result> {
         const dependencies = await this.create_dependency_graph(file_list, python_path);
+        return dependencies;
         if (dependencies.successful === false) {
             return dependencies;
         }

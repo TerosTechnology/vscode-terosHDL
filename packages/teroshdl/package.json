@@ -95,7 +95,7 @@
             },
             {
                 "view": "teroshdl-view-actions",
-                "contents": "[Open Configuration Menu](command:teroshdl.view.project.configuration)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)\n[Check dependencies](command:teroshdl.check_dependencies)"
+                "contents": "[Open Configuration Menu](command:teroshdl.view.project.configuration)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)"
             }
       ],
 
@@ -138,6 +138,14 @@
         ],
         "menus": {
             "explorer/context": [
+
+                {
+                    "when": "resourceLangId == gtkw_wavebin || resourceLangId == gtkw_waveconfig || resourceLangId == vcd",
+
+                    "command": "teroshdl.waveform",
+                    "group": "navigation"
+                }
+                        
             ],
             "view/title": [
 
@@ -173,6 +181,13 @@
                     "when": "view == teroshdl-view-dependency",
 
                     "command": "teroshdl.view.dependency.schematic",
+                    "group": "navigation"
+                }
+                        
+                ,{
+                    "when": "view == teroshdl-view-dependency",
+
+                    "command": "teroshdl.view.dependency.viewer",
                     "group": "navigation"
                 }
                         
@@ -307,6 +322,10 @@
                 "title": "Open file with TerosHDL"
             }, 
             {
+                "command": "teroshdl.waveform",
+                "title": "Open waveform viewer"
+            }, 
+            {
                 "command": "teroshdl.view.project.add",
                 "icon": {
                     "light": "resources/icon/light/add.svg",
@@ -395,6 +414,14 @@
                 "title": "Schematic viewer"
             }, 
             {
+                "command": "teroshdl.view.dependency.viewer",
+                "icon": {
+                    "light": "resources/icon/light/dep.svg",
+                    "dark": "resources/icon/dark/dep.svg"
+                },
+                "title": "Dependencies viewer"
+            }, 
+            {
                 "command": "teroshdl.view.runs.run_all",
                 "icon": {
                     "light": "resources/icon/light/run-all.svg",
@@ -472,7 +499,7 @@
                     "light": "resources/icon/light/list-tree.svg",
                     "dark": "resources/icon/dark/list-tree.svg"
                 },
-                "title": "Netlist viewer"
+                "title": "Schematic viewer"
             }, 
             {
                 "command": "teroshdl.format",
