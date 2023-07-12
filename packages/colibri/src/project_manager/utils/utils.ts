@@ -16,7 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { file_utils } from "../../utils/export_t";
 import { t_project_definition } from "../project_definition";
 import { convert_to_yaml } from "./json2yaml";
 
@@ -53,7 +52,6 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
 export function get_edam_yaml(prj: t_project_definition, top_level_list: undefined | string[], 
     reference_path?: string) {
     const edam_json = get_edam_json(prj, top_level_list, reference_path);
-    file_utils.save_file_sync("/home/carlos/Desktop/pepe2.json", JSON.stringify(edam_json))
     const edam_yaml = convert_to_yaml(edam_json);
     return edam_yaml;
 }
