@@ -4,7 +4,7 @@
 [![vscode-TerosHDL documentation](https://img.shields.io/website.svg?label=vscode-TerosHDL%20Documentation&longCache=true&style=flat-square&url=http%3A%2F%2FTerosTechnology.github.io%2FterosHDLdoc%2Findex.html)](https://TerosTechnology.github.io/terosHDLdoc)
 
 
-![TerosHDL](./resources/images/low_res_banner.png)
+![TerosHDL](https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/resources/images/low_res_banner.png?raw=true)
 
 **Check the full documentation:** [https://terostechnology.github.io](https://terostechnology.github.io/)
 
@@ -29,7 +29,7 @@ The IDE tries to be as much self-contained as possible and simplify the installa
 - State machine designer.
 - Code snippets and grammar.
 
-![TerosHDL](./resources/images/gui.gif)
+![TerosHDL](https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/resources/images/gui.gif?raw=true)
 
 ## Managed by
 
@@ -43,4 +43,4 @@ the European Commission's Next Generation Internet programme, under the aegis of
 Content and Technology under grant agreement No 957073.
 
 
-<img border=0 src="./doc/nlnet-fundation-150x150.png" width="150" height="150"><img border=0 src="./doc/logo.png" width="400" height="120">
+<img border=0 src="https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/doc/nlnet-fundation-150x150.png?raw=true" width="150" height="150"><img border=0 src="https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/doc/logo.png?raw=true" width="400" height="120">
