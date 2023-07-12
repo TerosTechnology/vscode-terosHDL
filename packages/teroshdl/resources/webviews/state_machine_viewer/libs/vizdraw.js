@@ -210,7 +210,12 @@ function delete_graph() {
         return;
     }
     for (let i = 0; i < graph.length; ++i) {
-        svgPanZoom(graph[i]).destroy();
+        try {
+            svgPanZoom(graph[i]).destroy();
+        }
+        catch (e) {
+            console.log(e);
+        }
         if (div[i].parentNode !== null) {
             div[i].parentNode.removeChild(div[i]);
         }

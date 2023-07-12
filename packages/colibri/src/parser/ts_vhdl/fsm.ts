@@ -590,7 +590,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         const cursor = p.walk();
         cursor.gotoFirstChild();
         do {
-            if (cursor.nodeType === 'simple_name') {
+            if (cursor.nodeType === 'expression') {
                 rigth = cursor.nodeText.split(/(\s)/)[0].trim();
             }
         }
