@@ -17,39 +17,44 @@
 // You should have received a copy of the GNU General Public License
 // along with teroshdl. If not, see <https://www.gnu.org/licenses/>.
 
-import {Project_manager} from "./project/manager";
-import {Source_manager} from "./source/manager";
-import {Tree_manager} from "./dependency/manager";
-import {Runs_manager} from "./runs/manager";
-import {Actions_manager} from "./actions/manager";
-import {Run_output_manager} from "./run_output";
-import {Watcher_manager} from "./watchers/manager";
-import {Output_manager} from "./output/manager";
-import {Logger} from "../../logger";
+import { Project_manager } from "./project/manager";
+import { Source_manager } from "./source/manager";
+import { Tree_manager } from "./dependency/manager";
+import { Runs_manager } from "./runs/manager";
+import { Actions_manager } from "./actions/manager";
+import { Run_output_manager } from "./run_output";
+import { Watcher_manager } from "./watchers/manager";
+import { Output_manager } from "./output/manager";
+import { Logger } from "../../logger";
 
 import * as events from "events";
 import * as vscode from "vscode";
+import * as os from "os";
+import * as path_lib from "path";
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
-import {Schematic_manager} from "../schematic";
-import {Dependency_manager} from "../dependency";
+import { Schematic_manager } from "../schematic";
+import { Dependency_manager } from "../dependency";
+import * as teroshdl from "teroshdl2";
 
-let project_manager : Project_manager;
-let source_manager : Source_manager;
-let tree_manager : Tree_manager;
-let runs_manager : Runs_manager;
-let run_output : Run_output_manager = new Run_output_manager();
-let actions_manager : Actions_manager;
-let watcher_manager : Watcher_manager;
-let output_manager : Output_manager;
+let project_manager: Project_manager;
+let source_manager: Source_manager;
+let tree_manager: Tree_manager;
+let runs_manager: Runs_manager;
+let run_output: Run_output_manager = new Run_output_manager();
+let actions_manager: Actions_manager;
+let watcher_manager: Watcher_manager;
+let output_manager: Output_manager;
+let multi_manager: Multi_project_manager
 
-export class Tree_view_manager{
-    private logger : Logger = new Logger();
+export class Tree_view_manager {
+    private logger: Logger = new Logger();
     private statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, emitter : events.EventEmitter,
-        schematic_manager : Schematic_manager, dependency_manager : Dependency_manager, global_logger : Logger){
+    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, emitter: events.EventEmitter,
+        schematic_manager: Schematic_manager, dependency_manager: Dependency_manager, global_logger: Logger) {
 
         context.subscriptions.push(this.statusbar);
+        multi_manager = manager;
 
         const slm = this;
 
@@ -57,16 +62,16 @@ export class Tree_view_manager{
         emitter.addListener('refresh_output', (function () {
             output_manager.refresh_tree();
         })
-    );
+        );
         emitter.addListener('loading', (function () {
-                slm.statusbar.text = `$(loading) TerosHDL: loading project..`;
-                slm.statusbar.show();
-            })
+            slm.statusbar.text = `$(loading) TerosHDL: loading project..`;
+            slm.statusbar.show();
+        })
         );
         emitter.addListener('loaded', (function () {
-                slm.statusbar.text = `$(megaphone) TerosHDL: project loaded!`;
-                slm.statusbar.show();
-            })
+            slm.statusbar.text = `$(megaphone) TerosHDL: project loaded!`;
+            slm.statusbar.show();
+        })
         );
 
         project_manager = new Project_manager(context, manager, emitter, run_output, global_logger);
@@ -80,13 +85,79 @@ export class Tree_view_manager{
         this.refresh();
     }
 
-    refresh(){
+    refresh() {
         source_manager.refresh_tree();
         project_manager.refresh_tree();
         runs_manager.refresh_tree();
         watcher_manager.refresh_tree();
         output_manager.refresh_tree();
         tree_manager.refresh_tree();
+
+        // Save toml
+        const selected_prj = multi_manager.get_select_project();
+        if (selected_prj.successful === false) {
+            return;
+        }
+        const select_project = (<teroshdl.project_manager.project_manager.Project_manager>selected_prj.result);
+        const prj_sources = select_project.get_project_definition().file_manager.get();
+
+        type t_lib = {
+            name: string,
+            files: string[]
+        }
+
+        let libraries: t_lib[] = [];
+
+        for (let i = 0; i < prj_sources.length; i++) {
+            const source = prj_sources[i];
+
+            // Check if file in library
+            let file_in_library = false;
+            for (let j = 0; j < libraries.length; j++) {
+                const library = libraries[j];
+                if (library.name === source.logical_name) {
+                    file_in_library = true;
+                    library.files.push(source.name);
+                    break;
+                }
+            }
+            if (file_in_library === false) {
+                let new_library: t_lib = {
+                    name: source.logical_name,
+                    files: [source.name]
+                }
+                libraries.push(new_library);
+            }
+        }
+
+        let files_toml: string[] = [];
+        let file_path = path_lib.join(os.homedir(), ".vhdl_ls.toml");
+        let toml = "[libraries]\n\n";
+        if (libraries !== undefined) {
+            for (let i = 0; i < libraries.length; i++) {
+                let library = libraries[i];
+                let files_in_library = "";
+                for (let j = 0; j < library.files.length; j++) {
+                    const file_in_library = library.files[j];
+                    let filename = path_lib.basename(file_in_library);
+                    const lang = teroshdl.utils.hdl.get_lang_from_path(filename);
+                    if (lang === teroshdl.common.general.HDL_LANG.VHDL) {
+                        files_in_library += `  '${file_in_library}',\n`;
+                        files_toml.push(file_in_library);
+                    }
+                }
+                let lib_name = library.name;
+                if (lib_name === "") {
+                    lib_name = "none";
+                }
+                if (library.name === undefined || library.name === '') {
+                    library.name = 'work';
+                }
+                toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
+            }
+        }
+        teroshdl.utils.file_utils.save_file_sync(file_path, toml);
+        return files_toml;
     }
 
     // prj_loading(slm: any){
