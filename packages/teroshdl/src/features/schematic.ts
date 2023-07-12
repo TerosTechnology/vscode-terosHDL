@@ -230,7 +230,7 @@ export class Schematic_manager extends Base_webview {
     async generate_from_project() {
         const selected_project = this.manager.get_select_project();
         if (selected_project.successful === false) {
-            this.logger.error("Selecte a project first.", true);
+            this.logger.error("Selecte a project first.", false);
             return "";
         }
 

@@ -124,6 +124,15 @@ export class Edalize extends Generic_tool_handler {
                     artifact_list.push(artifact_inst);
                     suite_name = "Simulation";
                 }
+                const artifact_build: t_test_artifact = {
+                    name: "Build folder",
+                    path: path_lib.join(working_directory),
+                    content: "",
+                    command: "",
+                    artifact_type: e_artifact_type.BUILD,
+                    element_type: e_element_type.FOLDER
+                };
+                artifact_list.push(artifact_build);
 
                 const test_result: t_test_result = {
                     suite_name: suite_name,

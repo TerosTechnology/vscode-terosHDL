@@ -172,7 +172,7 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
         } else if (extension === '.xdc') {
             file_type = 'xdc';
         } else if (extension === '.sdc') {
-            file_type = 'sdc';
+            file_type = 'SDC';
         } else if (extension === '.pin') {
             file_type = 'pin';
         } else if (extension === '.xci') {

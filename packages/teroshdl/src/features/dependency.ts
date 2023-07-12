@@ -135,7 +135,7 @@ export class Dependency_manager {
     async update() {
         const selected_project = this.manager.get_select_project();
         if (selected_project.successful === false) {
-            this.logger.error("Selecte a project first.", true);
+            this.logger.error("Selecte a project first.", false);
             return "";
         }
 

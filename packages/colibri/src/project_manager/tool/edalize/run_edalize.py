@@ -127,6 +127,13 @@ run-gui-external: work $(VPI_MODULES)\n\
         else:
             p = subprocess.Popen(["make", "run-gui"], cwd=working_directory)
             p.wait()
+    elif tool_name == "quartus":
+            step = "all"
+            if edam["tool_options"]["quartus"]["pnr"] == "none":
+                step = "syn"
+
+            p = subprocess.Popen(["make", step], cwd=working_directory)
+            p.wait()
     else:
         backend.build()
         backend.run()
