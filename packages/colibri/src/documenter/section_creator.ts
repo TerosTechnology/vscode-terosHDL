@@ -120,6 +120,7 @@ export class Creator extends Section_creator_interface {
 
         description = description.replace("\n\n #", "\n\n#");
         description = description.replace("\n #", "\n#");
+        description = description.trim();
 
         // Parse wavedrom
         const wavedrom_description_norm = this.parse_wavedrom(description, svg_path_dir,
