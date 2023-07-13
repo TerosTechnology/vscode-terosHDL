@@ -73,7 +73,7 @@ class Linter {
         }
     }
 
-    private get_options(): teroshdl2.linter.common.l_options {
+    private get_options(lang: teroshdl2.common.general.HDL_LANG): teroshdl2.linter.common.l_options {
         let path = "";
         let argument = "";
         const linter_name = this.get_linter_name();
@@ -82,11 +82,13 @@ class Linter {
             path = this.get_config().tools.ghdl.installation_path;
             argument = this.get_config().linter.ghdl.arguments;
         }
-        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.modelsim){
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.modelsim &&
+                lang === teroshdl2.common.general.HDL_LANG.VHDL){
             path = this.get_config().tools.modelsim.installation_path;
             argument = this.get_config().linter.modelsim.vhdl_arguments;
         }
-        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.vivado){
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.vivado &&
+                lang === teroshdl2.common.general.HDL_LANG.VHDL){
             path = this.get_config().tools.vivado.installation_path;
             argument = this.get_config().linter.vivado.vhdl_arguments;
         }
@@ -94,7 +96,8 @@ class Linter {
             path = this.get_config().tools.icarus.installation_path;
             argument = this.get_config().linter.icarus.arguments;
         }
-        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.modelsim){
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.modelsim &&
+                lang !== teroshdl2.common.general.HDL_LANG.VHDL){
             path = this.get_config().tools.modelsim.installation_path;
             argument = this.get_config().linter.vivado.verilog_arguments;
         }
@@ -102,7 +105,8 @@ class Linter {
             path = this.get_config().tools.verilator.installation_path;
             argument = this.get_config().linter.verilator.arguments;
         }
-        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.vivado){
+        else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.vivado &&
+                lang !== teroshdl2.common.general.HDL_LANG.VHDL){
             path = this.get_config().tools.vivado.installation_path;
             argument = this.get_config().linter.vivado.verilog_arguments;
         }
@@ -165,7 +169,7 @@ class Linter {
 
         console.log(`[terosHDL] Linting ${current_path}`);
 
-        let errors = await this.linter.lint_from_file(linter_name, current_path, this.get_options());
+        let errors = await this.linter.lint_from_file(linter_name, current_path, this.get_options(lang),);
 
         let diagnostics: vscode.Diagnostic[] = [];
         for (var i = 0; i < errors.length; ++i) {
@@ -193,7 +197,9 @@ class Linter {
         let current_path = uri.fsPath;
         const linter_name = this.get_linter_name();
 
-        let errors = await this.linter.lint_from_file(linter_name, current_path, this.get_options());
+        const lang = teroshdl2.utils.hdl.get_lang_from_path(current_path);
+
+        let errors = await this.linter.lint_from_file(linter_name, current_path, this.get_options(lang));
         let diagnostics: vscode.Diagnostic[] = [];
         if (empty === true 
             || linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.none

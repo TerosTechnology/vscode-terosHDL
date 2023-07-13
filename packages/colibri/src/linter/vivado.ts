@@ -43,7 +43,7 @@ export class Vivado extends Base_linter {
             binary = "xvhdl";
         }
         else if (file_lang === HDL_LANG.SYSTEMVERILOG) {
-            binary = "xvlog";
+            binary = `xvlog ${this.sv_options}`;
         }
         else {
             binary = "xvlog";

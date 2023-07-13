@@ -13,7 +13,7 @@ The goal of TerosHDL is to provide an open source IDE for HDL devlopers with fun
 
 The IDE tries to be as much self-contained as possible and simplify the installation process. Features:
 
-- Simulators and tools support: Vivado, ModelSim, GHDL, Verilator, Icarus, VCS, Yosys, VUnit, cocotb, Diamond, Icestorm, ISE, Quartus, Radiant, Spyglass, Symbiflow, Trellis, Xcelium... and more!
+- Simulators and tools support: [Raptor](https://rapidsilicon.com/raptor/), Vivado, ModelSim, GHDL, Verilator, Icarus, VCS, Yosys, VUnit, cocotb, Diamond, Icestorm, ISE, Quartus, Radiant, Spyglass, Symbiflow, Trellis, Xcelium... and more!
 - Go to definition.
 - Hover.
 - Hiterachy viewer.

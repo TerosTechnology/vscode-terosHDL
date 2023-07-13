@@ -4,6 +4,6 @@ vhdl_arguments:
   value: ""
 
 verilog_arguments:
-  description: "Verilog linter arguments."
+  description: "Verilog/SV linter arguments."
   type: string
   value: ""

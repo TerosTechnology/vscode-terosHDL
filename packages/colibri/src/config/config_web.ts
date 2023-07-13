@@ -1166,7 +1166,7 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <label for="linter-modelsim-verilog_arguments" class="form-label">Verilog linter arguments.</label>
+              <label for="linter-modelsim-verilog_arguments" class="form-label">Verilog/SV linter arguments.</label>
               <input class="form-control" id="linter-modelsim-verilog_arguments" rows="3"  value=""></input>
             </div>
           
@@ -1249,7 +1249,7 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <label for="linter-vivado-verilog_arguments" class="form-label">Verilog linter arguments.</label>
+              <label for="linter-vivado-verilog_arguments" class="form-label">Verilog/SV linter arguments.</label>
               <input class="form-control" id="linter-vivado-verilog_arguments" rows="3"  value=""></input>
             </div>
           
