@@ -157,6 +157,7 @@ export class Tree_view_manager {
             }
         }
         teroshdl.utils.file_utils.save_file_sync(file_path, toml);
+        vscode.commands.executeCommand("teroshdl.vhdlls.restart");
         return files_toml;
     }
 
