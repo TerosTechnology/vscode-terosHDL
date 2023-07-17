@@ -24,8 +24,8 @@ runpy_mode:
 
 extra_options:
   description: "VUnit options. Extra options for the VUnit test runner."
-  type: array
-  value: []
+  type: string
+  value: ""
 
 enable_array_util_lib:
   description: "Enable array util library in non standalone mode."

@@ -87,8 +87,14 @@ export class Vunit extends Generic_tool_handler {
         const json_path = process_utils.create_temp_file("");
         const args = `--export-json ${json_path}`;
 
+        // Simulator config
+        const simulator_name = config.tools.vunit.simulator_name;
+        const simulator_install_path = this.get_simulator_installation_path(config);
+        const simulator_config = this.get_simulator_config(simulator_name, simulator_install_path);
+
         const test_list: t_test_declaration[] = [];
-        const result = await python.exec_python_script(config.general.general.pypath, runpy_path, args);
+        const result = await python.exec_python_script(config.general.general.pypath, runpy_path, args, 
+            simulator_config);
 
         if (result.successful === true) {
             try {
@@ -208,7 +214,8 @@ export class Vunit extends Generic_tool_handler {
         const test_list_arg = this.get_test_list_argument(test_list);
 
         // Default options
-        const args = `--no-color -x ${output_path} --exit-0 ${gui_arg} ${test_list_arg}`;
+        // eslint-disable-next-line max-len
+        const args = `--no-color -x ${output_path} --exit-0 ${gui_arg} ${config.tools.vunit.extra_options} ${test_list_arg}`;
 
         // Simulator config
         const simulator_name = config.tools.vunit.simulator_name;

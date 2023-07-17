@@ -395,7 +395,7 @@ export type e_tools_vunit = {
     installation_path : string,
     simulator_name : e_tools_vunit_simulator_name,
     runpy_mode : e_tools_vunit_runpy_mode,
-    extra_options : any[],
+    extra_options : string,
     enable_array_util_lib : boolean,
     enable_com_lib : boolean,
     enable_json4vhdl_lib : boolean,
@@ -1067,7 +1067,7 @@ export function get_default_config(): e_config {
                 installation_path : "",
                 simulator_name : e_tools_vunit_simulator_name.ghdl,
                 runpy_mode : e_tools_vunit_runpy_mode.standalone,
-                extra_options : [],
+                extra_options : "",
                 enable_array_util_lib : false,
                 enable_com_lib : false,
                 enable_json4vhdl_lib : false,
@@ -2550,7 +2550,7 @@ export function get_config_from_json(json_config: any): e_config {
             
     // tools -> vunit -> extra_options
     const current_value_178 = json_config['tools']['vunit']['extra_options'];
-    if (Array.isArray(current_value_178)){
+    if (typeof current_value_178 === 'string'){
         default_config['tools']['vunit']['extra_options'] = current_value_178;
     }
             

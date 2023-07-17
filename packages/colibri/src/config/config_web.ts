@@ -2750,9 +2750,10 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <label for="tools-vunit-extra_options" class="form-label">VUnit options. Extra options for the VUnit test runner. <b>(Comma separed)</b></label>
-              <input class="form-control" id="tools-vunit-extra_options" rows="3"></input>
+              <label for="tools-vunit-extra_options" class="form-label">VUnit options. Extra options for the VUnit test runner.</label>
+              <input class="form-control" id="tools-vunit-extra_options" rows="3"  value=""></input>
             </div>
+          
           
           
           
@@ -4497,7 +4498,7 @@ export const WEB_CONFIG = `
     config["tools"]["vunit"]["simulator_name"] = element_value
     element_value = document.getElementById("tools-vunit-runpy_mode").value;
     config["tools"]["vunit"]["runpy_mode"] = element_value
-    element_value = document.getElementById("tools-vunit-extra_options").value.split(',');
+    element_value = document.getElementById("tools-vunit-extra_options").value;
     config["tools"]["vunit"]["extra_options"] = element_value
     element_value = document.getElementById("tools-vunit-enable_array_util_lib").checked;
     config["tools"]["vunit"]["enable_array_util_lib"] = element_value
@@ -4799,7 +4800,7 @@ export const WEB_CONFIG = `
     document.getElementById("tools-vunit-installation_path").value = config["tools"]["vunit"]["installation_path"];
     document.getElementById("tools-vunit-simulator_name").value = config["tools"]["vunit"]["simulator_name"];
     document.getElementById("tools-vunit-runpy_mode").value = config["tools"]["vunit"]["runpy_mode"];
-    element_value = document.getElementById("tools-vunit-extra_options").value = String(config["tools"]["vunit"]["extra_options"]);
+    document.getElementById("tools-vunit-extra_options").value = config["tools"]["vunit"]["extra_options"];
     document.getElementById("tools-vunit-enable_array_util_lib").checked = config["tools"]["vunit"]["enable_array_util_lib"];
     document.getElementById("tools-vunit-enable_com_lib").checked = config["tools"]["vunit"]["enable_com_lib"];
     document.getElementById("tools-vunit-enable_json4vhdl_lib").checked = config["tools"]["vunit"]["enable_json4vhdl_lib"];
