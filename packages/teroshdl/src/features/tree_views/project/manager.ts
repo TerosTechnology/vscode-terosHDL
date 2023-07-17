@@ -219,6 +219,8 @@ export class Project_manager {
         const make_result = await proc.exec_wait("make --version");
         if (!make_result.successful){
             this.global_logger.error(`${intro_short}Make not found`);
+            this.global_logger.error(make_result.stderr);
+            this.global_logger.error(make_result.stdout);
         }
         else{
             this.global_logger.info(`${intro_short} Make found`);
