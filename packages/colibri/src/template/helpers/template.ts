@@ -102,6 +102,10 @@ export function get_template(language: HDL_LANG, template_name: string, template
         }
 
         // Mix language
+        else if (template_name === "hdl_element_mix_component") {
+            template_str = reverse_base_temp.hdl_element_component;
+            options = reverse_options;
+        }
         else if (template_name === "hdl_element_mix_instance") {
             template_str = reverse_base_temp.hdl_element_instance;
             options = reverse_options;

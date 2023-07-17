@@ -119,6 +119,12 @@ export class TEMPLATE_NAME_VERILOG {
         lang: LANG.VERILOG
     };
 
+    static readonly HDL_ELEMENT_MIX_COMPONENT = {
+        name: "mix_component",
+        id: "hdl_element_mix_component",
+        description: "Copy as VHDL component",
+        lang: LANG.VHDL
+    };
     static readonly HDL_ELEMENT_MIX_INSTANCE = {
         name: "mix_instance",
         id: "hdl_element_mix_instance",
