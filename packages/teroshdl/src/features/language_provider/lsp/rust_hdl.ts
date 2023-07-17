@@ -92,6 +92,7 @@ export class Rusthdl_lsp {
         this.context.subscriptions.push(
             vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
                 if (this.stop_client === false) {
+                    await this.client.onReady();
                     await this.client.stop();
                     this.languageServerDisposable.dispose();
                     this.languageServerDisposable = this.client.start();
