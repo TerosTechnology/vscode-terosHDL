@@ -38,9 +38,9 @@ export const hdl_element_component = "";
 export const hdl_element_signal =
 `{% for element in port -%}
 {% if element['type'] == "" -%}
-{{ indent[1] }}reg r_{{element['info']['name']}};
+{{ indent[1] }}reg {{element['info']['name']}};
 {% else -%}
-{{ indent[1] }}reg r_{{element['type']}} {{element['info']['name']}};
+{{ indent[1] }}reg {{element['type']}} {{element['info']['name']}};
 {% endif -%}
 {% endfor -%}`;
 

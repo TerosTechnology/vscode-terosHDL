@@ -674,7 +674,9 @@ function add_port(element: any, key: any, name: any, direction: any, type: any, 
                 direction: ((ansi === true) ? directionVar : direction),
                 default_value: ""
             };
-            items.push(item);
+            if (port_name.trim() !== ""){
+                items.push(item);
+            }
         }
     }
     return items;
