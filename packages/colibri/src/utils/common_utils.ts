@@ -33,3 +33,8 @@ export function get_home_directory(): string {
     const home_directory = os.homedir();
     return home_directory;
 }
+
+export function normalize_path(path: string): string {
+    const normalized_file = path.replace(/ /g, '\\ ');
+    return normalized_file;
+}

@@ -18,6 +18,8 @@
 
 import { Process } from "./process";
 import { get_os } from "./utils";
+import { normalize_path } from "../utils/common_utils";
+
 import * as common from "./common";
 import { join } from "path";
 import { get_directory } from "../utils/file_utils";
@@ -142,9 +144,11 @@ export async function exec_python_script(python_path: string, python_script_path
         path: python_path
     };
 
+    python_script_path = normalize_path(python_script_path);
+
     const python_script_dir = get_directory(python_script_path);
     const python_result = await get_python_path(opt);
-    const cmd = `${pre_script} ${python_result.python_path} "${python_script_path}" ${args}`;
+    const cmd = `${pre_script} ${python_result.python_path} ${python_script_path} ${args}`;
     const p = new Process();
     const result = await p.exec_wait(cmd, { "cwd": python_script_dir });
     return result;
@@ -169,8 +173,10 @@ export function exec_python_script_async(python_path: string, python_script_path
         opt_exec = { cwd: working_directory };
     }
 
+    python_script_path = normalize_path(python_script_path);
+
     get_python_path(opt).then(function (result: python_result) {
-        const cmd = `${pre_script} ${result.python_path} "${python_script_path}" ${args}`;
+        const cmd = `${pre_script} ${result.python_path} ${python_script_path} ${args}`;
         const p = new Process();
         const exec_i = p.exec(cmd, opt_exec, (result: common.p_result) => {
             callback(result);
