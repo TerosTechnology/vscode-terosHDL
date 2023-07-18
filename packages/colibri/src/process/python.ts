@@ -45,11 +45,12 @@ export async function get_python_path(opt: python_options): Promise<python_resul
     let binary: string[] = [];
     const os_system = get_os();
     if (os_system === common.OS.WINDOWS) {
-        binary = [opt.path,
+        binary = [opt.path, normalize_path(opt.path),
         join(opt.path, 'python.exe'), join(opt.path, 'python3.exe'), 'python3', 'python', 'python.exe', 'python3.exe'];
     }
     else {
-        binary = [opt.path, join(opt.path, 'python'), join(opt.path, 'python3'), 'python3', 'python'];
+        binary = [opt.path, normalize_path(opt.path),
+            join(opt.path, 'python'), join(opt.path, 'python3'), 'python3', 'python'];
     }
     const result = await find_python3_in_list(binary);
     return result;
