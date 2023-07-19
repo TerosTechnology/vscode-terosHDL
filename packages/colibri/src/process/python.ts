@@ -18,7 +18,6 @@
 
 import { Process } from "./process";
 import { get_os } from "./utils";
-import { normalize_path } from "../utils/common_utils";
 
 import * as common from "./common";
 import { join } from "path";
@@ -45,14 +44,17 @@ export async function get_python_path(opt: python_options): Promise<python_resul
     let binary: string[] = [];
     const os_system = get_os();
     if (os_system === common.OS.WINDOWS) {
-        binary = [opt.path, normalize_path(opt.path),
+        binary = [opt.path,
         join(opt.path, 'python.exe'), join(opt.path, 'python3.exe'), 'python3', 'python', 'python.exe', 'python3.exe'];
     }
     else {
-        binary = [opt.path, normalize_path(opt.path),
-            join(opt.path, 'python'), join(opt.path, 'python3'), 'python3', 'python'];
+        binary = [opt.path, join(opt.path, 'python'), join(opt.path, 'python3'), 'python3', 'python'];
+    }
+    for (let i = 0; i < binary.length; i++) {
+        binary[i] = `"${binary[i]}"`;
     }
     const result = await find_python3_in_list(binary);
+    result.python_path = `"${result.python_path}"`;
     return result;
 }
 
@@ -145,11 +147,9 @@ export async function exec_python_script(python_path: string, python_script_path
         path: python_path
     };
 
-    python_script_path = normalize_path(python_script_path);
-
     const python_script_dir = get_directory(python_script_path);
     const python_result = await get_python_path(opt);
-    const cmd = `${pre_script} ${python_result.python_path} ${python_script_path} ${args}`;
+    const cmd = `${pre_script} ${python_result.python_path} ${normalize_python_script(python_script_path)} ${args}`;
     const p = new Process();
     const result = await p.exec_wait(cmd, { "cwd": python_script_dir });
     return result;
@@ -174,14 +174,18 @@ export function exec_python_script_async(python_path: string, python_script_path
         opt_exec = { cwd: working_directory };
     }
 
-    python_script_path = normalize_path(python_script_path);
 
     get_python_path(opt).then(function (result: python_result) {
-        const cmd = `${pre_script} ${result.python_path} ${python_script_path} ${args}`;
+        const cmd = `${pre_script} ${result.python_path} ${normalize_python_script(python_script_path)} ${args}`;
         const p = new Process();
         const exec_i = p.exec(cmd, opt_exec, (result: common.p_result) => {
             callback(result);
         });
         callback_stream(exec_i);
     });
+}
+
+function normalize_python_script(python_script_path: string): string {
+    python_script_path = `"${python_script_path}"`;
+    return python_script_path;
 }
