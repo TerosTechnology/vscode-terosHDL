@@ -65,7 +65,7 @@ export abstract class Base_linter {
             }
         }
 
-        const command = `${complete_path} ${this.extra_cmd} ${options.argument} "${file}"`;
+        const command = `"${complete_path}" ${this.extra_cmd} ${options.argument} "${file}"`;
         return command;
     }
 

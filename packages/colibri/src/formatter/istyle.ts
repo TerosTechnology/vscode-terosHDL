@@ -63,12 +63,12 @@ export class Istyle extends Base_formatter {
 
         let command = "";
         if (opt.style === cfg.e_formatter_istyle_style.indent_only) {
-            command = `${path_bin} --style=ansi -s${opt.indentation_size} `;
+            command = `"${path_bin}" --style=ansi -s${opt.indentation_size} `;
         }
         else {
-            command = `${path_bin} --style=${opt.style} -s${opt.indentation_size} `;
+            command = `"${path_bin}" --style=${opt.style} -s${opt.indentation_size} `;
         }
-        command += file;
+        command += `"${file}"`;
 
         const msg = `Formatting with command: ${command} `;
         logger.Logger.log(msg, logger.T_SEVERITY.INFO);

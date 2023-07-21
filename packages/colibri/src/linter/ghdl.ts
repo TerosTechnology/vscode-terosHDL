@@ -34,8 +34,7 @@ export class Ghdl extends Base_linter {
 
     async lint(file: string, options: common.l_options): Promise<common.l_error[]> {
         const result = await this.exec_linter(file, options);
-        return this.parse_output(result.stderr, file)
-
+        return this.parse_output(result.stderr, file);
     }
 
     parse_output(output: string, file: string): common.l_error[] {
