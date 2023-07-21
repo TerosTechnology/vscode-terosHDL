@@ -27,9 +27,9 @@ export const hdl_element_component =
 {{ indent[1] }}port (
 {% for port_inst in port -%}
 {% if loop.last -%}
-{{ indent[2] }}{{port_inst['info']['name']}} : {{port_inst['type']}}
+{{ indent[2] }}{{port_inst['info']['name']}} : {{port_inst['direction']} {{port_inst['type']}}
 {% else -%}
-{{ indent[2] }}{{port_inst['info']['name']}} : {{port_inst['type']}};
+{{ indent[2] }}{{port_inst['info']['name']}} : {{port_inst['direction']} {{port_inst['type']}};
 {% endif -%}
 {% endfor -%}
 {{ indent[1] }});
