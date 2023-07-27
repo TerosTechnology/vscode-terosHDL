@@ -99,7 +99,7 @@ class Linter {
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.modelsim &&
                 lang !== teroshdl2.common.general.HDL_LANG.VHDL){
             path = this.get_config().tools.modelsim.installation_path;
-            argument = this.get_config().linter.vivado.verilog_arguments;
+            argument = this.get_config().linter.modelsim.verilog_arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.verilator){
             path = this.get_config().tools.verilator.installation_path;
