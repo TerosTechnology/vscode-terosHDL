@@ -20,7 +20,7 @@
 import { create_temp_file } from "../process/utils";
 import { Process } from "../process/process";
 import * as common from "./common";
-import { check_if_path_exist } from "../utils/file_utils"
+import { check_if_path_exist, normalize_path } from "../utils/file_utils";
 import * as path_lib from "path";
 import * as logger from "../logger/logger";
 import { t_file } from "../project_manager/common";
@@ -64,8 +64,8 @@ export abstract class Base_linter {
                 complete_path = unix_path;
             }
         }
-
-        const command = `"${complete_path}" ${this.extra_cmd} ${options.argument} "${file}"`;
+        const norm_bin = normalize_path(complete_path);
+        const command = `${norm_bin} ${this.extra_cmd} ${options.argument} "${file}"`;
         return command;
     }
 

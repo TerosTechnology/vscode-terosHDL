@@ -60,13 +60,14 @@ export class Istyle extends Base_formatter {
     public async format(file: string, opt: cfg.e_formatter_istyle) {
         const binary_name = this.get_binary();
         const path_bin = path_lib.join(__dirname, 'bin', 'svistyle', binary_name);
+        const path_bin_norm = file_utils.normalize_path(path_bin);
 
         let command = "";
         if (opt.style === cfg.e_formatter_istyle_style.indent_only) {
-            command = `"${path_bin}" --style=ansi -s${opt.indentation_size} `;
+            command = `${path_bin_norm} --style=ansi -s${opt.indentation_size} `;
         }
         else {
-            command = `"${path_bin}" --style=${opt.style} -s${opt.indentation_size} `;
+            command = `${path_bin_norm} --style=${opt.style} -s${opt.indentation_size} `;
         }
         command += `"${file}"`;
 

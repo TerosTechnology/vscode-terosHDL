@@ -47,10 +47,12 @@ export class Verible extends Base_formatter {
 
         const P = new Process();
         for (const path_inst of path_checker) {
-            const cmd = `${path_inst} --version`;
+            const path_norm = file_utils.normalize_path(path_inst);
+
+            const cmd = `${path_norm} --version`;
             const exec_result = await P.exec_wait(cmd);
             if (exec_result.successful === true) {
-                return path_inst;
+                return path_norm;
             }
         }
         return '';
@@ -58,7 +60,7 @@ export class Verible extends Base_formatter {
 
     public async format(file: string, opt: common.e_formatter_verible_full) {
         const path_bin = await this.get_path(opt.path);
-        const command = `"${path_bin}" --inplace ${opt.format_args} "${file}"`;
+        const command = `${path_bin} --inplace ${opt.format_args} "${file}"`;
 
         const P = new Process();
         const exec_result = await P.exec_wait(command);

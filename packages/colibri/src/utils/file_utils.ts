@@ -237,3 +237,17 @@ export function getFilesInDirectory(directoryPath: string): string[] {
 
     return files;
 }
+
+/**
+ * Normalize path with spaces, get full path
+ * @param path Path to normalize
+ * @returns path normalized
+ */
+export function normalize_path(path: string) : string {
+    const regex = /[\s\t]/;
+
+    if (regex.test(path)){
+        return `"${path}"`;
+    }
+    return path;
+}

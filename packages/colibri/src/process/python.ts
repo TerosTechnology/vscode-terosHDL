@@ -21,7 +21,7 @@ import { get_os } from "./utils";
 
 import * as common from "./common";
 import { join } from "path";
-import { get_directory } from "../utils/file_utils";
+import { get_directory, normalize_path } from "../utils/file_utils";
 
 /** Python3 configuration options */
 export type python_options = {
@@ -31,6 +31,7 @@ export type python_options = {
 /** Result of a Python3 execution */
 export type python_result = {
     python_path: string;
+    python_complete_path: string;
     stdout: string;
     stderr: string;
     successful: boolean;
@@ -50,11 +51,20 @@ export async function get_python_path(opt: python_options): Promise<python_resul
     else {
         binary = [opt.path, join(opt.path, 'python'), join(opt.path, 'python3'), 'python3', 'python'];
     }
+
+    // Try with normalized path
+    const binary_norm = [];
     for (let i = 0; i < binary.length; i++) {
-        binary[i] = `"${binary[i]}"`;
+        binary_norm[i] = normalize_path(binary[i]);
     }
-    const result = await find_python3_in_list(binary);
-    result.python_path = `"${result.python_path}"`;
+    let result = await find_python3_in_list(binary_norm);
+    if (result.successful){
+        result.python_path = normalize_path(result.python_path);
+        // return result;
+    }
+    
+    // Try non normalized path
+    result = await find_python3_in_list(binary);
     return result;
 }
 
@@ -65,7 +75,8 @@ export async function get_python_path(opt: python_options): Promise<python_resul
  */
 export async function find_python3_in_list(binary: string[]): Promise<python_result> {
     const p_result: python_result = {
-        python_path: "",
+        python_path: "python",
+        python_complete_path: "python",
         stdout: "",
         stderr: "",
         successful: false
@@ -74,7 +85,8 @@ export async function find_python3_in_list(binary: string[]): Promise<python_res
         const opt: python_options = { path: bin };
         const result = await check_python3_path(opt);
         if (result.successful === true) {
-            p_result.python_path = await get_complete_python_path(bin);
+            p_result.python_complete_path = await get_complete_python_path(bin);
+            p_result.python_path = bin;
             p_result.successful = true;
             break;
         }

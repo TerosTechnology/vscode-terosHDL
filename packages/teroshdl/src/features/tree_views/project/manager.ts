@@ -200,6 +200,7 @@ export class Project_manager {
         }
         else{
             this.global_logger.info(`${intro} Python found: ${python_result.python_path}`);
+            this.global_logger.info(`${intro} Python found in path: ${python_result.python_complete_path}`);
 
             const package_list = ["vunit", "cocotb", "edalize"];
             for (const package_name of package_list) {
