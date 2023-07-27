@@ -25,6 +25,23 @@ import { Manager } from "./manager";
 export class File_manager extends Manager<t_file_reduced, undefined, string, string> {
     private files: t_file[] = [];
 
+    order(_python_path: string) {
+        const lib_files: t_file[] = [];
+        const non_lib_files: t_file[] = [];
+
+        this.files.forEach(element => {
+            if (element.logical_name === ""){
+                non_lib_files.push(element);
+            }
+            else{
+                lib_files.push(element);
+            }
+        });
+        
+        this.files = lib_files.concat(non_lib_files);
+    }
+
+
     clear() {
         this.files = [];
     }

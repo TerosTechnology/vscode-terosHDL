@@ -72,7 +72,7 @@ export class Project_manager {
         this.watchers = new manager_watcher.Watcher_manager((function () {
             selfm.files.clear_automatic_files();
             selfm.watchers.get().forEach(async (watcher: any) => {
-                if (file_utils.check_if_path_exist(watcher.path)){
+                if (file_utils.check_if_path_exist(watcher.path)) {
                     if (selfm.emitter !== undefined) {
                         selfm.emitter.emit('loading');
                     }
@@ -361,12 +361,12 @@ export class Project_manager {
     }
     async get_compile_order(python_path: string): Promise<t_action_result> {
         const m_dependency = new manager_dependency.Dependency_graph();
-        const result = m_dependency.get_compile_order(this.files.get(), python_path);
+        const result = await m_dependency.get_compile_order(this.files.get(), python_path);
         return result;
     }
     async get_dependency_tree(python_path: string): Promise<t_action_result> {
         const m_dependency = new manager_dependency.Dependency_graph();
-        const result = m_dependency.get_dependency_tree(this.files.get(), python_path);
+        const result = await m_dependency.get_dependency_tree(this.files.get(), python_path);
         return result;
     }
 
@@ -430,7 +430,7 @@ export class Project_manager {
         return utils.get_edam_yaml(this.get_project_definition(), undefined, reference_path);
     }
 
-    public save_edam_yaml(output_path: string){
+    public save_edam_yaml(output_path: string) {
         const edam_yaml = this.get_edam_yaml(output_path);
         file_utils.save_file_sync(output_path, edam_yaml);
     }
@@ -438,20 +438,25 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Tool
     ////////////////////////////////////////////////////////////////////////////
-    public run(general_config: e_config | undefined, test_list: t_test_declaration[],
+    public async run(general_config: e_config | undefined, test_list: t_test_declaration[],
         callback: (result: t_test_result[]) => void,
-        callback_stream: (stream_c: any) => void): any {
+        callback_stream: (stream_c: any) => void): Promise<any> {
 
         const n_config = merge_configs(general_config, this.config_manager.get_config());
         const n_config_manager = new Config_manager();
         n_config_manager.set_config(n_config);
 
-        return this.tools_manager.run(this.get_project_definition(n_config_manager),
-            test_list, callback, callback_stream);
+        const python_result = await python.get_python_path(
+            { "path": n_config_manager.get_config().general.general.pypath });
+
+        this.files.order(python_result.python_path);
+        const prj_def = this.get_project_definition(n_config_manager);
+
+        return this.tools_manager.run(prj_def, test_list, callback, callback_stream);
     }
 
     public clean(general_config: e_config | undefined,
-        clean_mode : e_clean_step,
+        clean_mode: e_clean_step,
         callback_stream: (stream_c: any) => void): any {
 
         const n_config = merge_configs(general_config, this.config_manager.get_config());
