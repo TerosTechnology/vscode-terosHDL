@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { get_language } from "../common/utils";
+import { get_hdl_language } from "../utils/common_utils";
 import { HDL_LANG } from "../common/general";
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
@@ -37,7 +37,7 @@ export class Modelsim extends Base_linter {
 
     set_binary(file: string): string {
         const work_directory = get_random_folder_in_home_directory();
-        const file_lang = get_language(file);
+        const file_lang = get_hdl_language(file);
         let extra_cmd = "";
         let binary = "";
         if (file_lang === HDL_LANG.VHDL) {

@@ -31,7 +31,7 @@
     "scripts": {
         "build-config": "cd src && cd config && cd helpers && ./generate.sh",
         "clean": "shx rm -rf out",
-        "generate-doc": "npx typedoc && shx cp -R ./docs out_doc_api",
+        "generate-doc": "npx typedoc --entryPointStrategy expand ./src && shx cp -R ./docs out_doc_api",
         "prepublish": "npm run compile",
         "build": "npm run compile",
         "postpack": "shx rm -f oclif.manifest.json",

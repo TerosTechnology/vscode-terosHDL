@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { get_language } from "../common/utils";
+import { get_hdl_language } from "../utils/common_utils";
 import { HDL_LANG } from "../common/general";
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
@@ -37,7 +37,7 @@ export class Verilator extends Base_linter {
     }
 
     async lint(file: string, options: common.l_options): Promise<common.l_error[]> {
-        const file_lang = get_language(file);
+        const file_lang = get_hdl_language(file);
         if (file_lang === HDL_LANG.SYSTEMVERILOG) {
             options.argument += ` ${this.sv_options} `;
         }

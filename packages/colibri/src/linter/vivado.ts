@@ -21,7 +21,7 @@ import { get_os } from "../process/utils";
 import { Process } from "../process/process";
 import { OS } from "../process/common";
 
-import { get_language } from "../common/utils";
+import { get_hdl_language } from "../utils/common_utils";
 import { HDL_LANG } from "../common/general";
 
 import { Base_linter } from "./base_linter";
@@ -37,7 +37,7 @@ export class Vivado extends Base_linter {
     }
 
     public set_binary(file: string) {
-        const file_lang = get_language(file);
+        const file_lang = get_hdl_language(file);
         let binary = "";
         if (file_lang === HDL_LANG.VHDL) {
             binary = "xvhdl";

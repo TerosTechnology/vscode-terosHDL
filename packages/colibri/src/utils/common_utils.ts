@@ -21,6 +21,11 @@ import * as os from 'os';
 import { HDL_LANG, HDL_EXTENSIONS } from "../common/general";
 import { get_file_extension } from "./file_utils";
 
+/**
+ * Create a random string of a given length
+ * @param length Length of the string
+ * @returns Random string
+**/
 export function makeid(length: number): string {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -31,6 +36,10 @@ export function makeid(length: number): string {
     return result;
 }
 
+/**
+ * Get the home directory of the user
+ * @returns Home directory
+**/
 export function get_home_directory(): string {
     const home_directory = os.homedir();
     return home_directory;
@@ -45,7 +54,7 @@ export function normalize_path(path: string): string {
  * Get the HDL language from a file path. If the file extension is not supported, return HDL_LANG.NONE
  * @param path File path
  * @returns HDL language
- */
+**/
 export function get_hdl_language(path: string): HDL_LANG {
     const ext_name = get_file_extension(path).toLocaleLowerCase();
     if (HDL_EXTENSIONS.SYSTEMVERILOG.includes(ext_name)) {

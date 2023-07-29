@@ -24,7 +24,7 @@ import { t_test_declaration, t_test_result } from "./tool/common";
 import { e_config } from "../config/config_declaration";
 import * as file_utils from "../utils/file_utils";
 import { get_linter_name, get_linter_options } from "../config/utils";
-import { get_language } from "../common/utils";
+import { get_hdl_language } from "../utils/common_utils";
 import { LINTER_MODE, l_error } from "../linter/common";
 import { Linter } from "../linter/linter";
 
@@ -68,7 +68,7 @@ export class Multi_project_manager {
     public async lint_from_file(file_path: string, mode: LINTER_MODE,
         general_config: e_config): Promise<l_error[]> {
 
-        const file_lang = get_language(file_path);
+        const file_lang = get_hdl_language(file_path);
         const linter_name = get_linter_name(file_lang, mode, general_config);
         const linter_options = get_linter_options();
 
