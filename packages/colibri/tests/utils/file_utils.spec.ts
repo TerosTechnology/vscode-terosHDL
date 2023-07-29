@@ -119,9 +119,9 @@ describe('File Utils', () => {
         const folder_path = path_lib.join(__dirname, 'helpers');
 
         const files = file_utils.read_directory(folder_path, false);
-        expect(files.length).toBe(2);
-        expect(files[0]).toBe(path_lib.join(__dirname, 'helpers', 'other_sample.txt'));
-        expect(files[1]).toBe(path_lib.join(__dirname, 'helpers', 'sample.txt'));
+        expect(files.length).toBe(3);
+        expect(files[1]).toBe(path_lib.join(__dirname, 'helpers', 'other_sample.txt'));
+        expect(files[2]).toBe(path_lib.join(__dirname, 'helpers', 'sample.txt'));
     });
 
     it('find_files_by_extensions_dir_and_subdir', () => {
