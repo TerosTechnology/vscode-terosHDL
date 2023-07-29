@@ -115,10 +115,10 @@ export async function add_sources_from_directory_and_subdirectories(project_mana
 
         let file_list : string[] = []
         if (allow_subdirectories){
-            file_list = teroshdl2.utils.file.find_files_by_extensions(directory_inst, hdl_extension_list);
+            file_list = teroshdl2.utils.file.find_files_by_extensions_dir_and_subdir(directory_inst, hdl_extension_list);
         }
         else{
-            file_list = teroshdl2.utils.file.getFilesInDirectory(directory_inst);
+            file_list = teroshdl2.utils.file.find_files_by_extensions_dir_and_subdir(directory_inst, []);
         }
 
         file_list.forEach(file_inst => {            

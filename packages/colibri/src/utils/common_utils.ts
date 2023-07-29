@@ -45,11 +45,6 @@ export function get_home_directory(): string {
     return home_directory;
 }
 
-export function normalize_path(path: string): string {
-    const normalized_file = path.replace(/ /g, '\\ ');
-    return normalized_file;
-}
-
 /**
  * Get the HDL language from a file path. If the file extension is not supported, return HDL_LANG.NONE
  * @param path File path

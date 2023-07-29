@@ -10,3 +10,4 @@ out_*
 coverage
 yarn.lock
 package-lock.json
+test_folder

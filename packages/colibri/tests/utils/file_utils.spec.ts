@@ -75,45 +75,72 @@ describe('File Utils', () => {
         expect(file_utils.get_absolute_path(__dirname, "file_utils.spec.ts")).toBe(__filename);
     });
 
+    it('create_folder, save_file_sync, remove_file, remove_directory', () => {
+        ////////////////////////////////////////////////////////////////////////
+        // Create folder
+        ////////////////////////////////////////////////////////////////////////
+        const folder_path = path_lib.join(__dirname, 'test_folder');
+        file_utils.create_directory(folder_path);
+
+        // Check if folder exist
+        expect(file_utils.check_if_path_exist(folder_path)).toBe(true);
+
+        ////////////////////////////////////////////////////////////////////////
+        // Save file
+        ////////////////////////////////////////////////////////////////////////
+        const file_path = path_lib.join(folder_path, 'test.txt');
+        file_utils.save_file_sync(file_path, 'testfile');
+        file_utils.save_file_sync(file_path, '2', true);
+
+        // Check if file exist
+        expect(file_utils.check_if_path_exist(file_path)).toBe(true);
+
+        // Check file content
+        expect(file_utils.read_file_sync(file_path)).toBe('testfile2');
+
+        ////////////////////////////////////////////////////////////////////////
+        // Delete file
+        ////////////////////////////////////////////////////////////////////////
+        file_utils.remove_file(file_path);
+
+        // Check if file exist
+        expect(file_utils.check_if_path_exist(file_path)).toBe(false);
+
+        ////////////////////////////////////////////////////////////////////////
+        // Delete directory
+        ////////////////////////////////////////////////////////////////////////
+        file_utils.remove_directory(folder_path);
+
+        // Check if folder exist
+        expect(file_utils.check_if_path_exist(folder_path)).toBe(false);
+    });
+
+    it('read_directory', () => {
+        const folder_path = path_lib.join(__dirname, 'helpers');
+
+        const files = file_utils.read_directory(folder_path, false);
+        expect(files.length).toBe(2);
+        expect(files[0]).toBe(path_lib.join(__dirname, 'helpers', 'other_sample.txt'));
+        expect(files[1]).toBe(path_lib.join(__dirname, 'helpers', 'sample.txt'));
+    });
+
+    it('find_files_by_extensions_dir_and_subdir', () => {
+        const folder_path = path_lib.join(__dirname, 'helpers');
+
+        const files = file_utils.find_files_by_extensions_dir_and_subdir(folder_path, ['.txt']);
+        expect(files.length).toBe(3);
+        expect(files[0]).toBe(path_lib.join(__dirname, 'helpers', 'other_sample.txt'));
+        expect(files[1]).toBe(path_lib.join(__dirname, 'helpers', 'sample.txt'));
+        expect(files[2]).toBe(path_lib.join(__dirname, 'helpers', 'subdir', 'sample3.txt'));
+
+    });
+
+    it('normalize_path', () => {
+        const path_0 = "/this/is/a path with spaces";
+        expect(file_utils.normalize_path(path_0)).toBe('"/this/is/a path with spaces"');
+
+        const path_1 = "/this/is/space";
+        expect(file_utils.normalize_path(path_1)).toBe(path_1);
+    });
+
 });
-
-    // it('get_relative_path', () => {
-    //     expect(file_utils.get_relative_path('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt', '/home/carlos')).toBe('colibri2/packages/colibri/tests/utils/file.txt');
-    // });
-
-    // it('get_filename', () => {
-    //     expect(file_utils.get_filename('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt')).toBe('file.txt');
-    //     expect(file_utils.get_filename('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt', false)).toBe('file');
-    // });
-
-    // it('get_file_extension', () => {
-    //     expect(file_utils.get_file_extension('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt')).toBe('.txt');
-    // });
-
-    // it('get_directory', () => {
-    //     expect(file_utils.get_directory('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt')).toBe('/home/carlos/colibri2/packages/colibri/tests/utils');
-    // });
-
-    // it('get_file_size', () => {
-    //     expect(file_utils.get_file_size('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt')).toBe(0);
-    // });
-
-    // it('is_file', () => {
-    //     expect(file_utils.is_file('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt')).toBe(true);
-    // });
-
-    // it('is_directory', () => {
-    //     expect(file_utils.is_directory('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt')).toBe(false);
-    // });
-
-    // it('is_file_or_directory', () => {
-    //     expect(file_utils.is_file_or_directory('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt')).toBe(true);
-    // });
-
-    // it('get_file_last_modified_date', () => {
-    //     expect(file_utils.get_file_last_modified_date('/home/carlos/colibri2/packages/colibri/tests/utils/file.txt')).toBe('2021-10-16 17:35:11');
-    // });
-
-    // it('get_file_last_accessed_date', () => {
-    //     expect(file_utils.get_file_last_accessed_date('/home/carlos
-

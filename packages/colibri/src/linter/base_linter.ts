@@ -36,7 +36,6 @@ export abstract class Base_linter {
     }
 
     async lint_from_file(file: string, options: common.l_options) {
-        // const normalized_file = file.replace(/ /g, '\\ ');
         const errors = await this.lint(file, options);
         return errors;
     }
