@@ -229,10 +229,7 @@ export class Project_manager {
         const py_path = n_config_manager.get_config().general.general.pypath;
         const json_path = process_utils.create_temp_file("");
         const args = `--export-json ${json_path}`;
-        console.log(`${py_path} ${vunit_path} ${args}`);
         const result = await python.exec_python_script(py_path, vunit_path, args, simulator_conf);
-        console.log(result.stderr);
-        console.log(result.stdout);
 
         if (result.successful === true) {
             try {
@@ -359,11 +356,8 @@ export class Project_manager {
         const result = await m_dependency.get_dependency_graph_svg(this.files.get(), python_path);
         return result;
     }
-    async get_compile_order(python_path: string): Promise<t_action_result> {
-        const m_dependency = new manager_dependency.Dependency_graph();
-        const result = await m_dependency.get_compile_order(this.files.get(), python_path);
-        return result;
-    }
+
+
     async get_dependency_tree(python_path: string): Promise<t_action_result> {
         const m_dependency = new manager_dependency.Dependency_graph();
         const result = await m_dependency.get_dependency_tree(this.files.get(), python_path);
@@ -449,7 +443,7 @@ export class Project_manager {
         const python_result = await python.get_python_path(
             { "path": n_config_manager.get_config().general.general.pypath });
 
-        this.files.order(python_result.python_path);
+        await this.files.order(python_result.python_path);
         const prj_def = this.get_project_definition(n_config_manager);
 
         return this.tools_manager.run(prj_def, test_list, callback, callback_stream);

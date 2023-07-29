@@ -72,7 +72,7 @@ for i in range(0, len(project_sources)):
             project.add_library(file_library, "work_path")
             libraries.append(file_library)
 
-        suffix = Path(file_name).suffix
+        suffix = Path(file_name).suffix.lower()
         if (suffix == ".v" or suffix == ".vh" or suffix == ".vl"):
             filetype = "verilog"
         elif (suffix == ".sv" or suffix == ".svh"):
@@ -90,7 +90,7 @@ try:
         if ( files_in_compile_order[i].library.name != 'src_lib_teroshdl'):
             library_name = files_in_compile_order[i].library.name
 
-        file_order = {'name': files_in_compile_order[i].name, 'library': library_name}
+        file_order = {'name': files_in_compile_order[i].name, 'logical_name': library_name}
         files_array.append(file_order)
 except:
     pass

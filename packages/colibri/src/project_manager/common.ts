@@ -37,6 +37,13 @@ export type t_action_result = {
     msg: string;
 }
 
+/** Result of action execution in the compile order*/
+export type t_action_compile_order = {
+    file_order: t_file[];
+    successful: boolean;
+    msg: string;
+}
+
 /** Project file reduced*/
 export type t_file_reduced = {
     /** File name with (absolute or relative) path */

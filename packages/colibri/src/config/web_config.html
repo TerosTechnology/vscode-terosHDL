@@ -288,7 +288,6 @@
                             <li><a id="btn-tools-quartus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Quartus</a></li>
                             <li><a id="btn-tools-radiant" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Radiant</a></li>
                             <li><a id="btn-tools-rivierapro" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Rivierapro</a></li>
-                            <li><a id="btn-tools-siliconcompiler" href="#" class="link-dark d-inline-flex text-decoration-none rounded">SiliconCompiler</a></li>
                             <li><a id="btn-tools-spyglass" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Spyglass</a></li>
                             <li><a id="btn-tools-symbiyosys" href="#" class="link-dark d-inline-flex text-decoration-none rounded">SymbiYosys</a></li>
                             <li><a id="btn-tools-symbiflow" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Symbiflow</a></li>
@@ -2169,75 +2168,6 @@
         <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
       </div>
   </div>
-    <div class="card h-100" id="tools-siliconcompiler">
-      <div class="card-header">
-        <h1 class="card-title">Tools: SiliconCompiler</h1>
-        <h6 class="card-subtitle mb-2 text-muted">SiliconCompiler is an open source compiler framework that automates translation from source code to silicon. Check the project documentation: <a href="https://docs.siliconcompiler.com/en/latest/">https://docs.siliconcompiler.com/en/latest/</a></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-siliconcompiler-installation_path" class="form-label"></label>
-              <input class="form-control" id="tools-siliconcompiler-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-siliconcompiler-target" class="form-label">Compilation target separated by a single underscore, specified as '<process>_<edaflow>' for ASIC compilation and '<partname>_<edaflow>'' for FPGA compilation. The process, edaflow, partname fields must be alphanumeric and cannot contain underscores. E.g: asicflow_freepdk45</label>
-              <input class="form-control" id="tools-siliconcompiler-target" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-siliconcompiler-server_enable">
-                <label class="form-check-label" for="tools-siliconcompiler-server_enable">
-                  Enable remote server.
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-siliconcompiler-server_address" class="form-label">Remote server address (e.g: https://server.siliconcompiler.com):</label>
-              <input class="form-control" id="tools-siliconcompiler-server_address" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-siliconcompiler-server_username" class="form-label">Remote server user:</label>
-              <input class="form-control" id="tools-siliconcompiler-server_username" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-siliconcompiler-server_password" class="form-label">Remote server password:</label>
-              <input class="form-control" id="tools-siliconcompiler-server_password" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
     <div class="card h-100" id="tools-spyglass">
       <div class="card-header">
         <h1 class="card-title">Tools: Spyglass</h1>
@@ -3665,13 +3595,6 @@
     document.getElementById("tools-rivierapro").classList.remove('d-none');
     document.getElementById("tools-rivierapro").classList.add('d-none');
   }
-  if ("tools" == tp0 && "siliconcompiler" == tp1){
-    document.getElementById("tools-siliconcompiler").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-siliconcompiler").classList.remove('d-none');
-    document.getElementById("tools-siliconcompiler").classList.add('d-none');
-  }
   if ("tools" == tp0 && "spyglass" == tp1){
     document.getElementById("tools-spyglass").classList.remove('d-none');
   }
@@ -3929,10 +3852,6 @@
 
   document.getElementById("btn-tools-rivierapro").addEventListener("click", function() {
     enable_tab("tools","rivierapro")
-  });
-
-  document.getElementById("btn-tools-siliconcompiler").addEventListener("click", function() {
-    enable_tab("tools","siliconcompiler")
   });
 
   document.getElementById("btn-tools-spyglass").addEventListener("click", function() {
@@ -4374,19 +4293,6 @@
     config["tools"]["rivierapro"]["vlog_options"] = element_value
     element_value = document.getElementById("tools-rivierapro-vsim_options").value.split(',');
     config["tools"]["rivierapro"]["vsim_options"] = element_value
-    config["tools"]["siliconcompiler"] = {}
-    element_value = document.getElementById("tools-siliconcompiler-installation_path").value;
-    config["tools"]["siliconcompiler"]["installation_path"] = element_value
-    element_value = document.getElementById("tools-siliconcompiler-target").value;
-    config["tools"]["siliconcompiler"]["target"] = element_value
-    element_value = document.getElementById("tools-siliconcompiler-server_enable").checked;
-    config["tools"]["siliconcompiler"]["server_enable"] = element_value
-    element_value = document.getElementById("tools-siliconcompiler-server_address").value;
-    config["tools"]["siliconcompiler"]["server_address"] = element_value
-    element_value = document.getElementById("tools-siliconcompiler-server_username").value;
-    config["tools"]["siliconcompiler"]["server_username"] = element_value
-    element_value = document.getElementById("tools-siliconcompiler-server_password").value;
-    config["tools"]["siliconcompiler"]["server_password"] = element_value
     config["tools"]["spyglass"] = {}
     element_value = document.getElementById("tools-spyglass-installation_path").value;
     config["tools"]["spyglass"]["installation_path"] = element_value
@@ -4733,12 +4639,6 @@
     document.getElementById("tools-rivierapro-compilation_mode").value = config["tools"]["rivierapro"]["compilation_mode"];
     element_value = document.getElementById("tools-rivierapro-vlog_options").value = String(config["tools"]["rivierapro"]["vlog_options"]);
     element_value = document.getElementById("tools-rivierapro-vsim_options").value = String(config["tools"]["rivierapro"]["vsim_options"]);
-    document.getElementById("tools-siliconcompiler-installation_path").value = config["tools"]["siliconcompiler"]["installation_path"];
-    document.getElementById("tools-siliconcompiler-target").value = config["tools"]["siliconcompiler"]["target"];
-    document.getElementById("tools-siliconcompiler-server_enable").checked = config["tools"]["siliconcompiler"]["server_enable"];
-    document.getElementById("tools-siliconcompiler-server_address").value = config["tools"]["siliconcompiler"]["server_address"];
-    document.getElementById("tools-siliconcompiler-server_username").value = config["tools"]["siliconcompiler"]["server_username"];
-    document.getElementById("tools-siliconcompiler-server_password").value = config["tools"]["siliconcompiler"]["server_password"];
     document.getElementById("tools-spyglass-installation_path").value = config["tools"]["spyglass"]["installation_path"];
     document.getElementById("tools-spyglass-methodology").value = config["tools"]["spyglass"]["methodology"];
     element_value = document.getElementById("tools-spyglass-goals").value = String(config["tools"]["spyglass"]["goals"]);

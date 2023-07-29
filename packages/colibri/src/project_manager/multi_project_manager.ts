@@ -514,13 +514,7 @@ export class Multi_project_manager {
         }
         return await prj.get_dependency_graph(python_path);
     }
-    async get_compile_order(prj_name: string, python_path: string): Promise<t_action_result> {
-        const prj = this.get_project_by_name(prj_name);
-        if (prj === undefined) {
-            return this.get_project_not_exist();
-        }
-        return await prj.get_compile_order(python_path);
-    }
+
     async get_dependency_tree(prj_name: string, python_path: string): Promise<t_action_result> {
         const prj = this.get_project_by_name(prj_name);
         if (prj === undefined) {

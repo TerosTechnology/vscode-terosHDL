@@ -186,10 +186,10 @@ tools:
       description: "Riviera Pro simulator from Aldec."
       page: ./configs/tools/rivierapro.yml
 
-    siliconcompiler:
-      title: SiliconCompiler
-      description: 'SiliconCompiler is an open source compiler framework that automates translation from source code to silicon. Check the project documentation: <a href="https://docs.siliconcompiler.com/en/latest/">https://docs.siliconcompiler.com/en/latest/</a>'
-      page: ./configs/tools/siliconcompiler.yml
+    # siliconcompiler:
+    #   title: SiliconCompiler
+    #   description: 'SiliconCompiler is an open source compiler framework that automates translation from source code to silicon. Check the project documentation: <a href="https://docs.siliconcompiler.com/en/latest/">https://docs.siliconcompiler.com/en/latest/</a>'
+    #   page: ./configs/tools/siliconcompiler.yml
 
     spyglass:
       title: Spyglass

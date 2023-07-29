@@ -18,14 +18,23 @@
 
 import { t_file_reduced, t_file, t_action_result, t_logical } from "../common";
 import * as file_utils from "../../utils/file_utils";
-import * as hdl_utils from "../../utils/hdl_utils";
-import * as general from "../../common/general";
+import * as utils from "../utils/utils";
 import { Manager } from "./manager";
+import { Dependency_graph } from "../dependency/dependency";
 
 export class File_manager extends Manager<t_file_reduced, undefined, string, string> {
     private files: t_file[] = [];
 
-    order(_python_path: string) {
+    async order(python_path: string) {
+        // Get compile order from dependency graph
+        const dep_manger = new Dependency_graph();
+        const dep_result = await dep_manger.get_compile_order(this.files, python_path);
+        if (dep_result.successful) {
+            this.files = dep_result.file_order;
+            return;
+        }
+
+        // Order by lib
         const lib_files: t_file[] = [];
         const non_lib_files: t_file[] = [];
 
@@ -40,7 +49,6 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
         
         this.files = lib_files.concat(non_lib_files);
     }
-
 
     clear() {
         this.files = [];
@@ -103,7 +111,7 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
 
         const complete_file: t_file = {
             name: file.name,
-            file_type: this.get_file_type(file.name),
+            file_type: utils.get_file_type(file.name),
             is_include_file: file.is_include_file,
             include_path: file.include_path,
             logical_name: file.logical_name,
@@ -163,44 +171,5 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
             }
         }
         return false;
-    }
-
-    private get_file_type(filepath: string) {
-        const extension = file_utils.get_file_extension(filepath);
-        let file_type = '';
-        const hdl_lang = hdl_utils.get_lang_from_extension(extension);
-
-        if (hdl_lang === general.HDL_LANG.VHDL) {
-            file_type = 'vhdlSource-2008';
-        } else if (hdl_lang === general.HDL_LANG.VERILOG) {
-            file_type = 'verilogSource-2005';
-        } else if (hdl_lang === general.HDL_LANG.SYSTEMVERILOG) {
-            file_type = 'systemVerilogSource';
-        } else if (extension === '.c') {
-            file_type = 'cSource';
-        } else if (extension === '.cpp') {
-            file_type = 'cppSource';
-        } else if (extension === '.vbl') {
-            file_type = 'veribleLintRules';
-        } else if (extension === '.tcl') {
-            file_type = 'tclSource';
-        } else if (extension === '.py') {
-            file_type = 'python';
-        } else if (extension === '.xdc') {
-            file_type = 'xdc';
-        } else if (extension === '.sdc') {
-            file_type = 'SDC';
-        } else if (extension === '.pin') {
-            file_type = 'pin';
-        } else if (extension === '.xci') {
-            file_type = 'xci';
-        } else if (extension === '.sby') {
-            file_type = 'sbyConfigTemplate';
-        } else if (extension === '.pro') {
-            file_type = 'osvvmProject';
-        } else {
-            file_type = extension.substring(1).toLocaleUpperCase();
-        }
-        return file_type;
     }
 }

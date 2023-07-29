@@ -16,12 +16,15 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_file, t_action_result } from "../common";
+import { t_file, t_action_result, t_action_compile_order } from "../common";
 import * as hdl_utils from "../../utils/hdl_utils";
 import * as file_utils from "../../utils/file_utils";
 import * as process_utils from "../../process/utils";
+import * as utils from "../utils/utils";
 import * as python from "../../process/python";
 import * as path_lib from 'path';
+
+
 // import graphviz from 'graphviz-wasm';
 
 export class Dependency_graph {
@@ -72,7 +75,7 @@ export class Dependency_graph {
         }
     }
 
-    public async get_compile_order(file_list: t_file[], python_path: string) {
+    public async get_compile_order(file_list: t_file[], python_path: string) : Promise<t_action_compile_order>{
         const hdl_file_list = this.clean_non_hdl_files(file_list);
 
         const project_files_json = JSON.stringify(hdl_file_list);
@@ -83,35 +86,57 @@ export class Dependency_graph {
         const python_script_path = path_lib.join(__dirname, "vunit_compile_order.py");
         const result = await python.exec_python_script(python_path, python_script_path, args);
 
-        const result_return: t_action_result = {
-            result: "",
-            successful: true,
+        const result_return: t_action_compile_order = {
+            file_order: [],
+            successful: false,
             msg: ""
         };
 
-        let compile_order = [];
-        if (result.return_value === 0) {
+        const compile_order : t_file[] = [];
+
+        if (result.successful) {
             try {
-                const rawdata = file_utils.read_file_sync(compile_order_output);
-                compile_order = JSON.parse(rawdata);
-                result_return.result = compile_order;
+                const rawdata =  JSON.parse(file_utils.read_file_sync(compile_order_output));
+                for (let i = 0; i < rawdata.length; i++) {
+                    const file_inst : t_file = {
+                        name: rawdata[i].name,
+                        file_type: utils.get_file_type(rawdata[i].name),
+                        is_include_file: false,
+                        include_path: "",
+                        logical_name: rawdata[i].logical_name,
+                        is_manual: false,
+                    };
+                    compile_order.push(file_inst);
+                }
+                result_return.file_order = compile_order;
+                result_return.successful = true;
+
             } catch (e) {
-                result_return.successful = false;
-                result_return.msg = result.stderr + '\n' + result.stdout;
-                file_utils.remove_file(project_files_path);
-                file_utils.remove_file(compile_order_output);
-                return compile_order;
+                result_return.msg = `${result.stderr}'\n'${result.stdout}\nError processing compile order output.`;
             }
         }
         else {
             result_return.successful = false;
-            result_return.msg = result.stderr + '\n' + result.stdout;
+            result_return.msg = `${result.stderr}'\n'${result.stdout}`;
         }
 
         file_utils.remove_file(project_files_path);
         file_utils.remove_file(compile_order_output);
 
-        result_return.result = compile_order;
+        // Add not HDL files
+        file_list.forEach(file_inst => {
+            let is_included = false;
+            compile_order.forEach(file_included => {
+                if (file_included.name === file_inst.name) {
+                    is_included = true;
+                }
+            });
+
+            if (!is_included) {
+                compile_order.push(file_inst);
+            }
+        });
+        result_return.file_order = compile_order;
 
         return result_return;
     }

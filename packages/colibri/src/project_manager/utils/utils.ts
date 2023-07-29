@@ -18,6 +18,9 @@
 
 import { t_project_definition } from "../project_definition";
 import { convert_to_yaml } from "./json2yaml";
+import * as file_utils from "../../utils/file_utils";
+import * as hdl_utils from "../../utils/hdl_utils";
+import * as general from "../../common/general";
 
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[], 
     refrence_path? : string) {
@@ -56,3 +59,41 @@ export function get_edam_yaml(prj: t_project_definition, top_level_list: undefin
     return edam_yaml;
 }
 
+export function get_file_type(filepath: string) {
+    const extension = file_utils.get_file_extension(filepath);
+    let file_type = '';
+    const hdl_lang = hdl_utils.get_lang_from_extension(extension);
+
+    if (hdl_lang === general.HDL_LANG.VHDL) {
+        file_type = 'vhdlSource-2008';
+    } else if (hdl_lang === general.HDL_LANG.VERILOG) {
+        file_type = 'verilogSource-2005';
+    } else if (hdl_lang === general.HDL_LANG.SYSTEMVERILOG) {
+        file_type = 'systemVerilogSource';
+    } else if (extension === '.c') {
+        file_type = 'cSource';
+    } else if (extension === '.cpp') {
+        file_type = 'cppSource';
+    } else if (extension === '.vbl') {
+        file_type = 'veribleLintRules';
+    } else if (extension === '.tcl') {
+        file_type = 'tclSource';
+    } else if (extension === '.py') {
+        file_type = 'python';
+    } else if (extension === '.xdc') {
+        file_type = 'xdc';
+    } else if (extension === '.sdc') {
+        file_type = 'SDC';
+    } else if (extension === '.pin') {
+        file_type = 'pin';
+    } else if (extension === '.xci') {
+        file_type = 'xci';
+    } else if (extension === '.sby') {
+        file_type = 'sbyConfigTemplate';
+    } else if (extension === '.pro') {
+        file_type = 'osvvmProject';
+    } else {
+        file_type = extension.substring(1).toLocaleUpperCase();
+    }
+    return file_type;
+}
