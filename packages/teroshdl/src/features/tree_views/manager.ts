@@ -156,7 +156,7 @@ export class Tree_view_manager {
                 toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
             }
         }
-        teroshdl.utils.file_utils.save_file_sync(file_path, toml);
+        teroshdl.utils.file.save_file_sync(file_path, toml);
         vscode.commands.executeCommand("teroshdl.vhdlls.restart");
         return files_toml;
     }

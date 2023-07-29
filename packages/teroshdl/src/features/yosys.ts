@@ -17,7 +17,7 @@ export function get_yosys_read_file(sources, backend, working_directory) {
             relative_path_file = filename;
         }
 
-        let lang = teroshdl2.common.utils.get_language(relative_path_file);
+        let lang = teroshdl2.utils.common.get_hdl_language(relative_path_file);
         if (lang === teroshdl2.common.general.HDL_LANG.VHDL) {
             vhdl_files.push(relative_path_file);
         }

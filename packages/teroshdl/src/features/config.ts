@@ -130,7 +130,7 @@ export class Config_manager {
                 const path_norm = utils.normalize_path(fileInfos?.path);
                 const config = this.manager.get_config_global_config();
                 const config_string = JSON.stringify(config, null, 4);
-                teroshdl2.utils.file_utils.save_file_sync(path_norm, config_string);
+                teroshdl2.utils.file.save_file_sync(path_norm, config_string);
             }
         });
     }
@@ -141,7 +141,7 @@ export class Config_manager {
                 return;
             }
             const path_norm = utils.normalize_path(value[0].fsPath);
-            const file_content = teroshdl2.utils.file_utils.read_file_sync(path_norm);
+            const file_content = teroshdl2.utils.file.read_file_sync(path_norm);
             const config = JSON.parse(file_content);
             this.set_config(config);
             this.update_web_config();
