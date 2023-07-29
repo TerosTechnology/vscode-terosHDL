@@ -115,7 +115,12 @@ export function check_if_path_exist(file_path: string): boolean {
  * @returns {boolean} True if file, false if directory
  */
 export function check_if_file(file_path: string): boolean {
-    return !fs.lstatSync(file_path).isDirectory();
+    try {
+        return !fs.lstatSync(file_path).isDirectory();
+    }
+    catch (err) {
+        return false;
+    }
 }
 
 /**

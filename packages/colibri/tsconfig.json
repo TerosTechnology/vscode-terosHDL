@@ -38,10 +38,11 @@
   },
   "include": [
     "src/**/*",
+    // "tests/**/*",
   ],
   "exclude": [
     "*.nj",
     "node_modules",
-    "tests_impr/**/*"
+    // "tests/**/*"
   ]
 }
