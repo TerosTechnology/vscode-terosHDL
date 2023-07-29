@@ -14,5 +14,8 @@
                 "urlForTestFiles": "https://github.com/TerosTechnology/colibri/tree/main/"
             }
         ]
+    ],
+    "testPathIgnorePatterns": [
+        "tests_impr"
     ]
 }

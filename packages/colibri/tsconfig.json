@@ -42,6 +42,6 @@
   "exclude": [
     "*.nj",
     "node_modules",
-    "tests/**/*"
+    "tests_impr/**/*"
   ]
 }
