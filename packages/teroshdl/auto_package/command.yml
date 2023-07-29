@@ -8,6 +8,9 @@
 - name: open
   title: Open file with TerosHDL
 
+- name: configuration
+  title: "TerosHDL: Open Configuration Menu"
+
 ################################################################################
 # VSCode tree
 ################################################################################

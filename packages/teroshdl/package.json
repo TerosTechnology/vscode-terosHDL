@@ -323,6 +323,10 @@
                 "title": "Open file with TerosHDL"
             }, 
             {
+                "command": "teroshdl.configuration",
+                "title": "TerosHDL: Open Configuration Menu"
+            }, 
+            {
                 "command": "teroshdl.waveform",
                 "title": "Open waveform viewer"
             }, 
