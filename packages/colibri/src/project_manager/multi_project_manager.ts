@@ -22,8 +22,7 @@ import { e_clean_step } from "./tool/common";
 import { Project_manager } from "./project_manager";
 import { t_test_declaration, t_test_result } from "./tool/common";
 import { e_config } from "../config/config_declaration";
-import { save_file_sync, read_file_sync } from "../utils/file_utils";
-import { file_utils } from "../utils/export_t";
+import * as file_utils from "../utils/file_utils";
 import { get_linter_name, get_linter_options } from "../config/utils";
 import { get_language } from "../common/utils";
 import { LINTER_MODE, l_error } from "../linter/common";
@@ -98,12 +97,12 @@ export class Multi_project_manager {
             project_list: prj_list
         };
         const config_string = JSON.stringify(total, null, 4);
-        save_file_sync(this.sync_file_path, config_string);
+        file_utils.save_file_sync(this.sync_file_path, config_string);
     }
 
     public load_from_sync_file() {
         try {
-            const file_content = read_file_sync(this.sync_file_path);
+            const file_content = file_utils.read_file_sync(this.sync_file_path);
             const prj_saved = JSON.parse(file_content);
             this.name = prj_saved.name;
             this.selected_project = prj_saved.selected_project;

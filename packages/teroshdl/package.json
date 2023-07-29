@@ -34,19 +34,6 @@
     },
     "main": "./out/extension.js",
 
-    "activationEvents": [
-        "*",
-        "onCommand:teroshdl.go_to_parent",
-        "onCommand:teroshdl.generate_template",
-        "onCommand:teroshdl.format",
-        "onCommand:teroshdl.documentation.module",
-        "onCommand:teroshdl.dependencies.viewer",
-        "onCommand:teroshdl.state_machine.viewer",
-        "onCommand:teroshdl.netlist.viewer",
-        "onLanguage:verilog",
-        "onLanguage:systemverilog",
-        "onLanguage:vhdl"
-    ],
     "contributes": {
         "viewsContainers": {
             "activitybar": [
@@ -632,6 +619,7 @@
     },
 
     "scripts": {
+        "build-package": "cd auto_package && ./gen.sh", 
         "clean": "shx rm -rf out", 
         "vscode:prepublish": "npm run generate-examples & npm run compile", 
         "compile": "tsc -p ./", 

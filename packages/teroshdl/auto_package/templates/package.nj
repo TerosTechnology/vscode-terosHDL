@@ -2,19 +2,6 @@
 {%- filter indent(width=4) %}
 {% include 'info.nj' %}
 {% endfilter %}
-    "activationEvents": [
-        "*",
-        "onCommand:teroshdl.go_to_parent",
-        "onCommand:teroshdl.generate_template",
-        "onCommand:teroshdl.format",
-        "onCommand:teroshdl.documentation.module",
-        "onCommand:teroshdl.dependencies.viewer",
-        "onCommand:teroshdl.state_machine.viewer",
-        "onCommand:teroshdl.netlist.viewer",
-        "onLanguage:verilog",
-        "onLanguage:systemverilog",
-        "onLanguage:vhdl"
-    ],
     "contributes": {
         "viewsContainers": {
             "activitybar": [

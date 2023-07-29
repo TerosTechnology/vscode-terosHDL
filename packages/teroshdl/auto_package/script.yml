@@ -1,3 +1,6 @@
+- name: "build-package"
+  command: "cd auto_package && ./gen.sh"
+
 - name: "clean"
   command: "shx rm -rf out"
 
