@@ -370,7 +370,13 @@ export class Schematic_manager extends Base_webview {
         };
 
         let jsonp = output_yosys.result;
-        output_yosys.result = await netlistsvg.render(skin, jsonp, undefined, undefined, config);
+        try {
+            output_yosys.result = await netlistsvg.render(skin, jsonp, undefined, undefined, config);
+        } catch (error) {
+            console.log(error);
+            this.logger.error("Generating the schematic graph. The graph exceeds the maximum size.", true);
+            return "";
+        }
 
         return output_yosys;
     }
