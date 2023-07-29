@@ -29,6 +29,7 @@
     },
     "pkg.scripts": "./out/**/*.js",
     "scripts": {
+        "build-config": "cd src && cd config && cd helpers && ./generate.sh",
         "clean": "shx rm -rf out",
         "generate-doc": "npx typedoc && shx cp -R ./docs out_doc_api",
         "prepublish": "npm run compile",

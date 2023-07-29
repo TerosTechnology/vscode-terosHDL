@@ -238,17 +238,23 @@ export class Project_manager {
         }
 
         // Check make
+        const make_binary_dir = this.project_manager.get_config_global_config().general.general.makepath;
+        let make_binary_path = ("make");
+        if (make_binary_dir !== ""){
+            make_binary_path = path_lib.join(make_binary_dir, make_binary_path);
+        }
+
         const proc = new teroshdl2.process.process.Process();
-        const make_result = await proc.exec_wait("make --version");
+        const make_result = await proc.exec_wait(`${make_binary_path} --version`);
         if (!make_result.successful){
             const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#make"
             const doc_msg = this.get_doc_msg(doc_msg_link);
-            this.global_logger.error(`${intro_error}Make not found. ${doc_msg}`);
+            this.global_logger.error(`${intro_error}Make not found in path: ${make_binary_path}. Check that the path is correct. ${doc_msg}`);
             this.global_logger.error(make_result.stderr);
             this.global_logger.error(make_result.stdout);
         }
         else{
-            this.global_logger.info(`${intro_info} Make found.`);
+            this.global_logger.info(`${intro_info} Make found in path: ${make_binary_path}.`);
         }
     }
 }

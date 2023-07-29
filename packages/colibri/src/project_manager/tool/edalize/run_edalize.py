@@ -11,14 +11,16 @@ try:
 except ImportError:
     from edalize.edatool import get_edatool
 
+MSG_INTRO = "--->"
+
 
 def print_info(working_directory, developer_mode, edam_file, config_exec_file):
     print("")
     print("************************************************************************************************")
-    print(f"---> Build directory: {working_directory}")
+    print(f"{MSG_INTRO} Build directory: {working_directory}")
     if developer_mode == "developer":
         current_cmd = str(os.path.basename(__file__))
-        print(f"---> Command: {current_cmd} {edam_file} {config_exec_file}")
+        print(f"{MSG_INTRO} Command: {current_cmd} {edam_file} {config_exec_file}")
 
 
 ################################################################################
@@ -41,6 +43,8 @@ config_exec = json.load(f)
 tool_name = config_exec["tool_name"]
 # Tool installation path
 installation_path = config_exec["installation_path"]
+# Make installation path
+make_installation_path = config_exec["make_installation_path"]
 # Execution mode
 execution_mode = config_exec["execution_mode"]
 # Debug mode
@@ -78,17 +82,39 @@ if installation_path != "":
         else:
             os.environ["PATH"] += f":{installation_path}"
     else:
-        print(f"---> Installation folder path: {installation_path} doesn't exists. It will search in the system path!!")
+        print(f"{MSG_INTRO} Installation folder path: {installation_path} doesn't exists. It will search in the system path!!")
+
+try:
+    # Configure make installation path
+    if make_installation_path != "":
+        make_installation_dir = ""
+        if os.path.isfile(make_installation_path):
+            make_installation_dir = os.path.dirname(make_installation_path)
+        else:
+            make_installation_dir = make_installation_path
+
+        plt = platform.system()
+        if plt.lower() == "windows":
+            os.environ["PATH"] += f";{make_installation_path}"
+        else:
+            os.environ["PATH"] += f":{make_installation_path}"
+except Exception as e:
+    pass
+
+msg_make = make_installation_path
+if installation_path == "":
+    msg_make = "System path"
+print(f"{MSG_INTRO} Make installation folder path: {msg_make}")
 
 # Configure ModelSim variables
 if tool_name == "modelsim":
     vsim_path = which("vsim")
     if vsim_path == None:
-        print("---> Error ModelSim path is not configured!")
+        print("{MSG_INTRO} Error ModelSim path is not configured!")
         exit(-1)
     vsim_dir = os.path.dirname(vsim_path).replace("\\", "/")
     os.environ["MODEL_TECH"] = vsim_dir
-    print(vsim_dir)
+    print(f"{MSG_INTRO} Modelsim directory: {vsim_dir}")
 
 ################################################################################
 # Configure project

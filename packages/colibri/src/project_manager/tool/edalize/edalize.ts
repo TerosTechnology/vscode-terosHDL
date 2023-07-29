@@ -89,11 +89,13 @@ export class Edalize extends Generic_tool_handler {
         const developer_mode = config.general.general.developer_mode;
         const waveform_viewer = config.tools.general.waveform_viewer;
         const python_path = config.general.general.pypath;
+        const make_path = config.general.general.makepath;
 
         // Save configuration
         const config_edalize = {
             tool_name: tool_name,
             installation_path: installation_path,
+            make_installation_path: make_path,
             execution_mode: execution_mode,
             developer_mode: developer_mode,
             working_directory: working_directory,

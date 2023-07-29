@@ -362,6 +362,14 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
+              <label for="general-general-makepath" class="form-label">Make binary directory (e.g.: /usr/bin). Empty if you want to use the system path.</label>
+              <input class="form-control" id="general-general-makepath" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="general-general-go_to_definition_vhdl">
                 <label class="form-check-label" for="general-general-go_to_definition_vhdl">
@@ -4015,6 +4023,8 @@ export const WEB_CONFIG = `
     config["general"]["general"]["logging"] = element_value
     element_value = document.getElementById("general-general-pypath").value;
     config["general"]["general"]["pypath"] = element_value
+    element_value = document.getElementById("general-general-makepath").value;
+    config["general"]["general"]["makepath"] = element_value
     element_value = document.getElementById("general-general-go_to_definition_vhdl").checked;
     config["general"]["general"]["go_to_definition_vhdl"] = element_value
     element_value = document.getElementById("general-general-go_to_definition_verilog").checked;
@@ -4530,6 +4540,7 @@ export const WEB_CONFIG = `
   function set_config(config){
     document.getElementById("general-general-logging").checked = config["general"]["general"]["logging"];
     document.getElementById("general-general-pypath").value = config["general"]["general"]["pypath"];
+    document.getElementById("general-general-makepath").value = config["general"]["general"]["makepath"];
     document.getElementById("general-general-go_to_definition_vhdl").checked = config["general"]["general"]["go_to_definition_vhdl"];
     document.getElementById("general-general-go_to_definition_verilog").checked = config["general"]["general"]["go_to_definition_verilog"];
     document.getElementById("general-general-developer_mode").checked = config["general"]["general"]["developer_mode"];
