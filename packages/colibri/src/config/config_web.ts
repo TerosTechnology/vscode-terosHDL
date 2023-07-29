@@ -342,18 +342,6 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="general-general-logging">
-                <label class="form-check-label" for="general-general-logging">
-                  Enable show TerosHDL console with each message.
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
               <label for="general-general-pypath" class="form-label">Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong></label>
               <input class="form-control" id="general-general-pypath" rows="3"  value=""></input>
             </div>
@@ -4019,8 +4007,6 @@ export const WEB_CONFIG = `
     let element_value;
     config["general"] = {}
     config["general"]["general"] = {}
-    element_value = document.getElementById("general-general-logging").checked;
-    config["general"]["general"]["logging"] = element_value
     element_value = document.getElementById("general-general-pypath").value;
     config["general"]["general"]["pypath"] = element_value
     element_value = document.getElementById("general-general-makepath").value;
@@ -4538,7 +4524,6 @@ export const WEB_CONFIG = `
   }
 
   function set_config(config){
-    document.getElementById("general-general-logging").checked = config["general"]["general"]["logging"];
     document.getElementById("general-general-pypath").value = config["general"]["general"]["pypath"];
     document.getElementById("general-general-makepath").value = config["general"]["general"]["makepath"];
     document.getElementById("general-general-go_to_definition_vhdl").checked = config["general"]["general"]["go_to_definition_vhdl"];

@@ -19,11 +19,13 @@
 
 import { create_temp_file } from "../process/utils";
 import { Process } from "../process/process";
+import { p_options } from "../process/common";
 import * as common from "./common";
 import { check_if_path_exist, normalize_path } from "../utils/file_utils";
 import * as path_lib from "path";
 import * as logger from "../logger/logger";
 import { t_file } from "../project_manager/common";
+import { file_utils } from "../utils/export_t";
 
 export abstract class Base_linter {
     abstract binary: string;
@@ -71,14 +73,18 @@ export abstract class Base_linter {
 
     async exec_linter(file: string, options: common.l_options) {
         this.delete_previus_lint();
+
         const command = this.get_command(file, options);
-
+        
         const msg = `Linting with command: ${command} `;
-        // eslint-disable-next-line no-console
         logger.Logger.log(msg, logger.T_SEVERITY.INFO);
-
+        
         const P = new Process();
-        const result = await P.exec_wait(command);
+        const file_dir = file_utils.get_directory(file);
+        const opt: p_options = {
+            cwd: file_dir,
+        };
+        const result = await P.exec_wait(command, opt);
 
         this.delete_previus_lint();
         return result;
