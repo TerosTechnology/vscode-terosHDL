@@ -202,7 +202,7 @@ export class Project_manager {
         // Check python
         const python_result = await teroshdl2.process.python.get_python_path(options)
         if (python_result.successful === false){
-            const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#python3-package-dependencies"
+            const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#2-python3"
             const doc_msg = this.get_doc_msg(doc_msg_link);
 
             this.global_logger.error(`${intro_error}Python not found. If you are using system path try setting the complete Python path. ${doc_msg}`);
@@ -220,7 +220,7 @@ export class Project_manager {
                 const package_result = await teroshdl2.process.python.check_python_package(python_result.python_path,
                     package_name);
                 if (!package_result){
-                    const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#python3-package-dependencies"
+                    const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#3-python3-package-dependencies"
                     const doc_msg = this.get_doc_msg(doc_msg_link);
 
                     if (package_list_optional.includes(package_name)){
@@ -247,7 +247,7 @@ export class Project_manager {
         const proc = new teroshdl2.process.process.Process();
         const make_result = await proc.exec_wait(`${make_binary_path} --version`);
         if (!make_result.successful){
-            const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#make"
+            const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#4-make"
             const doc_msg = this.get_doc_msg(doc_msg_link);
             this.global_logger.error(`${intro_error}Make not found in path: ${make_binary_path}. Check that the path is correct. ${doc_msg}`);
             this.global_logger.error(make_result.stderr);
