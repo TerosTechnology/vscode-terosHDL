@@ -70,7 +70,8 @@ export abstract class Base_linter {
     }
 
     async exec_linter(file: string, options: common.l_options) {
-        this.delete_previus_lint();
+        const file_dir = get_directory(file);
+        this.delete_previus_lint(file_dir);
 
         const command = this.get_command(file, options);
         
@@ -78,19 +79,18 @@ export abstract class Base_linter {
         logger.Logger.log(msg, logger.T_SEVERITY.INFO);
         
         const P = new Process();
-        const file_dir = get_directory(file);
         const opt: p_options = {
             cwd: file_dir,
         };
         const result = await P.exec_wait(command, opt);
 
-        this.delete_previus_lint();
+        this.delete_previus_lint(file_dir);
         return result;
     }
 
     abstract lint(file: string, options: common.l_options): Promise<common.l_error[]>;
 
-    abstract delete_previus_lint(): void;
+    abstract delete_previus_lint(working_dir: string): void;
 
     public async lint_from_project(file_path: string, _prj_file_list: t_file[],
         options: common.l_options): Promise<common.l_error[]> {

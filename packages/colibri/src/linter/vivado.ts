@@ -19,7 +19,7 @@
 
 import { get_os } from "../process/utils";
 import { Process } from "../process/process";
-import { OS } from "../process/common";
+import { OS, p_options } from "../process/common";
 
 import { get_hdl_language } from "../utils/common_utils";
 import { HDL_LANG } from "../common/general";
@@ -51,20 +51,26 @@ export class Vivado extends Base_linter {
         this.binary = binary;
     }
 
-    async delete_previus_lint() {
+    async delete_previus_lint(working_dir: string) {
+        const opt: p_options = {
+            cwd: working_dir,
+        };
+
         const os = get_os();
         const p = new Process();
         if (os === OS.WINDOWS) {
             let command = 'del xvhdl.pb && del xvhdl.log && rmdir xsim.dir';
-            await p.exec_wait(command);
+            await p.exec_wait(command, opt);
+
             command = 'del xvlog.pb && del xvlog.log && rmdir xsim.dir';
-            await p.exec_wait(command);
+            await p.exec_wait(command, opt);
         }
         else {
             let command = 'rm xvhdl.pb; rm xvhdl.log; rm -R xsim.dir';
-            await p.exec_wait(command);
+            await p.exec_wait(command, opt);
+
             command = 'rm xvlog.pb; rm xvlog.log; rm -R xsim.dir';
-            await p.exec_wait(command);
+            await p.exec_wait(command, opt);
         }
     }
 
