@@ -53,7 +53,7 @@ export function parse_doxygen(text: string) {
                 text_s_new += `${line.trim()}\n`;
             }
             else {
-                text_s_new += `${line.trim()} `;
+                text_s_new += `${line.trim()}\n`;
             }
         }
     });

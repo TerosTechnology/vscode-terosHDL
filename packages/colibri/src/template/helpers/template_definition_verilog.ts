@@ -55,9 +55,9 @@ module {{ name }}_tb;
 {{ indent[1] }}//Ports
 {% for port_inst in port -%}
 {% if port_inst['direction'] == "input" -%}
-{{ indent[1] }}reg {{port_inst['type']}} {{port_inst['info']['name']}};
+{{ indent[1] }}reg {% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% endif %} {{port_inst['info']['name']}};
 {% else -%}
-{{ indent[1] }}wire {{port_inst['type']}} {{port_inst['info']['name']}};
+{{ indent[1] }}wire {% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% endif %} {{port_inst['info']['name']}};
 {% endif -%}
 {% endfor %}
 {{ indent[1] }}{{ instance }}
@@ -78,9 +78,9 @@ module {{ name }}_tb;
 {{ indent[1] }}//Ports
 {% for port_inst in port -%}
 {% if port_inst['direction'] == "input" -%}
-{{ indent[1] }}reg {{port_inst['type']}} {{port_inst['info']['name']}};
+{{ indent[1] }}reg {% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% endif %} {{port_inst['info']['name']}};
 {% else -%}
-{{ indent[1] }}wire {{port_inst['type']}} {{port_inst['info']['name']}};
+{{ indent[1] }}wire {% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% endif %} {{port_inst['info']['name']}};
 {% endif -%}
 {% endfor %}
 {{ indent[1] }}{{ instance }}

@@ -110,7 +110,7 @@ print(f"{MSG_INTRO} Make installation folder path: {msg_make}")
 if tool_name == "modelsim":
     vsim_path = which("vsim")
     if vsim_path == None:
-        print("{MSG_INTRO} Error ModelSim path is not configured!")
+        print(f"{MSG_INTRO} Error ModelSim path is not configured!")
         exit(-1)
     vsim_dir = os.path.dirname(vsim_path).replace("\\", "/")
     os.environ["MODEL_TECH"] = vsim_dir

@@ -21,7 +21,7 @@ Code to reproduce the error.
  - VSCode version version [e.g. 22]
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+If applicable, add screenshots to help explain your problem. **Share the code as text, not as a screenshots!**
 
 **Additional context**
 Add any other context about the problem here.
