@@ -197,7 +197,7 @@ export class Documenter_manager extends Base_webview {
         const config = this.get_config();
 
         let uri = vscode.Uri.file(default_path);
-        vscode.window.showSaveDialog({ filters: filter, defaultUri: uri }).then(fileInfos => {
+        vscode.window.showSaveDialog({ title: "Save documentation", filters: filter, defaultUri: uri }).then(fileInfos => {
             if (fileInfos?.path !== undefined) {
                 let path_norm = utils.normalize_path(fileInfos?.path);
                 this.show_export_message(path_norm);
