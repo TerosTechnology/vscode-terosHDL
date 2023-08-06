@@ -52,7 +52,6 @@ function create_graph(svg, name, index) {
     var elem = document.createElement('div');
     elem.style.width = "100%";
     elem.style.heigh = "500px";
-    elem.style.border = "1px solid black";
     div.push(elem);
 
     document.body.appendChild(elem);

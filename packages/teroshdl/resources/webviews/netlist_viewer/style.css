@@ -71,7 +71,7 @@ body {
 }
 
 button svg {
-    fill: #ffffff;
+    fill: #000000;
     width: 20px;
     height: 20px;
     margin-bottom: 4px;
@@ -82,4 +82,8 @@ iframe {
     height: 100%;
     overflow-y: none;
     overflow-x: none;
+}
+
+button:hover svg{
+    fill: #ffffff;
 }

@@ -54,12 +54,17 @@ export class Documenter_manager extends Base_webview {
         const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', 'documenter', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'documenter',
+        const css_bootstrap_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
+            'bootstrap.min.css'));
+        const css_common_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
             'style.css'));
+
         const js_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'documenter',
             'script.js'));
         const html = nunjucks.renderString(template_str, {
-            "css_path": css_path, "cspSource": webview.cspSource,
+            "css_bootstrap_path": css_bootstrap_path,
+            "css_common_path": css_common_path,
+            "cspSource": webview.cspSource,
             "js_path": js_path
         });
         return html;
@@ -112,7 +117,7 @@ export class Documenter_manager extends Base_webview {
         const documenter = await this.get_documenter();
         const config = this.get_config();
         const html_document = await documenter.get_document(vscode_document.code, vscode_document.lang,
-            config, false, vscode_document.filename, '', true,
+            config, false, vscode_document.filename, '', false,
             teroshdl2.documenter.common.doc_output_type.HTML);
 
         if (this.panel !== undefined) {

@@ -71,8 +71,12 @@ body {
 }
 
 button svg {
-    fill: #ffffff;
+    fill: #000000;
     width: 20px;
     height: 20px;
     margin-bottom: 4px;
+}
+
+button:hover svg{
+    fill: #ffffff;
 }
