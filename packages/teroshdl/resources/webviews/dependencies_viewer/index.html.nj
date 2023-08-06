@@ -10,244 +10,41 @@
     <script src="{{ js_path_1 }}"></script>
     <script src="{{ js_path_4 }}"></script>
     <script src="{{ js_path_3 }}"></script>
-    
-    <div id="svg" style="text-align: center;"></div>
-    
-    <!-- <link rel="stylesheet" href="dependencies_viewer.css" type="text/css" /> -->
-    <style type="text/css">
-        body {
-        }
-        svg{
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
 
-        :root {
-            --light-foreground-color: black;
-            --dark-foreground-color: whitesmoke;
-            --high-contrast-foreground-color: whitesmoke;
-        }
-
-        h1,h2,h3,table {margin-left:5%;margin-right:5%;}
-        td,th,h1,h2,h3 {color: black;}
-        h1,h2 {font-weight:bold;}
-        tr:hover {background-color: #ddd;}
-        td, th {
-            border: 1px solid grey
-        }
-        p {color:black;}
-        p {margin:5%;}
-        th { background-color: #ffd78c;}
-        tr:nth-child(even){background-color: #f2f2f2;}
-
-        html,
-        body {
-            height: 100%;
-            overflow: hidden;
-            overflow-y:auto;
-        }
-
-        body {
-            background: white;
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-            padding: 0;
-        }
-
-        .toolbar {
-            overflow: visible;
-            width: 100%;
-            top: 0;
-            position: absolute;
-            background: gray;
-            box-shadow: black 0 0 1em;
-            color: black;
-            display: flex;
-            font: 12px "Segoe UI", sans-serif;
-            padding: 0.25em;
-            white-space: nowrap;
-            z-index: 2;
-        }
-        .left-panel,
-        .center-panel,
-        .right-panel {
-            align-items: center;
-            display: flex;
-            flex: 1;
-        }
-
-        .center-panel {
-            justify-content: center;
-        }
-
-        .right-panel {
-            justify-content: flex-end;
-        }
-
-        .button {
-            background: dimgray;
-            border: none;
-            box-sizing: border-box;
-            color: whitesmoke;
-            cursor: default;
-            font: inherit;
-            margin: 0.25em;
-            outline: none !important;
-            padding: 0.5em;
-            text-align: center;
-            text-decoration: none !important;
-            transition: background ease-out 125ms, color ease-out 125ms;
-            user-select: none;
-            width: 10em;
-        }
-
-        .button:hover {
-            background: darkgray;
-            box-shadow: inset rgba(255, 255, 255, 0.25) 0 0 1em;
-            color: black;
-        }
-
-        .fancy-checkbox>input:checked+div,
-        .button:active {
-            background: silver;
-            box-shadow: inset rgba(0, 0, 0, 0.25) 0 0 1em;
-            color: black;
-        }
-
-        .fancy-checkbox>input {
-            display: none;
-        }
-
-        .separator {
-            width: 1em;
-        }
-
-        #zoom {
-            color: white;
-            margin: 0.5em;
-        }
-
-        #workspace {
-            cursor: crosshair;
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-            user-select: none;
-        }
-
-        #workspace:focus {
-            outline: none;
-        }
-
-        #image {
-            box-shadow: rgba(0, 0, 0, 0.6) 0 0 3em;
-            max-height: none;
-            max-width: none;
-            position: absolute;
-        }
-
-        #status {
-            align-items: center;
-            background: rgba(0, 0, 0, 0.85);
-            color: white;
-            display: flex;
-            font: 16px Monaco, Menlo, Consolas, monospace;
-            height: 100%;
-            justify-content: center;
-            margin: 0;
-            position: absolute;
-            width: 100%;
-            z-index: 1;
-        }
-
-        #status:empty {
-            display: none;
-        }
-
-        .config {
-            background: rgba(255, 255, 255, 1);
-            top:4.7%;
-            padding-top: 10%;
-            overflow: visible;
-            width: 100%;
-            position: fixed;
-            color: black;
-            font: 12px "Segoe UI", sans-serif;
-            padding: 0.25em;
-            white-space: nowrap;
-            z-index: 4;
-        }
-
-        .config {
-            padding: 0.5em;
-        }
-
-    </style>
+    <link rel="stylesheet" href="{{css_common_path}}" type="text/css" />
+    <link rel="stylesheet" href="{{css_bootstrap_path}}" type="text/css" />
 </head>
 
 <body>
-    <!-- <div class="toolbar">
-        <div class="center-panel">
-            <label class="fancy-checkbox">
-                <input id="add-source" name="zoom-mode" type="radio" value="fixed" />
-                <div class="button">Add source</div>
-            </label>
-            <label class="fancy-checkbox">
-                <input id="clear-graph" name="zoom-mode" type="radio" value="fit"/>
-                <div class="button">Clear graph</div>
-            </label>
-            <label class="fancy-checkbox">
-                <input id="generate-documentation-markdown" name="zoom-mode" type="radio" value="fit"/>
-                <div class="button">Save as Markdown</div>
-            </label>
-            <label class="fancy-checkbox">
-                <input id="generate-documentation-html" name="zoom-mode" type="radio" value="fit"/>
-                <div class="button">Save as HTML</div>
-            </label>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="navbar-center">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <button type="button" id="export-as-image" class="btn btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-card-image" viewBox="0 0 16 16">
+                                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                                <path
+                                    d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54A.505.505 0 0 1 1 12.5v-9a.5.5 0 0 1 .5-.5h13z" />
+                            </svg>
+                            | Save
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div> -->
-    <!-- <div class="config">
+    </nav>
 
-        <label style="margin-left:2%;" >Include FSMs</label>
-        <input style="margin-right:2%;" id="enable-state-machines" type="checkbox">
-    
-        <label>Signals</label>
-        <select id="signals" style="margin-right:2%;" name="select">
-            <option value="all" selected>All</option>
-            <option value="commented">Only commented</option>
-            <option value="none">None</option>
-        </select>
-    
-        <label>Constants</label>
-        <select id="constants" style="margin-right:2%;" name="select">
-            <option value="all" selected>All</option>
-            <option value="commented">Only commented</option>
-            <option value="none">None</option>
-        </select>
-    
-        <label>Always/process</label>
-        <select id="process" style="margin-right:2%;" name="select">
-            <option value="all" selected>All</option>
-            <option value="commented">Only commented</option>
-            <option value="none">None</option>
-        </select>
-    
-    </div> -->
-    <div id="error-info" class="trontron"><div id="inner" class="fuck"></div></div>
-</body>
-
-<div class="toolbar">
-    <div class="center-panel">
-        <label class="fancy-checkbox">
-            <input id="export-as-image" name="zoom-mode" type="radio" value="fit" />
-            <div class="button">Export as SVG</div>
-        </label>
+    <div class="container-fluis">
+        <div class="row">
+            <div class="col-12"></div>
+                <div id="container"></div>
+            </div>
+        </div>
     </div>
-</div>
+
+</body>
 
 <script src="{{ js_path_2 }}"></script>
 

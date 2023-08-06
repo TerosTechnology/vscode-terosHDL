@@ -24,9 +24,7 @@ import * as path_lib from 'path';
 import * as fs from 'fs';
 import * as teroshdl2 from 'teroshdl2';
 import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
-import * as utils from '../utils/utils';
 import * as nunjucks from 'nunjucks';
-import { Base_webview } from './base_webview';
 import { Logger } from '../logger';
 
 const base_path = "dependencies_viewer";
@@ -61,7 +59,9 @@ export class Dependency_manager {
         const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', base_path, 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', base_path,
+        const css_bootstrap_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
+            'bootstrap.min.css'));
+        const css_common_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
             'style.css'));
         const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             base_path, 'libs', 'jquery-2.2.4.min.js'));
@@ -75,7 +75,9 @@ export class Dependency_manager {
             base_path, 'libs', 'viz.js'));
 
         const html = nunjucks.renderString(template_str, {
-            "css_path": css_path, "cspSource": webview.cspSource,
+            'css_bootstrap_path': css_bootstrap_path,
+            "css_common_path": css_common_path, 
+            "cspSource": webview.cspSource,
             "js_path_0": js_path_0,
             "js_path_1": js_path_1,
             "js_path_2": js_path_2,

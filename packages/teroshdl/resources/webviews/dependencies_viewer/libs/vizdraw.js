@@ -31,10 +31,13 @@ function update_graph(dot) {
     let viz = new Viz();
     viz.renderSVGElement(dot)
         .then(function (element) {
+            const container = document.getElementById("container");
             if (graph !== null) {
-                document.body.removeChild(graph);
+                container.removeChild(graph);
             }
-            document.body.appendChild(element);
+            element.setAttribute('style', 'width: 100vw; height: 100%;');
+
+            container.appendChild(element);
             graph = element;
             last_svg = element;
 
