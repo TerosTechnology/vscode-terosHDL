@@ -61,6 +61,8 @@ export class Schematic_manager extends Base_webview {
         const template_path = path_lib.join(this.context.extensionPath, 'resources','webviews', 'netlist_viewer', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
+        const css_bootstrap_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
+            'bootstrap.min.css'));
         const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
             'netlist_viewer', 'style.css'));
         const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
@@ -77,6 +79,7 @@ export class Schematic_manager extends Base_webview {
             'netlist_viewer', 'libs', 'main.js'));
 
         const html = nunjucks.renderString(template_str, {
+            "css_bootstrap_path": css_bootstrap_path, 
             "css_path": css_path, 
             "cspSource": webview.cspSource, 
             "js_path_0": js_path_0,
@@ -163,7 +166,7 @@ export class Schematic_manager extends Base_webview {
     async export_as(type: string, svg: string) {
         if (type === "svg") {
             let filter = { 'svg': ['svg'] };
-            vscode.window.showSaveDialog({ filters: filter }).then(fileInfos => {
+            vscode.window.showSaveDialog({ title: "Save image", filters: filter }).then(fileInfos => {
                 if (fileInfos?.path !== undefined) {
                     let path_norm = utils.normalize_path(fileInfos?.path);
 

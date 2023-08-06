@@ -32,9 +32,6 @@ window.addEventListener('message', event => {
 });
 
 function set_svg(svg) {
-    let w = document.getElementById('wave');
-    w.innerHTML = '';
-
     init();
     //Create SVG element
     let embed_svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -43,7 +40,20 @@ function set_svg(svg) {
     embed_svg.id = "svg_yosys";
     last_svg = svg;
     //Add to container
-    netlist_container = document.getElementById('netlist_container');
+
+    const iframe = document.getElementById('netlist_container_iframe');
+    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+
+    const contenidoIframe = `
+    <div id="netlist_container"></div>
+    <p id="wave">&nbsp;</p>
+    `;
+
+    iframeDocument.open();
+    iframeDocument.write(contenidoIframe);
+    iframeDocument.close();
+
+    const netlist_container = iframeDocument.getElementById('netlist_container');
 
     netlist_container.innerHTML = '';
     netlist_container.appendChild(embed_svg);
