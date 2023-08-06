@@ -80,3 +80,7 @@ button svg {
 button:hover svg{
     fill: #ffffff;
 }
+
+#main-container {
+    margin-top: 20px;
+}

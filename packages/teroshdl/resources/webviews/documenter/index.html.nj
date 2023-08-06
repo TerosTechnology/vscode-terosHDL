@@ -7,25 +7,7 @@
 </head>
 
 <body id="body_element">
-    {# <div>
-        <div class="toolbar">
-            <div class="center-panel">
-                <label class="fancy-checkbox">
-                    <input id="export-as-markdown" name="zoom-mode" type="radio" value="fixed" />
-                    <div class="button">Export markdown</div>
-                </label>
-                <label class="fancy-checkbox">
-                    <input id="export-as-html" name="zoom-mode" type="radio" value="fit" />
-                    <div class="button">Export HTML</div>
-                </label>
-                <label class="fancy-checkbox">
-                    <input id="export-as-image" name="zoom-mode" type="radio" value="fit" />
-                    <div class="button">Export as SVG</div>
-                </label>
-            </div>
-        </div> #}
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-fluid">
             <div class="navbar-center">
                 <ul class="navbar-nav">

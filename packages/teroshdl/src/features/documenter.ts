@@ -117,7 +117,7 @@ export class Documenter_manager extends Base_webview {
         const documenter = await this.get_documenter();
         const config = this.get_config();
         const html_document = await documenter.get_document(vscode_document.code, vscode_document.lang,
-            config, false, vscode_document.filename, '', false,
+            config, false, vscode_document.filename, '', true,
             teroshdl2.documenter.common.doc_output_type.HTML);
 
         if (this.panel !== undefined) {

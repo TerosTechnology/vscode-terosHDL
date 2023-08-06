@@ -13,11 +13,12 @@
     <script type="text/javascript" src="{{js_path_6}}"></script> 
 
     <link rel="stylesheet" href="{{css_path}}" type="text/css" />
+    <link rel="stylesheet" href="{{css_common_path}}" type="text/css" />
     <link rel="stylesheet" href="{{css_bootstrap_path}}" type="text/css" />
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container">
             <div class="navbar-center">
                 <ul class="navbar-nav">

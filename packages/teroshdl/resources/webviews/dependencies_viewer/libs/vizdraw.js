@@ -35,7 +35,7 @@ function update_graph(dot) {
             if (graph !== null) {
                 container.removeChild(graph);
             }
-            element.setAttribute('style', 'width: 100vw; height: 100%;');
+            element.setAttribute('style', 'width: 100vw; height: 100vh;');
 
             container.appendChild(element);
             graph = element;

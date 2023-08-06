@@ -13,13 +13,13 @@
 
     <div id="svg" style="text-align: center;"></div>
     
-    <link rel="stylesheet" href="{{css_path}}" type="text/css" />
+    <link rel="stylesheet" href="{{css_common_path}}" type="text/css" />
     <link rel="stylesheet" href="{{css_bootstrap_path}}" type="text/css" />
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-fluid">
             <div class="navbar-center">
                 <ul class="navbar-nav">
@@ -39,7 +39,7 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div id="main-container" class="container">
         <div id="error-info" class="trontron">
             <div id="inner" class="fuck"></div>
         </div>

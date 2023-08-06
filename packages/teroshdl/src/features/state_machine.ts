@@ -54,8 +54,9 @@ export class State_machine_manager extends Base_webview {
 
         const css_bootstrap_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
             'bootstrap.min.css'));
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'state_machine_viewer',
+        const css_common_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
             'style.css'));
+
         const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'state_machine_viewer', 'libs', 'jquery-2.2.4.min.js'));
         const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
@@ -68,7 +69,7 @@ export class State_machine_manager extends Base_webview {
             'state_machine_viewer', 'libs', 'viz.js'));
 
         const html = nunjucks.renderString(template_str, {
-            "css_path": css_path, 
+            "css_common_path": css_common_path, 
             "css_bootstrap_path": css_bootstrap_path, 
             "cspSource": webview.cspSource,
             "js_path_0": js_path_0,
