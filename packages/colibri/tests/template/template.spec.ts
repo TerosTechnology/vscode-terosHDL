@@ -109,7 +109,7 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
 
     const C_OUTPUT_BASE_PATH = create_output(TEST_TYPE);
     language_array.forEach(language => {
-        describe.skip(`Check template ${language} element ${TEST_TYPE}`, function () {
+        describe(`Check template ${language} element ${TEST_TYPE}`, function () {
             const values = Object.values(common.get_template_names(language));
             values.forEach(template_type => {
                 it(`Check ${template_type.id}`, async function () {

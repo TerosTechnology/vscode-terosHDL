@@ -3,6 +3,10 @@
     "testEnvironment": "node",
     "collectCoverage": true,
     "coverageDirectory": "coverage",
+    "coveragePathIgnorePatterns": [
+        "src/config/config_declaration.ts",
+        "src/parser"
+    ],
     "reporters": [
         "default",
         [
