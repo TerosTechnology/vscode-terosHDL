@@ -5,17 +5,40 @@
 <head>
     <meta charset="utf-8" />
     <title>State machine viewer</title>
-    
-    <script type="text/javascript" src="{{js_path_0}}"></script> 
-    <script type="text/javascript" src="{{js_path_1}}"></script> 
-    <script type="text/javascript" src="{{js_path_3}}"></script> 
-    <script type="text/javascript" src="{{js_path_4}}"></script> 
+
+    <script type="text/javascript" src="{{js_path_0}}"></script>
+    <script type="text/javascript" src="{{js_path_1}}"></script>
+    <script type="text/javascript" src="{{js_path_3}}"></script>
+    <script type="text/javascript" src="{{js_path_4}}"></script>
 
     <div id="svg" style="text-align: center;"></div>
-    
-    <link rel="stylesheet" href="{{css_path}}" type="text/css" />
-    <link rel="stylesheet" href="{{css_bootstrap_path}}" type="text/css" />
-</head>
+
+
+    <link rel="stylesheet"
+        href="/home/carlos/repo/vscode-terosHDL/packages/teroshdl/resources/webviews/common/bootstrap.min.css"
+        type="text/css" />
+
+    <style>
+        .navbar-center {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Optional: If you want to control the width of the center section */
+        .navbar-center {
+            width: 100%;
+        }
+
+        button svg {
+            /* Establece el color del icono si el SVG no tiene un atributo fill */
+            fill: #ffffff;
+            /* Ajusta el tamaño del icono */
+            width: 20px;
+            height: 20px;
+            margin-bottom: 4px;
+            /* Puedes agregar otros estilos según tus necesidades */
+        }
+    </style>
 
 <body>
 
@@ -51,5 +74,6 @@
     </div>
 
 </body>
-    <script type="text/javascript" src="{{js_path_2}}"></script> 
+<script type="text/javascript" src="{{js_path_2}}"></script>
+
 </html>
