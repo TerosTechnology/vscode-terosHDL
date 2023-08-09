@@ -125,11 +125,13 @@ export class Creator extends Section_creator_interface {
         // Remove doxygen
         const doxygen_description = doxygen.parse_doxygen(description);
         // Parse wavedrom
-        const wavedrom_description_norm = this.parse_wavedrom(doxygen_description.text, svg_path_dir,
+        let wavedrom_description_norm = this.parse_wavedrom(doxygen_description.text, svg_path_dir,
             image_basename, output_type);
         // Normalize
-        const norm_description = utils.normalize_description(wavedrom_description_norm);
-        return norm_description;
+        if (output_type === common_documenter.doc_output_type.HTML) {
+            wavedrom_description_norm = utils.normalize_description(wavedrom_description_norm);
+        }
+        return wavedrom_description_norm;
     }
 
     parse_wavedrom(description: string,
