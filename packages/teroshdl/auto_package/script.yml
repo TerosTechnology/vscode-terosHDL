@@ -24,3 +24,6 @@
 
 - name: "package"
   command: "npm run pre-package & vsce package --yarn --allow-star-activation"
+
+- name: "auto-package"
+  command: "cd auto_package & ./gen.sh"
