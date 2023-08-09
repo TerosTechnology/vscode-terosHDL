@@ -71,7 +71,7 @@ export abstract class Base_linter {
 
     async exec_linter(file: string, options: common.l_options) {
         const file_dir = get_directory(file);
-        this.delete_previus_lint(file_dir);
+        await this.delete_previus_lint(file_dir);
 
         const command = this.get_command(file, options);
         
@@ -84,7 +84,7 @@ export abstract class Base_linter {
         };
         const result = await P.exec_wait(command, opt);
 
-        this.delete_previus_lint(file_dir);
+        await this.delete_previus_lint(file_dir);
         return result;
     }
 

@@ -59,17 +59,11 @@ export class Vivado extends Base_linter {
         const os = get_os();
         const p = new Process();
         if (os === OS.WINDOWS) {
-            let command = 'del xvhdl.pb && del xvhdl.log && rmdir xsim.dir';
-            await p.exec_wait(command, opt);
-
-            command = 'del xvlog.pb && del xvlog.log && rmdir xsim.dir';
+            const command = 'del xvhdl.pb && del xvhdl.log && del xvlog.pb && xvlog.log && rmdir xsim.dir';
             await p.exec_wait(command, opt);
         }
         else {
-            let command = 'rm xvhdl.pb; rm xvhdl.log; rm -R xsim.dir';
-            await p.exec_wait(command, opt);
-
-            command = 'rm xvlog.pb; rm xvlog.log; rm -R xsim.dir';
+            const command = 'rm xvhdl.pb; rm xvhdl.log; rm xvlog.pb; rm xvlog.log; rm -R xsim.dir';
             await p.exec_wait(command, opt);
         }
     }
