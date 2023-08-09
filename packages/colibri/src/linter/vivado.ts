@@ -30,7 +30,6 @@ import * as common from "./common";
 export class Vivado extends Base_linter {
     binary = "";
     extra_cmd = "-nolog";
-    sv_options = "--sv";
 
     constructor() {
         super();
@@ -39,16 +38,19 @@ export class Vivado extends Base_linter {
     public set_binary(file: string) {
         const file_lang = get_hdl_language(file);
         let binary = "";
+        let extra_cmd = "--sv";
         if (file_lang === HDL_LANG.VHDL) {
             binary = "xvhdl";
+            extra_cmd = ""; 
         }
         else if (file_lang === HDL_LANG.SYSTEMVERILOG) {
-            binary = `xvlog ${this.sv_options}`;
+            binary = "xvlog";
         }
         else {
             binary = "xvlog";
         }
         this.binary = binary;
+        this.extra_cmd += " " + extra_cmd;
     }
 
     async delete_previus_lint(working_dir: string) {
@@ -59,7 +61,8 @@ export class Vivado extends Base_linter {
         const os = get_os();
         const p = new Process();
         if (os === OS.WINDOWS) {
-            const command = 'del xvhdl.pb && del xvhdl.log && del xvlog.pb && xvlog.log && rmdir xsim.dir';
+            // eslint-disable-next-line max-len
+            const command = 'del xvhdl.pb && del xvhdl.log && del xvlog.pb && xvlog.log && rmdir xsim.dir && Remove-Item xsim.dir';
             await p.exec_wait(command, opt);
         }
         else {
