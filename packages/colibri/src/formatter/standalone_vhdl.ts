@@ -107,6 +107,7 @@ export class Standalone_vhdl extends Base_formatter {
 
         if (opt.new_line_after_port === cfg.e_formatter_standalone_new_line_after_port.new_line) {
             new_line_settings.newLineAfterPush('PORT');
+            new_line_settings.newLineAfterPush('PORT MAP');
         }
         else if (opt.new_line_after_port === cfg.e_formatter_standalone_new_line_after_port.no_new_line) {
             new_line_settings.noNewLineAfterPush('PORT');
