@@ -26,6 +26,7 @@ import { HDL_LANG } from "../common/general";
 
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
+import * as path_lib from "path";
 
 export class Vivado extends Base_linter {
     binary = "";
@@ -60,13 +61,22 @@ export class Vivado extends Base_linter {
 
         const os = get_os();
         const p = new Process();
+
+        const path_0 = path_lib.join(working_dir, "xvhdl.pb");
+        const path_1 = path_lib.join(working_dir, "xvhdl.log");
+
+        const path_2 = path_lib.join(working_dir, "xvlog.pb");
+        const path_3 = path_lib.join(working_dir, "xvlog.log");
+
+        const path_4 = path_lib.join(working_dir, "xsim.dir");
+
         if (os === OS.WINDOWS) {
             // eslint-disable-next-line max-len
-            const command = 'del xvhdl.pb && del xvhdl.log && del xvlog.pb && xvlog.log && rmdir xsim.dir && Remove-Item xsim.dir';
+            const command = `del ${path_0} && del ${path_1} && del ${path_2} && del ${path_3} && del -Recurse ${path_4} && Remove-Item -Recurse -Path ${path_4}`;
             await p.exec_wait(command, opt);
         }
         else {
-            const command = 'rm xvhdl.pb; rm xvhdl.log; rm xvlog.pb; rm xvlog.log; rm -R xsim.dir';
+            const command = `rm ${path_0}; rm ${path_1}; rm ${path_2}; rm ${path_3}; rm -R ${path_4}`;
             await p.exec_wait(command, opt);
         }
     }
