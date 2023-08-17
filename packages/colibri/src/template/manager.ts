@@ -61,8 +61,6 @@ export class Template_manager {
             return header + '\n';
         }
         catch (e) {
-            // eslint-disable-next-line no-console
-            console.log(e);
             return '';
         }
     }

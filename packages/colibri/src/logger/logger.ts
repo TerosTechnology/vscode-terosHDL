@@ -44,7 +44,7 @@ export class Logger {
             console.log(msg_comlete);
         }
         else if (this.mode === LOG_MODE.FILE) {
-            file_utils.save_file_sync(this.output_path, msg_comlete, true);
+            file_utils.save_file_sync(this.output_path, `${msg_comlete}\n`, true);
             return;
         }
     }
