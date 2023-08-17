@@ -24,8 +24,8 @@ import * as fs from 'fs';
 
 /**
  * Get the current operative system name
- * @returns OS
- */
+ * @returns Operative system
+**/
 export function get_os(): OS {
     const os_i = process.platform;
     if (os_i === "linux") {
@@ -41,9 +41,9 @@ export function get_os(): OS {
 
 /**
  * Get sentence for the current OS
- * @param  {e_sentence} sentence_type Sentence type
- * @returns string -> Sentence
- */
+ * @param sentence_type Sentence type
+ * @returns The string sentence
+*/
 export function get_sentence_os(sentence_type: e_sentence): string {
     const os = get_os();
     if (os === OS.WINDOWS) {
@@ -54,9 +54,14 @@ export function get_sentence_os(sentence_type: e_sentence): string {
     }
 }
 
+/**
+ * Get sentence for unix
+ * @param sentence_type Sentence type
+ * @returns The string sentence
+*/
 function get_sentence_unix(sentence_type: e_sentence): string {
     if (sentence_type === e_sentence.MORE) {
-        return ";"
+        return ";";
     }
     else if (sentence_type === e_sentence.EXPORT) {
         return "export";
@@ -64,12 +69,16 @@ function get_sentence_unix(sentence_type: e_sentence): string {
     else if (sentence_type === e_sentence.SWITCH) {
         return "";
     }
-    else if (sentence_type === e_sentence.FOLDER_SEP) {
+    else {
         return "/";
     }
-    return "";
 }
 
+/**
+ * Get sentence for windows
+ * @param sentence_type Sentence type
+ * @returns The string sentence
+*/
 function get_sentence_windows(sentence_type: e_sentence): string {
     if (sentence_type === e_sentence.MORE) {
         return "&&";
@@ -80,20 +89,18 @@ function get_sentence_windows(sentence_type: e_sentence): string {
     else if (sentence_type === e_sentence.SWITCH) {
         return "/D";
     }
-    else if (sentence_type === e_sentence.FOLDER_SEP) {
+    else  {
         return "\\";
     }
-    return "";
 }
 
 /**
  * Create a temporary file and write the content
- * @param  {string} content File content to write
- * @returns string -> Temporal file path
- */
+ * @param  content File content to write
+ * @returns Temporal file path
+**/
 export function create_temp_file(content: string): string {
     const temp = require('temp');
-    const fs = require('fs');
 
     const temp_file = temp.openSync();
     if (temp_file === undefined) {
@@ -106,8 +113,8 @@ export function create_temp_file(content: string): string {
 
 /**
  * Get the home directory path
- * @returns string -> Home directory path
- */
+ * @returns Home directory path
+**/
 export function get_home_directory(): string {
     const user_hom_dir = os_lib.homedir();
     return user_hom_dir;
@@ -115,20 +122,20 @@ export function get_home_directory(): string {
 
 /**
  * Get a random folder path in home directory
- * @returns string -> Random folder path
- */
+ * @returns Random folder path in home dir
+**/
 export function get_random_folder_in_home_directory(): string {
     const user_hom_dir = get_home_directory();
     const random_id = makeid(5);
-    const random_folder = path_lib.join(user_hom_dir, `.teroshdl_${random_id}_`)
+    const random_folder = path_lib.join(user_hom_dir, `.teroshdl_${random_id}_`);
     return random_folder;
 }
 
 /**
  * Delete directory and subdirectories
- * @param  {string} directory Directory path
- * @returns boolean -> true if successful, false if not
- */
+ * @param  directory Directory to delete
+ * @returns True if successful, false if not
+**/
 export function rm_directory(directory: string): boolean {
     try {
         fs.rmdirSync(directory, { recursive: true });
