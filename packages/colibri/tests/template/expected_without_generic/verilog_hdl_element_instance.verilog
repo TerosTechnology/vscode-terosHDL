@@ -1,0 +1,7 @@
+test_entity_name  test_entity_name_inst (
+    .a(a),
+    .b(b),
+    .c(c),
+    .d(d),
+    .e(e)
+  );

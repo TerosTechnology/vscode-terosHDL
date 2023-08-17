@@ -1,3 +1,4 @@
+
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import Timer
@@ -9,19 +10,24 @@ async def run_test(dut):
 
   dut.a = 0
   dut.b = 0
-  dut.c = 0
-  dut.d = 0
   dut.e = 0
-  await Timer(20*PERIOD, units='ns')
 
-  dut.a = 1
-  dut.b = 1
-  dut.c = 1
-  dut.d = 1
-  dut.e = 1
+
   await Timer(20*PERIOD, units='ns')
+  c = dut.c.value
+  d = dut.d.value
+
+
+  dut.a = 0
+  dut.b = 0
+  dut.e = 0
+
+
+  await Timer(20*PERIOD, units='ns')
+  c = dut.c.value
+  d = dut.d.value
+
 
 # Register the test.
 factory = TestFactory(run_test)
 factory.generate_tests()
-    

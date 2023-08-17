@@ -6,4 +6,3 @@ test_entity_name_inst : entity work.test_entity_name
     d => d,
     e => e
   );
-

@@ -51,6 +51,12 @@ export class TEMPLATE_NAME_VHDL {
         description: "Copy as instance",
         lang: LANG.VHDL
     };
+    static readonly HDL_ELEMENT_INSTANCE_NEW = {
+        name: "instance new",
+        id: "hdl_element_instance_vhdl_new",
+        description: "Copy as instance > VHDL 93",
+        lang: LANG.VHDL
+    };
     static readonly HDL_ELEMENT_SIGNAL = {
         name: "signal",
         id: "hdl_element_signal",
@@ -78,12 +84,7 @@ export class TEMPLATE_NAME_VHDL {
     };
 
     // private to disallow creating other instances of this type
-    private constructor(private readonly key: string, public readonly value: any) {
-    }
-
-    toString() {
-        return this.key;
-    }
+    // private constructor(private readonly key: string, public readonly value: any) {}
 }
 
 /** Templates types for Verilog/SV */
@@ -145,12 +146,7 @@ export class TEMPLATE_NAME_VERILOG {
     };
 
     // private to disallow creating other instances of this type
-    private constructor(private readonly key: string, public readonly value: any) {
-    }
-
-    toString() {
-        return this.key;
-    }
+    // private constructor(private readonly key: string, public readonly value: any) {}
 }
 
 /**

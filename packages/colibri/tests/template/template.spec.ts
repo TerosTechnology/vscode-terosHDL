@@ -26,8 +26,7 @@ import { equal } from "assert";
 import * as paht_lib from 'path';
 import * as fs from 'fs';
 
-const language_array = [HDL_LANG.VHDL];
-// const language_array = [HDL_LANG.VHDL, HDL_LANG.VERILOG];
+const language_array = [HDL_LANG.VHDL, HDL_LANG.VERILOG];
 
 async function generate_template_manager(language: HDL_LANG) {
     const template_manager = new Template_manager(language);
@@ -52,7 +51,12 @@ generic (
     c : signed;
     d : std_logic := '1';
     e : std_logic_vector := "10001";
-    f : std_logic_vector(5 downto 0)
+    f : std_logic_vector(5 downto 0);
+    gg : integer;
+    hg : string;
+    ig : boolean;
+    jg : std_logic_vector;
+    kg : std_logic;
   );
 port(
   g : in std_logic;
@@ -105,6 +109,16 @@ endmodule `,
 
 const TEST_TYPE_LIST = ["with_generic", "without_generic"];
 
+function get_default_config() : cfg_aux.t_template_options{
+    const default_config: cfg_aux.t_template_options = {
+        header_file_path: "",
+        indent_char: "  ",
+        instance_style: cfg.e_templates_general_instance_style.inline,
+        clock_generation_style: cfg.e_templates_general_clock_generation_style.ifelse
+    };
+    return default_config;
+}
+
 TEST_TYPE_LIST.forEach(TEST_TYPE => {
 
     const C_OUTPUT_BASE_PATH = create_output(TEST_TYPE);
@@ -113,9 +127,13 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
             const values = Object.values(common.get_template_names(language));
             values.forEach(template_type => {
                 it(`Check ${template_type.id}`, async function () {
+
+                    const config = get_default_config();
+                    
                     let code_hdl = verilog_code;
                     if (language === HDL_LANG.VHDL) {
                         code_hdl = vhdl_code;
+                        config.header_file_path = paht_lib.join(__dirname, "header.txt");
                     }
                     else {
                         code_hdl = verilog_code;
@@ -126,16 +144,9 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
                         counter = 1;
                     }
 
-                    const options: cfg_aux.t_template_options = {
-                        header_file_path: "",
-                        indent_char: "  ",
-                        instance_style: cfg.e_templates_general_instance_style.inline,
-                        clock_generation_style: cfg.e_templates_general_clock_generation_style.ifelse
-                    };
-
                     const template_manager = await generate_template_manager(language);
                     const inst_hdl = code_hdl[counter];
-                    const template = await template_manager.generate(inst_hdl, template_type.id, options);
+                    const template = await template_manager.generate(inst_hdl, template_type.id, config);
                     const output_path = paht_lib.join(C_OUTPUT_BASE_PATH,
                         `${language}_${template_type.id}.${language}`);
                     fs.writeFileSync(output_path, template);
@@ -150,5 +161,40 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
             });
 
         });
+    });
+});
+
+describe('Template utils', function () {
+    it('get_template_definition', async function () {
+        const template_vhdl = common.get_template_definition(HDL_LANG.VHDL);
+        equal(template_vhdl.description_list.length, 10);
+
+        const template_verilog = common.get_template_definition(HDL_LANG.VERILOG);
+        equal(template_verilog.description_list.length, 9);
+    });
+
+    it('parse error', async function () {
+        const bad_code = "";
+        const template_manager = new Template_manager(HDL_LANG.VHDL);
+        const result = await template_manager.generate(bad_code, "entity", get_default_config());
+        equal(result, "");
+
+        const template_manager_sverilog = new Template_manager(HDL_LANG.SYSTEMVERILOG);
+        const result_sverilog = await template_manager_sverilog.generate(bad_code, "entity", get_default_config());
+        equal(result_sverilog, "");
+    });
+
+    it('bad header', async function () {
+        const config = get_default_config();
+        config.header_file_path = paht_lib.join(__dirname, "header_bad.txt");
+
+        const template_manager = new Template_manager(HDL_LANG.VHDL);
+        const result = await template_manager.generate(vhdl_code[0], "hdl_element_instance", config);
+
+        const input_path = paht_lib.join(__dirname, "expected_with_generic", 
+            "vhdl_hdl_element_instance_no_header.vhdl");
+        const expected = read_file_sync(input_path);
+
+        equal(result, expected);
     });
 });

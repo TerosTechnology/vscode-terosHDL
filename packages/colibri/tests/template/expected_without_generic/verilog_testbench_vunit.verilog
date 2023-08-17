@@ -1,3 +1,4 @@
+
 `include "vunit_defines.svh"
 
 module test_entity_name_tb;
@@ -7,12 +8,11 @@ module test_entity_name_tb;
   //Ports
   reg [3:0] a;
   reg  b;
-  wire [3:0];
-  wire ;
-  wire ;
+  wire [3:0] c;
+  wire  d;
+  wire  e;
 
-  test_entity_name
-  test_entity_name_inst (
+  test_entity_name  test_entity_name_inst (
     .a(a),
     .b(b),
     .c(c),
@@ -25,10 +25,10 @@ module test_entity_name_tb;
     $display("Hello world");
   end
 
-//  initial begin
-//    begin
-//      $finish;
-//    end
-//  end
+//initial begin
+//begin
+//$finish;
+//end
+//end
 
 endmodule

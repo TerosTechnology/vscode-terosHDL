@@ -1,0 +1,9 @@
+component test_entity_name
+  port (
+    a : in std_logic_vector (3 downto 0);
+    b : in std_logic;
+    c : out std_logic_vector (3 downto 0);
+    d : out std_logic;
+    e : inout std_logic
+  );
+end component;

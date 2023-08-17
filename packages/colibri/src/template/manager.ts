@@ -93,9 +93,6 @@ export class Template_manager {
         parser.init();
 
         const code_tree = await parser.get_all(code, '}{}');
-        if (code_tree === undefined) {
-            return undefined;
-        }
         return code_tree;
     }
 
@@ -106,24 +103,21 @@ export class Template_manager {
      * @param  {common.t_options} options Template options
      */
     async generate(code: string, template_type: string, options: t_template_options) {
+        let norm_language = this.language;
+        if (this.language === HDL_LANG.SYSTEMVERILOG) {
+            norm_language = HDL_LANG.VERILOG;
+        }
+
         let template = '';
         const code_tree = await this.parse(code);
-        if (code_tree === undefined) {
+        if (code_tree === undefined || code_tree.name === "") {
             return template;
-        }
-        if (code_tree.name === '') {
-            return '';
         }
         // Get header
         const header = this.get_header(options.header_file_path);
         // Indent
         const indent = this.get_indent(options.indent_char);
         // Template parent
-        let norm_language = this.language;
-        if (this.language === HDL_LANG.SYSTEMVERILOG) {
-            norm_language = HDL_LANG.VERILOG;
-        }
-
         const name = code_tree.name;
         const generic = this.adapt_port(code_tree.get_generic_array(), template_type, true);
         // Set default value to generics

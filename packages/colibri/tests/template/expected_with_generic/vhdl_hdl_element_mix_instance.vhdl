@@ -1,11 +1,14 @@
-test_entity_name
-  # (
-    .a(a),
+test_entity_name # (
     .b(b),
     .c(c),
     .d(d),
     .e(e),
-    .f(f)
+    .f(f),
+    .gg(gg),
+    .hg(hg),
+    .ig(ig),
+    .jg(jg),
+    .kg(kg)
   )
   test_entity_name_inst (
     .g(g),

@@ -1,3 +1,4 @@
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -25,13 +26,12 @@ begin
     d => d,
     e => e
   );
-
---   clk_process : process
---   begin
---     clk <= '1';
---     wait for clk_period/2;
---     clk <= '0';
---     wait for clk_period/2;
---   end process clk_process;
+-- clk_process : process
+-- begin
+-- clk <= '1';
+-- wait for clk_period/2;
+-- clk <= '0';
+-- wait for clk_period/2;
+-- end process clk_process;
 
 end;

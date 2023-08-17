@@ -70,11 +70,6 @@ export function get_template(language: HDL_LANG, template_name: string, template
 
         options = verilog_options;
         reverse_options = vhdl_options;
-
-        // template_options["clock"] = env.renderString(template_definition_verilog.clock,
-        //     { "clock_style": clock_style });
-        // template_options["instance"] = env.renderString(template_definition_verilog.hdl_element_instance,
-        //     template_options);
     }
 
     let template_str = "";
@@ -121,35 +116,6 @@ export function get_template(language: HDL_LANG, template_name: string, template
 
 
     }
-
-    // if (HDL_LANG.VHDL) {
-    //     if (template_name === "hdl_element_instance") {
-    //         template_str = template_definition_verilog.hdl_element_instance;
-    //     }
-    //     else if (template_name === "hdl_element_signal") {
-    //         template_str = template_definition_verilog.hdl_element_signal;
-    //     }
-    //     else if (template_name === "testbench_normal") {
-    //         template_str = template_definition_verilog.testbench_normal;
-    //     }
-    //     else if (template_name === "testbench_vunit") {
-    //         template_str = template_definition_verilog.testbench_vunit;
-    //     }
-    // }
-    // else {
-    //     if (template_name === "hdl_element_instance") {
-    //         template_str = template_definition_verilog.hdl_element_instance;
-    //     }
-    //     else if (template_name === "hdl_element_signal") {
-    //         template_str = template_definition_verilog.hdl_element_signal;
-    //     }
-    //     else if (template_name === "testbench_normal") {
-    //         template_str = template_definition_verilog.testbench_normal;
-    //     }
-    //     else if (template_name === "testbench_vunit") {
-    //         template_str = template_definition_verilog.testbench_vunit;
-    //     }
-    // }
 
     const result = nunjucks.renderString(template_str, options);
     return result;

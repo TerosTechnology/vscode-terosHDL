@@ -1,5 +1,5 @@
-  reg r_[3:0] a;
-  reg r_b;
-  reg r_[3:0] c;
-  reg r_d;
-  reg r_e;
+  reg [3:0] a;
+  reg b;
+  reg [3:0] c;
+  reg d;
+  reg e;
