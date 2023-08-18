@@ -130,17 +130,3 @@ export function get_random_folder_in_home_directory(): string {
     const random_folder = path_lib.join(user_hom_dir, `.teroshdl_${random_id}_`);
     return random_folder;
 }
-
-/**
- * Delete directory and subdirectories
- * @param  directory Directory to delete
- * @returns True if successful, false if not
-**/
-export function rm_directory(directory: string): boolean {
-    try {
-        fs.rmdirSync(directory, { recursive: true });
-        return true;
-    } catch (err) {
-        return false;
-    }
-}

@@ -21,7 +21,8 @@ import { get_hdl_language } from "../utils/common_utils";
 import { HDL_LANG } from "../common/general";
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
-import { get_random_folder_in_home_directory, rm_directory } from "../process/utils";
+import { get_random_folder_in_home_directory } from "../process/utils";
+import { remove_directory } from "../utils/file_utils";
 
 export class Modelsim extends Base_linter {
     binary = "";
@@ -120,7 +121,7 @@ export class Modelsim extends Base_linter {
         const errors_str = result.stdout;
         const errors = this.parse_output(errors_str, file);
         // Remove work directory
-        rm_directory(work_directory);
+        remove_directory(work_directory);
         return errors;
     }
 }

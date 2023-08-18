@@ -26,20 +26,28 @@ export class Process {
         cwd: ""
     };
 
-    constructor(remote_config?: p_remote_configuration) {
-        if (typeof remote_config === undefined) {
-            this.p = new Local_process();
-        }
-        else {
-            this.p = new Local_process();
-        }
+    constructor(_remote_config?: p_remote_configuration) {
+        this.p = new Local_process();
     }
 
+    /**
+     * Exec the command and wait for the result
+     * @param command Command to execute
+     * @param opt Options: cwd -> cmd working directory
+     * @returns Result of the execution
+    **/
     async exec_wait(command: string, opt?: p_options): Promise<p_result> {
         const opt_ins = (typeof opt === 'undefined') ? this.DEFAULT_OPT : opt;
         return <p_result>await this.p?.exec_wait(command, opt_ins);
     }
 
+    /**
+     * Exec the command
+     * @param command Command to execute
+     * @param opt Options: cwd -> cmd working directory
+     * @param callback Callback function
+     * @returns Result of the execution
+    **/
     exec(command: string, opt: p_options | undefined, callback: (result: p_result) => void) {
         const opt_ins = (typeof opt === 'undefined') ? this.DEFAULT_OPT : opt;
         const exec_i = this.p?.exec(command, opt_ins, (result: p_result) => {

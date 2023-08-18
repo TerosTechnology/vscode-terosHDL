@@ -108,5 +108,5 @@ describe("Process utils", () => {
 
         expect(true).toBe(result.startsWith(fake_homedir));
         spy.mockRestore();
-    });    
+    });
 });
