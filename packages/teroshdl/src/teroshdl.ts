@@ -1,5 +1,6 @@
-// Copyright 2022
+// Copyright 2023
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
+// Ismael Perez Rojo [ismaelprojo@gmail.com]
 //
 // This file is part of TerosHDL
 //

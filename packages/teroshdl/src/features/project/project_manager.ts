@@ -1,17 +1,15 @@
-// Copyright 2020-2021 Teros Technology
+// Copyright 2023
+// Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
+// Ismael Perez Rojo [ismaelprojo@gmail.com]
 //
-// Ismael Perez Rojo
-// Carlos Alberto Ruiz Naranjo
-// Alfredo Saez
+// This file is part of TerosHDL
 //
-// This file is part of TerosHDL.
-//
-// TerosHDL is free software: you can redistribute it and/or modify
+// Colibri is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// TerosHDL is distributed in the hope that it will be useful,
+// Colibri is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.

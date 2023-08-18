@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/class-name-casing */
-// Copyright 2022 
+// Copyright 2023
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
+// Ismael Perez Rojo [ismaelprojo@gmail.com]
 //
-// This file is part of teroshdl
+// This file is part of TerosHDL
 //
 // Colibri is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,9 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with teroshdl. If not, see <https://www.gnu.org/licenses/>.
+// along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
+
+/* eslint-disable @typescript-eslint/class-name-casing */
 
 import { Multi_project_manager } from "teroshdl2/out/project_manager/multi_project_manager";
 import * as vscode from "vscode";

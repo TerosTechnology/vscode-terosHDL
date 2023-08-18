@@ -1,5 +1,6 @@
-// Copyright 2022 
+// Copyright 2023
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
+// Ismael Perez Rojo [ismaelprojo@gmail.com]
 //
 // This file is part of TerosHDL
 //
@@ -15,6 +16,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
+
 import * as vscode from 'vscode';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
