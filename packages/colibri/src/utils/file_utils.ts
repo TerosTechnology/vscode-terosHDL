@@ -163,6 +163,10 @@ export function get_absolute_path(current_directory: string, path: string): stri
  * @returns Direcotry of path
 **/
 export function get_directory(path: string): string {
+    const is_file = check_if_file(path);
+    if (!is_file){
+        return path;
+    }
     return path_lib.dirname(path);
 }
 
