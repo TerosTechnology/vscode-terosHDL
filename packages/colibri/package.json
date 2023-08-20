@@ -79,7 +79,7 @@
         "svgdom": "^0.0.21",
         "temp": "0.9.4",
         "tiny-glob": "^0.2.9",
-        "wavedrom": "2.6.8",
+        "wavedrom": "3.3.0",
         "web-tree-sitter": "^0.20.7"
     },
     "devDependencies": {
