@@ -172,7 +172,6 @@ export class Creator extends Section_creator_interface {
         const svg_diagrams = [];
 
         const wavedrom = require('wavedrom');
-        const render = require('bit-field/lib/render');
         const onml = require('onml');
 
         let counter = 0;
@@ -186,20 +185,8 @@ export class Creator extends Section_creator_interface {
                 ++counter;
             }
             catch (error) {
-                try {
-                    const json = json5.parse(json_candidates[i]);
-                    const options = {
-                        hspace: 888
-                    };
-                    const jsonml = render(json, options);
-                    const diagram_svg = onml.stringify(jsonml);
-
-                    svg_diagrams.push(diagram_svg);
-                    description = description.replace(json_candidates[i], "\n" + "$cholosimeone$" + counter + " \n");
-                    ++counter;
-                }
                 // eslint-disable-next-line no-console
-                catch (error) { console.log(""); }
+                console.log("");
             }
         }
         return { description: description, wavedrom: svg_diagrams };
