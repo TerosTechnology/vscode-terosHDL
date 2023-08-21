@@ -17,9 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { get_os } from "../process/utils";
-import { Process } from "../process/process";
-import { OS, p_options } from "../process/common";
+import {rm_sync} from "../utils/file_utils";
 
 import { get_hdl_language } from "../utils/common_utils";
 import { HDL_LANG } from "../common/general";
@@ -55,30 +53,11 @@ export class Vivado extends Base_linter {
     }
 
     async delete_previus_lint(working_dir: string) {
-        const opt: p_options = {
-            cwd: working_dir,
-        };
-
-        const os = get_os();
-        const p = new Process();
-
-        const path_0 = path_lib.join(working_dir, "xvhdl.pb");
-        const path_1 = path_lib.join(working_dir, "xvhdl.log");
-
-        const path_2 = path_lib.join(working_dir, "xvlog.pb");
-        const path_3 = path_lib.join(working_dir, "xvlog.log");
-
-        const path_4 = path_lib.join(working_dir, "xsim.dir");
-
-        if (os === OS.WINDOWS) {
-            // eslint-disable-next-line max-len
-            const command = `del ${path_0} && del ${path_1} && del ${path_2} && del ${path_3} && del -Recurse ${path_4} && Remove-Item -Recurse -Path ${path_4} && rmdir /s /q ${path_4}`;
-            await p.exec_wait(command, opt);
-        }
-        else {
-            const command = `rm ${path_0}; rm ${path_1}; rm ${path_2}; rm ${path_3}; rm -R ${path_4}`;
-            await p.exec_wait(command, opt);
-        }
+        const file_list_to_delte = ["xvhdl.pb", "xvhdl.log", "xvlog.pb", "xvlog.log", "xsim.dir"];
+        file_list_to_delte.forEach(element => {
+            const full_path = path_lib.join(working_dir, element);
+            rm_sync(full_path, true);
+        });
     }
 
     async lint(file: string, options: common.l_options): Promise<common.l_error[]> {

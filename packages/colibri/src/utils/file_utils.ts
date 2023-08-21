@@ -199,6 +199,19 @@ export function remove_file(file_path: string) {
     catch (err) { }
 }
 
+/**
+ * Remove file/directory
+ * @param path File/directory path
+ * @param recursive Recursive delete
+*/
+export function rm_sync(path: string, recursive: boolean) {
+    try {
+        fs.rmSync(path, {recursive: recursive});
+    }
+    // eslint-disable-next-line no-empty
+    catch (err) { }
+}
+
 
 /**
  * Get all files or files and directories in a directory
