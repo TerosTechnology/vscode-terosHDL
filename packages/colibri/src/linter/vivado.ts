@@ -72,7 +72,7 @@ export class Vivado extends Base_linter {
 
         if (os === OS.WINDOWS) {
             // eslint-disable-next-line max-len
-            const command = `del ${path_0} && del ${path_1} && del ${path_2} && del ${path_3} && del -Recurse ${path_4} && Remove-Item -Recurse -Path ${path_4}`;
+            const command = `del ${path_0} && del ${path_1} && del ${path_2} && del ${path_3} && del -Recurse ${path_4} && Remove-Item -Recurse -Path ${path_4} && rmdir /s /q ${path_4}`;
             await p.exec_wait(command, opt);
         }
         else {
