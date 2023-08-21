@@ -212,7 +212,6 @@ export function rm_sync(path: string, recursive: boolean) {
     catch (err) { }
 }
 
-
 /**
  * Get all files or files and directories in a directory
  * @param dirname Directory path
