@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import {
-    t_file_reduced, t_script, t_parameter, e_script_stage, t_action_result, t_watcher,
+    t_file_reduced, t_action_result, t_watcher,
     e_watcher_type
 } from "./common";
 import * as  manager_watcher from "./list_manager/watcher";
@@ -135,37 +135,55 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Hook
     ////////////////////////////////////////////////////////////////////////////
-    public add_hook(script: t_script, stage: e_script_stage)
-        : t_action_result {
-        return this.hooks.add(script, stage);
-    }
+    // public add_hook(script: t_script, stage: e_script_stage)
+    //     : t_action_result {
+    //     return this.hooks.add(script, stage);
+    // }
 
-    public delete_hook(script: t_script, stage: e_script_stage)
-        : t_action_result {
-        return this.hooks.delete(script, stage);
-    }
+    // public delete_hook(script: t_script, stage: e_script_stage)
+    //     : t_action_result {
+    //     return this.hooks.delete(script, stage);
+    // }
 
     ////////////////////////////////////////////////////////////////////////////
     // Parameters
     ////////////////////////////////////////////////////////////////////////////
-    add_parameter(parameter: t_parameter): t_action_result {
-        return this.parameters.add(parameter);
-    }
+    // add_parameter(parameter: t_parameter): t_action_result {
+    //     return this.parameters.add(parameter);
+    // }
 
-    delete_parameter(parameter: t_parameter): t_action_result {
-        return this.parameters.delete(parameter);
-    }
+    // delete_parameter(parameter: t_parameter): t_action_result {
+    //     return this.parameters.delete(parameter);
+    // }
 
     ////////////////////////////////////////////////////////////////////////////
     // Toplevel
     ////////////////////////////////////////////////////////////////////////////
+    /**
+     * Add top level path to project. Delete de previous one.
+     * @param toplevel_path_inst Top level path to add.
+     * @returns Operation result
+    **/
     add_toplevel_path(toplevel_path_inst: string): t_action_result {
         this.toplevel_path.clear();
         return this.toplevel_path.add(toplevel_path_inst);
     }
 
+    /**
+     * Delete top level path to project.
+     * @param toplevel_path_inst Top level path to delete.
+     * @returns Operation result
+    **/
     delete_toplevel_path(toplevel_path_inst: string): t_action_result {
         return this.toplevel_path.delete(toplevel_path_inst);
+    }
+
+    /**
+     * Get top level path.
+     * @returns Top level path.
+    **/
+    get_toplevel_path(): string[] {
+        return this.toplevel_path.get();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -329,6 +347,10 @@ export class Project_manager {
         const result = this.files.delete(name, logical_name);
         this.delete_phantom_toplevel();
         return result;
+    }
+
+    get_file() : t_file_reduced[]{
+        return this.files.get();
     }
 
     delete_file_by_logical_name(logical_name: string) {

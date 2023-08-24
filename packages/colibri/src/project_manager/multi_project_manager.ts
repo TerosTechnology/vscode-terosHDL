@@ -17,7 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_file_reduced, t_script, t_parameter, e_script_stage, t_action_result, t_watcher, } from "./common";
+// import { t_file_reduced, t_script, t_parameter, e_script_stage, t_action_result, t_watcher, } from "./common";
+import { t_file_reduced, t_action_result, t_watcher, } from "./common";
 import { Config_manager } from "../config/config_manager";
 import { e_clean_step } from "./tool/common";
 import { Project_manager } from "./project_manager";
@@ -357,52 +358,52 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Hook
     ////////////////////////////////////////////////////////////////////////////
-    public add_hook(prj_name: string, script: t_script, stage: e_script_stage)
-        : t_action_result {
-        const prj = this.get_project_by_name(prj_name);
-        if (prj === undefined) {
-            this.save();
-            return this.get_project_not_exist();
-        }
-        const result = prj.add_hook(script, stage);
-        this.save();
-        return result;
-    }
+    // public add_hook(prj_name: string, script: t_script, stage: e_script_stage)
+    //     : t_action_result {
+    //     const prj = this.get_project_by_name(prj_name);
+    //     if (prj === undefined) {
+    //         this.save();
+    //         return this.get_project_not_exist();
+    //     }
+    //     const result = prj.add_hook(script, stage);
+    //     this.save();
+    //     return result;
+    // }
 
-    public delete_hook(prj_name: string, script: t_script, stage: e_script_stage)
-        : t_action_result {
-        const prj = this.get_project_by_name(prj_name);
-        if (prj === undefined) {
-            this.save();
-            return this.get_project_not_exist();
-        }
-        const result = prj.delete_hook(script, stage);
-        this.save();
-        return result;
-    }
+    // public delete_hook(prj_name: string, script: t_script, stage: e_script_stage)
+    //     : t_action_result {
+    //     const prj = this.get_project_by_name(prj_name);
+    //     if (prj === undefined) {
+    //         this.save();
+    //         return this.get_project_not_exist();
+    //     }
+    //     const result = prj.delete_hook(script, stage);
+    //     this.save();
+    //     return result;
+    // }
 
     ////////////////////////////////////////////////////////////////////////////
     // Parameters
     ////////////////////////////////////////////////////////////////////////////
-    add_parameter(prj_name: string, parameter: t_parameter): t_action_result {
-        const prj = this.get_project_by_name(prj_name);
-        if (prj === undefined) {
-            return this.get_project_not_exist();
-        }
-        const result = prj.add_parameter(parameter);
-        this.save();
-        return result;
-    }
+    // add_parameter(prj_name: string, parameter: t_parameter): t_action_result {
+    //     const prj = this.get_project_by_name(prj_name);
+    //     if (prj === undefined) {
+    //         return this.get_project_not_exist();
+    //     }
+    //     const result = prj.add_parameter(parameter);
+    //     this.save();
+    //     return result;
+    // }
 
-    delete_parameter(prj_name: string, parameter: t_parameter): t_action_result {
-        const prj = this.get_project_by_name(prj_name);
-        if (prj === undefined) {
-            return this.get_project_not_exist();
-        }
-        const result = prj.delete_parameter(parameter);
-        this.save();
-        return result;
-    }
+    // delete_parameter(prj_name: string, parameter: t_parameter): t_action_result {
+    //     const prj = this.get_project_by_name(prj_name);
+    //     if (prj === undefined) {
+    //         return this.get_project_not_exist();
+    //     }
+    //     const result = prj.delete_parameter(parameter);
+    //     this.save();
+    //     return result;
+    // }
 
     ////////////////////////////////////////////////////////////////////////////
     // Toplevel
