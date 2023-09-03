@@ -65,11 +65,11 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
         this.files = new_files;
     }
 
-    get(reference_path?: string): t_file[] {
-        if (reference_path !== undefined){
+    get(reference_file_path?: string): t_file[] {
+        if (reference_file_path !== undefined){
             const new_files =  [...this.files];
             for (let i = 0; i < new_files.length; i++) {
-                new_files[i].name = file_utils.get_relative_path(new_files[i].name, reference_path);
+                new_files[i].name = file_utils.get_relative_path(new_files[i].name, reference_file_path);
             }
             return new_files;
         }
@@ -145,12 +145,19 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
         return result;
     }
 
-    delete_by_logical_name(logical_name: string) {
+    delete_by_logical_name(logical_name: string) : t_action_result{
+        const result: t_action_result = {
+            result: "",
+            successful: false,
+            msg: ""
+        };
         this.files.forEach(file_inst => {
             if (logical_name === file_inst.logical_name) {
                 this.delete(file_inst.name, logical_name);
+                result.successful = true;
             }
         });
+        return result;
     }
 
     add_logical(logical_name: string) {

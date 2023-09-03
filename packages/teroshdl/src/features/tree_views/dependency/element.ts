@@ -37,7 +37,7 @@ export class Dependency extends vscode.TreeItem {
 
     constructor(path: string, entity_name: string, children?: any[]) {
         super(
-            entity_name,
+            teroshdl2.utils.file.get_filename(entity_name, true),
             children === undefined ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.Collapsed
         );
         // Common

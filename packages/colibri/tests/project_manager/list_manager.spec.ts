@@ -70,7 +70,7 @@ describe('list_manager: file', () => {
     });
 
     test('get with reference path', () => {
-        const ref_path = "/path/to/";
+        const ref_path = "/path/to/pepe.txt";
         const file = {
             name: '/path/example.py',
             is_include_file: false,

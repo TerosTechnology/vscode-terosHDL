@@ -32,7 +32,7 @@ export function get_full_path(path: string): string {
 /**
  * Get relative path from other **file**
  * @param path Path to get the relative
- * @param reference_path Reference path
+ * @param reference_path Reference file path
  * @returns Relative path
 **/
 export function get_relative_path(path: string, reference_path: string): string {

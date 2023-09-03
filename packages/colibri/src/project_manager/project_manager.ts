@@ -43,6 +43,7 @@ import { l_error } from "../linter/common";
 import { Linter } from "../linter/linter";
 import { t_linter_name, l_options } from "../linter/common";
 import { Vunit } from "./tool/vunit/vunit";
+import { csv_loader } from "./prj_loaders/csv_loader";
 
 export class Project_manager {
     /**  Name of the project */
@@ -283,59 +284,13 @@ export class Project_manager {
     }
 
     add_file_from_csv(csv_path: string, is_manual: boolean): t_action_result {
-        const csv_content = file_utils.read_file_sync(csv_path);
-        const file_list_array = csv_content.split(/\r?\n|\r/);
-        for (let i = 0; i < file_list_array.length; ++i) {
-            const element = file_list_array[i].trim();
-            if (element !== '') {
-                try {
-                    let proc_error = false;
-                    let lib_inst = "";
-                    let file_inst = "";
-                    const element_split = element.split(',');
-                    if (element_split.length === 1) {
-                        file_inst = element.split(',')[0].trim();
-                    }
-                    else if (element_split.length === 2) {
-                        lib_inst = element.split(',')[0].trim();
-                        file_inst = element.split(',')[1].trim();
-                    }
-                    else {
-                        proc_error = true;
-                    }
-
-                    if (proc_error === false) {
-                        if (lib_inst === "") {
-                            lib_inst = "";
-                        }
-                        const dirname_csv = file_utils.get_directory(csv_path);
-                        const complete_file_path = file_utils.get_absolute_path(dirname_csv, file_inst);
-
-                        const file_edam: t_file_reduced = {
-                            name: complete_file_path,
-                            is_include_file: false,
-                            include_path: "",
-                            logical_name: lib_inst,
-                            is_manual: is_manual
-                        };
-                        this.add_file(file_edam);
-                    }
-                }
-                catch (e) {
-                    const result: t_action_result = {
-                        result: undefined,
-                        successful: false,
-                        msg: "Error processing CSV."
-                    };
-                    return result;
-                }
-            }
+        const result = csv_loader(csv_path, is_manual);
+        const result_file_list = <t_file_reduced[]>result.result;
+        if (result.successful === true) {
+            result_file_list.forEach(file => {
+                this.add_file(file);
+            });
         }
-        const result: t_action_result = {
-            result: undefined,
-            successful: true,
-            msg: ""
-        };
         return result;
     }
 
