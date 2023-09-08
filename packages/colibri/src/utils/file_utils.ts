@@ -180,7 +180,11 @@ export function create_directory(folder_path: string, recursive = true) {
  * @param path Folder path
 */
 export function remove_directory(folder_path: string) {
-    fs.rmdirSync(folder_path, { recursive: true });
+    try {
+        fs.rmSync(folder_path, { recursive: true });
+    }
+    // eslint-disable-next-line no-empty
+    catch (err) { }
 }
 
 /**
@@ -202,7 +206,7 @@ export function remove_file(file_path: string) {
 */
 export function rm_sync(path: string, recursive: boolean) {
     try {
-        fs.rmSync(path, {recursive: recursive});
+        fs.rmSync(path, { recursive: recursive });
     }
     // eslint-disable-next-line no-empty
     catch (err) { }
@@ -218,7 +222,7 @@ export function read_directory(dirname: string, include_dir: boolean): string[] 
     if (check_if_path_exist(dirname)) {
         result = fs.readdirSync(dirname);
     }
-    const complete_result : string[] = [];
+    const complete_result: string[] = [];
     for (let index = 0; index < result.length; index++) {
         const element = path_lib.join(dirname, result[index]);
         if (check_if_file(element) || include_dir === true) {
@@ -260,10 +264,10 @@ export function find_files_by_extensions_dir_and_subdir(directory_path: string, 
  * @param path Path to normalize
  * @returns path normalized
 **/
-export function normalize_path(path: string) : string {
+export function normalize_path(path: string): string {
     const regex = /[\s\t]/;
 
-    if (regex.test(path)){
+    if (regex.test(path)) {
         return `"${path}"`;
     }
     return path;
