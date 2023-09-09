@@ -304,7 +304,7 @@ export class Creator extends Section_creator_interface {
             }
         });
 
-        if (generics.length === 0 && port_list.length === 0) {
+        if (generics.length === 0 && port_list.length === 0 && virtual_buses_to_show.length === 0) {
             return '';
         }
         let md = "";

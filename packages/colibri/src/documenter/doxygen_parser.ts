@@ -222,7 +222,10 @@ export function get_virtual_bus(port_list: common_hdl.Port_hdl[]) {
             if (index < number_of_ports - 1 && virtual_port_end.is_in === false) {
                 virtual_port_end = parse_virtualbus_end(port_list[index + 1].over_comment);
                 if (virtual_port_end.is_in === true) {
-                    port_list[index + 1].info.description = port_list[index + 1].info.description.replace('@end', '');
+                    port_list[index + 1].info.description = 
+                        port_list[index + 1].info.description.replace('@end', '').trim();
+                    port_list[index + 1].info.description = 
+                        port_list[index + 1].over_comment.replace('@end', '').trim();
                 }
             }
             else if (index === number_of_ports - 1 && virtual_port_end.is_in === false) {
