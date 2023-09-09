@@ -9,14 +9,14 @@
 **Check the full documentation:** [https://terostechnology.github.io](https://terostechnology.github.io/)
 
 
-The goal of TerosHDL is to provide an open source IDE for HDL devlopers with functionalities commonly used by software developers. The IDE consist in a bunch of tools and on top of them is the VSCode plugin. Some tools are developed by Teros Technology organization and others come from open source proyects. All the tools are organized in different backends and exposed to the GUI with the plugin.
+The goal of TerosHDL is to provide an open source IDE for HDL developers with functionalities commonly used by software developers. The IDE consist in a bunch of tools and on top of them is the VSCode plugin. Some tools are developed by Teros Technology organization and others come from open source projects. All the tools are organized in different backends and exposed to the GUI with the plugin.
 
 The IDE tries to be as much self-contained as possible and simplify the installation process. Features:
 
 - Simulators and tools support: [Raptor](https://rapidsilicon.com/raptor/), Vivado, ModelSim, GHDL, Verilator, Icarus, VCS, Yosys, VUnit, cocotb, Diamond, Icestorm, ISE, Quartus, Radiant, Spyglass, Symbiflow, Trellis, Xcelium... and more!
 - Go to definition.
 - Hover.
-- Hiterachy viewer.
+- Hierarchy viewer.
 - Dependencies viewer.
 - Syntax highlighting.
 - Template generator.
