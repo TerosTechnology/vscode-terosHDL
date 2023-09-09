@@ -99,10 +99,10 @@ export class Parser_fsm_base {
             const transitions = i_state.transitions;
             const state_name = i_state.name;
             if (emptys.includes(state_name) === true || gosth.includes(state_name) === true) {
-                sm_states += `${state_name} [color="red"]`;
+                sm_states += `${state_name} [color="red" type=regular]`;
             }
             else {
-                sm_states += `${state_name}`;
+                sm_states += `${state_name} [type=regular]`;
             }
             if (i !== num_states - 1) {
                 sm_states += ',';
