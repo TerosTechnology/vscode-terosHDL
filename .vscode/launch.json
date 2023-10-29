@@ -41,10 +41,10 @@
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/packages/teroshdl/out/**/*.js",
-        "/home/carlos/repo/vscode-terosHDL/packages/colibri/out/*.js",
-        "/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/*.js",
-        "/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/**/*.js",
-        "/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/**/*/*.js"
+        "${workspaceFolder}/packages/colibri/out/*.js",
+        "${workspaceFolder}/packages/colibri/out/**/*.js",
+        "${workspaceFolder}/packages/colibri/out/**/**/*.js",
+        "${workspaceFolder}/packages/colibri/out/**/**/*/*.js"
       ],
       "preLaunchTask": "npm: watch",
       "request": "launch",
