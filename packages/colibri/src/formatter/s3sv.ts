@@ -17,64 +17,56 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-const fs = require("fs");
-const path_lib = require("path");
+import * as path_lib from "path";
 import { Base_formatter } from "./base_formatter";
-import * as file_utils from "../utils/file_utils";
-import * as utils from "../process/utils";
-import * as python from "../process/python";
+import { read_file_sync } from "../utils/file_utils";
 import * as common from "./common";
 import * as cfg from "../config/config_declaration";
 import * as logger from "../logger/logger";
+import {Pyodide} from "../process/pyodide";
 
 export class S3sv extends Base_formatter {
     constructor() {
         super();
     }
 
-    public async format_from_code(code: string, opt: cfg.e_formatter_s3sv,
-        python_path: string): Promise<common.f_result> {
-        const temp_file = await utils.create_temp_file(code);
-        const formatted_code = await this.format(temp_file, opt, python_path);
-        file_utils.remove_file(temp_file);
-        return formatted_code;
-    }
+    public async format_from_code(code: string, opt: cfg.e_formatter_s3sv): Promise<common.f_result> {
 
-    public async format(file: string, opt: cfg.e_formatter_s3sv, python_path: string) {
-        const python_script = path_lib.join(__dirname, 'bin', 's3sv', 'verilog_beautifier.py');
-        //Argument construction from members parameters
-        let args = " ";
+        const python_file = path_lib.join(__dirname, 'bin', 's3sv', 's3sv.py');
+        const python_code = read_file_sync(python_file);
 
-        args += `-s ${opt.indentation_size} `;
-        if (opt.use_tabs) {
-            args += "--use-tabs ";
-        }
-        if (!opt.one_bind_per_line) {
-            args += "--no-oneBindPerLine ";
-        }
-
-        if (opt.one_declaration_per_line) {
-            args += "--oneDeclPerLine ";
-        }
-        args += `-i ${file}`;
-
-        const command = `python_path ${python_script} ${args}`;
-        const msg = `Formatting with command: ${command} `;
-        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
-
-        const result_p = await python.exec_python_script(python_path, python_script, args);
-
-        const result_f: common.f_result = {
-            code_formatted: "",
-            command: result_p.command,
-            successful: result_p.successful,
-            message: ""
+        const args = {
+            codein: code,
+            indentation_size: opt.indentation_size,
+            use_tabs: opt.use_tabs,
+            one_bind_per_line: opt.one_bind_per_line,
+            one_declaration_per_line: opt.one_declaration_per_line
         };
 
-        if (result_p.successful === true) {
-            const code_formatted = fs.readFileSync(file, 'utf8');
-            result_f.code_formatted = code_formatted;
+        const pyodide = new Pyodide();
+        const result = await pyodide.exec_python_code(python_code, [], args);
+
+        const formatter_result = {
+            code_formatted: code,
+            command: "",
+            successful: result.successful,
+            message: result.stderr + result.stdout
+        };
+
+        if (result.successful) {
+            formatter_result.code_formatted = result.return_value;
         }
+
+        return formatter_result;
+    }
+
+    public async format(file: string, opt: cfg.e_formatter_s3sv) {
+        const msg = `Formatting with command s3sv `;
+        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
+
+        const code = read_file_sync(file);
+        const result_f = await this.format_from_code(code, opt);
+
         return result_f;
     }
 }
