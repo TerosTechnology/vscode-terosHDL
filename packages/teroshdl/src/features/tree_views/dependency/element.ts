@@ -78,6 +78,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     data: TreeItem[] = [];
     private project_manager: Multi_project_manager;
     private hdl_tree: any;
+    private current_hdl_tree: any;
 
     constructor(project_manager: Multi_project_manager) {
         super();
@@ -102,7 +103,17 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         }
 
         // Dependencies
-        const current_dep = await this.get_deps(toplevel_path);
+        if (this.hdl_tree === undefined){
+            return [];
+        }
+        let current_dep : any = undefined;
+        for (let i = 0; i < this.hdl_tree.length; i++) {
+            const element = this.hdl_tree[i];
+            if (element.filename === toplevel_path) {
+                current_dep = element;
+            }
+        }
+        // const current_dep = await this.get_deps(toplevel_path);
         if (current_dep === undefined){
             return [];
         }
@@ -161,6 +172,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         if (hdl_tree === undefined){
             return undefined;
         }
+        this.current_hdl_tree = hdl_tree;
         for (let i = 0; i < this.hdl_tree.length; i++) {
             const element = this.hdl_tree[i];
             if (element.filename === top_path) {
