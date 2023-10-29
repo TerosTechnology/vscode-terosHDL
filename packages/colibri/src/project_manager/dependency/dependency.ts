@@ -24,59 +24,171 @@ import * as process_utils from "../../process/utils";
 import * as utils from "../utils/utils";
 import * as python from "../../process/python";
 import * as path_lib from 'path';
-
-
-// import graphviz from 'graphviz-wasm';
+import { Pyodide, PACKAGE_MAP, python_result } from "../../process/pyodide";
 
 export class Dependency_graph {
-    // private dependency_graph_svg = "";
-    private init = false;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Pyodide
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public async get_dependency_graph_svg(file_list: t_file[], python_path: string)
-        : Promise<t_action_result> {
-        const dependencies = await this.create_dependency_graph(file_list, python_path);
-        return dependencies;
-        if (dependencies.successful === false) {
-            return dependencies;
-        }
+    /**
+     * Exec Python code using Pyodide
+     * @param  file_list List of project files
+     * @param  python_script_name Python script name
+     * @returns Pyodide result
+    **/
+    private async run_pydodide(file_list: t_file[], python_script_name: any) : Promise<python_result>{
+        // Get python code
+        const python_script_path = path_lib.join(__dirname, `${python_script_name}.py`);
+        const python_script_content = file_utils.read_file_sync(python_script_path);
 
-        if (this.init === false) {
-            this.init = true;
-            // await graphviz.loadWASM();
-        }
+        // Get file mapped in Pyodide
+        const hdl_file_list = this.clean_non_hdl_files(file_list);
+        const file_list_reduced: string[] = [];
+        hdl_file_list.forEach(hdl_file_list => {
+            file_list_reduced.push(hdl_file_list.name);
+        });
 
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        try {
-            return new Promise(function (resolve) {
-                // const svg = graphviz.layout(dependencies.result);
-                const result_return: t_action_result = {
-                    result: 'svg',
-                    successful: true,
-                    msg: ""
-                };
+        const pyodide = new Pyodide();
+        const file_list_map = await pyodide.write_file_list(file_list_reduced);
 
-                resolve(result_return);
-                // element.viz.renderString(dependencies.result).then(function (tps: string) {
-                //     const result_return: t_action_result = {
-                //         result: tps,
-                //         successful: true,
-                //         msg: ""
-                //     };
+        type t_file_map = t_file & {
+            name_map: string;
+        };
 
-                //     resolve(result_return);
-                // });
-            });
-        } catch (e) {
-            const result_return: t_action_result = {
-                result: "",
-                successful: false,
-                msg: "Error generting dependency graph"
+        const prj_file_list_map: t_file_map[] = [];
+        file_list.forEach((file_inst, i) => {
+            const file_map: t_file_map = {
+                name: file_inst.name,
+                name_map: "/" + file_list_map[i],
+                file_type: file_inst.file_type,
+                is_include_file: file_inst.is_include_file,
+                include_path: file_inst.include_path,
+                logical_name: file_inst.logical_name,
+                is_manual: file_inst.is_manual,
             };
-            return result_return;
-        }
+            prj_file_list_map.push(file_map);
+        });
+
+        const args = {
+            "project_sources": prj_file_list_map,
+        };
+
+        const result = await pyodide.exec_python_code(python_script_content, [PACKAGE_MAP.vunit], args);
+        return result;
     }
 
-    public async get_compile_order(file_list: t_file[], python_path: string) : Promise<t_action_compile_order>{
+    /**
+     * Get project compile order using Pyodide
+     * @param  file_list List of project files
+     * @returns Compile order
+    **/
+    public async get_compile_order_pyodide(file_list: t_file[]): Promise<t_action_compile_order> {
+        const result = await this.run_pydodide(file_list, "vunit_compile_order_pyodide");
+
+        const result_return: t_action_compile_order = {
+            file_order: [],
+            successful: false,
+            msg: ""
+        };
+
+        const compile_order: t_file[] = [];
+        if (result.successful) {
+            try {
+                const rawdata = JSON.parse(result.return_value);
+                for (let i = 0; i < rawdata.length; i++) {
+                    const file_inst: t_file = {
+                        name: rawdata[i].name,
+                        file_type: utils.get_file_type(rawdata[i].name),
+                        is_include_file: false,
+                        include_path: "",
+                        logical_name: rawdata[i].logical_name,
+                        is_manual: false,
+                    };
+                    compile_order.push(file_inst);
+                }
+                result_return.file_order = compile_order;
+                result_return.successful = true;
+
+            } catch (e) {
+                result_return.msg = `${result.stderr}'\n'${result.stdout}\nError processing compile order output.`;
+            }
+        }
+        else {
+            result_return.successful = false;
+            result_return.msg = `${result.stderr}'\n'${result.stdout}`;
+        }
+        return result_return;
+    }
+
+
+    /**
+     * Get dependency tree using Pyodide
+     * @param  file_list List of project files
+     * @returns Dependency tree
+    **/
+    public async get_dependency_tree_pyodide(file_list: t_file[]) {
+        const result = await this.run_pydodide(file_list, "vunit_dependencies_standalone_pyodide");
+
+        const result_return: t_action_result = {
+            result: "",
+            successful: true,
+            msg: ""
+        };
+
+        if (result.successful === true) {
+            try {
+                const dep_tree = JSON.parse(result.return_value);
+                result_return.result = dep_tree;
+                result_return.successful = true;
+            } catch (e) {
+                result_return.successful = false;
+                result_return.msg = result.stderr + '\n' + result.stdout;
+                return result_return;
+            }
+        }
+        else {
+            result_return.successful = false;
+            result_return.msg = result.stderr + '\n' + result.stdout;
+        }
+        return result_return;
+    }
+
+    /**
+     * Get dependency graph representation using Pyodide
+     * @param  file_list List of project files
+     * @returns Dependency graph
+    **/
+    private async create_dependency_graph_pyodide(file_list: t_file[]) {
+        const result = await this.run_pydodide(file_list, "vunit_dependency_pyodide");
+
+        const result_return: t_action_result = {
+            result: "",
+            successful: true,
+            msg: ""
+        };
+
+        if (result.successful === true) {
+            result_return.result = result.return_value;
+        }
+        else {
+            result_return.successful = false;
+            result_return.msg = result.stderr + '\n' + result.stdout;
+        }
+        return result_return;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Pure Python
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public async get_dependency_graph_svg(file_list: t_file[], _python_path: string)
+        : Promise<t_action_result> {
+        const dependencies = await this.create_dependency_graph_pyodide(file_list);
+        return dependencies;
+    }
+
+    public async get_compile_order(file_list: t_file[], python_path: string): Promise<t_action_compile_order> {
         const hdl_file_list = this.clean_non_hdl_files(file_list);
 
         const project_files_json = JSON.stringify(hdl_file_list);
@@ -93,13 +205,13 @@ export class Dependency_graph {
             msg: ""
         };
 
-        const compile_order : t_file[] = [];
+        const compile_order: t_file[] = [];
 
         if (result.successful) {
             try {
-                const rawdata =  JSON.parse(file_utils.read_file_sync(compile_order_output));
+                const rawdata = JSON.parse(file_utils.read_file_sync(compile_order_output));
                 for (let i = 0; i < rawdata.length; i++) {
-                    const file_inst : t_file = {
+                    const file_inst: t_file = {
                         name: rawdata[i].name,
                         file_type: utils.get_file_type(rawdata[i].name),
                         is_include_file: false,
@@ -193,34 +305,33 @@ export class Dependency_graph {
         return hdl_file_list;
     }
 
-    private async create_dependency_graph(file_list: t_file[], python_path: string) {
-        const hdl_file_list = this.clean_non_hdl_files(file_list);
+    // private async create_dependency_graph(file_list: t_file[], python_path: string) {
+    //     const hdl_file_list = this.clean_non_hdl_files(file_list);
 
-        // Create a temporal file with the json project
-        const project_files_json = JSON.stringify(hdl_file_list);
-        const tmp_filepath = process_utils.create_temp_file(project_files_json);
+    //     // Create a temporal file with the json project
+    //     const project_files_json = JSON.stringify(hdl_file_list);
+    //     const tmp_filepath = process_utils.create_temp_file(project_files_json);
 
-        const python_script_path = path_lib.join(__dirname, "vunit_dependency.py");
-        const result = await python.exec_python_script(python_path, python_script_path, tmp_filepath);
+    //     const python_script_path = path_lib.join(__dirname, "vunit_dependency.py");
+    //     const result = await python.exec_python_script(python_path, python_script_path, tmp_filepath);
 
-        const result_return: t_action_result = {
-            result: "",
-            successful: true,
-            msg: ""
-        };
+    //     const result_return: t_action_result = {
+    //         result: "",
+    //         successful: true,
+    //         msg: ""
+    //     };
 
-        if (result.return_value === 0) {
-            result_return.result = result.stdout;
-        }
-        else {
-            result_return.successful = false;
-            result_return.msg = result.stderr + '\n' + result.stdout;
-        }
+    //     if (result.return_value === 0) {
+    //         result_return.result = result.stdout;
+    //     }
+    //     else {
+    //         result_return.successful = false;
+    //         result_return.msg = result.stderr + '\n' + result.stdout;
+    //     }
 
-        // Remove temporal file
-        file_utils.remove_file(tmp_filepath);
+    //     // Remove temporal file
+    //     file_utils.remove_file(tmp_filepath);
 
-        return result_return;
-    }
-
+    //     return result_return;
+    // }
 }

@@ -79,9 +79,8 @@ class Formatter {
     public async format(code) {
         const formatter_name = this.get_formatter_name();
         const formater_config = this.get_formatter_config();
-        const python_path = this.get_pytyon_path();
         const formatter = new teroshdl2.formatter.formatter.Formatter();
-        const result = await formatter.format_from_code(formatter_name, code, formater_config, python_path);
+        const result = await formatter.format_from_code(formatter_name, code, formater_config);
         if (result.successful === false){
             this.logger.info("Error format code.");
             this.logger.debug(result.command);

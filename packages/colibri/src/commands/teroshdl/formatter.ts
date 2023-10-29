@@ -235,7 +235,7 @@ export default class MyCLI extends Command {
             const current_code = file_utils.read_file_sync(filename);
             const formatted_code =
                 (await formatter_manager.format_from_code(get_formatter_name(formatter_name), current_code,
-                    formatter_options, python_path)).code_formatted;
+                    formatter_options)).code_formatted;
             let error = false;
             if (current_code !== formatted_code) {
                 error = true;

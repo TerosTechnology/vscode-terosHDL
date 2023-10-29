@@ -28,8 +28,7 @@ export class Standalone_vhdl extends Base_formatter {
         super();
     }
 
-    public async format_from_code(code: string, opt: cfg.e_formatter_standalone, 
-        _installation_path: string): Promise<common.f_result> {
+    public async format_from_code(code: string, opt: cfg.e_formatter_standalone): Promise<common.f_result> {
         try {
             const code_formatted = <string>beautify(code, this.get_settings(opt));
             const result: common.f_result = {
@@ -50,10 +49,9 @@ export class Standalone_vhdl extends Base_formatter {
         }
     }
 
-    public async format(file: string, opt: cfg.e_formatter_standalone,
-        installation_path: string): Promise<common.f_result> {
+    public async format(file: string, opt: cfg.e_formatter_standalone): Promise<common.f_result> {
         const file_content = file_utils.read_file_sync(file);
-        const result = this.format_from_code(file_content, opt, installation_path);
+        const result = this.format_from_code(file_content, opt);
         return result;
     }
 

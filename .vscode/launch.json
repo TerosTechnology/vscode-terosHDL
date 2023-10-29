@@ -3,52 +3,52 @@
 // Hover to view descriptions of existing attributes.
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Python: current file",
-			"type": "python",
-			"request": "launch",
-			"program": "${file}",
-			"console": "integratedTerminal",
-			"sudo": false,
-			"cwd": "${fileDirname}"
-		},
-		{
-			"type": "node",
-			"request": "launch",
-			"name": "Debug Active Spec",
-			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/mocha",
-			"runtimeArgs": [
-			  "--colors",
-			  "--spec",
-			  "${file}"
-			],
-			// "port": 9229,
-			"outputCapture": "std",
-			"skipFiles": [
-			  "<node_internals>/**/*.js"
-			],
-			"preLaunchTask": "npm: compile"
-			// "smartStep": true
-		  },
-		{
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}/packages/teroshdl"
-			],
-			"name": "Run Extension",
-			"sourceMaps": true,
-			"outFiles": [
-				"${workspaceFolder}/packages/teroshdl/out/**/*.js",
-				"/home/carlos/repo/vscode-terosHDL/packages/colibri/out/*.js",
-				"/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/*.js",
-				"/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/**/*.js",
-				"/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/**/*/*.js",
-
-			],
-			"preLaunchTask": "npm: watch",
-			"request": "launch",
-			"type": "extensionHost"
-		},
-	]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: current file",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "sudo": false,
+      "cwd": "${fileDirname}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest Current File",
+      "program": "${workspaceFolder}/packages/colibri/node_modules/jest/bin/jest",
+      "args": ["${fileBasenameNoExtension}"],
+      "cwd": "${workspaceFolder}/packages/colibri",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "runtimeArgs": ["--experimental-vm-modules", "--inspect-brk=0"],
+      "windows": {
+        "program": "${workspaceFolder}/packages/colibri/node_modules/jest/bin/jest"
+      },
+    //   "preLaunchTask": "npm: compile"
+    },
+    {
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/teroshdl"
+      ],
+      "name": "Run Extension",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/packages/teroshdl/out/**/*.js",
+        "/home/carlos/repo/vscode-terosHDL/packages/colibri/out/*.js",
+        "/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/*.js",
+        "/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/**/*.js",
+        "/home/carlos/repo/vscode-terosHDL/packages/colibri/out/**/**/*/*.js"
+      ],
+      "preLaunchTask": "npm: watch",
+      "request": "launch",
+      "type": "extensionHost"
+    }
+  ]
 }
