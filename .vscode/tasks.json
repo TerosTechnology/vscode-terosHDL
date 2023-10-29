@@ -4,6 +4,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "teros watch",
 			"type": "npm",
 			"options": {
 				"cwd": "packages/teroshdl"
@@ -17,7 +18,27 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
+			},
+			"dependsOn": [
+				"compile colibri"
+			],
+		},
+		{
+			"label": "compile colibri",
+			"type": "npm",
+			"problemMatcher": "$tsc",
+			"options": {
+				"cwd": "packages/colibri"
+			},
+			"script": "compile",
+			"isBackground": false,
+			"presentation": {
+				"reveal": "never"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
 			}
-		}
+		},
 	]
 }

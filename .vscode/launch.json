@@ -31,7 +31,6 @@
       "windows": {
         "program": "${workspaceFolder}/packages/colibri/node_modules/jest/bin/jest"
       },
-    //   "preLaunchTask": "npm: compile"
     },
     {
       "args": [
@@ -46,7 +45,7 @@
         "${workspaceFolder}/packages/colibri/out/**/**/*.js",
         "${workspaceFolder}/packages/colibri/out/**/**/*/*.js"
       ],
-      "preLaunchTask": "npm: watch",
+      "preLaunchTask": "teros watch",
       "request": "launch",
       "type": "extensionHost"
     }
