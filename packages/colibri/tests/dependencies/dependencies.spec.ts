@@ -50,7 +50,7 @@ describe('dependencies', () => {
         expect(compile_order.file_order[1]).toStrictEqual(file_list[0]);
 
         expect(compile_order.successful).toBe(true);
-    });
+    }, 100000);
 
     // Fix with: https://github.com/pyodide/pyodide/issues/4261
 

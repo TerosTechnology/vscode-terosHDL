@@ -57,7 +57,7 @@ export class Dependency_graph {
         };
 
         const prj_file_list_map: t_file_map[] = [];
-        file_list.forEach((file_inst, i) => {
+        hdl_file_list.forEach((file_inst, i) => {
             const file_map: t_file_map = {
                 name: file_inst.name,
                 name_map: "/" + file_list_map[i],
