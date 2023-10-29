@@ -7,6 +7,11 @@
         "src/config/config_declaration.ts",
         "src/parser"
     ],
+    "coverageReporters": [
+        "text",
+        "clover",
+        "cobertura"
+    ],
     "reporters": [
         "default",
         [

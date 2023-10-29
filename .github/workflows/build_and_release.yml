@@ -5,6 +5,8 @@ on:
     branches:
       - dev
   pull_request:
+    branches:
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -17,7 +19,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-  
+
       - name: Set version stable
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/dev'
         run: |
@@ -52,7 +54,7 @@ jobs:
           cd packages/teroshdl
           yarn install
 
-      - name: Build 
+      - name: Build
         id: build
         run: |
           npm install -g @vscode/vsce
@@ -83,7 +85,7 @@ jobs:
           automatic_release_tag: "${{ env.version }}"
           files: |
             *.vsix
-    
+
       - uses: "marvinpinto/action-automatic-releases@latest"
         if: github.ref == 'refs/heads/dev'
         with:

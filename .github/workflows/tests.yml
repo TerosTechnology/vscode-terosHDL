@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  colibri-tests:
+    name: Colibri
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run
+        run: |
+          cd packages/colibri
+          npm install
+          npm test
+
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: |
+            packages/colibri/test-report/test-report.html
+      
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: packages/colibri/coverage/cobertura-coverage.xml
+          fail_below_min: true
+          thresholds: '45 60'
+          indicators: true
