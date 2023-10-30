@@ -20,7 +20,7 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
 import { Logger } from '../logger';
 
@@ -29,14 +29,14 @@ let formatter_verilog: Formatter | undefined = undefined;
 
 class Formatter {
 
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
     private lang: teroshdl2.common.general.HDL_LANG;
     private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(lang: teroshdl2.common.general.HDL_LANG, manager: Multi_project_manager, logger: Logger) {
+    constructor(lang: teroshdl2.common.general.HDL_LANG, manager: t_Multi_project_manager, logger: Logger) {
         this.manager = manager;
         this.lang = lang;
         this.logger = logger;
@@ -94,12 +94,12 @@ class Formatter {
 
 export class Formatter_manager {
     private logger: Logger;
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, logger: Logger, manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager) {
 
         this.logger = logger;
         this.manager = manager;

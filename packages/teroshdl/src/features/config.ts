@@ -20,22 +20,22 @@
 
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
 import * as nunjucks from 'nunjucks';
 
 export class Config_manager {
 
     protected context: vscode.ExtensionContext;
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
     private panel: vscode.WebviewPanel | undefined = undefined;
     private web_content: string;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager) {
-
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
+        
         this.context = context;
         this.manager = manager;
         this.web_content = teroshdl2.config.WEB_CONFIG;

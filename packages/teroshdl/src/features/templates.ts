@@ -20,18 +20,18 @@
 import * as vscode from 'vscode';
 import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../type_declaration';
 import { Logger } from '../logger';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Template_manager {
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
     private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context, logger: Logger, manager: Multi_project_manager) {
+    constructor(context, logger: Logger, manager: t_Multi_project_manager) {
         this.logger = logger;
         this.manager = manager;
         vscode.commands.registerCommand("teroshdl.generate_template", () => this.get_template());

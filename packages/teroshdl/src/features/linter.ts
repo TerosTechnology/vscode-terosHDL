@@ -20,7 +20,7 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
 
 enum LINTER_MODE {
@@ -33,14 +33,14 @@ class Linter {
     private uri_collections: vscode.Uri[] = [];
 
     private mode: LINTER_MODE;
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
     private lang: teroshdl2.common.general.HDL_LANG;
     private linter = new teroshdl2.linter.linter.Linter();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(mode: LINTER_MODE, lang: teroshdl2.common.general.HDL_LANG, manager: Multi_project_manager) {
+    constructor(mode: LINTER_MODE, lang: teroshdl2.common.general.HDL_LANG, manager: t_Multi_project_manager) {
         this.manager = manager;
         this.mode = mode;
         this.lang = lang;
@@ -276,13 +276,13 @@ class Linter {
 }
 
 export class Linter_manager {
-    protected manager: Multi_project_manager;
+    protected manager: t_Multi_project_manager;
     private linter_list: Linter[] = [];
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
 
         this.manager = manager;
 

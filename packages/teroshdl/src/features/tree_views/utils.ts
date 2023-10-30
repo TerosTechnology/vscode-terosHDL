@@ -20,7 +20,7 @@
 import * as path_lib from "path";
 import * as vscode from "vscode";
 import * as teroshdl2 from 'teroshdl2';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../../type_declaration';
 import * as utils from "./utils";
 
 const BASE_PATH_ICON = path_lib.join(__filename, "..", "..", "..", "..", "resources", "icon");
@@ -87,7 +87,7 @@ export async function get_from_input_box(prompt: string, place_holder: string) {
     return value;
 }
 
-export async function add_sources_from_open_dialog(project_manager: Multi_project_manager, prj_name: string, logical_name: string) {
+export async function add_sources_from_open_dialog(project_manager: t_Multi_project_manager, prj_name: string, logical_name: string) {
     const source_path_list = await get_from_open_dialog("Add sources", false, true, true,
         "Select source file", { 'All files (*.*)': ['*'] });
     source_path_list.forEach(source_path => {
@@ -102,7 +102,7 @@ export async function add_sources_from_open_dialog(project_manager: Multi_projec
     });
 }
 
-export async function add_sources_from_directory_and_subdirectories(project_manager: Multi_project_manager, 
+export async function add_sources_from_directory_and_subdirectories(project_manager: t_Multi_project_manager, 
     prj_name: string, allow_subdirectories: boolean) {
 
     const directory_list = await get_from_open_dialog("Select directory", true, false, true,
@@ -135,7 +135,7 @@ export async function add_sources_from_directory_and_subdirectories(project_mana
     });
 }
 
-export async function add_sources_from_vunit(project_manager: Multi_project_manager, prj_name: string, is_manual: boolean) {
+export async function add_sources_from_vunit(project_manager: t_Multi_project_manager, prj_name: string, is_manual: boolean) {
     const path_list = await utils.get_from_open_dialog("Select run.py", false, true, true,
         "Select VUnit run.py files", { 'Python files (*.py)': ['py'] });
     path_list.forEach(async path => {
@@ -143,7 +143,7 @@ export async function add_sources_from_vunit(project_manager: Multi_project_mana
     });
 }
 
-export async function add_sources_from_vivado(project_manager: Multi_project_manager, prj_name: string, is_manual: boolean) {
+export async function add_sources_from_vivado(project_manager: t_Multi_project_manager, prj_name: string, is_manual: boolean) {
     const path_list = await utils.get_from_open_dialog("Select Vivado project", false, true, true,
         "Select Vivado project", { 'Vivado project (*.xpr)': ['xpr'] });
     path_list.forEach(async path => {

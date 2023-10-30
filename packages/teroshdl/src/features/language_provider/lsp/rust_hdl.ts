@@ -12,7 +12,7 @@ import vscode = require('vscode');
 import { ExtensionContext } from 'vscode';
 import util = require('util');
 import * as teroshdl2 from 'teroshdl2';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../../../type_declaration';
 
 const exec = util.promisify(require('child_process').exec);
 
@@ -35,10 +35,10 @@ export class Rusthdl_lsp {
     private client!: LanguageClient;
     private context: ExtensionContext;
     private languageServerDisposable;
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
     public stop_client: boolean = false;
 
-    constructor(context: ExtensionContext, manager: Multi_project_manager) {
+    constructor(context: ExtensionContext, manager: t_Multi_project_manager) {
         this.context = context;
         this.manager = manager;
     }

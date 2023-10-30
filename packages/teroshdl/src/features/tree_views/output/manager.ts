@@ -20,7 +20,7 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from "vscode";
 import * as element from "./element";
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../../../type_declaration';
 import {e_clean_step} from 'teroshdl2/out/project_manager/tool/common';
 
 import * as teroshdl2 from 'teroshdl2';
@@ -30,13 +30,13 @@ import {Logger} from "../../../logger";
 export class Output_manager {
     private tree: element.ProjectProvider;
     private run_output_manager: Run_output_manager;
-    private project_manager : Multi_project_manager;
+    private project_manager : t_Multi_project_manager;
     private logger : Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager,
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
         run_output_manager: Run_output_manager, logger: Logger) {
 
         this.run_output_manager = run_output_manager;
