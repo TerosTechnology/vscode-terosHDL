@@ -21,7 +21,7 @@ import * as opn from 'open';
 import * as vscode from 'vscode';
 import * as shelljs from 'shelljs';
 import { Base_webview } from './web';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../../type_declaration';
 import { OS } from "teroshdl2/out/process/common";
 import { get_os } from "teroshdl2/out/process/utils";
 import * as path_lib from 'path';
@@ -29,11 +29,11 @@ import { Logger } from '../../logger';
 
 export class Comander {
 
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
     private report_webview: Base_webview;
     private logger: Logger;
 
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, logger: Logger) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logger: Logger) {
         this.manager = manager;
         this.report_webview = new Base_webview(context);
         this.logger = logger;

@@ -22,7 +22,7 @@ import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../type_declaration';
 import { Base_webview } from './base_webview';
 import * as os from 'os';
 import * as fs from 'fs';
@@ -44,7 +44,7 @@ export class Schematic_manager extends Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, logger: Logger, manager: Multi_project_manager, 
+    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager, 
         mode_project: boolean) {
 
         super(context, manager, path_lib.join(context.extensionPath, 'resources', 'webviews', 

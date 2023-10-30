@@ -20,7 +20,7 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from './type_declaration';
 
 import { Language_provider_manager } from "./features/language_provider/language_provider";
 import { Template_manager } from "./features/templates";
@@ -36,8 +36,8 @@ import { Config_manager } from "./features/config";
 import { Tree_view_manager } from "./features/tree_views/manager";
 import * as teroshdl2 from 'teroshdl2';
 import * as events from "events";
-import {Comander} from "./features/comander/run";
-import {Logger} from "./logger";
+import { Comander } from "./features/comander/run";
+import { Logger } from "./logger";
 import { Dependency_manager } from './features/dependency';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
@@ -45,9 +45,9 @@ const PRJ_FILENAME = '.teroshdl2_prj.json';
 
 export class Teroshdl {
     private context: vscode.ExtensionContext;
-    private manager: Multi_project_manager;
-    private emitter : events.EventEmitter = new events.EventEmitter();
-    private global_logger : Logger;
+    private manager: t_Multi_project_manager;
+    private emitter: events.EventEmitter = new events.EventEmitter();
+    private global_logger: Logger;
 
     constructor(context: vscode.ExtensionContext, global_logger: Logger) {
 
@@ -55,12 +55,13 @@ export class Teroshdl {
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
 
-        this.manager = new Multi_project_manager("", file_config_path, file_prj_path, this.emitter);
+        this.manager = new teroshdl2.project_manager.multi_project_manager.Multi_project_manager(
+            "", file_config_path, file_prj_path, this.emitter);
         this.context = context;
         this.global_logger = global_logger;
     }
 
-    public init_teroshdl(){
+    public init_teroshdl() {
         this.init_language_provider();
         this.global_logger.debug("activated language provider")
 
@@ -151,7 +152,7 @@ export class Teroshdl {
         new Config_manager(this.context, this.manager);
     }
 
-    private init_tree_views(schematic_manager : Schematic_manager, dependency_manager : Dependency_manager) {
+    private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
         new Tree_view_manager(this.context, this.manager, this.emitter, schematic_manager,
             dependency_manager, this.global_logger);
     }

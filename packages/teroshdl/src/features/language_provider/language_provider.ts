@@ -25,7 +25,7 @@ import { CtagsManager } from "./ctags/ctags";
 import { Logger } from "./ctags/Logger";
 
 import * as vscode from 'vscode';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../../type_declaration';
 import * as rusthdl_lib from './lsp/rust_hdl';
 
 export type e_provider = {
@@ -35,7 +35,7 @@ export type e_provider = {
     'def': any
 };
 export class Language_provider_manager {
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
     private ctagsManager: CtagsManager | undefined;
 
     private provider_list: e_provider;
@@ -44,7 +44,7 @@ export class Language_provider_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
         
         this.context = context;
         this.manager = manager;

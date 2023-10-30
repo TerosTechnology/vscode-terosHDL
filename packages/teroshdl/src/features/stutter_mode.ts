@@ -29,7 +29,7 @@ import {
     TextEdit,
 } from 'vscode';
 
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../type_declaration';
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 
@@ -38,12 +38,12 @@ const TRIGGER_CHARACTERS = [';', '.', "'", ',', '[', ']', '-', '\n'];
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Stutter_mode_manager {
-    private manager: Multi_project_manager;
+    private manager: t_Multi_project_manager;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
 
         this.manager = manager;
 

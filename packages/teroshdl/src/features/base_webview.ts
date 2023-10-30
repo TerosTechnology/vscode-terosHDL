@@ -18,13 +18,13 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as vscode from 'vscode';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
 
 // eslint-disable-next-line @typescript-eslint/class-name-casing
 export abstract class Base_webview {
     protected context: vscode.ExtensionContext;
-    protected manager: Multi_project_manager;
+    protected manager: t_Multi_project_manager;
 
     protected subscriptions: vscode.Disposable[] | undefined;
 
@@ -36,7 +36,7 @@ export abstract class Base_webview {
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext,
-        manager: Multi_project_manager, webview_html_path: string, activation_command: string, id: string) {
+        manager: t_Multi_project_manager, webview_html_path: string, activation_command: string, id: string) {
 
             this.context = context;
             this.manager = manager;

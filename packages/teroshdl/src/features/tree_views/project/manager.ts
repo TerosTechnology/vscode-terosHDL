@@ -20,7 +20,7 @@
 import * as vscode from "vscode";
 import * as element from "./element";
 import * as path_lib from "path";
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../../../type_declaration';
 import * as teroshdl2 from 'teroshdl2';
 import * as events from "events";
 import * as utils from "../utils";
@@ -29,7 +29,7 @@ import {Logger} from "../../../logger";
 
 export class Project_manager {
     private tree : element.ProjectProvider;
-    private project_manager : Multi_project_manager;
+    private project_manager : t_Multi_project_manager;
     private emitter : events.EventEmitter;
     private run_output_manager : Run_output_manager;
     private context : vscode.ExtensionContext;
@@ -38,7 +38,7 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, emitter : events.EventEmitter,
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter : events.EventEmitter,
         run_output_manager: Run_output_manager, global_logger : Logger) {
         this.set_commands();
 

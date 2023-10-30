@@ -21,20 +21,20 @@
 import * as vscode from "vscode";
 import * as element from "./element";
 import * as path_lib from "path";
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../../../type_declaration';
 import * as events from "events";
 import * as utils from "../utils";
 import * as teroshdl2 from "teroshdl2";
 
 export class Watcher_manager {
     private tree : element.ProjectProvider;
-    private project_manager : Multi_project_manager;
+    private project_manager : t_Multi_project_manager;
     private emitter : events.EventEmitter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, emitter : events.EventEmitter) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter : events.EventEmitter) {
         this.set_commands();
 
         this.emitter = emitter;

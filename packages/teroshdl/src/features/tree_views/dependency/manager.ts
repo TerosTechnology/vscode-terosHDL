@@ -20,7 +20,7 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from "vscode";
 import * as element from "./element";
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../../../type_declaration';
 import {Schematic_manager} from "../../schematic";
 import {Dependency_manager} from "../../dependency";
 
@@ -32,7 +32,7 @@ export class Tree_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager, schematic_manager : Schematic_manager,
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, schematic_manager : Schematic_manager,
         dependency_manager : Dependency_manager) {
         this.set_commands();
 

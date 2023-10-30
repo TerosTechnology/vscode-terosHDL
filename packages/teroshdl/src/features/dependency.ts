@@ -21,7 +21,7 @@ import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
 import * as teroshdl2 from 'teroshdl2';
-import { Multi_project_manager } from 'teroshdl2/out/project_manager/multi_project_manager';
+import { t_Multi_project_manager } from '../type_declaration';
 import * as nunjucks from 'nunjucks';
 import { Logger } from '../logger';
 
@@ -33,7 +33,7 @@ export class Dependency_manager {
     private logger: Logger;
     private context: vscode.ExtensionContext;
     protected panel: vscode.WebviewPanel | undefined;
-    protected manager: Multi_project_manager;
+    protected manager: t_Multi_project_manager;
     private init: boolean = false;
     private viz : any = undefined;
     private dependencies : string = "";
@@ -41,7 +41,7 @@ export class Dependency_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, logger: Logger, manager: Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager) {
 
         const activation_command = 'teroshdl.dependency.viewer';
         const id = "dependency_viewer";
