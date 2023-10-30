@@ -114,7 +114,7 @@ export async function add_sources_from_directory_and_subdirectories(project_mana
         hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.HDL_EXTENSIONS.VERILOG);
         hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.HDL_EXTENSIONS.VHDL);
 
-        let file_list : string[] = []
+        let file_list : string[] = [];
         if (allow_subdirectories){
             file_list = teroshdl2.utils.file.find_files_by_extensions_dir_and_subdir(directory_inst, hdl_extension_list);
         }

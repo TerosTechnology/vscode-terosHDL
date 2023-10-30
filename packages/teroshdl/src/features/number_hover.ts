@@ -21,7 +21,6 @@ import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 import * as utils from '../utils/utils';
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Number_hover_manager {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

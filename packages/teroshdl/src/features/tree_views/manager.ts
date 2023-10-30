@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/class-name-casing */
 // Copyright 2023
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
 // Ismael Perez Rojo [ismaelprojo@gmail.com]
@@ -45,7 +44,7 @@ let run_output: Run_output_manager = new Run_output_manager();
 let actions_manager: Actions_manager;
 let watcher_manager: Watcher_manager;
 let output_manager: Output_manager;
-let multi_manager: t_Multi_project_manager
+let multi_manager: t_Multi_project_manager;
 
 export class Tree_view_manager {
     private logger: Logger = new Logger();
@@ -105,7 +104,7 @@ export class Tree_view_manager {
         type t_lib = {
             name: string,
             files: string[]
-        }
+        };
 
         let libraries: t_lib[] = [];
 
@@ -126,7 +125,7 @@ export class Tree_view_manager {
                 let new_library: t_lib = {
                     name: source.logical_name,
                     files: [source.name]
-                }
+                };
                 libraries.push(new_library);
             }
         }

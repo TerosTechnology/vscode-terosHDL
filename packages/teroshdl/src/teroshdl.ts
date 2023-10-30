@@ -22,7 +22,7 @@ import * as path_lib from 'path';
 
 import { t_Multi_project_manager } from './type_declaration';
 
-import { Language_provider_manager } from "./features/language_provider/language_provider";
+import { LanguageProviderManager } from "./features/language_provider/language_provider";
 import { Template_manager } from "./features/templates";
 import { Documenter_manager } from "./features/documenter";
 import { State_machine_manager } from "./features/state_machine";
@@ -63,49 +63,49 @@ export class Teroshdl {
 
     public init_teroshdl() {
         this.init_language_provider();
-        this.global_logger.debug("activated language provider")
+        this.global_logger.debug("activated language provider");
 
         this.init_template_manager();
-        this.global_logger.debug("activated template manager")
+        this.global_logger.debug("activated template manager");
 
         this.init_documenter();
-        this.global_logger.debug("activated documenter")
+        this.global_logger.debug("activated documenter");
 
         this.init_state_machine();
-        this.global_logger.debug("activated state machine")
+        this.global_logger.debug("activated state machine");
 
         const schematic = this.init_schematic();
-        this.global_logger.debug("activated schematic")
+        this.global_logger.debug("activated schematic");
 
         this.init_linter();
-        this.global_logger.debug("activated linter")
+        this.global_logger.debug("activated linter");
 
         this.init_formatter();
-        this.global_logger.debug("activated formatter")
+        this.global_logger.debug("activated formatter");
 
         this.init_completions();
-        this.global_logger.debug("activated completions")
+        this.global_logger.debug("activated completions");
 
         this.init_number_hover();
-        this.global_logger.debug("activated hover")
+        this.global_logger.debug("activated hover");
 
         this.init_shutter_mode();
-        this.global_logger.debug("activated shutter mode")
+        this.global_logger.debug("activated shutter mode");
 
         this.init_config();
-        this.global_logger.debug("activated config viewer")
+        this.global_logger.debug("activated config viewer");
 
         const dependency = this.init_dependency();
         this.init_tree_views(schematic, dependency);
-        this.global_logger.debug("activated views")
+        this.global_logger.debug("activated views");
 
         this.init_comander();
-        this.global_logger.debug("activated comander")
+        this.global_logger.debug("activated comander");
     }
 
     private init_language_provider() {
-        const lang_provider = new Language_provider_manager(this.context, this.manager);
-        lang_provider.configure()
+        const lang_provider = new LanguageProviderManager(this.context, this.manager);
+        lang_provider.configure();
     }
 
     private init_template_manager() {

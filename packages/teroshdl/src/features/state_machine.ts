@@ -27,7 +27,6 @@ import * as nunjucks from 'nunjucks';
 import { Base_webview } from './base_webview';
 import { Logger } from '../logger';
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 export class State_machine_manager extends Base_webview {
 
     private state_machines;

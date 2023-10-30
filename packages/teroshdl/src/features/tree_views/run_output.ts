@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/class-name-casing */
 // Copyright 2023
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
 // Ismael Perez Rojo [ismaelprojo@gmail.com]

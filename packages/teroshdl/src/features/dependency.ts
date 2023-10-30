@@ -27,7 +27,6 @@ import { Logger } from '../logger';
 
 const base_path = "dependencies_viewer";
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Dependency_manager {
 
     private logger: Logger;
@@ -145,7 +144,7 @@ export class Dependency_manager {
         const python_path = this.manager.get_config_manager().get_config().general.general.pypath;
 
         const result = await (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
-            .get_dependency_graph(python_path)
+            .get_dependency_graph(python_path);
 
         if (result.successful === false) {
             this.logger.error("Error while getting dependency graph.", true);

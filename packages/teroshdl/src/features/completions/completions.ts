@@ -4,7 +4,6 @@ import { VhdlStdPackageCompletionItemProvider} from './std_packages';
 
 import * as vscode from 'vscode';
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Completions_manager {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

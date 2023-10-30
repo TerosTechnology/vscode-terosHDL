@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/class-name-casing */
 // Copyright 2023
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
 // Ismael Perez Rojo [ismaelprojo@gmail.com]
@@ -45,7 +44,7 @@ export class Documenter_manager extends Base_webview {
         const resource_path = path_lib.join(context.extensionPath, 'resources', 'webviews', 'documenter', 'index.html');
         super(context, manager, resource_path, activation_command, id);
         this.context = context;
-        this.logger = logger
+        this.logger = logger;
     }
 
     get_webview_content(webview: vscode.Webview) {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/class-name-casing */
 // Copyright 2023
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
 // Ismael Perez Rojo [ismaelprojo@gmail.com]
@@ -173,7 +172,7 @@ export class Schematic_manager extends Base_webview {
                     let path_norm = utils.normalize_path(fileInfos?.path);
 
                     fs.writeFileSync(path_norm, svg);
-                    this.logger.info(`Schematic saved in: ${path_norm}`, true)
+                    this.logger.info(`Schematic saved in: ${path_norm}`, true);
                 }
             });
         }
@@ -240,7 +239,7 @@ export class Schematic_manager extends Base_webview {
         }
 
         const sources = (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
-            .get_project_definition().file_manager.get()
+            .get_project_definition().file_manager.get();
 
         const file_array : string[] = [];
         sources.forEach(source_inst => {
@@ -283,7 +282,7 @@ export class Schematic_manager extends Base_webview {
 
         let cmd_files = yosys.get_yosys_read_file(sources, backend, this.working_directory);
         if (cmd_files === undefined) {
-            this.logger.error(`Error procesing the schematic`, true)
+            this.logger.error(`Error procesing the schematic`, true);
             netlist.empty = true;
             return netlist;
         }

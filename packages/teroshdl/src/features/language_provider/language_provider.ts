@@ -34,7 +34,7 @@ export type e_provider = {
     'hover': any,
     'def': any
 };
-export class Language_provider_manager {
+export class LanguageProviderManager {
     private manager: t_Multi_project_manager;
     private ctagsManager: CtagsManager | undefined;
 
@@ -65,7 +65,7 @@ export class Language_provider_manager {
             'doc': doc_provider,
             'hover': hover_provider,
             'def': def_provider
-        }
+        };
         this.provider_list = provider_list;
     }
 

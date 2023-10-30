@@ -33,10 +33,8 @@ import { t_Multi_project_manager } from '../type_declaration';
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 const TRIGGER_CHARACTERS = [';', '.', "'", ',', '[', ']', '-', '\n'];
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Stutter_mode_manager {
     private manager: t_Multi_project_manager;
 
@@ -215,11 +213,11 @@ export class Stutter_mode_manager {
                                     return [
                                         TextEdit.replace(
                                             new Range(position.translate(0, -1), position.with()),
-                                            (document.eol == 1 ? '\n' : '\r\n') + indent + '-- '
+                                            (document.eol === 1 ? '\n' : '\r\n') + indent + '-- '
                                         ),
                                         TextEdit.insert(
                                             new Position(position.line + 1, 0),
-                                            indent + '-'.repeat(width) + (document.eol == 1 ? '\n' : '\r\n')
+                                            indent + '-'.repeat(width) + (document.eol === 1 ? '\n' : '\r\n')
                                         )
                                     ];
                                 } else if (linePrefix.match(/^\s*---$/)) {
