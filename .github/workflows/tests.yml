@@ -6,14 +6,40 @@ on:
       - dev
 
 jobs:
-  colibri-tests:
-    name: Colibri
+  colibri-lint:
+    name: Colibri Linter
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run
+      - name: Lint
+        run: |
+          cd packages/colibri
+          npm install
+          npm run lint
+
+  teros-lint:
+    name: TerosHDL Linter
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Lint
+        run: |
+          cd packages/teroshdl
+          npm install
+          npm run lint
+        
+  colibri-tests:
+    name: Colibri Tests
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Tests
         run: |
           cd packages/colibri
           npm install
