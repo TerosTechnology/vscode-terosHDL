@@ -23,7 +23,6 @@ import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../type_declaration';
 import { Logger } from '../logger';
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Template_manager {
     private manager: t_Multi_project_manager;
     private logger: Logger;
@@ -76,7 +75,7 @@ export class Template_manager {
 
         //Error
         if (template === undefined || template === '') {
-            this.logger.error("Make sure that the cursor is in the active document and select a valid file.", true)
+            this.logger.error("Make sure that the cursor is in the active document and select a valid file.", true);
         }
         else {
             this.logger.info("Template copied to clipboard.", true);

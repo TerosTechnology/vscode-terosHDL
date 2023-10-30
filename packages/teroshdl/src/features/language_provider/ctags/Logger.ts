@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import {OutputChannel, workspace, window} from 'vscode'
+import {OutputChannel, workspace, window} from 'vscode';
 
 // const logChannel: OutputChannel = window.createOutputChannel("Verilog");
 

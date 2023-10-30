@@ -20,7 +20,7 @@
 import * as vscode from 'vscode';
 //Extension manager
 import * as release_notes_webview from "./utils/webview/release_notes";
-import { Extension_manager } from "./utils/webview/utils";
+import { ExtensionManager } from "./utils/webview/utils";
 //Utils
 
 // TerosHDL
@@ -31,7 +31,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     console.log('Congratulations, your extension "TerosHDL" is now active!');
 
-    const extension_manager = new Extension_manager();
+    const extension_manager = new ExtensionManager();
 
     const global_logger = new Logger("TerosHDL: Global");
     global_logger.clear();

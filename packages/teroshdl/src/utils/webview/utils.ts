@@ -51,7 +51,7 @@ export interface IExtensionManager {
   get_installation_type: () => Record<string, unknown>;
 }
 
-export class Extension_manager implements IExtensionManager {
+export class ExtensionManager implements IExtensionManager {
   installationType!: InstallationType;
   private readonly userConfigFileUri: Uri;
   private configJSON!: teros_hdl_config;

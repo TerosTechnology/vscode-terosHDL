@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/class-name-casing */
 /* ------------------------------------------------------------------------------------------
  * MIT License
  * Copyright (c) 2020 Henrik Bohlin

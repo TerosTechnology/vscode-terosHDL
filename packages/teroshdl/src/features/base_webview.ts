@@ -21,7 +21,6 @@ import * as vscode from 'vscode';
 import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 export abstract class Base_webview {
     protected context: vscode.ExtensionContext;
     protected manager: t_Multi_project_manager;

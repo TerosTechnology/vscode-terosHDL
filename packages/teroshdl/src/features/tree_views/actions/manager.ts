@@ -17,7 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-/* eslint-disable @typescript-eslint/class-name-casing */
 import * as vscode from "vscode";
 import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';

@@ -66,7 +66,7 @@ export class Comander {
         let gtkwave_path = "";
         let base_path = this.manager.get_config_manager().get_config().tools.general.gtkwave_installation_path;
         if (base_path !== "") {
-            gtkwave_path = path_lib.join(base_path, gtkwave_binary)
+            gtkwave_path = path_lib.join(base_path, gtkwave_binary);
         }
         else {
             gtkwave_path = gtkwave_binary;
@@ -78,7 +78,7 @@ export class Comander {
     }
 
     private open_webview(args: string, webview: Base_webview) {
-        webview.create_webview(args)
+        webview.create_webview(args);
     }
 
 }

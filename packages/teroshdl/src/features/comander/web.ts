@@ -19,7 +19,6 @@
 
 import * as vscode from 'vscode';
 
-// eslint-disable-next-line @typescript-eslint/class-name-casing
 export class Base_webview {
     protected context: vscode.ExtensionContext;
     protected subscriptions: vscode.Disposable[] | undefined;
