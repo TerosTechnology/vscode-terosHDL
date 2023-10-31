@@ -274,7 +274,7 @@ describe('Check verible', function () {
         const linter_options: common.l_options = {
             path: "",
             argument: ""
-        }
+        };
 
         const linter = get_linter();
         const actual_errors = await linter.lint_from_file(LINTER_NAME, file, linter_options);

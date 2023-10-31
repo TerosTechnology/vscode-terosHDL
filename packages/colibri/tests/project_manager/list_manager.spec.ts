@@ -17,7 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_file, t_file_reduced } from '../../src/project_manager/common';
+import { LANGUAGE } from '../../src/common/general';
+import { t_file } from '../../src/project_manager/common';
 import {File_manager} from '../../src/project_manager/list_manager/file';
 
 describe('list_manager: file', () => {
@@ -28,20 +29,24 @@ describe('list_manager: file', () => {
     });
 
     test('adding a file', () => {
-        const file_0 : t_file_reduced = {
+        const file_0 : t_file = {
             name: 'example0.py',
             is_include_file: false,
             include_path: '',
             logical_name: 'example_logical',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
 
-        const file_1 : t_file_reduced= {
+        const file_1 : t_file= {
             name: 'example1.py',
             is_include_file: true,
             include_path: '',
             logical_name: 'example_logical',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
 
         const result_0 = file_manager.add(file_0);
@@ -60,7 +65,9 @@ describe('list_manager: file', () => {
             is_include_file: false,
             include_path: '',
             logical_name: 'example_logical',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
 
         file_manager.add(file);
@@ -76,7 +83,9 @@ describe('list_manager: file', () => {
             is_include_file: false,
             include_path: '',
             logical_name: 'example_logical',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
         const expected_file : t_file = {
             name: '../example.py',
@@ -84,7 +93,8 @@ describe('list_manager: file', () => {
             include_path: '',
             logical_name: 'example_logical',
             is_manual: false,
-            file_type: 'python'
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
 
         file_manager.add(file);
@@ -99,23 +109,18 @@ describe('list_manager: file', () => {
             is_include_file: false,
             include_path: '',
             logical_name: 'example_logical',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
         const file_1 = {
             name: '/path/example1.py',
             is_include_file: false,
             include_path: 'asf',
             logical_name: 'example_logical',
-            is_manual: true
-        };
-
-        const expected_file : t_file = {
-            name: '/path/example1.py',
-            is_include_file: false,
-            include_path: 'asf',
-            logical_name: 'example_logical',
             is_manual: true,
-            file_type: 'python'
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
 
         file_manager.add(file_0);
@@ -128,7 +133,7 @@ describe('list_manager: file', () => {
 
         result = file_manager.get();
         expect(result).toHaveLength(1);
-        expect(result[0]).toEqual(expect.objectContaining(expected_file));
+        expect(result[0]).toEqual(expect.objectContaining(file_1));
     });
 
     test('adding a duplicated file', () => {
@@ -137,7 +142,9 @@ describe('list_manager: file', () => {
             is_include_file: false,
             include_path: '',
             logical_name: 'example_logical',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
 
         file_manager.add(file);
@@ -151,7 +158,9 @@ describe('list_manager: file', () => {
             is_include_file: false,
             include_path: '',
             logical_name: 'example_logical',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
 
         file_manager.add(file);
@@ -170,21 +179,27 @@ describe('list_manager: file', () => {
             is_include_file: false,
             include_path: '',
             logical_name: 'logical1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
         const file2 = {
             name: 'file2.py',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical2',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
         const file3 = {
             name: 'file3.py',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical2',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
         
         file_manager.add(file1);
@@ -208,21 +223,27 @@ describe('list_manager: file', () => {
             is_include_file: false,
             include_path: '',
             logical_name: 'logical1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
         const file2 = {
             name: 'file2.py',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical2',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
         const file3 = {
             name: 'file3.py',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical2',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.PYTHON,
+            file_version: undefined,
         };
         
         file_manager.add(file1);

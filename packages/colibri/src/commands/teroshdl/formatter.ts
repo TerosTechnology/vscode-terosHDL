@@ -99,7 +99,7 @@ function get_standalone_vhdl_options(_config_path: string): cfg.e_formatter_stan
         new_line_after_else: cfg.e_formatter_standalone_new_line_after_else.new_line,
         new_line_after_port: cfg.e_formatter_standalone_new_line_after_port.new_line,
         new_line_after_generic: cfg.e_formatter_standalone_new_line_after_generic.new_line
-    }
+    };
     return config;
 }
 

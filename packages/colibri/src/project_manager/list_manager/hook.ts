@@ -38,7 +38,7 @@ export class Hook_manager extends Manager<t_script, e_script_stage, t_script, e_
             post_build: [],
             pre_run: [],
             post_run: []
-        }
+        };
     }
 
     get(): t_stage_script {
