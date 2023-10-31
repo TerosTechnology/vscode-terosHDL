@@ -17,14 +17,14 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { HDL_LANG } from "../common/general";
+import { LANGUAGE } from "../common/general";
 import { Vhdl_parser } from "./ts_vhdl/parser";
 import { Verilog_parser } from "./ts_verilog/parser";
 
 export class Factory {
 
-    async get_parser(lang: HDL_LANG) {
-        if (lang === HDL_LANG.VHDL) {
+    async get_parser(lang: LANGUAGE) {
+        if (lang === LANGUAGE.VHDL) {
             return await this.get_vhdl_parser();
         }
         else {

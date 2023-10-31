@@ -143,5 +143,4 @@ describe('File Utils', () => {
         const path_1 = "/this/is/space";
         expect(file_utils.normalize_path(path_1)).toBe(path_1);
     });
-
 });

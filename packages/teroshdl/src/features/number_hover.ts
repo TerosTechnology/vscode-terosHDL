@@ -30,13 +30,13 @@ export class Number_hover_manager {
         // VHDL
         let hover_numbers_vhdl = vscode.languages.registerHoverProvider(utils.VHDL_SELECTOR, {
             provideHover(document, position, token) {
-                return hover(document, position, teroshdl2.common.general.HDL_LANG.VHDL);
+                return hover(document, position, teroshdl2.common.general.LANGUAGE.VHDL);
             }
         });
         // Verilog/SV
         let hover_numbers_verilog = vscode.languages.registerHoverProvider(utils.VERILOG_SELECTOR, {
             provideHover(document, position, token) {
-                return hover(document, position, teroshdl2.common.general.HDL_LANG.VERILOG);
+                return hover(document, position, teroshdl2.common.general.LANGUAGE.VERILOG);
             }
         });
         context.subscriptions.push(hover_numbers_vhdl);
@@ -44,7 +44,7 @@ export class Number_hover_manager {
     }
 }
 
-function hover(document, position, lang: teroshdl2.common.general.HDL_LANG) {
+function hover(document, position, lang: teroshdl2.common.general.LANGUAGE) {
     let wordRange = document.getWordRangeAtPosition(position, /\w[-\w\.\"]*/g);
     let result: teroshdl2.utils.numbers.result_t;
     if (wordRange !== undefined) {

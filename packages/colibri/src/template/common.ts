@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { HDL_LANG, LANG } from "../common/general";
+import { LANGUAGE } from "../common/general";
 
 /** Templates types for VHDL */
 export class TEMPLATE_NAME_VHDL {
@@ -25,64 +25,64 @@ export class TEMPLATE_NAME_VHDL {
         name: "cocotb",
         id: "cocotb",
         description: "cocotb",
-        lang: LANG.PYTHON
+        lang: LANGUAGE.PYTHON
     };
 
     static readonly TESTBENCH_NORMAL = {
         name: "testbench",
         id: "testbench_normal",
         description: "VHDL testbench",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
     static readonly TESTBENCH_VUNIT = {
         name: "vunit_testbench",
         id: "testbench_vunit",
         description: "VUnit testbench",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
 
     static readonly HDL_ELEMENT_COMPONENT = {
         name: "component",
         id: "hdl_element_component",
         description: "Copy as component",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
     static readonly HDL_ELEMENT_INSTANCE = {
         name: "instance",
         id: "hdl_element_instance",
         description: "Copy as instance",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
     static readonly HDL_ELEMENT_INSTANCE_NEW = {
         name: "instance new",
         id: "hdl_element_instance_vhdl_new",
         description: "Copy as instance > VHDL 93",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
     static readonly HDL_ELEMENT_SIGNAL = {
         name: "signal",
         id: "hdl_element_signal",
         description: "Copy as signal",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
 
     static readonly HDL_ELEMENT_MIX_INSTANCE = {
         name: "mix_instance",
         id: "hdl_element_mix_instance",
         description: "Copy as Verilog instance",
-        lang: LANG.VERILOG
+        lang: LANGUAGE.VERILOG
     };
     static readonly HDL_ELEMENT_MIX_TESTBENCH_NORMAL = {
         name: "mix_testbench",
         id: "hdl_element_mix_testbench_normal",
         description: "Copy as Verilog testbench",
-        lang: LANG.VERILOG
+        lang: LANGUAGE.VERILOG
     };
     static readonly HDL_ELEMENT_MIX_TESTBENCH_VUNIT = {
         name: "mix_vunit_testbench",
         id: "hdl_element_mix_testbench_vunit",
         description: "Copy as Verilog VUnit testbench",
-        lang: LANG.VERILOG
+        lang: LANGUAGE.VERILOG
     };
 
     // private to disallow creating other instances of this type
@@ -95,56 +95,56 @@ export class TEMPLATE_NAME_VERILOG {
         name: "cocotb",
         id: "cocotb",
         description: "cocotb",
-        lang: LANG.PYTHON
+        lang: LANGUAGE.PYTHON
     };
     static readonly TESTBENCH_NORMAL = {
         name: "testbench",
         id: "testbench_normal",
         description: "Verilog testbench",
-        lang: LANG.VERILOG
+        lang: LANGUAGE.VERILOG
     };
     static readonly TESTBENCH_VUNIT = {
         name: "vunit_testbench",
         id: "testbench_vunit",
         description: "Vunit testbench",
-        lang: LANG.VERILOG
+        lang: LANGUAGE.VERILOG
     };
     static readonly HDL_ELEMENT_INSTANCE = {
         name: "instance",
         id: "hdl_element_instance",
         description: "Copy as instance",
-        lang: LANG.VERILOG
+        lang: LANGUAGE.VERILOG
     };
     static readonly HDL_ELEMENT_SIGNAL = {
         name: "signal",
         id: "hdl_element_signal",
         description: "Copy as signal",
-        lang: LANG.VERILOG
+        lang: LANGUAGE.VERILOG
     };
 
     static readonly HDL_ELEMENT_MIX_COMPONENT = {
         name: "mix_component",
         id: "hdl_element_mix_component",
         description: "Copy as VHDL component",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
     static readonly HDL_ELEMENT_MIX_INSTANCE = {
         name: "mix_instance",
         id: "hdl_element_mix_instance",
         description: "Copy as VHDL instance",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
     static readonly HDL_ELEMENT_MIX_TESTBENCH_NORMAL = {
         name: "mix_testbench",
         id: "hdl_element_mix_testbench_normal",
         description: "Copy as VHDL testbench",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
     static readonly HDL_ELEMENT_MIX_TESTBENCH_VUNIT = {
         name: "mix_vunit_testbench",
         id: "hdl_element_mix_testbench_vunit",
         description: "Copy as VHDL VUnit testbench",
-        lang: LANG.VHDL
+        lang: LANGUAGE.VHDL
     };
 
     // private to disallow creating other instances of this type
@@ -155,8 +155,8 @@ export class TEMPLATE_NAME_VERILOG {
  * Get type of templates for HDL language
  * @param  {HDL_LANG} lang HDL language
  */
-export function get_template_names(lang: HDL_LANG) {
-    if (lang === HDL_LANG.VHDL) {
+export function get_template_names(lang: LANGUAGE) {
+    if (lang === LANGUAGE.VHDL) {
         return TEMPLATE_NAME_VHDL;
     }
     else {
@@ -168,12 +168,12 @@ export function get_template_names(lang: HDL_LANG) {
  * Get templete description and IDs
  * @param  {HDL_LANG} lang HDL language
  */
-export function get_template_definition(lang: HDL_LANG) {
-    if (lang === HDL_LANG.VHDL) {
+export function get_template_definition(lang: LANGUAGE) {
+    if (lang === LANGUAGE.VHDL) {
         const template_names = TEMPLATE_NAME_VHDL;
         const description_list: string[] = [];
         const id_list: string[] = [];
-        const lang_list: LANG[] = [];
+        const lang_list: LANGUAGE[] = [];
         for (const [_key, value] of Object.entries(template_names)) {
             description_list.push(value.description);
             id_list.push(value.id);
@@ -185,7 +185,7 @@ export function get_template_definition(lang: HDL_LANG) {
         const template_names = TEMPLATE_NAME_VERILOG;
         const description_list: string[] = [];
         const id_list: string[] = [];
-        const lang_list: LANG[] = [];
+        const lang_list: LANGUAGE[] = [];
         for (const [_key, value] of Object.entries(template_names)) {
             description_list.push(value.description);
             id_list.push(value.id);

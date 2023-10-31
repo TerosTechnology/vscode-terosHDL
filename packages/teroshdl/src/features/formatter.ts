@@ -29,13 +29,13 @@ let formatter_verilog: Formatter | undefined = undefined;
 class Formatter {
 
     private manager: t_Multi_project_manager;
-    private lang: teroshdl2.common.general.HDL_LANG;
+    private lang: teroshdl2.common.general.LANGUAGE;
     private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(lang: teroshdl2.common.general.HDL_LANG, manager: t_Multi_project_manager, logger: Logger) {
+    constructor(lang: teroshdl2.common.general.LANGUAGE, manager: t_Multi_project_manager, logger: Logger) {
         this.manager = manager;
         this.lang = lang;
         this.logger = logger;
@@ -51,7 +51,7 @@ class Formatter {
 
     private get_formatter_name() {
         const config_manager = this.get_config_manager();
-        if (this.lang === teroshdl2.common.general.HDL_LANG.VHDL) {
+        if (this.lang === teroshdl2.common.general.LANGUAGE.VHDL) {
             return config_manager.get_formatter_name_vhdl();
         }
         else {
@@ -61,7 +61,7 @@ class Formatter {
 
     private get_formatter_config() {
         const config_manager = this.get_config_manager();
-        if (this.lang === teroshdl2.common.general.HDL_LANG.VHDL) {
+        if (this.lang === teroshdl2.common.general.LANGUAGE.VHDL) {
             return config_manager.get_formatter_config_vhdl();
         }
         else {
@@ -103,8 +103,8 @@ export class Formatter_manager {
         this.logger = logger;
         this.manager = manager;
 
-        formatter_vhdl = new Formatter(teroshdl2.common.general.HDL_LANG.VHDL, manager, logger);
-        formatter_verilog = new Formatter(teroshdl2.common.general.HDL_LANG.VERILOG, manager, logger);
+        formatter_vhdl = new Formatter(teroshdl2.common.general.LANGUAGE.VHDL, manager, logger);
+        formatter_verilog = new Formatter(teroshdl2.common.general.LANGUAGE.VERILOG, manager, logger);
 
         const disposable = vscode.languages.registerDocumentFormattingEditProvider(
             [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },

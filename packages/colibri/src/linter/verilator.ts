@@ -17,8 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { get_hdl_language } from "../utils/common_utils";
-import { HDL_LANG } from "../common/general";
+import { get_language_from_filepath } from "../utils/file_utils";
+import { LANGUAGE } from "../common/general";
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
 
@@ -37,8 +37,8 @@ export class Verilator extends Base_linter {
     }
 
     async lint(file: string, options: common.l_options): Promise<common.l_error[]> {
-        const file_lang = get_hdl_language(file);
-        if (file_lang === HDL_LANG.SYSTEMVERILOG) {
+        const file_lang = get_language_from_filepath(file);
+        if (file_lang === LANGUAGE.SYSTEMVERILOG) {
             options.argument += ` ${this.sv_options} `;
         }
         const result = await this.exec_linter(file, options);

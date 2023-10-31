@@ -18,13 +18,13 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import {
-    t_stage_script, t_file, t_file_reduced, t_script, t_parameter,
+    t_stage_script, t_file, t_script, t_parameter,
     e_script_stage, t_action_result, t_watcher
 } from "../common";
 
 export abstract class Manager
-    <A extends t_watcher | t_file_reduced | t_script | string | t_parameter, B extends undefined | e_script_stage,
-        C extends t_watcher | t_file_reduced | t_script | string | t_parameter,
+    <A extends t_watcher | t_file | t_script | string | t_parameter, B extends undefined | e_script_stage,
+        C extends t_watcher | t_file | t_script | string | t_parameter,
         D extends undefined | e_script_stage | string | t_file[]
     > {
 

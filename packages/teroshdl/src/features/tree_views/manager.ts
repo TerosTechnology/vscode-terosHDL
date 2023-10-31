@@ -140,8 +140,8 @@ export class Tree_view_manager {
                 for (let j = 0; j < library.files.length; j++) {
                     const file_in_library = library.files[j];
                     let filename = path_lib.basename(file_in_library);
-                    const lang = teroshdl.utils.hdl.get_lang_from_path(filename);
-                    if (lang === teroshdl.common.general.HDL_LANG.VHDL) {
+                    const lang = teroshdl.utils.file.get_language_from_filepath(filename);
+                    if (lang === teroshdl.common.general.LANGUAGE.VHDL) {
                         files_in_library += `  '${file_in_library}',\n`;
                         files_toml.push(file_in_library);
                     }

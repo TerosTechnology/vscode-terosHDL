@@ -17,8 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { get_hdl_language } from "../utils/common_utils";
-import { HDL_LANG } from "../common/general";
+import { get_language_from_filepath } from "../utils/file_utils";
+import { LANGUAGE } from "../common/general";
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
 import { get_random_folder_in_home_directory } from "../process/utils";
@@ -38,14 +38,14 @@ export class Modelsim extends Base_linter {
 
     set_binary(file: string): string {
         const work_directory = get_random_folder_in_home_directory();
-        const file_lang = get_hdl_language(file);
+        const file_lang = get_language_from_filepath(file);
         let extra_cmd = "";
         let binary = "";
-        if (file_lang === HDL_LANG.VHDL) {
+        if (file_lang === LANGUAGE.VHDL) {
             binary = "vcom";
             extra_cmd = `-quiet -nologo -2008 -work ${work_directory}`;
         }
-        else if (file_lang === HDL_LANG.SYSTEMVERILOG) {
+        else if (file_lang === LANGUAGE.SYSTEMVERILOG) {
             binary = "vlog";
             extra_cmd = `-quiet -nologo -sv -work ${work_directory}`;
         }

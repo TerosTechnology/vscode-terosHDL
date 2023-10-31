@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { HDL_LANG } from "../common/general";
+import { LANGUAGE } from "../common/general";
 
 // Common
 export type Position_hdl = {
@@ -133,7 +133,7 @@ export type Custom_hdl = {
 };
 
 export class Hdl_element {
-    public lang: HDL_LANG = HDL_LANG.VHDL;
+    public lang: LANGUAGE = LANGUAGE.VHDL;
     public hdl_type: TYPE_HDL_ELEMENT = TYPE_HDL_ELEMENT.NONE;
     private _name = "";
     private _description = "";
@@ -151,7 +151,7 @@ export class Hdl_element {
     private interface_array: Hdl_element[] = [];
     public error_state = false;
 
-    constructor(lang: HDL_LANG, hdl_type: TYPE_HDL_ELEMENT) {
+    constructor(lang: LANGUAGE, hdl_type: TYPE_HDL_ELEMENT) {
         this.lang = lang;
         this.hdl_type = hdl_type;
     }

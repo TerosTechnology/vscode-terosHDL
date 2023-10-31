@@ -18,13 +18,13 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { hdl_hover } from "../../src/utils/numbers";
-import { HDL_LANG } from "../../src/common/general";
+import { LANGUAGE } from "../../src/common/general";
 import { deepEqual } from "assert";
 
 // https://www.rapidtables.com/convert/number/hex-to-decimal.html
 
 describe('Check hover VHDL', function () {
-    const lang = HDL_LANG.VHDL;
+    const lang = LANGUAGE.VHDL;
 
     it(`Binary unsigned`, async function () {
         const code_dummy = '"0011"';
@@ -136,7 +136,7 @@ describe('Check hover VHDL', function () {
 });
 
 describe('Check hover Verilog', function () {
-    const lang = HDL_LANG.VERILOG;
+    const lang = LANGUAGE.VERILOG;
 
     it(`Binary unsigned`, async function () {
         const code_dummy = "4'b0011'";

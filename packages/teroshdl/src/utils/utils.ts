@@ -23,10 +23,10 @@ import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 
 export const VERILOG_SELECTOR: vscode.DocumentSelector = [
-    { scheme: 'file', language: teroshdl2.common.general.HDL_LANG.VERILOG },
-    { scheme: 'file', language: teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG }
+    { scheme: 'file', language: teroshdl2.common.general.LANGUAGE.VERILOG },
+    { scheme: 'file', language: teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG }
 ];
-export const VHDL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: teroshdl2.common.general.HDL_LANG.VHDL };
+export const VHDL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: teroshdl2.common.general.LANGUAGE.VHDL };
 export const TCL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: 'tcl' };
 
 export function get_webview_content(resource_path: string) {
@@ -43,7 +43,7 @@ export function get_webview_content(resource_path: string) {
 export type t_vscode_document = {
     filename: string;
     is_hdl: boolean;
-    lang: teroshdl2.common.general.HDL_LANG;
+    lang: teroshdl2.common.general.LANGUAGE;
     code: string;
 };
 
@@ -101,25 +101,25 @@ export function check_if_active_editor_hdl(): boolean {
 
 export function check_if_document_is_hdl(document: vscode.TextDocument): boolean {
     const lang = get_document_lang(document);
-    if (lang === teroshdl2.common.general.HDL_LANG.NONE) {
+    if (lang === teroshdl2.common.general.LANGUAGE.NONE) {
         return false;
     }
     return true;
 }
 
-export function get_document_lang(document: vscode.TextDocument): teroshdl2.common.general.HDL_LANG {
+export function get_document_lang(document: vscode.TextDocument): teroshdl2.common.general.LANGUAGE {
     const language_id: string = document.languageId;
     if (language_id === 'systemverilog') {
-        return teroshdl2.common.general.HDL_LANG.VERILOG;
+        return teroshdl2.common.general.LANGUAGE.VERILOG;
     }
     else if (language_id === "verilog") {
-        return teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG;
+        return teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG;
     }
     else if (language_id === "vhdl") {
-        return teroshdl2.common.general.HDL_LANG.VHDL;
+        return teroshdl2.common.general.LANGUAGE.VHDL;
     }
     else {
-        return teroshdl2.common.general.HDL_LANG.NONE;
+        return teroshdl2.common.general.LANGUAGE.NONE;
     }
 }
 

@@ -24,7 +24,7 @@ import { Parser_base } from "../parser";
 import { Hdl_element } from "../common";
 import { Ts_base_parser } from "../ts_base_parser";
 import * as elements_hdl from "./elements";
-import { HDL_LANG } from "../../common/general";
+import { LANGUAGE } from "../../common/general";
 import { Parser_interface } from "./parser_interface";
 import * as common_hdl from "../common";
 import * as Parser from "web-tree-sitter";
@@ -62,7 +62,7 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
 
     public get_all(code: string, comment_symbol: string): Hdl_element {
         this.comment_symbol = comment_symbol;
-        let hdl_element = new Hdl_element(HDL_LANG.VERILOG, common_hdl.TYPE_HDL_ELEMENT.ENTITY);
+        let hdl_element = new Hdl_element(LANGUAGE.VERILOG, common_hdl.TYPE_HDL_ELEMENT.ENTITY);
 
         if (this.loaded === false) {
             return hdl_element;
@@ -76,7 +76,7 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
             const module_header = utils.search_multiple_in_tree(tree.rootNode, 'module_header');
 
             if (module_header.length === 0) {
-                hdl_element = new Hdl_element(HDL_LANG.VERILOG, common_hdl.TYPE_HDL_ELEMENT.PACKAGE);
+                hdl_element = new Hdl_element(LANGUAGE.VERILOG, common_hdl.TYPE_HDL_ELEMENT.PACKAGE);
                 this.get_body_elements_and_declarations(hdl_element, tree, lines, comments, true);
 
                 this.get_package_declaration(hdl_element, tree.rootNode, lines);
@@ -91,7 +91,7 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
                 }
                 return hdl_element;
             } else {
-                hdl_element = new Hdl_element(HDL_LANG.VERILOG, common_hdl.TYPE_HDL_ELEMENT.ENTITY);
+                hdl_element = new Hdl_element(LANGUAGE.VERILOG, common_hdl.TYPE_HDL_ELEMENT.ENTITY);
                 const arch_body = this.get_architecture_body(tree);
                 this.get_entity_name(tree.rootNode, lines, hdl_element);
                 this.get_body_elements_and_declarations(hdl_element, arch_body, lines, comments, false);

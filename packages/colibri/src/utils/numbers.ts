@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { HDL_LANG } from "../common/general";
+import { LANGUAGE } from "../common/general";
 
 export type result_t = {
     signed_n: number;
@@ -26,8 +26,8 @@ export type result_t = {
     is_ok: boolean;
 }
 
-export function hdl_hover(txt: string, lang: HDL_LANG) {
-    if (lang === HDL_LANG.VHDL) {
+export function hdl_hover(txt: string, lang: LANGUAGE) {
+    if (lang === LANGUAGE.VHDL) {
         return vhdl_hover(txt);
     }
     else {

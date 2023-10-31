@@ -17,8 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-// import { t_file_reduced, t_script, t_parameter, e_script_stage, t_action_result, t_watcher, } from "./common";
-import { t_file_reduced, t_action_result, t_watcher, } from "./common";
+import { t_file, t_action_result, t_watcher, } from "./common";
 import { Config_manager } from "../config/config_manager";
 import { e_clean_step } from "./tool/common";
 import { Project_manager } from "./project_manager";
@@ -26,7 +25,7 @@ import { t_test_declaration, t_test_result } from "./tool/common";
 import { e_config } from "../config/config_declaration";
 import * as file_utils from "../utils/file_utils";
 import { get_linter_name, get_linter_options } from "../config/utils";
-import { get_hdl_language } from "../utils/common_utils";
+import { get_language_from_filepath } from "../utils/file_utils";
 import { LINTER_MODE, l_error } from "../linter/common";
 import { Linter } from "../linter/linter";
 
@@ -70,7 +69,7 @@ export class Multi_project_manager {
     public async lint_from_file(file_path: string, mode: LINTER_MODE,
         general_config: e_config): Promise<l_error[]> {
 
-        const file_lang = get_hdl_language(file_path);
+        const file_lang = get_language_from_filepath(file_path);
         const linter_name = get_linter_name(file_lang, mode, general_config);
         const linter_options = get_linter_options();
 
@@ -118,7 +117,8 @@ export class Multi_project_manager {
                     this.add_file(prj_name, {
                         name: file.name, is_include_file: file.is_include_file,
                         include_path: file.include_path, logical_name: file.logical_name,
-                        is_manual: file.is_manual
+                        is_manual: file.is_manual, file_type: file.file_type, 
+                        file_version: file_utils.check_default_version_for_filepath(file.name, file.file_version)
                     });
                 });
                 // Hooks
@@ -219,13 +219,23 @@ export class Multi_project_manager {
                 if (file.is_manual !== undefined) {
                     is_manual = file.is_manual;
                 }
+                let file_type = file.file_type;
+                if (file_type === undefined) {
+                    file_type = get_language_from_filepath(name);
+                }
+                let file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
+                if (file_version === undefined) {
+                    file_version = file_utils.get_default_version_for_filepath(name);
+                }
 
-                const file_definition: t_file_reduced = {
+                const file_definition: t_file = {
                     name: name,
                     is_include_file: is_include_file,
                     include_path: include_path,
                     logical_name: logical_name,
-                    is_manual: is_manual
+                    is_manual: is_manual,
+                    file_type: file_type,
+                    file_version: file_version
                 };
 
                 prj.add_file(file_definition);
@@ -441,7 +451,7 @@ export class Multi_project_manager {
         return result;
     }
 
-    add_file(prj_name: string, file: t_file_reduced): t_action_result {
+    add_file(prj_name: string, file: t_file): t_action_result {
         const prj = this.get_project_by_name(prj_name);
         if (prj === undefined) {
             return this.get_project_not_exist();

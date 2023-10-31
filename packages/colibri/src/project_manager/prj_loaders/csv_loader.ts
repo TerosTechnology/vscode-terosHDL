@@ -18,12 +18,12 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as file_utils from "../../utils/file_utils";
-import { t_file_reduced, t_action_result } from "../common";
+import { t_file, t_action_result } from "../common";
 
 export function csv_loader(csv_path: string, is_manual: boolean): t_action_result {
     const csv_content = file_utils.read_file_sync(csv_path);
     const file_list_array = csv_content.split(/\r?\n|\r/);
-    const result_file_list: t_file_reduced[] = [];
+    const result_file_list: t_file[] = [];
     for (let i = 0; i < file_list_array.length; ++i) {
         const element = file_list_array[i].trim();
         if (element !== '') {
@@ -50,12 +50,14 @@ export function csv_loader(csv_path: string, is_manual: boolean): t_action_resul
                     const dirname_csv = file_utils.get_directory(csv_path);
                     const complete_file_path = file_utils.get_absolute_path(dirname_csv, file_inst);
 
-                    const file_edam: t_file_reduced = {
+                    const file_edam: t_file = {
                         name: complete_file_path,
                         is_include_file: false,
                         include_path: "",
                         logical_name: lib_inst,
-                        is_manual: is_manual
+                        is_manual: is_manual,
+                        file_type: file_utils.get_language_from_filepath(complete_file_path),
+                        file_version: file_utils.get_default_version_for_filepath(complete_file_path)
                     };
                     result_file_list.push(file_edam);
                 }

@@ -17,6 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
+import { t_version_inst, LANGUAGE } from "../common/general";
+
 /** Type of parameter */
 export enum e_file_type {
     CMDLINEARG = "cmdlinearg",
@@ -28,7 +30,7 @@ export enum e_file_type {
 
 export type t_logical = {
     name: string;
-    file_list: t_file_reduced[];
+    file_list: t_file[];
 }
 
 /** Result of action execution in the project manager*/
@@ -46,26 +48,9 @@ export type t_action_compile_order = {
 }
 
 /** Project file reduced*/
-export type t_file_reduced = {
-    /** File name with (absolute or relative) path */
-    name: string;
-    /** Indicates if this file should be treated as an include file (default false) */
-    is_include_file: boolean;
-    /** When is_include_file is true, the directory containing the file will be 
-     * added to the include path. include_path allows setting an explicit directory to use instead */
-    include_path: string;
-    /** Logical name (e.g. VHDL/SystemVerilog library) of the file */
-    logical_name: string;
-    /** If the file was added manually */
-    is_manual: boolean;
-}
-
-/** Project file */
 export type t_file = {
     /** File name with (absolute or relative) path */
     name: string;
-    /** File type */
-    file_type: string;
     /** Indicates if this file should be treated as an include file (default false) */
     is_include_file: boolean;
     /** When is_include_file is true, the directory containing the file will be 
@@ -75,6 +60,10 @@ export type t_file = {
     logical_name: string;
     /** If the file was added manually */
     is_manual: boolean;
+    /** File type */
+    file_type: LANGUAGE;
+    /** File version */
+    file_version: t_version_inst;
 }
 
 /** Type of watcher */
