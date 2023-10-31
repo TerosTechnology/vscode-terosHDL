@@ -19,9 +19,10 @@
 
 import * as paht_lib from "path";
 
-import { t_file_reduced } from '../../src/project_manager/common';
+import { t_file } from '../../src/project_manager/common';
 import {Project_manager} from '../../src/project_manager/project_manager';
 import {get_default_config} from '../../src/config/config_declaration';
+import { LANGUAGE, VHDL_LANG_VERSION } from "../../src/common/general";
 
 const DEFAULT_NAME = "def_name";
 
@@ -63,20 +64,24 @@ describe('project_manager', () => {
     // });
 
     test('add_file', () => {
-        const file_0 : t_file_reduced = {
+        const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_0',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
-        const file_1 : t_file_reduced = {
+        const file_1 : t_file = {
             name: 'file_1',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
         project_manager.add_file(file_0);
@@ -87,28 +92,34 @@ describe('project_manager', () => {
     });
 
     test('delete_file', () => {
-        const file_0 : t_file_reduced = {
+        const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_0',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
-        const file_1 : t_file_reduced = {
+        const file_1 : t_file = {
             name: 'file_1',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
-        const file_2 : t_file_reduced = {
+        const file_2 : t_file = {
             name: 'file_2',
             is_include_file: false,
             include_path: '',
             logical_name: '',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
         project_manager.add_file(file_0);
@@ -132,28 +143,34 @@ describe('project_manager', () => {
     });
 
     test('delete_file_by_logical_name', () => {
-        const file_0 : t_file_reduced = {
+        const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
-        const file_1 : t_file_reduced = {
+        const file_1 : t_file = {
             name: 'file_1',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
-        const file_2 : t_file_reduced = {
+        const file_2 : t_file = {
             name: 'file_2',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_2',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
         project_manager.add_file(file_0);
@@ -181,20 +198,24 @@ describe('project_manager', () => {
 
 
     test('check_if_file_in_project', () => {
-        const file_0 : t_file_reduced = {
+        const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
-        const file_1 : t_file_reduced = {
+        const file_1 : t_file = {
             name: 'file_1',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
         project_manager.add_file(file_0);
@@ -207,20 +228,24 @@ describe('project_manager', () => {
     });
 
     test('check_if_path_in_project', () => {
-        const file_0 : t_file_reduced = {
+        const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
-        const file_1 : t_file_reduced = {
+        const file_1 : t_file = {
             name: 'file_1',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
         project_manager.add_file(file_0);
@@ -230,20 +255,24 @@ describe('project_manager', () => {
     });
 
     test('get_project_definition', () => {
-        const file_0 : t_file_reduced = {
+        const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
-        const file_1 : t_file_reduced = {
+        const file_1 : t_file = {
             name: 'file_1',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
         project_manager.add_file(file_0);
@@ -256,12 +285,14 @@ describe('project_manager', () => {
     });
 
     test('delete_phantom_toplevel', () => {
-        const file_0 : t_file_reduced = {
+        const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
             include_path: '',
             logical_name: 'logical_1',
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
         };
 
         project_manager.add_file(file_0);

@@ -111,7 +111,7 @@ function convertString(obj: any, ret: any[]) {
 }
 
 export function convert_to_yaml(obj: any) {
-    if (typeof obj == 'string') {
+    if (typeof obj === 'string') {
         obj = JSON.parse(obj);
     }
 

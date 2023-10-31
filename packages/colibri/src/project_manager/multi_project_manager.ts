@@ -109,7 +109,7 @@ export class Multi_project_manager {
             this.selected_project = prj_saved.selected_project;
             const prj_list = prj_saved.project_list;
             prj_list.forEach((prj: any) => {
-                const prj_name = prj.name
+                const prj_name = prj.name;
                 this.create_project(prj_name);
                 // Files
                 const file_list = prj.files;
