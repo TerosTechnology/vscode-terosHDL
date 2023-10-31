@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import {
-    t_file_reduced, t_action_result, t_watcher,
+    t_file, t_action_result, t_watcher,
     e_watcher_type
 } from "./common";
 import * as  manager_watcher from "./list_manager/watcher";
@@ -256,12 +256,14 @@ export class Project_manager {
                 const json_str = file_utils.read_file_sync(json_path);
                 const file_list = JSON.parse(json_str).files;
                 file_list.forEach((file: any) => {
-                    const file_declaration: t_file_reduced = {
+                    const file_declaration: t_file = {
                         name: file.file_name,
                         is_include_file: false,
                         include_path: "",
                         logical_name: file.library_name,
-                        is_manual: is_manual
+                        is_manual: is_manual,
+                        file_type: file_utils.get_language_from_filepath(file.file_name),
+                        file_version: file_utils.get_default_version_for_filepath(file.file_name)
                     };
                     this.add_file(file_declaration);
                 });
@@ -285,7 +287,7 @@ export class Project_manager {
 
     add_file_from_csv(csv_path: string, is_manual: boolean): t_action_result {
         const result = csv_loader(csv_path, is_manual);
-        const result_file_list = <t_file_reduced[]>result.result;
+        const result_file_list = <t_file[]>result.result;
         if (result.successful === true) {
             result_file_list.forEach(file => {
                 this.add_file(file);
@@ -294,7 +296,7 @@ export class Project_manager {
         return result;
     }
 
-    add_file(file: t_file_reduced): t_action_result {
+    add_file(file: t_file): t_action_result {
         return this.files.add(file);
     }
 
@@ -304,7 +306,7 @@ export class Project_manager {
         return result;
     }
 
-    get_file() : t_file_reduced[]{
+    get_file() : t_file[]{
         return this.files.get();
     }
 

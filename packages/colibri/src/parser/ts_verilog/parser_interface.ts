@@ -19,7 +19,7 @@
 
 import * as elements_hdl from "./elements";
 import * as utils from './utils';
-import { HDL_LANG } from "../../common/general";
+import { LANGUAGE } from "../../common/general";
 import * as common_hdl from "../common";
 
 export type Interface_items = {
@@ -46,7 +46,7 @@ export class Parser_interface {
         do {
             if (generics_types.includes(cursor.nodeType) === true) {
 
-                const interface_i = new common_hdl.Hdl_element(HDL_LANG.VERILOG, common_hdl.TYPE_HDL_ELEMENT.INTERFACE);
+                const interface_i = new common_hdl.Hdl_element(LANGUAGE.VERILOG, common_hdl.TYPE_HDL_ELEMENT.INTERFACE);
                 let parameters: common_hdl.Port_hdl[] = [];
                 let ports: common_hdl.Port_hdl[] = [];
                 let modport_array: common_hdl.Modport_hdl[] = [];
@@ -149,7 +149,7 @@ export class Parser_interface {
         }
         while (cursor.gotoNextSibling() !== false);
 
-        const interface_declaration = new common_hdl.Hdl_element(HDL_LANG.VERILOG,
+        const interface_declaration = new common_hdl.Hdl_element(LANGUAGE.VERILOG,
             common_hdl.TYPE_HDL_ELEMENT.INTERFACE_DECLARATION);
 
         interface_array.forEach(element => {

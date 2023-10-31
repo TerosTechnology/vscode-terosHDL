@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as fs from 'fs';
-import { HDL_LANG } from "../common/general";
+import { LANGUAGE } from "../common/general";
 import * as parser_lib from "../parser/factory";
 import * as common_hdl from "../parser/common";
 import { t_template_options } from "../config/auxiliar_config";
@@ -26,14 +26,14 @@ import { get_template } from "./helpers/template";
 
 /** Template */
 export class Template_manager {
-    private language: HDL_LANG = HDL_LANG.VHDL;
+    private language: LANGUAGE = LANGUAGE.VHDL;
     private comment_symbol = "//";
 
     /**
-     * @param  {HDL_LANG} language Language name
+     * @param  {LANGUAGE} language Language name
      */
-    constructor(language: HDL_LANG) {
-        if (language === HDL_LANG.VHDL) {
+    constructor(language: LANGUAGE) {
+        if (language === LANGUAGE.VHDL) {
             this.comment_symbol = '//';
         }
         else {
@@ -103,8 +103,8 @@ export class Template_manager {
      */
     async generate(code: string, template_type: string, options: t_template_options) {
         let norm_language = this.language;
-        if (this.language === HDL_LANG.SYSTEMVERILOG) {
-            norm_language = HDL_LANG.VERILOG;
+        if (this.language === LANGUAGE.SYSTEMVERILOG) {
+            norm_language = LANGUAGE.VERILOG;
         }
 
         let template = '';
@@ -165,10 +165,10 @@ export class Template_manager {
     private adapt_port(port_list: common_hdl.Port_hdl[], template_type: string, is_generic: boolean)
         : common_hdl.Port_hdl[] {
 
-        if (this.language === HDL_LANG.VHDL && template_type.includes("mix")) {
+        if (this.language === LANGUAGE.VHDL && template_type.includes("mix")) {
             return this.adapt_port_to_verilog(port_list, is_generic);
         }
-        else if ((this.language === HDL_LANG.VERILOG || this.language === HDL_LANG.SYSTEMVERILOG)
+        else if ((this.language === LANGUAGE.VERILOG || this.language === LANGUAGE.SYSTEMVERILOG)
             && template_type.includes("mix")) {
             return this.adapt_port_to_vhdl(port_list, is_generic);
         }

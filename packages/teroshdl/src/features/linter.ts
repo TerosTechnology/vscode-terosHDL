@@ -33,13 +33,13 @@ class Linter {
 
     private mode: LINTER_MODE;
     private manager: t_Multi_project_manager;
-    private lang: teroshdl2.common.general.HDL_LANG;
+    private lang: teroshdl2.common.general.LANGUAGE;
     private linter = new teroshdl2.linter.linter.Linter();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(mode: LINTER_MODE, lang: teroshdl2.common.general.HDL_LANG, manager: t_Multi_project_manager) {
+    constructor(mode: LINTER_MODE, lang: teroshdl2.common.general.LANGUAGE, manager: t_Multi_project_manager) {
         this.manager = manager;
         this.mode = mode;
         this.lang = lang;
@@ -54,15 +54,15 @@ class Linter {
     }
 
     private get_linter_name() {
-        if (this.lang === teroshdl2.common.general.HDL_LANG.VHDL && this.mode === LINTER_MODE.ERRORS) {
+        if (this.lang === teroshdl2.common.general.LANGUAGE.VHDL && this.mode === LINTER_MODE.ERRORS) {
             return this.get_config().linter.general.linter_vhdl;
         }
-        else if ((this.lang === teroshdl2.common.general.HDL_LANG.VERILOG
-            || this.lang === teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG)
+        else if ((this.lang === teroshdl2.common.general.LANGUAGE.VERILOG
+            || this.lang === teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG)
             && this.mode === LINTER_MODE.ERRORS) {
             return this.get_config().linter.general.linter_verilog;
         }
-        else if (this.lang === teroshdl2.common.general.HDL_LANG.VHDL && this.mode === LINTER_MODE.STYLE) {
+        else if (this.lang === teroshdl2.common.general.LANGUAGE.VHDL && this.mode === LINTER_MODE.STYLE) {
             return this.get_config().linter.general.lstyle_vhdl;
         }
         else {
@@ -70,7 +70,7 @@ class Linter {
         }
     }
 
-    private get_options(lang: teroshdl2.common.general.HDL_LANG): teroshdl2.linter.common.l_options {
+    private get_options(lang: teroshdl2.common.general.LANGUAGE): teroshdl2.linter.common.l_options {
         let path = "";
         let argument = "";
         const linter_name = this.get_linter_name();
@@ -80,12 +80,12 @@ class Linter {
             argument = this.get_config().linter.ghdl.arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.modelsim &&
-                lang === teroshdl2.common.general.HDL_LANG.VHDL){
+                lang === teroshdl2.common.general.LANGUAGE.VHDL){
             path = this.get_config().tools.modelsim.installation_path;
             argument = this.get_config().linter.modelsim.vhdl_arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.vivado &&
-                lang === teroshdl2.common.general.HDL_LANG.VHDL){
+                lang === teroshdl2.common.general.LANGUAGE.VHDL){
             path = this.get_config().tools.vivado.installation_path;
             argument = this.get_config().linter.vivado.vhdl_arguments;
         }
@@ -94,7 +94,7 @@ class Linter {
             argument = this.get_config().linter.icarus.arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.modelsim &&
-                lang !== teroshdl2.common.general.HDL_LANG.VHDL){
+                lang !== teroshdl2.common.general.LANGUAGE.VHDL){
             path = this.get_config().tools.modelsim.installation_path;
             argument = this.get_config().linter.modelsim.verilog_arguments;
         }
@@ -103,7 +103,7 @@ class Linter {
             argument = this.get_config().linter.verilator.arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.vivado &&
-                lang !== teroshdl2.common.general.HDL_LANG.VHDL){
+                lang !== teroshdl2.common.general.LANGUAGE.VHDL){
             path = this.get_config().tools.vivado.installation_path;
             argument = this.get_config().linter.vivado.verilog_arguments;
         }
@@ -134,12 +134,12 @@ class Linter {
         catch (e) { console.log(e); }
     }
 
-    public check_lang(document_lang:teroshdl2.common.general.HDL_LANG) :boolean{
+    public check_lang(document_lang:teroshdl2.common.general.LANGUAGE) :boolean{
         if (document_lang === this.lang){
             return true;
         }
-        else if(document_lang === teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG 
-            && this.lang === teroshdl2.common.general.HDL_LANG.VERILOG){
+        else if(document_lang === teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG 
+            && this.lang === teroshdl2.common.general.LANGUAGE.VERILOG){
             return true;
         }
         return false;
@@ -194,7 +194,7 @@ class Linter {
         let current_path = uri.fsPath;
         const linter_name = this.get_linter_name();
 
-        const lang = teroshdl2.utils.hdl.get_lang_from_path(current_path);
+        const lang = teroshdl2.utils.file.get_language_from_extension(current_path);
 
         let errors = await this.linter.lint_from_file(linter_name, current_path, this.get_options(lang));
         let diagnostics: vscode.Diagnostic[] = [];
@@ -292,10 +292,10 @@ export class Linter_manager {
         vscode.workspace.onDidSaveTextDocument((e) => this.lint(e));
         vscode.workspace.onDidCloseTextDocument((e) => this.remove_file_diagnostics(e));
 
-        const linter_vhdl = new Linter(LINTER_MODE.ERRORS, teroshdl2.common.general.HDL_LANG.VHDL, manager);
-        const linter_verilog = new Linter(LINTER_MODE.ERRORS, teroshdl2.common.general.HDL_LANG.VERILOG, manager);
-        const linter_style_vhdl = new Linter(LINTER_MODE.STYLE, teroshdl2.common.general.HDL_LANG.VHDL, manager);
-        const linter_style_verilog = new Linter(LINTER_MODE.STYLE, teroshdl2.common.general.HDL_LANG.VERILOG, manager);
+        const linter_vhdl = new Linter(LINTER_MODE.ERRORS, teroshdl2.common.general.LANGUAGE.VHDL, manager);
+        const linter_verilog = new Linter(LINTER_MODE.ERRORS, teroshdl2.common.general.LANGUAGE.VERILOG, manager);
+        const linter_style_vhdl = new Linter(LINTER_MODE.STYLE, teroshdl2.common.general.LANGUAGE.VHDL, manager);
+        const linter_style_verilog = new Linter(LINTER_MODE.STYLE, teroshdl2.common.general.LANGUAGE.VERILOG, manager);
 
         this.linter_list.push(linter_vhdl);
         this.linter_list.push(linter_verilog);

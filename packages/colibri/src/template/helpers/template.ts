@@ -17,13 +17,13 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { HDL_LANG } from "../../common/general";
+import { LANGUAGE } from "../../common/general";
 import * as template_definition_general from "./template_definition";
 import * as template_definition_verilog from "./template_definition_verilog";
 import * as template_definition_vhdl from "./template_definition_vhdl";
 import * as nunjucks from 'nunjucks';
 
-export function get_template(language: HDL_LANG, template_name: string, template_options: any,
+export function get_template(language: LANGUAGE, template_name: string, template_options: any,
     header: string, clock_style: string) {
 
     nunjucks.configure({ autoescape: false });
@@ -58,7 +58,7 @@ export function get_template(language: HDL_LANG, template_name: string, template
         template_options);
 
 
-    if (language === HDL_LANG.VHDL) {
+    if (language === LANGUAGE.VHDL) {
         base_temp = template_definition_vhdl;
         reverse_base_temp = template_definition_verilog;
 

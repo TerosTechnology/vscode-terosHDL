@@ -17,32 +17,103 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-/** HDL language */
-export enum HDL_LANG {
-    VHDL = "vhdl",
-    VERILOG = "verilog",
-    SYSTEMVERILOG = "systemverilog",
-    CPP = "cpp",
+////////////////////////////////////////////////////////////////////////////////
+// Languages
+////////////////////////////////////////////////////////////////////////////////
+export enum LANGUAGE {
+    VHDL = "vhdlSource",
+    VERILOG = "verilogSource",
+    SYSTEMVERILOG = "systemVerilogSource",
+    C = "cSource",
+    CPP = "cppSource",
+    PYTHON = "python",
+    VERIBLELINTRULES = "veribleLintRules",
+    TCL = "tclSource",
+    XDC = "xdc",
+    SDC = "sdc",
+    PIN = "pin",
+    XCI = "xci",
+    SBY = "sbyConfigTemplate",
+    PRO = "osvvmProject",
+    // Intel Quartus IP file
+    QIP = "QIP",
+    // Xilinx ISE constraint file
+    UCF = "UCF",
     NONE = "none"
 }
 
-/** Language */
-export enum LANG {
-    VHDL = "vhdl",
-    VERILOG = "verilog",
-    SYSTEMVERILOG = "systemverilog",
-    CPP = "cpp",
-    PYTHON = "python"
+////////////////////////////////////////////////////////////////////////////////
+// Versions
+////////////////////////////////////////////////////////////////////////////////
+export enum VHDL_LANG_VERSION {
+    v2008 = "2008",
+    v93 = "93",
+    v2000 = "2000",
 }
 
-/** HDL extensions */
-export const HDL_EXTENSIONS = {
-    VHDL: ['.vhd', '.vho', '.vhdl'],
-    VERILOG: ['.v', '.vh', '.vl'],
-    SYSTEMVERILOG: ['.sv', '.svh']
+export enum VERILOG_LANG_VERSION {
+    v2000 = "2000",
+    v2005 = "2005",
+}
+
+export type t_version_inst = VHDL_LANG_VERSION | VERILOG_LANG_VERSION | undefined;
+export type t_versions = (t_version_inst)[] | undefined;
+
+export const LANGUAGE_VERSIONS_LIST: Record<LANGUAGE, t_versions> = {
+    [LANGUAGE.VHDL]: Object.values(VHDL_LANG_VERSION),
+    [LANGUAGE.VERILOG]: Object.values(VERILOG_LANG_VERSION),
+    [LANGUAGE.SYSTEMVERILOG]: undefined,
+    [LANGUAGE.CPP]: undefined,
+    [LANGUAGE.C]: undefined,
+    [LANGUAGE.PYTHON]: undefined,
+    [LANGUAGE.VERIBLELINTRULES]: undefined,
+    [LANGUAGE.TCL]: undefined,
+    [LANGUAGE.XDC]: undefined,
+    [LANGUAGE.SDC]: undefined,
+    [LANGUAGE.PIN]: undefined,
+    [LANGUAGE.XCI]: undefined,
+    [LANGUAGE.SBY]: undefined,
+    [LANGUAGE.PRO]: undefined,
+    [LANGUAGE.NONE]: undefined,
+    [LANGUAGE.QIP]: undefined,
+    [LANGUAGE.UCF]: undefined
 };
 
-/** Other extensions */
-export const OTHER_EXTENSIONS = {
-    CPP: ['.cpp', '.cc', '.cp', '.CPP'],
+////////////////////////////////////////////////////////////////////////////////
+// Extensions
+////////////////////////////////////////////////////////////////////////////////
+export const LANGUAGE_EXTENSION_LIST: { [key: string]: LANGUAGE } = {
+    // VHDL
+    "vhd": LANGUAGE.VHDL,
+    "vho": LANGUAGE.VHDL,
+    "vhdl": LANGUAGE.VHDL,
+    // Verilog
+    "v": LANGUAGE.VERILOG,
+    "vh": LANGUAGE.VERILOG,
+    "vl": LANGUAGE.VERILOG,
+    // SystemVerilog
+    "sv": LANGUAGE.SYSTEMVERILOG,
+    "svh": LANGUAGE.SYSTEMVERILOG,
+    // CPP
+    "cpp": LANGUAGE.CPP,
+    "cc": LANGUAGE.CPP,
+    "cp": LANGUAGE.CPP,
+    // Python
+    "py": LANGUAGE.PYTHON,
+    // vbl
+    "vbl": LANGUAGE.VERIBLELINTRULES,
+    // tcl
+    "tcl": LANGUAGE.TCL,
+    // xdc
+    "xdc": LANGUAGE.XDC,
+    // sdc
+    "sdc": LANGUAGE.SDC,
+    // pin
+    "pin": LANGUAGE.PIN,
+    // xci
+    "xci": LANGUAGE.XCI,
+    // sby
+    "sby": LANGUAGE.SBY,
+    // pro
+    "pro": LANGUAGE.PRO,
 };

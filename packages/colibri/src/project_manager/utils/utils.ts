@@ -20,11 +20,10 @@
 import { t_project_definition } from "../project_definition";
 import { convert_to_yaml } from "./json2yaml";
 import * as file_utils from "../../utils/file_utils";
-import * as hdl_utils from "../../utils/hdl_utils";
 import * as general from "../../common/general";
 
-export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[], 
-    refrence_path? : string) {
+export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
+    refrence_path?: string) {
 
     const tool_name = prj.config_manager.get_tool_name();
     const tool_options = prj.config_manager.get_tool_options();
@@ -53,48 +52,28 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
     return edam_json;
 }
 
-export function get_edam_yaml(prj: t_project_definition, top_level_list: undefined | string[], 
+export function get_edam_yaml(prj: t_project_definition, top_level_list: undefined | string[],
     reference_path?: string) {
     const edam_json = get_edam_json(prj, top_level_list, reference_path);
     const edam_yaml = convert_to_yaml(edam_json);
     return edam_yaml;
 }
 
-export function get_file_type(filepath: string) {
+/**
+ * Get the file type for projec manager in string format
+ * @param filepath File path. E.g: /home/user/file.vhd
+ * @returns File type in string format
+**/
+export function get_file_type(filepath: string): string {
     const extension = file_utils.get_file_extension(filepath);
-    let file_type = '';
-    const hdl_lang = hdl_utils.get_lang_from_extension(extension);
-
-    if (hdl_lang === general.HDL_LANG.VHDL) {
-        file_type = 'vhdlSource-2008';
-    } else if (hdl_lang === general.HDL_LANG.VERILOG) {
-        file_type = 'verilogSource-2005';
-    } else if (hdl_lang === general.HDL_LANG.SYSTEMVERILOG) {
-        file_type = 'systemVerilogSource';
-    } else if (extension === '.c') {
-        file_type = 'cSource';
-    } else if (extension === '.cpp') {
-        file_type = 'cppSource';
-    } else if (extension === '.vbl') {
-        file_type = 'veribleLintRules';
-    } else if (extension === '.tcl') {
-        file_type = 'tclSource';
-    } else if (extension === '.py') {
-        file_type = 'python';
-    } else if (extension === '.xdc') {
-        file_type = 'xdc';
-    } else if (extension === '.sdc') {
-        file_type = 'SDC';
-    } else if (extension === '.pin') {
-        file_type = 'pin';
-    } else if (extension === '.xci') {
-        file_type = 'xci';
-    } else if (extension === '.sby') {
-        file_type = 'sbyConfigTemplate';
-    } else if (extension === '.pro') {
-        file_type = 'osvvmProject';
-    } else {
-        file_type = extension.substring(1).toLocaleUpperCase();
+    const language = file_utils.get_language_from_extension(extension);
+    if (language === general.LANGUAGE.NONE) {
+        return extension.substring(1).toLocaleUpperCase();
+    }
+    const default_version = file_utils.get_default_version_for_language(language);
+    let file_type: string = language;
+    if (default_version !== undefined) {
+        file_type += `-${default_version}`;
     }
     return file_type;
 }

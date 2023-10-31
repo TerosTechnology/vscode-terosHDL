@@ -19,6 +19,10 @@
 
 import * as fs from 'fs';
 import * as path_lib from 'path';
+import {
+    LANGUAGE, LANGUAGE_VERSIONS_LIST,
+    t_versions, t_version_inst, LANGUAGE_EXTENSION_LIST
+} from "../common/general";
 
 /**
  * Get full path
@@ -271,4 +275,86 @@ export function normalize_path(path: string): string {
         return `"${path}"`;
     }
     return path;
+}
+
+/**
+ * Get language from file path
+ * @param file_path File path
+ * @returns Language
+**/
+export function get_language_from_filepath(file_path: string): LANGUAGE {
+    const extension = get_file_extension(file_path);
+    return get_language_from_extension(extension);
+}
+
+/**
+ * Get language from extension
+ * @param file_path File path
+ * @returns Language
+**/
+export function get_language_from_extension(extension: string): LANGUAGE {
+    extension = extension.toLowerCase();
+    if (extension.startsWith(".")) {
+        extension = extension.slice(1);
+    }
+
+    const language = LANGUAGE_EXTENSION_LIST[extension] || LANGUAGE.NONE;
+    return language;
+}
+
+/**
+ * Get all the allowed versions for a language
+ * @param language Language
+ * @returns Extension list
+**/
+export function get_versions_for_language(language: LANGUAGE): t_versions {
+    return LANGUAGE_VERSIONS_LIST[language] || [];
+}
+
+/**
+ * Get the default version for a language
+ * @param language Language
+ * @returns Default version
+**/
+export function get_default_version_for_language(language: LANGUAGE): t_version_inst | undefined {
+    if (LANGUAGE_VERSIONS_LIST && LANGUAGE_VERSIONS_LIST[language]) {
+        return LANGUAGE_VERSIONS_LIST?.[language]?.[0];
+    } else {
+        return undefined;
+    }
+}
+
+/**
+ * Get the default version for a filepath
+ * @param filepath File path
+ * @returns Default version
+**/
+export function get_default_version_for_filepath(filepath: string): t_version_inst | undefined {
+    const language = get_language_from_filepath(filepath);
+    if (LANGUAGE_VERSIONS_LIST && LANGUAGE_VERSIONS_LIST[language]) {
+        return LANGUAGE_VERSIONS_LIST?.[language]?.[0];
+    } else {
+        return undefined;
+    }
+}
+
+/**
+ * Check version from filepath. Return default version if error. Return file version if ok
+ * @param filepath File path
+ * @returns Default version if error
+**/
+export function check_default_version_for_filepath(filepath: string, version: t_version_inst):
+    t_version_inst | undefined {
+
+    const language = get_language_from_filepath(filepath);
+    const allowed_versions = get_versions_for_language(language);
+    if (allowed_versions === undefined) {
+        return undefined;
+    }
+
+    if (allowed_versions.includes(version)) {
+        return version;
+    } else {
+        return get_default_version_for_language(language);
+    }
 }

@@ -36,12 +36,12 @@ export function get_yosys_read_file(sources, backend, working_directory) {
             relative_path_file = filename;
         }
 
-        let lang = teroshdl2.utils.common.get_hdl_language(relative_path_file);
-        if (lang === teroshdl2.common.general.HDL_LANG.VHDL) {
+        let lang = teroshdl2.utils.file.get_language_from_filepath(relative_path_file);
+        if (lang === teroshdl2.common.general.LANGUAGE.VHDL) {
             vhdl_files.push(relative_path_file);
         }
-        else if (lang === teroshdl2.common.general.HDL_LANG.VERILOG 
-            || lang === teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG) {
+        else if (lang === teroshdl2.common.general.LANGUAGE.VERILOG 
+            || lang === teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG) {
             verilog_files.push(relative_path_file);
         }
 

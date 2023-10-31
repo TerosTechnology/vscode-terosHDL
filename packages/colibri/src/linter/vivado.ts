@@ -19,8 +19,8 @@
 
 import {rm_sync} from "../utils/file_utils";
 
-import { get_hdl_language } from "../utils/common_utils";
-import { HDL_LANG } from "../common/general";
+import { get_language_from_filepath } from "../utils/file_utils";
+import { LANGUAGE } from "../common/general";
 
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
@@ -35,14 +35,14 @@ export class Vivado extends Base_linter {
     }
 
     public set_binary(file: string) {
-        const file_lang = get_hdl_language(file);
+        const file_lang = get_language_from_filepath(file);
         let binary = "";
         let extra_cmd = "--sv";
-        if (file_lang === HDL_LANG.VHDL) {
+        if (file_lang === LANGUAGE.VHDL) {
             binary = "xvhdl";
             extra_cmd = ""; 
         }
-        else if (file_lang === HDL_LANG.SYSTEMVERILOG) {
+        else if (file_lang === LANGUAGE.SYSTEMVERILOG) {
             binary = "xvlog";
         }
         else {

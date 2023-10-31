@@ -91,12 +91,14 @@ export async function add_sources_from_open_dialog(project_manager: t_Multi_proj
     const source_path_list = await get_from_open_dialog("Add sources", false, true, true,
         "Select source file", { 'All files (*.*)': ['*'] });
     source_path_list.forEach(source_path => {
-        const f: teroshdl2.project_manager.common.t_file_reduced = {
+        const f: teroshdl2.project_manager.common.t_file = {
             name: source_path,
             is_include_file: false,
             include_path: "",
             logical_name: logical_name,
-            is_manual: true
+            is_manual: true,
+            file_type: teroshdl2.utils.file.get_language_from_filepath(source_path),
+            file_version: teroshdl2.utils.file.get_default_version_for_filepath(source_path)
         };
         project_manager.add_file(prj_name, f);
     });
@@ -110,9 +112,9 @@ export async function add_sources_from_directory_and_subdirectories(project_mana
     directory_list.forEach(directory_inst => {
 
         let hdl_extension_list : string[ ]= [];
-        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.HDL_EXTENSIONS.SYSTEMVERILOG);
-        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.HDL_EXTENSIONS.VERILOG);
-        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.HDL_EXTENSIONS.VHDL);
+        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG);
+        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.LANGUAGE.VERILOG);
+        hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.LANGUAGE.VHDL);
 
         let file_list : string[] = [];
         if (allow_subdirectories){
@@ -123,12 +125,14 @@ export async function add_sources_from_directory_and_subdirectories(project_mana
         }
 
         file_list.forEach(file_inst => {            
-            const f: teroshdl2.project_manager.common.t_file_reduced = {
+            const f: teroshdl2.project_manager.common.t_file = {
                 name: file_inst,
                 is_include_file: false,
                 include_path: "",
                 logical_name: "",
-                is_manual: true
+                is_manual: true,
+                file_type: teroshdl2.utils.file.get_language_from_filepath(file_inst),
+                file_version: teroshdl2.utils.file.get_default_version_for_filepath(file_inst)
             };
             project_manager.add_file(prj_name, f);
         });

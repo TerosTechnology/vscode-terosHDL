@@ -20,8 +20,8 @@ import { e_clean_step } from "../common";
 import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import { e_tools_raptor } from "../../../config/config_declaration";
 import { t_file } from "../../common";
-import { get_lang_from_path } from "../../../utils/hdl_utils";
-import { HDL_LANG } from "../../../common/general";
+import { get_language_from_filepath } from "../../../utils/file_utils";
+import { LANGUAGE } from "../../../common/general";
 
 export function get_tcl_script(prj: t_project_definition, is_clean_mode: boolean,
     clean_step: e_clean_step | undefined): string {
@@ -107,12 +107,12 @@ function get_simulation_file(config: e_tools_raptor){
 
     simulation_file_list.forEach((file_tb: string) => {
         if (file_tb !== ""){
-            const lang = get_lang_from_path(file_tb);
+            const lang = get_language_from_filepath(file_tb);
             let cmd_lang = `-${config.vhdl_version}`;
-            if (lang === HDL_LANG.VERILOG){
+            if (lang === LANGUAGE.VERILOG){
                 cmd_lang = `-${config.verilog_version}`;
             }
-            else if (lang === HDL_LANG.SYSTEMVERILOG){
+            else if (lang === LANGUAGE.SYSTEMVERILOG){
                 cmd_lang = `-${config.sv_version}`;
             }
             else {
@@ -144,11 +144,11 @@ function get_compile_steps(config: e_tools_raptor){
     let gate_simulation = "";
     if (config.simulate_gate === true){
         const top_level_path = config.top_level;
-        const lang = get_lang_from_path(top_level_path);
-        if (lang === HDL_LANG.VHDL){
+        const lang = get_language_from_filepath(top_level_path);
+        if (lang === LANGUAGE.VHDL){
             pnr_netlist_lang = "pnr_netlist_lang vhdl";
         }
-        if (lang === HDL_LANG.SYSTEMVERILOG){
+        if (lang === LANGUAGE.SYSTEMVERILOG){
             pnr_netlist_lang = "pnr_netlist_lang verilog";
         }
 
@@ -193,13 +193,13 @@ function get_design_files(config: e_tools_raptor, file_list: t_file[]){
         }
 
         let version_cmd = "";
-        if (element.file_type === "vhdlSource-2008") {
+        if (element.file_type === LANGUAGE.VHDL) {
             version_cmd = `-${config.vhdl_version}`;
         }
-        else if (element.file_type === "verilogSource-2005") {
+        else if (element.file_type === LANGUAGE.VERILOG) {
             version_cmd = `-${config.verilog_version}`;
         }
-        else if (element.file_type === "systemVerilogSource") {
+        else if (element.file_type === LANGUAGE.SYSTEMVERILOG) {
             version_cmd = `-${config.sv_version}`;
         }
 

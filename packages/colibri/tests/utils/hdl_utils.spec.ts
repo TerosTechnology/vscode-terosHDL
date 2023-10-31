@@ -18,23 +18,11 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as hdl_utils from "../../src/utils/hdl_utils";
-import { HDL_LANG } from "../../src/common/general";
+import { LANGUAGE } from "../../src/common/general";
 import { equal } from "assert";
 import * as path_lib from "path";
 
 describe('HDL utils', function () {
-
-    it(`get_lang_from_extension`, async function () {
-        expect(hdl_utils.get_lang_from_extension(".vhdl")).toBe(HDL_LANG.VHDL);
-        expect(hdl_utils.get_lang_from_extension(".v")).toBe(HDL_LANG.VERILOG);
-        expect(hdl_utils.get_lang_from_extension(".sv")).toBe(HDL_LANG.SYSTEMVERILOG);
-        expect(hdl_utils.get_lang_from_extension(".cpp")).toBe(HDL_LANG.CPP);
-        expect(hdl_utils.get_lang_from_extension(".sf")).toBe(HDL_LANG.NONE);
-    });
-
-    it(`get_lang_from_path`, async function () {
-        expect(hdl_utils.get_lang_from_path("/this/my/path.vhdl")).toBe(HDL_LANG.VHDL);
-    });
 
     it(`check_if_hdl_file`, async function () {
         expect(hdl_utils.check_if_hdl_file("/this/my/path.vhdl")).toBe(true);
@@ -103,7 +91,7 @@ Test no comment 2`;
             `;
 
         const expected = 'test_entity_name';
-        const current = hdl_utils.get_toplevel(code_dummy, HDL_LANG.VHDL);
+        const current = hdl_utils.get_toplevel(code_dummy, LANGUAGE.VHDL);
         equal(current, expected);
     });
 
@@ -171,13 +159,13 @@ Test no comment 2`;
             endmodule
             `;
         const expected = 'test_entity_name2';
-        const current = hdl_utils.get_toplevel(code_dummy, HDL_LANG.VERILOG);
+        const current = hdl_utils.get_toplevel(code_dummy, LANGUAGE.VERILOG);
         equal(current, expected);
     });
 
 
     it(`get_toplevel None`, function () {
-        const current = hdl_utils.get_toplevel("", HDL_LANG.VERILOG);
+        const current = hdl_utils.get_toplevel("", LANGUAGE.VERILOG);
         equal(current, "");
     });
 

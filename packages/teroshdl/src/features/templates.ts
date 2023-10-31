@@ -54,7 +54,7 @@ export class Template_manager {
         const id_list = template_names.id_list;
         const lang_template_list = template_names.lang_list;
         let select_id = '';
-        let lang_template = teroshdl2.common.general.LANG.VHDL;
+        let lang_template = teroshdl2.common.general.LANGUAGE.VHDL;
         let picker_value = await vscode.window.showQuickPick(template_names.description_list,
             { placeHolder: 'Select the template type.' });
         for (let i = 0; i < description_list.length; i++) {
@@ -86,7 +86,7 @@ export class Template_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Utils
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private get_indent(general_indent:string, lang: teroshdl2.common.general.LANG): string{
+    private get_indent(general_indent:string, lang: teroshdl2.common.general.LANGUAGE): string{
         const indent = general_indent;
         let tab_size = undefined;
         let insert_spaces = undefined;
@@ -103,19 +103,19 @@ export class Template_manager {
             let cpp_tabsize = vscode.workspace.getConfiguration('[C_Cpp]')['editor.tabSize'];
             let cpp_insert_spaces = vscode.workspace.getConfiguration('[C_Cpp]')['editor.insertSpaces'];
 
-            if (lang === teroshdl2.common.general.LANG.PYTHON) {
+            if (lang === teroshdl2.common.general.LANGUAGE.PYTHON) {
                 tab_size = python_tabsize;
                 insert_spaces = python_insert_spaces;
             }
-            else if (lang === teroshdl2.common.general.LANG.VERILOG) {
+            else if (lang === teroshdl2.common.general.LANGUAGE.VERILOG) {
                 tab_size = verilog_tabsize;
                 insert_spaces = verilog_insert_spaces;
             }
-            else if (lang === teroshdl2.common.general.LANG.VHDL) {
+            else if (lang === teroshdl2.common.general.LANGUAGE.VHDL) {
                 tab_size = vhdl_tabsize;
                 insert_spaces = vhdl_insert_spaces;
             }
-            else if (lang === teroshdl2.common.general.LANG.CPP) {
+            else if (lang === teroshdl2.common.general.LANGUAGE.CPP) {
                 tab_size = cpp_tabsize;
                 insert_spaces = cpp_insert_spaces;
             }

@@ -17,13 +17,13 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_file_reduced, t_file, t_action_result, t_logical } from "../common";
+import { t_file, t_action_result, t_logical } from "../common";
 import * as file_utils from "../../utils/file_utils";
-import * as utils from "../utils/utils";
 import { Manager } from "./manager";
 import { Dependency_graph } from "../dependency/dependency";
+import { LANGUAGE } from "../../common/general";
 
-export class File_manager extends Manager<t_file_reduced, undefined, string, string> {
+export class File_manager extends Manager<t_file, undefined, string, string> {
     private files: t_file[] = [];
 
     async order(python_path: string) {
@@ -98,7 +98,7 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
         return logical_list;
     }
 
-    add(file: t_file_reduced): t_action_result {
+    add(file: t_file): t_action_result {
         const result: t_action_result = {
             result: "",
             successful: true,
@@ -112,7 +112,8 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
 
         const complete_file: t_file = {
             name: file.name,
-            file_type: utils.get_file_type(file.name),
+            file_type: file.file_type,
+            file_version: file_utils.check_default_version_for_filepath(file.name, file.file_version),
             is_include_file: file.is_include_file,
             include_path: file.include_path,
             logical_name: file.logical_name,
@@ -161,12 +162,14 @@ export class File_manager extends Manager<t_file_reduced, undefined, string, str
     }
 
     add_logical(logical_name: string) {
-        const magic_file: t_file_reduced = {
+        const magic_file: t_file = {
             name: "",
             is_include_file: false,
             include_path: "",
             logical_name: logical_name,
-            is_manual: false
+            is_manual: false,
+            file_type: LANGUAGE.NONE,
+            file_version: undefined
         };
         return this.add(magic_file);
     }

@@ -17,20 +17,20 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { HDL_LANG } from '../common/general';
+import { LANGUAGE } from '../common/general';
 import { e_config } from './config_declaration';
 import { t_linter_name, LINTER_MODE, l_options } from '../linter/common';
 
-export function get_linter_name(lang: HDL_LANG, mode: LINTER_MODE, config: e_config): t_linter_name {
-    if (lang === HDL_LANG.VHDL && mode === LINTER_MODE.ERRORS) {
+export function get_linter_name(lang: LANGUAGE, mode: LINTER_MODE, config: e_config): t_linter_name {
+    if (lang === LANGUAGE.VHDL && mode === LINTER_MODE.ERRORS) {
         return config.linter.general.linter_vhdl;
     }
-    else if ((lang === HDL_LANG.VERILOG
-        || lang === HDL_LANG.SYSTEMVERILOG)
+    else if ((lang === LANGUAGE.VERILOG
+        || lang === LANGUAGE.SYSTEMVERILOG)
         && mode === LINTER_MODE.ERRORS) {
         return config.linter.general.linter_verilog;
     }
-    else if (lang === HDL_LANG.VHDL && mode === LINTER_MODE.STYLE) {
+    else if (lang === LANGUAGE.VHDL && mode === LINTER_MODE.STYLE) {
         return config.linter.general.lstyle_vhdl;
     }
     else {

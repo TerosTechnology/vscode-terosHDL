@@ -22,7 +22,7 @@ import * as path_lib from 'path';
 import * as section_creator from './section_creator';
 import * as common_documenter from "./common";
 import * as common_hdl from "../parser/common";
-import { HDL_LANG } from "../common/general";
+import { LANGUAGE } from "../common/general";
 import * as parser_lib from "../parser/factory";
 import * as css_const_style from "./css";
 import { t_documenter_options } from "../config/auxiliar_config";
@@ -44,7 +44,7 @@ export class Documenter extends section_creator.Creator {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Save
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async save_document(code: string, lang: HDL_LANG, configuration: t_documenter_options,
+    async save_document(code: string, lang: LANGUAGE, configuration: t_documenter_options,
         input_path: string, output_path: string, output_type: common_documenter.doc_output_type): Promise<boolean> {
 
         if (output_type === common_documenter.doc_output_type.SVG) {
@@ -62,7 +62,7 @@ export class Documenter extends section_creator.Creator {
         }
     }
 
-    async save_svg(code: string, lang: HDL_LANG, configuration: t_documenter_options,
+    async save_svg(code: string, lang: LANGUAGE, configuration: t_documenter_options,
         path: string): Promise<boolean> {
 
         const hdl_element = await this.get_code_tree(code, lang, configuration);
@@ -82,7 +82,7 @@ export class Documenter extends section_creator.Creator {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Get document
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async get_document(code: string, lang: HDL_LANG, configuration: t_documenter_options,
+    async get_document(code: string, lang: LANGUAGE, configuration: t_documenter_options,
         save: boolean, input_path: string, output_svg_dir: string, extra_top_space: boolean,
         output_type: common_documenter.doc_output_type): Promise<result_type> {
 
@@ -203,10 +203,10 @@ export class Documenter extends section_creator.Creator {
     ////////////////////////////////////////////////////////////////////////////
     // Parsers
     ////////////////////////////////////////////////////////////////////////////
-    private async get_code_tree(code: string, lang: HDL_LANG, configuration: t_documenter_options) {
+    private async get_code_tree(code: string, lang: LANGUAGE, configuration: t_documenter_options) {
         const parser = await this.get_parser(lang);
         let symbol = configuration.verilog_symbol;
-        if (lang === HDL_LANG.VHDL) {
+        if (lang === LANGUAGE.VHDL) {
             symbol = configuration.vhdl_symbol;
         }
         const code_tree = await parser.get_all(code, symbol);
@@ -214,17 +214,17 @@ export class Documenter extends section_creator.Creator {
     }
 
     private async init() {
-        await this.create_parser(HDL_LANG.VERILOG);
-        await this.create_parser(HDL_LANG.VHDL);
+        await this.create_parser(LANGUAGE.VERILOG);
+        await this.create_parser(LANGUAGE.VHDL);
         this.init_parser = true;
     }
 
-    private async get_parser(lang: HDL_LANG) {
+    private async get_parser(lang: LANGUAGE) {
         if (this.init_parser === false) {
             await this.init();
         }
 
-        if (lang === HDL_LANG.VHDL) {
+        if (lang === LANGUAGE.VHDL) {
             return this.vhdl_parser;
         }
         else {
@@ -232,9 +232,9 @@ export class Documenter extends section_creator.Creator {
         }
     }
 
-    private async create_parser(lang: HDL_LANG) {
+    private async create_parser(lang: LANGUAGE) {
         const parser_factory = new parser_lib.Factory();
-        if (lang === HDL_LANG.VHDL) {
+        if (lang === LANGUAGE.VHDL) {
             this.vhdl_parser = await parser_factory.get_parser(lang);
         }
         else {
@@ -242,9 +242,9 @@ export class Documenter extends section_creator.Creator {
         }
     }
 
-    public async get_fsm(code: string, lang: HDL_LANG, configuration: t_documenter_options) {
+    public async get_fsm(code: string, lang: LANGUAGE, configuration: t_documenter_options) {
         let symbol = configuration.verilog_symbol;
-        if (lang === HDL_LANG.VHDL) {
+        if (lang === LANGUAGE.VHDL) {
             symbol = configuration.vhdl_symbol;
         }
         const parser = await this.get_parser(lang);
@@ -252,7 +252,7 @@ export class Documenter extends section_creator.Creator {
         return fsm_list;
     }
 
-    private async get_fsm_svg(code: string, lang: HDL_LANG, configuration: t_documenter_options) {
+    private async get_fsm_svg(code: string, lang: LANGUAGE, configuration: t_documenter_options) {
         const fsm_list = await this.get_fsm(code, lang, configuration);
         return fsm_list.svg;
     }

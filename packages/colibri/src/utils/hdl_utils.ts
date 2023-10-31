@@ -17,42 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { HDL_LANG, HDL_EXTENSIONS, OTHER_EXTENSIONS } from "../common/general";
+import { LANGUAGE } from "../common/general";
 import * as file_utils from './file_utils';
-
-/**
- * Get file language from extension
- * @param extension File extension. E.g: .vhd
- * @returns File language
-**/
-export function get_lang_from_extension(extension: string): HDL_LANG {
-    if (HDL_EXTENSIONS.VHDL.includes(extension) === true) {
-        return HDL_LANG.VHDL;
-    }
-    else if (HDL_EXTENSIONS.VERILOG.includes(extension) === true) {
-        return HDL_LANG.VERILOG;
-    }
-    else if (HDL_EXTENSIONS.SYSTEMVERILOG.includes(extension) === true) {
-        return HDL_LANG.SYSTEMVERILOG;
-    }
-    else if (OTHER_EXTENSIONS.CPP.includes(extension) === true) {
-        return HDL_LANG.CPP;
-    }
-    else {
-        return HDL_LANG.NONE;
-    }
-}
-
-/**
- * Get file language from path
- * @param file_path File path. E.g: /home/user/file.vhd
- * @returns File language
-**/
-export function get_lang_from_path(file_path: string): HDL_LANG {
-    const extension = file_utils.get_file_extension(file_path);
-    const lang = get_lang_from_extension(extension);
-    return lang;
-}
 
 /**
  * Check if file is HDL
@@ -60,13 +26,19 @@ export function get_lang_from_path(file_path: string): HDL_LANG {
  * @returns True if file is HDL
 **/
 export function check_if_hdl_file(file_path: string): boolean {
-    const lang = get_lang_from_path(file_path);
-    let check = false;
-    if (lang !== HDL_LANG.NONE && lang !== HDL_LANG.CPP) {
-        check = true;
-    }
-    return check;
+    const lang = file_utils.get_language_from_filepath(file_path);
+    return check_if_hdl_language(lang);
 }
+
+/**
+ * Check if language is HDL
+ * @param language Language
+ * @returns True if language is HDL
+**/
+export function check_if_hdl_language(language: LANGUAGE): boolean {
+    return (language === LANGUAGE.VHDL || language === LANGUAGE.VERILOG || language === LANGUAGE.SYSTEMVERILOG);
+}
+
 
 /**
  * Remove comments from VHDL code
@@ -135,10 +107,11 @@ export function remove_comments_verilog(content: string): string {
  * @param lang HDL language
  * @returns Top level name
 **/
-export function get_toplevel(code: string, lang: HDL_LANG): string {
+export function get_toplevel(code: string, lang: LANGUAGE): string {
+    if (!check_if_hdl_language(lang)) { return ''; }
     let result;
     let regex;
-    if (lang === HDL_LANG.VHDL) {
+    if (lang === LANGUAGE.VHDL) {
         code = remove_comments_vhdl(code);
         regex = /(entity|package)\s+(?<name>\w+)\s*is\s*/gim;
         result = regex.exec(code);
@@ -158,63 +131,13 @@ export function get_toplevel(code: string, lang: HDL_LANG): string {
     return '';
 }
 
-// export function get_declaration(code: string, lang: HDL_LANG) {
-//     let result;
-//     let regex;
-//     const declaration = { name: '', type: '' };
-//     if (lang === HDL_LANG.VHDL) {
-//         code = remove_comments_vhdl(code);
-//         regex = /(entity|package)\s+(?<name>\w+)\s*is\s*/gim;
-//         result = regex.exec(code);
-//         if (result !== null && result !== undefined && result.length >= 3) {
-//             declaration.type = result[1].toLocaleLowerCase();
-//             declaration.name = result[2];
-//         }
-//     }
-//     else {
-//         //Remove comments
-//         code = remove_comments_verilog(code);
-//         regex = /(?<type>module|program|interface|package|primitive|config|property)\s+(?:automatic\s+)?(?<name>\w+)/gm;
-//         result = regex.exec(code);
-//         if (result !== null && result !== undefined && result.length >= 3) {
-//             declaration.type = 'entity';
-//             declaration.name = result[2];
-//         }
-//     }
-//     return declaration;
-// }
-
 export function get_toplevel_from_path(filepath: string): string {
     if (file_utils.check_if_file(filepath) === false) {
         return '';
     }
-    const lang = get_lang_from_path(filepath);
-    if (lang === HDL_LANG.NONE) {
-        return '';
-    }
+    if (!check_if_hdl_file(filepath)) { return ''; }
 
     const code = file_utils.read_file_sync(filepath);
-    const entity_name = get_toplevel(code, lang);
+    const entity_name = get_toplevel(code, file_utils.get_language_from_filepath(filepath));
     return entity_name;
 }
-
-// export async function get_declaration_from_path(filepath: string) {
-//     if (filepath === undefined) {
-//         return '';
-//     }
-//     if (fs.existsSync(filepath) === false) {
-//         return '';
-//     }
-//     const lang = get_lang_from_path(filepath);
-//     if (lang === HDL_LANG.NONE) {
-//         return '';
-//     }
-
-//     const code = fs.readFileSync(filepath, "utf8");
-//     const entity_name = get_declaration(code, lang);
-
-//     if (entity_name === undefined) {
-//         return '';
-//     }
-//     return entity_name;
-// }

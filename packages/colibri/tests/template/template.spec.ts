@@ -22,14 +22,14 @@ import * as common from "../../src/template/common";
 import * as cfg from "../../src/config/config_declaration";
 import * as cfg_aux from "../../src/config/auxiliar_config";
 import { read_file_sync } from "../../src/utils/file_utils";
-import { HDL_LANG } from "../../src/common/general";
+import { LANGUAGE } from "../../src/common/general";
 import { equal } from "assert";
 import * as paht_lib from 'path';
 import * as fs from 'fs';
 
-const language_array = [HDL_LANG.VHDL, HDL_LANG.VERILOG];
+const language_array = [LANGUAGE.VHDL, LANGUAGE.VERILOG];
 
-async function generate_template_manager(language: HDL_LANG) {
+async function generate_template_manager(language: LANGUAGE) {
     const template_manager = new Template_manager(language);
     return template_manager;
 }
@@ -132,7 +132,7 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
                     const config = get_default_config();
                     
                     let code_hdl = verilog_code;
-                    if (language === HDL_LANG.VHDL) {
+                    if (language === LANGUAGE.VHDL) {
                         code_hdl = vhdl_code;
                         config.header_file_path = paht_lib.join(__dirname, "header.txt");
                     }
@@ -145,16 +145,21 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
                         counter = 1;
                     }
 
+                    let extension = "verilog";
+                    if (language === LANGUAGE.VHDL) {
+                        extension = "vhdl";
+                    }
+
                     const template_manager = await generate_template_manager(language);
                     const inst_hdl = code_hdl[counter];
                     const template = await template_manager.generate(inst_hdl, template_type.id, config);
                     const output_path = paht_lib.join(C_OUTPUT_BASE_PATH,
-                        `${language}_${template_type.id}.${language}`);
+                        `${extension}_${template_type.id}.${extension}`);
                     fs.writeFileSync(output_path, template);
 
                     //Get exepcted template
                     const input_path = paht_lib.join(__dirname, `expected_${TEST_TYPE}`,
-                        `${language}_${template_type.id}.${language}`);
+                        `${extension}_${template_type.id}.${extension}`);
                     const expected = read_file_sync(input_path);
 
                     equal(template, expected);
@@ -167,20 +172,20 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
 
 describe('Template utils', function () {
     it('get_template_definition', async function () {
-        const template_vhdl = common.get_template_definition(HDL_LANG.VHDL);
+        const template_vhdl = common.get_template_definition(LANGUAGE.VHDL);
         equal(template_vhdl.description_list.length, 10);
 
-        const template_verilog = common.get_template_definition(HDL_LANG.VERILOG);
+        const template_verilog = common.get_template_definition(LANGUAGE.VERILOG);
         equal(template_verilog.description_list.length, 9);
     });
 
     it('parse error', async function () {
         const bad_code = "";
-        const template_manager = new Template_manager(HDL_LANG.VHDL);
+        const template_manager = new Template_manager(LANGUAGE.VHDL);
         const result = await template_manager.generate(bad_code, "entity", get_default_config());
         equal(result, "");
 
-        const template_manager_sverilog = new Template_manager(HDL_LANG.SYSTEMVERILOG);
+        const template_manager_sverilog = new Template_manager(LANGUAGE.SYSTEMVERILOG);
         const result_sverilog = await template_manager_sverilog.generate(bad_code, "entity", get_default_config());
         equal(result_sverilog, "");
     });
@@ -189,7 +194,7 @@ describe('Template utils', function () {
         const config = get_default_config();
         config.header_file_path = paht_lib.join(__dirname, "header_bad.txt");
 
-        const template_manager = new Template_manager(HDL_LANG.VHDL);
+        const template_manager = new Template_manager(LANGUAGE.VHDL);
         const result = await template_manager.generate(vhdl_code[0], "hdl_element_instance", config);
 
         const input_path = paht_lib.join(__dirname, "expected_with_generic", 

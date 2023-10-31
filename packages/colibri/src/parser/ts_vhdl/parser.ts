@@ -23,7 +23,7 @@ import { Parser_base } from "../parser";
 import { Hdl_element } from "../common";
 import { Ts_base_parser } from "../ts_base_parser";
 import * as elements_hdl from "./elements";
-import { HDL_LANG } from "../../common/general";
+import { LANGUAGE } from "../../common/general";
 import * as common_hdl from "../common";
 import * as Parser from "web-tree-sitter";
 
@@ -60,7 +60,7 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
 
     public get_all(code: string, comment_symbol: string): Hdl_element {
         this.comment_symbol = comment_symbol;
-        let hdl_element = new Hdl_element(HDL_LANG.VHDL, common_hdl.TYPE_HDL_ELEMENT.ENTITY);
+        let hdl_element = new Hdl_element(LANGUAGE.VHDL, common_hdl.TYPE_HDL_ELEMENT.ENTITY);
 
         if (this.loaded === false) {
             hdl_element.error_state = true;
@@ -70,7 +70,7 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
         const check: boolean = this.get_entity_file(code, hdl_element);
 
         if (check === false) {
-            hdl_element = new Hdl_element(HDL_LANG.VHDL, common_hdl.TYPE_HDL_ELEMENT.PACKAGE);
+            hdl_element = new Hdl_element(LANGUAGE.VHDL, common_hdl.TYPE_HDL_ELEMENT.PACKAGE);
             this.get_package_file(code, hdl_element);
         }
         return hdl_element;

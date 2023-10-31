@@ -22,7 +22,6 @@ import * as path_lib from 'path';
 import * as file_utils from '../../utils/file_utils';
 import * as command_utils from '../../utils/command_utils';
 import * as printer from '../../utils/printer';
-import * as hdl_utils from '../../utils/hdl_utils';
 import * as template_manager from '../../template/manager';
 import * as template_common from '../../template/common';
 import * as cfg from '../../config/config_declaration';
@@ -165,7 +164,7 @@ export default class MyCLI extends Command {
             this.exit(-1);
         }
 
-        const input_hdl_lang = hdl_utils.get_lang_from_path(input_path_absolute);
+        const input_hdl_lang = file_utils.get_language_from_filepath(input_path_absolute);
         const cl_template = new template_manager.Template_manager(input_hdl_lang);
         const code_content = file_utils.read_file_sync(input_path_absolute);
 

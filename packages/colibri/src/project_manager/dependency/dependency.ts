@@ -21,7 +21,6 @@ import { t_file, t_action_result, t_action_compile_order } from "../common";
 import * as hdl_utils from "../../utils/hdl_utils";
 import * as file_utils from "../../utils/file_utils";
 import * as process_utils from "../../process/utils";
-import * as utils from "../utils/utils";
 import * as python from "../../process/python";
 import * as path_lib from 'path';
 import { Pyodide, PACKAGE_MAP, python_result } from "../../process/pyodide";
@@ -66,6 +65,7 @@ export class Dependency_graph {
                 include_path: file_inst.include_path,
                 logical_name: file_inst.logical_name,
                 is_manual: file_inst.is_manual,
+                file_version: file_inst.file_version,
             };
             prj_file_list_map.push(file_map);
         });
@@ -99,11 +99,12 @@ export class Dependency_graph {
                 for (let i = 0; i < rawdata.length; i++) {
                     const file_inst: t_file = {
                         name: rawdata[i].name,
-                        file_type: utils.get_file_type(rawdata[i].name),
+                        file_type: file_utils.get_language_from_filepath(rawdata[i].name),
                         is_include_file: false,
                         include_path: "",
                         logical_name: rawdata[i].logical_name,
                         is_manual: false,
+                        file_version: file_utils.get_default_version_for_filepath(rawdata[i].name),
                     };
                     compile_order.push(file_inst);
                 }
@@ -213,11 +214,12 @@ export class Dependency_graph {
                 for (let i = 0; i < rawdata.length; i++) {
                     const file_inst: t_file = {
                         name: rawdata[i].name,
-                        file_type: utils.get_file_type(rawdata[i].name),
+                        file_type: file_utils.get_language_from_filepath(rawdata[i].name),
                         is_include_file: false,
                         include_path: "",
                         logical_name: rawdata[i].logical_name,
                         is_manual: false,
+                        file_version: file_utils.get_default_version_for_filepath(rawdata[i].name),
                     };
                     compile_order.push(file_inst);
                 }

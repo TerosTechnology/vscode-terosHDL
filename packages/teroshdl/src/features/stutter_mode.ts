@@ -45,16 +45,16 @@ export class Stutter_mode_manager {
 
         this.manager = manager;
 
-        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.HDL_LANG.VHDL));
-        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.HDL_LANG.VERILOG));
-        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG));
+        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.LANGUAGE.VHDL));
+        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.LANGUAGE.VERILOG));
+        context.subscriptions.push(this.get_stutter_mode(teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG));
     }
 
-    private get_stutter_mode(lang: teroshdl2.common.general.HDL_LANG) {
+    private get_stutter_mode(lang: teroshdl2.common.general.LANGUAGE) {
         let stutter;
         const element = this;
 
-        if (lang === teroshdl2.common.general.HDL_LANG.VHDL) {
+        if (lang === teroshdl2.common.general.LANGUAGE.VHDL) {
             stutter = languages.registerOnTypeFormattingEditProvider(
                 { scheme: '*', language: 'vhdl' },
                 {
