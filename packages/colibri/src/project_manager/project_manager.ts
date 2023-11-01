@@ -34,16 +34,14 @@ import * as file_utils from "../utils/file_utils";
 import { Config_manager, merge_configs } from "../config/config_manager";
 import { e_config } from "../config/config_declaration";
 import * as utils from "./utils/utils";
-import * as process_utils from "../process/utils";
 import * as python from "../process/python";
 import * as events from "events";
-import * as path_lib from "path";
-import * as process from "../process/process";
 import { l_error } from "../linter/common";
 import { Linter } from "../linter/linter";
 import { t_linter_name, l_options } from "../linter/common";
-import { Vunit } from "./tool/vunit/vunit";
-import { csv_loader } from "./prj_loaders/csv_loader";
+import { get_files_from_csv } from "./prj_loaders/csv_loader";
+import { get_files_from_vivado } from "./prj_loaders/vivado_loader";
+import { get_files_from_vunit } from "./prj_loaders/vunit_loader";
 
 export class Project_manager {
     /**  Name of the project */
@@ -208,30 +206,15 @@ export class Project_manager {
         const n_config_manager = new Config_manager();
         n_config_manager.set_config(n_config);
 
-        // Get Vivado binary path
-        let vivado_bin = n_config.tools.vivado.installation_path;
-        if (vivado_bin === "") {
-            vivado_bin = "vivado";
-        }
-        else {
-            vivado_bin = path_lib.join(vivado_bin, "vivado");
-        }
-
-        // Create temp file for out.csv
-        const csv_file = process_utils.create_temp_file("");
-        const tcl_file = path_lib.join(__dirname, 'prj_loaders', 'vivado.tcl');
-
-        const cmd = `vivado -mode batch -source ${tcl_file} -tclargs ${vivado_path} ${csv_file}`;
-        await (new process.Process(undefined)).exec_wait(cmd);
-
-        const result_load = this.add_file_from_csv(csv_file, is_manual);
-
-        // Delete temp file
-        file_utils.remove_file(csv_file);
-
-        return result_load;
+        const result = await get_files_from_vivado(n_config, vivado_path, is_manual);
+        this.add_file_from_array(result.file_list);
+        const action_result: t_action_result = {
+            result: result.file_list,
+            successful: result.successful,
+            msg: result.msg
+        };
+        return action_result;
     }
-
 
     async add_file_from_vunit(general_config: e_config | undefined, vunit_path: string, is_manual: boolean
     ): Promise<t_action_result> {
@@ -240,64 +223,41 @@ export class Project_manager {
         const n_config_manager = new Config_manager();
         n_config_manager.set_config(n_config);
 
-        const vunit = new Vunit();
-        const simulator_name = n_config.tools.vunit.simulator_name;
-        const simulator_install_path = vunit.get_simulator_installation_path(n_config);
+        const result = await get_files_from_vunit(n_config, vunit_path, is_manual);
 
-        const simulator_conf = vunit.get_simulator_config(simulator_name, simulator_install_path);
-
-        const py_path = n_config_manager.get_config().general.general.pypath;
-        const json_path = process_utils.create_temp_file("");
-        const args = `--export-json ${json_path}`;
-        const result = await python.exec_python_script(py_path, vunit_path, args, simulator_conf);
-
-        if (result.successful === true) {
-            try {
-                const json_str = file_utils.read_file_sync(json_path);
-                const file_list = JSON.parse(json_str).files;
-                file_list.forEach((file: any) => {
-                    const file_declaration: t_file = {
-                        name: file.file_name,
-                        is_include_file: false,
-                        include_path: "",
-                        logical_name: file.library_name,
-                        is_manual: is_manual,
-                        file_type: file_utils.get_language_from_filepath(file.file_name),
-                        file_version: file_utils.get_default_version_for_filepath(file.file_name)
-                    };
-                    this.add_file(file_declaration);
-                });
-                const result: t_action_result = {
-                    result: undefined,
-                    successful: true,
-                    msg: ""
-                };
-                return result;
-            }
-            // eslint-disable-next-line no-empty
-            catch (e) { }
-        }
-        const result_error: t_action_result = {
-            result: undefined,
-            successful: false,
-            msg: "Error processing run.py"
+        this.add_file_from_array(result.file_list);
+        const action_result: t_action_result = {
+            result: result.file_list,
+            successful: result.successful,
+            msg: result.msg
         };
-        return result_error;
+        return action_result;
     }
 
     add_file_from_csv(csv_path: string, is_manual: boolean): t_action_result {
-        const result = csv_loader(csv_path, is_manual);
-        const result_file_list = <t_file[]>result.result;
-        if (result.successful === true) {
-            result_file_list.forEach(file => {
-                this.add_file(file);
-            });
-        }
-        return result;
+        const result = get_files_from_csv(csv_path, is_manual);
+        this.add_file_from_array(result.file_list);
+        const action_result: t_action_result = {
+            result: result.file_list,
+            successful: result.successful,
+            msg: result.msg
+        };
+        return action_result;
     }
 
     add_file(file: t_file): t_action_result {
         return this.files.add(file);
+    }
+
+    add_file_from_array(file_list: t_file[]): t_action_result {
+        file_list.forEach(file => {
+            this.files.add(file);
+        });
+        return {
+            result: undefined,
+            successful: true,
+            msg: ""
+        };
     }
 
     delete_file(name: string, logical_name = "") {
@@ -306,7 +266,7 @@ export class Project_manager {
         return result;
     }
 
-    get_file() : t_file[]{
+    get_file(): t_file[] {
         return this.files.get();
     }
 
