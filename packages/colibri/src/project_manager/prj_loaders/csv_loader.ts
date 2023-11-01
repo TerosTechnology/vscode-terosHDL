@@ -18,9 +18,10 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as file_utils from "../../utils/file_utils";
-import { t_file, t_action_result } from "../common";
+import { t_file } from "../common";
+import { t_loader_action_result } from "./common";
 
-export function csv_loader(csv_path: string, is_manual: boolean): t_action_result {
+export function get_files_from_csv(csv_path: string, is_manual: boolean): t_loader_action_result {
     const csv_content = file_utils.read_file_sync(csv_path);
     const file_list_array = csv_content.split(/\r?\n|\r/);
     const result_file_list: t_file[] = [];
@@ -63,8 +64,8 @@ export function csv_loader(csv_path: string, is_manual: boolean): t_action_resul
                 }
             }
             catch (e) {
-                const result: t_action_result = {
-                    result: [],
+                const result: t_loader_action_result = {
+                    file_list: [],
                     successful: false,
                     msg: "Error processing CSV."
                 };
@@ -72,8 +73,8 @@ export function csv_loader(csv_path: string, is_manual: boolean): t_action_resul
             }
         }
     }
-    const result: t_action_result = {
-        result: result_file_list,
+    const result: t_loader_action_result = {
+        file_list: result_file_list,
         successful: true,
         msg: ""
     };
