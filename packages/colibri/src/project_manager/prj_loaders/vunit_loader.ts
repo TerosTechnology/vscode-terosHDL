@@ -23,10 +23,10 @@ import { t_file } from "../common";
 import { Vunit } from "../tool/vunit/vunit";
 import * as process_utils from "../../process/utils";
 import * as file_utils from "../../utils/file_utils";
-import { t_loader_action_result } from "./common";
+import { t_loader_file_list_result } from "../tool/common";
 
 export async function get_files_from_vunit(config: e_config, vunit_path: string, is_manual: boolean
-): Promise<t_loader_action_result> {
+): Promise<t_loader_file_list_result> {
 
     const n_config_manager = new Config_manager();
     n_config_manager.set_config(config);
@@ -59,7 +59,7 @@ export async function get_files_from_vunit(config: e_config, vunit_path: string,
                 };
                 file_defined_list.push(file_declaration);
             });
-            const result: t_loader_action_result = {
+            const result: t_loader_file_list_result = {
                 file_list: file_defined_list,
                 successful: true,
                 msg: ""
@@ -69,7 +69,7 @@ export async function get_files_from_vunit(config: e_config, vunit_path: string,
         // eslint-disable-next-line no-empty
         catch (e) { }
     }
-    const result_error: t_loader_action_result = {
+    const result_error: t_loader_file_list_result = {
         file_list: [],
         successful: false,
         msg: "Error processing run.py"

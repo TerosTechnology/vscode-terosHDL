@@ -46,7 +46,7 @@ export class Source_manager {
     set_commands() {
         vscode.commands.registerCommand("teroshdl.view.source.save_project", () => this.save_project());
         vscode.commands.registerCommand("teroshdl.view.source.select_toplevel", (item) => this.select_top(item));
-        vscode.commands.registerCommand("teroshdl.view.source.add", () => this.add());
+        vscode.commands.registerCommand("teroshdl.view.source.add", async () => await this.add());
         vscode.commands.registerCommand("teroshdl.view.source.add_source_to_library", (item) => this.add_source_to_library(item));
         vscode.commands.registerCommand("teroshdl.view.source.delete_library", (item) => this.delete_library(item));
         vscode.commands.registerCommand("teroshdl.view.source.delete_source", (item) => this.delete_source(item));
@@ -81,9 +81,13 @@ export class Source_manager {
         // Add source
         if (picker_value === element_types[0]) {
             // const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py", "Load from Vivado .xpr"];
-            const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py",
+            const element_types = [
+                "Browser", 
+                "Load from CSV", 
+                "Load from VUnit run.py",
                 "Add all HDL files from a directory and subdirectories",
-                "Add all files from a directory"
+                "Add all files from a directory",
+                "Load from Intel® Quartus® Prime project"
             ];
             const picker_value = await utils.get_picker_value(element_types, "Add from:");
 
@@ -111,10 +115,10 @@ export class Source_manager {
             else if (picker_value === element_types[4]) {
                 await utils.add_sources_from_directory_and_subdirectories(this.project_manager, prj_name, false);
             }
-            // // Add from Vivado
-            // else if (picker_value === element_types[3]) {
-            //     await utils.add_sources_from_vivado(this.project_manager, prj_name, true);
-            // }
+            // Add from Quartus
+            else if (picker_value === element_types[5]) {
+                await utils.add_sources_from_quartus(this.project_manager, prj_name, true);
+            }
         }
         // Add library
         else {

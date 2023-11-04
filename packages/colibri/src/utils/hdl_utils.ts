@@ -39,7 +39,6 @@ export function check_if_hdl_language(language: LANGUAGE): boolean {
     return (language === LANGUAGE.VHDL || language === LANGUAGE.VERILOG || language === LANGUAGE.SYSTEMVERILOG);
 }
 
-
 /**
  * Remove comments from VHDL code
  * @param content VHDL code

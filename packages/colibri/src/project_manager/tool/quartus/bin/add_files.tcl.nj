@@ -1,0 +1,8 @@
+set project_path [lindex $argv 0]
+
+#open Quartus project
+project_open -current_revision $project_path
+
+{% for cmd in cmd_list %}
+{{cmd}}
+{% endfor %}
