@@ -79,7 +79,9 @@ export class Project_manager {
             "Load project from JSON EDAM", 
             "Load project from YAML EDAM", 
             "Load project from VUnit run.py",
-            "Load an example project"
+            "Load an example project",
+            "Load Intel® Quartus® Prime project",
+            "New Intel® Quartus® Prime project",
         ];
 
         const picker_value = await vscode.window.showQuickPick(PROJECT_ADD_TYPES, {
@@ -143,6 +145,57 @@ export class Project_manager {
                 this.create_project_from_yaml(project_path);
             }
         }
+        // Load from Quartus
+        else if(picker_value === PROJECT_ADD_TYPES[5]){
+            const path_list = await utils.get_from_open_dialog("Load Quartus project", false, true, false, 
+                "Select Quartus project", { 'Quartus project (*.qsf)': ['qsf'] });
+            for (const path of path_list) {
+                this.create_project_from_quartus(path);
+            }
+        }
+        else if(picker_value === PROJECT_ADD_TYPES[6]){
+            // Working directory
+            const working_directory = await 
+                utils.get_from_open_dialog("What is the working directory for this project?", true, false, false, 
+                "Choose", {});
+            if (working_directory.length !== 1) {
+                return;
+            }
+
+            // Project name
+            const project_name = await utils.get_from_input_box("What is the name of this project?", "Project name");
+            if (project_name === undefined) {
+                return;
+            }
+            // Device family
+            const family_list = await teroshdl2.project_manager.quartus
+                .get_family_and_parts_list(this.project_manager.get_config_global_config());
+            const family_list_string = family_list.board_list.map(x => x.family);
+            let picker_family = await vscode.window.showQuickPick(family_list_string, {
+                placeHolder: "Device family",
+            });
+            if (picker_family === undefined) {
+                return;
+            }
+            // Device part
+            const part_list = family_list.board_list.filter(x => x.family === picker_family)[0].part_list;
+
+            const picker_part = await vscode.window.showQuickPick(part_list, {
+                placeHolder: "Device",
+            });
+            if (picker_part === undefined) {
+                return;
+            }
+
+            // Create project
+            const rsult = teroshdl2.project_manager.quartus.create_quartus_project(this.project_manager.get_config_global_config(), working_directory[0],
+                project_name, picker_family, picker_part);
+        }
+    }
+
+    async create_project_from_quartus(prj_path : string){
+        await this.project_manager.create_project_from_quartus(this.project_manager.get_config_global_config(), prj_path);
+        this.refresh();
     }
     
     create_project_from_json(prj_path : string){

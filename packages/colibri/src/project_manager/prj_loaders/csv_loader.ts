@@ -19,9 +19,9 @@
 
 import * as file_utils from "../../utils/file_utils";
 import { t_file } from "../common";
-import { t_loader_action_result } from "./common";
+import { t_loader_file_list_result } from "../tool/common";
 
-export function get_files_from_csv(csv_path: string, is_manual: boolean): t_loader_action_result {
+export function get_files_from_csv(csv_path: string, is_manual: boolean): t_loader_file_list_result {
     const csv_content = file_utils.read_file_sync(csv_path);
     const file_list_array = csv_content.split(/\r?\n|\r/);
     const result_file_list: t_file[] = [];
@@ -64,7 +64,7 @@ export function get_files_from_csv(csv_path: string, is_manual: boolean): t_load
                 }
             }
             catch (e) {
-                const result: t_loader_action_result = {
+                const result: t_loader_file_list_result = {
                     file_list: [],
                     successful: false,
                     msg: "Error processing CSV."
@@ -73,7 +73,7 @@ export function get_files_from_csv(csv_path: string, is_manual: boolean): t_load
             }
         }
     }
-    const result: t_loader_action_result = {
+    const result: t_loader_file_list_result = {
         file_list: result_file_list,
         successful: true,
         msg: ""

@@ -31,6 +31,7 @@ import { Linter } from "../linter/linter";
 
 import * as yaml from "js-yaml";
 import * as events from "events";
+import { get_project_info_from_quartus } from "./tool/quartus/utils";
 
 export class Multi_project_manager {
     private project_manager_list: Project_manager[] = [];
@@ -139,6 +140,21 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
+    async create_project_from_quartus(general_config: e_config, prj_path: string): Promise<t_action_result> {
+        const result = await get_project_info_from_quartus(general_config, prj_path);
+        const result_prj_create = this.create_project(result.prj_name);
+        if (result_prj_create.successful === false) {
+            return result_prj_create;
+        }
+        let q_result = await this.add_file_from_quartus(result.prj_name, general_config, prj_path, true);
+        if (q_result.successful === false) {
+            return q_result;
+        }
+        q_result = await this.add_toplevel_path_from_entity(result.prj_name, result.prj_top_entity);
+        this.save();
+        return q_result;
+    }
+
     public rename_project(prj_name: string, new_name: string) {
         // Check if project to reanme exists
         const exist_prj_0 = this.get_project_by_name(prj_name);
@@ -241,10 +257,10 @@ export class Multi_project_manager {
                 prj.add_file(file_definition);
             });
 
-            if (prj_info.toplevel !== undefined){
-                const toplevel_path = file_utils.get_absolute_path(file_utils.get_directory(base_path), 
+            if (prj_info.toplevel !== undefined) {
+                const toplevel_path = file_utils.get_absolute_path(file_utils.get_directory(base_path),
                     prj_info.toplevel);
-                if (file_utils.check_if_path_exist(toplevel_path)){
+                if (file_utils.check_if_path_exist(toplevel_path)) {
                     prj.add_toplevel_path(toplevel_path);
                 }
             }
@@ -418,6 +434,16 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Toplevel
     ////////////////////////////////////////////////////////////////////////////
+    add_toplevel_path_from_entity(prj_name: string, entity_name: string): t_action_result {
+        const prj = this.get_project_by_name(prj_name);
+        if (prj === undefined) {
+            return this.get_project_not_exist();
+        }
+        const result = prj.add_toplevel_path_from_entity(entity_name);
+        this.save();
+        return result;
+    }
+
     add_toplevel_path(prj_name: string, toplevel_path_inst: string): t_action_result {
         const prj = this.get_project_by_name(prj_name);
         if (prj === undefined) {
@@ -491,6 +517,18 @@ export class Multi_project_manager {
             return this.get_project_not_exist();
         }
         const result = await prj.add_file_from_vivado(general_config, vivado_path, is_manual);
+        this.save();
+        return result;
+    }
+
+    async add_file_from_quartus(prj_name: string, general_config: e_config | undefined,
+        prj_path: string, is_manual: boolean): Promise<t_action_result> {
+
+        const prj = this.get_project_by_name(prj_name);
+        if (prj === undefined) {
+            return this.get_project_not_exist();
+        }
+        const result = await prj.add_file_from_quartus(general_config, prj_path, is_manual);
         this.save();
         return result;
     }

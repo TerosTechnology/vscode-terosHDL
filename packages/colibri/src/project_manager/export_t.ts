@@ -21,3 +21,4 @@ export * as project_manager from './project_manager';
 export * as multi_project_manager from './multi_project_manager';
 export * as common from './common';
 export * as tool_common from './tool/common';
+export * as quartus from './tool/quartus/utils';

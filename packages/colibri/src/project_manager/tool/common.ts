@@ -18,6 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { e_config } from "../../config/config_declaration";
+import { t_file } from "../common";
 
 export interface TestItem {
     test_type: string | undefined,
@@ -111,4 +112,34 @@ export enum e_clean_step {
     Route = "Route",
     Sta = "Sta",
     Bitstream = "Bitstream"
+}
+
+export type t_board_list = {
+    family: string;
+    part_list: string[];
+}
+
+export type t_loader_boards_result = {
+    board_list: t_board_list[];
+    successful: boolean;
+    msg: string;
+}
+
+export type t_loader_file_list_result = {
+    file_list: t_file[];
+    successful: boolean;
+    msg: string;
+}
+
+export type t_loader_prj_info_result = {
+    prj_name: string;
+    prj_revision: string;
+    prj_top_entity: string;
+    successful: boolean;
+    msg: string;
+}
+
+export type t_loader_action_result = {
+    successful: boolean;
+    msg: string;
 }

@@ -17,7 +17,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { e_config } from "../../config/config_declaration";
-import { t_loader_action_result } from "./common";
+import { t_loader_file_list_result } from "../tool/common";
 import * as path_lib from "path";
 import * as process_utils from "../../process/utils";
 import * as process from "../../process/process";
@@ -25,7 +25,7 @@ import { get_files_from_csv } from "./csv_loader";
 import * as file_utils from "../../utils/file_utils";
 
 export async function get_files_from_vivado(config: e_config, vivado_path: string, is_manual: boolean)
-    : Promise<t_loader_action_result> {
+    : Promise<t_loader_file_list_result> {
 
     // Get Vivado binary path
     let vivado_bin = config.tools.vivado.installation_path;
@@ -38,12 +38,12 @@ export async function get_files_from_vivado(config: e_config, vivado_path: strin
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");
-    const tcl_file = path_lib.join(__dirname, 'prj_loaders', 'vivado.tcl');
+    const tcl_file = path_lib.join(__dirname, 'vivado.tcl');
 
     const cmd = `${vivado_bin} -mode batch -source ${tcl_file} -tclargs ${vivado_path} ${csv_file}`;
     const cmd_result = await (new process.Process(undefined)).exec_wait(cmd);
 
-    const result: t_loader_action_result = {
+    const result: t_loader_file_list_result = {
         file_list: [],
         successful: cmd_result.successful,
         msg: cmd_result.stderr + cmd_result.stdout

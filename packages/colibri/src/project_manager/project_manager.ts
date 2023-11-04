@@ -31,6 +31,7 @@ import { Tool_manager } from "./tool/tools_manager";
 import { t_test_declaration, t_test_result, e_clean_step } from "./tool/common";
 import { t_project_definition } from "./project_definition";
 import * as file_utils from "../utils/file_utils";
+import * as hdl_utils from "../utils/hdl_utils";
 import { Config_manager, merge_configs } from "../config/config_manager";
 import { e_config } from "../config/config_declaration";
 import * as utils from "./utils/utils";
@@ -42,6 +43,7 @@ import { t_linter_name, l_options } from "../linter/common";
 import { get_files_from_csv } from "./prj_loaders/csv_loader";
 import { get_files_from_vivado } from "./prj_loaders/vivado_loader";
 import { get_files_from_vunit } from "./prj_loaders/vunit_loader";
+import { get_files_from_quartus } from "./tool/quartus/utils";
 
 export class Project_manager {
     /**  Name of the project */
@@ -159,6 +161,28 @@ export class Project_manager {
     // Toplevel
     ////////////////////////////////////////////////////////////////////////////
     /**
+     * Add top level path to project from entity. Delete de previous one.
+     * @param toplevel_path_inst Top level entity to add.
+     * @returns Operation result
+    **/
+    add_toplevel_path_from_entity(entity_name: string): t_action_result {
+        const file_list = this.files.get();
+        for(const file of file_list){
+            const entity_name_of_file = hdl_utils.get_toplevel_from_path(file.name);
+            if(entity_name_of_file === entity_name){
+                this.toplevel_path.clear();
+                return this.add_toplevel_path(file.name);
+            }
+        }
+
+        return {
+            result: undefined,
+            successful: false,
+            msg: "Entity not found."
+        };
+    }
+
+    /**
      * Add top level path to project. Delete de previous one.
      * @param toplevel_path_inst Top level path to add.
      * @returns Operation result
@@ -199,6 +223,23 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // File
     ////////////////////////////////////////////////////////////////////////////
+    async add_file_from_quartus(general_config: e_config | undefined, vivado_path: string, is_manual: boolean)
+        : Promise<t_action_result> {
+
+        const n_config = merge_configs(general_config, this.config_manager.get_config());
+        const n_config_manager = new Config_manager();
+        n_config_manager.set_config(n_config);
+
+        const result = await get_files_from_quartus(n_config, vivado_path, is_manual);
+        this.add_file_from_array(result.file_list);
+        const action_result: t_action_result = {
+            result: result.file_list,
+            successful: result.successful,
+            msg: result.msg
+        };
+        return action_result;
+    }
+
     async add_file_from_vivado(general_config: e_config | undefined, vivado_path: string, is_manual: boolean)
         : Promise<t_action_result> {
 
