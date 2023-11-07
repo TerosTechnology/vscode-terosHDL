@@ -43,14 +43,14 @@ import { t_linter_name, l_options } from "../linter/common";
 import { get_files_from_csv } from "./prj_loaders/csv_loader";
 import { get_files_from_vivado } from "./prj_loaders/vivado_loader";
 import { get_files_from_vunit } from "./prj_loaders/vunit_loader";
-import { get_files_from_quartus } from "./tool/quartus/utils";
+import { getFilesFromProject, QuartusExecutionError } from "./tool/quartus/utils";
 
 export class Project_manager {
     /**  Name of the project */
     private name: string;
     /** Contains all the HDL source files, constraint files, vendor IP description files, 
      * memory initialization files etc. for the project. */
-    private files = new manager_file.File_manager();
+    protected files = new manager_file.File_manager();
     /** File watcher. */
     private watchers: manager_watcher.Watcher_manager;
     /** A dictionary of extra commands to execute at various stages of the project build/run. */
@@ -167,9 +167,9 @@ export class Project_manager {
     **/
     add_toplevel_path_from_entity(entity_name: string): t_action_result {
         const file_list = this.files.get();
-        for(const file of file_list){
+        for (const file of file_list) {
             const entity_name_of_file = hdl_utils.get_toplevel_from_path(file.name);
-            if(entity_name_of_file === entity_name){
+            if (entity_name_of_file === entity_name) {
                 this.toplevel_path.clear();
                 return this.add_toplevel_path(file.name);
             }
@@ -224,20 +224,19 @@ export class Project_manager {
     // File
     ////////////////////////////////////////////////////////////////////////////
     async add_file_from_quartus(general_config: e_config | undefined, vivado_path: string, is_manual: boolean)
-        : Promise<t_action_result> {
+        : Promise<void> {
 
         const n_config = merge_configs(general_config, this.config_manager.get_config());
         const n_config_manager = new Config_manager();
         n_config_manager.set_config(n_config);
 
-        const result = await get_files_from_quartus(n_config, vivado_path, is_manual);
-        this.add_file_from_array(result.file_list);
-        const action_result: t_action_result = {
-            result: result.file_list,
-            successful: result.successful,
-            msg: result.msg
-        };
-        return action_result;
+        try {
+            const fileList = await getFilesFromProject(n_config, vivado_path, is_manual);
+            this.add_file_from_array(fileList);
+
+        } catch (error) {
+            throw new QuartusExecutionError("Error in Quartus execution");
+        }
     }
 
     async add_file_from_vivado(general_config: e_config | undefined, vivado_path: string, is_manual: boolean)

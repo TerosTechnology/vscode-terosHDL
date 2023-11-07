@@ -173,8 +173,8 @@ export class Project_manager {
             }
             // Device family
             const family_list = await teroshdl2.project_manager.quartus
-                .get_family_and_parts_list(this.project_manager.get_config_global_config());
-            const family_list_string = family_list.board_list.map(x => x.family);
+                .getFamilyAndParts(this.project_manager.get_config_global_config());
+            const family_list_string = family_list.map(x => x.family);
             let picker_family = await vscode.window.showQuickPick(family_list_string, {
                 placeHolder: "Device family",
             });
@@ -182,7 +182,7 @@ export class Project_manager {
                 return;
             }
             // Device part
-            const part_list = family_list.board_list.filter(x => x.family === picker_family)[0].part_list;
+            const part_list = family_list.filter(x => x.family === picker_family)[0].part_list;
 
             const picker_part = await vscode.window.showQuickPick(part_list, {
                 placeHolder: "Device",
@@ -191,16 +191,16 @@ export class Project_manager {
                 return;
             }
 
-            // Create project
-            const rsult = teroshdl2.project_manager.quartus.create_quartus_project(this.project_manager.get_config_global_config(), working_directory[0],
-                project_name, picker_family, picker_part);
+            // // Create project
+            // const rsult = teroshdl2.project_manager.quartus.create_quartus_project(this.project_manager.get_config_global_config(), working_directory[0],
+            //     project_name, picker_family, picker_part);
         }
         this.refresh();
     }
 
     async create_project_from_quartus(prj_path: string) {
         try {
-            await this.project_manager.create_project_from_quartus(prj_path);
+            // await this.project_manager.create_project_from_quartus(prj_path);
             this.refresh();
         } catch (error) {
         }

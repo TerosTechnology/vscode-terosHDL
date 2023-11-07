@@ -26,7 +26,7 @@ import { get_language_from_filepath } from "../utils/file_utils";
 
 import * as yaml from "js-yaml";
 import * as events from "events";
-import { get_project_info_from_quartus } from "./tool/quartus/utils";
+// import { get_project_info_from_quartus } from "./tool/quartus/utils";
 
 class ProjectNotFoundError extends Error {
     constructor(message: string) {
@@ -255,13 +255,13 @@ export class Multi_project_manager {
     // OLD
     ////////////////////////////////////////////////////////////////////////////
 
-    async create_project_from_quartus(prj_path: string): Promise<Project_manager> {
-        const result = await get_project_info_from_quartus(this.get_config_global_config(), prj_path);
-        const prj = this.initialize_project(result.prj_name);
-        await prj.add_file_from_quartus(this.get_config_global_config(), prj_path, true);
-        prj.add_toplevel_path_from_entity(result.prj_top_entity);
-        return prj;
-    }
+    // async create_project_from_quartus(prj_path: string): Promise<Project_manager> {
+    //     const result = await get_project_info_from_quartus(this.get_config_global_config(), prj_path);
+    //     const prj = this.initialize_project(result.prj_name);
+    //     await prj.add_file_from_quartus(this.get_config_global_config(), prj_path, true);
+    //     prj.add_toplevel_path_from_entity(result.prj_top_entity);
+    //     return prj;
+    // }
 
     public create_project_from_json_edam(filepath: string): Project_manager {
         const prj_info = JSON.parse(file_utils.read_file_sync(filepath));

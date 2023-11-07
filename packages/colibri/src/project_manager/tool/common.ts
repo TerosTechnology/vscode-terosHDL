@@ -135,6 +135,7 @@ export type t_loader_prj_info_result = {
     prj_name: string;
     prj_revision: string;
     prj_top_entity: string;
+    revision_list: string[];
     successful: boolean;
     msg: string;
 }
