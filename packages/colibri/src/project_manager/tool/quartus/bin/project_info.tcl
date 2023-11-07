@@ -16,6 +16,9 @@ proc get_prj_info {csv_file} {
     set top_level_entity [get_global_assignment -name TOP_LEVEL_ENTITY]
 
     puts $csv_file [join [ list $prj_name $prj_revision $top_level_entity] "," ]
+
+    set revision_list [get_project_revisions]
+    puts $csv_file [join [ $revision_list ] "," ]
 }
 
 get_prj_info $csv_file
