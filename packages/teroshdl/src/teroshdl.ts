@@ -109,15 +109,15 @@ export class Teroshdl {
     }
 
     private init_template_manager() {
-        new Template_manager(this.context, this.global_logger, this.manager);
+        // new Template_manager(this.context, this.global_logger, this.manager);
     }
 
     private init_documenter() {
-        new Documenter_manager(this.context, this.global_logger, this.manager);
+        // new Documenter_manager(this.context, this.global_logger, this.manager);
     }
 
     private init_state_machine() {
-        new State_machine_manager(this.context, this.global_logger, this.manager);
+        // new State_machine_manager(this.context, this.global_logger, this.manager);
     }
 
     private init_schematic() {
@@ -133,7 +133,7 @@ export class Teroshdl {
     }
 
     private init_formatter() {
-        new Formatter_manager(this.context, this.global_logger, this.manager);
+        // new Formatter_manager(this.context, this.global_logger, this.manager);
     }
 
     private init_completions() {
@@ -141,7 +141,7 @@ export class Teroshdl {
     }
 
     private init_number_hover() {
-        new Number_hover_manager(this.context);
+        // new Number_hover_manager(this.context);
     }
 
     private init_shutter_mode() {

@@ -57,31 +57,33 @@ describe('dependencies', () => {
 
     // Fix with: https://github.com/pyodide/pyodide/issues/4261
 
-    // it('dependency tree', async () => {
-    //     const file_list : t_file[] = [
-    //         {
-    //             name: path_lib.join(HELPER_FOLDER, "half_adder_tb.vhd"),
-    //             file_type: "vhdlSource-2008",
-    //             is_include_file: false,
-    //             include_path: "",
-    //             logical_name: "",
-    //             is_manual: false,
-    //         },
-    //         {
-    //             name: path_lib.join(HELPER_FOLDER, "half_adder.vhd"),
-    //             file_type: "vhdlSource-2008",
-    //             is_include_file: false,
-    //             include_path: "",
-    //             logical_name: "mylib",
-    //             is_manual: false,
-    //         }
-    //     ];
+    it('dependency tree', async () => {
+        const file_list : t_file[] = [
+            {
+                name: path_lib.join(HELPER_FOLDER, "half_adder_tb.vhd"),
+                file_version: VHDL_LANG_VERSION.v2008,
+                file_type: LANGUAGE.VHDL,
+                is_include_file: false,
+                include_path: "",
+                logical_name: "",
+                is_manual: false,
+            },
+            {
+                name: path_lib.join(HELPER_FOLDER, "half_adder.vhd"),
+                file_version: VHDL_LANG_VERSION.v2008,
+                file_type: LANGUAGE.VHDL,
+                is_include_file: false,
+                include_path: "",
+                logical_name: "mylib",
+                is_manual: false,
+            }
+        ];
 
         
-    //     const compile_order = await dependency_graph.get_dependency_tree_pyodide(file_list);
-    //     expect(compile_order.successful).toBe(true);
+        const compile_order = await dependency_graph.get_dependency_tree_pyodide(file_list);
+        expect(compile_order.successful).toBe(true);
 
-    // }, 100000);
+    }, 100000);
 
     // it('dependency graph', async () => {
     //     const file_list : t_file[] = [

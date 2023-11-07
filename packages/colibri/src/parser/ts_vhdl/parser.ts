@@ -25,7 +25,7 @@ import { Ts_base_parser } from "../ts_base_parser";
 import * as elements_hdl from "./elements";
 import { LANGUAGE } from "../../common/general";
 import * as common_hdl from "../common";
-import * as Parser from "web-tree-sitter";
+import Parser from "web-tree-sitter";
 
 export class Vhdl_parser extends Ts_base_parser implements Parser_base {
     comment_symbol = "";

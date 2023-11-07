@@ -16,11 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import * as r_html from './html_formatter/index';
-import * as r_html_detailed from './html_detailed_formatter/detailed';
-import * as r_junit from './junit_formatter/index';
-import * as r_json from './json_formatter/index';
-import * as r_compact from './compact_formatter/index';
+import r_html from './html_formatter/index';
+import r_html_detailed from './html_detailed_formatter/detailed';
+import r_junit from './junit_formatter/index';
+import r_json from './json_formatter/index';
+import r_compact from './compact_formatter/index';
 
 export type i_error = {
     ruleId: string;

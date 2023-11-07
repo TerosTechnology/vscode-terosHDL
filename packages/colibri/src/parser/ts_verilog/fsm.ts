@@ -19,7 +19,7 @@
 
 import { Parser_fsm_base } from "../fsm_base_parser";
 import * as path from "path";
-import * as Parser from "web-tree-sitter";
+import Parser from "web-tree-sitter";
 
 export class Paser_fsm_verilog extends Parser_fsm_base {
     private parser: any;

@@ -222,7 +222,7 @@ export async function add_files_to_quartus_prj(config: e_config, prj_path: strin
     return result;
 }
 
-export async function remove_files_to_quartus_prj(config: e_config, prj_path: string, file_list: t_file[])
+export async function remove_files_from_quartus_prj(config: e_config, prj_path: string, file_list: t_file[])
     : Promise<t_loader_action_result> {
 
     const cmd_list: string[] = [];

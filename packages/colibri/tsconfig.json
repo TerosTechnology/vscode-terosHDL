@@ -7,14 +7,14 @@
     "declaration": true,
     "declarationMap": true,
     "target": "ES2019",
-    "module": "commonjs",
+    "module": "node16",
     "lib": [
       "ES2019"
     ],
     // "module": "es2022",
     // "moduleResolution": "node",
     // "esModuleInterop": true,
-    "strict": true /* Enable all strict type-checking options. */,
+    "strict": false /* Enable all strict type-checking options. */,
     /* Strict Type-Checking Options */
     // "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
     // "strictNullChecks": true /* Enable strict null checks. */,
