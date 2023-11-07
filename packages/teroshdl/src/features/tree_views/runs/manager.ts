@@ -24,7 +24,7 @@ import * as events from "events";
 import * as teroshdl2 from 'teroshdl2';
 import {Run_output_manager} from "../run_output";
 import {Logger} from "../../../logger";
-import * as tree_kill from 'tree-kill';
+import tree_kill from 'tree-kill';
 
 export class Runs_manager {
     private tree : element.ProjectProvider;

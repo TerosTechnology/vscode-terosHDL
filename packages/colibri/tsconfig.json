@@ -7,13 +7,13 @@
     "declaration": true,
     "declarationMap": true,
     "target": "ES2019",
-    "module": "node16",
+    "module": "NodeNext",
     "lib": [
       "ES2019"
     ],
     // "module": "es2022",
     // "moduleResolution": "node",
-    // "esModuleInterop": true,
+    "esModuleInterop": true,
     "strict": false /* Enable all strict type-checking options. */,
     /* Strict Type-Checking Options */
     // "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
