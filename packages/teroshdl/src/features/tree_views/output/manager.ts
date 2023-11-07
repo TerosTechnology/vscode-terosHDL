@@ -20,17 +20,17 @@
 import * as vscode from "vscode";
 import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';
-import {e_clean_step} from 'teroshdl2/out/project_manager/tool/common';
+import { e_clean_step } from 'teroshdl2/out/project_manager/tool/common';
 
 import * as teroshdl2 from 'teroshdl2';
 import { Run_output_manager } from "../run_output";
-import {Logger} from "../../../logger";
+import { Logger } from "../../../logger";
 
 export class Output_manager {
     private tree: element.ProjectProvider;
     private run_output_manager: Run_output_manager;
-    private project_manager : t_Multi_project_manager;
-    private logger : Logger;
+    private project_manager: t_Multi_project_manager;
+    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -67,7 +67,7 @@ export class Output_manager {
 
     async clean() {
         const tool_name = this.project_manager.get_config_global_config().tools.general.select_tool;
-        if (tool_name !== teroshdl2.config.config_declaration.e_tools_general_select_tool.raptor){
+        if (tool_name !== teroshdl2.config.config_declaration.e_tools_general_select_tool.raptor) {
             return;
         }
 
@@ -76,7 +76,7 @@ export class Output_manager {
             placeHolder: "Select stage.",
         });
 
-        if (picker_value === undefined){
+        if (picker_value === undefined) {
             return;
         }
 
@@ -100,7 +100,7 @@ export class Output_manager {
         );
     }
 
-    get_step_enum(value: string) : e_clean_step{
+    get_step_enum(value: string): e_clean_step {
         const indexOfS = Object.values(e_clean_step).indexOf(value as unknown as e_clean_step);
         const key = Object.keys(e_clean_step)[indexOfS];
         return <e_clean_step>key;

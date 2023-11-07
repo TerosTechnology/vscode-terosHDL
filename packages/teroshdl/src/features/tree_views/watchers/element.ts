@@ -19,7 +19,7 @@
 
 import { Multi_project_manager } from "teroshdl2/out/project_manager/multi_project_manager";
 import * as vscode from "vscode";
-import {get_icon} from "../utils";
+import { get_icon } from "../utils";
 import * as teroshdl2 from "teroshdl2";
 import * as path_lib from "path";
 
@@ -32,7 +32,7 @@ export class Watcher extends vscode.TreeItem {
     public children: any[] | undefined;
     public iconPath = get_icon("search");
     public contextValue = "watcher";
-    private name : string;
+    private name: string;
 
     constructor(name: string, children?: any[]) {
         super(
@@ -52,7 +52,7 @@ export class Watcher extends vscode.TreeItem {
         };
     }
 
-    public get_name() : string{
+    public get_name(): string {
         return this.name;
     }
 }
@@ -70,14 +70,14 @@ export abstract class BaseTreeDataProvider<T> implements vscode.TreeDataProvider
 }
 
 export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
-    
+
     private _onDidChangeTreeData: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
 
     data: TreeItem[] = [];
-    private project_manager : Multi_project_manager;
+    private project_manager: Multi_project_manager;
 
-    constructor(project_manager : Multi_project_manager) {
+    constructor(project_manager: Multi_project_manager) {
         super();
         this.project_manager = project_manager;
     }

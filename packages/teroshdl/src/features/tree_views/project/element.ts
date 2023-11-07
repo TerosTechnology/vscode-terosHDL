@@ -19,7 +19,7 @@
 
 import { Multi_project_manager } from "teroshdl2/out/project_manager/multi_project_manager";
 import * as vscode from "vscode";
-import {get_icon} from "../utils";
+import { get_icon } from "../utils";
 
 
 export const VIEW_ID = "teroshdl-project";
@@ -52,7 +52,7 @@ export class Project extends vscode.TreeItem {
         };
     }
 
-    public get_project_name() : string{
+    public get_project_name(): string {
         return this.project_name;
     }
 }
@@ -70,14 +70,14 @@ export abstract class BaseTreeDataProvider<T> implements vscode.TreeDataProvider
 }
 
 export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
-    
+
     private _onDidChangeTreeData: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
 
     data: TreeItem[] = [];
-    private project_manager : Multi_project_manager;
+    private project_manager: Multi_project_manager;
 
-    constructor(project_manager : Multi_project_manager) {
+    constructor(project_manager: Multi_project_manager) {
         super();
         this.project_manager = project_manager;
     }
@@ -98,7 +98,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     }
 
     refresh(): void {
-        const prj_view : Project[]= [];
+        const prj_view: Project[] = [];
 
         const project_list = this.project_manager.get_projects();
         const selected_project = this.project_manager.get_select_project();

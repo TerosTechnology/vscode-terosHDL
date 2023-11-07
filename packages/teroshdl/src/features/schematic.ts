@@ -43,19 +43,19 @@ export class Schematic_manager extends Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager, 
+    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager,
         mode_project: boolean) {
 
-        super(context, manager, path_lib.join(context.extensionPath, 'resources', 'webviews', 
+        super(context, manager, path_lib.join(context.extensionPath, 'resources', 'webviews',
             'netlist_viewer', 'netlist_viewer.html'), activation_command, id);
-        
+
         this.working_directory = os.tmpdir();
         this.output_path = path_lib.join(this.working_directory, 'teroshdl_yosys_output.json');
         this.logger = logger;
     }
 
-    get_webview_content(webview: vscode.Webview){
-        const template_path = path_lib.join(this.context.extensionPath, 'resources','webviews', 'netlist_viewer', 'index.html.nj');
+    get_webview_content(webview: vscode.Webview) {
+        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', 'netlist_viewer', 'index.html.nj');
         const template_str = fs.readFileSync(template_path, 'utf-8');
 
         const css_bootstrap_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
@@ -63,26 +63,26 @@ export class Schematic_manager extends Base_webview {
         const css_common_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
             'style.css'));
 
-        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const css_path = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'netlist_viewer', 'style.css'));
-        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const js_path_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'netlist_viewer', 'libs', 'elk.bundled.js'));
-        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const js_path_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'netlist_viewer', 'libs', 'netlistsvg.bundle.js'));
-        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews', 
+        const js_path_2 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'netlist_viewer', 'libs', 'jquery-2.2.4.min.js'));
-        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews',
+        const js_path_3 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'netlist_viewer', 'libs', 'svg-pan-zoom.min.js'));
-        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews',
+        const js_path_4 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'netlist_viewer', 'libs', 'viz.js'));
-        const js_path_5 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources','webviews',
+        const js_path_5 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews',
             'netlist_viewer', 'libs', 'main.js'));
 
         const html = nunjucks.renderString(template_str, {
             "css_common_path": css_common_path,
-            "css_bootstrap_path": css_bootstrap_path, 
-            "css_path": css_path, 
-            "cspSource": webview.cspSource, 
+            "css_bootstrap_path": css_bootstrap_path,
+            "css_path": css_path,
+            "cspSource": webview.cspSource,
             "js_path_0": js_path_0,
             "js_path_1": js_path_1,
             "js_path_2": js_path_2,
@@ -138,7 +138,7 @@ export class Schematic_manager extends Base_webview {
             }
             await this.update(document);
         }
-        else{
+        else {
             await this.generate_project_netlist();
         }
     }
@@ -160,7 +160,7 @@ export class Schematic_manager extends Base_webview {
         await this.panel?.webview.postMessage({ command: "update", result: result });
 
     }
-    
+
     //////////////////////////////////////////////////////////////////////////////
     // Export
     //////////////////////////////////////////////////////////////////////////////
@@ -187,7 +187,7 @@ export class Schematic_manager extends Base_webview {
         } catch (err) { }
     }
 
-    async generate_project_netlist() {  
+    async generate_project_netlist() {
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Window,
             cancellable: false,
@@ -288,7 +288,7 @@ export class Schematic_manager extends Base_webview {
         }
         let output_path_filename = path_lib.basename(output_path);
         let top_level_cmd = "";
-        if (top_level !== ""){
+        if (top_level !== "") {
             top_level_cmd = `hierarchy -top ${top_level}`;
         }
         const script_code = `${cmd_files}; ${top_level_cmd}; proc; ${custom_argumens} ; write_json ${output_path_filename}; stat`;
@@ -298,8 +298,8 @@ export class Schematic_manager extends Base_webview {
             plugin = `-m ghdl`;
         }
         let command = `${extra} yowasp-yosys -p "${script_code}"`;
-        if (backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys 
-            || backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl 
+        if (backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys
+            || backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl
             || backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl_module) {
             if (yosys_path === '') {
                 yosys_path = 'yosys';
@@ -353,7 +353,7 @@ export class Schematic_manager extends Base_webview {
     async get_svg_from_json(output_yosys) {
         output_yosys.result = yosys.normalize_netlist(output_yosys.result);
         const netlistsvg = require("netlistsvg");
-        const skinPath = path_lib.join(this.context.extensionPath, "resources", 
+        const skinPath = path_lib.join(this.context.extensionPath, "resources",
             "webviews", "netlist_viewer", "default.svg");
         const skin = fs.readFileSync(skinPath);
 

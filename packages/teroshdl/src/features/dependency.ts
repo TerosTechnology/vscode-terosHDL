@@ -34,8 +34,8 @@ export class Dependency_manager {
     protected panel: vscode.WebviewPanel | undefined;
     protected manager: t_Multi_project_manager;
     private init: boolean = false;
-    private viz : any = undefined;
-    private dependencies : string = "";
+    private viz: any = undefined;
+    private dependencies: string = "";
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -73,7 +73,7 @@ export class Dependency_manager {
 
         const html = nunjucks.renderString(template_str, {
             'css_bootstrap_path': css_bootstrap_path,
-            "css_common_path": css_common_path, 
+            "css_common_path": css_common_path,
             "cspSource": webview.cspSource,
             "js_path_0": js_path_0,
             "js_path_1": js_path_1,
