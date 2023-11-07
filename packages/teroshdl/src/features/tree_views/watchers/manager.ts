@@ -26,24 +26,24 @@ import * as utils from "../utils";
 import * as teroshdl2 from "teroshdl2";
 
 export class Watcher_manager {
-    private tree : element.ProjectProvider;
-    private project_manager : t_Multi_project_manager;
-    private emitter : events.EventEmitter;
+    private tree: element.ProjectProvider;
+    private project_manager: t_Multi_project_manager;
+    private emitter: events.EventEmitter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter : events.EventEmitter) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter) {
         this.set_commands();
 
         this.emitter = emitter;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
-        
+
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as element.BaseTreeDataProvider<element.Watcher>));
     }
 
-    set_commands(){
+    set_commands() {
         vscode.commands.registerCommand("teroshdl.view.watcher.add", (item) => this.add(item));
         vscode.commands.registerCommand("teroshdl.view.watcher.delete", (item) => this.delete(item));
     }
@@ -102,11 +102,11 @@ export class Watcher_manager {
         this.refresh();
     }
 
-    refresh(){
+    refresh() {
         this.emitter.emit('refresh');
     }
 
-    refresh_tree(){
+    refresh_tree() {
         this.tree.refresh();
     }
 }

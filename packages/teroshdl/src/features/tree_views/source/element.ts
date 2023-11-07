@@ -36,8 +36,8 @@ enum SOURCE_TREE_ELEMENT {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export class Source_tree_element extends vscode.TreeItem {
     public children: any[] | undefined;
-    private logical_name : string = "";
-    private name : string = "";
+    private logical_name: string = "";
+    private name: string = "";
 
     constructor(element_type: SOURCE_TREE_ELEMENT, name: string, is_manual: boolean, select_check: boolean, logical_name: string, children?: any[]) {
         super(
@@ -56,17 +56,17 @@ export class Source_tree_element extends vscode.TreeItem {
             this.iconPath = get_icon("library");
         }
         else {
-            if (select_check === true){
+            if (select_check === true) {
                 this.label = `${path_lib.basename(name)} (current)`;
             }
-            else{
+            else {
                 this.label = path_lib.basename(name);
             }
 
-            if (is_manual === true){
+            if (is_manual === true) {
                 this.label = `${this.label} (M)`;
             }
-            else{
+            else {
                 this.label = `${this.label} (A)`;
             }
 
@@ -85,10 +85,10 @@ export class Source_tree_element extends vscode.TreeItem {
         }
     }
 
-    get_name() : string{
+    get_name(): string {
         return this.name;
     }
-    get_logical_name() : string{
+    get_logical_name(): string {
         return this.logical_name;
     }
 }

@@ -22,22 +22,22 @@ import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as events from "events";
 import * as teroshdl2 from 'teroshdl2';
-import {Run_output_manager} from "../run_output";
-import {Logger} from "../../../logger";
+import { Run_output_manager } from "../run_output";
+import { Logger } from "../../../logger";
 import * as tree_kill from 'tree-kill';
 
 export class Runs_manager {
-    private tree : element.ProjectProvider;
-    private project_manager : t_Multi_project_manager;
-    private run_output_manager : Run_output_manager;
-    private logger : Logger;
-    private emitter : events.EventEmitter;
-    private last_run : any;
+    private tree: element.ProjectProvider;
+    private project_manager: t_Multi_project_manager;
+    private run_output_manager: Run_output_manager;
+    private logger: Logger;
+    private emitter: events.EventEmitter;
+    private last_run: any;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter : events.EventEmitter,
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter,
         run_output_manager: Run_output_manager, logger: Logger) {
 
         this.set_commands();
@@ -47,12 +47,12 @@ export class Runs_manager {
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager, run_output_manager);
         this.emitter = emitter;
-        
-        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), 
+
+        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(),
             this.tree as element.BaseTreeDataProvider<element.Run>));
     }
 
-    set_commands(){
+    set_commands() {
         vscode.commands.registerCommand("teroshdl.view.runs.run_all", () => this.run(undefined));
         vscode.commands.registerCommand("teroshdl.view.runs.stop", () => this.stop(undefined));
         vscode.commands.registerCommand("teroshdl.view.runs.run", (item) => this.run(item));
@@ -75,22 +75,22 @@ export class Runs_manager {
             const pid = this.last_run.pid;
             tree_kill(pid, 'SIGTERM', (err) => {
                 if (err) {
-                  console.error(err);
+                    console.error(err);
                 } else {
                 }
-              });
+            });
         } catch (error) {
             console.log(error);
         }
     }
 
-    async run(item: element.Run | undefined){
+    async run(item: element.Run | undefined) {
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Window,
             cancellable: false,
             title: 'TerosHDL: Tool running'
         }, async (progress) => {
-        
+
             // Status bar to 0
             progress.report({ increment: 0 });
 
@@ -141,13 +141,13 @@ export class Runs_manager {
         });
     }
 
-    refresh(result: teroshdl2.project_manager.tool_common.t_test_result[]){
+    refresh(result: teroshdl2.project_manager.tool_common.t_test_result[]) {
         this.run_output_manager.set_results(result);
         this.refresh_tree();
         this.emitter.emit('refresh_output');
     }
 
-    refresh_tree(){
+    refresh_tree() {
         this.tree.refresh();
     }
 }

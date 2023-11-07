@@ -94,19 +94,19 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         if (element) {
             toplevel_path = element.get_path();
         }
-        else{
+        else {
             const current_top = await this.get_toplevel_path();
-            if (current_top === undefined){
+            if (current_top === undefined) {
                 return [];
             }
             toplevel_path = current_top;
         }
 
         // Dependencies
-        if (this.hdl_tree === undefined){
+        if (this.hdl_tree === undefined) {
             return [];
         }
-        let current_dep : any = undefined;
+        let current_dep: any = undefined;
         for (let i = 0; i < this.hdl_tree.length; i++) {
             const element = this.hdl_tree[i];
             if (element.filename === toplevel_path) {
@@ -114,7 +114,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             }
         }
         // const current_dep = await this.get_deps(toplevel_path);
-        if (current_dep === undefined){
+        if (current_dep === undefined) {
             return [];
         }
 
@@ -124,7 +124,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         if (element) {
             return dependency_view;
         }
-        else{
+        else {
             return [new Dependency((<any>current_dep).filename, (<any>current_dep).entity, dependency_view)];
         }
     }
@@ -169,7 +169,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         let current_dep = undefined;
         const hdl_tree = await this.get_hdl_tree();
 
-        if (hdl_tree === undefined){
+        if (hdl_tree === undefined) {
             return undefined;
         }
         this.current_hdl_tree = hdl_tree;
@@ -182,7 +182,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         return current_dep;
     }
 
-    get_dep_view(deps){
+    get_dep_view(deps) {
         const dependency_view: Dependency[] = [];
         if (deps.dependencies !== undefined) {
             deps.dependencies.forEach(dep => {
@@ -195,7 +195,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     async refresh() {
         // Toplevel path
         const toplevel_path = await this.get_toplevel_path();
-        if (toplevel_path === undefined){
+        if (toplevel_path === undefined) {
             this.data = [];
             this._onDidChangeTreeData.fire();
             return;
@@ -203,7 +203,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
 
         // Dependencies
         const current_dep = await this.get_deps(toplevel_path);
-        if (current_dep === undefined){
+        if (current_dep === undefined) {
             this.data = [];
             this._onDidChangeTreeData.fire();
             return;

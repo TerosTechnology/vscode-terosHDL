@@ -28,12 +28,12 @@ import * as file_utils from "teroshdl2/out/utils/file_utils";
 export class Source_manager {
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
-    private emitter : events.EventEmitter;
+    private emitter: events.EventEmitter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter : events.EventEmitter) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter) {
         this.set_commands();
 
         this.emitter = emitter;
@@ -177,11 +177,11 @@ export class Source_manager {
         }
     }
 
-    refresh(){
+    refresh() {
         this.emitter.emit('refresh');
     }
 
-    refresh_tree(){
+    refresh_tree() {
         this.tree.refresh();
     }
 }
