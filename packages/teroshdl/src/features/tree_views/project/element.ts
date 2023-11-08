@@ -101,15 +101,15 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         const prj_view: Project[] = [];
 
         const project_list = this.project_manager.get_projects();
-        const selected_project = this.project_manager.get_select_project();
         let selected_project_name = '';
-        if (selected_project.successful === true){
-            selected_project_name = selected_project.result.name;
+        try {
+            selected_project_name = this.project_manager.get_selected_project().get_name();
+        } catch (error) {
         }
         project_list.forEach(prj => {
             const prj_name = prj.get_name();
             let label = prj.get_name();
-            if (selected_project_name === prj_name){
+            if (selected_project_name === prj_name) {
                 label = `${prj_name} (current)`;
             }
             prj_view.push(new Project(prj.get_name(), label));

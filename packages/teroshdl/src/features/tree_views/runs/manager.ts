@@ -59,18 +59,7 @@ export class Runs_manager {
         vscode.commands.registerCommand("teroshdl.view.runs.refresh", () => this.refresh([]));
     }
 
-    get_selected_project_name(): string | undefined {
-        const selected_prj = this.project_manager.get_select_project();
-        // No project select
-        if (selected_prj.successful === false) {
-            return undefined;
-        }
-        else {
-            return (<teroshdl2.project_manager.project_manager.Project_manager>selected_prj.result).get_name();
-        }
-    }
-
-    async stop(item: element.Run | undefined){
+    async stop(item: element.Run | undefined) {
         try {
             const pid = this.last_run.pid;
             tree_kill(pid, 'SIGTERM', (err) => {
@@ -97,47 +86,47 @@ export class Runs_manager {
             // Init output to empty
             this.refresh([]);
 
-            const prj_name = this.get_selected_project_name();
-            if (prj_name === undefined){
-                return;
-            }
+            try {
+                const prj = this.project_manager.get_selected_project();
 
-            let test_list : teroshdl2.project_manager.tool_common.t_test_declaration[] = [];
-            if (item === undefined){
-                test_list = await this.project_manager.get_test_list(prj_name, this.project_manager.get_config_global_config());
+                let test_list: teroshdl2.project_manager.tool_common.t_test_declaration[] = [];
+                if (item === undefined) {
+                    test_list = await prj.get_test_list(this.project_manager.get_config_global_config());
+                }
+                else {
+                    const test: teroshdl2.project_manager.tool_common.t_test_declaration = {
+                        suite_name: item.get_suite_name(),
+                        name: item.get_name(),
+                        test_type: "",
+                        filename: item.get_path(),
+                        location: item.get_location(),
+                    };
+                    test_list = [test];
+                }
+                this.logger.show();
+                const selfm = this;
+                const p = new Promise<void>(resolve => {
+                    prj.run(this.project_manager.get_config_global_config(), test_list,
+                        (function (result: teroshdl2.project_manager.tool_common.t_test_result[]) {
+                            selfm.refresh(result);
+                            // Status bar to 100
+                            progress.report({ increment: 100 });
+                            resolve();
+                        }),
+                        (function (stream_c: any) {
+                            selfm.last_run = stream_c;
+                            stream_c.stdout.on('data', function (data: any) {
+                                selfm.logger.log(data);
+                            });
+                            stream_c.stderr.on('data', function (data: any) {
+                                selfm.logger.log(data);
+                            });
+                        }),
+                    );
+                });
+                return p;
+            } catch (error) {
             }
-            else{
-                const test : teroshdl2.project_manager.tool_common.t_test_declaration = {
-                    suite_name: item.get_suite_name(),
-                    name: item.get_name(),
-                    test_type: "",
-                    filename: item.get_path(),
-                    location: item.get_location(),
-                };
-                test_list = [test];
-            }
-            this.logger.show();
-            const selfm = this;
-			const p = new Promise<void>(resolve => {
-                this.project_manager.run(prj_name, this.project_manager.get_config_global_config(), test_list, 
-                    (function(result: teroshdl2.project_manager.tool_common.t_test_result[]) { 
-                        selfm.refresh(result);
-                        // Status bar to 100
-                        progress.report({ increment: 100 });
-                        resolve();
-                    }),
-                    (function(stream_c: any) {
-                        selfm.last_run = stream_c;
-                        stream_c.stdout.on('data', function (data: any) {
-                            selfm.logger.log(data);
-                        });
-                        stream_c.stderr.on('data', function (data: any) {
-                            selfm.logger.log(data);
-                        });
-                    }),
-                );
-			});
-			return p;
         });
     }
 

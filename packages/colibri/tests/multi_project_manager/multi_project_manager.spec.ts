@@ -16,11 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Multi_project_manager } from "../../../src/project_manager/multi_project_manager";
 import { assert } from 'chai';
-import * as common from "../../../src/project_manager/common";
-
-const MULTI_PRJ_NAME = "my-multi-prj";
+import { LANGUAGE } from '../../src/common/general';
+import { t_file } from '../../src/project_manager/common';
+import { Project_manager } from '../../src/project_manager/project_manager';
+import { Multi_project_manager } from '../../src/project_manager/multi_project_manager';
 
 
 const prj_0 = {
@@ -45,18 +45,20 @@ const prj_2 = {
 };
 
 // Create project manager
-const multi_prj = new Multi_project_manager(MULTI_PRJ_NAME, "", undefined, undefined);
+const multi_prj = new Multi_project_manager("", "", undefined);
 
 function add_files(multi_manager: Multi_project_manager, prj: any) {
     prj.files.forEach(function (file: any) {
-        const file_inst: common.t_file_reduced = {
+        const file_inst: t_file = {
             name: file,
             is_include_file: false,
             include_path: "",
             logical_name: "",
             is_manual: true,
+            file_type: LANGUAGE.NONE,
+            file_version: undefined,
         };
-        multi_manager.add_file(prj.name, file_inst);
+        multi_manager.get_project_by_name(prj.name).add_file(file_inst);
     });
 }
 
@@ -72,17 +74,11 @@ function check_project(multi_manager: Multi_project_manager, expected_project: a
 
 describe(`Check multi project manager`, function () {
 
-    it(`Get name after creation`, async function () {
-        // Get project name
-        const prj_name = multi_prj.get_name();
-        assert.equal(prj_name, MULTI_PRJ_NAME, "Error in project name.");
-    });
-
     it(`Add 3 projects`, async function () {
         // Create projects
-        multi_prj.create_project(prj_0.name);
-        multi_prj.create_project(prj_1.name);
-        multi_prj.create_project(prj_2.name);
+        multi_prj.initialize_project(prj_0.name);
+        multi_prj.initialize_project(prj_1.name);
+        multi_prj.initialize_project(prj_2.name);
         // Add files
         add_files(multi_prj, prj_0);
         add_files(multi_prj, prj_1);
@@ -97,7 +93,8 @@ describe(`Check multi project manager`, function () {
         const new_name = 'new-name';
 
         // Rename project
-        multi_prj.rename_project(prj_0.name, new_name);
+        const prj0_obj = multi_prj.get_project_by_name(prj_0.name);
+        multi_prj.rename_project(prj0_obj, new_name);
 
         // Check
         prj_0.name = new_name;
@@ -106,7 +103,8 @@ describe(`Check multi project manager`, function () {
 
     it(`Delete one`, async function () {
         // Delete project
-        multi_prj.delete_project(prj_0.name);
+        const prj0_obj = multi_prj.get_project_by_name(prj_0.name);
+        multi_prj.delete_project(prj0_obj);
 
         // Check number of projects
         assert.equal(multi_prj.get_projects().length, 2);
@@ -118,14 +116,13 @@ describe(`Check multi project manager`, function () {
 
     it(`Select project`, async function () {
         // Select project
-        let result = multi_prj.select_project_current(prj_1.name);
-        assert.equal(result.successful, true);
-        assert.equal(multi_prj.get_select_project().successful, true);
+        const prj1_obj = multi_prj.get_project_by_name(prj_1.name);
+        multi_prj.set_selected_project(prj1_obj);
+        assert.equal(multi_prj.get_selected_project(), prj1_obj);
+
         // Select project doesn't exist
-        result = multi_prj.select_project_current(prj_0.name);
-        assert.equal(result.successful, false);
-        assert.equal(multi_prj.get_select_project().successful, true);
+        assert.Throw(() =>
+            multi_prj.set_selected_project(new Project_manager(prj_0.name, undefined))
+            , "Project new-name is not in the project list.");
     });
-
-
 });

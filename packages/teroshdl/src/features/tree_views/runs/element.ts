@@ -124,22 +124,20 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     }
 
     async refresh(): Promise<void> {
-        const selected_project = this.project_manager.get_select_project();
-        if (selected_project.successful === false) {
+        try {
+            const selected_project = this.project_manager.get_selected_project();
+            const config = this.project_manager.get_config_global_config();
+
+            const runs_list = await selected_project.get_test_list(config);
+            const runs_view: Run[] = [];
+            runs_list.forEach(run => {
+                runs_view.push(new Run(run.suite_name, run.name, run.filename, run.location));
+            });
+
+            this.data = runs_view;
+        } catch (error) {
             this.data = [];
-            this._onDidChangeTreeData.fire();
-            return;
         }
-        const prj_name = (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result).get_name();
-        const config = this.project_manager.get_config_global_config();
-
-        const runs_list = await this.project_manager.get_test_list(prj_name, config);
-        const runs_view: Run[] = [];
-        runs_list.forEach(run => {
-            runs_view.push(new Run(run.suite_name, run.name, run.filename, run.location));
-        });
-
-        this.data = runs_view;
         this._onDidChangeTreeData.fire();
     }
 
