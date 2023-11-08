@@ -54,17 +54,6 @@ export class Output_manager {
         this.tree.refresh();
     }
 
-    get_selected_project_name(): string | undefined {
-        const selected_prj = this.project_manager.get_select_project();
-        // No project select
-        if (selected_prj.successful === false) {
-            return undefined;
-        }
-        else {
-            return (<teroshdl2.project_manager.project_manager.Project_manager>selected_prj.result).get_name();
-        }
-    }
-
     async clean() {
         const tool_name = this.project_manager.get_config_global_config().tools.general.select_tool;
         if (tool_name !== teroshdl2.config.config_declaration.e_tools_general_select_tool.raptor) {
@@ -80,24 +69,24 @@ export class Output_manager {
             return;
         }
 
-        const prj_name = this.get_selected_project_name();
-        if (prj_name === undefined){
+        try {
+            const prj = this.project_manager.get_selected_project();
+            const selfm = this;
+            const step = this.get_step_enum(picker_value);
+            prj.clean(this.project_manager.get_config_global_config(),
+                step,
+                (function (stream_c: any) {
+                    stream_c.stdout.on('data', function (data: any) {
+                        selfm.logger.log(data);
+                    });
+                    stream_c.stderr.on('data', function (data: any) {
+                        selfm.logger.log(data);
+                    });
+                }),
+            );
+        } catch (error) {
             return;
         }
-
-        const selfm = this;
-        const step = this.get_step_enum(picker_value);
-        this.project_manager.clean(prj_name, this.project_manager.get_config_global_config(), 
-        step,
-            (function (stream_c: any) {
-                stream_c.stdout.on('data', function (data: any) {
-                    selfm.logger.log(data);
-                });
-                stream_c.stderr.on('data', function (data: any) {
-                    selfm.logger.log(data);
-                });
-            }),
-        );
     }
 
     get_step_enum(value: string): e_clean_step {

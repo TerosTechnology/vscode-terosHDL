@@ -20,7 +20,6 @@
 import { Multi_project_manager } from "teroshdl2/out/project_manager/multi_project_manager";
 import * as vscode from "vscode";
 import { get_icon } from "../utils";
-import * as teroshdl2 from "teroshdl2";
 import * as path_lib from "path";
 
 export const VIEW_ID = "teroshdl-view-watcher";
@@ -98,21 +97,18 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     }
 
     refresh(): void {
-        const watcher_view : Watcher[] = [];
-        const selected_project = this.project_manager.get_select_project();
-        if (selected_project.successful === false) {
+        const watcher_view: Watcher[] = [];
+        try {
+            const prj_definition = this.project_manager.get_selected_project().get_project_definition();
+            const watcher_list = prj_definition.watcher_manager.get();
+
+            watcher_list.forEach(watcher_inst => {
+                watcher_view.push(new Watcher(watcher_inst.path));
+            });
+            this.data = watcher_view;
+        } catch (error) {
             this.data = [];
-            this._onDidChangeTreeData.fire();
-            return;
         }
-
-        const prj_definition = (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result).get_project_definition();
-        const watcher_list = prj_definition.watcher_manager.get();
-
-        watcher_list.forEach(watcher_inst => {
-            watcher_view.push(new Watcher(watcher_inst.path));
-        });
-        this.data = watcher_view;
         this._onDidChangeTreeData.fire();
     }
 }

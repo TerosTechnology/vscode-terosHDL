@@ -51,55 +51,47 @@ export class Watcher_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async add(item: element.Watcher){
-        const prj_name = this.get_selected_project_name();
-        if (prj_name === undefined){
-            return;
-        }
+    async add(item: element.Watcher) {
+        try {
 
-        // const element_types = ["VUnit", "CSV", "Vivado project"];
-        const element_types = ["VUnit", "CSV"];
-        const picker_value = await utils.get_picker_value(element_types, "Choose file watcher type");
-        let watcher_type = teroshdl2.project_manager.common.e_watcher_type.CSV;
-        if (picker_value === element_types[0]){
-            watcher_type = teroshdl2.project_manager.common.e_watcher_type.VUNIT;
-        }
-        else if(picker_value === element_types[1]){
-            watcher_type = teroshdl2.project_manager.common.e_watcher_type.CSV;
-        }
-        // else if(picker_value === element_types[2]){
-        //     watcher_type = teroshdl2.project_manager.common.e_watcher_type.VIVADO;
-        // }
-        else{
-            return;
-        }
-        const path_list = await utils.get_from_open_dialog("Add watcher", false, true, true, 
-            "Select watcher files", {'File (*.*)': ['*']});
-        
-        path_list.forEach(path_inst => {
-            this.project_manager.add_file_to_watcher(prj_name, {path: path_inst, watcher_type: watcher_type});
-        });
-        this.refresh();
-    }
+            const prj = this.project_manager.get_selected_project();
 
-    get_selected_project_name(): string | undefined {
-        const selected_prj = this.project_manager.get_select_project();
-        // No project select
-        if (selected_prj.successful === false) {
-            return undefined;
-        }
-        else {
-            return (<teroshdl2.project_manager.project_manager.Project_manager>selected_prj.result).get_name();
+            // const element_types = ["VUnit", "CSV", "Vivado project"];
+            const element_types = ["VUnit", "CSV"];
+            const picker_value = await utils.get_picker_value(element_types, "Choose file watcher type");
+            let watcher_type = teroshdl2.project_manager.common.e_watcher_type.CSV;
+            if (picker_value === element_types[0]) {
+                watcher_type = teroshdl2.project_manager.common.e_watcher_type.VUNIT;
+            }
+            else if (picker_value === element_types[1]) {
+                watcher_type = teroshdl2.project_manager.common.e_watcher_type.CSV;
+            }
+            // else if(picker_value === element_types[2]){
+            //     watcher_type = teroshdl2.project_manager.common.e_watcher_type.VIVADO;
+            // }
+            else {
+                return;
+            }
+            const path_list = await utils.get_from_open_dialog("Add watcher", false, true, true,
+                "Select watcher files", { 'File (*.*)': ['*'] });
+
+            path_list.forEach(path_inst => {
+                prj.add_file_to_watcher({ path: path_inst, watcher_type: watcher_type });
+            });
+            this.refresh();
+        } catch (error) {
+
         }
     }
 
-    delete(item: element.Watcher){
-        const prj_name = this.get_selected_project_name();
-        if (prj_name === undefined){
-            return;
+    delete(item: element.Watcher) {
+        try {
+            const prj = this.project_manager.get_selected_project();
+            prj.delete_file_in_watcher(item.get_name());
+            this.refresh();
+        } catch (error) {
+
         }
-        this.project_manager.delete_file_in_watcher(prj_name, item.get_name());
-        this.refresh();
     }
 
     refresh() {

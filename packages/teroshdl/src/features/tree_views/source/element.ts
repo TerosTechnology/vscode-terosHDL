@@ -134,45 +134,42 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     }
 
     refresh(): void {
-        const selected_project = this.project_manager.get_select_project();
-        if (selected_project.successful === false) {
-            this.data = [];
-            this._onDidChangeTreeData.fire();
-            return;
-        }
+        try {
+            const prj_definition = this.project_manager.get_selected_project().get_project_definition();
+            const logical_list = prj_definition.file_manager.get_by_logical_name();
+            const toplevel = prj_definition.toplevel_path_manager.get();
 
-        const prj_definition = (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result).get_project_definition();
-        const logical_list = prj_definition.file_manager.get_by_logical_name();
-        const toplevel = prj_definition.toplevel_path_manager.get();
-
-        let source_view : Source_tree_element[] = [];
-        let empty_logical : Source_tree_element[] = [];
-        logical_list.forEach(logical_inst => {
-            const children_list : Source_tree_element[] = [];
-            logical_inst.file_list.forEach(file_inst => {
-                const name = file_inst.name;
-                const is_manual = file_inst.is_manual;
-                const logical_name = file_inst.logical_name;
-                if (name !== ''){
-                    let select_check = false;
-                    if (toplevel.length !== 0 && toplevel[0] === name){
-                        select_check = true;
+            let source_view: Source_tree_element[] = [];
+            let empty_logical: Source_tree_element[] = [];
+            logical_list.forEach(logical_inst => {
+                const children_list: Source_tree_element[] = [];
+                logical_inst.file_list.forEach(file_inst => {
+                    const name = file_inst.name;
+                    const is_manual = file_inst.is_manual;
+                    const logical_name = file_inst.logical_name;
+                    if (name !== '') {
+                        let select_check = false;
+                        if (toplevel.length !== 0 && toplevel[0] === name) {
+                            select_check = true;
+                        }
+                        children_list.push(new Source_tree_element(SOURCE_TREE_ELEMENT.SOURCE, name, is_manual, select_check, logical_name));
                     }
-                    children_list.push(new Source_tree_element(SOURCE_TREE_ELEMENT.SOURCE, name, is_manual, select_check, logical_name));
+                });
+                if (logical_inst.name !== "") {
+                    source_view.push(new Source_tree_element(SOURCE_TREE_ELEMENT.LIBRARY, logical_inst.name, false, false, logical_inst.name, children_list));
+                }
+                else {
+                    empty_logical = children_list;
                 }
             });
-            if (logical_inst.name !== ""){
-                source_view.push(new Source_tree_element(SOURCE_TREE_ELEMENT.LIBRARY, logical_inst.name, false, false, logical_inst.name, children_list));
-            }
-            else{
-                empty_logical = children_list;
-            }
-        });
 
-        //Add sources with empty logical name
-        source_view = source_view.concat(empty_logical);
+            //Add sources with empty logical name
+            source_view = source_view.concat(empty_logical);
 
-        this.data = source_view;
+            this.data = source_view;
+        } catch (error) {
+            this.data = [];
+        }
         this._onDidChangeTreeData.fire();
     }
 }

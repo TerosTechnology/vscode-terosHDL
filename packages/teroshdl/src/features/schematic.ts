@@ -232,31 +232,30 @@ export class Schematic_manager extends Base_webview {
     }
 
     async generate_from_project() {
-        const selected_project = this.manager.get_select_project();
-        if (selected_project.successful === false) {
-            this.logger.error("Selecte a project first.", false);
+        try {
+            const selected_project = this.manager.get_selected_project();
+            const sources = selected_project.get_project_definition().file_manager.get();
+
+            const file_array: string[] = [];
+            sources.forEach(source_inst => {
+                file_array.push(source_inst.name);
+            });
+
+            this.clear_enviroment(this.output_path);
+
+            const top_level_path = selected_project.get_project_definition().toplevel_path_manager.get();
+
+            let top_level = "";
+            if (top_level_path.length === 1) {
+                top_level = teroshdl2.utils.hdl.get_toplevel_from_path(top_level_path[0]);
+            }
+
+            return await this.run_yosys_script(top_level, file_array, this.output_path);
+        } catch (error) {
+            this.logger.error("Select a project first.", false);
             return "";
         }
 
-        const sources = (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
-            .get_project_definition().file_manager.get();
-
-        const file_array : string[] = [];
-        sources.forEach(source_inst => {
-            file_array.push(source_inst.name);
-        });
-
-        this.clear_enviroment(this.output_path);
-
-        const top_level_path = (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
-        .get_project_definition().toplevel_path_manager.get();
-
-        let top_level = "";
-        if (top_level_path.length === 1){
-            top_level = teroshdl2.utils.hdl.get_toplevel_from_path(top_level_path[0]);
-        }
-
-        return await this.run_yosys_script(top_level, file_array, this.output_path);
     }
 
     async generate_from_file(file_path: string) {

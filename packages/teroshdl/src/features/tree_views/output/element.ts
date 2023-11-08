@@ -171,34 +171,34 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     }
 
     async refresh(): Promise<void> {
-        const selected_project = this.project_manager.get_select_project();
-        if (selected_project.successful === false) {
+        try {
+            this.project_manager.get_selected_project();
+            const runs_view: Output[] = [];
+
+            const result_list = this.run_output_manager.get_results();
+            result_list.forEach(result => {
+                const artifact_list: Output[] = [];
+                result.artifact.forEach(artifact => {
+                    artifact_list.push(new Output(artifact.name, artifact.path, undefined, artifact.artifact_type,
+                        artifact.element_type, artifact.content, undefined));
+                });
+                if (artifact_list.length !== 0) {
+                    runs_view.push(new Output(result.name, result.name, result.successful, undefined, undefined,
+                        "", result.time, artifact_list));
+                }
+                else {
+                    runs_view.push(new Output(result.name, result.name, result.successful, undefined, undefined, "",
+                        result.time));
+                }
+            });
+
+            this.data = runs_view;
+            this._onDidChangeTreeData.fire();
+        } catch (error) {
             this.data = [];
             this._onDidChangeTreeData.fire();
             return;
         }
-
-        const runs_view: Output[] = [];
-
-        const result_list = this.run_output_manager.get_results();
-        result_list.forEach(result => {
-            const artifact_list: Output[] = [];
-            result.artifact.forEach(artifact => {
-                artifact_list.push(new Output(artifact.name, artifact.path, undefined, artifact.artifact_type, 
-                    artifact.element_type, artifact.content, undefined));
-            });
-            if (artifact_list.length !== 0){
-                runs_view.push(new Output(result.name, result.name, result.successful, undefined, undefined, 
-                    "", result.time, artifact_list));
-            }
-            else{
-                runs_view.push(new Output(result.name, result.name, result.successful, undefined, undefined, "",
-                    result.time));
-            }
-        });
-
-        this.data = runs_view;
-        this._onDidChangeTreeData.fire();
     }
 
     get_successful(name: string) {

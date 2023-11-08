@@ -135,24 +135,21 @@ export class Dependency_manager {
         if (this.panel === undefined) {
             return;
         }
-        const selected_project = this.manager.get_select_project();
-        if (selected_project.successful === false) {
-            this.logger.error("Selecte a project first.", false);
+        try {
+            const selected_project = this.manager.get_selected_project();
+            const python_path = this.manager.get_config_manager().get_config().general.general.pypath;
+            const result = await selected_project.get_dependency_graph(python_path);
+            if (result.successful === false) {
+                this.logger.error("Error while getting dependency graph.", true);
+                this.logger.error(result.msg, true);
+                return "";
+            }
+            this.dependencies = result.result;
+            await this.panel?.webview.postMessage({ command: "update", message: result.result });
+        } catch (error) {
+            this.logger.error("Select a project first.", false);
             return "";
         }
-
-        const python_path = this.manager.get_config_manager().get_config().general.general.pypath;
-
-        const result = await (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
-            .get_dependency_graph(python_path);
-
-        if (result.successful === false) {
-            this.logger.error("Error while getting dependency graph.", true);
-            this.logger.error(result.msg, true);
-            return "";
-        }
-        this.dependencies = result.result;
-        await this.panel?.webview.postMessage({ command: "update", message: result.result });
     }
 
     async export_as() {

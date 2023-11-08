@@ -20,7 +20,6 @@
 import * as path_lib from "path";
 import * as vscode from "vscode";
 import * as teroshdl2 from 'teroshdl2';
-import { t_Multi_project_manager } from '../../type_declaration';
 import * as utils from "./utils";
 
 const BASE_PATH_ICON = path_lib.join(__filename, "..", "..", "..", "..", "resources", "icon");
@@ -87,7 +86,7 @@ export async function get_from_input_box(prompt: string, place_holder: string) {
     return value;
 }
 
-export async function add_sources_from_open_dialog(project_manager: t_Multi_project_manager, prj_name: string, logical_name: string) {
+export async function add_sources_from_open_dialog(prj: teroshdl2.project_manager.project_manager.Project_manager, logical_name: string) {
     const source_path_list = await get_from_open_dialog("Add sources", false, true, true,
         "Select source file", { 'All files (*.*)': ['*'] });
     source_path_list.forEach(source_path => {
@@ -100,12 +99,11 @@ export async function add_sources_from_open_dialog(project_manager: t_Multi_proj
             file_type: teroshdl2.utils.file.get_language_from_filepath(source_path),
             file_version: teroshdl2.utils.file.get_default_version_for_filepath(source_path)
         };
-        project_manager.add_file(prj_name, f);
+        prj.add_file(f);
     });
 }
 
-export async function add_sources_from_directory_and_subdirectories(project_manager: t_Multi_project_manager,
-    prj_name: string, allow_subdirectories: boolean) {
+export async function add_sources_from_directory_and_subdirectories(prj: teroshdl2.project_manager.project_manager.Project_manager, allow_subdirectories: boolean) {
 
     const directory_list = await get_from_open_dialog("Select directory", true, false, true,
         "Select", []);
@@ -134,31 +132,31 @@ export async function add_sources_from_directory_and_subdirectories(project_mana
                 file_type: teroshdl2.utils.file.get_language_from_filepath(file_inst),
                 file_version: teroshdl2.utils.file.get_default_version_for_filepath(file_inst)
             };
-            project_manager.add_file(prj_name, f);
+            prj.add_file(f);
         });
     });
 }
 
-export async function add_sources_from_vunit(project_manager: t_Multi_project_manager, prj_name: string, is_manual: boolean) {
+export async function add_sources_from_vunit(prj: teroshdl2.project_manager.project_manager.Project_manager, config: teroshdl2.config.config_declaration.e_config, is_manual: boolean) {
     const path_list = await utils.get_from_open_dialog("Select run.py", false, true, true,
         "Select VUnit run.py files", { 'Python files (*.py)': ['py'] });
-    for (const path of path_list) {
-        await project_manager.add_file_from_vunit(prj_name, project_manager.get_config_global_config(), path, is_manual);
-    }
+    path_list.forEach(async path => {
+        await prj.add_file_from_vunit(config, path, is_manual);
+    });
 }
 
-export async function add_sources_from_vivado(project_manager: t_Multi_project_manager, prj_name: string, is_manual: boolean) {
-    const path_list = await utils.get_from_open_dialog("Select Vivado project", false, true, false,
+export async function add_sources_from_vivado(prj: teroshdl2.project_manager.project_manager.Project_manager, config: teroshdl2.config.config_declaration.e_config, is_manual: boolean) {
+    const path_list = await utils.get_from_open_dialog("Select Vivado project", false, true, true,
         "Select Vivado project", { 'Vivado project (*.xpr)': ['xpr'] });
-    for (const path of path_list) {
-        await project_manager.add_file_from_vivado(prj_name, project_manager.get_config_global_config(), path, is_manual);
-    }
+    path_list.forEach(async path => {
+        await prj.add_file_from_vivado(config, path, is_manual);
+    });
 }
 
-export async function add_sources_from_quartus(project_manager: t_Multi_project_manager, prj_name: string, is_manual: boolean) {
+export async function add_sources_from_quartus(prj: teroshdl2.project_manager.project_manager.Project_manager, config: teroshdl2.config.config_declaration.e_config, is_manual: boolean) {
     const path_list = await utils.get_from_open_dialog("Select Quartus project", false, true, false,
         "Select Quartus project", { 'Quartus project (*.qsf)': ['qsf'] });
     for (const path of path_list) {
-        await project_manager.add_file_from_quartus(prj_name, project_manager.get_config_global_config(), path, is_manual);
+        await prj.add_file_from_quartus(config, path, is_manual);
     }
 }

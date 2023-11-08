@@ -137,32 +137,31 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     // Utils
     //////////////////////////////////////////////////////////////////////////////////////////////
     async get_hdl_tree() {
-        const selected_project = this.project_manager.get_select_project();
-        if (selected_project.successful === false) {
+        try {
+            const selected_project = this.project_manager.get_selected_project();
+            const python_path = this.project_manager.get_config_global_config().general.general.pypath;
+            const result = await selected_project.get_dependency_tree(python_path);
+            if (result.successful === true) {
+                this.hdl_tree = result.result;
+                return this.hdl_tree;
+            }
+            return undefined;
+        } catch (error) {
             return undefined;
         }
-
-        const python_path = this.project_manager.get_config_global_config().general.general.pypath;
-        const result = await (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
-            .get_dependency_tree(python_path);
-        if (result.successful === true) {
-            this.hdl_tree = result.result;
-            return this.hdl_tree;
-        }
-        return undefined;
     }
 
     async get_toplevel_path() {
-        const selected_project = this.project_manager.get_select_project();
-        if (selected_project.successful === false) {
+        try {
+            const selected_project = this.project_manager.get_selected_project();
+            const toplevel = await selected_project.get_project_definition().toplevel_path_manager.get();
+            if (toplevel.length > 0) {
+                return toplevel[0];
+            }
+            return undefined;
+        } catch (error) {
             return undefined;
         }
-        const toplevel = await (<teroshdl2.project_manager.project_manager.Project_manager>selected_project.result)
-            .get_project_definition().toplevel_path_manager.get();
-        if (toplevel.length > 0) {
-            return toplevel[0];
-        }
-        return undefined;
     }
 
     private async get_deps(top_path: string) {

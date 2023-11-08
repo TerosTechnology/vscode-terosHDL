@@ -93,8 +93,10 @@ export class Project_manager {
             // Create project
             const project_name = await utils.get_from_input_box("Set the project name", "Project name");
             if (project_name !== undefined) {
-                this.project_manager.create_project(project_name);
-                this.refresh();
+                try {
+                    this.project_manager.initialize_project(project_name);
+                } catch (error) {
+                }
             }
         }
         // Load from JSON EDAM
@@ -118,9 +120,11 @@ export class Project_manager {
             // Create project
             const project_name = await utils.get_from_input_box("Set the project name", "Project name");
             if (project_name !== undefined) {
-                this.project_manager.create_project(project_name);
-                await utils.add_sources_from_vunit(this.project_manager, project_name, true);
-                this.refresh();
+                try {
+                    const prj = this.project_manager.initialize_project(project_name);
+                    await utils.add_sources_from_vunit(prj, this.project_manager.get_config_global_config(), true);
+                } catch (error) {
+                }
             }
         }
         // Load an example
@@ -191,44 +195,64 @@ export class Project_manager {
             const rsult = teroshdl2.project_manager.quartus.create_quartus_project(this.project_manager.get_config_global_config(), working_directory[0],
                 project_name, picker_family, picker_part);
         }
+        this.refresh();
     }
 
-    async create_project_from_quartus(prj_path : string){
-        await this.project_manager.create_project_from_quartus(this.project_manager.get_config_global_config(), prj_path);
-        this.refresh();
+    async create_project_from_quartus(prj_path: string) {
+        try {
+            await this.project_manager.create_project_from_quartus(prj_path);
+            this.refresh();
+        } catch (error) {
+        }
     }
-    
-    create_project_from_json(prj_path : string){
-        this.project_manager.create_project_from_json_edam(prj_path);
-        this.refresh();
+
+    create_project_from_json(prj_path: string) {
+        try {
+            this.project_manager.create_project_from_json_edam(prj_path);
+            this.refresh();
+        } catch (error) {
+        }
     }
 
     create_project_from_yaml(prj_path: string) {
-        this.project_manager.create_project_from_yaml_edam(prj_path);
-        this.refresh();
+        try {
+            this.project_manager.create_project_from_yaml_edam(prj_path);
+            this.refresh();
+        } catch (error) {
+        }
     }
 
-    select_project(item: element.Project){
-        this.project_manager.select_project_current(item.get_project_name());
-        this.run_output_manager.clear();
-        this.refresh();
+    select_project(item: element.Project) {
+        try {
+            this.project_manager.set_selected_project(this.project_manager.get_project_by_name(item.get_project_name()));
+            this.run_output_manager.clear();
+            this.refresh();
+        } catch (error) {
+        }
     }
 
-    delete_project(item: element.Project){
-        this.project_manager.delete_project(item.get_project_name());
-        this.refresh();
+    delete_project(item: element.Project) {
+        try {
+            this.project_manager.delete_project(this.project_manager.get_project_by_name(item.get_project_name()));
+            this.refresh();
+        } catch (error) {
+        }
     }
 
     async rename_project(item: element.Project) {
         const new_project_name = await utils.get_from_input_box("New project name", "Project name");
         if (new_project_name !== undefined) {
-            this.project_manager.rename_project(item.get_project_name(), new_project_name);
-            this.refresh();
+            try {
+                this.project_manager.rename_project(this.project_manager.get_project_by_name(item.get_project_name()), new_project_name);
+                this.refresh();
+            } catch (error) {
+            }
         }
     }
 
     refresh() {
         this.emitter.emit('refresh');
+        this.project_manager.save();
     }
 
     refresh_tree() {

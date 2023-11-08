@@ -56,7 +56,8 @@ export class Teroshdl {
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
 
         this.manager = new teroshdl2.project_manager.multi_project_manager.Multi_project_manager(
-            "", file_config_path, file_prj_path, this.emitter);
+            file_config_path, file_prj_path, this.emitter);
+        this.manager.load();
         this.context = context;
         this.global_logger = global_logger;
     }
