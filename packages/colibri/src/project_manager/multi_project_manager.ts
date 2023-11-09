@@ -138,14 +138,17 @@ export class Multi_project_manager {
     // Project Actions
     ////////////////////////////////////////////////////////////////////////////
     public initialize_project(prj_name: string): Project_manager {
-        try {
-            this.get_project_by_name(prj_name);
+        if (prj_name && /^[a-zA-Z0-9_-]{1,128}$/.test(prj_name)) {
+            try {
+                this.get_project_by_name(prj_name);
+            } catch (error) { // Not exists
+                const prj = new Project_manager(prj_name, this.emitter);
+                this.project_manager_list.push(prj);
+                return prj;
+            }
             throw new ProjectOperationError(`Project ${prj_name} already exists. Please use a different name.`);
-        } catch (error) { // Not exists
-            const prj = new Project_manager(prj_name, this.emitter);
-            this.project_manager_list.push(prj);
-            return prj;
         }
+        throw new ProjectOperationError("Provided name is invalid or has more than 128 characters");
     }
 
     public create_project(prj_info: any, base_path: string): Project_manager {
