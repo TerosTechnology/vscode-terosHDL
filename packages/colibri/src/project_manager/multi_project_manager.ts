@@ -44,7 +44,7 @@ class ProjectOperationError extends Error {
 
 export class Multi_project_manager {
     private project_manager_list: Project_manager[] = [];
-    private selected_project_name = "";
+    private selected_project: Project_manager | undefined = undefined;
     private global_config: Config_manager;
     private sync_file_path = "";
     private emitter: events.EventEmitter | undefined = undefined;
@@ -61,14 +61,32 @@ export class Multi_project_manager {
     // Getters
     ////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Returns a list of projects
+     * @returns list of Project_manager.
+    **/
     public get_projects(): Project_manager[] {
         return this.project_manager_list;
     }
 
+    /**
+     * Returns the selected project.
+     * Throws a ProjectOperationError if there is no selected project.
+     * @returns selected Project_manager.
+    **/
     public get_selected_project(): Project_manager {
-        return this.get_project_by_name(this.selected_project_name);
+        if (this.selected_project === undefined) {
+            throw new ProjectOperationError("There is no selected project.");
+        }
+        return this.selected_project;
     }
 
+    /**
+     * Returns the project in the list by the specified name.
+     * Throws ProjectNotFoundError if there's no project with that name in the list.
+     * @param name Project name.
+     * @returns a Project_manager.
+    **/
     public get_project_by_name(name: string): Project_manager {
         let return_value: Project_manager | undefined = undefined;
         this.project_manager_list.forEach(project => {
@@ -89,8 +107,6 @@ export class Multi_project_manager {
         try {
             const file_content = file_utils.read_file_sync(this.sync_file_path);
             const prj_saved = JSON.parse(file_content);
-
-            this.selected_project_name = prj_saved.selected_project;
 
             const prj_list = prj_saved.project_list;
             prj_list.forEach((prj_info: any) => {
@@ -114,6 +130,13 @@ export class Multi_project_manager {
                     prj.add_file_to_watcher(watcher);
                 });
             });
+
+            try {
+                this.selected_project = this.get_project_by_name(prj_saved.selected_project);
+            } catch (error) {
+                this.selected_project = undefined;
+            }
+
         }
         // eslint-disable-next-line no-empty
         catch (error) {
@@ -126,8 +149,15 @@ export class Multi_project_manager {
         this.project_manager_list.forEach(prj => {
             prj_list.push(prj.get_edam_json());
         });
+
+        let selected_project_name;
+        try {
+            selected_project_name = this.get_selected_project().get_name();
+        } catch (error) {
+            selected_project_name = "";
+        }
         const total = {
-            selected_project: this.selected_project_name,
+            selected_project: selected_project_name,
             project_list: prj_list
         };
         const config_string = JSON.stringify(total, null, 4);
@@ -137,18 +167,24 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Project Actions
     ////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Create a project with the specified name.
+     * Throws ProjectOperationError if the name is invalid.
+     * Throws ProjectOperationError if that name is already being used by a project.
+     * @param prj_name project name.
+     * @returns a Project_manager.
+    **/
     public initialize_project(prj_name: string): Project_manager {
-        if (prj_name && /^[a-zA-Z0-9_-]{1,128}$/.test(prj_name)) {
-            try {
-                this.get_project_by_name(prj_name);
-            } catch (error) { // Not exists
-                const prj = new Project_manager(prj_name, this.emitter);
-                this.project_manager_list.push(prj);
-                return prj;
-            }
-            throw new ProjectOperationError(`Project ${prj_name} already exists. Please use a different name.`);
+        this.validate_project_name(prj_name);
+        try {
+            this.get_project_by_name(prj_name);
+        } catch (error) { // Not exists
+            const prj = new Project_manager(prj_name, this.emitter);
+            this.project_manager_list.push(prj);
+            return prj;
         }
-        throw new ProjectOperationError("Provided name is invalid or has more than 128 characters");
+        throw new ProjectOperationError(`Project ${prj_name} already exists. Please use a different name.`);
     }
 
     public create_project(prj_info: any, base_path: string): Project_manager {
@@ -207,52 +243,77 @@ export class Multi_project_manager {
         }
 
         return prj;
-
     }
 
+    /**
+     * Rename the specified project to the new name.
+     * Throws ProjectOperationError if the name is invalid.
+     * Throws ProjectOperationError if that name is already being used by a project.
+     * @param prj project to rename.
+     * @param new_name new name.
+    **/
     public rename_project(prj: Project_manager, new_name: string): void {
+        this.validate_project_name(new_name);
         try {
             this.get_project_by_name(new_name);
-            throw new ProjectOperationError(`Project ${new_name} already exists. Please use a different name.`);
         } catch (error) {
-            prj.rename(new_name);
-        }
-    }
-
-    public delete_project(prj: Project_manager): void {
-        const new_project_manager_list: Project_manager[] = [];
-
-        if (prj.get_name() === this.selected_project_name) {
-            this.selected_project_name = "";
-        }
-
-        let is_prj = false;
-        for (let i = 0; i < this.project_manager_list.length; i++) {
-            const element = this.project_manager_list[i];
-            if (element.get_name() !== prj.get_name()) {
-                new_project_manager_list.push(element);
-            }
-            else {
-                is_prj = true;
-            }
-        }
-        this.project_manager_list = new_project_manager_list;
-
-        if (is_prj === false) {
-            throw new ProjectOperationError(`Project ${prj.get_name()} could not been deleted.`);
-        }
-    }
-
-    public set_selected_project(prj: Project_manager): void {
-        if (this.project_manager_list.includes(prj) === true) {
-            this.selected_project_name = prj.get_name();
+            // new name is valid and doesn't exits
+            // Using get_project_by_name to validate if this prj is in the project list
+            this.get_project_by_name(prj.get_name()).rename(new_name);
             return;
         }
-        throw new ProjectOperationError(`Project ${prj.get_name()} is not in the project list.`);
+        throw new ProjectOperationError(`Project ${new_name} already exists. Please use a different name.`);
+    }
+
+    /**
+     * Deletes a project.
+     * Throws ProjectNotFoundError if project is not in the project list.
+     * @param prj project to delete.
+    **/
+    public delete_project(prj: Project_manager): void {
+
+        // Check if project is in the list. Error if not.
+        this.get_project_by_name(prj.get_name());
+
+        // If it's selected, put selected empty
+        try {
+            if (this.get_selected_project() === prj) {
+                this.selected_project = undefined;
+            }
+        } catch (error) { /* empty */ }
+
+        // Create new list with rest of the projects
+        const new_project_manager_list: Project_manager[] = [];
+        this.project_manager_list.forEach(another_project => {
+            if (another_project.get_name() !== prj.get_name()) {
+                new_project_manager_list.push(another_project);
+            }
+        });
+        this.project_manager_list = new_project_manager_list;
+
+        // TODO
+        // prj.delete();
+    }
+
+    /**
+     * Mark a project as currently selected.
+     * Throws ProjectNotFoundError if project is not in the project list.
+     * @param prj project to select.
+    **/
+    public set_selected_project(prj: Project_manager): void {
+        // Check if project is in the list. Error if not.
+        this.get_project_by_name(prj.get_name());
+        this.selected_project = prj;
+    }
+
+    private validate_project_name(name: string): void {
+        if (!(name && /^[a-zA-Z0-9_-]{1,128}$/.test(name))) {
+            throw new ProjectOperationError("Provided name is invalid or has more than 128 characters");
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // OLD
+    // Creators
     ////////////////////////////////////////////////////////////////////////////
 
     // async create_project_from_quartus(prj_path: string): Promise<Project_manager> {
