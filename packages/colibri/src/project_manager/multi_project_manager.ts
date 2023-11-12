@@ -26,7 +26,6 @@ import { get_language_from_filepath } from "../utils/file_utils";
 
 import * as yaml from "js-yaml";
 import * as events from "events";
-// import { get_project_info_from_quartus } from "./tool/quartus/utils";
 
 class ProjectNotFoundError extends Error {
     constructor(message: string) {

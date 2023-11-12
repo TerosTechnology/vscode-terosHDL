@@ -225,7 +225,7 @@ export async function getFilesFromProject(config: e_config, projectPath: string,
 export async function executeCmdListQuartusProject(config: e_config, projectPath: string, cmdList: string[])
     : Promise<t_loader_action_result> {
 
-    const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl'));
+    const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl.nj'));
     const templateRender = nunjucks.renderString(templateContent, { "cmd_list": cmdList });
 
     // Create temp file
@@ -275,10 +275,16 @@ export async function addFilesToProject(config: e_config, projectPath: string, f
  * @param fileList List of files to add.
 **/
 export async function removeFilesFromProject(config: e_config, projectPath: string, fileList: t_file[]): Promise<void> {
-
     const cmd_list: string[] = [];
     for (const file of fileList) {
         let cmd = `set_global_assignment -remove -name ${LANGUAGE_MAP[file.file_type]} ${file.name}`;
+        if (file.logical_name !== "") {
+            cmd += ` -library ${file.logical_name}`;
+        }
+        cmd_list.push(cmd);
+
+        const fileRelative = file_utils.get_relative_path(file.name, projectPath);
+        cmd = `set_global_assignment -remove -name ${LANGUAGE_MAP[file.file_type]} ${fileRelative}`;
         if (file.logical_name !== "") {
             cmd += ` -library ${file.logical_name}`;
         }

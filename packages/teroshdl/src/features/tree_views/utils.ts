@@ -89,7 +89,8 @@ export async function get_from_input_box(prompt: string, place_holder: string) {
 export async function add_sources_from_open_dialog(prj: teroshdl2.project_manager.project_manager.Project_manager, logical_name: string) {
     const source_path_list = await get_from_open_dialog("Add sources", false, true, true,
         "Select source file", { 'All files (*.*)': ['*'] });
-    source_path_list.forEach(source_path => {
+
+    for (const source_path of source_path_list) {
         const f: teroshdl2.project_manager.common.t_file = {
             name: source_path,
             is_include_file: false,
@@ -99,15 +100,16 @@ export async function add_sources_from_open_dialog(prj: teroshdl2.project_manage
             file_type: teroshdl2.utils.file.get_language_from_filepath(source_path),
             file_version: teroshdl2.utils.file.get_default_version_for_filepath(source_path)
         };
-        prj.add_file(f);
-    });
+        await prj.add_file(f);
+    }
 }
 
 export async function add_sources_from_directory_and_subdirectories(prj: teroshdl2.project_manager.project_manager.Project_manager, allow_subdirectories: boolean) {
 
     const directory_list = await get_from_open_dialog("Select directory", true, false, true,
         "Select", []);
-    directory_list.forEach(directory_inst => {
+    for (const directory_inst of directory_list) {
+
 
         let hdl_extension_list: string[] = [];
         hdl_extension_list = hdl_extension_list.concat(teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG);
@@ -122,7 +124,7 @@ export async function add_sources_from_directory_and_subdirectories(prj: teroshd
             file_list = teroshdl2.utils.file.find_files_by_extensions_dir_and_subdir(directory_inst, []);
         }
 
-        file_list.forEach(file_inst => {
+        for (const file_inst of file_list) {
             const f: teroshdl2.project_manager.common.t_file = {
                 name: file_inst,
                 is_include_file: false,
@@ -132,9 +134,9 @@ export async function add_sources_from_directory_and_subdirectories(prj: teroshd
                 file_type: teroshdl2.utils.file.get_language_from_filepath(file_inst),
                 file_version: teroshdl2.utils.file.get_default_version_for_filepath(file_inst)
             };
-            prj.add_file(f);
-        });
-    });
+            await prj.add_file(f);
+        };
+    };
 }
 
 export async function add_sources_from_vunit(prj: teroshdl2.project_manager.project_manager.Project_manager, config: teroshdl2.config.config_declaration.e_config, is_manual: boolean) {

@@ -20,6 +20,7 @@
 import { Multi_project_manager } from "teroshdl2/out/project_manager/multi_project_manager";
 import * as vscode from "vscode";
 import { get_icon } from "../utils";
+import * as teroshdl2 from 'teroshdl2';
 
 
 export const VIEW_ID = "teroshdl-project";
@@ -34,7 +35,9 @@ export class Project extends vscode.TreeItem {
     // Element
     private project_name: string;
 
-    constructor(project_name: string, label: string, children?: any[]) {
+    constructor(projectType: teroshdl2.project_manager.common.e_project_type, project_name: string,
+        label: string, isOpen: boolean, children?: any[]) {
+
         super(
             label,
             children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
@@ -50,6 +53,19 @@ export class Project extends vscode.TreeItem {
             title: "Select project",
             arguments: [this],
         };
+        if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
+            this.iconPath = get_icon("intel");
+        }
+        else {
+            this.iconPath = get_icon("folder");
+        }
+
+        if (isOpen) {
+            this.iconPath = get_icon("folder-active");
+        }
+        else {
+            this.iconPath = get_icon("folder");
+        }
     }
 
     public get_project_name(): string {
@@ -109,10 +125,12 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         project_list.forEach(prj => {
             const prj_name = prj.get_name();
             let label = prj.get_name();
+            let isOpen = false;
             if (selected_project_name === prj_name) {
                 label = `${prj_name} (current)`;
+                isOpen = true;
             }
-            prj_view.push(new Project(prj.get_name(), label));
+            prj_view.push(new Project(prj.getProjectType(), prj.get_name(), label, isOpen));
         });
         this.data = prj_view;
         this._onDidChangeTreeData.fire();

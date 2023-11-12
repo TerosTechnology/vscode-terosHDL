@@ -19,7 +19,8 @@
 
 import {
     t_file, t_action_result, t_watcher,
-    e_watcher_type
+    e_watcher_type,
+    e_project_type
 } from "./common";
 import * as  manager_watcher from "./list_manager/watcher";
 import * as  manager_file from "./list_manager/file";
@@ -48,9 +49,11 @@ import { getFilesFromProject, QuartusExecutionError } from "./tool/quartus/utils
 export class Project_manager {
     /**  Name of the project */
     private name: string;
+    /** Path of the project */
+    private _projectDiskPath = "";
     /** Contains all the HDL source files, constraint files, vendor IP description files, 
      * memory initialization files etc. for the project. */
-    protected files = new manager_file.File_manager();
+    private files = new manager_file.File_manager();
     /** File watcher. */
     private watchers: manager_watcher.Watcher_manager;
     /** A dictionary of extra commands to execute at various stages of the project build/run. */
@@ -96,11 +99,27 @@ export class Project_manager {
         }), emitter);
     }
 
-    get_name() {
+    set projectDiskPath(projectDiskPath: string) {
+        this._projectDiskPath = projectDiskPath;
+    }
+
+    get projectDiskPath(): string {
+        return this._projectDiskPath;
+    }
+
+    /**
+     * Get project type
+     * @returns Project type
+     */
+    public getProjectType(): e_project_type { 
+        return e_project_type.GENERIC;
+    }
+
+    public get_name() {
         return this.name;
     }
 
-    rename(name: string) {
+    public rename(name: string) {
         this.name = name;
     }
 
@@ -114,12 +133,26 @@ export class Project_manager {
         return watcher_type;
     }
 
+    protected async notifyChanged(): Promise<void> {
+        if (this.emitter !== undefined) {
+            this.emitter.emit('refresh');
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    public async syncWithDisk(): Promise<void> {
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
-    // public save_definition() {
-    //     const definition = this.get_project_definition(undefined);
-    // }
+    static async fromJson(config: e_config, jsonContent: any, emitter: events.EventEmitter):
+        Promise<Project_manager> {
+            console.log(config);
+            console.log(jsonContent);
+            console.log(emitter);
+            return new Project_manager("", emitter);
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Linter
@@ -165,7 +198,7 @@ export class Project_manager {
      * @param toplevel_path_inst Top level entity to add.
      * @returns Operation result
     **/
-    add_toplevel_path_from_entity(entity_name: string): t_action_result {
+    public async add_toplevel_path_from_entity(entity_name: string): Promise<t_action_result> {
         const file_list = this.files.get();
         for (const file of file_list) {
             const entity_name_of_file = hdl_utils.get_toplevel_from_path(file.name);
@@ -187,7 +220,7 @@ export class Project_manager {
      * @param toplevel_path_inst Top level path to add.
      * @returns Operation result
     **/
-    add_toplevel_path(toplevel_path_inst: string): t_action_result {
+    public async add_toplevel_path(toplevel_path_inst: string): Promise<t_action_result> {
         this.toplevel_path.clear();
         return this.toplevel_path.add(toplevel_path_inst);
     }
@@ -285,11 +318,11 @@ export class Project_manager {
         return action_result;
     }
 
-    add_file(file: t_file): t_action_result {
+    public async add_file(file: t_file): Promise<t_action_result> {
         return this.files.add(file);
     }
 
-    add_file_from_array(file_list: t_file[]): t_action_result {
+    public async add_file_from_array(file_list: t_file[]): Promise<t_action_result> {
         file_list.forEach(file => {
             this.files.add(file);
         });
@@ -300,7 +333,7 @@ export class Project_manager {
         };
     }
 
-    delete_file(name: string, logical_name = "") {
+    public async delete_file(name: string, logical_name = "") {
         const result = this.files.delete(name, logical_name);
         this.delete_phantom_toplevel();
         return result;
@@ -310,7 +343,7 @@ export class Project_manager {
         return this.files.get();
     }
 
-    delete_file_by_logical_name(logical_name: string) {
+    public async delete_file_by_logical_name(logical_name: string): Promise<t_action_result> {
         const result = this.files.delete_by_logical_name(logical_name);
         this.delete_phantom_toplevel();
         return result;
@@ -326,6 +359,10 @@ export class Project_manager {
                 this.delete_toplevel_path(toplevel);
             }
         });
+    }
+
+    public clearFiles() {
+        this.files.clear();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -364,6 +401,8 @@ export class Project_manager {
         }
         const prj_definition: t_project_definition = {
             name: this.name,
+            project_disk_path: this.projectDiskPath,
+            project_type: this.getProjectType(),
             file_manager: this.files,
             hook_manager: this.hooks,
             parameter_manager: this.parameters,
