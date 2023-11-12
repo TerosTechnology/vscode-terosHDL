@@ -19,6 +19,13 @@
 
 import { t_version_inst, LANGUAGE } from "../common/general";
 
+
+/** Type of project */
+export enum e_project_type {
+    GENERIC = "genericProject",
+    QUARTUS = "quartusProject",
+}
+
 /** Type of parameter */
 export enum e_file_type {
     CMDLINEARG = "cmdlinearg",

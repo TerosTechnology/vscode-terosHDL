@@ -199,6 +199,9 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             this._onDidChangeTreeData.fire();
             return;
         }
+        else {
+            this._onDidChangeTreeData.fire();
+        }
 
         // Dependencies
         const current_dep = await this.get_deps(toplevel_path);

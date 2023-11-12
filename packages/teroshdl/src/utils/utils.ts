@@ -29,6 +29,12 @@ export const VERILOG_SELECTOR: vscode.DocumentSelector = [
 export const VHDL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: teroshdl2.common.general.LANGUAGE.VHDL };
 export const TCL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: 'tcl' };
 
+export enum t_message_level {
+    INFO,
+    WARNING,
+    ERROR
+}
+
 export function get_webview_content(resource_path: string) {
     const dir_path = path_lib.dirname(resource_path);
     let html = fs.readFileSync(resource_path, 'utf-8');
@@ -132,59 +138,17 @@ export function normalize_path(path: string) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// export function get_active_editor_lang() : teroshdl2.common.general.HDL_LANG {
-//     const active_editor = check_if_active_editor();
-//     if (active_editor === false){
-//         return undefined;
-//     }
-//     const document = vscode.window.activeTextEditor?.document;
-//     const language_id: string = <string>document?.languageId;
-
-//     if (language_id === 'systemverilog') {
-//         return teroshdl2.common.general.HDL_LANG.VERILOG;
-//     }
-//     else if(language_id === "verilog") {
-//         return teroshdl2.common.general.HDL_LANG.SYSTEMVERILOG;
-//     }
-//     else if (language_id === "vhdl") {
-//         return teroshdl2.common.general.HDL_LANG.VHDL;
-//     }
-//     else{
-//         return teroshdl2.common.general.HDL_LANG.NONE;
-//     }
-// }
-
-// export function get_active_editor_lang_and_code()  {
-//     const result = {
-//         sucessful: false,
-//         lang: teroshdl2.common.general.HDL_LANG.NONE,
-//         code: '',
-//         filename: ''
-//     };
-//     const lang = get_active_editor_lang();
-//     if (lang === teroshdl2.common.general.HDL_LANG.NONE){
-//         return result;
-//     }
-
-//     const document = vscode.window.activeTextEditor?.document;
-//     const code: string = <string>document?.getText();
-//     result.code = code;
-//     result.lang = lang;
-//     result.filename = <string>document?.fileName;
-//     result.sucessful = true;
-//     return result;
-// }
+export function showMessage(message: string, level: t_message_level) {
+    if (level === t_message_level.INFO) {
+        vscode.window.showInformationMessage(message);
+    }
+    else if (level === t_message_level.WARNING) {
+        vscode.window.showWarningMessage(message);
+    }
+    else if (level === t_message_level.ERROR) {
+        vscode.window.showErrorMessage(message);
+    }
+}
 
 export function get_files_from_dir_recursive(dir: any, filelist: any[] = []) {
     fs.readdirSync(dir).forEach(file => {

@@ -138,7 +138,7 @@ export class Source_manager {
     async delete_library(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
-            prj.delete_file_by_logical_name(item.get_logical_name());
+            await prj.delete_file_by_logical_name(item.get_logical_name());
             this.refresh();
         } catch (error) {
 
@@ -148,7 +148,7 @@ export class Source_manager {
     async delete_source(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
-            prj.delete_file(item.get_name(), item.get_logical_name());
+            await prj.delete_file(item.get_name(), item.get_logical_name());
             this.refresh();
         } catch (error) {
 
@@ -158,7 +158,7 @@ export class Source_manager {
     async select_top(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
-            prj.add_toplevel_path(item.get_name());
+            await prj.add_toplevel_path(item.get_name());
             this.refresh();
         } catch (error) {
 

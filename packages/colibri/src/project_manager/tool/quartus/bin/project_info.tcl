@@ -1,8 +1,8 @@
 #quartus_sh -t quartus.tcl <path to qpf or qsf file>
 ## return: prj_name, revision, top_level_entity
 
-set project_path [lindex $argv 0]
-set csv_file_name [lindex $argv 1]
+set csv_file_name [lindex $argv 0]
+set project_path [lindex $argv 1]
 
 #open Quartus project
 project_open -current_revision $project_path
@@ -18,7 +18,7 @@ proc get_prj_info {csv_file} {
     puts $csv_file [join [ list $prj_name $prj_revision $top_level_entity] "," ]
 
     set revision_list [get_project_revisions]
-    puts $csv_file [join [ $revision_list ] "," ]
+    puts $csv_file [join [ list $revision_list ] "," ]
 }
 
 get_prj_info $csv_file

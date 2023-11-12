@@ -18,6 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 export * as project_manager from './project_manager';
+export * as quartusProjectManager from './tool/quartus/quartusProjectManager';
 export * as multi_project_manager from './multi_project_manager';
 export * as common from './common';
 export * as tool_common from './tool/common';

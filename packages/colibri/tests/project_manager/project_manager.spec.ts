@@ -91,7 +91,7 @@ describe('project_manager', () => {
         expect(project_manager.get_file()[1].name).toStrictEqual(file_1.name);
     });
 
-    test('delete_file', () => {
+    test('delete_file', async () => {
         const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
@@ -126,23 +126,23 @@ describe('project_manager', () => {
         project_manager.add_file(file_1);
         project_manager.add_file(file_2);
 
-        const result_0 = project_manager.delete_file("file_0", "logical_0");
+        const result_0 = await project_manager.delete_file("file_0", "logical_0");
         expect(project_manager.get_file()[0].name).toStrictEqual(file_1.name);
         expect(result_0.successful).toBe(true);
     
-        const result_1 = project_manager.delete_file("file_1", "logical_5");
+        const result_1 = await project_manager.delete_file("file_1", "logical_5");
         expect(result_1.successful).toBe(false);
 
-        const result_2 = project_manager.delete_file("file_1", "logical_1");
+        const result_2 = await project_manager.delete_file("file_1", "logical_1");
         expect(project_manager.get_file()[0].name).toStrictEqual(file_2.name);
         expect(result_2.successful).toBe(true);
 
-        const result_3 = project_manager.delete_file("file_2");
+        const result_3 = await project_manager.delete_file("file_2");
         expect(project_manager.get_file()).toStrictEqual([]);
         expect(result_3.successful).toBe(true);
     });
 
-    test('delete_file_by_logical_name', () => {
+    test('delete_file_by_logical_name', async () => {
         const file_0 : t_file = {
             name: 'file_0',
             is_include_file: false,
@@ -177,11 +177,11 @@ describe('project_manager', () => {
         project_manager.add_file(file_1);
         project_manager.add_file(file_2);
 
-        const result_0 = project_manager.delete_file_by_logical_name("logical_1");
+        const result_0 = await project_manager.delete_file_by_logical_name("logical_1");
         expect(project_manager.get_file()[0].name).toStrictEqual(file_2.name);
         expect(result_0.successful).toBe(true);
 
-        const result_1 = project_manager.delete_file_by_logical_name("logical_1");
+        const result_1 = await project_manager.delete_file_by_logical_name("logical_1");
         expect(result_1.successful).toBe(false);
     });
 

@@ -40,13 +40,15 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
     }
 
     const edam_json = {
+        name: prj.name,
+        project_disk_path: prj.project_disk_path,
+        project_type: prj.project_type,
+        toplevel: top_level,
         files: prj.file_manager.get(refrence_path),
         hooks: prj.hook_manager.get(),
         watchers: prj.watcher_manager.get(refrence_path),
-        name: prj.name,
         // parameters: prj.parameter_manager.get(),
         tool_options: tmp_edam_1,
-        toplevel: top_level
     };
 
     return edam_json;

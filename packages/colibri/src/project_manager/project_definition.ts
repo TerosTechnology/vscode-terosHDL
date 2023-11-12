@@ -23,9 +23,12 @@ import { Parameter_manager } from "./list_manager/parameter";
 import { Toplevel_path_manager } from "./list_manager/toplevel_path";
 import { Config_manager } from "../config/config_manager";
 import { Watcher_manager } from "./list_manager/watcher";
+import { e_project_type } from "./common";
 
 export type t_project_definition = {
-    name: string;
+    name: string,
+    project_type: e_project_type,
+    project_disk_path: string,
     file_manager: File_manager,
     hook_manager: Hook_manager,
     parameter_manager: Parameter_manager,

@@ -25,6 +25,7 @@ import * as events from "events";
 import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
 import { Logger } from "../../../logger";
+import { t_message_level, showMessage } from "../../../utils/utils";
 
 export class Project_manager {
     private tree: element.ProjectProvider;
@@ -157,6 +158,7 @@ export class Project_manager {
                 this.create_project_from_quartus(path);
             }
         }
+        // Create new Quartus project
         else if (picker_value === PROJECT_ADD_TYPES[6]) {
             // Working directory
             const working_directory = await
@@ -191,17 +193,37 @@ export class Project_manager {
                 return;
             }
 
-            // // Create project
-            // const rsult = teroshdl2.project_manager.quartus.create_quartus_project(this.project_manager.get_config_global_config(), working_directory[0],
-            //     project_name, picker_family, picker_part);
+            try {
+                // Create project
+                const quartusProject =
+                    await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromNewQuartusProject(
+                        this.project_manager.get_config_global_config(), project_name, picker_family, picker_part,
+                        working_directory[0], this.emitter);
+
+                // Add project to manager
+                this.project_manager.add_project(quartusProject);
+
+                const msg = `Intel@ Quartus@ Prime project ${quartusProject.get_name()} created.`;
+                showMessage(msg, t_message_level.INFO);
+            } catch (error) { }
         }
         this.refresh();
     }
 
     async create_project_from_quartus(prj_path: string) {
         try {
-            // await this.project_manager.create_project_from_quartus(prj_path);
+            // Create project
+            const quartusProject =
+                await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromExistingQuartusProject(
+                    this.project_manager.get_config_global_config(), prj_path, this.emitter
+                );
+
+            // Add project to manager
+            this.project_manager.add_project(quartusProject);
             this.refresh();
+
+            const msg = `Intel@ Quartus@ Prime project ${quartusProject.get_name()} loaded.`;
+            showMessage(msg, t_message_level.INFO);
         } catch (error) {
         }
     }
