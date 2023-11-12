@@ -18,12 +18,23 @@
 
 import { Multi_project_manager } from '../../src/project_manager/multi_project_manager';
 import { Project_manager } from '../../src/project_manager/project_manager';
+import { save_file_sync } from '../../src/utils/file_utils';
+
+const sync_file_path = "/tmp/sync_file_path.json";
+
+jest.mock('../../src/utils/file_utils', () => ({
+    ...jest.requireActual('../../src/utils/file_utils'),
+    save_file_sync: jest.fn((file_path: string, content: string) => {
+        expect(file_path).toBe(sync_file_path);
+        return JSON.parse(content);
+    }),
+}));
 
 describe('MultiProjectManager', () => {
     let multiProjectManager: Multi_project_manager;
 
     beforeEach(() => {
-        multiProjectManager = new Multi_project_manager("", "", undefined);
+        multiProjectManager = new Multi_project_manager("", sync_file_path, undefined);
     });
 
     function create_project_with_name_and_add(prj_name: string): Project_manager {
@@ -441,4 +452,106 @@ describe('MultiProjectManager', () => {
         });
 
     });
+
+    describe('save', () => {
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should handle save correctly when the project list is empty', () => {
+            multiProjectManager.save();
+
+            expect(save_file_sync).toHaveBeenCalled();
+            const returnedValue = (<jest.Mock>save_file_sync).mock.results[0].value;
+            expect(returnedValue.project_list).toEqual([]);
+        });
+
+        for (let num_projects = 1; num_projects <= 15; num_projects++) {
+            test(`should save the current state with selected project and a project list of size ${num_projects}`, () => {
+                for (let i = 1; i <= num_projects; i++) {
+                    create_project_with_name_and_add(`Project${i}`);
+                }
+                multiProjectManager.set_selected_project(multiProjectManager.get_project_by_name("Project1"));
+
+                multiProjectManager.save();
+
+                expect(save_file_sync).toHaveBeenCalled();
+                const returnedValue = (<jest.Mock>save_file_sync).mock.results[0].value;
+                expect(returnedValue.selected_project).toBe("Project1");
+                expect(returnedValue.project_list.length).toBe(num_projects);
+                for (let i = 1; i <= num_projects; i++) {
+                    expect(returnedValue.project_list[i - 1].name).toBe(`Project${i}`);
+                }
+            });
+        }
+
+        for (let num_projects = 1; num_projects <= 15; num_projects++) {
+            test(`should save correctly with ${num_projects} projects and none selected`, () => {
+                for (let i = 1; i <= num_projects; i++) {
+                    create_project_with_name_and_add(`Project${i}`);
+                }
+                multiProjectManager.save();
+
+                expect(save_file_sync).toHaveBeenCalled();
+                const returnedValue = (<jest.Mock>save_file_sync).mock.results[0].value;
+                expect(returnedValue.selected_project).toBe("");
+                expect(returnedValue.project_list.length).toBe(num_projects);
+                for (let i = 1; i <= num_projects; i++) {
+                    expect(returnedValue.project_list[i - 1].name).toBe(`Project${i}`);
+                }
+            });
+        }
+
+        test('should save correctly after a project deleted', () => {
+            create_project_with_name_and_add("Project1");
+            const prj2 = create_project_with_name_and_add("Project2");
+            multiProjectManager.delete_project(prj2);
+
+            multiProjectManager.save();
+
+            expect(save_file_sync).toHaveBeenCalled();
+            const returnedValue = (<jest.Mock>save_file_sync).mock.results[0].value;
+            expect(returnedValue.project_list.length).toBe(1);
+            expect(returnedValue.project_list[0].name).toBe("Project1");
+        });
+
+        test('should save correctly after a project rename', () => {
+            const prj1 = create_project_with_name_and_add("Project1");
+            create_project_with_name_and_add("Project2");
+            multiProjectManager.rename_project(prj1, "NewName");
+
+            multiProjectManager.save();
+
+            expect(save_file_sync).toHaveBeenCalled();
+            const returnedValue = (<jest.Mock>save_file_sync).mock.results[0].value;
+            expect(returnedValue.project_list.length).toBe(2);
+            expect(returnedValue.project_list[0].name).toBe("NewName");
+            expect(returnedValue.project_list[1].name).toBe("Project2");
+        });
+
+        test('should save correctly multiple times', () => {
+            const prj1 = create_project_with_name_and_add("Project1");
+            create_project_with_name_and_add("Project2");
+            multiProjectManager.set_selected_project(prj1);
+
+            multiProjectManager.save();
+
+            expect(save_file_sync).toHaveBeenCalled();
+            const returnedValue = (<jest.Mock>save_file_sync).mock.results[0].value;
+            expect(returnedValue.selected_project).toBe("Project1");
+            expect(returnedValue.project_list.length).toBe(2);
+            expect(returnedValue.project_list[0].name).toBe("Project1");
+            expect(returnedValue.project_list[1].name).toBe("Project2");
+
+            multiProjectManager.save();
+            const returnedValueSecond = (<jest.Mock>save_file_sync).mock.results[1].value;
+
+            expect(returnedValue).toStrictEqual(returnedValueSecond);
+
+        });
+
+
+    });
+
 });
