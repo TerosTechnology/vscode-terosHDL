@@ -26,6 +26,12 @@ describe('MultiProjectManager', () => {
         multiProjectManager = new Multi_project_manager("", "", undefined);
     });
 
+    function create_project_with_name_and_add(prj_name: string): Project_manager {
+        const prj = new Project_manager(prj_name, undefined);
+        multiProjectManager.add_project(prj);
+        return prj;
+    }
+
     describe('default scenario', () => {
         test('get_projects should return an empty array if no projects are created', () => {
             expect(multiProjectManager.get_projects()).toEqual([]);
@@ -38,15 +44,15 @@ describe('MultiProjectManager', () => {
         });
     });
 
-    describe('initialize_project', () => {
+    describe('add_project', () => {
 
         for (let num_projects = 1; num_projects <= 10; num_projects++) {
-            test(`should initialize ${num_projects} project(s) with different name(s)`, () => {
+            test(`should add ${num_projects} project(s) with different name(s)`, () => {
                 for (let i = 1; i <= num_projects; i++) {
                     // Create each project, from 1 to num_projects
                     const project_name = `Project${i}`;
 
-                    multiProjectManager.initialize_project(project_name);
+                    create_project_with_name_and_add(project_name);
 
                     // Assert created, last in the project_list and project_list size is ok
                     expect(multiProjectManager.get_project_by_name(project_name)).toBeDefined();
@@ -57,65 +63,84 @@ describe('MultiProjectManager', () => {
             });
         }
 
-        test('should throw an error when initializing a project with a name that already exists', () => {
+        test('should throw an error when adding a project with a name that already exists', () => {
             const projectName = 'DuplicateProject';
-            multiProjectManager.initialize_project(projectName);
+            create_project_with_name_and_add(projectName);
 
             expect(() => {
-                multiProjectManager.initialize_project(projectName);
+                create_project_with_name_and_add(projectName);
             }).toThrow();
         });
 
-        test('should throw an error when initializing a project with an empty name', () => {
+        test('should throw an error when adding a project with an empty name', () => {
             expect(() => {
-                multiProjectManager.initialize_project('');
+                create_project_with_name_and_add('');
             }).toThrow();
         });
 
-        test('should throw an error when initializing a project with a name that is only whitespace', () => {
+        test('should throw an error when adding a project with a name that is only whitespace', () => {
             expect(() => {
-                multiProjectManager.initialize_project('   ');
+                create_project_with_name_and_add('   ');
             }).toThrow();
         });
 
-        test('should throw an error when initializing a project with a name containing only special characters', () => {
+        test('should throw an error when adding a project with a name containing only special characters', () => {
             expect(() => {
-                multiProjectManager.initialize_project('!@#$%^&*()');
+                create_project_with_name_and_add('!@#$%^&*()');
             }).toThrow();
         });
 
-        test('should throw an error when initializing a project with a name longer than the maximum allowed length', () => {
+        test('should throw an error when adding a project with a name longer than the maximum allowed length', () => {
             const longName = 'a'.repeat(129);
             expect(() => {
-                multiProjectManager.initialize_project(longName);
+                create_project_with_name_and_add(longName);
             }).toThrow();
         });
 
-        test('should successfully initialize a project with a name of maximum allowed length', () => {
+        test('should successfully add a project with a name of maximum allowed length', () => {
             const maxName = 'a'.repeat(128);
 
-            multiProjectManager.initialize_project(maxName);
+            create_project_with_name_and_add(maxName);
             expect(multiProjectManager.get_projects()[multiProjectManager.get_projects().length - 1].get_name()).toBe(maxName);
         });
 
-        test('should throw an error when initializing a project with a name that is a undefined', () => {
+        test('should throw an error when adding a project with a name that is undefined', () => {
             expect(() => {
-                multiProjectManager.initialize_project(undefined as any);
+                create_project_with_name_and_add(undefined as any);
             }).toThrow();
         });
 
-        test('should throw an error when initializing a project with a name that is an object', () => {
+        test('should throw an error when adding a project with a name that is an object', () => {
             expect(() => {
-                multiProjectManager.initialize_project({ name: 'ObjectProject' } as any);
+                create_project_with_name_and_add({ name: 'ObjectProject' } as any);
             }).toThrow();
         });
+
+        test('should throw an error when adding a project that is undefined', () => {
+            expect(() => {
+                multiProjectManager.add_project(undefined as any);
+            }).toThrow();
+        });
+
+        test('should throw an error when adding a project multiple times', () => {
+            const projectName = 'DuplicateProject';
+            const prj = new Project_manager(projectName, undefined);
+            multiProjectManager.add_project(prj);
+
+            for (let i = 0; i < 5; i++) {
+                expect(() => {
+                    multiProjectManager.add_project(prj);
+                }).toThrow();
+            }
+        });
+
     });
 
     describe('rename_project', () => {
 
         test('should rename an existing project successfully', () => {
             // Create project
-            const prj = multiProjectManager.initialize_project('OldName');
+            const prj = create_project_with_name_and_add('OldName');
             const new_name = 'NewName';
 
             // Rename
@@ -145,9 +170,9 @@ describe('MultiProjectManager', () => {
         });
 
         test('should throw an error when the new name is already taken by another project', () => {
-            const prj1 = multiProjectManager.initialize_project('Project1');
+            const prj1 = create_project_with_name_and_add('Project1');
 
-            multiProjectManager.initialize_project('Project2');
+            create_project_with_name_and_add('Project2');
 
             expect(() => {
                 multiProjectManager.rename_project(prj1, 'Project2');
@@ -155,7 +180,7 @@ describe('MultiProjectManager', () => {
         });
 
         test('should not change the project name and raise an exception if the old and new names are the same', () => {
-            const prj = multiProjectManager.initialize_project('ProjectName');
+            const prj = create_project_with_name_and_add('ProjectName');
 
             expect(() => {
                 multiProjectManager.rename_project(prj, 'ProjectName');
@@ -170,7 +195,7 @@ describe('MultiProjectManager', () => {
             let prj: Project_manager;
 
             beforeEach(() => {
-                prj = multiProjectManager.initialize_project('ProjectName');
+                prj = create_project_with_name_and_add('ProjectName');
             });
 
             test('should throw an error when renaming a project with an empty name', () => {
@@ -212,7 +237,7 @@ describe('MultiProjectManager', () => {
     describe('delete_project', () => {
 
         test('should delete an existing project successfully', () => {
-            const prj = multiProjectManager.initialize_project('ProjectToDelete');
+            const prj = create_project_with_name_and_add('ProjectToDelete');
 
             multiProjectManager.delete_project(prj);
 
@@ -226,7 +251,7 @@ describe('MultiProjectManager', () => {
             test(`should correctly update the list of ${num_projects} projects after deletion the first one`, () => {
                 // Initialize num_projects
                 for (let i = 1; i <= num_projects; i++) {
-                    multiProjectManager.initialize_project(`Project${i}`);
+                    create_project_with_name_and_add(`Project${i}`);
                 }
 
                 for (let i = 1; i <= num_projects; i++) {
@@ -251,7 +276,7 @@ describe('MultiProjectManager', () => {
             test(`should correctly update the list of ${num_projects} projects after deletion the last one`, () => {
                 // Initialize num_projects
                 for (let i = 1; i <= num_projects; i++) {
-                    multiProjectManager.initialize_project(`Project${i}`);
+                    create_project_with_name_and_add(`Project${i}`);
                 }
 
                 for (let i = num_projects; i >= 1; i--) {
@@ -276,7 +301,7 @@ describe('MultiProjectManager', () => {
             test(`should correctly update the list of ${num_projects} projects after deletion the middle one`, () => {
                 // Initialize num_projects
                 for (let i = 1; i <= num_projects; i++) {
-                    multiProjectManager.initialize_project(`Project${i}`);
+                    create_project_with_name_and_add(`Project${i}`);
                 }
 
                 for (let i = 2; i <= num_projects - 1; i++) {
@@ -318,7 +343,7 @@ describe('MultiProjectManager', () => {
     describe('set_current_project', () => {
 
         test('should set an existing project as selected successfully', () => {
-            const prj = multiProjectManager.initialize_project('ProjectToSelect');
+            const prj = create_project_with_name_and_add('ProjectToSelect');
 
             multiProjectManager.set_selected_project(prj);
 
@@ -341,8 +366,8 @@ describe('MultiProjectManager', () => {
         });
 
         test('should only have one selected project at a time', () => {
-            const prj1 = multiProjectManager.initialize_project('Project1');
-            const prj2 = multiProjectManager.initialize_project('Project2');
+            const prj1 = create_project_with_name_and_add('Project1');
+            const prj2 = create_project_with_name_and_add('Project2');
 
             multiProjectManager.set_selected_project(prj1);
             multiProjectManager.set_selected_project(prj2);
@@ -354,7 +379,7 @@ describe('MultiProjectManager', () => {
     describe('integration', () => {
 
         test('delete_project should unset the selected project if it is deleted', () => {
-            const prj = multiProjectManager.initialize_project('Project1');
+            const prj = create_project_with_name_and_add('Project1');
 
             multiProjectManager.set_selected_project(prj);
             multiProjectManager.delete_project(prj);
@@ -365,8 +390,8 @@ describe('MultiProjectManager', () => {
         });
 
         test('delete_project should keep the selected project unchanged if it is not the one being deleted', () => {
-            const prj1 = multiProjectManager.initialize_project('Project1');
-            const prj2 = multiProjectManager.initialize_project('Project2');
+            const prj1 = create_project_with_name_and_add('Project1');
+            const prj2 = create_project_with_name_and_add('Project2');
 
             multiProjectManager.set_selected_project(prj1);
             multiProjectManager.delete_project(prj2);
@@ -375,7 +400,7 @@ describe('MultiProjectManager', () => {
         });
 
         test('rename_project should update the selected project name if it is the one being renamed', () => {
-            const prj = multiProjectManager.initialize_project('Project1');
+            const prj = create_project_with_name_and_add('Project1');
 
             multiProjectManager.set_selected_project(prj);
             const selectedProject = multiProjectManager.get_selected_project();
@@ -386,8 +411,8 @@ describe('MultiProjectManager', () => {
         });
 
         test('rename_project should keep the selected project unchanged if it is not the one being renamed', () => {
-            const prj1 = multiProjectManager.initialize_project('Project1');
-            const prj2 = multiProjectManager.initialize_project('Project2');
+            const prj1 = create_project_with_name_and_add('Project1');
+            const prj2 = create_project_with_name_and_add('Project2');
 
             multiProjectManager.set_selected_project(prj1);
             multiProjectManager.rename_project(prj2, 'Project2New');
@@ -396,7 +421,7 @@ describe('MultiProjectManager', () => {
         });
 
         test('rename_project should fail after trying to rename a deleted project', () => {
-            const prj1 = multiProjectManager.initialize_project('Project1');
+            const prj1 = create_project_with_name_and_add('Project1');
 
             multiProjectManager.delete_project(prj1);
 
@@ -406,7 +431,7 @@ describe('MultiProjectManager', () => {
         });
 
         test('set_selected_project should fail after trying to select a deleted project', () => {
-            const prj1 = multiProjectManager.initialize_project('Project1');
+            const prj1 = create_project_with_name_and_add('Project1');
 
             multiProjectManager.delete_project(prj1);
 

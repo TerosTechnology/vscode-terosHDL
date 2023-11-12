@@ -169,80 +169,20 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Create a project with the specified name.
+     * Add an existing project to the project list.
      * Throws ProjectOperationError if the name is invalid.
-     * Throws ProjectOperationError if that name is already being used by a project.
-     * @param prj_name project name.
-     * @returns a Project_manager.
+     * Throws ProjectOperationError if that name is used by a project already in the list.
+     * @param prj a Project_manager.
     **/
-    public initialize_project(prj_name: string): Project_manager {
-        this.validate_project_name(prj_name);
+    public add_project(prj: Project_manager): void {
+        this.validate_project_name(prj.get_name());
         try {
-            this.get_project_by_name(prj_name);
+            this.get_project_by_name(prj.get_name());
         } catch (error) { // Not exists
-            const prj = new Project_manager(prj_name, this.emitter);
             this.project_manager_list.push(prj);
-            return prj;
+            return;
         }
-        throw new ProjectOperationError(`Project ${prj_name} already exists. Please use a different name.`);
-    }
-
-    public create_project(prj_info: any, base_path: string): Project_manager {
-        const prj = this.initialize_project(prj_info.name);
-
-        // Add files
-        const file_list = prj_info.files;
-        file_list.forEach((file: any) => {
-            //Relative path to absolute
-            const name = file_utils.get_absolute_path(file_utils.get_directory(base_path), file.name);
-
-            let is_include_file = false;
-            if (file.is_include_file !== undefined) {
-                is_include_file = file.is_include_file;
-            }
-            let include_path = "";
-            if (file.include_path !== undefined) {
-                include_path = file.include_path;
-            }
-            let logical_name = "";
-            if (file.logical_name !== undefined) {
-                logical_name = file.logical_name;
-            }
-            let is_manual = true;
-            if (file.is_manual !== undefined) {
-                is_manual = file.is_manual;
-            }
-            let file_type = file.file_type;
-            if (file_type === undefined) {
-                file_type = get_language_from_filepath(name);
-            }
-            let file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
-            if (file_version === undefined) {
-                file_version = file_utils.get_default_version_for_filepath(name);
-            }
-
-            const file_definition: t_file = {
-                name: name,
-                is_include_file: is_include_file,
-                include_path: include_path,
-                logical_name: logical_name,
-                is_manual: is_manual,
-                file_type: file_type,
-                file_version: file_version
-            };
-
-            prj.add_file(file_definition);
-        });
-
-        if (prj_info.toplevel !== undefined) {
-            const toplevel_path = file_utils.get_absolute_path(file_utils.get_directory(base_path),
-                prj_info.toplevel);
-            if (file_utils.check_if_path_exist(toplevel_path)) {
-                prj.add_toplevel_path(toplevel_path);
-            }
-        }
-
-        return prj;
+        throw new ProjectOperationError(`Project ${prj.get_name()} already exists. Please use a different name.`);
     }
 
     /**
@@ -313,8 +253,71 @@ export class Multi_project_manager {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Creators
+    // Deprecated
     ////////////////////////////////////////////////////////////////////////////
+    public initialize_project(prj_name: string): Project_manager {
+        const prj = new Project_manager(prj_name, this.emitter);
+        this.add_project(prj);
+        return prj;
+    }
+
+    public create_project(prj_info: any, base_path: string): Project_manager {
+        const prj = this.initialize_project(prj_info.name);
+
+        // Add files
+        const file_list = prj_info.files;
+        file_list.forEach((file: any) => {
+            //Relative path to absolute
+            const name = file_utils.get_absolute_path(file_utils.get_directory(base_path), file.name);
+
+            let is_include_file = false;
+            if (file.is_include_file !== undefined) {
+                is_include_file = file.is_include_file;
+            }
+            let include_path = "";
+            if (file.include_path !== undefined) {
+                include_path = file.include_path;
+            }
+            let logical_name = "";
+            if (file.logical_name !== undefined) {
+                logical_name = file.logical_name;
+            }
+            let is_manual = true;
+            if (file.is_manual !== undefined) {
+                is_manual = file.is_manual;
+            }
+            let file_type = file.file_type;
+            if (file_type === undefined) {
+                file_type = get_language_from_filepath(name);
+            }
+            let file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
+            if (file_version === undefined) {
+                file_version = file_utils.get_default_version_for_filepath(name);
+            }
+
+            const file_definition: t_file = {
+                name: name,
+                is_include_file: is_include_file,
+                include_path: include_path,
+                logical_name: logical_name,
+                is_manual: is_manual,
+                file_type: file_type,
+                file_version: file_version
+            };
+
+            prj.add_file(file_definition);
+        });
+
+        if (prj_info.toplevel !== undefined) {
+            const toplevel_path = file_utils.get_absolute_path(file_utils.get_directory(base_path),
+                prj_info.toplevel);
+            if (file_utils.check_if_path_exist(toplevel_path)) {
+                prj.add_toplevel_path(toplevel_path);
+            }
+        }
+
+        return prj;
+    }
 
     // async create_project_from_quartus(prj_path: string): Promise<Project_manager> {
     //     const result = await get_project_info_from_quartus(this.get_config_global_config(), prj_path);
