@@ -151,7 +151,7 @@ export class Project_manager {
             console.log(config);
             console.log(jsonContent);
             console.log(emitter);
-            return new Project_manager("", emitter);
+            return new Project_manager(jsonContent.name, emitter);
     }
 
     ////////////////////////////////////////////////////////////////////////////

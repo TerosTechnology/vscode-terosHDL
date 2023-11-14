@@ -103,10 +103,10 @@ export class Multi_project_manager {
             const prj_saved = JSON.parse(file_content);
 
             for (const prj_info of prj_saved.project_list) {
-                if (prj_info.project_type === e_project_type.GENERIC) {
-                    this.add_project(await Project_manager.fromJson(this.get_config_global_config(), prj_info, emitter));
-                } else if (prj_info.project_type === e_project_type.QUARTUS) {
+                if (prj_info.project_type === e_project_type.QUARTUS) {
                     this.add_project(await QuartusProjectManager.fromJson(this.get_config_global_config(), prj_info, emitter));
+                } else {
+                    this.add_project(await Project_manager.fromJson(this.get_config_global_config(), prj_info, emitter));
                 }
             }
 
