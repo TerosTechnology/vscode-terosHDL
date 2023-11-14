@@ -56,11 +56,13 @@ export class Source_tree_element extends vscode.TreeItem {
             this.iconPath = get_icon("library");
         }
         else {
+            this.label = path_lib.basename(name);
+
             if (select_check === true) {
-                this.label = `${path_lib.basename(name)} (current)`;
+                this.iconPath = get_icon("file-open");
             }
             else {
-                this.label = path_lib.basename(name);
+                this.iconPath = get_icon("file");
             }
 
             if (is_manual === true) {
@@ -71,7 +73,6 @@ export class Source_tree_element extends vscode.TreeItem {
             }
 
             this.contextValue = "source";
-            this.iconPath = get_icon("file");
             this.command = {
                 title: 'Open file',
                 command: 'vscode.open',

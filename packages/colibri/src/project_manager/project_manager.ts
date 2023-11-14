@@ -111,7 +111,7 @@ export class Project_manager {
      * Get project type
      * @returns Project type
      */
-    public getProjectType(): e_project_type { 
+    public getProjectType(): e_project_type {
         return e_project_type.GENERIC;
     }
 
@@ -146,12 +146,26 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
-    static async fromJson(config: e_config, jsonContent: any, emitter: events.EventEmitter):
+    static async fromJson(_config: e_config, jsonContent: any, emitter: events.EventEmitter):
         Promise<Project_manager> {
-            console.log(config);
-            console.log(jsonContent);
-            console.log(emitter);
-            return new Project_manager(jsonContent.name, emitter);
+        const prj = new Project_manager(jsonContent.name, emitter);
+        // Files
+        jsonContent.files.forEach((file: any) => {
+            prj.add_file({
+                name: file.name, is_include_file: file.is_include_file,
+                include_path: file.include_path, logical_name: file.logical_name,
+                is_manual: file.is_manual, file_type: file.file_type,
+                file_version: file_utils.check_default_version_for_filepath(file.name, file.file_version)
+            });
+        });
+        // Toplevel
+        prj.add_toplevel_path(jsonContent.toplevel);
+        // Watchers
+        const watcher_list = jsonContent.watchers;
+        watcher_list.forEach((watcher: any) => {
+            prj.add_file_to_watcher(watcher);
+        });
+        return prj;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -488,7 +502,6 @@ export class Project_manager {
         return await this.tools_manager.get_test_list(this.get_project_definition(n_config_manager));
     }
 }
-
 
 
 

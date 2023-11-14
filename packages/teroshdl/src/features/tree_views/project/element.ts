@@ -53,14 +53,13 @@ export class Project extends vscode.TreeItem {
             title: "Select project",
             arguments: [this],
         };
-        if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
-            this.iconPath = get_icon("intel");
+        if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS && isOpen) {
+            this.iconPath = get_icon("folder-active");
         }
-        else {
+        else if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
             this.iconPath = get_icon("folder");
         }
-
-        if (isOpen) {
+        else if (isOpen) {
             this.iconPath = get_icon("folder-active");
         }
         else {
@@ -127,10 +126,18 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             let label = prj.get_name();
             let isOpen = false;
             if (selected_project_name === prj_name) {
-                label = `${prj_name} (current)`;
                 isOpen = true;
             }
-            prj_view.push(new Project(prj.getProjectType(), prj.get_name(), label, isOpen));
+
+            const prjType = prj.getProjectType();
+            if (prjType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
+                label = `${prj_name} [Quartus]`;
+            }
+            else {
+                label = `${prj_name} [TerosHDL]`;
+            }
+
+            prj_view.push(new Project(prjType, prj.get_name(), label, isOpen));
         });
         this.data = prj_view;
         this._onDidChangeTreeData.fire();
