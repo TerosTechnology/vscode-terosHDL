@@ -50,5 +50,5 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     const teroshdl = new Teroshdl(context, global_logger);
-    teroshdl.init_teroshdl();
+    await teroshdl.init_teroshdl();
 }

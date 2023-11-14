@@ -17,14 +17,13 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_file, t_action_result } from "./common";
+import { e_project_type, t_action_result } from "./common";
 import { Config_manager } from "../config/config_manager";
 import { Project_manager } from "./project_manager";
 import { e_config } from "../config/config_declaration";
 import * as file_utils from "../utils/file_utils";
-import { get_language_from_filepath } from "../utils/file_utils";
+import { QuartusProjectManager } from "./tool/quartus/quartusProjectManager";
 
-import * as yaml from "js-yaml";
 import * as events from "events";
 
 class ProjectNotFoundError extends Error {
@@ -46,14 +45,10 @@ export class Multi_project_manager {
     private selected_project: Project_manager | undefined = undefined;
     private global_config: Config_manager;
     private sync_file_path = "";
-    private emitter: events.EventEmitter | undefined = undefined;
 
-    constructor(global_config_sync_path: string, sync_file_path = "",
-        emitter: events.EventEmitter | undefined) {
-
+    constructor(global_config_sync_path: string, sync_file_path = "") {
         this.global_config = new Config_manager(global_config_sync_path);
         this.sync_file_path = sync_file_path;
-        this.emitter = emitter;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -102,33 +97,18 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Load / Save in a file
     ////////////////////////////////////////////////////////////////////////////
-    public load(): void {
+    public async load(emitter: events.EventEmitter): Promise<void> {
         try {
             const file_content = file_utils.read_file_sync(this.sync_file_path);
             const prj_saved = JSON.parse(file_content);
 
-            const prj_list = prj_saved.project_list;
-            prj_list.forEach((prj_info: any) => {
-                const prj = this.initialize_project(prj_info.name);
-                // Files
-                prj_info.files.forEach((file: any) => {
-                    prj.add_file({
-                        name: file.name, is_include_file: file.is_include_file,
-                        include_path: file.include_path, logical_name: file.logical_name,
-                        is_manual: file.is_manual, file_type: file.file_type,
-                        file_version: file_utils.check_default_version_for_filepath(file.name, file.file_version)
-                    });
-                });
-                // Hooks
-                // Toplevel
-                prj.add_toplevel_path(prj_info.toplevel);
-                // Tool options
-                // Watchers
-                const watcher_list = prj_info.watchers;
-                watcher_list.forEach((watcher: any) => {
-                    prj.add_file_to_watcher(watcher);
-                });
-            });
+            for (const prj_info of prj_saved.project_list) {
+                if (prj_info.project_type === e_project_type.GENERIC) {
+                    this.add_project(await Project_manager.fromJson(this.get_config_global_config(), prj_info, emitter));
+                } else if (prj_info.project_type === e_project_type.QUARTUS) {
+                    this.add_project(await QuartusProjectManager.fromJson(this.get_config_global_config(), prj_info, emitter));
+                }
+            }
 
             try {
                 this.selected_project = this.get_project_by_name(prj_saved.selected_project);
@@ -249,91 +229,6 @@ export class Multi_project_manager {
         if (!(name && /^[a-zA-Z0-9_-]{1,128}$/.test(name))) {
             throw new ProjectOperationError("Provided name is invalid or has more than 128 characters");
         }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Deprecated
-    ////////////////////////////////////////////////////////////////////////////
-    public initialize_project(prj_name: string): Project_manager {
-        const prj = new Project_manager(prj_name, this.emitter);
-        this.add_project(prj);
-        return prj;
-    }
-
-    public create_project(prj_info: any, base_path: string): Project_manager {
-        const prj = this.initialize_project(prj_info.name);
-
-        // Add files
-        const file_list = prj_info.files;
-        file_list.forEach((file: any) => {
-            //Relative path to absolute
-            const name = file_utils.get_absolute_path(file_utils.get_directory(base_path), file.name);
-
-            let is_include_file = false;
-            if (file.is_include_file !== undefined) {
-                is_include_file = file.is_include_file;
-            }
-            let include_path = "";
-            if (file.include_path !== undefined) {
-                include_path = file.include_path;
-            }
-            let logical_name = "";
-            if (file.logical_name !== undefined) {
-                logical_name = file.logical_name;
-            }
-            let is_manual = true;
-            if (file.is_manual !== undefined) {
-                is_manual = file.is_manual;
-            }
-            let file_type = file.file_type;
-            if (file_type === undefined) {
-                file_type = get_language_from_filepath(name);
-            }
-            let file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
-            if (file_version === undefined) {
-                file_version = file_utils.get_default_version_for_filepath(name);
-            }
-
-            const file_definition: t_file = {
-                name: name,
-                is_include_file: is_include_file,
-                include_path: include_path,
-                logical_name: logical_name,
-                is_manual: is_manual,
-                file_type: file_type,
-                file_version: file_version
-            };
-
-            prj.add_file(file_definition);
-        });
-
-        if (prj_info.toplevel !== undefined) {
-            const toplevel_path = file_utils.get_absolute_path(file_utils.get_directory(base_path),
-                prj_info.toplevel);
-            if (file_utils.check_if_path_exist(toplevel_path)) {
-                prj.add_toplevel_path(toplevel_path);
-            }
-        }
-
-        return prj;
-    }
-
-    // async create_project_from_quartus(prj_path: string): Promise<Project_manager> {
-    //     const result = await get_project_info_from_quartus(this.get_config_global_config(), prj_path);
-    //     const prj = this.initialize_project(result.prj_name);
-    //     await prj.add_file_from_quartus(this.get_config_global_config(), prj_path, true);
-    //     prj.add_toplevel_path_from_entity(result.prj_top_entity);
-    //     return prj;
-    // }
-
-    public create_project_from_json_edam(filepath: string): Project_manager {
-        const prj_info = JSON.parse(file_utils.read_file_sync(filepath));
-        return this.create_project(prj_info, filepath);
-    }
-
-    public create_project_from_yaml_edam(filepath: string): Project_manager {
-        const prj_info = yaml.load(file_utils.read_file_sync(filepath));
-        return this.create_project(prj_info, filepath);
     }
 
     ////////////////////////////////////////////////////////////////////////////

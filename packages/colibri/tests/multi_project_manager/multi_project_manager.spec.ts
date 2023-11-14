@@ -34,7 +34,7 @@ describe('MultiProjectManager', () => {
     let multiProjectManager: Multi_project_manager;
 
     beforeEach(() => {
-        multiProjectManager = new Multi_project_manager("", sync_file_path, undefined);
+        multiProjectManager = new Multi_project_manager("", sync_file_path);
     });
 
     function create_project_with_name_and_add(prj_name: string): Project_manager {
