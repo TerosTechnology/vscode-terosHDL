@@ -26,6 +26,8 @@ import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
 import { Logger } from "../../../logger";
 import { t_message_level, showMessage } from "../../../utils/utils";
+import { read_file_sync } from "teroshdl2/out/utils/file_utils";
+import * as yaml from "js-yaml";
 
 export class Project_manager {
     private tree: element.ProjectProvider;
@@ -95,7 +97,7 @@ export class Project_manager {
             const project_name = await utils.get_from_input_box("Set the project name", "Project name");
             if (project_name !== undefined) {
                 try {
-                    this.project_manager.initialize_project(project_name);
+                    this.project_manager.add_project(new teroshdl2.project_manager.project_manager.Project_manager(project_name, this.emitter));
                 } catch (error) {
                 }
             }
@@ -104,17 +106,17 @@ export class Project_manager {
         else if (picker_value === PROJECT_ADD_TYPES[1]) {
             const path_list = await utils.get_from_open_dialog("Load project", false, true, true,
                 "Select JSON EDAM files", { 'JSON files (*.json, *.JSON)': ['json', 'JSON'] });
-            path_list.forEach(path => {
-                this.create_project_from_json(path);
-            });
+            for (const path of path_list) {
+                await this.create_project_from_json(path);
+            };
         }
         // Load from YAML EDAM
         else if (picker_value === PROJECT_ADD_TYPES[2]) {
             const path_list = await utils.get_from_open_dialog("Load project", false, true, true,
                 "Select YAML EDAM files", { 'YAML files (*.yaml, *.yml)': ['yaml', 'yml'] });
-            path_list.forEach(path => {
-                this.create_project_from_yaml(path);
-            });
+            for (const path of path_list) {
+                await this.create_project_from_yaml(path);
+            };
         }
         // Load from VUnit
         else if (picker_value === PROJECT_ADD_TYPES[3]) {
@@ -122,7 +124,8 @@ export class Project_manager {
             const project_name = await utils.get_from_input_box("Set the project name", "Project name");
             if (project_name !== undefined) {
                 try {
-                    const prj = this.project_manager.initialize_project(project_name);
+                    const prj = new teroshdl2.project_manager.project_manager.Project_manager(project_name, this.emitter);
+                    this.project_manager.add_project(prj);
                     await utils.add_sources_from_vunit(prj, this.project_manager.get_config_global_config(), true);
                 } catch (error) {
                 }
@@ -147,7 +150,7 @@ export class Project_manager {
 
                 const project_path = path_lib.join(this.context.extensionUri.fsPath, "resources",
                     "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
-                this.create_project_from_yaml(project_path);
+                await this.create_project_from_yaml(project_path);
             }
         }
         // Load from Quartus
@@ -155,7 +158,7 @@ export class Project_manager {
             const path_list = await utils.get_from_open_dialog("Load Quartus project", false, true, false,
                 "Select Quartus project", { 'Quartus project (*.qsf)': ['qsf'] });
             for (const path of path_list) {
-                this.create_project_from_quartus(path);
+                await this.create_project_from_quartus(path);
             }
         }
         // Create new Quartus project
@@ -228,17 +231,23 @@ export class Project_manager {
         }
     }
 
-    create_project_from_json(prj_path: string) {
+    async create_project_from_json(prj_path: string) {
         try {
-            this.project_manager.create_project_from_json_edam(prj_path);
+            const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
+                this.project_manager.get_config_global_config(),
+                JSON.parse(read_file_sync(prj_path)), this.emitter);
+            this.project_manager.add_project(prj);
             this.refresh();
         } catch (error) {
         }
     }
 
-    create_project_from_yaml(prj_path: string) {
+    async create_project_from_yaml(prj_path: string) {
         try {
-            this.project_manager.create_project_from_yaml_edam(prj_path);
+            const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
+                this.project_manager.get_config_global_config(),
+                yaml.load(read_file_sync(prj_path)), this.emitter);
+            this.project_manager.add_project(prj);
             this.refresh();
         } catch (error) {
         }

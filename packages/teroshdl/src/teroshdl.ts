@@ -56,13 +56,14 @@ export class Teroshdl {
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
 
         this.manager = new teroshdl2.project_manager.multi_project_manager.Multi_project_manager(
-            file_config_path, file_prj_path, this.emitter);
-        this.manager.load();
+            file_config_path, file_prj_path);
         this.context = context;
         this.global_logger = global_logger;
     }
 
-    public init_teroshdl() {
+    public async init_teroshdl() {
+        await this.init_multi_project_manager();
+
         this.init_language_provider();
         this.global_logger.debug("activated language provider");
 
@@ -102,6 +103,10 @@ export class Teroshdl {
 
         this.init_comander();
         this.global_logger.debug("activated comander");
+    }
+
+    private async init_multi_project_manager() {
+        await this.manager.load(this.emitter);
     }
 
     private init_language_provider() {
