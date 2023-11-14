@@ -39,10 +39,13 @@ export class QuartusProjectManager extends Project_manager {
 
     static async fromJson(config: e_config, jsonContent: any, emitter: events.EventEmitter):
         Promise<QuartusProjectManager> {
-            console.log(config);
-            console.log(jsonContent);
-            console.log(emitter);
-            return new QuartusProjectManager("", "", emitter);
+        try {
+            const projectPath = jsonContent.project_disk_path;
+            return this.fromExistingQuartusProject(config, projectPath, emitter);
+        }
+        catch (error) {
+            throw new QuartusExecutionError("Error in Quartus execution");
+        }
     }
 
     /**
