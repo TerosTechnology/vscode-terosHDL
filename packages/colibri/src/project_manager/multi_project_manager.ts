@@ -98,29 +98,47 @@ export class Multi_project_manager {
     // Load / Save in a file
     ////////////////////////////////////////////////////////////////////////////
     public async load(emitter: events.EventEmitter): Promise<void> {
+        let failed = false;
+
+        // Initialize
+        this.project_manager_list = [];
+        this.selected_project = undefined;
+
         try {
             const file_content = file_utils.read_file_sync(this.sync_file_path);
             const prj_saved = JSON.parse(file_content);
 
             for (const prj_info of prj_saved.project_list) {
-                if (prj_info.project_type === e_project_type.QUARTUS) {
-                    this.add_project(await QuartusProjectManager.fromJson(this.get_config_global_config(), prj_info, emitter));
-                } else {
-                    this.add_project(await Project_manager.fromJson(this.get_config_global_config(), prj_info, emitter));
+                try {
+                    if (prj_info.project_type === e_project_type.QUARTUS) {
+                        this.add_project(await QuartusProjectManager.fromJson(this.get_config_global_config(), prj_info, emitter));
+                    } else {
+                        this.add_project(await Project_manager.fromJson(this.get_config_global_config(), prj_info, emitter));
+                    }
+                } catch (error) {
+                    failed = true;
                 }
             }
 
-            try {
-                this.selected_project = this.get_project_by_name(prj_saved.selected_project);
-            } catch (error) {
-                this.selected_project = undefined;
+            if (prj_saved.selected_project) {
+                try {
+                    this.selected_project = this.get_project_by_name(prj_saved.selected_project);
+                } catch (error) {
+                    this.selected_project = undefined;
+                    failed = true;
+                }
             }
 
         }
-        // eslint-disable-next-line no-empty
+
         catch (error) {
-            // TODO Log the error
+            failed = true;
         }
+
+        if (failed) {
+            throw new ProjectOperationError(`There have been errors loading project list from disk.`);
+        }
+
     }
 
     public save(): void {

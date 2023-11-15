@@ -16,9 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
+import { e_project_type } from '../../src/project_manager/common';
 import { Multi_project_manager } from '../../src/project_manager/multi_project_manager';
 import { Project_manager } from '../../src/project_manager/project_manager';
-import { save_file_sync } from '../../src/utils/file_utils';
+import { QuartusProjectManager } from '../../src/project_manager/tool/quartus/quartusProjectManager';
+import { save_file_sync, read_file_sync } from '../../src/utils/file_utils';
 
 const sync_file_path = "/tmp/sync_file_path.json";
 
@@ -28,7 +30,31 @@ jest.mock('../../src/utils/file_utils', () => ({
         expect(file_path).toBe(sync_file_path);
         return JSON.parse(content);
     }),
+    read_file_sync: jest.fn((file_path: string): string => {
+        expect(file_path).toBe("");
+        return file_path;
+    }),
 }));
+
+jest.mock('../../src/project_manager/project_manager', () => {
+    const originalModule = jest.requireActual('../../src/project_manager/project_manager');
+
+    originalModule.Project_manager.fromJson = jest.fn(async (_config, jsonContent, emitter) => {
+        return new originalModule.Project_manager(jsonContent.name, emitter);
+    });
+
+    return originalModule;
+});
+
+jest.mock('../../src/project_manager/tool/quartus/quartusProjectManager', () => {
+    const originalModule = jest.requireActual('../../src/project_manager/tool/quartus/quartusProjectManager');
+
+    originalModule.QuartusProjectManager.fromJson = jest.fn(async (_config, jsonContent, emitter) => {
+        return new originalModule.QuartusProjectManager(jsonContent.name, emitter);
+    });
+
+    return originalModule;
+});
 
 describe('MultiProjectManager', () => {
     let multiProjectManager: Multi_project_manager;
@@ -358,7 +384,7 @@ describe('MultiProjectManager', () => {
 
             multiProjectManager.set_selected_project(prj);
 
-            expect(multiProjectManager.get_selected_project()).toBe(prj)
+            expect(multiProjectManager.get_selected_project()).toBe(prj);
         });
 
         test('should throw an error when trying to select a non-existing project', () => {
@@ -551,6 +577,251 @@ describe('MultiProjectManager', () => {
 
         });
 
+    });
+
+
+    describe('load', () => {
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should load correctly when the project list is empty', async () => {
+            (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                selected_project: "",
+                project_list: [],
+            }));
+
+            await multiProjectManager.load(undefined as any);
+
+            expect(() => {
+                multiProjectManager.get_selected_project();
+            }).toThrow();
+            expect(multiProjectManager.get_projects().length).toBe(0);
+
+        });
+
+        for (let num_projects = 1; num_projects <= 15; num_projects++) {
+            test(`should handle load with a selected project and a project list of size ${num_projects}`, async () => {
+                (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                    selected_project: "Project1",
+                    project_list: Array.from({ length: num_projects }, (_, i) => ({ name: `Project${i + 1}` })),
+                }));
+
+                await multiProjectManager.load(undefined as any);
+
+                expect(multiProjectManager.get_selected_project().get_name()).toBe("Project1");
+                for (let i = 1; i <= num_projects; i++) {
+                    expect(multiProjectManager.get_projects()[i - 1].get_name()).toBe(`Project${i}`);
+                }
+
+            });
+        }
+
+        for (let num_projects = 1; num_projects <= 15; num_projects++) {
+            test(`should handle load with ${num_projects} projects and none selected`, async () => {
+                (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                    selected_project: "",
+                    project_list: Array.from({ length: num_projects }, (_, i) => ({ name: `Project${i + 1}` })),
+                }));
+
+                await multiProjectManager.load(undefined as any);
+
+                expect(() => {
+                    multiProjectManager.get_selected_project();
+                }).toThrow();
+                for (let i = 1; i <= num_projects; i++) {
+                    expect(multiProjectManager.get_projects()[i - 1].get_name()).toBe(`Project${i}`);
+                }
+
+            });
+        }
+
+        test('should fail if selected project does not exist', async () => {
+            (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                selected_project: "Project",
+                project_list: [],
+            }));
+
+            await expect(multiProjectManager.load(undefined as any)).rejects.toThrow();
+
+            expect(() => {
+                multiProjectManager.get_selected_project();
+            }).toThrow();
+            expect(multiProjectManager.get_projects().length).toBe(0);
+
+        });
+
+        describe("should handle load incorrect project and valid projects", () => {
+
+            test("with a valid project selected", async () => {
+                (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                    selected_project: "Project3",
+                    project_list: [{ name: "Project1" }, { no_name: "Project2" }, { name: "Project3" }, { no_name: "Project4" }],
+                }));
+
+                await expect(multiProjectManager.load(undefined as any)).rejects.toThrow();
+
+                expect(multiProjectManager.get_selected_project().get_name()).toBe("Project3");
+                expect(multiProjectManager.get_projects().length).toBe(2);
+                expect(multiProjectManager.get_project_by_name("Project1")).toBeDefined();
+                expect(() => {
+                    multiProjectManager.get_project_by_name("Project2");
+                }).toThrow();
+                expect(multiProjectManager.get_project_by_name("Project3")).toBeDefined();
+                expect(() => {
+                    multiProjectManager.get_project_by_name("Project4");
+                }).toThrow();
+
+            });
+
+            test("with a non valid project selected", async () => {
+                (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                    selected_project: "Project4",
+                    project_list: [{ name: "Project1" }, { no_name: "Project2" }, { name: "Project3" }, { no_name: "Project4" }],
+                }));
+
+                await expect(multiProjectManager.load(undefined as any)).rejects.toThrow();
+
+                expect(() => {
+                    multiProjectManager.get_selected_project();
+                }).toThrow();
+
+                expect(multiProjectManager.get_projects().length).toBe(2);
+                expect(multiProjectManager.get_project_by_name("Project1")).toBeDefined();
+                expect(() => {
+                    multiProjectManager.get_project_by_name("Project2");
+                }).toThrow();
+                expect(multiProjectManager.get_project_by_name("Project3")).toBeDefined();
+                expect(() => {
+                    multiProjectManager.get_project_by_name("Project4");
+                }).toThrow();
+
+            });
+        });
+
+        test("should report failure if selected project has invalid type", async () => {
+            (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                selected_project: 17,
+                project_list: [{ name: "Project1" }, { name: "Project2" }],
+            }));
+
+            await expect(multiProjectManager.load(undefined as any)).rejects.toThrow();
+
+            expect(() => {
+                multiProjectManager.get_selected_project();
+            }).toThrow();
+            expect(multiProjectManager.get_projects().length).toBe(2);
+            expect(multiProjectManager.get_project_by_name("Project1")).toBeDefined();
+            expect(multiProjectManager.get_project_by_name("Project2")).toBeDefined();
+
+        });
+
+        test("should report failure if project_list has invalid type", async () => {
+            (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                selected_project: "Project1",
+                project_list: { name: "Project1" },
+            }));
+
+            await expect(multiProjectManager.load(undefined as any)).rejects.toThrow();
+
+            expect(() => {
+                multiProjectManager.get_selected_project();
+            }).toThrow();
+            expect(multiProjectManager.get_projects().length).toBe(0);
+
+        });
+
+        test("should fail if there are projects with duplicated names, only processing the fist one", async () => {
+            (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                selected_project: "Project1",
+                project_list: [{ name: "Project1" }, { name: "Project2" }, { name: "Project1" }],
+            }));
+
+            await expect(multiProjectManager.load(undefined as any)).rejects.toThrow();
+
+            expect(multiProjectManager.get_selected_project().get_name()).toBe("Project1");
+            expect(multiProjectManager.get_projects().length).toBe(2);
+            expect(multiProjectManager.get_project_by_name("Project1")).toBeDefined();
+            expect(multiProjectManager.get_project_by_name("Project2")).toBeDefined();
+
+        });
+
+        describe("should delete previous data", () => {
+
+            test("when info to load is empty", async () => {
+                (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                    selected_project: "",
+                    project_list: [],
+                }));
+                create_project_with_name_and_add("Project1");
+
+                await multiProjectManager.load(undefined as any);
+
+                expect(() => {
+                    multiProjectManager.get_selected_project();
+                }).toThrow();
+                expect(multiProjectManager.get_projects().length).toBe(0);
+
+            });
+
+            test("when load is correct", async () => {
+                (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                    selected_project: "Project2",
+                    project_list: [{ name: "Project2" }],
+                }));
+                create_project_with_name_and_add("Project1");
+
+                await multiProjectManager.load(undefined as any);
+
+                expect(multiProjectManager.get_selected_project().get_name()).toBe("Project2");
+                expect(multiProjectManager.get_projects().length).toBe(1);
+                expect(multiProjectManager.get_project_by_name("Project2")).toBeDefined();
+                expect(() => {
+                    multiProjectManager.get_project_by_name("Project1");
+                }).toThrow();
+
+            });
+
+            test("when load is invalid", async () => {
+                (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                    selected_project: "Project2",
+                    project_list: [{ no_name: "Project2" }, { name: "Project3" }],
+                }));
+                create_project_with_name_and_add("Project1");
+
+                await expect(multiProjectManager.load(undefined as any)).rejects.toThrow();
+
+                expect(() => {
+                    multiProjectManager.get_selected_project();
+                }).toThrow();
+                expect(multiProjectManager.get_projects().length).toBe(1);
+                expect(multiProjectManager.get_project_by_name("Project3")).toBeDefined();
+                expect(() => {
+                    multiProjectManager.get_project_by_name("Project1");
+                }).toThrow();
+                expect(() => {
+                    multiProjectManager.get_project_by_name("Project2");
+                }).toThrow();
+            });
+
+        });
+
+        test("should call fromJSON factory of the proper class", async () => {
+            (<jest.Mock>read_file_sync).mockReturnValue(JSON.stringify({
+                selected_project: "Project1",
+                project_list: [{ name: "Project1", project_type: e_project_type.QUARTUS.valueOf() }, { name: "Project2", project_type: e_project_type.GENERIC.valueOf() }],
+            }));
+
+            await multiProjectManager.load(undefined as any);
+
+            expect(QuartusProjectManager.fromJson).toHaveBeenCalledTimes(1);
+            expect(Project_manager.fromJson).toHaveBeenCalledTimes(1);
+            expect(multiProjectManager.get_selected_project().get_name()).toBe("Project1");
+            expect(multiProjectManager.get_projects().length).toBe(2);
+            expect(multiProjectManager.get_project_by_name("Project1")).toBeInstanceOf(QuartusProjectManager);
+            expect(multiProjectManager.get_project_by_name("Project2")).toBeInstanceOf(Project_manager);
+        });
 
     });
 

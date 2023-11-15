@@ -106,7 +106,11 @@ export class Teroshdl {
     }
 
     private async init_multi_project_manager() {
-        await this.manager.load(this.emitter);
+        try {
+            await this.manager.load(this.emitter);
+        } catch (error) {
+            this.global_logger.warn("There have been errors loading project list from disk.");
+        }
     }
 
     private init_language_provider() {
