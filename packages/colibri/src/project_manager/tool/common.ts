@@ -20,16 +20,187 @@
 import { e_config } from "../../config/config_declaration";
 import { t_file } from "../common";
 
-export interface TestItem {
-    test_type: string | undefined,
-    location: {
-        file_name: string;
-        length: number;
-        offset: number;
-    } | undefined;
-    name: string;
+////////////////////////////////////////////////////////////////////////////////
+// Quartus
+////////////////////////////////////////////////////////////////////////////////
+export enum e_taskType {
+    // Quartus tasks
+    QUARTUS_COMPILEDESIGN = "Compile Design",
+    QUARTUS_IPGENERATION = "IP Generation",
+    QUARTUS_ANALYSISSYNTHESIS = "Analysis & Synthesis",
+    QUARTUS_ANALYSISELABORATION = "Analysis & Elaboration",
+    QUARTUS_SYNTHESIS = "Synthesis",
+    QUARTUS_EARLYTIMINGANALYSIS = "Early Timing Analysis",
+    QUARTUS_FITTER = "Fitter",
+    QUARTUS_FITTERIMPLEMENT = "Fitter (Implement)",
+    QUARTUS_PLAN = "Plan",
+    QUARTUS_PLACE = "Place",
+    QUARTUS_ROUTE = "Route",
+    QUARTUS_FITTERFINALIZE = "Fitter (Finalize)",
+    QUARTUS_TIMING = "Timing Analysis (Signoff)",
+    // Common
 }
 
+export const ListOfTasksRun: Record<e_taskType, e_taskType[]> = {
+    [e_taskType.QUARTUS_COMPILEDESIGN]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_FITTER,
+        e_taskType.QUARTUS_FITTERIMPLEMENT,
+        e_taskType.QUARTUS_PLAN,
+        e_taskType.QUARTUS_PLACE,
+        e_taskType.QUARTUS_ROUTE,
+        e_taskType.QUARTUS_FITTERFINALIZE,
+    ],
+    [e_taskType.QUARTUS_IPGENERATION]: [
+        e_taskType.QUARTUS_IPGENERATION
+    ],
+    [e_taskType.QUARTUS_ANALYSISSYNTHESIS]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS
+    ],
+    [e_taskType.QUARTUS_ANALYSISELABORATION]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+    ],
+    [e_taskType.QUARTUS_SYNTHESIS]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+    ],
+    [e_taskType.QUARTUS_EARLYTIMINGANALYSIS]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_EARLYTIMINGANALYSIS,
+    ],
+    [e_taskType.QUARTUS_FITTER]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_FITTER,
+        e_taskType.QUARTUS_FITTERIMPLEMENT,
+        e_taskType.QUARTUS_PLAN,
+        e_taskType.QUARTUS_PLACE,
+        e_taskType.QUARTUS_ROUTE,
+        e_taskType.QUARTUS_FITTERFINALIZE,
+    ],
+    [e_taskType.QUARTUS_FITTERIMPLEMENT]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_FITTERIMPLEMENT,
+        e_taskType.QUARTUS_PLAN,
+        e_taskType.QUARTUS_PLACE,
+        e_taskType.QUARTUS_ROUTE,
+    ],
+
+    [e_taskType.QUARTUS_PLAN]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_PLAN,
+    ],
+    [e_taskType.QUARTUS_PLACE]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_PLAN,
+        e_taskType.QUARTUS_PLACE,
+    ],
+    [e_taskType.QUARTUS_ROUTE]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_FITTERIMPLEMENT,
+        e_taskType.QUARTUS_PLAN,
+        e_taskType.QUARTUS_PLACE,
+        e_taskType.QUARTUS_ROUTE,
+    ],
+
+    [e_taskType.QUARTUS_FITTERFINALIZE]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_FITTER,
+        e_taskType.QUARTUS_FITTERIMPLEMENT,
+        e_taskType.QUARTUS_PLAN,
+        e_taskType.QUARTUS_PLACE,
+        e_taskType.QUARTUS_ROUTE,
+        e_taskType.QUARTUS_FITTERFINALIZE,
+    ],
+    [e_taskType.QUARTUS_TIMING]: [
+        e_taskType.QUARTUS_IPGENERATION,
+        e_taskType.QUARTUS_ANALYSISSYNTHESIS,
+        e_taskType.QUARTUS_ANALYSISELABORATION,
+        e_taskType.QUARTUS_SYNTHESIS,
+        e_taskType.QUARTUS_FITTER,
+        e_taskType.QUARTUS_FITTERIMPLEMENT,
+        e_taskType.QUARTUS_PLAN,
+        e_taskType.QUARTUS_PLACE,
+        e_taskType.QUARTUS_ROUTE,
+        e_taskType.QUARTUS_FITTERFINALIZE,
+        e_taskType.QUARTUS_TIMING,
+    ],
+};
+
+export enum e_iconType {
+    RUN = "run",
+    TIME = "time",
+    WAVEFORM = "waveform",
+    CHIP = "chip",
+}
+
+export enum e_reportType {
+    REPORT = "Report",
+    TIMINGANALYZER = "Timing Analyzer",
+    TECHNOLOGYMAPVIEWER = "Technology Map Viewer",
+    SNAPSHOPVIEWER = "Snapshop Viewer",
+}
+
+export enum e_taskState {
+    IDLE = "Idle",
+    RUNNING = "Running",
+    FINISHED = "Finished",
+    FAILED = "Failed",
+}
+
+/** Task execution type */
+export enum e_taskExecutionType {
+    /** Run a complex command. Execute the command in the back-end */
+    COMPLEXCOMMAND = "COMPLEXCOMMAND",
+    /** Execute the command in the front-end. */
+    SIMPLECOMMAND = "SIMPLECOMMAND",
+    /** Only display information. Not execution. */
+    DISPLAYGROUP = "DISPLAYGROUP",
+}
+
+export type t_taskRep = {
+    "name": e_taskType,
+    "label": string,
+    "executionType": e_taskExecutionType,
+    "reports"?: e_reportType[],
+    "children"?: t_taskRep[],
+    "icon"?: e_iconType,
+    "duration"?: number | undefined,
+    "state": e_taskState,
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Common
+////////////////////////////////////////////////////////////////////////////////
 /** Character location */
 export type t_location = {
     filename: string;
@@ -56,7 +227,8 @@ export enum e_artifact_type {
     SUMMARY = "summary",
     OTHER = "other",
     WAVEFORM = "waveform",
-    BUILD = "folder"
+    BUILD = "folder",
+    COMMAND = "command",
 }
 
 /** File type */
@@ -68,6 +240,7 @@ export enum e_element_type {
     FILE = "file",
     FOLDER = "folder",
     FST = "fst",
+    NONE = "none",
 }
 
 /** Test artifact */

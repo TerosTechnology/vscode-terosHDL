@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // Copyright 2023
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
 // Ismael Perez Rojo [ismaelprojo@gmail.com]
@@ -29,7 +30,7 @@ import * as  manager_parameter from "./list_manager/parameter";
 import * as  manager_toplevel_path from "./list_manager/toplevel_path";
 import * as  manager_dependency from "./dependency/dependency";
 import { Tool_manager } from "./tool/tools_manager";
-import { t_test_declaration, t_test_result, e_clean_step } from "./tool/common";
+import { t_test_declaration, t_test_result, e_clean_step, t_loader_action_result, e_taskType, e_taskState, t_test_artifact, e_reportType } from "./tool/common";
 import { t_project_definition } from "./project_definition";
 import * as file_utils from "../utils/file_utils";
 import * as hdl_utils from "../utils/hdl_utils";
@@ -45,6 +46,10 @@ import { get_files_from_csv } from "./prj_loaders/csv_loader";
 import { get_files_from_vivado } from "./prj_loaders/vivado_loader";
 import { get_files_from_vunit } from "./prj_loaders/vunit_loader";
 import { getFilesFromProject, QuartusExecutionError } from "./tool/quartus/utils";
+import { t_taskRep } from "./tool/common";
+import { ChildProcess } from "child_process";
+import { p_result } from "../process/common";
+import { TaskStateManager } from "./tool/taskState";
 
 export class Project_manager {
     /**  Name of the project */
@@ -68,6 +73,7 @@ export class Project_manager {
     private emitter: events.EventEmitter | undefined = undefined;
     /** Linter */
     private linter = new Linter();
+    public taskStateManager: TaskStateManager = new TaskStateManager([]);
 
     constructor(name: string, emitter: events.EventEmitter | undefined = undefined) {
         this.name = name;
@@ -501,8 +507,34 @@ export class Project_manager {
 
         return await this.tools_manager.get_test_list(this.get_project_definition(n_config_manager));
     }
+
+    public getBuildSteps(): t_taskRep[] {
+        return [];
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+    public runTask(_taskType: e_taskType, _callback: (result: p_result) => void): ChildProcess {
+        return {} as ChildProcess;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    public async cleallAllProject(): Promise<t_loader_action_result> {
+        return {
+            successful: false,
+            msg: "Not implemented"
+        };
+    }
+
+    public getTaskState(nameTask: e_taskType): e_taskState | null {
+        return this.taskStateManager.getTaskState(nameTask);
+    }
+
+    setTaskManager(taskManager: TaskStateManager) {
+        this.taskStateManager = taskManager;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getArtifact(_taskType: e_taskType, _reportType: e_reportType) : t_test_artifact{
+        return {} as t_test_artifact;
+    }
 }
-
-
-
-

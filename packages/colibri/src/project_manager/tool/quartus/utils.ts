@@ -1,26 +1,10 @@
-// Copyright 2023
-// Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
-//
-// This file is part of TerosHDL
-//
-// Colibri is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Colibri is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
+// This code only can be used for Quartus boards
 
 import { e_config } from "../../../config/config_declaration";
 import { p_result } from "../../../process/common";
 import { t_board_list, t_loader_action_result } from "../common";
 import * as process_utils from "../../../process/utils";
-import * as process from "../../../process/process";
+import * as process_teros from "../../../process/process";
 import * as file_utils from "../../../utils/file_utils";
 import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import * as path_lib from "path";
@@ -28,6 +12,7 @@ import { get_files_from_csv } from "../../prj_loaders/csv_loader";
 import { t_file } from "../../common";
 import { LANGUAGE } from "../../../common/general";
 import * as nunjucks from 'nunjucks';
+import * as process from 'process';
 
 export const LANGUAGE_MAP: Record<LANGUAGE, string> = {
     [LANGUAGE.VHDL]: "VHDL_FILE",
@@ -57,6 +42,19 @@ export class QuartusExecutionError extends Error {
 }
 
 /**
+ * Get Quartus binary directory.
+ * @returns Quartus binary directory.
+**/
+export function getQuartusPath(): string {
+    const QSYS_ROOTDIR = process.env.QSYS_ROOTDIR;
+    if (QSYS_ROOTDIR === undefined) {
+        return "";
+    }
+    const quartusRootDir = path_lib.resolve(path_lib.join(QSYS_ROOTDIR, "..", "..", "quartus", "bin"));
+    return quartusRootDir;
+}
+
+/**
  * Execute Quartus tcl script.
  * @param config Configuration.
  * @param tcl_file Tcl file path.
@@ -64,23 +62,16 @@ export class QuartusExecutionError extends Error {
  * @param cwd Current working directory.
  * @returns Result of execution.
 **/
-async function executeQuartusTcl(config: e_config, tcl_file: string, args: string, cwd: string):
+async function executeQuartusTcl(_config: e_config, tcl_file: string, args: string, cwd: string):
     Promise<{ result: p_result, csv_content: string }> {
 
-    // Get Vivado binary path
-    let quartus_bin = config.tools.quartus.installation_path;
-    if (quartus_bin === "") {
-        quartus_bin = "quartus_sh";
-    }
-    else {
-        quartus_bin = path_lib.join(quartus_bin, "quartus_sh");
-    }
+    const quartus_bin = path_lib.join(getQuartusPath(), "quartus_sh");
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");
 
     const cmd = `${quartus_bin} -t ${tcl_file} ${csv_file} ${args}`;
-    const cmd_result = await (new process.Process(undefined)).exec_wait(cmd, { cwd: cwd });
+    const cmd_result = await (new process_teros.Process(undefined)).exec_wait(cmd, { cwd: cwd });
 
     const csv_content = await file_utils.read_file_sync(csv_file);
 
@@ -321,12 +312,10 @@ export async function createProject(config: e_config, projectDirectory: string, 
  * @param config Configuration.
  * @param projectPath Path to Quartus project.
 **/
-export async function cleanProject(config: e_config, projectPath: string): Promise<void> {
+export async function cleanProject(config: e_config, projectPath: string): Promise<t_loader_action_result> {
     const cmd = "project_clean";
     const result = await executeCmdListQuartusProject(config, projectPath, [cmd]);
-    if (!result.successful) {
-        throw new QuartusExecutionError("Error in Quartus execution");
-    }
+    return result;
 }
 
 /**

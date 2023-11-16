@@ -77,7 +77,6 @@ export class Tool_manager {
     }
 
     private get_tool_handler(tool_name: e_tools_general_select_tool): Edalize | Vunit | Cocotb | Osvvm | Raptor{
-
         if (this.vunit.get_supported_tools().includes(tool_name)) {
             return this.vunit;
         }
