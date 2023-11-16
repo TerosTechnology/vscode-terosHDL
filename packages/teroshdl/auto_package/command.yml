@@ -132,6 +132,47 @@
   when: "viewItem == run"
   group: "inline"
 
+## Tasks
+- name: view.tasks.stop
+  title: "Stop"
+  icon: stop
+  where: ["view/title"]
+  when: "view == teroshdl-view-tasks"
+
+- name: view.tasks.clean
+  title: "Clean project"
+  icon: trash
+  where: ["view/title"]
+  when: "view == teroshdl-view-tasks"
+
+- name: view.tasks.report
+  title: "Open Report"
+  icon: output
+  where: ["view/item/context"]
+  when: "viewItem =~ /report/"
+  group: "inline"
+
+- name: view.tasks.timing_analyzer
+  title: "Open Timing Analyzer"
+  icon: watch
+  where: ["view/item/context"]
+  when: "viewItem =~ /timinganalyzer/"
+  group: "inline"
+
+- name: view.tasks.technology_map_viewer
+  title: "Open Technology Map Viewer"
+  icon: search
+  where: ["view/item/context"]
+  when: "viewItem =~ /technologymapviewer/"
+  group: "inline"
+
+- name: view.tasks.snapshotviewer
+  title: "Open Snapshop Viewer"
+  icon: eye
+  where: ["view/item/context"]
+  when: "viewItem =~ /snapshotviewer/"
+  group: "inline"
+
 ## Watcher
 - name: view.watcher.add
   title: "Add"

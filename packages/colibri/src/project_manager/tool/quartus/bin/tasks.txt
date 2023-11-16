@@ -1,0 +1,125 @@
+COMPILEDESIGN = "Compile Design",
+
+
+
+IPGENERATION = "IP Generation",
+
+
+
+ANALYSISSYNTHESIS = "Analysis & Synthesis",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+
+
+ANALYSISELABORATION = "Analysis & Elaboration",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off --analysis_and_elaboration asdf -c asdf
+
+
+
+SYNTHESIS = "Synthesis",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off --synthesis asdf -c asdf
+
+
+
+EARLYTIMINGANALYSIS = "Early Timing Analysis",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf --plan --place
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf --route
+
+
+FITTER = "Fitter",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf
+
+
+FITTERIMPLEMENT = "Fitter (Implement)",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf --plan --place --route
+
+
+PLAN = "Plan",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf --plan
+
+
+PLACE = "Place",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf --plan --place
+
+
+ROUTE = "Route",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf --plan --place --route
+
+
+FITTERFINALIZE = "Fitter (Finalize)",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf
+
+
+TIMING = "Timing Analysis (Signoff)",
+quartus_syn --dni --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_fit --read_settings_files=on --write_settings_files=off asdf -c asdf
+quartus_sta asdf -c asdf --mode=finalize
+
+
+CHIPPLANNER = "Chip Planner",
+
+
+
+TIMINGANALYZER = "Timing Analysis",
+
+
+
+NONE = "none"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+synthesis
+project_open -force "/home/carlos/Desktop/miprj/asdf.qpf" -revision "asdf"
+qsta_utility::auto_CRU "create_timing_netlist -snapshot synthesized"
+qsta_utility::auto_report_setup
+
+
+
+plan
+project_open -force "/home/carlos/Desktop/miprj/asdf.qpf" -revision "asdf"
+qsta_utility::auto_CRU "create_timing_netlist -snapshot planned"
+qsta_utility::auto_report_setup
+
+
+place
+project_open -force "/home/carlos/Desktop/miprj/asdf.qpf" -revision "asdf"
+qsta_utility::auto_CRU "create_timing_netlist -snapshot placed"
+qsta_utility::auto_report_setup
+
+route
+project_open -force "/home/carlos/Desktop/miprj/asdf.qpf" -revision "asdf"
+qsta_utility::auto_CRU "create_timing_netlist -snapshot routed"
+qsta_utility::auto_report_setup
+
+fitter (finalize)
+project_open -force "/home/carlos/Desktop/miprj/asdf.qpf" -revision "asdf"
+qsta_utility::auto_CRU "create_timing_netlist -snapshot final"
+qsta_utility::auto_report_setup
+
+
+Timing Analysis (signoff)
+project_open -force "/home/carlos/Desktop/miprj/asdf.qpf" -revision "asdf"
+qsta_utility::auto_CRU "create_timing_netlist -snapshot final"
+qsta_utility::auto_report_setup

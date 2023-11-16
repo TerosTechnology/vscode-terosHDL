@@ -67,6 +67,10 @@
                     "name": "Runs"
                 },
                 {
+                    "id": "teroshdl-view-tasks",
+                    "name": "Tasks"
+                },
+                {
                     "id": "teroshdl-view-output",
                     "name": "Outputs"
                 },
@@ -201,6 +205,20 @@
                 }
                         
                 ,{
+                    "when": "view == teroshdl-view-tasks",
+
+                    "command": "teroshdl.view.tasks.stop",
+                    "group": "navigation"
+                }
+                        
+                ,{
+                    "when": "view == teroshdl-view-tasks",
+
+                    "command": "teroshdl.view.tasks.clean",
+                    "group": "navigation"
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-watcher",
 
                     "command": "teroshdl.view.watcher.add",
@@ -256,6 +274,30 @@
                     ,{
                         "when": "viewItem == run",
                         "command": "teroshdl.view.runs.run",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /report/",
+                        "command": "teroshdl.view.tasks.report",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /timinganalyzer/",
+                        "command": "teroshdl.view.tasks.timing_analyzer",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /technologymapviewer/",
+                        "command": "teroshdl.view.tasks.technology_map_viewer",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /snapshotviewer/",
+                        "command": "teroshdl.view.tasks.snapshotviewer",
                         "group": "inline"
                     }
                             
@@ -444,6 +486,54 @@
                     "dark": "resources/icon/dark/run.svg"
                 },
                 "title": "Run"
+            }, 
+            {
+                "command": "teroshdl.view.tasks.stop",
+                "icon": {
+                    "light": "resources/icon/light/stop.svg",
+                    "dark": "resources/icon/dark/stop.svg"
+                },
+                "title": "Stop"
+            }, 
+            {
+                "command": "teroshdl.view.tasks.clean",
+                "icon": {
+                    "light": "resources/icon/light/trash.svg",
+                    "dark": "resources/icon/dark/trash.svg"
+                },
+                "title": "Clean project"
+            }, 
+            {
+                "command": "teroshdl.view.tasks.report",
+                "icon": {
+                    "light": "resources/icon/light/output.svg",
+                    "dark": "resources/icon/dark/output.svg"
+                },
+                "title": "Open Report"
+            }, 
+            {
+                "command": "teroshdl.view.tasks.timing_analyzer",
+                "icon": {
+                    "light": "resources/icon/light/watch.svg",
+                    "dark": "resources/icon/dark/watch.svg"
+                },
+                "title": "Open Timing Analyzer"
+            }, 
+            {
+                "command": "teroshdl.view.tasks.technology_map_viewer",
+                "icon": {
+                    "light": "resources/icon/light/search.svg",
+                    "dark": "resources/icon/dark/search.svg"
+                },
+                "title": "Open Technology Map Viewer"
+            }, 
+            {
+                "command": "teroshdl.view.tasks.snapshotviewer",
+                "icon": {
+                    "light": "resources/icon/light/eye.svg",
+                    "dark": "resources/icon/dark/eye.svg"
+                },
+                "title": "Open Snapshop Viewer"
             }, 
             {
                 "command": "teroshdl.view.watcher.add",
@@ -655,9 +745,9 @@
         "@types/glob": "^7.1.1",
         "@types/node": "^13.11.0",
         "@types/vscode": "^1.45.0",
-        "@typescript-eslint/eslint-plugin": "^5.27.0",
-        "@typescript-eslint/parser": "^5.27.0",
-        "eslint": "^8.17.0",
+        "@typescript-eslint/eslint-plugin": "^2.30.0",
+        "@typescript-eslint/parser": "^2.30.0",
+        "eslint": "^6.8.0",
         "glob": "^7.1.6",
         "js-yaml": "^3.13.1",
         "typescript": "4.5.5",

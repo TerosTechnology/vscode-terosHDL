@@ -18,13 +18,13 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { p_result, p_options } from "./common";
+import { ChildProcess, ExecException, exec } from "child_process";
 
 export class Local_process {
 
     async exec_wait(command: string, opt: p_options) {
-        const exec = require("child_process").exec;
         return new Promise((resolve) => {
-            exec(command, opt, (error: number, stdout: string, stderr: string) => {
+            exec(command, opt, (error: ExecException | null, stdout: string, stderr: string) => {
                 let error_code = 0;
                 let successful = true;
                 if (error !== undefined && error !== null) {
@@ -45,9 +45,8 @@ export class Local_process {
         });
     }
 
-    exec(command: string, opt: p_options, callback: (result: p_result) => void) {
-        const exec_c = require("child_process").exec;
-        const exec_i = exec_c(command, opt, (error: number, stdout: string, stderr: string) => {
+    exec(command: string, opt: p_options, callback: (result: p_result) => void) : ChildProcess{
+        const exec_i = exec(command, opt, (error: ExecException | null, stdout: string, stderr: string) => {
             let error_code = 0;
             let successful = true;
             if (error !== undefined && error !== null) {

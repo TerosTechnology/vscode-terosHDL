@@ -35,6 +35,10 @@
                     "name": "Runs"
                 },
                 {
+                    "id": "teroshdl-view-tasks",
+                    "name": "Tasks"
+                },
+                {
                     "id": "teroshdl-view-output",
                     "name": "Outputs"
                 },
