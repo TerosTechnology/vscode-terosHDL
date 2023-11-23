@@ -43,6 +43,18 @@ import { Dependency_manager } from './features/dependency';
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
 
+class MiWebviewProvider implements vscode.WebviewViewProvider {
+    resolveWebviewView(webviewView, context, token) {
+        webviewView.webview.options = { enableScripts: true };
+        webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
+    }
+
+    getHtmlForWebview(webview) {
+        const fs = require('fs');
+        return fs.readFileSync("/home/carlos/Music/sample/pepe.html", 'utf8');
+    }
+}
+
 export class Teroshdl {
     private context: vscode.ExtensionContext;
     private manager: t_Multi_project_manager;
@@ -59,6 +71,12 @@ export class Teroshdl {
             file_config_path, file_prj_path);
         this.context = context;
         this.global_logger = global_logger;
+
+        const fs = require('fs');
+
+
+        context.subscriptions.push(vscode.window.registerWebviewViewProvider('miWebview', new MiWebviewProvider()));
+
     }
 
     public async init_teroshdl() {

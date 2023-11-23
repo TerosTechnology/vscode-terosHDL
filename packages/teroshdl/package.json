@@ -33,7 +33,9 @@
         "url": "https://github.com/TerosTechnology/vscode-terosHDL/issues"
     },
     "main": "./out/extension.js",
-
+    "activationEvents": [
+        "*"
+    ],
     "contributes": {
         "viewsContainers": {
             "activitybar": [
@@ -42,7 +44,14 @@
                     "title": "TerosHDL",
                     "icon": "resources/images/teros_logo.svg"
                 }
-            ]
+            ],
+            "panel": [
+                {
+                  "id": "my-fancy-view",
+                  "title": "Fancy View",
+                  "icon": "fancy.icon"
+                }
+              ]
         },
         "views": {
             "teroshdl-project": [
@@ -77,6 +86,13 @@
                 {
                     "id": "teroshdl-view-actions",
                     "name": "Actions"
+                }
+            ],
+            "my-fancy-view": [
+                {
+                    "type": "webview",
+                    "id": "miWebview",
+                    "name": "Mi Webview Personalizado"
                 }
             ]
         },
