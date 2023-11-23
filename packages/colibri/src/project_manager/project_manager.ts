@@ -30,7 +30,10 @@ import * as  manager_parameter from "./list_manager/parameter";
 import * as  manager_toplevel_path from "./list_manager/toplevel_path";
 import * as  manager_dependency from "./dependency/dependency";
 import { Tool_manager } from "./tool/tools_manager";
-import { t_test_declaration, t_test_result, e_clean_step, t_loader_action_result, e_taskType, e_taskState, t_test_artifact, e_reportType } from "./tool/common";
+import {
+    t_test_declaration, t_test_result, e_clean_step, e_taskType, e_taskState, t_test_artifact,
+    e_reportType
+} from "./tool/common";
 import { t_project_definition } from "./project_definition";
 import * as file_utils from "../utils/file_utils";
 import * as hdl_utils from "../utils/hdl_utils";
@@ -517,14 +520,6 @@ export class Project_manager {
         return {} as ChildProcess;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    public async cleallAllProject(): Promise<t_loader_action_result> {
-        return {
-            successful: false,
-            msg: "Not implemented"
-        };
-    }
-
     public getTaskState(nameTask: e_taskType): e_taskState | null {
         return this.taskStateManager.getTaskState(nameTask);
     }
@@ -534,7 +529,13 @@ export class Project_manager {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public getArtifact(_taskType: e_taskType, _reportType: e_reportType) : t_test_artifact{
+    public getArtifact(_taskType: e_taskType, _reportType: e_reportType): t_test_artifact {
         return {} as t_test_artifact;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public cleallAllProject(_callback:
+        (result: p_result) => void): ChildProcess {
+        return {} as ChildProcess;
     }
 }

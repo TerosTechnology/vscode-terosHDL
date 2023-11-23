@@ -175,10 +175,28 @@ export class Tasks_manager {
             statusBarItem.show();
             try {
                 const selectedProject = this.project_manager.get_selected_project();
-                const result = await selectedProject.cleallAllProject();
+                const exec_i = selectedProject.cleallAllProject((result: teroshdl2.process.common.p_result) => {
+                    statusBarItem.hide();
+                    this.state = e_VIEW_STATE.IDLE;
+                    // Refresh view to set the finish decorators
+                    this.refresh_tree();
+                });
+
+                // Refresh view to set the running decorators
+                this.refresh_tree();
 
                 this.logger.show(true);
-                this.logger.log(result.msg);
+                if (exec_i.stdout) {
+                    exec_i.stdout.on('data', (data: string) => {
+                        this.logger.log(data);
+                    });
+                }
+
+                if (exec_i.stderr) {
+                    exec_i.stderr.on('data', (data: string) => {
+                        this.logger.log(data);
+                    });
+                }
             }
             catch (error) { }
             finally {

@@ -13,6 +13,8 @@ import { t_file } from "../../common";
 import { LANGUAGE } from "../../../common/general";
 import * as nunjucks from 'nunjucks';
 import * as process from 'process';
+import { ChildProcess } from "child_process";
+import { Process } from "../../../process/process";
 
 export const LANGUAGE_MAP: Record<LANGUAGE, string> = {
     [LANGUAGE.VHDL]: "VHDL_FILE",
@@ -312,11 +314,11 @@ export async function createProject(config: e_config, projectDirectory: string, 
  * @param config Configuration.
  * @param projectPath Path to Quartus project.
 **/
-export async function cleanProject(config: e_config, projectPath: string): Promise<t_loader_action_result> {
-    const cmd = "project_clean";
-    const result = await executeCmdListQuartusProject(config, projectPath, [cmd]);
-    return result;
-}
+// export async function cleanProject(config: e_config, projectPath: string): Promise<t_loader_action_result> {
+//     const cmd = "project_clean";
+//     const result = await executeCmdListQuartusProject(config, projectPath, [cmd]);
+//     return result;
+// }
 
 /**
  * Set top level path in Quartus project.
@@ -334,4 +336,32 @@ export async function setTopLevelPath(config: e_config, projectPath: string, top
     if (!result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
+}
+
+export function cleanProject(projectPath: string, callback:
+    (result: p_result) => void): ChildProcess {
+
+    const cmdList = ["project_clean"];
+
+    const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl.nj'));
+    const templateRender = nunjucks.renderString(templateContent, { "cmd_list": cmdList });
+
+    // Create temp file
+    const tclFile = process_utils.create_temp_file(templateRender);
+    const args = projectPath;
+
+    const quartus_bin = path_lib.join(getQuartusPath(), "quartus_sh");
+
+    // Create temp file for out.csv
+    const csv_file = process_utils.create_temp_file("");
+
+    const cmd = `${quartus_bin} -t ${tclFile} ${csv_file} ${args}`;
+
+    const opt_exec = { cwd: path_lib.dirname(projectPath) };
+    const p = new Process();
+
+    const exec_i = p.exec(cmd, opt_exec, (result: p_result) => {
+        callback(result);
+    });
+    return exec_i;
 }
