@@ -3,6 +3,7 @@
 import { e_config } from '../../../config/config_declaration';
 import { QuartusProjectManager } from './quartusProjectManager';
 import { get_toplevel_from_path } from '../../../utils/hdl_utils';
+import events = require("events");
 
 import * as path_lib from 'path';
 import { createProject, getProjectInfo, getFilesFromProject, QuartusExecutionError } from './utils';
@@ -17,12 +18,13 @@ import { createProject, getProjectInfo, getFilesFromProject, QuartusExecutionErr
  * @returns Quartus project.
 **/
 export async function createNewProject(config: e_config, name: string, family: string, part: string,
-    projectDirectory: string): Promise<QuartusProjectManager | undefined> {
+    projectDirectory: string, emitterProject: events.EventEmitter, emitterStatus: events.EventEmitter)
+    : Promise<QuartusProjectManager | undefined> {
 
     try {
         await createProject(config, name, family, part, projectDirectory);
         const projectPath = path_lib.join(projectDirectory, `${name}`);
-        const project = new QuartusProjectManager(name, projectPath);
+        const project = new QuartusProjectManager(name, projectPath, emitterProject, emitterStatus);
         return project;
     }
     catch (error) {
@@ -36,12 +38,13 @@ export async function createNewProject(config: e_config, name: string, family: s
  * @param project_path Quartus project path.
  * @returns Quartus project.
 **/
-export async function loadProject(config: e_config, project_path: string): Promise<QuartusProjectManager> {
+export async function loadProject(config: e_config, project_path: string,
+    emitterProject: events.EventEmitter, emitterStatus: events.EventEmitter): Promise<QuartusProjectManager> {
     try {
         const projectInfo = await getProjectInfo(config, project_path);
         const projectFiles = await getFilesFromProject(config, project_path, true);
 
-        const quartusProject = new QuartusProjectManager(projectInfo.name, project_path);
+        const quartusProject = new QuartusProjectManager(projectInfo.name, project_path, emitterProject, emitterStatus);
 
         // Search for toplevel path for top level entity
         if (projectInfo.topEntity === "") {

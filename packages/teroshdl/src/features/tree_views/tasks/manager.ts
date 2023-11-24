@@ -38,7 +38,8 @@ export class Tasks_manager {
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
     private logger: Logger;
-    private emitter: events.EventEmitter;
+    private emitterProject: events.EventEmitter;
+    private emitterStatus: events.EventEmitter;
     private state: e_VIEW_STATE = e_VIEW_STATE.IDLE;
     private latesRunTask: ChildProcess | undefined = undefined;
     private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined = undefined;
@@ -46,15 +47,16 @@ export class Tasks_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter,
-        logger: Logger) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
+        emitterStatus: events.EventEmitter, logger: Logger) {
 
         this.set_commands();
 
         this.logger = logger;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
-        this.emitter = emitter;
+        this.emitterProject = emitterProject;
+        this.emitterStatus = emitterStatus;
 
         const provider = new RedTextDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
@@ -103,20 +105,20 @@ export class Tasks_manager {
         try {
             const selectedProject = this.project_manager.get_selected_project();
 
-            const taskStatus = selectedProject.getTaskState(taskItem.taskDefinition.name);
-            if (taskStatus === teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
-                const msg = `${taskItem.taskDefinition.name} has already run successfully. Do you want to run the task again?`;
-                const result = await vscode.window.showInformationMessage(
-                    msg,
-                    'Yes',
-                    'No'
-                );
+            // const taskStatus = selectedProject.getTaskState(taskItem.taskDefinition.name);
+            // if (taskStatus === teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
+            //     const msg = `${taskItem.taskDefinition.name} has already run successfully. Do you want to run the task again?`;
+            //     const result = await vscode.window.showInformationMessage(
+            //         msg,
+            //         'Yes',
+            //         'No'
+            //     );
 
-                if (result === 'No') {
-                    this.state = e_VIEW_STATE.IDLE;
-                    return;
-                }
-            }
+            //     if (result === 'No') {
+            //         this.state = e_VIEW_STATE.IDLE;
+            //         return;
+            //     }
+            // }
 
             const task = taskItem.taskDefinition.name;
             statusBarItem.text = `$(sync~spin) Running Quartus task: ${task} ...`;
@@ -218,7 +220,7 @@ export class Tasks_manager {
 
     refresh(result: teroshdl2.project_manager.tool_common.t_test_result[]) {
         this.refresh_tree();
-        this.emitter.emit('refresh_output');
+        this.emitterProject.emit('refresh_output');
     }
 
     openReport(taskItem: element.Task, reportType: teroshdl2.project_manager.tool_common.e_reportType) {
@@ -234,11 +236,11 @@ export class Tasks_manager {
             return;
         }
 
-        const taskStatus = selectedProject.getTaskState(task);
-        if (taskStatus !== teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
-            vscode.window.showWarningMessage(`The task ${task} has not finished yet. Please wait until it finishes to open the report.`);
-            return;
-        }
+        // const taskStatus = selectedProject.getTaskState(task);
+        // if (taskStatus !== teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
+        //     vscode.window.showWarningMessage(`The task ${task} has not finished yet. Please wait until it finishes to open the report.`);
+        //     return;
+        // }
 
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.COMMAND) {
             shelljs.exec(report.command, { async: true, cwd: report.path });

@@ -52,37 +52,39 @@ export class Tree_view_manager {
     private logger: Logger = new Logger();
     private statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter,
-        schematic_manager: Schematic_manager, dependency_manager: Dependency_manager, global_logger: Logger) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
+        emitterStatus: events.EventEmitter, schematic_manager: Schematic_manager,
+        dependency_manager: Dependency_manager, global_logger: Logger) {
 
         context.subscriptions.push(this.statusbar);
         multi_manager = manager;
 
         const slm = this;
 
-        emitter.addListener('refresh', this.refresh);
-        emitter.addListener('refresh_output', (function () {
+        emitterProject.addListener('refresh', this.refresh);
+        emitterProject.addListener('refresh_output', (function () {
             output_manager.refresh_tree();
         })
         );
-        emitter.addListener('loading', (function () {
+        emitterProject.addListener('loading', (function () {
             slm.statusbar.text = `$(loading) TerosHDL: loading project..`;
             slm.statusbar.show();
         })
         );
-        emitter.addListener('loaded', (function () {
+        emitterProject.addListener('loaded', (function () {
             slm.statusbar.text = `$(megaphone) TerosHDL: project loaded!`;
             slm.statusbar.show();
         })
         );
 
-        project_manager = new Project_manager(context, manager, emitter, run_output, global_logger);
-        source_manager = new Source_manager(context, manager, emitter);
+        project_manager = new Project_manager(context, manager, emitterProject, emitterStatus,
+            run_output, global_logger);
+        source_manager = new Source_manager(context, manager, emitterProject);
         tree_manager = new Tree_manager(context, manager, schematic_manager, dependency_manager);
-        runs_manager = new Runs_manager(context, manager, emitter, run_output, this.logger);
-        tasks_manager = new Tasks_manager(context, manager, emitter, this.logger);
-        actions_manager = new Actions_manager(context, manager, emitter, run_output);
-        watcher_manager = new Watcher_manager(context, manager, emitter);
+        runs_manager = new Runs_manager(context, manager, emitterProject, run_output, this.logger);
+        tasks_manager = new Tasks_manager(context, manager, emitterProject, emitterStatus, this.logger);
+        actions_manager = new Actions_manager(context, manager, emitterProject, run_output);
+        watcher_manager = new Watcher_manager(context, manager, emitterProject);
         output_manager = new Output_manager(context, manager, run_output, this.logger);
 
         this.refresh();

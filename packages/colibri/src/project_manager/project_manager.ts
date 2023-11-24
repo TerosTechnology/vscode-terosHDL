@@ -31,7 +31,7 @@ import * as  manager_toplevel_path from "./list_manager/toplevel_path";
 import * as  manager_dependency from "./dependency/dependency";
 import { Tool_manager } from "./tool/tools_manager";
 import {
-    t_test_declaration, t_test_result, e_clean_step, e_taskType, e_taskState, t_test_artifact,
+    t_test_declaration, t_test_result, e_clean_step, e_taskType, t_test_artifact,
     e_reportType
 } from "./tool/common";
 import { t_project_definition } from "./project_definition";
@@ -73,22 +73,22 @@ export class Project_manager {
     /** Config manager. */
     private config_manager = new Config_manager();
     private tools_manager = new Tool_manager(undefined);
-    private emitter: events.EventEmitter | undefined = undefined;
+    private emitterProject: events.EventEmitter;
     /** Linter */
     private linter = new Linter();
     public taskStateManager: TaskStateManager = new TaskStateManager([]);
 
-    constructor(name: string, emitter: events.EventEmitter | undefined = undefined) {
+    constructor(name: string, emitterProject: events.EventEmitter, _emitterStatus: events.EventEmitter) {
         this.name = name;
-        this.emitter = emitter;
+        this.emitterProject = emitterProject;
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const selfm = this;
         this.watchers = new manager_watcher.Watcher_manager((function () {
             selfm.files.clear_automatic_files();
             selfm.watchers.get().forEach(async (watcher: any) => {
                 if (file_utils.check_if_path_exist(watcher.path)) {
-                    if (selfm.emitter !== undefined) {
-                        selfm.emitter.emit('loading');
+                    if (selfm.emitterProject !== undefined) {
+                        selfm.emitterProject.emit('loading');
                     }
                     if (watcher.watcher_type === e_watcher_type.CSV) {
                         selfm.add_file_from_csv(watcher.path, false);
@@ -99,13 +99,13 @@ export class Project_manager {
                     else if (watcher.watcher_type === e_watcher_type.VIVADO) {
                         await selfm.add_file_from_vivado(selfm.config_manager.get_config(), watcher.path, false);
                     }
-                    if (selfm.emitter !== undefined) {
-                        selfm.emitter.emit('loaded');
-                        selfm.emitter.emit('refresh');
+                    if (selfm.emitterProject !== undefined) {
+                        selfm.emitterProject.emit('loaded');
+                        selfm.emitterProject.emit('refresh');
                     }
                 }
             });
-        }), emitter);
+        }), emitterProject);
     }
 
     set projectDiskPath(projectDiskPath: string) {
@@ -143,9 +143,7 @@ export class Project_manager {
     }
 
     protected async notifyChanged(): Promise<void> {
-        if (this.emitter !== undefined) {
-            this.emitter.emit('refresh');
-        }
+        this.emitterProject.emit('refresh');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -155,9 +153,9 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
-    static async fromJson(_config: e_config, jsonContent: any, emitter: events.EventEmitter):
-        Promise<Project_manager> {
-        const prj = new Project_manager(jsonContent.name, emitter);
+    static async fromJson(_config: e_config, jsonContent: any, emitterProject: events.EventEmitter,
+        emitterStatus: events.EventEmitter): Promise<Project_manager> {
+        const prj = new Project_manager(jsonContent.name, emitterProject, emitterStatus);
         // Files
         jsonContent.files.forEach((file: any) => {
             prj.add_file({
@@ -520,9 +518,9 @@ export class Project_manager {
         return {} as ChildProcess;
     }
 
-    public getTaskState(nameTask: e_taskType): e_taskState | null {
-        return this.taskStateManager.getTaskState(nameTask);
-    }
+    // public getTaskState(nameTask: e_taskType): e_taskState | null {
+    //     return this.taskStateManager.getTaskState(nameTask);
+    // }
 
     setTaskManager(taskManager: TaskStateManager) {
         this.taskStateManager = taskManager;

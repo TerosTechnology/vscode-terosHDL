@@ -97,7 +97,7 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Load / Save in a file
     ////////////////////////////////////////////////////////////////////////////
-    public async load(emitter: events.EventEmitter): Promise<void> {
+    public async load(emitterProject: events.EventEmitter, emitterStatus: events.EventEmitter): Promise<void> {
         let failed = false;
 
         // Initialize
@@ -112,11 +112,13 @@ export class Multi_project_manager {
                 try {
                     if (prj_info.project_type === e_project_type.QUARTUS) {
                         this.add_project(
-                            await QuartusProjectManager.fromJson(this.get_config_global_config(), prj_info, emitter)
+                            await QuartusProjectManager.fromJson(this.get_config_global_config(), prj_info, 
+                                emitterProject, emitterStatus)
                         );
                     } else {
                         this.add_project(
-                            await Project_manager.fromJson(this.get_config_global_config(), prj_info, emitter)
+                            await Project_manager.fromJson(this.get_config_global_config(), 
+                                prj_info, emitterProject, emitterStatus)
                         );
                     }
                 } catch (error) {

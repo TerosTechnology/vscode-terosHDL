@@ -55,10 +55,11 @@ export class Task extends vscode.TreeItem {
     constructor(taskDefinition: teroshdl2.project_manager.tool_common.t_taskRep, children?: any[]) {
 
         super(
-            appendDuration(taskDefinition.name, taskDefinition.duration),
+            // appendDuration(taskDefinition.name, taskDefinition.duration),
+            "0",
             children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
         );
-        this.resourceUri = vscode.Uri.parse(URISTRINGINIT + taskDefinition.state);
+        // this.resourceUri = vscode.Uri.parse(URISTRINGINIT + taskDefinition.state);
         // Common
         this.children = children;
         // Element

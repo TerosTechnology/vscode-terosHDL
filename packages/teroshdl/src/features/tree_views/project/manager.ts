@@ -32,7 +32,8 @@ import * as yaml from "js-yaml";
 export class Project_manager {
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
-    private emitter: events.EventEmitter;
+    private emitterProject: events.EventEmitter;
+    private emitterStatus: events.EventEmitter;
     private run_output_manager: Run_output_manager;
     private context: vscode.ExtensionContext;
     private global_logger: Logger;
@@ -40,12 +41,13 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter,
-        run_output_manager: Run_output_manager, global_logger: Logger) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
+        emitterStatus: events.EventEmitter, run_output_manager: Run_output_manager, global_logger: Logger) {
         this.set_commands();
 
         this.global_logger = global_logger;
-        this.emitter = emitter;
+        this.emitterProject = emitterProject;
+        this.emitterStatus = emitterStatus;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
         this.run_output_manager = run_output_manager;
@@ -97,7 +99,10 @@ export class Project_manager {
             const project_name = await utils.get_from_input_box("Set the project name", "Project name");
             if (project_name !== undefined) {
                 try {
-                    this.project_manager.add_project(new teroshdl2.project_manager.project_manager.Project_manager(project_name, this.emitter));
+                    this.project_manager.add_project(
+                        new teroshdl2.project_manager.project_manager.Project_manager(project_name, this.emitterProject,
+                            this.emitterStatus
+                    ));
                 } catch (error) {
                 }
             }
@@ -124,7 +129,9 @@ export class Project_manager {
             const project_name = await utils.get_from_input_box("Set the project name", "Project name");
             if (project_name !== undefined) {
                 try {
-                    const prj = new teroshdl2.project_manager.project_manager.Project_manager(project_name, this.emitter);
+                    const prj = new teroshdl2.project_manager.project_manager.Project_manager(
+                        project_name, this.emitterProject, this.emitterStatus
+                    );
                     this.project_manager.add_project(prj);
                     await utils.add_sources_from_vunit(prj, this.project_manager.get_config_global_config(), true);
                 } catch (error) {
@@ -201,7 +208,7 @@ export class Project_manager {
                 const quartusProject =
                     await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromNewQuartusProject(
                         this.project_manager.get_config_global_config(), project_name, picker_family, picker_part,
-                        working_directory[0], this.emitter);
+                        working_directory[0], this.emitterProject, this.emitterStatus);
 
                 // Add project to manager
                 this.project_manager.add_project(quartusProject);
@@ -218,7 +225,7 @@ export class Project_manager {
             // Create project
             const quartusProject =
                 await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromExistingQuartusProject(
-                    this.project_manager.get_config_global_config(), prj_path, this.emitter
+                    this.project_manager.get_config_global_config(), prj_path, this.emitterProject, this.emitterStatus
                 );
 
             // Add project to manager
@@ -235,7 +242,7 @@ export class Project_manager {
         try {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
                 this.project_manager.get_config_global_config(),
-                JSON.parse(read_file_sync(prj_path)), this.emitter);
+                JSON.parse(read_file_sync(prj_path)), this.emitterProject, this.emitterStatus);
             this.project_manager.add_project(prj);
             this.refresh();
         } catch (error) {
@@ -246,7 +253,7 @@ export class Project_manager {
         try {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
                 this.project_manager.get_config_global_config(),
-                yaml.load(read_file_sync(prj_path)), this.emitter);
+                yaml.load(read_file_sync(prj_path)), this.emitterProject, this.emitterStatus);
             this.project_manager.add_project(prj);
             this.refresh();
         } catch (error) {
@@ -282,7 +289,7 @@ export class Project_manager {
     }
 
     refresh() {
-        this.emitter.emit('refresh');
+        this.emitterProject.emit('refresh');
         this.project_manager.save();
     }
 
