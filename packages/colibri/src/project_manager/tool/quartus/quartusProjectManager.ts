@@ -29,12 +29,17 @@ export class QuartusProjectManager extends Project_manager {
     private quartusProjectWatcher: chokidar.FSWatcher;
     private quartusStatusWatcher: chokidar.FSWatcher;
     private quartusDatabaseStatusPath = "";
+    private emitterTask: events.EventEmitter = new events.EventEmitter();
 
     constructor(name: string, projectPath: string, emitterProject: events.EventEmitter,
         emitterStatus: events.EventEmitter) {
         super(name, emitterProject, emitterStatus);
         super.taskStateManager = new TaskStateManager(getDefaultTaskList());
         this.projectDiskPath = projectPath;
+
+        this.emitterTask.on("taskFinished", async () => {
+            await this.updateStatus();
+        });
 
         // Project watcher
         this.quartusProjectWatcher = chokidar.watch('file', {
@@ -51,7 +56,7 @@ export class QuartusProjectManager extends Project_manager {
 
         // Status watcher
         this.quartusStatusWatcher = chokidar.watch('file', {
-            usePolling: true, interval: 1000
+            usePolling: true, interval: 500
         });
         this.quartusStatusWatcher.on('change', (_path, _stats) => {
             this.updateStatus();
@@ -156,8 +161,9 @@ export class QuartusProjectManager extends Project_manager {
         // }
     }
 
-    private updateStatus() {
-        setStatus(this.taskStateManager, this.quartusDatabaseStatusPath);
+    private async updateStatus() {
+        await setStatus(this.taskStateManager, this.quartusDatabaseStatusPath);
+        super.emitUpdateStatus();
     }
 
     async syncWithDisk(): Promise<void> {
@@ -250,12 +256,11 @@ export class QuartusProjectManager extends Project_manager {
     public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
         const quartusDir = getQuartusPath();
         const projectDir = get_directory(this.projectDiskPath);
-        return runTask(taskType, quartusDir, projectDir, this.get_name(),
-            this.get_name(), callback);
+        return runTask(taskType, quartusDir, projectDir, this.get_name(), this.get_name(), this.emitterTask, callback);
     }
 
     public cleallAllProject(callback: (result: p_result) => void): ChildProcess {
-        const exec_i = cleanProject(this.projectDiskPath, callback);
+        const exec_i = cleanProject(this.projectDiskPath, this.emitterTask, callback);
         return exec_i;
     }
 

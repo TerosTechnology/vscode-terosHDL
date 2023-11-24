@@ -134,7 +134,6 @@ export class Multi_project_manager {
                     failed = true;
                 }
             }
-
         }
 
         catch (error) {
@@ -144,7 +143,6 @@ export class Multi_project_manager {
         if (failed) {
             throw new ProjectOperationError(`There have been errors loading project list from disk.`);
         }
-
     }
 
     public save(): void {

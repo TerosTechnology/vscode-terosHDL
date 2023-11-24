@@ -6,8 +6,9 @@ import { Process } from "../../../process/process";
 import { p_result } from "../../../process/common";
 import { e_taskType } from "../common";
 import * as path_lib from "path";
+import { EventEmitter } from "stream";
 
-function executeCommandList(commands: string[], cwd: string,
+function executeCommandList(commands: string[], cwd: string, emitter: EventEmitter,
     callback: (result: p_result) => void): ChildProcess {
 
     const concatCommands = commands.join(" && ");
@@ -16,13 +17,15 @@ function executeCommandList(commands: string[], cwd: string,
     const p = new Process();
 
     const exec_i = p.exec(concatCommands, opt_exec, (result: p_result) => {
+        emitter.emit("taskFinished");
         callback(result);
     });
     return exec_i;
 }
 
 export function runTask(taskType: e_taskType, quartusDir: string, 
-    projectDir: string, projectName: string, revisionName: string, callback: (result: p_result) => void): ChildProcess {
+    projectDir: string, projectName: string, revisionName: string, emitter: EventEmitter,
+    callback: (result: p_result) => void): ChildProcess {
 
     const binIP = path_lib.join(quartusDir, "quartus_ipgenerate");
     const binSyn = path_lib.join(quartusDir, "quartus_syn");
@@ -98,5 +101,5 @@ export function runTask(taskType: e_taskType, quartusDir: string,
     if (commandToRun.length === 0) {
         return {} as ChildProcess;
     }
-    return executeCommandList(commandDeclaration[taskType], projectDir, callback);
+    return executeCommandList(commandDeclaration[taskType], projectDir, emitter, callback);
 }

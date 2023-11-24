@@ -19,18 +19,24 @@ const taskNameInBBDD: Record<string, e_taskType> = {
     "none3": e_taskType.QUARTUS_TIMING,
 };
 
-export function setStatus(taskManager: TaskStateManager, bbddPath: string): void {
+export async function setStatus(taskManager: TaskStateManager, bbddPath: string): Promise<void> {
     const db = new Database(bbddPath, (err) => {
         if (err) {
-            taskManager.cleanAll();
+            const taskToClean = Object.values(e_taskType);
+            for (const task of taskToClean) {
+                taskManager.updateTask(task, e_taskState.IDLE, undefined, undefined, undefined);
+            }
         }
     });
 
-    // Ejecuta una consulta
-    db.serialize(() => {
-        db.each('SELECT * FROM status', (err, row: any) => {
+    await db.serialize(async () => {
+        const taskToClean = Object.values(e_taskType);
+        await db.each('SELECT * FROM status', (err, row: any) => {
             if (err) {
-                taskManager.cleanAll();
+                const taskToClean = Object.values(e_taskType);
+                for (const task of taskToClean) {
+                    taskManager.updateTask(task, e_taskState.IDLE, undefined, undefined, undefined);
+                }
             } else {
                 const status = row.status === "done" ? e_taskState.FINISHED : e_taskState.RUNNING;
                 const percent = parseInt(row.percent);
@@ -40,14 +46,20 @@ export function setStatus(taskManager: TaskStateManager, bbddPath: string): void
                 const name = row.name;
                 if (name in taskNameInBBDD) {
                     const taskType = taskNameInBBDD[name];
+                    if (taskToClean.includes(taskType)) {
+                        taskToClean.splice(taskToClean.indexOf(taskType), 1);
+                    }
                     taskManager.updateTask(taskType, status, percent, success, elapsed_time);
                 }
             }
         });
+        for (const task of taskToClean) {
+            taskManager.updateTask(task, e_taskState.IDLE, undefined, undefined, undefined);
+        }
     });
 
-    // Cierra la base de datos
-    db.close((err) => {
+
+    await db.close((err) => {
         if (err) {
             console.error(err.message);
         }

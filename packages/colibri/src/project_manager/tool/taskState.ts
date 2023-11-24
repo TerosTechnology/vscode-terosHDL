@@ -27,7 +27,8 @@ export class TaskStateManager {
         this.taskList = taskList;
     }
 
-    updateTask(taskType: e_taskType, status: e_taskState, percent: number, success: boolean, elapsed_time: number) {
+    updateTask(taskType: e_taskType, status: e_taskState, percent: number| undefined, success: boolean | undefined, 
+        elapsed_time: number | undefined) {
         const task = this.findTaskByName(this.taskList, taskType);
         if (task) {
             task.status = status;

@@ -74,13 +74,15 @@ export class Project_manager {
     private config_manager = new Config_manager();
     private tools_manager = new Tool_manager(undefined);
     private emitterProject: events.EventEmitter;
+    private emitterStatus: events.EventEmitter;
     /** Linter */
     private linter = new Linter();
     public taskStateManager: TaskStateManager = new TaskStateManager([]);
 
-    constructor(name: string, emitterProject: events.EventEmitter, _emitterStatus: events.EventEmitter) {
+    constructor(name: string, emitterProject: events.EventEmitter, emitterStatus: events.EventEmitter) {
         this.name = name;
         this.emitterProject = emitterProject;
+        this.emitterStatus = emitterStatus;
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const selfm = this;
         this.watchers = new manager_watcher.Watcher_manager((function () {
@@ -535,5 +537,9 @@ export class Project_manager {
     public cleallAllProject(_callback:
         (result: p_result) => void): ChildProcess {
         return {} as ChildProcess;
+    }
+
+    protected emitUpdateStatus() {
+        this.emitterStatus.emit('updateStatus');
     }
 }

@@ -58,6 +58,11 @@ export class Tasks_manager {
         this.emitterProject = emitterProject;
         this.emitterStatus = emitterStatus;
 
+        const selfm = this;
+        emitterStatus.addListener('updateStatus', function () {
+            selfm.refresh(selfm);
+        });
+
         const provider = new RedTextDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
 
@@ -218,9 +223,9 @@ export class Tasks_manager {
         return false;
     }
 
-    refresh(result: teroshdl2.project_manager.tool_common.t_test_result[]) {
-        this.refresh_tree();
-        this.emitterProject.emit('refresh_output');
+    refresh(element) {
+        element.refresh_tree();
+        element.emitterProject.emit('refresh_output');
     }
 
     openReport(taskItem: element.Task, reportType: teroshdl2.project_manager.tool_common.e_reportType) {
