@@ -2,6 +2,7 @@
 import { Database } from 'sqlite3';
 import { TaskStateManager } from '../taskState';
 import { e_taskState, e_taskType } from '../common';
+import { check_if_path_exist } from '../../../utils/file_utils';
 
 const taskNameInBBDD: Record<string, e_taskType> = {
     "Full Compilation": e_taskType.QUARTUS_COMPILEDESIGN,
@@ -11,7 +12,7 @@ const taskNameInBBDD: Record<string, e_taskType> = {
     "Synthesis": e_taskType.QUARTUS_SYNTHESIS,
     "none1": e_taskType.QUARTUS_EARLYTIMINGANALYSIS,
     "Fitter": e_taskType.QUARTUS_FITTER,
-    "none2": e_taskType.QUARTUS_FITTERIMPLEMENT,
+    "Fitter (Implement)": e_taskType.QUARTUS_FITTERIMPLEMENT,
     "Plan": e_taskType.QUARTUS_PLAN,
     "Place": e_taskType.QUARTUS_PLACE,
     "Route": e_taskType.QUARTUS_ROUTE,
@@ -19,25 +20,78 @@ const taskNameInBBDD: Record<string, e_taskType> = {
     "none3": e_taskType.QUARTUS_TIMING,
 };
 
-export async function setStatus(taskManager: TaskStateManager, bbddPath: string): Promise<void> {
-    const db = new Database(bbddPath, (err) => {
-        if (err) {
-            const taskToClean = Object.values(e_taskType);
-            for (const task of taskToClean) {
-                taskManager.updateTask(task, e_taskState.IDLE, undefined, undefined, undefined);
-            }
-        }
-    });
-
-    await db.serialize(async () => {
-        const taskToClean = Object.values(e_taskType);
-        await db.each('SELECT * FROM status', (err, row: any) => {
+/**
+ * Open the database and return the object
+ * @param bbddPath Path to the database
+ * @returns Promise with the database object
+ */
+function openDatabase(bbddPath: string) {
+    return new Promise((resolve, reject) => {
+        const db = new Database(bbddPath, (err) => {
             if (err) {
-                const taskToClean = Object.values(e_taskType);
-                for (const task of taskToClean) {
-                    taskManager.updateTask(task, e_taskState.IDLE, undefined, undefined, undefined);
-                }
+                reject(err);
             } else {
+                resolve(db);
+            }
+        });
+    });
+}
+
+/**
+ * Close the database
+ * @param db Database object
+ */
+async function closeDatabase(db: Database) {
+    try {
+        await new Promise<void>((resolve, reject) => {
+            db.close((err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    } catch (error) { /* empty */ }
+}
+
+/**
+ * Clean all the tasks
+ * @param taskManager Task manager
+ */
+function cleanAll(taskManager: TaskStateManager) {
+    const taskToClean = Object.values(e_taskType);
+    for (const task of taskToClean) {
+        taskManager.updateTask(task, e_taskState.IDLE, undefined, undefined, undefined);
+    }
+}
+
+/**
+ * Set the status of the tasks
+ * @param taskManager Task manager
+ * @param bbddPath Path to the database
+*/
+export async function setStatus(taskManager: TaskStateManager, bbddPath: string): Promise<void> {
+    if (!check_if_path_exist(bbddPath)) {
+        cleanAll(taskManager);
+    }
+
+    const db = <Database>await openDatabase(bbddPath);
+    try {
+        const rows = await new Promise((resolve, reject) => {
+            db.all('SELECT * FROM status', (err, rows) => {
+                if (err) {
+                    cleanAll(taskManager);
+                    reject(err);
+                }
+                else { resolve(rows); }
+            });
+        });
+
+        const taskToClean = Object.values(e_taskType);
+
+        if (rows) {
+            for (const row of <any[]>rows) {
                 const status = row.status === "done" ? e_taskState.FINISHED : e_taskState.RUNNING;
                 const percent = parseInt(row.percent);
                 const success = row.success === 1;
@@ -52,17 +106,12 @@ export async function setStatus(taskManager: TaskStateManager, bbddPath: string)
                     taskManager.updateTask(taskType, status, percent, success, elapsed_time);
                 }
             }
-        });
-        for (const task of taskToClean) {
-            taskManager.updateTask(task, e_taskState.IDLE, undefined, undefined, undefined);
         }
-    });
-
-
-    await db.close((err) => {
-        if (err) {
-            console.error(err.message);
+        else {
+            cleanAll(taskManager);
         }
-        console.log('Conexión a la base de datos cerrada');
-    });
+        await closeDatabase(db);
+    } catch (error) {
+        cleanAll(taskManager);
+    }
 }

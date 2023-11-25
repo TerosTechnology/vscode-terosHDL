@@ -64,7 +64,12 @@ export class Task extends vscode.TreeItem {
             // taskDefinition.name,
             children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
         );
-        this.resourceUri = vscode.Uri.parse(URISTRINGINIT + taskDefinition.status);
+        // if (taskDefinition.success === false) {
+        //     this.resourceUri = vscode.Uri.parse(URISTRINGINIT + teroshdl2.project_manager.tool_common.e_taskState.FAILED);
+        // }
+        // else {
+            this.resourceUri = vscode.Uri.parse(URISTRINGINIT + taskDefinition.status);
+        // }
         // Common
         this.children = children;
         // Element

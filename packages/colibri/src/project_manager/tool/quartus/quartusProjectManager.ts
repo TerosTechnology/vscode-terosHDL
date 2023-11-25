@@ -62,6 +62,8 @@ export class QuartusProjectManager extends Project_manager {
             this.updateStatus();
         });
         this.quartusStatusWatcher.on('unlink', (_path: any, _stats: any) => {
+            this.quartusStatusWatcher.unwatch(this.quartusDatabaseStatusPath);
+            this.quartusStatusWatcher.add(this.quartusDatabaseStatusPath);
             this.updateStatus();
         });
 
@@ -143,7 +145,7 @@ export class QuartusProjectManager extends Project_manager {
 
             // Add all files to project
             await quartusProject.add_file_from_array(projectFiles);
-
+            await quartusProject.updateStatus();
             return quartusProject;
         }
         catch (error) {

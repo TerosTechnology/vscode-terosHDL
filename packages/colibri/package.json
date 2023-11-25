@@ -85,7 +85,8 @@
         "web-tree-sitter": "^0.20.7",
         "pyodide": "0.24.1",
         "sqlite3": "^5.0.2",
-        "@types/sqlite3": "^3.1.11"
+        "@types/sqlite3": "^3.1.11",
+        "@prisma/client": "^5.6.0"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.21.0",
