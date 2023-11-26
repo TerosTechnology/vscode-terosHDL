@@ -23,6 +23,7 @@ import { t_file } from '../../src/project_manager/common';
 import {Project_manager} from '../../src/project_manager/project_manager';
 import {get_default_config} from '../../src/config/config_declaration';
 import { LANGUAGE, VHDL_LANG_VERSION } from "../../src/common/general";
+import EventEmitter = require("events");
 
 const DEFAULT_NAME = "def_name";
 
@@ -30,7 +31,8 @@ describe('project_manager', () => {
     let project_manager: Project_manager;
 
     beforeEach(() => {
-        project_manager = new Project_manager(DEFAULT_NAME, undefined);
+        const emitter = new EventEmitter();
+        project_manager = new Project_manager(DEFAULT_NAME, emitter);
     });
 
     test('rename', () => {

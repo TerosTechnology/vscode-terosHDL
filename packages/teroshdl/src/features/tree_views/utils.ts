@@ -90,6 +90,7 @@ export async function add_sources_from_open_dialog(prj: teroshdl2.project_manage
     const source_path_list = await get_from_open_dialog("Add sources", false, true, true,
         "Select source file", { 'All files (*.*)': ['*'] });
 
+    const fileDefinitionList: teroshdl2.project_manager.common.t_file[] = [];
     for (const source_path of source_path_list) {
         const f: teroshdl2.project_manager.common.t_file = {
             name: source_path,
@@ -100,8 +101,9 @@ export async function add_sources_from_open_dialog(prj: teroshdl2.project_manage
             file_type: teroshdl2.utils.file.get_language_from_filepath(source_path),
             file_version: teroshdl2.utils.file.get_default_version_for_filepath(source_path)
         };
-        await prj.add_file(f);
+        fileDefinitionList.push(f);
     }
+    await prj.add_file_from_array(fileDefinitionList);
 }
 
 export async function add_sources_from_directory_and_subdirectories(prj: teroshdl2.project_manager.project_manager.Project_manager, allow_subdirectories: boolean) {
@@ -124,6 +126,7 @@ export async function add_sources_from_directory_and_subdirectories(prj: teroshd
             file_list = teroshdl2.utils.file.find_files_by_extensions_dir_and_subdir(directory_inst, []);
         }
 
+        const fileTerosDefList : teroshdl2.project_manager.common.t_file[] = [];
         for (const file_inst of file_list) {
             const f: teroshdl2.project_manager.common.t_file = {
                 name: file_inst,
@@ -134,8 +137,9 @@ export async function add_sources_from_directory_and_subdirectories(prj: teroshd
                 file_type: teroshdl2.utils.file.get_language_from_filepath(file_inst),
                 file_version: teroshdl2.utils.file.get_default_version_for_filepath(file_inst)
             };
-            await prj.add_file(f);
+            fileTerosDefList.push(f);
         };
+        await prj.add_file_from_array(fileTerosDefList);
     };
 }
 

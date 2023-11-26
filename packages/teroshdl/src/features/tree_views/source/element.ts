@@ -78,11 +78,6 @@ export class Source_tree_element extends vscode.TreeItem {
                 command: 'vscode.open',
                 arguments: [vscode.Uri.file(name)]
             };
-            // this.command = {
-            //     command: "teroshdl.view.source.select_toplevel",
-            //     title: "Select project",
-            //     arguments: [this],
-            // };
         }
     }
 

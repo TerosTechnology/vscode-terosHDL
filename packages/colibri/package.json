@@ -83,7 +83,9 @@
         "tiny-glob": "^0.2.9",
         "wavedrom": "3.3.0",
         "web-tree-sitter": "^0.20.7",
-        "pyodide": "0.24.1"
+        "pyodide": "0.24.1",
+        "sqlite3": "^5.0.2",
+        "@types/sqlite3": "^3.1.11"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.21.0",

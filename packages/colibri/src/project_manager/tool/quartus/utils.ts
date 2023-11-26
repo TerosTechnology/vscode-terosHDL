@@ -15,6 +15,7 @@ import * as nunjucks from 'nunjucks';
 import * as process from 'process';
 import { ChildProcess } from "child_process";
 import { Process } from "../../../process/process";
+import { EventEmitter } from "stream";
 
 export const LANGUAGE_MAP: Record<LANGUAGE, string> = {
     [LANGUAGE.VHDL]: "VHDL_FILE",
@@ -338,7 +339,7 @@ export async function setTopLevelPath(config: e_config, projectPath: string, top
     }
 }
 
-export function cleanProject(projectPath: string, callback:
+export function cleanProject(projectPath: string, emitter: EventEmitter,callback:
     (result: p_result) => void): ChildProcess {
 
     const cmdList = ["project_clean"];
@@ -361,6 +362,7 @@ export function cleanProject(projectPath: string, callback:
     const p = new Process();
 
     const exec_i = p.exec(cmd, opt_exec, (result: p_result) => {
+        emitter.emit("taskFinished");
         callback(result);
     });
     return exec_i;

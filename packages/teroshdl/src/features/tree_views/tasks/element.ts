@@ -26,20 +26,25 @@ import { ThemeColor } from "vscode";
 export const VIEW_ID = "teroshdl-view-tasks";
 const URISTRINGINIT = "teroshdl:/";
 
-function msToTime(duration) {
-    let seconds = Math.floor((duration / 1000) % 60),
-        minutes = Math.floor((duration / (1000 * 60)) % 60),
-        hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+function msToTime(seconds: number) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
 
-    let formattedHours = (hours < 10) ? "0" + hours : hours.toString();
-    let formattedMinutes = (minutes < 10) ? "0" + minutes : minutes.toString();
-    let formattedSeconds = (seconds < 10) ? "0" + seconds : seconds.toString();
+    const formattedHours = hours.toString().padStart(2, '0');
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
 
-    return formattedHours + ":" + formattedMinutes + ":" + formattedSeconds;
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
 
 function appendDuration(name, duration) {
-    return duration !== undefined ? name + ` (${msToTime(duration)})` : name;
+    return duration !== undefined ? name + `      (${msToTime(duration)})` : name;
+}
+
+function appendPercent(name, percent) {
+    return percent !== undefined ? name + ` [${percent}%]` : name;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,10 +60,16 @@ export class Task extends vscode.TreeItem {
     constructor(taskDefinition: teroshdl2.project_manager.tool_common.t_taskRep, children?: any[]) {
 
         super(
-            appendDuration(taskDefinition.name, taskDefinition.duration),
+            appendDuration(appendPercent(taskDefinition.name, taskDefinition.percent), taskDefinition.elapsed_time),
+            // taskDefinition.name,
             children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
         );
-        this.resourceUri = vscode.Uri.parse(URISTRINGINIT + taskDefinition.state);
+        // if (taskDefinition.success === false) {
+        //     this.resourceUri = vscode.Uri.parse(URISTRINGINIT + teroshdl2.project_manager.tool_common.e_taskState.FAILED);
+        // }
+        // else {
+            this.resourceUri = vscode.Uri.parse(URISTRINGINIT + taskDefinition.status);
+        // }
         // Common
         this.children = children;
         // Element
