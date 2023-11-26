@@ -38,7 +38,7 @@ export class Tasks_manager {
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
     private logger: Logger;
-    private emitter: events.EventEmitter;
+    private emitterProject: events.EventEmitter;
     private state: e_VIEW_STATE = e_VIEW_STATE.IDLE;
     private latesRunTask: ChildProcess | undefined = undefined;
     private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined = undefined;
@@ -46,7 +46,7 @@ export class Tasks_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter,
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
         logger: Logger) {
 
         this.set_commands();
@@ -54,7 +54,12 @@ export class Tasks_manager {
         this.logger = logger;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
-        this.emitter = emitter;
+        this.emitterProject = emitterProject;
+
+        const selfm = this;
+        emitterProject.addListener('updateStatus', function () {
+            selfm.refresh(selfm);
+        });
 
         const provider = new RedTextDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
@@ -103,20 +108,20 @@ export class Tasks_manager {
         try {
             const selectedProject = this.project_manager.get_selected_project();
 
-            const taskStatus = selectedProject.getTaskState(taskItem.taskDefinition.name);
-            if (taskStatus === teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
-                const msg = `${taskItem.taskDefinition.name} has already run successfully. Do you want to run the task again?`;
-                const result = await vscode.window.showInformationMessage(
-                    msg,
-                    'Yes',
-                    'No'
-                );
+            // const taskStatus = selectedProject.getTaskState(taskItem.taskDefinition.name);
+            // if (taskStatus === teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
+            //     const msg = `${taskItem.taskDefinition.name} has already run successfully. Do you want to run the task again?`;
+            //     const result = await vscode.window.showInformationMessage(
+            //         msg,
+            //         'Yes',
+            //         'No'
+            //     );
 
-                if (result === 'No') {
-                    this.state = e_VIEW_STATE.IDLE;
-                    return;
-                }
-            }
+            //     if (result === 'No') {
+            //         this.state = e_VIEW_STATE.IDLE;
+            //         return;
+            //     }
+            // }
 
             const task = taskItem.taskDefinition.name;
             statusBarItem.text = `$(sync~spin) Running Quartus task: ${task} ...`;
@@ -216,9 +221,9 @@ export class Tasks_manager {
         return false;
     }
 
-    refresh(result: teroshdl2.project_manager.tool_common.t_test_result[]) {
-        this.refresh_tree();
-        this.emitter.emit('refresh_output');
+    refresh(element) {
+        element.refresh_tree();
+        element.emitterProject.emit('refresh_output');
     }
 
     openReport(taskItem: element.Task, reportType: teroshdl2.project_manager.tool_common.e_reportType) {

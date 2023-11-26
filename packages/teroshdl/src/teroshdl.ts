@@ -46,7 +46,7 @@ const PRJ_FILENAME = '.teroshdl2_prj.json';
 export class Teroshdl {
     private context: vscode.ExtensionContext;
     private manager: t_Multi_project_manager;
-    private emitter: events.EventEmitter = new events.EventEmitter();
+    private emitterProject: events.EventEmitter = new events.EventEmitter();
     private global_logger: Logger;
 
     constructor(context: vscode.ExtensionContext, global_logger: Logger) {
@@ -107,7 +107,7 @@ export class Teroshdl {
 
     private async init_multi_project_manager() {
         try {
-            await this.manager.load(this.emitter);
+            await this.manager.load(this.emitterProject);
         } catch (error) {
             this.global_logger.warn("There have been errors loading project list from disk.");
         }
@@ -163,7 +163,7 @@ export class Teroshdl {
     }
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
-        new Tree_view_manager(this.context, this.manager, this.emitter, schematic_manager,
+        new Tree_view_manager(this.context, this.manager, this.emitterProject, schematic_manager,
             dependency_manager, this.global_logger);
     }
 

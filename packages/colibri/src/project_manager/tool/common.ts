@@ -194,8 +194,11 @@ export type t_taskRep = {
     "reports"?: e_reportType[],
     "children"?: t_taskRep[],
     "icon"?: e_iconType,
-    "duration"?: number | undefined,
-    "state": e_taskState,
+
+    "status"?: e_taskState | undefined,
+    "success"?: boolean | undefined,
+    "elapsed_time"?: number | undefined,
+    "percent"?: number | undefined,
 }
 
 ////////////////////////////////////////////////////////////////////////////////

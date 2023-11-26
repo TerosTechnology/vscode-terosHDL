@@ -80,7 +80,7 @@ export class Source_manager {
                     "Load from VUnit run.py",
                     "Add all HDL files from a directory and subdirectories",
                     "Add all files from a directory",
-                    "Load from Intel® Quartus® Prime project"
+                    // "Load from Intel® Quartus® Prime project"
                 ];
                 const picker_value = await utils.get_picker_value(element_types, "Add from:");
                 // Add from browser

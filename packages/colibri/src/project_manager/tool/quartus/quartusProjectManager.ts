@@ -21,23 +21,59 @@ import { runTask } from "./taskRunner";
 import { get_directory } from "../../../utils/file_utils";
 import { getDefaultTaskList } from "./common";
 import { TaskStateManager } from "../taskState";
+import { setStatus } from "./quartusBBDD";
 
 export class QuartusProjectManager extends Project_manager {
 
     private quartusProjectWatcher: chokidar.FSWatcher;
+    private quartusStatusWatcher: chokidar.FSWatcher | undefined = undefined;
+    private quartusDatabaseStatusPath = "";
+    private emitterTask: events.EventEmitter = new events.EventEmitter();
+    private currentRevision: string;
 
-    constructor(name: string, projectPath: string, emitter: events.EventEmitter | undefined = undefined) {
-        super(name, emitter);
+    constructor(name: string, projectPath: string, currentRevision: string,
+        emitterProject: events.EventEmitter) {
+        super(name, emitterProject);
         super.taskStateManager = new TaskStateManager(getDefaultTaskList());
         this.projectDiskPath = projectPath;
+        this.currentRevision = currentRevision;
 
+        this.emitterTask.on("taskFinished", async () => {
+            await this.updateStatus();
+        });
+
+        // Project watcher
         this.quartusProjectWatcher = chokidar.watch('file', {
-            usePolling: true, interval: 2000
+            usePolling: true, interval: 1000
         });
         this.quartusProjectWatcher.on('change', (_path, _stats) => {
             this.syncWithDisk();
         });
+        this.quartusProjectWatcher.on('unlink', (_path: any, _stats: any) => {
+            this.syncWithDisk();
+        });
+
         this.quartusProjectWatcher.add(projectPath);
+
+        const newQuartusDatabaseStatusPath = path_lib.join(get_directory(this.projectDiskPath), "qdb",
+            "_compiler", currentRevision, "_flat", "23.3.0", "legacy", "/1", "runlog.db");
+        this.quartusDatabaseStatusPath = newQuartusDatabaseStatusPath;
+
+        // Status watcher
+        this.quartusStatusWatcher = chokidar.watch(get_directory(this.projectDiskPath), {
+            usePolling: true, interval: 500, persistent: true, depth: 7,
+            ignored: ['*.txt', '*.rdb', '*.model', '*.db_info', '*.qmsgdb', '*.rpt', '*.kvp', '*.ddm'],
+        });
+        this.quartusStatusWatcher.on('change', (path, _stats) => {
+            if (path === this.quartusDatabaseStatusPath) {
+                this.updateStatus();
+            }
+        });
+        this.quartusStatusWatcher.on('unlink', (path: any, _stats: any) => {
+            if (path === this.quartusDatabaseStatusPath) {
+                this.updateStatus();
+            }
+        });
     }
 
     /**
@@ -48,11 +84,11 @@ export class QuartusProjectManager extends Project_manager {
         return e_project_type.QUARTUS;
     }
 
-    static async fromJson(config: e_config, jsonContent: any, emitter: events.EventEmitter):
-        Promise<QuartusProjectManager> {
+    static async fromJson(config: e_config, jsonContent: any, emitterProject: events.EventEmitter)
+        : Promise<QuartusProjectManager> {
         try {
             const projectPath = jsonContent.project_disk_path;
-            return await this.fromExistingQuartusProject(config, projectPath, emitter);
+            return await this.fromExistingQuartusProject(config, projectPath, emitterProject);
         }
         catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
@@ -70,12 +106,13 @@ export class QuartusProjectManager extends Project_manager {
      * @returns Quartus project.
     **/
     static async fromNewQuartusProject(config: e_config, name: string, family: string, part: string,
-        projectDirectory: string, emitter: events.EventEmitter): Promise<QuartusProjectManager> {
+        projectDirectory: string, emitterProject: events.EventEmitter)
+        : Promise<QuartusProjectManager> {
 
         try {
             await createProject(config, projectDirectory, name, family, part);
             const projectPath = path_lib.join(projectDirectory, `${name}.qsf`);
-            const project = new QuartusProjectManager(name, projectPath, emitter);
+            const project = new QuartusProjectManager(name, projectPath, name, emitterProject);
             return project;
         }
         catch (error) {
@@ -90,13 +127,14 @@ export class QuartusProjectManager extends Project_manager {
      * @param emitter Emitter function.
      * @returns Quartus project.
     **/
-    static async fromExistingQuartusProject(config: e_config, project_path: string, emitter: events.EventEmitter)
+    static async fromExistingQuartusProject(config: e_config, project_path: string, emitterProject: events.EventEmitter)
         : Promise<QuartusProjectManager> {
         try {
             const projectInfo = await getProjectInfo(config, project_path);
             const projectFiles = await getFilesFromProject(config, project_path, true);
 
-            const quartusProject = new QuartusProjectManager(projectInfo.name, project_path, emitter);
+            const quartusProject = new QuartusProjectManager(projectInfo.name, project_path,
+                projectInfo.currentRevision, emitterProject);
 
             // Search for toplevel path for top level entity
             if (projectInfo.topEntity !== "") {
@@ -110,12 +148,17 @@ export class QuartusProjectManager extends Project_manager {
 
             // Add all files to project
             await quartusProject.add_file_from_array(projectFiles);
-
+            await quartusProject.updateStatus();
             return quartusProject;
         }
         catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
+    }
+
+    private async updateStatus() {
+        await setStatus(this.taskStateManager, this.quartusDatabaseStatusPath);
+        super.emitUpdateStatus();
     }
 
     async syncWithDisk(): Promise<void> {
@@ -206,19 +249,18 @@ export class QuartusProjectManager extends Project_manager {
     public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
         const quartusDir = getQuartusPath();
         const projectDir = get_directory(this.projectDiskPath);
-        this.taskStateManager.setRunning(taskType);
-        return runTask(this.taskStateManager, taskType, quartusDir, projectDir, this.get_name(),
-            this.get_name(), callback);
+        return runTask(taskType, quartusDir, projectDir, this.get_name(), this.currentRevision,
+            this.emitterTask, callback);
     }
 
     public cleallAllProject(callback: (result: p_result) => void): ChildProcess {
-        const exec_i = cleanProject(this.projectDiskPath, callback);
+        const exec_i = cleanProject(this.projectDiskPath, this.emitterTask, callback);
         return exec_i;
     }
 
     public getArtifact(taskType: e_taskType, reportType: e_reportType): t_test_artifact {
         if (reportType === e_reportType.TIMINGANALYZER) {
-            const command = `quartus_staw ${this.get_name()} -c ${this.get_name()}`;
+            const command = `quartus_staw ${this.get_name()} -c ${this.currentRevision}`;
 
             const artifact: t_test_artifact = {
                 name: "Timing Analyzer",
