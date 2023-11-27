@@ -42,6 +42,13 @@
                     "title": "TerosHDL",
                     "icon": "resources/images/teros_logo.svg"
                 }
+            ],
+            "panel": [
+                {
+                "id": "teroshdl-messages-view",
+                "title": "TerosHDL: log report",
+                "icon": "fancy.icon"
+                }
             ]
         },
         "views": {
@@ -77,6 +84,13 @@
                 {
                     "id": "teroshdl-view-actions",
                     "name": "Actions"
+                }
+            ],
+            "teroshdl-messages-view": [
+                {
+                    "type": "webview",
+                    "id": "teroshdl-report-logs",
+                    "name": "Report Logs"
                 }
             ]
         },
@@ -274,6 +288,12 @@
                     ,{
                         "when": "viewItem == run",
                         "command": "teroshdl.view.runs.run",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /logs/",
+                        "command": "teroshdl.view.tasks.logs",
                         "group": "inline"
                     }
                             
@@ -502,6 +522,14 @@
                     "dark": "resources/icon/dark/trash.svg"
                 },
                 "title": "Clean project"
+            }, 
+            {
+                "command": "teroshdl.view.tasks.logs",
+                "icon": {
+                    "light": "resources/icon/light/database.svg",
+                    "dark": "resources/icon/dark/database.svg"
+                },
+                "title": "Open Log"
             }, 
             {
                 "command": "teroshdl.view.tasks.report",
@@ -739,14 +767,16 @@
         "xml2js": "0.4.23",
         "nunjucks": "^3.2.0",
         "@types/nunjucks": "^3.1.4",
-        "tree-kill": "1.2.2"
+        "tree-kill": "1.2.2",
+        "sqlite3": "^5.0.2",
+        "@types/sqlite3": "^3.1.11"
     },
     "devDependencies": {
         "@types/glob": "^7.1.1",
         "@types/node": "^13.11.0",
         "@types/vscode": "^1.45.0",
-        "@typescript-eslint/eslint-plugin": "^2.30.0",
-        "@typescript-eslint/parser": "^2.30.0",
+        "@typescript-eslint/eslint-plugin": "^5.10.2",
+        "@typescript-eslint/parser": "^5.10.2",
         "eslint": "^6.8.0",
         "glob": "^7.1.6",
         "js-yaml": "^3.13.1",

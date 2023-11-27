@@ -10,6 +10,13 @@
                     "title": "TerosHDL",
                     "icon": "resources/images/teros_logo.svg"
                 }
+            ],
+            "panel": [
+                {
+                "id": "teroshdl-messages-view",
+                "title": "TerosHDL: log report",
+                "icon": "fancy.icon"
+                }
             ]
         },
         "views": {
@@ -45,6 +52,13 @@
                 {
                     "id": "teroshdl-view-actions",
                     "name": "Actions"
+                }
+            ],
+            "teroshdl-messages-view": [
+                {
+                    "type": "webview",
+                    "id": "teroshdl-report-logs",
+                    "name": "Report Logs"
                 }
             ]
         },

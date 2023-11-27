@@ -21,6 +21,7 @@ import { t_project_definition } from "../project_definition";
 import { convert_to_yaml } from "./json2yaml";
 import * as file_utils from "../../utils/file_utils";
 import * as general from "../../common/general";
+import { Database } from 'sqlite3';
 
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
     refrence_path?: string) {
@@ -78,4 +79,39 @@ export function get_file_type(filepath: string): string {
         file_type += `-${default_version}`;
     }
     return file_type;
+}
+
+/**
+ * Open the database and return the object
+ * @param bbddPath Path to the database
+ * @returns Promise with the database object
+ */
+export function openDatabase(bbddPath: string) {
+    return new Promise((resolve, reject) => {
+        const db = new Database(bbddPath, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(db);
+            }
+        });
+    });
+}
+
+/**
+ * Close the database
+ * @param db Database object
+ */
+export async function closeDatabase(db: Database) {
+    try {
+        await new Promise<void>((resolve, reject) => {
+            db.close((err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    } catch (error) { /* empty */ }
 }

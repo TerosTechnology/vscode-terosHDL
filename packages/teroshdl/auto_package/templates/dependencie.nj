@@ -17,5 +17,7 @@
     "xml2js": "0.4.23",
     "nunjucks": "^3.2.0",
     "@types/nunjucks": "^3.1.4",
-    "tree-kill": "1.2.2"
+    "tree-kill": "1.2.2",
+    "sqlite3": "^5.0.2",
+    "@types/sqlite3": "^3.1.11"
 }

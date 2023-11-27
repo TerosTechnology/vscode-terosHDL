@@ -165,6 +165,7 @@ export enum e_iconType {
 
 export enum e_reportType {
     REPORT = "Report",
+    REPORTDB = "Logs",
     TIMINGANALYZER = "Timing Analyzer",
     TECHNOLOGYMAPVIEWER = "Technology Map Viewer",
     SNAPSHOPVIEWER = "Snapshop Viewer",
@@ -226,6 +227,7 @@ export type t_test_declaration = {
 
 /** Artifact type */
 export enum e_artifact_type {
+    LOG = "log",
     CONSOLE_LOG = "console_log",
     SUMMARY = "summary",
     OTHER = "other",
@@ -244,6 +246,7 @@ export enum e_element_type {
     FOLDER = "folder",
     FST = "fst",
     NONE = "none",
+    DATABASE = "database",
 }
 
 /** Test artifact */

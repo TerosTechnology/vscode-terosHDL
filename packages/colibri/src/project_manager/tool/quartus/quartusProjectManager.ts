@@ -21,7 +21,7 @@ import { runTask } from "./taskRunner";
 import { get_directory } from "../../../utils/file_utils";
 import { getDefaultTaskList } from "./common";
 import { TaskStateManager } from "../taskState";
-import { setStatus } from "./quartusBBDD";
+import { setStatus } from "./quartusDB";
 
 export class QuartusProjectManager extends Project_manager {
 
@@ -287,9 +287,9 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.QUARTUS_EARLYTIMINGANALYSIS]: "",
             [e_taskType.QUARTUS_FITTERIMPLEMENT]: "",
         };
-        const reportKeys = Object.keys(reportSufix);
+        let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {
-            const reportName = `${this.get_name()}.${reportSufix[taskType]}.rpt`;
+            const reportName = `${this.currentRevision}.${reportSufix[taskType]}.rpt`;
             const reportPath = path_lib.join(get_directory(this.projectDiskPath), reportName);
 
             const artifact: t_test_artifact = {
@@ -298,6 +298,23 @@ export class QuartusProjectManager extends Project_manager {
                 command: "",
                 artifact_type: e_artifact_type.SUMMARY,
                 element_type: e_element_type.TEXT_FILE,
+                content: undefined
+            };
+            return artifact;
+        }
+
+        reportSufix[e_taskType.QUARTUS_IPGENERATION] = "ipg";
+        reportKeys = Object.keys(reportSufix);
+        if (reportType === e_reportType.REPORTDB && reportKeys.includes(taskType)) {
+            const reportName = `${this.currentRevision}.${reportSufix[taskType]}.qmsgdb`;
+            const reportPath = path_lib.join(get_directory(this.quartusDatabaseStatusPath), reportName);
+
+            const artifact: t_test_artifact = {
+                name: "Report",
+                path: reportPath,
+                command: "",
+                artifact_type: e_artifact_type.LOG,
+                element_type: e_element_type.DATABASE,
                 content: undefined
             };
             return artifact;

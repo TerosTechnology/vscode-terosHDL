@@ -145,6 +145,13 @@
   where: ["view/title"]
   when: "view == teroshdl-view-tasks"
 
+- name: view.tasks.logs
+  title: "Open Log"
+  icon: database
+  where: ["view/item/context"]
+  when: "viewItem =~ /logs/"
+  group: "inline"
+
 - name: view.tasks.report
   title: "Open Report"
   icon: output
