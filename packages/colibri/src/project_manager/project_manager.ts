@@ -392,14 +392,16 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     async get_dependency_graph(python_path: string): Promise<t_action_result> {
         const m_dependency = new manager_dependency.Dependency_graph();
-        const result = await m_dependency.get_dependency_graph_svg(this.files.get(), python_path);
+        // const result = await m_dependency.create_dependency_graph_pyodide(this.files.get());
+        const result = await m_dependency.create_dependency_graph(this.files.get(), python_path);
         return result;
     }
 
 
-    async get_dependency_tree(_python_path: string): Promise<t_action_result> {
+    async get_dependency_tree(python_path: string): Promise<t_action_result> {
         const m_dependency = new manager_dependency.Dependency_graph();
-        const result = await m_dependency.get_dependency_tree_pyodide(this.files.get());
+        // const result = await m_dependency.get_dependency_tree_pyodide(this.files.get());
+        const result = await m_dependency.get_dependency_tree(this.files.get(), python_path);
         return result;
     }
 
