@@ -160,7 +160,7 @@ export class Dependency_graph {
      * @param  file_list List of project files
      * @returns Dependency graph
     **/
-    private async create_dependency_graph_pyodide(file_list: t_file[]) {
+    public async create_dependency_graph_pyodide(file_list: t_file[]) {
         const result = await this.run_pydodide(file_list, "vunit_dependency_pyodide");
 
         const result_return: t_action_result = {
@@ -183,12 +183,6 @@ export class Dependency_graph {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Pure Python
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public async get_dependency_graph_svg(file_list: t_file[], _python_path: string)
-        : Promise<t_action_result> {
-        const dependencies = await this.create_dependency_graph_pyodide(file_list);
-        return dependencies;
-    }
-
     public async get_compile_order(file_list: t_file[], python_path: string): Promise<t_action_compile_order> {
         const hdl_file_list = this.clean_non_hdl_files(file_list);
 
@@ -307,33 +301,33 @@ export class Dependency_graph {
         return hdl_file_list;
     }
 
-    // private async create_dependency_graph(file_list: t_file[], python_path: string) {
-    //     const hdl_file_list = this.clean_non_hdl_files(file_list);
+    public async create_dependency_graph(file_list: t_file[], python_path: string) {
+        const hdl_file_list = this.clean_non_hdl_files(file_list);
 
-    //     // Create a temporal file with the json project
-    //     const project_files_json = JSON.stringify(hdl_file_list);
-    //     const tmp_filepath = process_utils.create_temp_file(project_files_json);
+        // Create a temporal file with the json project
+        const project_files_json = JSON.stringify(hdl_file_list);
+        const tmp_filepath = process_utils.create_temp_file(project_files_json);
 
-    //     const python_script_path = path_lib.join(__dirname, "vunit_dependency.py");
-    //     const result = await python.exec_python_script(python_path, python_script_path, tmp_filepath);
+        const python_script_path = path_lib.join(__dirname, "vunit_dependency.py");
+        const result = await python.exec_python_script(python_path, python_script_path, tmp_filepath);
 
-    //     const result_return: t_action_result = {
-    //         result: "",
-    //         successful: true,
-    //         msg: ""
-    //     };
+        const result_return: t_action_result = {
+            result: "",
+            successful: true,
+            msg: ""
+        };
 
-    //     if (result.return_value === 0) {
-    //         result_return.result = result.stdout;
-    //     }
-    //     else {
-    //         result_return.successful = false;
-    //         result_return.msg = result.stderr + '\n' + result.stdout;
-    //     }
+        if (result.return_value === 0) {
+            result_return.result = result.stdout;
+        }
+        else {
+            result_return.successful = false;
+            result_return.msg = result.stderr + '\n' + result.stdout;
+        }
 
-    //     // Remove temporal file
-    //     file_utils.remove_file(tmp_filepath);
+        // Remove temporal file
+        file_utils.remove_file(tmp_filepath);
 
-    //     return result_return;
-    // }
+        return result_return;
+    }
 }

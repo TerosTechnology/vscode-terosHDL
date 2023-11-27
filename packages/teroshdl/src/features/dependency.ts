@@ -20,7 +20,6 @@
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as fs from 'fs';
-import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../type_declaration';
 import * as nunjucks from 'nunjucks';
 import { Logger } from '../logger';
