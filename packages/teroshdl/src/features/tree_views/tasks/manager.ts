@@ -26,6 +26,8 @@ import { Logger } from "../../../logger";
 import { RedTextDecorator } from "./element";
 import { ChildProcess } from "child_process";
 import * as shelljs from 'shelljs';
+import { LogView } from "../../../views/logs";
+import * as tree_kill from 'tree-kill';
 
 enum e_VIEW_STATE {
     IDLE = 0,
@@ -41,13 +43,14 @@ export class Tasks_manager {
     private emitterProject: events.EventEmitter;
     private state: e_VIEW_STATE = e_VIEW_STATE.IDLE;
     private latesRunTask: ChildProcess | undefined = undefined;
-    private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined = undefined;
+    private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined | string = undefined;
+    private logView: LogView;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
-        logger: Logger) {
+        logger: Logger, logView: LogView) {
 
         this.set_commands();
 
@@ -55,6 +58,7 @@ export class Tasks_manager {
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
         this.emitterProject = emitterProject;
+        this.logView = logView;
 
         const selfm = this;
         emitterProject.addListener('updateStatus', function () {
@@ -77,6 +81,8 @@ export class Tasks_manager {
             this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TECHNOLOGYMAPVIEWER));
         vscode.commands.registerCommand("teroshdl.view.tasks.snapshotviewer", (item) =>
             this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.SNAPSHOPVIEWER));
+        vscode.commands.registerCommand("teroshdl.view.tasks.logs", (item) =>
+            this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORTDB));
 
         vscode.commands.registerCommand("teroshdl.view.tasks.stop", () => this.stop());
         vscode.commands.registerCommand("teroshdl.view.tasks.run", (item) => this.run(item));
@@ -85,15 +91,19 @@ export class Tasks_manager {
 
     stop() {
         if (this.latesRunTask && !this.latesRunTask.killed) {
-            // const signal = process.platform === 'win32' ? 'SIGINT' : 'SIGTERM';
-            const EMITSIGNAL = 'SIGKILL';
-            this.latesRunTask.kill(EMITSIGNAL);
-            this.latesRunTask.on('close', (code, signal) => {
-                if (signal === EMITSIGNAL) {
-                    this.logger.warn(`${this.latestTask} stopped with signal ${signal}`);
-                    vscode.window.showInformationMessage(`${this.latestTask} stopped successfully.`);
-                }
-            });
+            try {
+                const pid = this.latesRunTask.pid;
+                tree_kill(pid, 'SIGTERM', (err) => {
+                    if (err) {
+                        console.error(err);
+                    } else {
+                        this.logger.warn(`${this.latestTask} stopped.`);
+                        vscode.window.showInformationMessage(`${this.latestTask} stopped successfully.`);
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
@@ -240,8 +250,9 @@ export class Tasks_manager {
         }
 
         const taskStatus = selectedProject.getTaskState(task);
-        if (taskStatus !== teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
-            vscode.window.showWarningMessage(`The task ${task} has not finished yet. Please wait until it finishes to open the report.`);
+        if (taskStatus !== teroshdl2.project_manager.tool_common.e_taskState.FINISHED &&
+            report.element_type !== teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
+            showTaskWarningMessage(task);
             return;
         }
 
@@ -250,12 +261,28 @@ export class Tasks_manager {
         }
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY
             && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.TEXT_FILE) {
+            if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {
+                vscode.window.showWarningMessage("The report database does not exist.");
+                return;
+            }
             vscode.window.showTextDocument(vscode.Uri.file(report.path));
+        }
+        if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.LOG
+            && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
+            if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {
+                vscode.window.showWarningMessage("The report database does not exist.");
+                return;
+            }
+            this.logView.sendLogs(report.path);
         }
     }
 
     refresh_tree() {
         this.tree.refresh();
     }
+}
+
+function showTaskWarningMessage(task: string) {
+    vscode.window.showWarningMessage(`The task ${task} has not finished yet. Please wait until it finishes to open the report.`);
 }
 

@@ -3,6 +3,7 @@ import { Database } from 'sqlite3';
 import { TaskStateManager } from '../taskState';
 import { e_taskState, e_taskType } from '../common';
 import { check_if_path_exist } from '../../../utils/file_utils';
+import { openDatabase, closeDatabase } from '../../utils/utils';
 
 const taskNameInBBDD: Record<string, e_taskType> = {
     "Full Compilation": e_taskType.QUARTUS_COMPILEDESIGN,
@@ -17,43 +18,8 @@ const taskNameInBBDD: Record<string, e_taskType> = {
     "Place": e_taskType.QUARTUS_PLACE,
     "Route": e_taskType.QUARTUS_ROUTE,
     "Fitter (Finalize)": e_taskType.QUARTUS_FITTERFINALIZE,
-    "none3": e_taskType.QUARTUS_TIMING,
+    "Timing Analysis (Finalize)": e_taskType.QUARTUS_TIMING,
 };
-
-/**
- * Open the database and return the object
- * @param bbddPath Path to the database
- * @returns Promise with the database object
- */
-function openDatabase(bbddPath: string) {
-    return new Promise((resolve, reject) => {
-        const db = new Database(bbddPath, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(db);
-            }
-        });
-    });
-}
-
-/**
- * Close the database
- * @param db Database object
- */
-async function closeDatabase(db: Database) {
-    try {
-        await new Promise<void>((resolve, reject) => {
-            db.close((err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    } catch (error) { /* empty */ }
-}
 
 /**
  * Clean all the tasks

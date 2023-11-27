@@ -39,6 +39,7 @@ import * as events from "events";
 import { Comander } from "./features/comander/run";
 import { Logger } from "./logger";
 import { Dependency_manager } from './features/dependency';
+import { LogView } from './views/logs';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -48,8 +49,14 @@ export class Teroshdl {
     private manager: t_Multi_project_manager;
     private emitterProject: events.EventEmitter = new events.EventEmitter();
     private global_logger: Logger;
+    private logView;
 
     constructor(context: vscode.ExtensionContext, global_logger: Logger) {
+        this.logView = new LogView(context);
+
+        context.subscriptions.push(vscode.window.registerWebviewViewProvider(
+            'teroshdl-report-logs', this.logView, { webviewOptions: { retainContextWhenHidden: true } })
+        );
 
         const homedir = teroshdl2.utils.common.get_home_directory();
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);
@@ -164,7 +171,7 @@ export class Teroshdl {
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
         new Tree_view_manager(this.context, this.manager, this.emitterProject, schematic_manager,
-            dependency_manager, this.global_logger);
+            dependency_manager, this.global_logger, this.logView);
     }
 
     private init_comander() {

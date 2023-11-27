@@ -36,6 +36,7 @@ import { t_Multi_project_manager } from '../../type_declaration';
 import { Schematic_manager } from "../schematic";
 import { Dependency_manager } from "../dependency";
 import * as teroshdl from "teroshdl2";
+import { LogView } from "../../views/logs";
 
 let project_manager: Project_manager;
 let source_manager: Source_manager;
@@ -54,7 +55,8 @@ export class Tree_view_manager {
 
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
         schematic_manager: Schematic_manager,
-        dependency_manager: Dependency_manager, global_logger: Logger) {
+        dependency_manager: Dependency_manager, global_logger: Logger,
+        logView: LogView) {
 
         context.subscriptions.push(this.statusbar);
         multi_manager = manager;
@@ -82,7 +84,7 @@ export class Tree_view_manager {
         source_manager = new Source_manager(context, manager, emitterProject);
         tree_manager = new Tree_manager(context, manager, schematic_manager, dependency_manager);
         runs_manager = new Runs_manager(context, manager, emitterProject, run_output, this.logger);
-        tasks_manager = new Tasks_manager(context, manager, emitterProject, this.logger);
+        tasks_manager = new Tasks_manager(context, manager, emitterProject, this.logger, logView);
         actions_manager = new Actions_manager(context, manager, emitterProject, run_output);
         watcher_manager = new Watcher_manager(context, manager, emitterProject);
         output_manager = new Output_manager(context, manager, run_output, this.logger);

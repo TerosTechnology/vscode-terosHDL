@@ -110,6 +110,9 @@ export class Task extends vscode.TreeItem {
             if (taskDefinition.reports.includes(teroshdl2.project_manager.tool_common.e_reportType.SNAPSHOPVIEWER)) {
                 this.contextValue += ";snapshotviewer";
             }
+            if (taskDefinition.reports.includes(teroshdl2.project_manager.tool_common.e_reportType.REPORTDB)) {
+                this.contextValue += ";logs";
+            }
         }
     }
 

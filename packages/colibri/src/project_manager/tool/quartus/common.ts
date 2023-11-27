@@ -16,12 +16,18 @@ export function getDefaultTaskList(): t_taskRep[] {
                     "success": undefined,
                     "elapsed_time": undefined,
                     "percent": undefined,
+                    "reports": [
+                        e_reportType.REPORTDB,
+                    ]
                 },
                 {
                     "name": e_taskType.QUARTUS_ANALYSISSYNTHESIS,
                     "label": "Run during full compilation",
                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
-                    "reports": [e_reportType.REPORT,],
+                    "reports": [
+                        e_reportType.REPORTDB,
+                        e_reportType.REPORT,
+                    ],
                     "success": undefined,
                     "elapsed_time": undefined,
                     "percent": undefined,
@@ -31,7 +37,10 @@ export function getDefaultTaskList(): t_taskRep[] {
                             "name": e_taskType.QUARTUS_ANALYSISELABORATION,
                             "label": "Run during full compilation",
                             "executionType": e_taskExecutionType.COMPLEXCOMMAND,
-                            "reports": [e_reportType.REPORT,],
+                            "reports": [
+                                e_reportType.REPORTDB,
+                                e_reportType.REPORT,
+                            ],
                             "success": undefined,
                             "elapsed_time": undefined,
                             "percent": undefined,
@@ -42,8 +51,9 @@ export function getDefaultTaskList(): t_taskRep[] {
                             "label": "Run during full compilation",
                             "executionType": e_taskExecutionType.COMPLEXCOMMAND,
                             "reports": [
+                                e_reportType.REPORTDB,
                                 e_reportType.REPORT, e_reportType.TIMINGANALYZER,
-                                e_reportType.TECHNOLOGYMAPVIEWER,
+                                // e_reportType.TECHNOLOGYMAPVIEWER,
                             ],
                             "status": e_taskState.IDLE,
                             "success": undefined,
@@ -56,7 +66,11 @@ export function getDefaultTaskList(): t_taskRep[] {
                     "name": e_taskType.QUARTUS_EARLYTIMINGANALYSIS,
                     "label": "Not run during full compilation",
                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
-                    "reports": [e_reportType.REPORT, e_reportType.TIMINGANALYZER,],
+                    "reports": [
+                        e_reportType.REPORTDB,
+                        e_reportType.REPORT, 
+                        e_reportType.TIMINGANALYZER,
+                    ],
                     "icon": e_iconType.TIME,
                     "success": undefined,
                     "elapsed_time": undefined,
@@ -67,7 +81,10 @@ export function getDefaultTaskList(): t_taskRep[] {
                     "name": e_taskType.QUARTUS_FITTER,
                     "label": "Run during full compilation",
                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
-                    "reports": [e_reportType.REPORT,],
+                    "reports": [
+                        e_reportType.REPORTDB,
+                        e_reportType.REPORT,
+                    ],
                     "success": undefined,
                     "elapsed_time": undefined,
                     "percent": undefined,
@@ -90,8 +107,9 @@ export function getDefaultTaskList(): t_taskRep[] {
                                     "percent": undefined,
                                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
                                     "reports": [
+                                        e_reportType.REPORTDB,
                                         e_reportType.REPORT, e_reportType.TIMINGANALYZER,
-                                        e_reportType.TECHNOLOGYMAPVIEWER
+                                        // e_reportType.TECHNOLOGYMAPVIEWER
                                     ],
                                     "status": e_taskState.IDLE
                                 },
@@ -103,8 +121,9 @@ export function getDefaultTaskList(): t_taskRep[] {
                                     "percent": undefined,
                                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
                                     "reports": [
+                                        e_reportType.REPORTDB,
                                         e_reportType.REPORT, e_reportType.TIMINGANALYZER,
-                                        e_reportType.TECHNOLOGYMAPVIEWER
+                                        // e_reportType.TECHNOLOGYMAPVIEWER
                                     ],
                                     "status": e_taskState.IDLE,
                                 },
@@ -116,8 +135,9 @@ export function getDefaultTaskList(): t_taskRep[] {
                                     "percent": undefined,
                                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
                                     "reports": [
+                                        e_reportType.REPORTDB,
                                         e_reportType.REPORT, e_reportType.TIMINGANALYZER,
-                                        e_reportType.TECHNOLOGYMAPVIEWER
+                                        // e_reportType.TECHNOLOGYMAPVIEWER
                                     ],
                                     "status": e_taskState.IDLE,
                                 },
@@ -130,7 +150,10 @@ export function getDefaultTaskList(): t_taskRep[] {
                             "elapsed_time": undefined,
                             "percent": undefined,
                             "executionType": e_taskExecutionType.COMPLEXCOMMAND,
-                            "reports": [e_reportType.REPORT, e_reportType.TIMINGANALYZER,],
+                            "reports": [
+                                e_reportType.REPORTDB,
+                                e_reportType.REPORT, e_reportType.TIMINGANALYZER,
+                            ],
                             "status": e_taskState.IDLE,
                         },
                     ]
@@ -142,7 +165,9 @@ export function getDefaultTaskList(): t_taskRep[] {
                     "elapsed_time": undefined,
                     "percent": undefined,
                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
-                    "reports": [e_reportType.REPORT, e_reportType.TIMINGANALYZER,],
+                    "reports": [
+                        e_reportType.REPORTDB,
+                        e_reportType.REPORT, e_reportType.TIMINGANALYZER,],
                     "icon": e_iconType.TIME,
                     "status": e_taskState.IDLE,
                 },
