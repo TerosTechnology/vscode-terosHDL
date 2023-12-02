@@ -115,9 +115,14 @@ export async function setLogs(bbddPath: string, webview: any,
     const messageList: any[] = [];
     try {
 
-        let extraQuery = "";
+        let extraQuery0 = "";
+        let extraQuery1 = `
+    WHERE
+        NOT EXISTS (
+            SELECT 1 FROM hierarchy WHERE child_id = m.sequence_id
+        )\n`;
         if (logLevelList) {
-            extraQuery = " WHERE LOWER(type) IN (";
+            let extraQuery = "";
             for (let i = 0; i < logLevelList.length; i++) {
                 extraQuery += "'" + logLevelList[i] + "'";
                 if (i < logLevelList.length - 1) {
@@ -125,19 +130,45 @@ export async function setLogs(bbddPath: string, webview: any,
                 }
             }
             extraQuery += ")";
+
+            extraQuery0 = " AND LOWER(c.type) IN ( " + extraQuery;
+            extraQuery1 += "        AND LOWER(m.type) IN ( " + extraQuery;
         }
 
         if (onlyFileLogs) {
-            if (extraQuery === "") {
-                extraQuery = " WHERE file != ''";
-            }
-            else {
-                extraQuery += " AND file != ''";
-            }
+            extraQuery1 += "        AND file != ''";
         }
 
+        const query = `
+        SELECT 
+        m.sequence_id, 
+        m.time, 
+        m.source, 
+        m.type, 
+        m.file, 
+        m.line, 
+        COALESCE(GROUP_CONCAT(c.text, ' '), m.text) AS aggregated_text
+    FROM 
+        messages m
+    LEFT JOIN 
+        hierarchy h ON m.sequence_id = h.parent_id
+    LEFT JOIN 
+        messages c ON h.child_id = c.sequence_id ${extraQuery0}
+${extraQuery1}
+    GROUP BY 
+        m.sequence_id, 
+        m.time, 
+        m.source, 
+        m.type, 
+        m.file, 
+        m.line
+    HAVING 
+        aggregated_text != '*******************************************************************'
+        OR aggregated_text IS NULL;
+`;
+
         const rows = await new Promise((resolve, reject) => {
-            db.all(`SELECT * FROM messages ${extraQuery}`, (err, rows) => {
+            db.all(query, (err, rows) => {
                 if (err) {
                     reject(err);
                 }
@@ -145,12 +176,11 @@ export async function setLogs(bbddPath: string, webview: any,
             });
         });
 
-
         if (rows) {
             for (const row of <any[]>rows) {
                 const time = row.time;
                 const level = row.type;
-                const description = row.text;
+                const description = row.aggregated_text;
                 const file = row.file;
                 const line = row.line;
 
