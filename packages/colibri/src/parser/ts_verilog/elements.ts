@@ -781,26 +781,27 @@ export function get_generics(tree: any, lines: any, comments: any, ansi: any, co
             comment = utils_hdl.get_comment_with_break(pre_comment, comment_symbol);
         }
 
-        const item: common_hdl.Port_hdl = {
-            hdl_element_type: common_hdl.TYPE_HDL_ELEMENT.PORT,
-            info: {
-                position: {
-                    line: inputs[x].startPosition.row,
-                    column: 0
+        try {
+            const item: common_hdl.Port_hdl = {
+                hdl_element_type: common_hdl.TYPE_HDL_ELEMENT.PORT,
+                info: {
+                    position: {
+                        line: inputs[x].startPosition.row,
+                        column: 0
+                    },
+                    name: get_generic_name(inputs[x], lines),
+                    description: comment
                 },
-                name: get_generic_name(inputs[x], lines),
-                description: comment
-            },
-            type: get_generic_kind(inputs[x], lines),
-            subtype: "",
-            direction: "",
-            inline_comment: "",
-            over_comment: "",
-            default_value: get_generic_default(inputs[x], lines),
-        };
-
-
-        items.push(item);
+                type: get_generic_kind(inputs[x], lines),
+                subtype: "",
+                direction: "",
+                inline_comment: "",
+                over_comment: "",
+                default_value: get_generic_default(inputs[x], lines),
+            };
+            items.push(item);
+        }
+        catch (error) { /* empty */ }
     }
     return items;
 }
