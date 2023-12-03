@@ -113,12 +113,12 @@ export class Multi_project_manager {
                     if (prj_info.project_type === e_project_type.QUARTUS) {
                         this.add_project(
                             await QuartusProjectManager.fromJson(this.get_config_global_config(), prj_info, 
-                                emitterProject)
+                                this.sync_file_path, emitterProject)
                         );
                     } else {
                         this.add_project(
                             await Project_manager.fromJson(this.get_config_global_config(), 
-                                prj_info, emitterProject)
+                                prj_info, this.sync_file_path, emitterProject)
                         );
                     }
                 } catch (error) {

@@ -154,22 +154,39 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
-    static async fromJson(_config: e_config, jsonContent: any, emitterProject: events.EventEmitter)
-        : Promise<Project_manager> {
+    static async fromJson(_config: e_config, jsonContent: any, reference_path: string,
+        emitterProject: events.EventEmitter): Promise<Project_manager> {
         const prj = new Project_manager(jsonContent.name, emitterProject);
         // Files
         jsonContent.files.forEach((file: any) => {
+            const name = file_utils.get_absolute_path(file_utils.get_directory(reference_path), file.name);
+
+            const is_include_file = jsonContent?.["is_include_file"] ?? false;
+            const include_path = jsonContent?.["include_path"] ?? "";
+            const logical_name = jsonContent?.["logical_name"] ?? "";
+            const is_manual = jsonContent?.["is_manual"] ?? true;
+            const file_type = file_utils.get_language_from_filepath(name);
+            const file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
+
             prj.add_file({
-                name: file.name, is_include_file: file.is_include_file,
-                include_path: file.include_path, logical_name: file.logical_name,
-                is_manual: file.is_manual, file_type: file.file_type,
-                file_version: file_utils.check_default_version_for_filepath(file.name, file.file_version)
+                name: name, is_include_file: is_include_file,
+                include_path: include_path, logical_name: logical_name,
+                is_manual: is_manual, file_type: file_type,
+                file_version: file_version
             });
         });
         // Toplevel
-        prj.add_toplevel_path(jsonContent.toplevel);
+
+        if (jsonContent.toplevel !== undefined) {
+            const toplevel_path = file_utils.get_absolute_path(file_utils.get_directory(reference_path),
+                jsonContent.toplevel);
+            if (file_utils.check_if_path_exist(toplevel_path)) {
+                prj.add_toplevel_path(toplevel_path);
+            }
+        }
+
         // Watchers
-        const watcher_list = jsonContent.watchers;
+        const watcher_list = jsonContent?.["watchers"] ?? [];
         watcher_list.forEach((watcher: any) => {
             prj.add_file_to_watcher(watcher);
         });

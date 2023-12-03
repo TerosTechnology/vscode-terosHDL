@@ -239,7 +239,7 @@ export class Project_manager {
         try {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
                 this.project_manager.get_config_global_config(),
-                JSON.parse(read_file_sync(prj_path)), this.emitterProject);
+                JSON.parse(read_file_sync(prj_path)), prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
             this.refresh();
         } catch (error) {
@@ -250,7 +250,7 @@ export class Project_manager {
         try {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
                 this.project_manager.get_config_global_config(),
-                yaml.load(read_file_sync(prj_path)), this.emitterProject);
+                yaml.load(read_file_sync(prj_path)), prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
             this.refresh();
         } catch (error) {

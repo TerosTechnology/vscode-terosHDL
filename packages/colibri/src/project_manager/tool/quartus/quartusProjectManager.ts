@@ -84,8 +84,8 @@ export class QuartusProjectManager extends Project_manager {
         return e_project_type.QUARTUS;
     }
 
-    static async fromJson(config: e_config, jsonContent: any, emitterProject: events.EventEmitter)
-        : Promise<QuartusProjectManager> {
+    static async fromJson(config: e_config, jsonContent: any, _reference_path: string, 
+        emitterProject: events.EventEmitter): Promise<QuartusProjectManager> {
         try {
             const projectPath = jsonContent.project_disk_path;
             return await this.fromExistingQuartusProject(config, projectPath, emitterProject);
