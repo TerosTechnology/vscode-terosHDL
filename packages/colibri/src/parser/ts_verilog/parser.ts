@@ -61,6 +61,8 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
     }
 
     public get_all(code: string, comment_symbol: string): Hdl_element {
+        code = code.replace(/\$clog2/g, 'clog2');
+
         this.comment_symbol = comment_symbol;
         let hdl_element = new Hdl_element(LANGUAGE.VERILOG, common_hdl.TYPE_HDL_ELEMENT.ENTITY);
 
