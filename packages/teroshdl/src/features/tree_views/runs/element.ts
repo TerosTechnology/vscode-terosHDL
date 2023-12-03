@@ -126,9 +126,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     async refresh(): Promise<void> {
         try {
             const selected_project = this.project_manager.get_selected_project();
-            const config = this.project_manager.get_config_global_config();
-
-            const runs_list = await selected_project.get_test_list(config);
+            const runs_list = await selected_project.get_test_list();
             const runs_view: Run[] = [];
             runs_list.forEach(run => {
                 runs_view.push(new Run(run.suite_name, run.name, run.filename, run.location));

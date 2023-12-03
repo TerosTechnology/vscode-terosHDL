@@ -22,6 +22,8 @@ import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
 import { Logger } from '../logger';
+import { e_formatter_general_formatter_verilog, e_formatter_general_formatter_vhdl } from 'teroshdl2/out/config/config_declaration';
+import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 let formatter_vhdl: Formatter | undefined = undefined;
 let formatter_verilog: Formatter | undefined = undefined;
@@ -44,35 +46,51 @@ class Formatter {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Configuration
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private get_config_manager() {
-        const config = this.manager.get_config_manager();
-        return config;
-    }
-
     private get_formatter_name() {
-        const config_manager = this.get_config_manager();
         if (this.lang === teroshdl2.common.general.LANGUAGE.VHDL) {
-            return config_manager.get_formatter_name_vhdl();
+            return GlobalConfigManager.getInstance().get_config().formatter.general.formatter_vhdl;
         }
         else {
-            return config_manager.get_formatter_name_verilog();
+            return GlobalConfigManager.getInstance().get_config().formatter.general.formatter_verilog;
         }
     }
 
     private get_formatter_config() {
-        const config_manager = this.get_config_manager();
         if (this.lang === teroshdl2.common.general.LANGUAGE.VHDL) {
-            return config_manager.get_formatter_config_vhdl();
-        }
+            const formatter_name = GlobalConfigManager.getInstance().get_config().formatter.general.formatter_vhdl;
+            if (formatter_name === e_formatter_general_formatter_vhdl.standalone) {
+                return GlobalConfigManager.getInstance().get_config().formatter.standalone;
+            }
+            else if (formatter_name === e_formatter_general_formatter_vhdl.vsg) {
+                return GlobalConfigManager.getInstance().get_config().formatter.svg;
+            }
+            else {
+                return GlobalConfigManager.getInstance().get_config().formatter.standalone;
+            }
+            }
         else {
-            return config_manager.get_formatter_config_verilog();
+            const formatter_name = GlobalConfigManager.getInstance().get_config().formatter.general.formatter_verilog;
+            if (formatter_name === e_formatter_general_formatter_verilog.istyle) {
+                return GlobalConfigManager.getInstance().get_config().formatter.istyle;
+            }
+            else if (formatter_name === e_formatter_general_formatter_verilog.s3sv) {
+                return GlobalConfigManager.getInstance().get_config().formatter.s3sv;
+            }
+            else if (formatter_name === e_formatter_general_formatter_verilog.verible) {
+                const config = {
+                    format_args : GlobalConfigManager.getInstance().get_config().formatter.verible.format_args,
+                    path: GlobalConfigManager.getInstance().get_config().tools.verible.installation_path
+                };
+                return config;
+            }
+            else {
+                return GlobalConfigManager.getInstance().get_config().formatter.istyle;
+            }
         }
     }
 
     private get_pytyon_path() {
-        const config_manager = this.get_config_manager();
-        const python_path = config_manager.get_exec_config().python_path;
-        return python_path;
+        return GlobalConfigManager.getInstance().get_config().general.general.pypath;
     }
 
     public async format(code) {

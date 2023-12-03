@@ -143,26 +143,26 @@ export async function add_sources_from_directory_and_subdirectories(prj: teroshd
     };
 }
 
-export async function add_sources_from_vunit(prj: teroshdl2.project_manager.project_manager.Project_manager, config: teroshdl2.config.config_declaration.e_config, is_manual: boolean) {
+export async function add_sources_from_vunit(prj: teroshdl2.project_manager.project_manager.Project_manager, is_manual: boolean) {
     const path_list = await utils.get_from_open_dialog("Select run.py", false, true, true,
         "Select VUnit run.py files", { 'Python files (*.py)': ['py'] });
     path_list.forEach(async path => {
-        await prj.add_file_from_vunit(config, path, is_manual);
+        await prj.add_file_from_vunit(path, is_manual);
     });
 }
 
-export async function add_sources_from_vivado(prj: teroshdl2.project_manager.project_manager.Project_manager, config: teroshdl2.config.config_declaration.e_config, is_manual: boolean) {
+export async function add_sources_from_vivado(prj: teroshdl2.project_manager.project_manager.Project_manager, is_manual: boolean) {
     const path_list = await utils.get_from_open_dialog("Select Vivado project", false, true, true,
         "Select Vivado project", { 'Vivado project (*.xpr)': ['xpr'] });
     path_list.forEach(async path => {
-        await prj.add_file_from_vivado(config, path, is_manual);
+        await prj.add_file_from_vivado(path, is_manual);
     });
 }
 
-export async function add_sources_from_quartus(prj: teroshdl2.project_manager.project_manager.Project_manager, config: teroshdl2.config.config_declaration.e_config, is_manual: boolean) {
+export async function add_sources_from_quartus(prj: teroshdl2.project_manager.project_manager.Project_manager, is_manual: boolean) {
     const path_list = await utils.get_from_open_dialog("Select Quartus project", false, true, false,
         "Select Quartus project", { 'Quartus project (*.qsf)': ['qsf'] });
     for (const path of path_list) {
-        await prj.add_file_from_quartus(config, path, is_manual);
+        await prj.add_file_from_quartus(path, is_manual);
     }
 }

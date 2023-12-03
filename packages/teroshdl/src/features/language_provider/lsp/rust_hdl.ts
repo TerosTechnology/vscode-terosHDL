@@ -20,6 +20,7 @@ import {
     LanguageClientOptions,
     ServerOptions,
 } from 'vscode-languageclient/node';
+import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 
 const isWindows = process.platform === 'win32';
@@ -146,7 +147,7 @@ export class Rusthdl_lsp {
     }
 
     getServerOptionsEmbedded(context: ExtensionContext) {
-        const linter_name = this.manager.get_config_manager().get_config().linter.general.linter_vhdl;
+        const linter_name = GlobalConfigManager.getInstance().get_config().linter.general.linter_vhdl;
         let args: string[] = [];
         if (linter_name !== teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.none) {
             args = ['--no-lint'];

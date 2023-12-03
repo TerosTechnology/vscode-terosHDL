@@ -22,6 +22,7 @@ import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../type_declaration';
 import { Logger } from '../logger';
+import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 export class Template_manager {
     private manager: t_Multi_project_manager;
@@ -86,7 +87,7 @@ export class Template_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Utils
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private get_indent(general_indent:string, lang: teroshdl2.common.general.LANGUAGE): string{
+    private get_indent(general_indent: string, lang: teroshdl2.common.general.LANGUAGE): string {
         const indent = general_indent;
         let tab_size = undefined;
         let insert_spaces = undefined;
@@ -127,7 +128,7 @@ export class Template_manager {
             return general_indent;
         }
 
-        if (tab_size === undefined || insert_spaces === undefined){
+        if (tab_size === undefined || insert_spaces === undefined) {
             return general_indent;
         }
 
@@ -147,7 +148,12 @@ export class Template_manager {
     }
 
     private get_config(): teroshdl2.config.auxiliar_config.t_template_options {
-        const config = this.manager.get_config_manager().get_template_config();
-        return config;
+        const config = GlobalConfigManager.getInstance().get_config();
+        return <teroshdl2.config.auxiliar_config.t_template_options>{
+            header_file_path: config.templates.general.header_file_path,
+            indent_char: config.templates.general.indent,
+            clock_generation_style: config.templates.general.clock_generation_style,
+            instance_style: config.templates.general.instance_style
+        };
     }
 }

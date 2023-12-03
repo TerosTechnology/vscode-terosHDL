@@ -56,7 +56,7 @@ export class Tool_manager {
     }
 
     public async get_test_list(prj: t_project_definition): Promise<t_test_declaration[]> {
-        const tool_name = prj.config_manager.get_tool_name();
+        const tool_name = prj.config.tools.general.select_tool;
         const tool_handler = this.get_tool_handler(tool_name);
         return await tool_handler.get_test_list(prj);
     }
@@ -65,13 +65,13 @@ export class Tool_manager {
         callback: (result: t_test_result[]) => void,
         callback_stream: (stream_c: any) => void) {
 
-        const tool_name = prj.config_manager.get_config().tools.general.select_tool;
+        const tool_name = prj.config.tools.general.select_tool;
         const tool_handler = this.get_tool_handler(tool_name);
         return tool_handler.run(prj, test_list, this.working_directory, callback, callback_stream);
     }
 
     public clean(prj: t_project_definition, clean_mode: e_clean_step, callback_stream: (stream_c: any) => void) {
-        const tool_name = prj.config_manager.get_config().tools.general.select_tool;
+        const tool_name = prj.config.tools.general.select_tool;
         const tool_handler = this.get_tool_handler(tool_name);
         return tool_handler.clean(prj, this.working_directory, clean_mode, callback_stream);
     }

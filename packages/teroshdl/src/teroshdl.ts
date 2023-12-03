@@ -40,6 +40,7 @@ import { Comander } from "./features/comander/run";
 import { Logger } from "./logger";
 import { Dependency_manager } from './features/dependency';
 import { LogView } from './views/logs';
+import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -63,7 +64,8 @@ export class Teroshdl {
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
 
         this.manager = new teroshdl2.project_manager.multi_project_manager.Multi_project_manager(
-            file_config_path, file_prj_path);
+            file_prj_path);
+        GlobalConfigManager.newInstance(file_config_path);
         this.context = context;
         this.global_logger = global_logger;
     }
@@ -114,6 +116,7 @@ export class Teroshdl {
 
     private async init_multi_project_manager() {
         try {
+            GlobalConfigManager.getInstance().load();
             await this.manager.load(this.emitterProject);
         } catch (error) {
             this.global_logger.warn("There have been errors loading project list from disk.");

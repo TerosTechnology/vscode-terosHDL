@@ -38,8 +38,8 @@ import {
 import { t_project_definition } from "./project_definition";
 import * as file_utils from "../utils/file_utils";
 import * as hdl_utils from "../utils/hdl_utils";
-import { Config_manager, merge_configs } from "../config/config_manager";
-import { e_config } from "../config/config_declaration";
+import { ConfigManager, GlobalConfigManager } from "../config/config_manager";
+import { e_config, get_default_config } from "../config/config_declaration";
 import * as utils from "./utils/utils";
 import * as python from "../process/python";
 import * as events from "events";
@@ -55,7 +55,7 @@ import { ChildProcess } from "child_process";
 import { p_result } from "../process/common";
 import { TaskStateManager } from "./tool/taskState";
 
-export class Project_manager {
+export class Project_manager extends ConfigManager {
     /**  Name of the project */
     private name: string;
     /** Path of the project */
@@ -71,8 +71,6 @@ export class Project_manager {
     private parameters = new manager_parameter.Parameter_manager();
     /** Toplevel path(s) for the project. */
     private toplevel_path = new manager_toplevel_path.Toplevel_path_manager();
-    /** Config manager. */
-    private config_manager = new Config_manager();
     private tools_manager = new Tool_manager(undefined);
     private emitterProject: events.EventEmitter;
     /** Linter */
@@ -80,6 +78,7 @@ export class Project_manager {
     public taskStateManager: TaskStateManager = new TaskStateManager([]);
 
     constructor(name: string, emitterProject: events.EventEmitter) {
+        super(get_undefined_config());
         this.name = name;
         this.emitterProject = emitterProject;
         // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -95,10 +94,10 @@ export class Project_manager {
                         selfm.add_file_from_csv(watcher.path, false);
                     }
                     else if (watcher.watcher_type === e_watcher_type.VUNIT) {
-                        await selfm.add_file_from_vunit(selfm.config_manager.get_config(), watcher.path, false);
+                        await selfm.add_file_from_vunit(watcher.path, false);
                     }
                     else if (watcher.watcher_type === e_watcher_type.VIVADO) {
-                        await selfm.add_file_from_vivado(selfm.config_manager.get_config(), watcher.path, false);
+                        await selfm.add_file_from_vivado(watcher.path, false);
                     }
                     if (selfm.emitterProject !== undefined) {
                         selfm.emitterProject.emit('loaded');
@@ -154,8 +153,7 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
-    static async fromJson(_config: e_config, jsonContent: any, reference_path: string,
-        emitterProject: events.EventEmitter): Promise<Project_manager> {
+    static async fromJson(jsonContent: any, reference_path: string, emitterProject: events.EventEmitter): Promise<Project_manager> {
         const prj = new Project_manager(jsonContent.name, emitterProject);
         // Files
         jsonContent.files.forEach((file: any) => {
@@ -204,30 +202,6 @@ export class Project_manager {
         }
         return await this.linter.lint_from_project(file_path, this.files.get(), linter_name, options);
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Hook
-    ////////////////////////////////////////////////////////////////////////////
-    // public add_hook(script: t_script, stage: e_script_stage)
-    //     : t_action_result {
-    //     return this.hooks.add(script, stage);
-    // }
-
-    // public delete_hook(script: t_script, stage: e_script_stage)
-    //     : t_action_result {
-    //     return this.hooks.delete(script, stage);
-    // }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Parameters
-    ////////////////////////////////////////////////////////////////////////////
-    // add_parameter(parameter: t_parameter): t_action_result {
-    //     return this.parameters.add(parameter);
-    // }
-
-    // delete_parameter(parameter: t_parameter): t_action_result {
-    //     return this.parameters.delete(parameter);
-    // }
 
     ////////////////////////////////////////////////////////////////////////////
     // Toplevel
@@ -295,15 +269,11 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // File
     ////////////////////////////////////////////////////////////////////////////
-    async add_file_from_quartus(general_config: e_config | undefined, vivado_path: string, is_manual: boolean)
+    async add_file_from_quartus(vivado_path: string, is_manual: boolean)
         : Promise<void> {
 
-        const n_config = merge_configs(general_config, this.config_manager.get_config());
-        const n_config_manager = new Config_manager();
-        n_config_manager.set_config(n_config);
-
         try {
-            const fileList = await getFilesFromProject(n_config, vivado_path, is_manual);
+            const fileList = await getFilesFromProject(this.get_config(), vivado_path, is_manual);
             this.add_file_from_array(fileList);
 
         } catch (error) {
@@ -311,14 +281,10 @@ export class Project_manager {
         }
     }
 
-    async add_file_from_vivado(general_config: e_config | undefined, vivado_path: string, is_manual: boolean)
+    async add_file_from_vivado(vivado_path: string, is_manual: boolean)
         : Promise<t_action_result> {
 
-        const n_config = merge_configs(general_config, this.config_manager.get_config());
-        const n_config_manager = new Config_manager();
-        n_config_manager.set_config(n_config);
-
-        const result = await get_files_from_vivado(n_config, vivado_path, is_manual);
+        const result = await get_files_from_vivado(this.get_config(), vivado_path, is_manual);
         this.add_file_from_array(result.file_list);
         const action_result: t_action_result = {
             result: result.file_list,
@@ -328,14 +294,10 @@ export class Project_manager {
         return action_result;
     }
 
-    async add_file_from_vunit(general_config: e_config | undefined, vunit_path: string, is_manual: boolean
+    async add_file_from_vunit(vunit_path: string, is_manual: boolean
     ): Promise<t_action_result> {
 
-        const n_config = merge_configs(general_config, this.config_manager.get_config());
-        const n_config_manager = new Config_manager();
-        n_config_manager.set_config(n_config);
-
-        const result = await get_files_from_vunit(n_config, vunit_path, is_manual);
+        const result = await get_files_from_vunit(this.get_config(), vunit_path, is_manual);
 
         this.add_file_from_array(result.file_list);
         const action_result: t_action_result = {
@@ -425,21 +387,18 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Config
     ////////////////////////////////////////////////////////////////////////////
-    public set_config(new_config: e_config) {
-        this.config_manager.set_config(new_config);
+    public set_config(config: e_config): void {
+        super.set_config(diff_config(config, GlobalConfigManager.getInstance().get_config()));
     }
+
     public get_config(): e_config {
-        return this.config_manager.get_config();
+        return merge_configs(super.get_config(), GlobalConfigManager.getInstance().get_config());
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Utils
     ////////////////////////////////////////////////////////////////////////////
-    public get_project_definition(config_manager: Config_manager | undefined = undefined): t_project_definition {
-        let current_config_manager = config_manager;
-        if (current_config_manager === undefined) {
-            current_config_manager = this.config_manager;
-        }
+    public get_project_definition(): t_project_definition {
         const prj_definition: t_project_definition = {
             name: this.name,
             project_disk_path: this.projectDiskPath,
@@ -449,7 +408,7 @@ export class Project_manager {
             parameter_manager: this.parameters,
             toplevel_path_manager: this.toplevel_path,
             watcher_manager: this.watchers,
-            config_manager: current_config_manager
+            config: this.get_config()
         };
         return prj_definition;
     }
@@ -492,41 +451,26 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Tool
     ////////////////////////////////////////////////////////////////////////////
-    public async run(general_config: e_config | undefined, test_list: t_test_declaration[],
+    public async run(test_list: t_test_declaration[],
         callback: (result: t_test_result[]) => void,
         callback_stream: (stream_c: any) => void): Promise<any> {
 
-        const n_config = merge_configs(general_config, this.config_manager.get_config());
-        const n_config_manager = new Config_manager();
-        n_config_manager.set_config(n_config);
-
         const python_result = await python.get_python_path(
-            { "path": n_config_manager.get_config().general.general.pypath });
+            { "path": this.get_config().general.general.pypath });
 
         await this.files.order(python_result.python_path);
-        const prj_def = this.get_project_definition(n_config_manager);
+        const prj_def = this.get_project_definition();
 
         return this.tools_manager.run(prj_def, test_list, callback, callback_stream);
     }
 
-    public clean(general_config: e_config | undefined,
-        clean_mode: e_clean_step,
-        callback_stream: (stream_c: any) => void): any {
-
-        const n_config = merge_configs(general_config, this.config_manager.get_config());
-        const n_config_manager = new Config_manager();
-        n_config_manager.set_config(n_config);
-
-        return this.tools_manager.clean(this.get_project_definition(n_config_manager), clean_mode, callback_stream);
+    public clean(clean_mode: e_clean_step, callback_stream: (stream_c: any) => void): any {
+        return this.tools_manager.clean(this.get_project_definition(), clean_mode, callback_stream);
     }
 
-    public async get_test_list(general_config: e_config | undefined = undefined): Promise<t_test_declaration[]> {
+    public async get_test_list(): Promise<t_test_declaration[]> {
 
-        const n_config = merge_configs(general_config, this.config_manager.get_config());
-        const n_config_manager = new Config_manager();
-        n_config_manager.set_config(n_config);
-
-        return await this.tools_manager.get_test_list(this.get_project_definition(n_config_manager));
+        return await this.tools_manager.get_test_list(this.get_project_definition());
     }
 
     public getBuildSteps(): t_taskRep[] {
@@ -560,4 +504,79 @@ export class Project_manager {
     protected emitUpdateStatus() {
         this.emitterProject.emit('updateStatus');
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+// Config Helpers
+////////////////////////////////////////////////////////////////////////////
+function get_undefined_config(): e_config {
+    return create_copy_with_undefined_values(get_default_config());
+}
+
+function create_copy_with_undefined_values<T extends Record<string, any>>(obj: T): T {
+    const result: Record<string, any> = {};
+
+    for (const key in obj) {
+        const value = obj[key];
+        if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+            result[key] = create_copy_with_undefined_values(value);
+        } else {
+            result[key] = undefined as any;
+        }
+    }
+
+    return result as T;
+}
+
+function merge_configs<T extends Record<string, any>>(main_config: T, default_config: T): T {
+
+    const result: Record<string, any> = {};
+
+    const keys = Array.from(new Set([...Object.keys(main_config), ...Object.keys(default_config)]));
+
+    keys.forEach((key) => {
+        const value1 = main_config[key];
+        const value2 = default_config[key];
+
+        if (value1 !== undefined && value2 !== undefined
+            && typeof value1 === typeof value2
+            && typeof value1 === 'object' && !Array.isArray(value1)) {
+            // Both are object, so merge them
+            result[key] = merge_configs(value1, value2);
+        } else if (value1 !== undefined) {
+            // Keep main one
+            result[key] = value1;
+        } else {
+            // Use default one
+            result[key] = value2;
+        }
+    });
+
+    return result as T;
+
+}
+
+function diff_config<T extends Record<string, any>>(config1: T, config2: T): T {
+    const differences: Record<string, any> = {};
+
+    const keys = Array.from(new Set([...Object.keys(config1), ...Object.keys(config2)]));
+
+    keys.forEach((key) => {
+        const value1 = config1[key];
+        const value2 = config2[key];
+
+        if (typeof value1 === 'object' && value1 !== null
+            && typeof value2 === 'object' && value2 !== null
+            && !Array.isArray(value1) && !Array.isArray(value2)) {
+            const nestedDifferences = diff_config(value1, value2);
+            differences[key] = nestedDifferences;
+        } else if (value1 !== value2) {
+            differences[key] = value1;
+        } else {
+            differences[key] = undefined;
+        }
+    });
+
+    return differences as T;
 }

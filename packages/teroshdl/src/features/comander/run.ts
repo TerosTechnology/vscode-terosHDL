@@ -26,6 +26,7 @@ import { OS } from "teroshdl2/out/process/common";
 import { get_os } from "teroshdl2/out/process/utils";
 import * as path_lib from 'path';
 import { Logger } from '../../logger';
+import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 export class Comander {
 
@@ -64,14 +65,14 @@ export class Comander {
         }
 
         let gtkwave_path = "";
-        let base_path = this.manager.get_config_manager().get_config().tools.general.gtkwave_installation_path;
+        let base_path = GlobalConfigManager.getInstance().get_config().tools.general.gtkwave_installation_path;
         if (base_path !== "") {
             gtkwave_path = path_lib.join(base_path, gtkwave_binary);
         }
         else {
             gtkwave_path = gtkwave_binary;
         }
-        const extra_arguments = this.manager.get_config_manager().get_config().tools.general.gtkwave_extra_arguments;
+        const extra_arguments = GlobalConfigManager.getInstance().get_config().tools.general.gtkwave_extra_arguments;
 
         let command = `${gtkwave_path} ${file_path} ${extra_arguments}`;
         shelljs.exec(command, { async: true });

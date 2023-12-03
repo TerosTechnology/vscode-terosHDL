@@ -74,7 +74,7 @@ export class Edalize extends Generic_tool_handler {
         test_list.forEach(test => {
             top_level_list.push(test.name);
         });
-        const config = prj.config_manager.get_config();
+        const config = prj.config;
 
         // Save EDAM project in JSON file
         let edam_json = get_edam_json(prj, top_level_list);

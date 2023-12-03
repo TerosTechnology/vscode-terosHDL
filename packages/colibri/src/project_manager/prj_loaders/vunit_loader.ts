@@ -17,7 +17,6 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { e_config } from "../../config/config_declaration";
-import { Config_manager } from "../../config/config_manager";
 import { python } from "../../process/export_t";
 import { t_file } from "../common";
 import { Vunit } from "../tool/vunit/vunit";
@@ -28,16 +27,13 @@ import { t_loader_file_list_result } from "../tool/common";
 export async function get_files_from_vunit(config: e_config, vunit_path: string, is_manual: boolean
 ): Promise<t_loader_file_list_result> {
 
-    const n_config_manager = new Config_manager();
-    n_config_manager.set_config(config);
-
     const vunit = new Vunit();
     const simulator_name = config.tools.vunit.simulator_name;
     const simulator_install_path = vunit.get_simulator_installation_path(config);
 
     const simulator_conf = vunit.get_simulator_config(simulator_name, simulator_install_path);
 
-    const py_path = n_config_manager.get_config().general.general.pypath;
+    const py_path = config.general.general.pypath;
     const json_path = process_utils.create_temp_file("");
     const args = `--export-json ${json_path}`;
     const result = await python.exec_python_script(py_path, vunit_path, args, simulator_conf);

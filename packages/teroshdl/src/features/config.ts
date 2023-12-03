@@ -22,6 +22,7 @@ import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
 import * as nunjucks from 'nunjucks';
+import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 export class Config_manager {
 
@@ -125,8 +126,7 @@ export class Config_manager {
         vscode.window.showSaveDialog({title: "Export TerosHDL configuration"}).then(fileInfos => {
             if (fileInfos?.path !== undefined) {
                 const path_norm = utils.normalize_path(fileInfos?.path);
-                const config = this.manager.get_config_global_config();
-                const config_string = JSON.stringify(config, null, 4);
+                const config_string = GlobalConfigManager.getInstance().toString();
                 teroshdl2.utils.file.save_file_sync(path_norm, config_string);
             }
         });
@@ -148,16 +148,16 @@ export class Config_manager {
     async update_web_config(){
         await this.panel?.webview.postMessage({
             command: "set_config",
-            config: this.manager.get_config_global_config()
+            config: GlobalConfigManager.getInstance().get_config()
         });
     }
 
     set_config(config: any){
-        this.manager.set_global_config_from_json(config);
+        GlobalConfigManager.getInstance().set_config(config);
     }
 
     set_config_and_close(config: any){
-        this.manager.set_global_config_from_json(config);
+        GlobalConfigManager.getInstance().set_config(config);
         this.close_panel();
     }
 

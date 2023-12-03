@@ -17,6 +17,7 @@
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
 import { EventEmitter } from 'stream';
+import { GlobalConfigManager } from '../../src/config/config_manager';
 import { e_project_type } from '../../src/project_manager/common';
 import { Multi_project_manager } from '../../src/project_manager/multi_project_manager';
 import { Project_manager } from '../../src/project_manager/project_manager';
@@ -42,7 +43,7 @@ jest.mock('../../src/utils/file_utils', () => ({
 jest.mock('../../src/project_manager/project_manager', () => {
     const originalModule = jest.requireActual('../../src/project_manager/project_manager');
 
-    originalModule.Project_manager.fromJson = jest.fn(async (_config, jsonContent, _reference_path, emitter) => {
+    originalModule.Project_manager.fromJson = jest.fn(async (jsonContent, _reference_path, emitter) => {
         return new originalModule.Project_manager(jsonContent.name, emitter);
     });
 
@@ -52,7 +53,7 @@ jest.mock('../../src/project_manager/project_manager', () => {
 jest.mock('../../src/project_manager/tool/quartus/quartusProjectManager', () => {
     const originalModule = jest.requireActual('../../src/project_manager/tool/quartus/quartusProjectManager');
 
-    originalModule.QuartusProjectManager.fromJson = jest.fn(async (_config, jsonContent, _reference_path, emitter) => {
+    originalModule.QuartusProjectManager.fromJson = jest.fn(async (jsonContent, _reference_path, emitter) => {
         return new originalModule.QuartusProjectManager(jsonContent.name, "", "", emitter);
     });
 
@@ -63,7 +64,7 @@ describe('MultiProjectManager', () => {
     let multiProjectManager: Multi_project_manager;
 
     beforeEach(() => {
-        multiProjectManager = new Multi_project_manager("", sync_file_path);
+        multiProjectManager = new Multi_project_manager(sync_file_path);
     });
 
     function create_project_with_name_and_add(prj_name: string): Project_manager {
@@ -485,6 +486,7 @@ describe('MultiProjectManager', () => {
     describe('save', () => {
 
         beforeEach(() => {
+            GlobalConfigManager.newInstance("");
             jest.clearAllMocks();
         });
 

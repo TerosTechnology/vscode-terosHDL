@@ -50,7 +50,7 @@ export class Vunit extends Generic_tool_handler {
 
     private create_runpy(prj: t_project_definition): string {
         const template_path = paht_lib.join(__dirname, 'run.nj');
-        const vunit_config = prj.config_manager.get_config().tools.vunit;
+        const vunit_config = prj.config.tools.vunit;
 
         const template = nunjucks.render(template_path, {
             file_list: prj.file_manager.get(),
@@ -63,7 +63,7 @@ export class Vunit extends Generic_tool_handler {
     public async get_test_list(prj: t_project_definition): Promise<t_test_declaration[]> {
 
         let toplevel_path_list = prj.toplevel_path_manager.get();
-        const config = prj.config_manager.get_config();
+        const config = prj.config;
         // Create runpy
         if (config.tools.vunit.runpy_mode === t_config.e_tools_vunit_runpy_mode.creation) {
             toplevel_path_list = [this.create_runpy(prj)];
@@ -166,7 +166,7 @@ export class Vunit extends Generic_tool_handler {
                         name: tst.name,
                         edam: edam_json,
                         config_summary_path: path_f,
-                        config: prj.config_manager.get_config(),
+                        config: prj.config,
                         artifact: log_artifact,
                         build_path: working_directory,
                         successful: tst.successful,
@@ -202,7 +202,7 @@ export class Vunit extends Generic_tool_handler {
         output_path: string, callback: (result: p_result) => void, callback_stream: (stream_c: any) => void) {
 
         // Config
-        const config = prj.config_manager.get_config();
+        const config = prj.config;
         const python_path = config.general.general.pypath;
 
         // GUI execution
@@ -220,7 +220,7 @@ export class Vunit extends Generic_tool_handler {
 
         // Simulator config
         const simulator_name = config.tools.vunit.simulator_name;
-        const simulator_install_path = this.get_simulator_installation_path(prj.config_manager.get_config());
+        const simulator_install_path = this.get_simulator_installation_path(prj.config);
         const simulator_config = this.get_simulator_config(simulator_name, simulator_install_path);
 
         let python_script = prj.toplevel_path_manager.get()[0];

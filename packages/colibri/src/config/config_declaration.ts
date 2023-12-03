@@ -86,6 +86,9 @@ export type e_config = {
         "questa" : e_tools_questa,
         "raptor" : e_tools_raptor,
     }
+    [key: string]: {
+        [key: string]: any;
+    };
 };
 export type e_general_general = {
     pypath : string,

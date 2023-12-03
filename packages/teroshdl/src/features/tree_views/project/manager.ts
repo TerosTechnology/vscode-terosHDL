@@ -28,6 +28,7 @@ import { Logger } from "../../../logger";
 import { t_message_level, showMessage } from "../../../utils/utils";
 import { read_file_sync } from "teroshdl2/out/utils/file_utils";
 import * as yaml from "js-yaml";
+import { GlobalConfigManager } from "teroshdl2/out/config/config_manager";
 
 export class Project_manager {
     private tree: element.ProjectProvider;
@@ -130,7 +131,7 @@ export class Project_manager {
                         project_name, this.emitterProject
                     );
                     this.project_manager.add_project(prj);
-                    await utils.add_sources_from_vunit(prj, this.project_manager.get_config_global_config(), true);
+                    await utils.add_sources_from_vunit(prj, true);
                 } catch (error) {
                 }
             }
@@ -182,7 +183,7 @@ export class Project_manager {
             }
             // Device family
             const family_list = await teroshdl2.project_manager.quartus
-                .getFamilyAndParts(this.project_manager.get_config_global_config());
+                .getFamilyAndParts(GlobalConfigManager.getInstance().get_config());
             const family_list_string = family_list.map(x => x.family);
             let picker_family = await vscode.window.showQuickPick(family_list_string, {
                 placeHolder: "Device family",
@@ -204,7 +205,7 @@ export class Project_manager {
                 // Create project
                 const quartusProject =
                     await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromNewQuartusProject(
-                        this.project_manager.get_config_global_config(), project_name, picker_family, picker_part,
+                        GlobalConfigManager.getInstance().get_config(), project_name, picker_family, picker_part,
                         working_directory[0], this.emitterProject);
 
                 // Add project to manager
@@ -222,7 +223,7 @@ export class Project_manager {
             // Create project
             const quartusProject =
                 await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromExistingQuartusProject(
-                    this.project_manager.get_config_global_config(), prj_path, this.emitterProject
+                    GlobalConfigManager.getInstance().get_config(), prj_path, this.emitterProject
                 );
 
             // Add project to manager
@@ -238,7 +239,6 @@ export class Project_manager {
     async create_project_from_json(prj_path: string) {
         try {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
-                this.project_manager.get_config_global_config(),
                 JSON.parse(read_file_sync(prj_path)), prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
             this.refresh();
@@ -249,7 +249,6 @@ export class Project_manager {
     async create_project_from_yaml(prj_path: string) {
         try {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
-                this.project_manager.get_config_global_config(),
                 yaml.load(read_file_sync(prj_path)), prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
             this.refresh();
@@ -301,7 +300,7 @@ export class Project_manager {
 
     async check_dependencies() {
         const options: teroshdl2.process.python.python_options = {
-            path: this.project_manager.get_config_global_config().general.general.pypath
+            path: GlobalConfigManager.getInstance().get_config().general.general.pypath
         };
 
         const intro_info = "-------> ";
@@ -349,7 +348,7 @@ export class Project_manager {
         }
 
         // Check make
-        const make_binary_dir = this.project_manager.get_config_global_config().general.general.makepath;
+        const make_binary_dir = GlobalConfigManager.getInstance().get_config().general.general.makepath;
         let make_binary_path = ("make");
         if (make_binary_dir !== "") {
             make_binary_path = path_lib.join(make_binary_dir, make_binary_path);

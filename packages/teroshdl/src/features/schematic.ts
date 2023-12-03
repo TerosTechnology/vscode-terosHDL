@@ -29,6 +29,7 @@ import * as yosys from './yosys';
 import * as shell from 'shelljs';
 import * as nunjucks from 'nunjucks';
 import { Logger } from '../logger';
+import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 const activation_command = 'teroshdl.netlist.viewer';
 const id = "netlist";
@@ -271,7 +272,7 @@ export class Schematic_manager extends Base_webview {
             'empty': false
         };
 
-        const config = this.manager.get_config_manager().get_config();
+        const config = GlobalConfigManager.getInstance().get_config();
 
         const backend = config.schematic.general.backend;
         const custom_argumens = config.schematic.general.args;

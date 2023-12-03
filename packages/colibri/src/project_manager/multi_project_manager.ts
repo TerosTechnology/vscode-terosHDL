@@ -17,10 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { e_project_type, t_action_result } from "./common";
-import { Config_manager } from "../config/config_manager";
+import { e_project_type } from "./common";
 import { Project_manager } from "./project_manager";
-import { e_config } from "../config/config_declaration";
 import * as file_utils from "../utils/file_utils";
 import { QuartusProjectManager } from "./tool/quartus/quartusProjectManager";
 
@@ -43,11 +41,9 @@ class ProjectOperationError extends Error {
 export class Multi_project_manager {
     private project_manager_list: Project_manager[] = [];
     private selected_project: Project_manager | undefined = undefined;
-    private global_config: Config_manager;
     private sync_file_path = "";
 
-    constructor(global_config_sync_path: string, sync_file_path = "") {
-        this.global_config = new Config_manager(global_config_sync_path);
+    constructor(sync_file_path = "") {
         this.sync_file_path = sync_file_path;
     }
 
@@ -112,13 +108,11 @@ export class Multi_project_manager {
                 try {
                     if (prj_info.project_type === e_project_type.QUARTUS) {
                         this.add_project(
-                            await QuartusProjectManager.fromJson(this.get_config_global_config(), prj_info, 
-                                this.sync_file_path, emitterProject)
+                            await QuartusProjectManager.fromJson(prj_info, this.sync_file_path, emitterProject)
                         );
                     } else {
                         this.add_project(
-                            await Project_manager.fromJson(this.get_config_global_config(), 
-                                prj_info, this.sync_file_path, emitterProject)
+                            await Project_manager.fromJson(prj_info, this.sync_file_path, emitterProject)
                         );
                     }
                 } catch (error) {
@@ -251,51 +245,6 @@ export class Multi_project_manager {
         if (!(name && /^[a-zA-Z0-9_-]{1,128}$/.test(name))) {
             throw new ProjectOperationError("Provided name is invalid or has more than 128 characters");
         }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Config
-    ////////////////////////////////////////////////////////////////////////////
-    public get_config_manager() {
-        // // Selected project config
-        // const selected_prj = this.get_select_project();
-        // let prj_config = undefined;
-        // if (selected_prj.successful === true) {
-        //     prj_config = selected_prj.result.get_config_manager();
-        // }
-        // Glogal config
-        const global_config = this.global_config.get_config();
-        // Merge configs
-        const config_manager = new Config_manager();
-        // config_manager.set_config(merge_configs(global_config, prj_config));
-
-        config_manager.set_config(global_config);
-
-
-        return config_manager;
-    }
-
-    public set_global_config(config: e_config) {
-        this.global_config.set_config(config);
-        return this.get_sucessful_result(undefined);
-    }
-
-    public set_global_config_from_json(config: any) {
-        this.global_config.set_config_from_json(config);
-        return this.get_sucessful_result(undefined);
-    }
-
-    public get_config_global_config() {
-        return this.global_config.get_config();
-    }
-
-    private get_sucessful_result(result_i: any): t_action_result {
-        const result: t_action_result = {
-            result: result_i,
-            successful: true,
-            msg: ""
-        };
-        return result;
     }
 
 }

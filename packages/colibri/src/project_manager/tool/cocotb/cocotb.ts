@@ -133,8 +133,12 @@ export class Cocotb extends Generic_tool_handler {
         working_directory: string, callback: (result: t_test_result[]) => void,
         callback_stream: (stream_c: any) => void) {
 
-        const execution_config = prj.config_manager.get_exec_config();
-        const config = prj.config_manager.get_config();
+        const execution_config = {
+            execution_mode: prj.config.tools.general.execution_mode,
+            python_path: prj.config.general.general.pypath,
+            developer_mode: prj.config.general.general.developer_mode,
+            waveform_viewer: prj.config.tools.general.waveform_viewer
+        };
 
         // Get toplevel entity from toplevel path
         const toplevel_path = prj.toplevel_path_manager.get()[0];
@@ -159,7 +163,7 @@ export class Cocotb extends Generic_tool_handler {
                         name: tst.name,
                         edam: edam_json,
                         config_summary_path: path_f,
-                        config: config,
+                        config: prj.config,
                         artifact: [],
                         build_path: working_directory,
                         successful: tst.successful,
@@ -288,7 +292,7 @@ export class Cocotb extends Generic_tool_handler {
         const export_s = process_utils.get_sentence_os(e_sentence.EXPORT);
         const more_s = process_utils.get_sentence_os(e_sentence.MORE);
 
-        const tool_option = prj.config_manager.get_config().tools.cocotb;
+        const tool_option = prj.config.tools.cocotb;
 
         // eslint-disable-next-line max-len
         const compile_args = tool_option.compile_args === '' ? '' : `${export_s} COMPILE_ARGS=${tool_option.compile_args}${more_s} `;
@@ -305,7 +309,7 @@ export class Cocotb extends Generic_tool_handler {
     }
 
     private get_simulator(prj: t_project_definition): string {
-        const tool_option = prj.config_manager.get_config().tools.cocotb;
+        const tool_option = prj.config.tools.cocotb;
         const simulator_name = tool_option.simulator_name;
         const export_s = process_utils.get_sentence_os(e_sentence.EXPORT);
         const more_s = process_utils.get_sentence_os(e_sentence.MORE);

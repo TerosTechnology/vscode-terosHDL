@@ -22,6 +22,7 @@ import { get_directory } from "../../../utils/file_utils";
 import { getDefaultTaskList } from "./common";
 import { TaskStateManager } from "../taskState";
 import { setStatus } from "./quartusDB";
+import { GlobalConfigManager } from "../../../config/config_manager";
 
 export class QuartusProjectManager extends Project_manager {
 
@@ -84,11 +85,11 @@ export class QuartusProjectManager extends Project_manager {
         return e_project_type.QUARTUS;
     }
 
-    static async fromJson(config: e_config, jsonContent: any, _reference_path: string, 
+    static async fromJson(jsonContent: any, _reference_path: string, 
         emitterProject: events.EventEmitter): Promise<QuartusProjectManager> {
         try {
             const projectPath = jsonContent.project_disk_path;
-            return await this.fromExistingQuartusProject(config, projectPath, emitterProject);
+            return await this.fromExistingQuartusProject(GlobalConfigManager.getInstance().get_config(), projectPath, emitterProject);
         }
         catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
