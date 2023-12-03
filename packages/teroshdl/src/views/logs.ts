@@ -26,13 +26,16 @@ export class LogView implements vscode.WebviewViewProvider {
     private context: vscode.ExtensionContext;
     private dbPath: string = "";
     private logLevelList: string[] | undefined = undefined;
-    private onlyFileLogs: boolean | undefined = true;
+    private onlyFileLogs: boolean | undefined = false;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
     }
 
     resolveWebviewView(webviewView: vscode.WebviewView, context, token) {
+        this.webview = webviewView.webview;
+        this.webviewView = webviewView;
+
         webviewView.webview.onDidReceiveMessage(
             message => {
                 switch (message.command) {
@@ -49,8 +52,6 @@ export class LogView implements vscode.WebviewViewProvider {
             enableScripts: true
         };
         webviewView.webview.html = this.getHtmlForWebview();
-        this.webview = webviewView.webview;
-        this.webviewView = webviewView;
 
         webviewView.webview.onDidReceiveMessage(
             message => {
@@ -70,7 +71,17 @@ export class LogView implements vscode.WebviewViewProvider {
 
     getHtmlForWebview() {
         const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', 'logs', 'index.html');
-        const template_str = teroshdl2.utils.file.read_file_sync(template_path);
+        let template_str = teroshdl2.utils.file.read_file_sync(template_path);
+
+        if (!this.webview) {
+            return template_str;
+        }
+
+        const css_bootstrap_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
+            'bootstrap.min.css'));
+
+        template_str = template_str.replace(/{{css_bootstrap_path}}/g, css_bootstrap_path.toString());
+
         return template_str;
     }
 
@@ -136,7 +147,7 @@ export async function setLogs(bbddPath: string, webview: any,
         }
 
         if (onlyFileLogs) {
-            extraQuery1 += "        AND file != ''";
+            extraQuery1 += "        AND m.file != ''";
         }
 
         const query = `
