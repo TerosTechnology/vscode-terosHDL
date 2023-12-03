@@ -48,13 +48,20 @@ export class QuartusExecutionError extends Error {
  * Get Quartus binary directory.
  * @returns Quartus binary directory.
 **/
-export function getQuartusPath(): string {
-    const QSYS_ROOTDIR = process.env.QSYS_ROOTDIR;
-    if (QSYS_ROOTDIR === undefined) {
-        return "";
+export function getQuartusPath(_config: e_config): string {
+    const QUARTUS_ROOTDIR = process.env.QUARTUS_ROOTDIR;
+    if (QUARTUS_ROOTDIR !== undefined && QUARTUS_ROOTDIR !== "") {
+        const quartusRootDir = path_lib.resolve(path_lib.join(QUARTUS_ROOTDIR, "bin"));
+        return quartusRootDir;
     }
-    const quartusRootDir = path_lib.resolve(path_lib.join(QSYS_ROOTDIR, "..", "..", "quartus", "bin"));
-    return quartusRootDir;
+
+    const QSYS_ROOTDIR = process.env.QSYS_ROOTDIR;
+    if (QSYS_ROOTDIR !== undefined && QSYS_ROOTDIR !== "") {
+        const quartusRootDir = path_lib.resolve(path_lib.join(QSYS_ROOTDIR, "..", "..", "quartus", "bin"));
+        return quartusRootDir;
+    }
+
+    return "";
 }
 
 /**
@@ -65,10 +72,10 @@ export function getQuartusPath(): string {
  * @param cwd Current working directory.
  * @returns Result of execution.
 **/
-async function executeQuartusTcl(_config: e_config, tcl_file: string, args: string, cwd: string):
+async function executeQuartusTcl(config: e_config, tcl_file: string, args: string, cwd: string):
     Promise<{ result: p_result, csv_content: string }> {
 
-    const quartus_bin = path_lib.join(getQuartusPath(), "quartus_sh");
+    const quartus_bin = path_lib.join(getQuartusPath(config), "quartus_sh");
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");
@@ -339,7 +346,7 @@ export async function setTopLevelPath(config: e_config, projectPath: string, top
     }
 }
 
-export function cleanProject(projectPath: string, emitter: EventEmitter,callback:
+export function cleanProject(config: e_config,projectPath: string, emitter: EventEmitter,callback:
     (result: p_result) => void): ChildProcess {
 
     const cmdList = ["project_clean"];
@@ -351,7 +358,7 @@ export function cleanProject(projectPath: string, emitter: EventEmitter,callback
     const tclFile = process_utils.create_temp_file(templateRender);
     const args = projectPath;
 
-    const quartus_bin = path_lib.join(getQuartusPath(), "quartus_sh");
+    const quartus_bin = path_lib.join(getQuartusPath(config), "quartus_sh");
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");

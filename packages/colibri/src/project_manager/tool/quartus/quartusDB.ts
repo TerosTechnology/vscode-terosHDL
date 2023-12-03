@@ -33,11 +33,22 @@ function cleanAll(taskManager: TaskStateManager) {
 }
 
 /**
+ * Clean list of tasks
+ * @param taskManager Task manager
+ */
+function cleanList(taskManager: TaskStateManager, taskToClean: e_taskType[]) {
+    for (const task of taskToClean) {
+        taskManager.updateTask(task, e_taskState.IDLE, undefined, undefined, undefined);
+    }
+}
+
+/**
  * Set the status of the tasks
  * @param taskManager Task manager
  * @param bbddPath Path to the database
 */
-export async function setStatus(taskManager: TaskStateManager, bbddPath: string): Promise<void> {
+export async function setStatus(taskManager: TaskStateManager, bbddPath: string, 
+    deleteRunning: boolean): Promise<void> {
     if (!check_if_path_exist(bbddPath)) {
         cleanAll(taskManager);
     }
@@ -70,12 +81,15 @@ export async function setStatus(taskManager: TaskStateManager, bbddPath: string)
                 const name = row.name;
                 if (name in taskNameInBBDD) {
                     const taskType = taskNameInBBDD[name];
-                    if (taskToClean.includes(taskType)) {
-                        taskToClean.splice(taskToClean.indexOf(taskType), 1);
+                    if (!deleteRunning || row.status !== "running") {
+                        if (taskToClean.includes(taskType)) {
+                            taskToClean.splice(taskToClean.indexOf(taskType), 1);
+                        }
+                        taskManager.updateTask(taskType, status, percent, success, elapsed_time);
                     }
-                    taskManager.updateTask(taskType, status, percent, success, elapsed_time);
                 }
             }
+            cleanList(taskManager, taskToClean);
         }
         else {
             cleanAll(taskManager);
