@@ -42,7 +42,7 @@ jest.mock('../../src/utils/file_utils', () => ({
 jest.mock('../../src/project_manager/project_manager', () => {
     const originalModule = jest.requireActual('../../src/project_manager/project_manager');
 
-    originalModule.Project_manager.fromJson = jest.fn(async (_config, jsonContent, emitter) => {
+    originalModule.Project_manager.fromJson = jest.fn(async (_config, jsonContent, _reference_path, emitter) => {
         return new originalModule.Project_manager(jsonContent.name, emitter);
     });
 
@@ -52,7 +52,7 @@ jest.mock('../../src/project_manager/project_manager', () => {
 jest.mock('../../src/project_manager/tool/quartus/quartusProjectManager', () => {
     const originalModule = jest.requireActual('../../src/project_manager/tool/quartus/quartusProjectManager');
 
-    originalModule.QuartusProjectManager.fromJson = jest.fn(async (_config, jsonContent, emitter) => {
+    originalModule.QuartusProjectManager.fromJson = jest.fn(async (_config, jsonContent, _reference_path, emitter) => {
         return new originalModule.QuartusProjectManager(jsonContent.name, "", "", emitter);
     });
 
