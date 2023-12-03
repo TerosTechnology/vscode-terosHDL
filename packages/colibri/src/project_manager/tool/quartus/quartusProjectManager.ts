@@ -39,7 +39,7 @@ export class QuartusProjectManager extends Project_manager {
         this.currentRevision = currentRevision;
 
         this.emitterTask.on("taskFinished", async () => {
-            await this.updateStatus();
+            await this.updateStatus(true);
         });
 
         // Project watcher
@@ -66,12 +66,12 @@ export class QuartusProjectManager extends Project_manager {
         });
         this.quartusStatusWatcher.on('change', (path, _stats) => {
             if (path === this.quartusDatabaseStatusPath) {
-                this.updateStatus();
+                this.updateStatus(false);
             }
         });
         this.quartusStatusWatcher.on('unlink', (path: any, _stats: any) => {
             if (path === this.quartusDatabaseStatusPath) {
-                this.updateStatus();
+                this.updateStatus(false);
             }
         });
     }
@@ -148,7 +148,7 @@ export class QuartusProjectManager extends Project_manager {
 
             // Add all files to project
             await quartusProject.add_file_from_array(projectFiles);
-            await quartusProject.updateStatus();
+            await quartusProject.updateStatus(true);
             return quartusProject;
         }
         catch (error) {
@@ -156,8 +156,8 @@ export class QuartusProjectManager extends Project_manager {
         }
     }
 
-    private async updateStatus() {
-        await setStatus(this.taskStateManager, this.quartusDatabaseStatusPath);
+    private async updateStatus(deleteRunning: boolean) {
+        await setStatus(this.taskStateManager, this.quartusDatabaseStatusPath, deleteRunning);
         super.emitUpdateStatus();
     }
 
@@ -247,14 +247,18 @@ export class QuartusProjectManager extends Project_manager {
     }
 
     public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
-        const quartusDir = getQuartusPath();
+        const config = super.get_config();
+
+        const quartusDir = getQuartusPath(config);
         const projectDir = get_directory(this.projectDiskPath);
         return runTask(taskType, quartusDir, projectDir, this.get_name(), this.currentRevision,
             this.emitterTask, callback);
     }
 
     public cleallAllProject(callback: (result: p_result) => void): ChildProcess {
-        const exec_i = cleanProject(this.projectDiskPath, this.emitterTask, callback);
+        const config = super.get_config();
+
+        const exec_i = cleanProject(config, this.projectDiskPath, this.emitterTask, callback);
         return exec_i;
     }
 
