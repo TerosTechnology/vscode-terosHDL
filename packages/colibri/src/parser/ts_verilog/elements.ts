@@ -821,11 +821,18 @@ function get_generic_name(port: any, lines: any): string {
 
 function get_generic_default(input: any, lines: any): string {
     const arr = utils_hdl.search_multiple_in_tree(input, 'constant_param_expression');
+    const arr_error = utils_hdl.search_multiple_in_tree(input, 'ERROR');
     if (arr.length === 0) {
         return "undefined";
     }
+
+    let input_error = "";
+    for (const err of arr_error) {
+        input_error += err.text + " ";
+    }
+
     const input_value = utils_hdl.extract_data(arr[0], lines);
-    return input_value;
+    return input_error + input_value;
 }
 
 function get_generic_kind(port: any, lines: any): string {
