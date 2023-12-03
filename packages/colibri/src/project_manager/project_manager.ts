@@ -161,10 +161,10 @@ export class Project_manager {
         jsonContent.files.forEach((file: any) => {
             const name = file_utils.get_absolute_path(file_utils.get_directory(reference_path), file.name);
 
-            const is_include_file = jsonContent?.["is_include_file"] ?? false;
-            const include_path = jsonContent?.["include_path"] ?? "";
-            const logical_name = jsonContent?.["logical_name"] ?? "";
-            const is_manual = jsonContent?.["is_manual"] ?? true;
+            const is_include_file = file?.["is_include_file"] ?? false;
+            const include_path = file?.["include_path"] ?? "";
+            const logical_name = file?.["logical_name"] ?? "";
+            const is_manual = file?.["is_manual"] ?? true;
             const file_type = file_utils.get_language_from_filepath(name);
             const file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
 
