@@ -26,8 +26,14 @@ import { Database } from 'sqlite3';
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
     refrence_path?: string) {
 
-    const tool_name = prj.config_manager.get_tool_name();
-    const tool_options = prj.config_manager.get_tool_options();
+    const tool_name = prj.config.tools.general.select_tool;
+    const tool_config = (<any>prj.config.tools)[tool_name];
+    const tool_options = {
+        name: tool_name,
+        installation_path: tool_config['installation_path'],
+        config: tool_config
+    };
+
     const tmp_edam_0 = `{ "${tool_name}" : ${JSON.stringify(tool_options)} }`;
     const tmp_edam_1 = JSON.parse(tmp_edam_0);
 

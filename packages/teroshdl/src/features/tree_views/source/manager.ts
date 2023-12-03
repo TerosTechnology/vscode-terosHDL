@@ -97,7 +97,7 @@ export class Source_manager {
                 }
                 // Add from VUnit
                 else if (picker_value === element_types[2]) {
-                    await utils.add_sources_from_vunit(prj, this.project_manager.get_config_global_config(), true);
+                    await utils.add_sources_from_vunit(prj, true);
                 }
                 // Add from directory and subirectories
                 else if (picker_value === element_types[3]) {
@@ -109,7 +109,7 @@ export class Source_manager {
                 }
                 // Add from Quartus
                 else if (picker_value === element_types[5]) {
-                    await utils.add_sources_from_quartus(prj, this.project_manager.get_config_global_config(), true);
+                    await utils.add_sources_from_quartus(prj, true);
                 }
             }
             // Add library

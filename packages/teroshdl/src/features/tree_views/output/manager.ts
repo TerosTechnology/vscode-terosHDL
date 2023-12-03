@@ -25,6 +25,7 @@ import { e_clean_step } from 'teroshdl2/out/project_manager/tool/common';
 import * as teroshdl2 from 'teroshdl2';
 import { Run_output_manager } from "../run_output";
 import { Logger } from "../../../logger";
+import { GlobalConfigManager } from "teroshdl2/out/config/config_manager";
 
 export class Output_manager {
     private tree: element.ProjectProvider;
@@ -55,7 +56,7 @@ export class Output_manager {
     }
 
     async clean() {
-        const tool_name = this.project_manager.get_config_global_config().tools.general.select_tool;
+        const tool_name = GlobalConfigManager.getInstance().get_config().tools.general.select_tool;
         if (tool_name !== teroshdl2.config.config_declaration.e_tools_general_select_tool.raptor) {
             return;
         }
@@ -73,7 +74,7 @@ export class Output_manager {
             const prj = this.project_manager.get_selected_project();
             const selfm = this;
             const step = this.get_step_enum(picker_value);
-            prj.clean(this.project_manager.get_config_global_config(),
+            prj.clean(
                 step,
                 (function (stream_c: any) {
                     stream_c.stdout.on('data', function (data: any) {

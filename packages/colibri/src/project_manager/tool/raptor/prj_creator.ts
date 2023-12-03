@@ -26,7 +26,7 @@ import { LANGUAGE } from "../../../common/general";
 export function get_tcl_script(prj: t_project_definition, is_clean_mode: boolean,
     clean_step: e_clean_step | undefined): string {
     const file_list = prj.file_manager.get();
-    const config = prj.config_manager.get_config().tools.raptor;
+    const config = prj.config.tools.raptor;
 
     ////////////////////////////////////////////////////////////////////////////
     // Design project

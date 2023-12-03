@@ -26,6 +26,7 @@ import * as fs from 'fs';
 import { t_Multi_project_manager } from '../type_declaration';
 import { Base_webview } from './base_webview';
 import { Logger } from '../logger';
+import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 
 export class Documenter_manager extends Base_webview {
@@ -135,8 +136,21 @@ export class Documenter_manager extends Base_webview {
     }
 
     private get_config(): teroshdl2.config.auxiliar_config.t_documenter_options {
-        const config = this.manager.get_config_manager().get_documenter_config();
-        return config;
+        const config = GlobalConfigManager.getInstance().get_config();
+        return <teroshdl2.config.auxiliar_config.t_documenter_options>{
+            generic_visibility: config.documentation.general.generics,
+            port_visibility: config.documentation.general.ports,
+            signal_visibility: config.documentation.general.signals,
+            constant_visibility: config.documentation.general.constants,
+            type_visibility: config.documentation.general.types,
+            function_visibility: config.documentation.general.functions,
+            instantiation_visibility: config.documentation.general.instantiations,
+            process_visibility: config.documentation.general.process,
+            language: config.documentation.general.language,
+            vhdl_symbol: config.documentation.general.symbol_vhdl,
+            verilog_symbol: config.documentation.general.symbol_verilog,
+            enable_fsm: config.documentation.general.fsm
+        };
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

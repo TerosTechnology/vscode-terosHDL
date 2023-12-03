@@ -69,7 +69,7 @@ export class Raptor extends Generic_tool_handler {
         // const edam_json = get_edam_json(prj, top_level_list);
 
         // Get config
-        const config = prj.config_manager.get_config();
+        const config = prj.config;
         
         let installation_path = config.tools.raptor.installation_path;
         if (installation_path === ""){
@@ -119,7 +119,7 @@ export class Raptor extends Generic_tool_handler {
         }
 
         // Get config
-        const config = prj.config_manager.get_config();
+        const config = prj.config;
         
         let installation_path = config.tools.raptor.installation_path;
         if (installation_path === ""){

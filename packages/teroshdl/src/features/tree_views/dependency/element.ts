@@ -139,7 +139,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     async get_hdl_tree() {
         try {
             const selected_project = this.project_manager.get_selected_project();
-            const python_path = this.project_manager.get_config_global_config().general.general.pypath;
+            const python_path = selected_project.get_config().general.general.pypath;
             const result = await selected_project.get_dependency_tree(python_path);
             if (result.successful === true) {
                 this.hdl_tree = result.result;

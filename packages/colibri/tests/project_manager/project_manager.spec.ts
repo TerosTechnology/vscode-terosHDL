@@ -24,6 +24,7 @@ import {Project_manager} from '../../src/project_manager/project_manager';
 import {get_default_config} from '../../src/config/config_declaration';
 import { LANGUAGE, VHDL_LANG_VERSION } from "../../src/common/general";
 import EventEmitter = require("events");
+import { GlobalConfigManager } from "../../src/config/config_manager";
 
 const DEFAULT_NAME = "def_name";
 
@@ -279,7 +280,8 @@ describe('project_manager', () => {
 
         project_manager.add_file(file_0);
         project_manager.add_file(file_1);
-
+        
+        GlobalConfigManager.newInstance("");
         const project_definition = project_manager.get_project_definition();
         expect(project_definition.name).toBe(DEFAULT_NAME);
         expect(project_definition.file_manager.get()[0].name).toBe(file_0.name);
@@ -327,11 +329,13 @@ describe('project_manager', () => {
     });
 
     test('set_config, get_config', () => {
-        const default_config = get_default_config();
-        default_config.tools.ghdl.installation_path = "ghdl_path";
+        GlobalConfigManager.newInstance("");
 
-        project_manager.set_config(default_config);
-        expect(project_manager.get_config()).toBe(default_config);
+        const new_config = get_default_config();
+        new_config.tools.ghdl.installation_path = "ghdl_path";
+
+        project_manager.set_config(new_config);
+        expect(project_manager.get_config()).toStrictEqual(new_config);
     });
 
 });

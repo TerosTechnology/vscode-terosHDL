@@ -25,6 +25,9 @@ export type e_config = {
     {%- endfor %}
     }
 {%- endfor %}
+    [key: string]: {
+        [key: string]: any;
+    };
 };
 
 {%- for tp0 in type_declaration -%}

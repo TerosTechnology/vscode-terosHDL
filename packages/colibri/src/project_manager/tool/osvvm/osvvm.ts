@@ -87,7 +87,7 @@ export class Osvvm extends Generic_tool_handler {
         const edam_json = get_edam_json(prj, top_level_list);
 
         // Get config
-        const config = prj.config_manager.get_config();
+        const config = prj.config;
 
         const simulator_name = config.tools.osvvm.simulator_name;
         const osvvm_installation_path = config.tools.osvvm.installation_path;
@@ -324,8 +324,8 @@ exit
     }
 
     get_simulator_installation_path(prj: t_project_definition): string {
-        const config = prj.config_manager.get_config();
-        const simulator_name = prj.config_manager.get_config().tools.osvvm.simulator_name;
+        const config = prj.config;
+        const simulator_name = prj.config.tools.osvvm.simulator_name;
 
         let installation_path = "";
         try {

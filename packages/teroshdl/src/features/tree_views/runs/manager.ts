@@ -91,7 +91,7 @@ export class Runs_manager {
 
                 let test_list: teroshdl2.project_manager.tool_common.t_test_declaration[] = [];
                 if (item === undefined) {
-                    test_list = await prj.get_test_list(this.project_manager.get_config_global_config());
+                    test_list = await prj.get_test_list();
                 }
                 else {
                     const test: teroshdl2.project_manager.tool_common.t_test_declaration = {
@@ -106,7 +106,7 @@ export class Runs_manager {
                 this.logger.show();
                 const selfm = this;
                 const p = new Promise<void>(resolve => {
-                    prj.run(this.project_manager.get_config_global_config(), test_list,
+                    prj.run(test_list,
                         (function (result: teroshdl2.project_manager.tool_common.t_test_result[]) {
                             selfm.refresh(result);
                             // Status bar to 100
