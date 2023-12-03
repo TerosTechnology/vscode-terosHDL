@@ -130,10 +130,6 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
                 || cursor.nodeType === 'package_declaration') {
                 cursor.gotoFirstChild();
 
-
-
-
-
                 do {
                     if (cursor.nodeType === 'package_or_generate_item_declaration') {
                         cursor.gotoFirstChild();
