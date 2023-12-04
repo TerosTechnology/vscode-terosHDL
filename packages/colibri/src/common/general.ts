@@ -39,6 +39,8 @@ export enum LANGUAGE {
     QIP = "QIP",
     // Xilinx ISE constraint file
     UCF = "UCF",
+    IP = "IP",
+    QSYS = "QSYS",
     NONE = "none"
 }
 
@@ -76,7 +78,9 @@ export const LANGUAGE_VERSIONS_LIST: Record<LANGUAGE, t_versions> = {
     [LANGUAGE.PRO]: undefined,
     [LANGUAGE.NONE]: undefined,
     [LANGUAGE.QIP]: undefined,
-    [LANGUAGE.UCF]: undefined
+    [LANGUAGE.UCF]: undefined,
+    [LANGUAGE.IP]: undefined,
+    [LANGUAGE.QSYS]: undefined,
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,4 +120,8 @@ export const LANGUAGE_EXTENSION_LIST: { [key: string]: LANGUAGE } = {
     "sby": LANGUAGE.SBY,
     // pro
     "pro": LANGUAGE.PRO,
+    // IP
+    "ip": LANGUAGE.IP,
+    // QSYS
+    "qsys": LANGUAGE.QSYS,
 };
