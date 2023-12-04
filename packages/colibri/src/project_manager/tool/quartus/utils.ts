@@ -27,14 +27,16 @@ export const LANGUAGE_MAP: Record<LANGUAGE, string> = {
     [LANGUAGE.VERIBLELINTRULES]: "",
     [LANGUAGE.TCL]: "",
     [LANGUAGE.XDC]: "",
-    [LANGUAGE.SDC]: "",
+    [LANGUAGE.SDC]: "SDC_FILE",
     [LANGUAGE.PIN]: "",
     [LANGUAGE.XCI]: "",
     [LANGUAGE.SBY]: "",
     [LANGUAGE.PRO]: "",
     [LANGUAGE.NONE]: "",
     [LANGUAGE.QIP]: "",
-    [LANGUAGE.UCF]: ""
+    [LANGUAGE.UCF]: "",
+    [LANGUAGE.IP]: "IP_FILE",
+    [LANGUAGE.QSYS]: "QSYS_FILE",
 };
 
 export class QuartusExecutionError extends Error {
