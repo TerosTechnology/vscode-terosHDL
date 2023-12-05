@@ -202,6 +202,15 @@ export type t_taskRep = {
     "percent"?: number | undefined,
 }
 
+export type t_ipCatalogRep = {
+    "name": string,
+    "display_name": string,
+    "is_group": boolean,
+    "supportedDeviceFamily"?: string[],
+    "children"?: t_ipCatalogRep[],
+    "command"?: string,
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Common
 ////////////////////////////////////////////////////////////////////////////////

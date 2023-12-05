@@ -5,14 +5,15 @@ import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
     QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath,
-    getProjectInfo, getFilesFromProject, createProject, getQuartusPath, cleanProject
+    getProjectInfo, getFilesFromProject, createProject, getQuartusPath, cleanProject,
 } from "./utils";
+import { getIpCatalog } from "./ipCatalog";
 import { e_config } from "../../../config/config_declaration";
 import * as path_lib from 'path';
 import events = require("events");
 import { get_filename } from "../../../utils/file_utils";
 import {
-    e_artifact_type, e_element_type, e_reportType, e_taskType, t_taskRep,
+    e_artifact_type, e_element_type, e_reportType, e_taskType, t_ipCatalogRep, t_taskRep,
     t_test_artifact
 } from "../common";
 import { p_result } from "../../../process/common";
@@ -26,7 +27,6 @@ import { GlobalConfigManager } from "../../../config/config_manager";
 
 export class QuartusProjectManager extends Project_manager {
 
-    private quartusProjectWatcher: chokidar.FSWatcher;
     private quartusStatusWatcher: chokidar.FSWatcher | undefined = undefined;
     private quartusDatabaseStatusPath = "";
     private emitterTask: events.EventEmitter = new events.EventEmitter();
@@ -43,19 +43,6 @@ export class QuartusProjectManager extends Project_manager {
             await this.updateStatus(true);
         });
 
-        // Project watcher
-        this.quartusProjectWatcher = chokidar.watch('file', {
-            usePolling: true, interval: 1000
-        });
-        this.quartusProjectWatcher.on('change', (_path, _stats) => {
-            this.syncWithDisk();
-        });
-        this.quartusProjectWatcher.on('unlink', (_path: any, _stats: any) => {
-            this.syncWithDisk();
-        });
-
-        this.quartusProjectWatcher.add(projectPath);
-
         const newQuartusDatabaseStatusPath = path_lib.join(get_directory(this.projectDiskPath), "qdb",
             "_compiler", currentRevision, "_flat", "23.3.0", "legacy", "/1", "runlog.db");
         this.quartusDatabaseStatusPath = newQuartusDatabaseStatusPath;
@@ -69,10 +56,16 @@ export class QuartusProjectManager extends Project_manager {
             if (path === this.quartusDatabaseStatusPath) {
                 this.updateStatus(false);
             }
+            if (path === this.projectDiskPath) {
+                this.syncWithDisk();
+            }
         });
         this.quartusStatusWatcher.on('unlink', (path: any, _stats: any) => {
             if (path === this.quartusDatabaseStatusPath) {
                 this.updateStatus(false);
+            }
+            if (path === this.projectDiskPath) {
+                this.syncWithDisk();
             }
         });
     }
@@ -85,11 +78,12 @@ export class QuartusProjectManager extends Project_manager {
         return e_project_type.QUARTUS;
     }
 
-    static async fromJson(jsonContent: any, _reference_path: string, 
+    static async fromJson(jsonContent: any, _reference_path: string,
         emitterProject: events.EventEmitter): Promise<QuartusProjectManager> {
         try {
             const projectPath = jsonContent.project_disk_path;
-            return await this.fromExistingQuartusProject(GlobalConfigManager.getInstance().get_config(), projectPath, emitterProject);
+            return await this.fromExistingQuartusProject(
+                GlobalConfigManager.getInstance().get_config(), projectPath, emitterProject);
         }
         catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
@@ -141,14 +135,14 @@ export class QuartusProjectManager extends Project_manager {
             if (projectInfo.topEntity !== "") {
                 for (const file of projectFiles) {
                     if (projectInfo.topEntity === get_filename(file.name, false)) {
-                        await quartusProject.add_toplevel_path(file.name);
+                        await quartusProject.add_toplevel_path_no_quartus_update(file.name);
                         break;
                     }
                 }
             }
 
             // Add all files to project
-            await quartusProject.add_file_from_array(projectFiles);
+            await quartusProject.add_file_from_array_no_quartus_update(projectFiles);
             await quartusProject.updateStatus(true);
             return quartusProject;
         }
@@ -181,6 +175,10 @@ export class QuartusProjectManager extends Project_manager {
         super.notifyChanged();
     }
 
+    public async add_toplevel_path_no_quartus_update(toplevel_path_inst: string): Promise<t_action_result> {
+        return super.add_toplevel_path(toplevel_path_inst);
+    }
+
     public async add_toplevel_path(toplevel_path_inst: string): Promise<t_action_result> {
         const config = super.get_config();
         try {
@@ -202,6 +200,10 @@ export class QuartusProjectManager extends Project_manager {
         } catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
+        return await super.add_file_from_array(file_list);
+    }
+
+    private async add_file_from_array_no_quartus_update(file_list: t_file[]): Promise<t_action_result> {
         return await super.add_file_from_array(file_list);
     }
 
@@ -247,6 +249,16 @@ export class QuartusProjectManager extends Project_manager {
         return this.taskStateManager.getTaskList();
     }
 
+    public async getIpCatalog(): Promise<t_ipCatalogRep[]> {
+        const projectInfo = await getProjectInfo(this.get_config(), this.projectDiskPath);
+        try {
+            return await getIpCatalog(this.get_config(), projectInfo.family, this.projectDiskPath);
+        }
+        catch (error) {
+            return [];
+        }
+    }
+
     public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
         const config = super.get_config();
 
@@ -265,7 +277,8 @@ export class QuartusProjectManager extends Project_manager {
 
     public getArtifact(taskType: e_taskType, reportType: e_reportType): t_test_artifact {
         if (reportType === e_reportType.TIMINGANALYZER) {
-            const command = `quartus_staw ${this.get_name()} -c ${this.currentRevision}`;
+            const quartusBin = path_lib.join(getQuartusPath(this.get_config()), "quartus_staw");
+            const command = `${quartusBin} ${this.get_name()} -c ${this.currentRevision}`;
 
             const artifact: t_test_artifact = {
                 name: "Timing Analyzer",

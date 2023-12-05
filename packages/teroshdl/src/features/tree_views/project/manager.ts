@@ -100,7 +100,7 @@ export class Project_manager {
                 try {
                     this.project_manager.add_project(
                         new teroshdl2.project_manager.project_manager.Project_manager(project_name, this.emitterProject
-                    ));
+                        ));
                 } catch (error) {
                 }
             }
@@ -261,6 +261,7 @@ export class Project_manager {
             this.project_manager.set_selected_project(this.project_manager.get_project_by_name(item.get_project_name()));
             this.run_output_manager.clear();
             this.refresh();
+            this.emitterProject.emit('changeProject');
         } catch (error) {
         }
     }

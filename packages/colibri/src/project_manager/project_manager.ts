@@ -33,7 +33,8 @@ import { Tool_manager } from "./tool/tools_manager";
 import {
     t_test_declaration, t_test_result, e_clean_step, e_taskType, t_test_artifact,
     e_reportType,
-    e_taskState
+    e_taskState,
+    t_ipCatalogRep
 } from "./tool/common";
 import { t_project_definition } from "./project_definition";
 import * as file_utils from "../utils/file_utils";
@@ -474,6 +475,10 @@ export class Project_manager extends ConfigManager {
     }
 
     public getBuildSteps(): t_taskRep[] {
+        return [];
+    }
+
+    public async getIpCatalog(): Promise<t_ipCatalogRep[]> {
         return [];
     }
 

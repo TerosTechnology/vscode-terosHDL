@@ -24,7 +24,11 @@ export class Local_process {
 
     async exec_wait(command: string, opt: p_options) {
         return new Promise((resolve) => {
-            exec(command, opt, (error: ExecException | null, stdout: string, stderr: string) => {
+            const options = {
+                cwd: opt.cwd,
+                maxBuffer: 1024 * 1024 * 1024
+            };
+            exec(command, options, (error: ExecException | null, stdout: string, stderr: string) => {
                 let error_code = 0;
                 let successful = true;
                 if (error !== undefined && error !== null) {
