@@ -20,55 +20,48 @@
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as vscode from "vscode";
 import { get_icon } from "../utils";
-import * as teroshdl2 from 'teroshdl2';
+import * as teroshdl2 from "teroshdl2";
 
-
-export const VIEW_ID = "teroshdl-project";
+export const VIEW_ID = "teroshdl-view-ip-catalog";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elements
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export class Project extends vscode.TreeItem {
+export class CatalogElement extends vscode.TreeItem {
     public children: any[] | undefined;
-    public iconPath = get_icon("folder");
-    public contextValue = "project";
+    public contextValue = "ip-catalog";
+    public elementDefinition: teroshdl2.project_manager.tool_common.t_ipCatalogRep;
     // Element
-    private project_name: string;
+    private name: string;
 
-    constructor(projectType: teroshdl2.project_manager.common.e_project_type, project_name: string,
-        label: string, isOpen: boolean, children?: any[]) {
+    constructor(elementDefinition: teroshdl2.project_manager.tool_common.t_ipCatalogRep, children?: any[]) {
 
         super(
-            label,
-            children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
+            elementDefinition.display_name,
+            // taskDefinition.name,
+            children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed
         );
         // Common
         this.children = children;
         // Element
-        this.project_name = project_name;
-        this.tooltip = "";
-        // Command
-        this.command = {
-            command: "teroshdl.view.project.select",
-            title: "Select project",
-            arguments: [this],
-        };
-        if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS && isOpen) {
-            this.iconPath = get_icon("folder-active");
+        this.elementDefinition = elementDefinition;
+        this.name = elementDefinition.name;
+
+        if (elementDefinition.name === "loading") {
+            this.iconPath = get_icon("loading");
         }
-        else if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
-            this.iconPath = get_icon("folder");
-        }
-        else if (isOpen) {
-            this.iconPath = get_icon("folder-active");
-        }
-        else {
-            this.iconPath = get_icon("folder");
+        else if (!elementDefinition.is_group) {
+            this.iconPath = get_icon("verilog");
+            this.command = {
+                title: 'Create IP',
+                command: 'teroshdl.quartus.create_ip',
+                arguments: [this]
+            };
         }
     }
 
-    public get_project_name(): string {
-        return this.project_name;
+    get_name() {
+        return this.name;
     }
 }
 
@@ -84,7 +77,7 @@ export abstract class BaseTreeDataProvider<T> implements vscode.TreeDataProvider
     abstract getChildren(element?: T | undefined): vscode.ProviderResult<T[]>;
 }
 
-export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
+export class IpCatalogProvider extends BaseTreeDataProvider<TreeItem> {
 
     private _onDidChangeTreeData: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
@@ -112,34 +105,37 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         return VIEW_ID;
     }
 
-    refresh(): void {
-        const prj_view: Project[] = [];
+    async refresh(): Promise<void> {
+        // Set loading..
+        const elementEmpty: teroshdl2.project_manager.tool_common.t_ipCatalogRep = {
+            display_name: "Loading...",
+            name: "loading",
+            supportedDeviceFamily: [],
+            is_group: true
+        };
+        this.data = [new CatalogElement(elementEmpty, undefined)];
+        this._onDidChangeTreeData.fire();
 
-        const project_list = this.project_manager.get_projects();
-        let selected_project_name = '';
         try {
-            selected_project_name = this.project_manager.get_selected_project().get_name();
+            const selected_project = this.project_manager.get_selected_project();
+            const catalog = await selected_project.getIpCatalog();
+
+            function createCatalog(children, depth = 0) {
+                const catalogList: CatalogElement[] = [];
+                for (const child of children) {
+                    const childTasks = child.children ? createCatalog(child.children, depth + 1) : [];
+                    catalogList.push(new CatalogElement(child, childTasks.length > 0 ? childTasks : undefined));
+                }
+                return catalogList;
+            }
+
+            const taskView = createCatalog(catalog);
+
+
+            this.data = taskView;
         } catch (error) {
+            this.data = [];
         }
-        project_list.forEach(prj => {
-            const prj_name = prj.get_name();
-            let label = prj.get_name();
-            let isOpen = false;
-            if (selected_project_name === prj_name) {
-                isOpen = true;
-            }
-
-            const prjType = prj.getProjectType();
-            if (prjType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
-                label = `${prj_name} [Quartus]`;
-            }
-            else {
-                label = `${prj_name} [TerosHDL]`;
-            }
-
-            prj_view.push(new Project(prjType, prj.get_name(), label, isOpen));
-        });
-        this.data = prj_view;
         this._onDidChangeTreeData.fire();
     }
 }
@@ -155,4 +151,3 @@ export class TreeItem extends vscode.TreeItem {
         this.children = children;
     }
 }
-

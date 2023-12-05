@@ -22,6 +22,7 @@ import { Source_manager } from "./source/manager";
 import { Tree_manager } from "./dependency/manager";
 import { Runs_manager } from "./runs/manager";
 import { Tasks_manager } from "./tasks/manager";
+import { IpCatalogManager } from "./ip-catalog/manager";
 import { Actions_manager } from "./actions/manager";
 import { Run_output_manager } from "./run_output";
 import { Watcher_manager } from "./watchers/manager";
@@ -43,6 +44,7 @@ let source_manager: Source_manager;
 let tree_manager: Tree_manager;
 let runs_manager: Runs_manager;
 let tasks_manager: Tasks_manager;
+let ipCatalogManager: IpCatalogManager;
 let run_output: Run_output_manager = new Run_output_manager();
 let actions_manager: Actions_manager;
 let watcher_manager: Watcher_manager;
@@ -85,10 +87,21 @@ export class Tree_view_manager {
         tree_manager = new Tree_manager(context, manager, schematic_manager, dependency_manager);
         runs_manager = new Runs_manager(context, manager, emitterProject, run_output, this.logger);
         tasks_manager = new Tasks_manager(context, manager, emitterProject, this.logger, logView);
+        ipCatalogManager = new IpCatalogManager(context, manager, emitterProject, this.logger);
         actions_manager = new Actions_manager(context, manager, emitterProject, run_output);
         watcher_manager = new Watcher_manager(context, manager, emitterProject);
         output_manager = new Output_manager(context, manager, run_output, this.logger);
 
+        emitterProject.addListener('changeProject', (function () {
+            ipCatalogManager.refresh_tree();
+        })
+        );
+
+        this.refreshInitial();
+    }
+
+    refreshInitial() {
+        ipCatalogManager.refresh_tree();
         this.refresh();
     }
 

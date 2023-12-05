@@ -184,3 +184,9 @@ export function replace_range(s: string, start: number, end: number, substitute:
     let sub_string_1: string = s.substring(end, s.length);
     return s.substring(0, start) + substitute + s.substring(end);
 }
+
+export function open_file(args: vscode.Uri) {
+    vscode.workspace.openTextDocument(args).then(doc => {
+        vscode.window.showTextDocument(doc);
+    });
+}

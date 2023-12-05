@@ -78,6 +78,10 @@
                     "name": "Tasks"
                 },
                 {
+                    "id": "teroshdl-view-ip-catalog",
+                    "name": "IP Catalog"
+                },
+                {
                     "id": "teroshdl-view-output",
                     "name": "Outputs"
                 },
@@ -143,6 +147,16 @@
             }
         ],
         "menus": {
+            "editor/context": [
+
+                {
+                    "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
+
+                    "command": "teroshdl.quartus.add_ip",
+                    "group": "navigation"
+                }
+                        
+            ],
             "explorer/context": [
 
                 {
@@ -626,6 +640,10 @@
                     "dark": "resources/icon/dark/book.svg"
                 },
                 "title": "Module documentation preview"
+            }, 
+            {
+                "command": "teroshdl.quartus.add_ip",
+                "title": "Add Quartus IP core"
             }
         ],
         "languages": [

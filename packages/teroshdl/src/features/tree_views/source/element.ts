@@ -17,13 +17,11 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-
 import { Multi_project_manager } from "teroshdl2/out/project_manager/multi_project_manager";
 import * as vscode from "vscode";
 import { get_icon } from "../utils";
-import * as teroshdl2 from 'teroshdl2';
 import * as path_lib from 'path';
-
+import * as teroshdl2 from "teroshdl2";
 
 export const VIEW_ID = "teroshdl-view-source";
 enum SOURCE_TREE_ELEMENT {
@@ -73,10 +71,11 @@ export class Source_tree_element extends vscode.TreeItem {
             }
 
             this.contextValue = "source";
+
             this.command = {
                 title: 'Open file',
-                command: 'vscode.open',
-                arguments: [vscode.Uri.file(name)]
+                command: 'teroshdl.view.source.open',
+                arguments: [name]
             };
         }
     }

@@ -48,7 +48,6 @@ export class Comander {
 
     private open_file(args: vscode.Uri) {
         this.logger.info(`Opening the file: ${args.fsPath}`);
-        // opn(`${'file://'}${args.fsPath}`);
         vscode.workspace.openTextDocument(args).then(doc => {
             vscode.window.showTextDocument(doc);
         });

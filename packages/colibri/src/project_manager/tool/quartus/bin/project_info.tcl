@@ -14,8 +14,10 @@ proc get_prj_info {csv_file} {
     set prj_name [get_current_project]
     set prj_revision [get_current_revision]
     set top_level_entity [get_global_assignment -name TOP_LEVEL_ENTITY]
+    set family [get_global_assignment -name FAMILY]
+    set part [get_global_assignment -name DEVICE]
 
-    puts $csv_file [join [ list $prj_name $prj_revision $top_level_entity] "," ]
+    puts $csv_file [join [ list $prj_name $prj_revision $top_level_entity $family $part] "," ]
 
     set revision_list [get_project_revisions]
     puts $csv_file [join [ list $revision_list ] "," ]

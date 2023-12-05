@@ -46,6 +46,10 @@
                     "name": "Tasks"
                 },
                 {
+                    "id": "teroshdl-view-ip-catalog",
+                    "name": "IP Catalog"
+                },
+                {
                     "id": "teroshdl-view-output",
                     "name": "Outputs"
                 },

@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Multi_project_manager } from "teroshdl2/out/project_manager/multi_project_manager";
+import { t_Multi_project_manager } from '../../../type_declaration';
 import * as vscode from "vscode";
 import { get_icon } from "../utils";
 import * as teroshdl2 from "teroshdl2";
@@ -142,9 +142,9 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
 
     data: TreeItem[] = [];
-    private project_manager: Multi_project_manager;
+    private project_manager: t_Multi_project_manager;
 
-    constructor(project_manager: Multi_project_manager) {
+    constructor(project_manager: t_Multi_project_manager) {
         super();
         this.project_manager = project_manager;
     }

@@ -22,6 +22,10 @@ import * as element from "./element";
 import * as utils from "../utils";
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as events from "events";
+import * as teroshdl2 from 'teroshdl2';
+import * as path_lib from 'path';
+import * as shelljs from 'shelljs';
+import { open_file } from "../../../utils/utils";
 
 export class Source_manager {
     private tree: element.ProjectProvider;
@@ -48,11 +52,32 @@ export class Source_manager {
         vscode.commands.registerCommand("teroshdl.view.source.add_source_to_library", (item) => this.add_source_to_library(item));
         vscode.commands.registerCommand("teroshdl.view.source.delete_library", (item) => this.delete_library(item));
         vscode.commands.registerCommand("teroshdl.view.source.delete_source", (item) => this.delete_source(item));
+        vscode.commands.registerCommand("teroshdl.view.source.open", (item) => this.openSource(item));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    async openSource(name: string) {
+        const fileExtension = path_lib.extname(name);
+
+        const prj = this.project_manager.get_selected_project();
+        const prjType = prj.getProjectType();
+        if (prjType === teroshdl2.project_manager.common.e_project_type.QUARTUS &&
+            (fileExtension === ".ip" || fileExtension === ".qsys")) {
+
+            const config = prj.get_config();
+            const pathBin = path_lib.join(teroshdl2.project_manager.quartus.getQsysPath(config), "qsys-edit");
+
+            const qPath = prj.projectDiskPath.replace(".qsf", ".qpf");
+            const cmd = `${pathBin} ${name} --quartus-project=${qPath}`;
+            shelljs.exec(cmd, { async: true });
+        }
+        else {
+            open_file(vscode.Uri.file(name));
+        }
+    }
+
     async save_project() {
         try {
             const prj = this.project_manager.get_selected_project();

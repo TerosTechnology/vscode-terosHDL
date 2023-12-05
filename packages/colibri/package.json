@@ -67,7 +67,7 @@
         "cli-color": "^2.0.3",
         "clone": "^2.1.2",
         "console-table-printer": "^2.11.0",
-        "fast-xml-parser": "4.0.10",
+        "fast-xml-parser": "4.3.2",
         "jest-html-reporter": "^3.7.0",
         "js-yaml": "^4.1.0",
         "json5": "2.1.3",

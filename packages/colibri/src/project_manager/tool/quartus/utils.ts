@@ -67,6 +67,15 @@ export function getQuartusPath(_config: e_config): string {
 }
 
 /**
+ * Get qsys binary directory.
+ * @returns qsys binary directory.
+**/
+export function getQsysPath(config: e_config): string {
+    const qsysPath = path_lib.resolve(path_lib.join(getQuartusPath(config), "..", "..", "qsys", "bin"));
+    return qsysPath;
+}
+
+/**
  * Execute Quartus tcl script.
  * @param config Configuration.
  * @param tcl_file Tcl file path.
@@ -99,7 +108,10 @@ async function executeQuartusTcl(config: e_config, tcl_file: string, args: strin
  * @returns Quartus project info.
 **/
 export async function getProjectInfo(config: e_config, prj_path: string)
-    : Promise<{ name: string, currentRevision: string, topEntity: string, revisionList: string[] }> {
+    : Promise<{
+        name: string, currentRevision: string, topEntity: string, revisionList: string[],
+        family: string, part: string
+    }> {
 
     const args = prj_path;
     const tcl_file = path_lib.join(__dirname, 'bin', 'project_info.tcl');
@@ -111,6 +123,8 @@ export async function getProjectInfo(config: e_config, prj_path: string)
         prj_revision: "",
         prj_top_entity: "",
         revision_list: [""],
+        family: "",
+        part: "",
     };
 
     if (!cmd_result.result.successful) {
@@ -125,10 +139,12 @@ export async function getProjectInfo(config: e_config, prj_path: string)
 
         // General info
         const data_0 = line_split[0].split(',');
-        if (data_0.length === 3) {
+        if (data_0.length === 5) {
             result.prj_name = data_0[0].trim();
             result.prj_revision = data_0[1].trim();
             result.prj_top_entity = data_0[2].trim();
+            result.family = data_0[3].trim();
+            result.part = data_0[4].trim();
         } else {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -146,7 +162,9 @@ export async function getProjectInfo(config: e_config, prj_path: string)
         name: result.prj_name,
         currentRevision: result.prj_revision,
         topEntity: result.prj_top_entity,
-        revisionList: result.revision_list
+        revisionList: result.revision_list,
+        family: result.family,
+        part: result.part,
     };
     return projectInfo;
 }
@@ -348,7 +366,7 @@ export async function setTopLevelPath(config: e_config, projectPath: string, top
     }
 }
 
-export function cleanProject(config: e_config,projectPath: string, emitter: EventEmitter,callback:
+export function cleanProject(config: e_config, projectPath: string, emitter: EventEmitter, callback:
     (result: p_result) => void): ChildProcess {
 
     const cmdList = ["project_clean"];
