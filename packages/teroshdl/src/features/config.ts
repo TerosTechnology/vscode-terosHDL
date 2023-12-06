@@ -41,7 +41,8 @@ export class Config_manager {
         this.web_content = teroshdl2.config.WEB_CONFIG;
 
         const activation_command = 'teroshdl.configuration';
-        vscode.commands.registerCommand(activation_command, () => this.create_webview());
+        vscode.commands.registerCommand(activation_command + ".global", () => this.createWebviewGlobal());
+        vscode.commands.registerCommand(activation_command + ".project", () => this.createWebviewProject());
 
 
         vscode.commands.registerCommand("teroshdl.view.project.export_configuration", () => this.export_config());
@@ -51,7 +52,11 @@ export class Config_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Webview creator
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async create_webview() {
+    async createWebviewProject() {
+        this.createWebviewGlobal()
+    }
+
+    async createWebviewGlobal() {
         if (this.panel === undefined) {
             this.panel = vscode.window.createWebviewPanel(
                 'catCoding',

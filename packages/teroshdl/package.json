@@ -105,7 +105,7 @@
             },
             {
                 "view": "teroshdl-view-actions",
-                "contents": "[Open Configuration Menu](command:teroshdl.view.project.configuration)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)\n[Check dependencies](command:teroshdl.check_dependencies)"
+                "contents": "[Open Global Configuration Menu](command:teroshdl.configuration.global)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)\n[Check dependencies](command:teroshdl.check_dependencies)"
             }
       ],
 
@@ -386,8 +386,8 @@
                 "title": "Open file with TerosHDL"
             }, 
             {
-                "command": "teroshdl.configuration",
-                "title": "TerosHDL: Open Configuration Menu"
+                "command": "teroshdl.configuration.global",
+                "title": "TerosHDL: Open Global Configuration Menu"
             }, 
             {
                 "command": "teroshdl.waveform",
