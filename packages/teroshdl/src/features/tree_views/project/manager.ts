@@ -54,13 +54,6 @@ export class Project_manager {
         this.context = context;
 
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as element.BaseTreeDataProvider<element.Project>));
-        vscode.commands.registerCommand("teroshdl.documentation", () => this.open_doc());
-        vscode.commands.registerCommand("teroshdl.view.project.configuration", () => this.config());
-        vscode.commands.registerCommand("teroshdl.check_dependencies", () => this.check_dependencies());
-    }
-
-    async config() {
-        vscode.commands.executeCommand("teroshdl.configuration");
     }
 
     open_doc() {
@@ -68,6 +61,9 @@ export class Project_manager {
     }
 
     set_commands() {
+        vscode.commands.registerCommand("teroshdl.documentation", () => this.open_doc());
+        vscode.commands.registerCommand("teroshdl.check_dependencies", () => this.check_dependencies());
+
         vscode.commands.registerCommand("teroshdl.view.project.add", (item) => this.add_project(item));
         vscode.commands.registerCommand("teroshdl.view.project.select", (item) => this.select_project(item));
         vscode.commands.registerCommand("teroshdl.view.project.delete", (item) => this.delete_project(item));
