@@ -19,4 +19,5 @@
 
 export * as auxiliar_config from './auxiliar_config';
 export * as config_declaration from './config_declaration';
+export * as configManager from './config_manager';
 export { WEB_CONFIG } from './config_web';

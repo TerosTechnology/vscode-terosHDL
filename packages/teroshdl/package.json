@@ -105,7 +105,7 @@
             },
             {
                 "view": "teroshdl-view-actions",
-                "contents": "[Open Global Configuration Menu](command:teroshdl.configuration.global)\n[Export configuration](command:teroshdl.view.project.export_configuration)\n[Load configuration](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)\n[Check dependencies](command:teroshdl.check_dependencies)"
+                "contents": "[Open Global Settings Menu](command:teroshdl.configuration.global)\n[Export Settings](command:teroshdl.view.project.export_configuration)\n[Load Settings](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)\n[Check dependencies](command:teroshdl.check_dependencies)"
             }
       ],
 
@@ -265,6 +265,12 @@
             
                     {
                         "when": "viewItem == project",
+                        "command": "teroshdl.configuration.project",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == project",
                         "command": "teroshdl.view.project.delete",
                         "group": "inline"
                     }
@@ -387,7 +393,7 @@
             }, 
             {
                 "command": "teroshdl.configuration.global",
-                "title": "TerosHDL: Open Global Configuration Menu"
+                "title": "TerosHDL: Open Global Settings Menu"
             }, 
             {
                 "command": "teroshdl.waveform",
@@ -400,6 +406,14 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add project"
+            }, 
+            {
+                "command": "teroshdl.configuration.project",
+                "icon": {
+                    "light": "resources/icon/light/gear.svg",
+                    "dark": "resources/icon/dark/gear.svg"
+                },
+                "title": "Open Project Settings"
             }, 
             {
                 "command": "teroshdl.view.project.delete",

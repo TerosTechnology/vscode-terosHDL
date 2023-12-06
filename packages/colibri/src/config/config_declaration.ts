@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
-// Copyright 2023
+// Copyright 2022
 // Carlos Alberto Ruiz Naranjo [carlosruiznaranjo@gmail.com]
-// Ismael Perez Rojo [ismaelprojo@gmail.com]
 //
-// This file is part of TerosHDL
+// This file is part of colibri2
 //
 // Colibri is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +15,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
+// along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
 export type e_config = {
     "general" : {

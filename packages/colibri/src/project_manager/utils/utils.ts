@@ -26,6 +26,7 @@ import { Database } from 'sqlite3';
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
     refrence_path?: string) {
 
+    // Set tool options in EDAM format
     const tool_name = prj.config.tools.general.select_tool;
     const tool_config = (<any>prj.config.tools)[tool_name];
     const tool_options = {
@@ -54,8 +55,8 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
         files: prj.file_manager.get(refrence_path),
         hooks: prj.hook_manager.get(),
         watchers: prj.watcher_manager.get(refrence_path),
-        // parameters: prj.parameter_manager.get(),
-        tool_options: tmp_edam_1,
+        configuration: prj.config,
+        tool_options: tmp_edam_1
     };
 
     return edam_json;

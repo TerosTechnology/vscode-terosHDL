@@ -6,6 +6,10 @@
             padding-right: 10px;
         }
 
+        .markConfig {
+            font-size: 0.6em;
+        }
+
         .sidebar {
             position: fixed;
             top: 0px;

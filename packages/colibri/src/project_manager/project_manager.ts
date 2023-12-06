@@ -40,7 +40,7 @@ import { t_project_definition } from "./project_definition";
 import * as file_utils from "../utils/file_utils";
 import * as hdl_utils from "../utils/hdl_utils";
 import { ConfigManager, GlobalConfigManager } from "../config/config_manager";
-import { e_config, get_default_config } from "../config/config_declaration";
+import { e_config, get_config_from_json, get_default_config } from "../config/config_declaration";
 import * as utils from "./utils/utils";
 import * as python from "../process/python";
 import * as events from "events";
@@ -189,6 +189,11 @@ export class Project_manager extends ConfigManager {
         watcher_list.forEach((watcher: any) => {
             prj.add_file_to_watcher(watcher);
         });
+
+        if (jsonContent?.["configuration"] !== undefined) {
+            prj.set_config(get_config_from_json(jsonContent?.["configuration"]));
+        }
+
         return prj;
     }
 
@@ -394,6 +399,10 @@ export class Project_manager extends ConfigManager {
 
     public get_config(): e_config {
         return merge_configs(super.get_config(), GlobalConfigManager.getInstance().get_config());
+    }
+
+    public get_diff_config(): e_config {
+        return super.get_config();
     }
 
     ////////////////////////////////////////////////////////////////////////////

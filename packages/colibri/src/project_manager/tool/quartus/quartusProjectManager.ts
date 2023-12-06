@@ -10,6 +10,7 @@ import {
 import { getIpCatalog } from "./ipCatalog";
 import { e_config } from "../../../config/config_declaration";
 import * as path_lib from 'path';
+import * as fs from 'fs';
 import events = require("events");
 import { get_filename } from "../../../utils/file_utils";
 import {
@@ -24,6 +25,26 @@ import { getDefaultTaskList } from "./common";
 import { TaskStateManager } from "../taskState";
 import { setStatus } from "./quartusDB";
 import { GlobalConfigManager } from "../../../config/config_manager";
+
+function getVersionDirectory(basePath: string): string {
+    const defaultVersionDirectory = "23.3.0";
+    try {
+        const folders = fs.readdirSync(basePath).filter(file => {
+            const fullPath = path_lib.join(basePath, file);
+            const isDirectory = fs.statSync(fullPath).isDirectory();
+            const matchesPattern = /^\d+(\.\d+)*\.?/.test(file);
+            return isDirectory && matchesPattern;
+        });
+
+        if (folders.length === 0) {
+            return defaultVersionDirectory;
+        }
+
+        return folders[0];
+    } catch (error) {
+        return defaultVersionDirectory;
+    }
+}
 
 export class QuartusProjectManager extends Project_manager {
 
@@ -43,8 +64,12 @@ export class QuartusProjectManager extends Project_manager {
             await this.updateStatus(true);
         });
 
-        const newQuartusDatabaseStatusPath = path_lib.join(get_directory(this.projectDiskPath), "qdb",
-            "_compiler", currentRevision, "_flat", "23.3.0", "legacy", "/1", "runlog.db");
+        const basePath = path_lib.join(
+            get_directory(this.projectDiskPath), "qdb", "_compiler", currentRevision, "_flat"
+        );
+
+        const folderVersion = getVersionDirectory(basePath);
+        const newQuartusDatabaseStatusPath = path_lib.join(basePath, folderVersion, "legacy", "/1", "runlog.db");
         this.quartusDatabaseStatusPath = newQuartusDatabaseStatusPath;
 
         // Status watcher
