@@ -9,7 +9,7 @@
   title: Open file with TerosHDL
 
 - name: configuration.global
-  title: "TerosHDL: Open Global Configuration Menu"
+  title: "TerosHDL: Open Global Settings Menu"
 
 ################################################################################
 # VSCode tree
@@ -31,6 +31,13 @@
   icon: add
   where: ["view/title"]
   when: "view == teroshdl-project"
+
+- name: configuration.project
+  title: "Open Project Settings"
+  icon: gear
+  where: ["view/item/context"]
+  when: "viewItem == project"
+  group: "inline"
 
 - name: view.project.delete
   title: "Delete project"

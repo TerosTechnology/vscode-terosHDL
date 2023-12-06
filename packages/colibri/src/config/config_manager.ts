@@ -37,10 +37,6 @@ export class ConfigManager {
     public get_config(): e_config {
         return this.config;
     }
-
-    public toString(): string {
-        return JSON.stringify(this.config, null, 4);
-    }
 }
 
 export class GlobalConfigManager extends ConfigManager {

@@ -86,6 +86,8 @@
       switch (message.command) {
           case 'set_config':
               set_config(message.config);
+              set_mark(message.diff_config, message.projectName);
+              document.getElementById("configTitle").innerHTML = message.title;
               break;
       }
   });
@@ -129,6 +131,42 @@
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
                 {%- else %}
     document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
+                {%- endif %}
+            {%- endif %}
+        {%- endfor %}
+    {%- endfor %}
+{%- endfor %}
+  }
+
+  function set_mark(config, projectName){
+    if (projectName == undefined){
+      return;
+    }
+    const MODIFIEDMSG = "Modified in project";
+    let mark = "";
+{%- for tp0 in type_declaration %}
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+        {%- for tp2 in type_declaration[tp0]["pages"][tp1] %}
+            {%- if tp2 != "title" and tp2 != "description"%}
+                {%- if type_declaration[tp0]["pages"][tp1][tp2]["type"] == "boolean" %}
+    mark = "";
+    if (config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_{{tp0}}-{{tp1}}-{{tp2}}").innerHTML = mark;
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
+    mark = "";
+    if (config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_{{tp0}}-{{tp1}}-{{tp2}}").innerHTML = mark;
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
+                {%- else %}
+    mark = "";
+    if (config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_{{tp0}}-{{tp1}}-{{tp2}}").innerHTML = mark;
                 {%- endif %}
             {%- endif %}
         {%- endfor %}

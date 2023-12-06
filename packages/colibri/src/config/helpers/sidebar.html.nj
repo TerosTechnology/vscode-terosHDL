@@ -2,7 +2,7 @@
             <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
                 {% include 'logo.svg.nj' %}
 
-                <div class="fs-5 fw-semibold sidebar-heading">Configuration</div>
+                <div class="fs-5 fw-semibold sidebar-heading h5" id="configTitle">Global Configuration</div>
             </a>
             <ul class="list-unstyled ps-0">
 {%- for tp0 in type_declaration %}

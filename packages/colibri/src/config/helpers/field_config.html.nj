@@ -14,7 +14,10 @@
           {%- if "options" in type_declaration[tp0]["pages"][tp1][tp2] %}
           {# <li class="list-group-item"> #}
             <div class="mb-3">
-              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}</label>
+              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">
+                {{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}
+                <span class="markConfig badge bg-secondary" id="mark_{{tp0}}-{{tp1}}-{{tp2}}"></span>
+              </label>
               <select class="form-select" aria-label="{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}" id="{{tp0}}-{{tp1}}-{{tp2}}">
                     {%- for option in type_declaration[tp0]["pages"][tp1][tp2]["options"] %}
                       <option value='{{option}}'>{{type_declaration[tp0]["pages"][tp1][tp2]["options"][option]}}</option>
@@ -30,6 +33,7 @@
                 <input class="form-check-input" type="checkbox" value="" id="{{tp0}}-{{tp1}}-{{tp2}}">
                 <label class="form-check-label" for="{{tp0}}-{{tp1}}-{{tp2}}">
                   {{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}
+                  <span class="markConfig badge bg-secondary" id="mark_{{tp0}}-{{tp1}}-{{tp2}}"></span>
                 </label>
               </div>
             </div>
@@ -38,7 +42,10 @@
           {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "string" %}
           {# <li class="list-group-item"> #}
             <div class="mb-3">
-              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}</label>
+              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">
+                {{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}
+                <span class="markConfig badge bg-secondary" id="mark_{{tp0}}-{{tp1}}-{{tp2}}"></span>
+              </label>
               <input class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"  value="{{type_declaration[tp0]['pages'][tp1][tp2]['value']}}"></input>
             </div>
           {# </li> #}
@@ -46,7 +53,10 @@
           {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "number" %}
           {# <li class="list-group-item"> #}
             <div class="mb-3">
-              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}</label>
+              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">
+                {{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}
+                <span class="markConfig badge bg-secondary" id="mark_{{tp0}}-{{tp1}}-{{tp2}}"></span>
+              </label>
               <input type='number' class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"></input>
             </div>
           {# </li> #}
@@ -61,7 +71,10 @@
           {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
           {# <li class="list-group-item"> #}
             <div class="mb-3">
-              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">{{type_declaration[tp0]["pages"][tp1][tp2]["description"]}} <b>(Comma separed)</b></label>
+              <label for="{{tp0}}-{{tp1}}-{{tp2}}" class="form-label">
+                {{type_declaration[tp0]["pages"][tp1][tp2]["description"]}} <b>(Comma separed)</b>
+                <span class="markConfig badge bg-secondary" id="mark_{{tp0}}-{{tp1}}-{{tp2}}"></span>
+              </label>
               <input class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"></input>
             </div>
           {# </li> #}
