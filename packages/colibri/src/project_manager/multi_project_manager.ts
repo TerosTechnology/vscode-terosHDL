@@ -232,8 +232,6 @@ export class Multi_project_manager {
 
         this.projectEmitter.emitEvent("", e_event.REMOVE_PROJECT);
 
-        // TODO
-        // prj.delete();
     }
 
     /**

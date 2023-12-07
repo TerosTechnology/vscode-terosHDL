@@ -94,70 +94,7 @@ export class Tree_view_manager {
         }
 
         try {
-            // Save toml
-            const select_project = multi_manager.get_selected_project();
-            if (select_project.get_name() !== projectName && projectName !== "") {
-                return;
-            }
-
-            const prj_sources = select_project.get_project_definition().file_manager.get();
-
-            type t_lib = {
-                name: string,
-                files: string[]
-            };
-
-            let libraries: t_lib[] = [];
-
-            for (let i = 0; i < prj_sources.length; i++) {
-                const source = prj_sources[i];
-
-                // Check if file in library
-                let file_in_library = false;
-                for (let j = 0; j < libraries.length; j++) {
-                    const library = libraries[j];
-                    if (library.name === source.logical_name) {
-                        file_in_library = true;
-                        library.files.push(source.name);
-                        break;
-                    }
-                }
-                if (file_in_library === false) {
-                    let new_library: t_lib = {
-                        name: source.logical_name,
-                        files: [source.name]
-                    };
-                    libraries.push(new_library);
-                }
-            }
-
-            let files_toml: string[] = [];
-            let file_path = path_lib.join(os.homedir(), ".vhdl_ls.toml");
-            let toml = "[libraries]\n\n";
-            if (libraries !== undefined) {
-                for (let i = 0; i < libraries.length; i++) {
-                    let library = libraries[i];
-                    let files_in_library = "";
-                    for (let j = 0; j < library.files.length; j++) {
-                        const file_in_library = library.files[j];
-                        let filename = path_lib.basename(file_in_library);
-                        const lang = teroshdl2.utils.file.get_language_from_filepath(filename);
-                        if (lang === teroshdl2.common.general.LANGUAGE.VHDL) {
-                            files_in_library += `  '${file_in_library}',\n`;
-                            files_toml.push(file_in_library);
-                        }
-                    }
-                    let lib_name = library.name;
-                    if (lib_name === "") {
-                        lib_name = "none";
-                    }
-                    if (library.name === undefined || library.name === '') {
-                        library.name = 'work';
-                    }
-                    toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
-                }
-            }
-            teroshdl2.utils.file.save_file_sync(file_path, toml);
+            multi_manager.get_selected_project().save_toml(path_lib.join(os.homedir(), ".vhdl_ls.toml"));
             vscode.commands.executeCommand("teroshdl.vhdlls.restart");
         } catch (error) {
             return;
