@@ -24,3 +24,4 @@ export * as common from './common';
 export * as tool_common from './tool/common';
 export * as quartus from './tool/quartus/utils';
 export * as utils from './utils/utils';
+export * as projectEmitter from './projectEmitter';

@@ -48,7 +48,7 @@ const PRJ_FILENAME = '.teroshdl2_prj.json';
 export class Teroshdl {
     private context: vscode.ExtensionContext;
     private manager: t_Multi_project_manager;
-    private emitterProject: events.EventEmitter = new events.EventEmitter();
+    private emitterProject = new teroshdl2.project_manager.projectEmitter.ProjectEmitter();
     private global_logger: Logger;
     private logView;
 
@@ -64,6 +64,7 @@ export class Teroshdl {
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
 
         this.manager = new teroshdl2.project_manager.multi_project_manager.Multi_project_manager(
+            this.emitterProject,
             file_prj_path);
         GlobalConfigManager.newInstance(file_config_path);
         this.context = context;

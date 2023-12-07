@@ -21,8 +21,7 @@ import { e_project_type } from "./common";
 import { Project_manager } from "./project_manager";
 import * as file_utils from "../utils/file_utils";
 import { QuartusProjectManager } from "./tool/quartus/quartusProjectManager";
-
-import * as events from "events";
+import { ProjectEmitter, e_event } from "./projectEmitter";
 
 class ProjectNotFoundError extends Error {
     constructor(message: string) {
@@ -42,9 +41,11 @@ export class Multi_project_manager {
     private project_manager_list: Project_manager[] = [];
     private selected_project: Project_manager | undefined = undefined;
     private sync_file_path = "";
+    private projectEmitter: ProjectEmitter;
 
-    constructor(sync_file_path = "") {
+    constructor(projectEmitter: ProjectEmitter, sync_file_path = "") {
         this.sync_file_path = sync_file_path;
+        this.projectEmitter = projectEmitter;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -93,7 +94,7 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Load / Save in a file
     ////////////////////////////////////////////////////////////////////////////
-    public async load(emitterProject: events.EventEmitter): Promise<void> {
+    public async load(emitterProject: ProjectEmitter): Promise<void> {
         let failed = false;
 
         // Initialize
@@ -133,6 +134,8 @@ export class Multi_project_manager {
         catch (error) {
             failed = true;
         }
+
+        this.projectEmitter.emitEvent("", e_event.ADD_PROJECT);
 
         if (failed) {
             throw new ProjectOperationError(`There have been errors loading project list from disk.`);
@@ -175,6 +178,7 @@ export class Multi_project_manager {
             this.get_project_by_name(prj.get_name());
         } catch (error) { // Not exists
             this.project_manager_list.push(prj);
+            this.projectEmitter.emitEvent("", e_event.ADD_PROJECT);
             return;
         }
         throw new ProjectOperationError(`Project ${prj.get_name()} already exists. Please use a different name.`);
@@ -226,6 +230,8 @@ export class Multi_project_manager {
         });
         this.project_manager_list = new_project_manager_list;
 
+        this.projectEmitter.emitEvent("", e_event.REMOVE_PROJECT);
+
         // TODO
         // prj.delete();
     }
@@ -239,6 +245,7 @@ export class Multi_project_manager {
         // Check if project is in the list. Error if not.
         this.get_project_by_name(prj.get_name());
         this.selected_project = prj;
+        this.projectEmitter.emitEvent("", e_event.SELECT_PROJECT);
     }
 
     private validate_project_name(name: string): void {

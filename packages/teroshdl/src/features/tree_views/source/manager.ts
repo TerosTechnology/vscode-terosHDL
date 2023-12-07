@@ -21,24 +21,25 @@ import * as vscode from "vscode";
 import * as element from "./element";
 import * as utils from "../utils";
 import { t_Multi_project_manager } from '../../../type_declaration';
-import * as events from "events";
 import * as teroshdl2 from 'teroshdl2';
 import * as path_lib from 'path';
 import * as shelljs from 'shelljs';
 import { open_file } from "../../../utils/utils";
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
 
-export class Source_manager {
+export class Source_manager extends BaseView {
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
-    private emitter: events.EventEmitter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
+        super(e_viewType.SOURCE);
+
         this.set_commands();
 
-        this.emitter = emitter;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
 
@@ -144,7 +145,6 @@ export class Source_manager {
                     prj.add_logical(logical_name);
                 }
             }
-            this.refresh();
         } catch (error) {
 
         }
@@ -154,7 +154,6 @@ export class Source_manager {
         try {
             const prj = this.project_manager.get_selected_project();
             await utils.add_sources_from_open_dialog(prj, item.get_logical_name());
-            this.refresh();
         } catch (error) {
 
         }
@@ -164,7 +163,6 @@ export class Source_manager {
         try {
             const prj = this.project_manager.get_selected_project();
             await prj.delete_file_by_logical_name(item.get_logical_name());
-            this.refresh();
         } catch (error) {
 
         }
@@ -174,7 +172,6 @@ export class Source_manager {
         try {
             const prj = this.project_manager.get_selected_project();
             await prj.delete_file(item.get_name(), item.get_logical_name());
-            this.refresh();
         } catch (error) {
 
         }
@@ -184,14 +181,9 @@ export class Source_manager {
         try {
             const prj = this.project_manager.get_selected_project();
             await prj.add_toplevel_path(item.get_name());
-            this.refresh();
         } catch (error) {
 
         }
-    }
-
-    refresh() {
-        this.emitter.emit('refresh');
     }
 
     refresh_tree() {

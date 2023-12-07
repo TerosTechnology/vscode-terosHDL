@@ -23,8 +23,10 @@ import { t_Multi_project_manager } from '../../../type_declaration';
 import * as events from "events";
 import * as shelljs from 'shelljs';
 import { Logger } from "../../../logger";
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
 
-export class IpCatalogManager {
+export class IpCatalogManager extends BaseView{
     private tree: element.IpCatalogProvider;
     private project_manager: t_Multi_project_manager;
     private logger: Logger;
@@ -32,8 +34,9 @@ export class IpCatalogManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
-        logger: Logger) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logger: Logger) {
+
+        super(e_viewType.IP_CATALOG);
 
         this.project_manager = manager;
         this.logger = logger;
@@ -82,10 +85,6 @@ export class IpCatalogManager {
 
     refresh_tree() {
         this.tree.refresh();
-    }
-
-    refresh(element) {
-        element.refresh_tree();
     }
 }
 

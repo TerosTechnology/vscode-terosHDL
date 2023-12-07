@@ -3,6 +3,11 @@ import { e_iconType, e_reportType, e_taskExecutionType, e_taskState, e_taskType,
 export function getDefaultTaskList(): t_taskRep[] {
     const taskList: t_taskRep[] = [
         {
+            "name": e_taskType.OPENFOLDER,
+            "label": "Open Project Folder",
+            "executionType": e_taskExecutionType.OPENFOLDER,
+        },
+        {
             "name": e_taskType.QUARTUS_COMPILEDESIGN,
             "label": "Run during full compilation",
             "executionType": e_taskExecutionType.COMPLEXCOMMAND,

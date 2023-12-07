@@ -19,11 +19,14 @@
 
 import * as vscode from "vscode";
 import * as element from "./element";
+import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../../../type_declaration';
 import {Schematic_manager} from "../../schematic";
 import {Dependency_manager} from "../../dependency";
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
 
-export class Tree_manager {
+export class TreeDependencyManager extends BaseView{
     private tree : element.ProjectProvider;
     private schematic_manager : Schematic_manager;
     private dependency_manager : Dependency_manager;
@@ -33,6 +36,9 @@ export class Tree_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, schematic_manager : Schematic_manager,
         dependency_manager : Dependency_manager) {
+        
+        super(e_viewType.DEPENDENCY);
+        
         this.set_commands();
 
         this.tree = new element.ProjectProvider(manager);

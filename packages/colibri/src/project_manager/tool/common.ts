@@ -39,9 +39,11 @@ export enum e_taskType {
     QUARTUS_FITTERFINALIZE = "Fitter (Finalize)",
     QUARTUS_TIMING = "Timing Analysis (Signoff)",
     // Common
+    OPENFOLDER = "Open Project Folder",
 }
 
 export const ListOfTasksRun: Record<e_taskType, e_taskType[]> = {
+    [e_taskType.OPENFOLDER]: [],
     [e_taskType.QUARTUS_COMPILEDESIGN]: [
         e_taskType.QUARTUS_IPGENERATION,
         e_taskType.QUARTUS_ANALYSISSYNTHESIS,
@@ -186,6 +188,7 @@ export enum e_taskExecutionType {
     SIMPLECOMMAND = "SIMPLECOMMAND",
     /** Only display information. Not execution. */
     DISPLAYGROUP = "DISPLAYGROUP",
+    OPENFOLDER = "FOLDER",
 }
 
 export type t_taskRep = {

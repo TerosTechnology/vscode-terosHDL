@@ -26,8 +26,10 @@ import * as teroshdl2 from 'teroshdl2';
 import { Run_output_manager } from "../run_output";
 import { Logger } from "../../../logger";
 import { GlobalConfigManager } from "teroshdl2/out/config/config_manager";
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
 
-export class Output_manager {
+export class Output_manager extends BaseView{
     private tree: element.ProjectProvider;
     private run_output_manager: Run_output_manager;
     private project_manager: t_Multi_project_manager;
@@ -38,6 +40,8 @@ export class Output_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
         run_output_manager: Run_output_manager, logger: Logger) {
+
+        super(e_viewType.OUTPUT);
 
         this.run_output_manager = run_output_manager;
         this.project_manager = manager;

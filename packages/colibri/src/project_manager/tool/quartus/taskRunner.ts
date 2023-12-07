@@ -6,9 +6,9 @@ import { Process } from "../../../process/process";
 import { p_result } from "../../../process/common";
 import { e_taskType } from "../common";
 import * as path_lib from "path";
-import { EventEmitter } from "stream";
+import { ProjectEmitter, e_event } from "../../projectEmitter";
 
-function executeCommandList(commands: string[], cwd: string, emitter: EventEmitter,
+function executeCommandList(projectName:string, commands: string[], cwd: string, emitter: ProjectEmitter,
     callback: (result: p_result) => void): ChildProcess {
 
     const concatCommands = commands.join(" && ");
@@ -17,14 +17,14 @@ function executeCommandList(commands: string[], cwd: string, emitter: EventEmitt
     const p = new Process();
 
     const exec_i = p.exec(concatCommands, opt_exec, (result: p_result) => {
-        emitter.emit("taskFinished");
+        emitter.emitEvent(projectName, e_event.FINISH_TASK);
         callback(result);
     });
     return exec_i;
 }
 
 export function runTask(taskType: e_taskType, quartusDir: string, 
-    projectDir: string, projectName: string, revisionName: string, emitter: EventEmitter,
+    projectDir: string, projectName: string, revisionName: string, emitter: ProjectEmitter,
     callback: (result: p_result) => void): ChildProcess {
 
     const binIP = path_lib.join(quartusDir, "quartus_ipgenerate");
@@ -33,6 +33,7 @@ export function runTask(taskType: e_taskType, quartusDir: string,
     const binSTA = path_lib.join(quartusDir, "quartus_sta");
 
     const commandDeclaration: Record<e_taskType, string[]> = {
+        [e_taskType.OPENFOLDER]: [],
         [e_taskType.QUARTUS_COMPILEDESIGN]: [
             `${binSyn} --dni --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
             `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
@@ -101,5 +102,5 @@ export function runTask(taskType: e_taskType, quartusDir: string,
     if (commandToRun.length === 0) {
         return {} as ChildProcess;
     }
-    return executeCommandList(commandDeclaration[taskType], projectDir, emitter, callback);
+    return executeCommandList(projectName, commandDeclaration[taskType], projectDir, emitter, callback);
 }

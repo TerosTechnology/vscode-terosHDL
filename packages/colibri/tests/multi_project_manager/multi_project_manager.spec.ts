@@ -16,17 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { EventEmitter } from 'stream';
 import { GlobalConfigManager } from '../../src/config/config_manager';
 import { e_project_type } from '../../src/project_manager/common';
 import { Multi_project_manager } from '../../src/project_manager/multi_project_manager';
 import { Project_manager } from '../../src/project_manager/project_manager';
 import { QuartusProjectManager } from '../../src/project_manager/tool/quartus/quartusProjectManager';
 import { save_file_sync, read_file_sync } from '../../src/utils/file_utils';
+import { ProjectEmitter } from '../../src/project_manager/projectEmitter';
 
 const sync_file_path = "/tmp/sync_file_path.json";
 
-const emitter = new EventEmitter();
+const emitter = new ProjectEmitter();
 
 jest.mock('../../src/utils/file_utils', () => ({
     ...jest.requireActual('../../src/utils/file_utils'),
@@ -64,7 +64,7 @@ describe('MultiProjectManager', () => {
     let multiProjectManager: Multi_project_manager;
 
     beforeEach(() => {
-        multiProjectManager = new Multi_project_manager(sync_file_path);
+        multiProjectManager = new Multi_project_manager(emitter, sync_file_path);
     });
 
     function create_project_with_name_and_add(prj_name: string): Project_manager {

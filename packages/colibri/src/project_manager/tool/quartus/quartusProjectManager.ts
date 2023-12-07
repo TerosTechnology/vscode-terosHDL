@@ -11,7 +11,6 @@ import { getIpCatalog } from "./ipCatalog";
 import { e_config } from "../../../config/config_declaration";
 import * as path_lib from 'path';
 import * as fs from 'fs';
-import events = require("events");
 import { get_filename } from "../../../utils/file_utils";
 import {
     e_artifact_type, e_element_type, e_reportType, e_taskType, t_ipCatalogRep, t_taskRep,
@@ -25,6 +24,7 @@ import { getDefaultTaskList } from "./common";
 import { TaskStateManager } from "../taskState";
 import { setStatus } from "./quartusDB";
 import { GlobalConfigManager } from "../../../config/config_manager";
+import { ProjectEmitter, e_event } from "../../projectEmitter";
 
 function getVersionDirectory(basePath: string): string {
     const defaultVersionDirectory = "23.3.0";
@@ -50,18 +50,19 @@ export class QuartusProjectManager extends Project_manager {
 
     private quartusStatusWatcher: chokidar.FSWatcher | undefined = undefined;
     private quartusDatabaseStatusPath = "";
-    private emitterTask: events.EventEmitter = new events.EventEmitter();
     private currentRevision: string;
 
     constructor(name: string, projectPath: string, currentRevision: string,
-        emitterProject: events.EventEmitter) {
+        emitterProject: ProjectEmitter) {
         super(name, emitterProject);
         super.taskStateManager = new TaskStateManager(getDefaultTaskList());
         this.projectDiskPath = projectPath;
         this.currentRevision = currentRevision;
 
-        this.emitterTask.on("taskFinished", async () => {
-            await this.updateStatus(true);
+        emitterProject.addProjectListener(async (projectName: string, eventType: e_event) => {
+            if (projectName === this.get_name() && eventType === e_event.FINISH_TASK) {
+                await this.updateStatus(true);
+            }
         });
 
         const basePath = path_lib.join(
@@ -104,7 +105,7 @@ export class QuartusProjectManager extends Project_manager {
     }
 
     static async fromJson(jsonContent: any, _reference_path: string,
-        emitterProject: events.EventEmitter): Promise<QuartusProjectManager> {
+        emitterProject: ProjectEmitter): Promise<QuartusProjectManager> {
         try {
             const projectPath = jsonContent.project_disk_path;
             return await this.fromExistingQuartusProject(
@@ -126,7 +127,7 @@ export class QuartusProjectManager extends Project_manager {
      * @returns Quartus project.
     **/
     static async fromNewQuartusProject(config: e_config, name: string, family: string, part: string,
-        projectDirectory: string, emitterProject: events.EventEmitter)
+        projectDirectory: string, emitterProject: ProjectEmitter)
         : Promise<QuartusProjectManager> {
 
         try {
@@ -147,7 +148,7 @@ export class QuartusProjectManager extends Project_manager {
      * @param emitter Emitter function.
      * @returns Quartus project.
     **/
-    static async fromExistingQuartusProject(config: e_config, project_path: string, emitterProject: events.EventEmitter)
+    static async fromExistingQuartusProject(config: e_config, project_path: string, emitterProject: ProjectEmitter)
         : Promise<QuartusProjectManager> {
         try {
             const projectInfo = await getProjectInfo(config, project_path);
@@ -290,13 +291,13 @@ export class QuartusProjectManager extends Project_manager {
         const quartusDir = getQuartusPath(config);
         const projectDir = get_directory(this.projectDiskPath);
         return runTask(taskType, quartusDir, projectDir, this.get_name(), this.currentRevision,
-            this.emitterTask, callback);
+            this.emitterProject, callback);
     }
 
     public cleallAllProject(callback: (result: p_result) => void): ChildProcess {
         const config = super.get_config();
 
-        const exec_i = cleanProject(config, this.projectDiskPath, this.emitterTask, callback);
+        const exec_i = cleanProject(this.get_name(), config, this.projectDiskPath, this.emitterProject, callback);
         return exec_i;
     }
 
@@ -316,6 +317,7 @@ export class QuartusProjectManager extends Project_manager {
             return artifact;
         }
         const reportSufix: Record<e_taskType, string> = {
+            [e_taskType.OPENFOLDER]: "",
             [e_taskType.QUARTUS_ANALYSISSYNTHESIS]: "syn",
             [e_taskType.QUARTUS_ANALYSISELABORATION]: "syn",
             [e_taskType.QUARTUS_SYNTHESIS]: "syn",
