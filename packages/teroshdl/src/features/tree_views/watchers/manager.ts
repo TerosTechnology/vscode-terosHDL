@@ -19,24 +19,23 @@
 
 import * as vscode from "vscode";
 import * as element from "./element";
-import * as path_lib from "path";
 import { t_Multi_project_manager } from '../../../type_declaration';
-import * as events from "events";
 import * as utils from "../utils";
 import * as teroshdl2 from "teroshdl2";
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
 
-export class Watcher_manager {
+export class Watcher_manager extends BaseView{
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
-    private emitter: events.EventEmitter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter: events.EventEmitter) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
+        super(e_viewType.WATCHERS);
+        
         this.set_commands();
-
-        this.emitter = emitter;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
 
@@ -56,7 +55,6 @@ export class Watcher_manager {
 
             const prj = this.project_manager.get_selected_project();
 
-            // const element_types = ["VUnit", "CSV", "Vivado project"];
             const element_types = ["VUnit", "CSV"];
             const picker_value = await utils.get_picker_value(element_types, "Choose file watcher type");
             let watcher_type = teroshdl2.project_manager.common.e_watcher_type.CSV;
@@ -66,9 +64,6 @@ export class Watcher_manager {
             else if (picker_value === element_types[1]) {
                 watcher_type = teroshdl2.project_manager.common.e_watcher_type.CSV;
             }
-            // else if(picker_value === element_types[2]){
-            //     watcher_type = teroshdl2.project_manager.common.e_watcher_type.VIVADO;
-            // }
             else {
                 return;
             }
@@ -78,7 +73,6 @@ export class Watcher_manager {
             path_list.forEach(path_inst => {
                 prj.add_file_to_watcher({ path: path_inst, watcher_type: watcher_type });
             });
-            this.refresh();
         } catch (error) {
 
         }
@@ -88,14 +82,9 @@ export class Watcher_manager {
         try {
             const prj = this.project_manager.get_selected_project();
             prj.delete_file_in_watcher(item.get_name());
-            this.refresh();
         } catch (error) {
 
         }
-    }
-
-    refresh() {
-        this.emitter.emit('refresh');
     }
 
     refresh_tree() {

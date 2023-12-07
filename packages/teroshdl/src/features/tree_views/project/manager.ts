@@ -16,12 +16,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
+
 import * as vscode from "vscode";
 import * as element from "./element";
 import * as path_lib from "path";
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as teroshdl2 from 'teroshdl2';
-import * as events from "events";
 import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
 import { Logger } from "../../../logger";
@@ -29,11 +29,13 @@ import { t_message_level, showMessage } from "../../../utils/utils";
 import { read_file_sync } from "teroshdl2/out/utils/file_utils";
 import * as yaml from "js-yaml";
 import { GlobalConfigManager } from "teroshdl2/out/config/config_manager";
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
 
-export class Project_manager {
+export class Project_manager extends BaseView{
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
-    private emitterProject: events.EventEmitter;
+    private emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter;
     private run_output_manager: Run_output_manager;
     private context: vscode.ExtensionContext;
     private global_logger: Logger;
@@ -41,8 +43,12 @@ export class Project_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, 
+        emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter,
         run_output_manager: Run_output_manager, global_logger: Logger) {
+        
+        super(e_viewType.PROJECT);
+
         this.set_commands();
 
         this.global_logger = global_logger;
@@ -54,6 +60,10 @@ export class Project_manager {
         this.context = context;
 
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as element.BaseTreeDataProvider<element.Project>));
+    }
+
+    public getRefreshEvent(): teroshdl2.project_manager.projectEmitter.e_event[] {
+        return []
     }
 
     open_doc() {
@@ -211,7 +221,6 @@ export class Project_manager {
                 showMessage(msg, t_message_level.INFO);
             } catch (error) { }
         }
-        this.refresh();
     }
 
     async create_project_from_quartus(prj_path: string) {
@@ -224,7 +233,6 @@ export class Project_manager {
 
             // Add project to manager
             this.project_manager.add_project(quartusProject);
-            this.refresh();
 
             const msg = `Intel@ Quartus@ Prime project ${quartusProject.get_name()} loaded.`;
             showMessage(msg, t_message_level.INFO);
@@ -237,7 +245,6 @@ export class Project_manager {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
                 JSON.parse(read_file_sync(prj_path)), prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
-            this.refresh();
         } catch (error) {
         }
     }
@@ -247,7 +254,6 @@ export class Project_manager {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
                 yaml.load(read_file_sync(prj_path)), prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
-            this.refresh();
         } catch (error) {
         }
     }
@@ -256,8 +262,6 @@ export class Project_manager {
         try {
             this.project_manager.set_selected_project(this.project_manager.get_project_by_name(item.get_project_name()));
             this.run_output_manager.clear();
-            this.refresh();
-            this.emitterProject.emit('changeProject');
         } catch (error) {
         }
     }
@@ -265,7 +269,6 @@ export class Project_manager {
     delete_project(item: element.Project) {
         try {
             this.project_manager.delete_project(this.project_manager.get_project_by_name(item.get_project_name()));
-            this.refresh();
         } catch (error) {
         }
     }
@@ -275,15 +278,9 @@ export class Project_manager {
         if (new_project_name !== undefined) {
             try {
                 this.project_manager.rename_project(this.project_manager.get_project_by_name(item.get_project_name()), new_project_name);
-                this.refresh();
             } catch (error) {
             }
         }
-    }
-
-    refresh() {
-        this.emitterProject.emit('refresh');
-        this.project_manager.save();
     }
 
     refresh_tree() {

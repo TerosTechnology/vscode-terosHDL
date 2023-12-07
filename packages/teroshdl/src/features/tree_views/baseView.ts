@@ -17,5 +17,16 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as teroshdl2 from 'teroshdl2';
+import { e_viewType, REFRESHLIST } from './common';
 
-export type t_Multi_project_manager = teroshdl2.project_manager.multi_project_manager.Multi_project_manager;
+export abstract class BaseView {
+    private viewType: e_viewType;
+
+    constructor(viewType: e_viewType) {
+        this.viewType = viewType;
+    }
+
+    public getRefreshEventList(): teroshdl2.project_manager.projectEmitter.e_event[] {
+        return REFRESHLIST[this.viewType];
+    }
+}

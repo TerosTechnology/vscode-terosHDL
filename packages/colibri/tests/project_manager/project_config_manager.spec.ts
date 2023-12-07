@@ -1,7 +1,7 @@
-import EventEmitter = require("events");
 import { Project_manager } from "../../src/project_manager/project_manager";
 import { GlobalConfigManager } from "../../src/config/config_manager";
 import { get_default_config } from "../../src/config/config_declaration";
+import { ProjectEmitter } from "../../src/project_manager/projectEmitter";
 
 describe('ProjectManager Configuration', () => {
 
@@ -10,7 +10,7 @@ describe('ProjectManager Configuration', () => {
 
     beforeEach(() => {
         GlobalConfigManager.getInstance().set_config(get_default_config()); // Restore default config before each test
-        projectManager = new Project_manager("Project1", new EventEmitter());
+        projectManager = new Project_manager("Project1", new ProjectEmitter());
     });
 
     it('should initialize configuration with default config', () => {

@@ -28,6 +28,8 @@ import { ChildProcess } from "child_process";
 import * as shelljs from 'shelljs';
 import { LogView } from "../../../views/logs";
 import * as tree_kill from 'tree-kill';
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
 
 enum e_VIEW_STATE {
     IDLE = 0,
@@ -36,11 +38,10 @@ enum e_VIEW_STATE {
     FAILED = 3
 }
 
-export class Tasks_manager {
+export class Tasks_manager extends BaseView{
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
     private logger: Logger;
-    private emitterProject: events.EventEmitter;
     private state: e_VIEW_STATE = e_VIEW_STATE.IDLE;
     private latesRunTask: ChildProcess | undefined = undefined;
     private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined | string = undefined;
@@ -49,21 +50,16 @@ export class Tasks_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
-        logger: Logger, logView: LogView) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logger: Logger, logView: LogView) {
+
+        super(e_viewType.TASKS);
 
         this.set_commands();
 
         this.logger = logger;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
-        this.emitterProject = emitterProject;
         this.logView = logView;
-
-        const selfm = this;
-        emitterProject.addListener('updateStatus', function () {
-            selfm.refresh(selfm);
-        });
 
         const provider = new RedTextDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
@@ -72,6 +68,9 @@ export class Tasks_manager {
             this.tree as element.BaseTreeDataProvider<element.Task>));
     }
 
+    /**
+     * Sets up the commands for the task manager.
+     */
     set_commands() {
         vscode.commands.registerCommand("teroshdl.view.tasks.report", (item) =>
             this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORT));
@@ -89,6 +88,9 @@ export class Tasks_manager {
         vscode.commands.registerCommand("teroshdl.view.tasks.clean", () => this.clean());
     }
 
+    /**
+     * Stops the latest run task if it is still running.
+     */
     stop() {
         if (this.latesRunTask && !this.latesRunTask.killed) {
             try {
@@ -223,17 +225,17 @@ export class Tasks_manager {
         }
     }
 
+    /**
+     * Checks if there is a task currently running.
+     * 
+     * @returns {boolean} Returns true if there is a task running, otherwise false.
+     */
     checkRunning() {
         if (this.state === e_VIEW_STATE.RUNNING) {
             vscode.window.showInformationMessage("There is a task running. Please wait until it finishes.");
             return true;
         }
         return false;
-    }
-
-    refresh(element) {
-        element.refresh_tree();
-        element.emitterProject.emit('refresh_output');
     }
 
     openReport(taskItem: element.Task, reportType: teroshdl2.project_manager.tool_common.e_reportType) {

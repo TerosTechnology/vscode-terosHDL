@@ -19,26 +19,16 @@
 
 import * as vscode from "vscode";
 import * as element from "./element";
-import { t_Multi_project_manager } from '../../../type_declaration';
-import * as events from "events";
-import {Run_output_manager} from "../run_output";
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
 
-export class Actions_manager {
-    private project_manager : t_Multi_project_manager;
-    private emitter : events.EventEmitter;
-    private run_output_manager : Run_output_manager;
-
+export class Actions_manager extends BaseView{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitter : events.EventEmitter,
-        run_output_manager: Run_output_manager) {
-
-        this.run_output_manager = run_output_manager;
-        this.emitter = emitter;
-        this.project_manager = manager;
-        const tree = new element.ActionsProvider();
-        
+    constructor(context: vscode.ExtensionContext) {
+        super(e_viewType.ACTIONS);
+        const tree = new element.ActionsProvider();        
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ActionsProvider.getViewID(), tree));
     }
 }

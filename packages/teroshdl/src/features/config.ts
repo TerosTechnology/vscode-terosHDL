@@ -295,7 +295,7 @@ export class Config_manager {
      */
     private getMessageAlert(): string {
         if (this.currentConfigIsGlobal) {
-            return "- TerosHDL Global configuration.";
+            return "- TerosHDL Global Settings.";
         }
         else {
             return `- ${this.currentProjectName}.`;

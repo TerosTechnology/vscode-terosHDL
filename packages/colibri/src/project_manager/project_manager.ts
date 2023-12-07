@@ -43,7 +43,6 @@ import { ConfigManager, GlobalConfigManager } from "../config/config_manager";
 import { e_config, get_config_from_json, get_default_config } from "../config/config_declaration";
 import * as utils from "./utils/utils";
 import * as python from "../process/python";
-import * as events from "events";
 import { l_error } from "../linter/common";
 import { Linter } from "../linter/linter";
 import { t_linter_name, l_options } from "../linter/common";
@@ -55,12 +54,13 @@ import { t_taskRep } from "./tool/common";
 import { ChildProcess } from "child_process";
 import { p_result } from "../process/common";
 import { TaskStateManager } from "./tool/taskState";
+import { ProjectEmitter, e_event } from "./projectEmitter";
 
 export class Project_manager extends ConfigManager {
     /**  Name of the project */
     private name: string;
     /** Path of the project */
-    private _projectDiskPath = "";
+    public _projectDiskPath = "";
     /** Contains all the HDL source files, constraint files, vendor IP description files, 
      * memory initialization files etc. for the project. */
     private files = new manager_file.File_manager();
@@ -73,12 +73,12 @@ export class Project_manager extends ConfigManager {
     /** Toplevel path(s) for the project. */
     private toplevel_path = new manager_toplevel_path.Toplevel_path_manager();
     private tools_manager = new Tool_manager(undefined);
-    private emitterProject: events.EventEmitter;
+    protected emitterProject: ProjectEmitter;
     /** Linter */
     private linter = new Linter();
     public taskStateManager: TaskStateManager = new TaskStateManager([]);
 
-    constructor(name: string, emitterProject: events.EventEmitter) {
+    constructor(name: string, emitterProject: ProjectEmitter) {
         super(get_undefined_config());
         this.name = name;
         this.emitterProject = emitterProject;
@@ -89,7 +89,7 @@ export class Project_manager extends ConfigManager {
             selfm.watchers.get().forEach(async (watcher: any) => {
                 if (file_utils.check_if_path_exist(watcher.path)) {
                     if (selfm.emitterProject !== undefined) {
-                        selfm.emitterProject.emit('loading');
+                        selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_LOADING);
                     }
                     if (watcher.watcher_type === e_watcher_type.CSV) {
                         selfm.add_file_from_csv(watcher.path, false);
@@ -101,8 +101,8 @@ export class Project_manager extends ConfigManager {
                         await selfm.add_file_from_vivado(watcher.path, false);
                     }
                     if (selfm.emitterProject !== undefined) {
-                        selfm.emitterProject.emit('loaded');
-                        selfm.emitterProject.emit('refresh');
+                        selfm.emitterProject.emitEvent(selfm.name, e_event.ADD_SOURCE);
+                        selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_FINISHED);
                     }
                 }
             });
@@ -131,6 +131,7 @@ export class Project_manager extends ConfigManager {
 
     public rename(name: string) {
         this.name = name;
+        this.emitterProject.emitEvent(this.name, e_event.RENAME_PROJECT);
     }
 
     get_watcher_type(path: string): e_watcher_type {
@@ -144,7 +145,7 @@ export class Project_manager extends ConfigManager {
     }
 
     protected async notifyChanged(): Promise<void> {
-        this.emitterProject.emit('refresh');
+        this.emitterProject.emitEvent(this.name, e_event.GLOBAL_REFRESH);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -154,7 +155,7 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
-    static async fromJson(jsonContent: any, reference_path: string, emitterProject: events.EventEmitter): Promise<Project_manager> {
+    static async fromJson(jsonContent: any, reference_path: string, emitterProject: ProjectEmitter): Promise<Project_manager> {
         const prj = new Project_manager(jsonContent.name, emitterProject);
         // Files
         jsonContent.files.forEach((file: any) => {
@@ -226,7 +227,7 @@ export class Project_manager extends ConfigManager {
                 return this.add_toplevel_path(file.name);
             }
         }
-
+        this.emitterProject.emitEvent(this.name, e_event.SELECT_TOPLEVEL);
         return {
             result: undefined,
             successful: false,
@@ -241,7 +242,9 @@ export class Project_manager extends ConfigManager {
     **/
     public async add_toplevel_path(toplevel_path_inst: string): Promise<t_action_result> {
         this.toplevel_path.clear();
-        return this.toplevel_path.add(toplevel_path_inst);
+        const result = this.toplevel_path.add(toplevel_path_inst);
+        this.emitterProject.emitEvent(this.name, e_event.SELECT_TOPLEVEL);
+        return result;
     }
 
     /**
@@ -250,7 +253,9 @@ export class Project_manager extends ConfigManager {
      * @returns Operation result
     **/
     delete_toplevel_path(toplevel_path_inst: string): t_action_result {
-        return this.toplevel_path.delete(toplevel_path_inst);
+        const result = this.toplevel_path.delete(toplevel_path_inst);
+        this.emitterProject.emitEvent(this.name, e_event.SELECT_TOPLEVEL);
+        return result;
     }
 
     /**
@@ -265,11 +270,15 @@ export class Project_manager extends ConfigManager {
     // Watcher
     ////////////////////////////////////////////////////////////////////////////
     add_file_to_watcher(watcher: t_watcher): t_action_result {
-        return this.watchers.add(watcher);
+        const result = this.watchers.add(watcher);
+        this.emitterProject.emitEvent(this.name, e_event.ADD_WATCHER);
+        return result;
     }
 
     delete_file_in_watcher(watcher_path: string): t_action_result {
-        return this.watchers.delete(watcher_path);
+        const result = this.watchers.delete(watcher_path);
+        this.emitterProject.emitEvent(this.name, e_event.REMOVE_WATCHER);
+        return result;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -281,7 +290,6 @@ export class Project_manager extends ConfigManager {
         try {
             const fileList = await getFilesFromProject(this.get_config(), vivado_path, is_manual);
             this.add_file_from_array(fileList);
-
         } catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -326,13 +334,16 @@ export class Project_manager extends ConfigManager {
     }
 
     public async add_file(file: t_file): Promise<t_action_result> {
-        return this.files.add(file);
+        const result = this.files.add(file);
+        this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        return result;
     }
 
     public async add_file_from_array(file_list: t_file[]): Promise<t_action_result> {
         file_list.forEach(file => {
             this.files.add(file);
         });
+        this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
         return {
             result: undefined,
             successful: true,
@@ -343,6 +354,7 @@ export class Project_manager extends ConfigManager {
     public async delete_file(name: string, logical_name = "") {
         const result = this.files.delete(name, logical_name);
         this.delete_phantom_toplevel();
+        this.emitterProject.emitEvent(this.name, e_event.DELETE_SOURCE);
         return result;
     }
 
@@ -353,14 +365,17 @@ export class Project_manager extends ConfigManager {
     public async delete_file_by_logical_name(logical_name: string): Promise<t_action_result> {
         const result = this.files.delete_by_logical_name(logical_name);
         this.delete_phantom_toplevel();
+        this.emitterProject.emitEvent(this.name, e_event.DELETE_SOURCE);
         return result;
     }
 
-    add_logical(logical_name: string) {
-        return this.files.add_logical(logical_name);
+    public add_logical(logical_name: string) {
+        const result = this.files.add_logical(logical_name);
+        this.emitterProject.emitEvent(this.name, e_event.ADD_LIBRARY);
+        return result;
     }
 
-    delete_phantom_toplevel() {
+    public delete_phantom_toplevel() {
         this.toplevel_path.get().forEach(toplevel => {
             if (this.check_if_path_in_project(toplevel) === false) {
                 this.delete_toplevel_path(toplevel);
@@ -370,6 +385,7 @@ export class Project_manager extends ConfigManager {
 
     public clearFiles() {
         this.files.clear();
+        this.emitterProject.emitEvent(this.name, e_event.DELETE_SOURCE);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -395,6 +411,7 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     public set_config(config: e_config): void {
         super.set_config(diff_config(config, GlobalConfigManager.getInstance().get_config()));
+        this.emitterProject.emitEvent(this.name, e_event.SAVE_SETTINGS);
     }
 
     public get_config(): e_config {
@@ -516,7 +533,7 @@ export class Project_manager extends ConfigManager {
     }
 
     protected emitUpdateStatus() {
-        this.emitterProject.emit('updateStatus');
+        this.emitterProject.emitEvent(this.name, e_event.UPDATE_TASK);
     }
 }
 
@@ -585,6 +602,13 @@ function diff_config<T extends Record<string, any>>(config1: T, config2: T): T {
             && !Array.isArray(value1) && !Array.isArray(value2)) {
             const nestedDifferences = diff_config(value1, value2);
             differences[key] = nestedDifferences;
+        } else if (Array.isArray(value1) && Array.isArray(value2)) {
+            if (value1.length === value2.length && value1.every((value, index) => value === value2[index])) {
+                differences[key] = undefined;
+            }
+            else {
+                differences[key] = value1;
+            }
         } else if (value1 !== value2) {
             differences[key] = value1;
         } else {

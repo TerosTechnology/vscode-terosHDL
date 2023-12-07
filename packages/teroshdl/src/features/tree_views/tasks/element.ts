@@ -21,6 +21,7 @@ import { t_Multi_project_manager } from '../../../type_declaration';
 import * as vscode from "vscode";
 import { get_icon } from "../utils";
 import * as teroshdl2 from "teroshdl2";
+import * as path_lib from "path";
 import { ThemeColor } from "vscode";
 
 export const VIEW_ID = "teroshdl-view-tasks";
@@ -60,7 +61,8 @@ export class Task extends vscode.TreeItem {
     // Element
     private name: string;
 
-    constructor(taskDefinition: teroshdl2.project_manager.tool_common.t_taskRep, children?: any[]) {
+    constructor(taskDefinition: teroshdl2.project_manager.tool_common.t_taskRep, projectFolder: string, 
+        children?: any[]) {
 
         super(
             appendDuration(appendPercent(taskDefinition.name, taskDefinition.percent), taskDefinition.elapsed_time),
@@ -83,7 +85,6 @@ export class Task extends vscode.TreeItem {
         }
         this.iconPath = get_icon("play-blue");
         if (taskDefinition.executionType !== teroshdl2.project_manager.tool_common.e_taskExecutionType.DISPLAYGROUP) {
-
             if (taskDefinition.icon === teroshdl2.project_manager.tool_common.e_iconType.CHIP) {
                 this.iconPath = get_icon("verilog");
             }
@@ -97,6 +98,14 @@ export class Task extends vscode.TreeItem {
                 command: "teroshdl.view.tasks.run",
                 title: "Run",
                 arguments: [this],
+            };
+        }
+        if (taskDefinition.executionType === teroshdl2.project_manager.tool_common.e_taskExecutionType.OPENFOLDER) {
+            this.iconPath = get_icon("folder");
+            this.command = {
+                title: 'Open folder',
+                command: 'revealFileInOS',
+                arguments: [vscode.Uri.file(projectFolder)]
             };
         }
 
@@ -169,11 +178,13 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             const selected_project = this.project_manager.get_selected_project();
             const groupTaskList = selected_project.getBuildSteps();
 
+            const projectFolder = teroshdl2.utils.file.get_directory(selected_project.projectDiskPath);
+
             function createTasks(children, depth = 0) {
                 const tasks: Task[] = [];
                 for (const child of children) {
                     const childTasks = child.children ? createTasks(child.children, depth + 1) : [];
-                    tasks.push(new Task(child, childTasks.length > 0 ? childTasks : undefined));
+                    tasks.push(new Task(child, projectFolder,childTasks.length > 0 ? childTasks : undefined));
                 }
                 return tasks;
             }

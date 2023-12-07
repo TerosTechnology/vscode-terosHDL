@@ -20,15 +20,15 @@
 import { t_watcher, t_action_result } from "../common";
 import { Manager } from "./manager";
 import * as chokidar from "chokidar";
-import * as events from "events";
 import * as file_utils from "../../utils/file_utils";
+import { ProjectEmitter } from "../projectEmitter";
 
 export class Watcher_manager extends Manager<t_watcher, undefined, string, string> {
     private watchers: t_watcher[] = [];
     private watcher_manager: chokidar.FSWatcher;
     private watcher_callback_update: (path: string) => void;
 
-    constructor(watcher_callback_update: (path: string) => void, _emitter: events.EventEmitter | undefined) {
+    constructor(watcher_callback_update: (path: string) => void, _emitter: ProjectEmitter | undefined) {
         super();
         this.watcher_callback_update = watcher_callback_update;
         this.watcher_manager = chokidar.watch('file', {

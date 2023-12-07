@@ -17,9 +17,13 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
+import * as vscode from "vscode";
+import * as os from "os";
+import * as path_lib from "path";
+import * as teroshdl2 from "teroshdl2";
 import { Project_manager } from "./project/manager";
 import { Source_manager } from "./source/manager";
-import { Tree_manager } from "./dependency/manager";
+import { TreeDependencyManager } from "./dependency/manager";
 import { Runs_manager } from "./runs/manager";
 import { Tasks_manager } from "./tasks/manager";
 import { IpCatalogManager } from "./ip-catalog/manager";
@@ -28,34 +32,21 @@ import { Run_output_manager } from "./run_output";
 import { Watcher_manager } from "./watchers/manager";
 import { Output_manager } from "./output/manager";
 import { Logger } from "../../logger";
-
-import * as events from "events";
-import * as vscode from "vscode";
-import * as os from "os";
-import * as path_lib from "path";
 import { t_Multi_project_manager } from '../../type_declaration';
 import { Schematic_manager } from "../schematic";
 import { Dependency_manager } from "../dependency";
-import * as teroshdl from "teroshdl2";
 import { LogView } from "../../views/logs";
 
-let project_manager: Project_manager;
-let source_manager: Source_manager;
-let tree_manager: Tree_manager;
-let runs_manager: Runs_manager;
-let tasks_manager: Tasks_manager;
-let ipCatalogManager: IpCatalogManager;
 let run_output: Run_output_manager = new Run_output_manager();
-let actions_manager: Actions_manager;
-let watcher_manager: Watcher_manager;
-let output_manager: Output_manager;
 let multi_manager: t_Multi_project_manager;
+let viewList: any[] = [];
 
 export class Tree_view_manager {
     private logger: Logger = new Logger();
     private statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, emitterProject: events.EventEmitter,
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
+        emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter,
         schematic_manager: Schematic_manager,
         dependency_manager: Dependency_manager, global_logger: Logger,
         logView: LogView) {
@@ -63,60 +54,52 @@ export class Tree_view_manager {
         context.subscriptions.push(this.statusbar);
         multi_manager = manager;
 
-        const slm = this;
+        viewList = [
+            new Project_manager(context, manager, emitterProject, run_output, global_logger),
+            new Source_manager(context, manager),
+            new TreeDependencyManager(context, manager, schematic_manager, dependency_manager),
+            new Runs_manager(context, manager, run_output, this.logger),
+            new Tasks_manager(context, manager, this.logger, logView),
+            new IpCatalogManager(context, manager, this.logger),
+            new Actions_manager(context),
+            new Watcher_manager(context, manager),
+            new Output_manager(context, manager, run_output, this.logger),
+        ];
 
-        emitterProject.addListener('refresh', this.refresh);
-        emitterProject.addListener('refresh_output', (function () {
-            output_manager.refresh_tree();
-        })
-        );
-        emitterProject.addListener('loading', (function () {
-            slm.statusbar.text = `$(loading) TerosHDL: loading project..`;
-            slm.statusbar.show();
-        })
-        );
-        emitterProject.addListener('loaded', (function () {
-            slm.statusbar.text = `$(megaphone) TerosHDL: project loaded!`;
-            slm.statusbar.show();
-        })
-        );
+        emitterProject.addProjectListener(this.runRefresh);
+        emitterProject.addProjectListener(this.refreshToml);
 
-        project_manager = new Project_manager(context, manager, emitterProject,
-            run_output, global_logger);
-        source_manager = new Source_manager(context, manager, emitterProject);
-        tree_manager = new Tree_manager(context, manager, schematic_manager, dependency_manager);
-        runs_manager = new Runs_manager(context, manager, emitterProject, run_output, this.logger);
-        tasks_manager = new Tasks_manager(context, manager, emitterProject, this.logger, logView);
-        ipCatalogManager = new IpCatalogManager(context, manager, emitterProject, this.logger);
-        actions_manager = new Actions_manager(context, manager, emitterProject, run_output);
-        watcher_manager = new Watcher_manager(context, manager, emitterProject);
-        output_manager = new Output_manager(context, manager, run_output, this.logger);
-
-        emitterProject.addListener('changeProject', (function () {
-            ipCatalogManager.refresh_tree();
-        })
-        );
-
-        this.refreshInitial();
+        emitterProject.enable();
+        emitterProject.emitEvent("", teroshdl2.project_manager.projectEmitter.e_event.GLOBAL_REFRESH);
     }
 
-    refreshInitial() {
-        ipCatalogManager.refresh_tree();
-        this.refresh();
+    private async runRefresh(projectName: string, eventType: teroshdl2.project_manager.projectEmitter.e_event): Promise<void> {
+        for (const view of viewList) {
+            if (view.getRefreshEventList().includes(eventType)) {
+                view.refresh_tree();
+            }
+        }
+        multi_manager.save();
     }
 
-    refresh() {
-        source_manager.refresh_tree();
-        project_manager.refresh_tree();
-        runs_manager.refresh_tree();
-        tasks_manager.refresh_tree();
-        watcher_manager.refresh_tree();
-        output_manager.refresh_tree();
-        tree_manager.refresh_tree();
+    private async refreshToml(projectName: string, eventType: teroshdl2.project_manager.projectEmitter.e_event): Promise<void> {
+        const refuseRefreshEventList = [
+            teroshdl2.project_manager.projectEmitter.e_event.EXEC_RUN,
+            teroshdl2.project_manager.projectEmitter.e_event.FINISH_RUN,
+            teroshdl2.project_manager.projectEmitter.e_event.UPDATE_TASK,
+        ];
+
+        if (refuseRefreshEventList.includes(eventType)) {
+            return;
+        }
 
         try {
             // Save toml
             const select_project = multi_manager.get_selected_project();
+            if (select_project.get_name() !== projectName && projectName !== "") {
+                return;
+            }
+
             const prj_sources = select_project.get_project_definition().file_manager.get();
 
             type t_lib = {
@@ -158,8 +141,8 @@ export class Tree_view_manager {
                     for (let j = 0; j < library.files.length; j++) {
                         const file_in_library = library.files[j];
                         let filename = path_lib.basename(file_in_library);
-                        const lang = teroshdl.utils.file.get_language_from_filepath(filename);
-                        if (lang === teroshdl.common.general.LANGUAGE.VHDL) {
+                        const lang = teroshdl2.utils.file.get_language_from_filepath(filename);
+                        if (lang === teroshdl2.common.general.LANGUAGE.VHDL) {
                             files_in_library += `  '${file_in_library}',\n`;
                             files_toml.push(file_in_library);
                         }
@@ -174,29 +157,11 @@ export class Tree_view_manager {
                     toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
                 }
             }
-            teroshdl.utils.file.save_file_sync(file_path, toml);
+            teroshdl2.utils.file.save_file_sync(file_path, toml);
             vscode.commands.executeCommand("teroshdl.vhdlls.restart");
-            return files_toml;
-
         } catch (error) {
             return;
         }
     }
-
-    // prj_loading(slm: any){
-    //     // if (this.statusbar === undefined){
-    //     //     this.statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    //     //     this.context.subscriptions.push(this.statusbar);
-    //     // }
-    //     this.statusbar.text = `$(loading) TerosHDL: loading project..`;
-    //     this.statusbar.show();
-    // }
-
-    // prj_loaded(slm: any){
-    //     // if (this.statusbar !== undefined){
-    //         this.statusbar.text = `$(megaphone) TerosHDL: project loaded!`;
-    //     // }
-    // }
-
 }
 

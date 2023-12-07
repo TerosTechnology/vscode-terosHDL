@@ -4801,6 +4801,9 @@
     element_value = document.getElementById("tools-ascenlint-installation_path").value;
     config["tools"]["ascenlint"]["installation_path"] = element_value
     element_value = document.getElementById("tools-ascenlint-ascentlint_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["ascenlint"]["ascentlint_options"] = element_value
     config["tools"]["cocotb"] = {}
     element_value = document.getElementById("tools-cocotb-installation_path").value;
@@ -4824,8 +4827,14 @@
     element_value = document.getElementById("tools-ghdl-waveform").value;
     config["tools"]["ghdl"]["waveform"] = element_value
     element_value = document.getElementById("tools-ghdl-analyze_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["ghdl"]["analyze_options"] = element_value
     element_value = document.getElementById("tools-ghdl-run_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["ghdl"]["run_options"] = element_value
     config["tools"]["icarus"] = {}
     element_value = document.getElementById("tools-icarus-installation_path").value;
@@ -4833,6 +4842,9 @@
     element_value = document.getElementById("tools-icarus-timescale").value;
     config["tools"]["icarus"]["timescale"] = element_value
     element_value = document.getElementById("tools-icarus-iverilog_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["icarus"]["iverilog_options"] = element_value
     config["tools"]["icestorm"] = {}
     element_value = document.getElementById("tools-icestorm-installation_path").value;
@@ -4848,10 +4860,19 @@
     element_value = document.getElementById("tools-icestorm-makefile_name").value;
     config["tools"]["icestorm"]["makefile_name"] = element_value
     element_value = document.getElementById("tools-icestorm-arachne_pnr_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["icestorm"]["arachne_pnr_options"] = element_value
     element_value = document.getElementById("tools-icestorm-nextpnr_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["icestorm"]["nextpnr_options"] = element_value
     element_value = document.getElementById("tools-icestorm-yosys_synth_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["icestorm"]["yosys_synth_options"] = element_value
     config["tools"]["ise"] = {}
     element_value = document.getElementById("tools-ise-installation_path").value;
@@ -4868,22 +4889,40 @@
     element_value = document.getElementById("tools-isem-installation_path").value;
     config["tools"]["isem"]["installation_path"] = element_value
     element_value = document.getElementById("tools-isem-fuse_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["isem"]["fuse_options"] = element_value
     element_value = document.getElementById("tools-isem-isim_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["isem"]["isim_options"] = element_value
     config["tools"]["modelsim"] = {}
     element_value = document.getElementById("tools-modelsim-installation_path").value;
     config["tools"]["modelsim"]["installation_path"] = element_value
     element_value = document.getElementById("tools-modelsim-vcom_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["modelsim"]["vcom_options"] = element_value
     element_value = document.getElementById("tools-modelsim-vlog_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["modelsim"]["vlog_options"] = element_value
     element_value = document.getElementById("tools-modelsim-vsim_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["modelsim"]["vsim_options"] = element_value
     config["tools"]["morty"] = {}
     element_value = document.getElementById("tools-morty-installation_path").value;
     config["tools"]["morty"]["installation_path"] = element_value
     element_value = document.getElementById("tools-morty-morty_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["morty"]["morty_options"] = element_value
     config["tools"]["quartus"] = {}
     element_value = document.getElementById("tools-quartus-installation_path").value;
@@ -4899,8 +4938,14 @@
     element_value = document.getElementById("tools-quartus-pnr").value;
     config["tools"]["quartus"]["pnr"] = element_value
     element_value = document.getElementById("tools-quartus-dse_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["quartus"]["dse_options"] = element_value
     element_value = document.getElementById("tools-quartus-quartus_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["quartus"]["quartus_options"] = element_value
     config["tools"]["radiant"] = {}
     element_value = document.getElementById("tools-radiant-installation_path").value;
@@ -4913,8 +4958,14 @@
     element_value = document.getElementById("tools-rivierapro-compilation_mode").value;
     config["tools"]["rivierapro"]["compilation_mode"] = element_value
     element_value = document.getElementById("tools-rivierapro-vlog_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["rivierapro"]["vlog_options"] = element_value
     element_value = document.getElementById("tools-rivierapro-vsim_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["rivierapro"]["vsim_options"] = element_value
     config["tools"]["spyglass"] = {}
     element_value = document.getElementById("tools-spyglass-installation_path").value;
@@ -4922,15 +4973,27 @@
     element_value = document.getElementById("tools-spyglass-methodology").value;
     config["tools"]["spyglass"]["methodology"] = element_value
     element_value = document.getElementById("tools-spyglass-goals").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["spyglass"]["goals"] = element_value
     element_value = document.getElementById("tools-spyglass-spyglass_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["spyglass"]["spyglass_options"] = element_value
     element_value = document.getElementById("tools-spyglass-rule_parameters").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["spyglass"]["rule_parameters"] = element_value
     config["tools"]["symbiyosys"] = {}
     element_value = document.getElementById("tools-symbiyosys-installation_path").value;
     config["tools"]["symbiyosys"]["installation_path"] = element_value
     element_value = document.getElementById("tools-symbiyosys-tasknames").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["symbiyosys"]["tasknames"] = element_value
     config["tools"]["symbiflow"] = {}
     element_value = document.getElementById("tools-symbiflow-installation_path").value;
@@ -4961,15 +5024,27 @@
     element_value = document.getElementById("tools-trellis-script_name").value;
     config["tools"]["trellis"]["script_name"] = element_value
     element_value = document.getElementById("tools-trellis-nextpnr_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["trellis"]["nextpnr_options"] = element_value
     element_value = document.getElementById("tools-trellis-yosys_synth_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["trellis"]["yosys_synth_options"] = element_value
     config["tools"]["vcs"] = {}
     element_value = document.getElementById("tools-vcs-installation_path").value;
     config["tools"]["vcs"]["installation_path"] = element_value
     element_value = document.getElementById("tools-vcs-vcs_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["vcs"]["vcs_options"] = element_value
     element_value = document.getElementById("tools-vcs-run_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["vcs"]["run_options"] = element_value
     config["tools"]["verible"] = {}
     element_value = document.getElementById("tools-verible-installation_path").value;
@@ -4980,12 +5055,24 @@
     element_value = document.getElementById("tools-verilator-mode").value;
     config["tools"]["verilator"]["mode"] = element_value
     element_value = document.getElementById("tools-verilator-libs").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["verilator"]["libs"] = element_value
     element_value = document.getElementById("tools-verilator-verilator_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["verilator"]["verilator_options"] = element_value
     element_value = document.getElementById("tools-verilator-make_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["verilator"]["make_options"] = element_value
     element_value = document.getElementById("tools-verilator-run_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["verilator"]["run_options"] = element_value
     config["tools"]["vivado"] = {}
     element_value = document.getElementById("tools-vivado-installation_path").value;
@@ -5025,19 +5112,37 @@
     element_value = document.getElementById("tools-xcelium-installation_path").value;
     config["tools"]["xcelium"]["installation_path"] = element_value
     element_value = document.getElementById("tools-xcelium-xmvhdl_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["xcelium"]["xmvhdl_options"] = element_value
     element_value = document.getElementById("tools-xcelium-xmvlog_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["xcelium"]["xmvlog_options"] = element_value
     element_value = document.getElementById("tools-xcelium-xmsim_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["xcelium"]["xmsim_options"] = element_value
     element_value = document.getElementById("tools-xcelium-xrun_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["xcelium"]["xrun_options"] = element_value
     config["tools"]["xsim"] = {}
     element_value = document.getElementById("tools-xsim-installation_path").value;
     config["tools"]["xsim"]["installation_path"] = element_value
     element_value = document.getElementById("tools-xsim-xelab_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["xsim"]["xelab_options"] = element_value
     element_value = document.getElementById("tools-xsim-xsim_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["xsim"]["xsim_options"] = element_value
     config["tools"]["yosys"] = {}
     element_value = document.getElementById("tools-yosys-installation_path").value;
@@ -5053,6 +5158,9 @@
     element_value = document.getElementById("tools-yosys-script_name").value;
     config["tools"]["yosys"]["script_name"] = element_value
     element_value = document.getElementById("tools-yosys-yosys_synth_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["yosys"]["yosys_synth_options"] = element_value
     config["tools"]["openfpga"] = {}
     element_value = document.getElementById("tools-openfpga-installation_path").value;
@@ -5060,6 +5168,9 @@
     element_value = document.getElementById("tools-openfpga-arch").value;
     config["tools"]["openfpga"]["arch"] = element_value
     element_value = document.getElementById("tools-openfpga-task_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["openfpga"]["task_options"] = element_value
     config["tools"]["activehdl"] = {}
     element_value = document.getElementById("tools-activehdl-installation_path").value;
@@ -5102,6 +5213,9 @@
     element_value = document.getElementById("tools-raptor-top_level").value;
     config["tools"]["raptor"]["top_level"] = element_value
     element_value = document.getElementById("tools-raptor-sim_source_list").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
     config["tools"]["raptor"]["sim_source_list"] = element_value
     element_value = document.getElementById("tools-raptor-simulate_rtl").checked;
     config["tools"]["raptor"]["simulate_rtl"] = element_value
@@ -5361,1144 +5475,1140 @@
   }
 
   function set_mark(config, projectName){
-    if (projectName == undefined){
-      return;
-    }
-    //const MODIFIEDMSG = " (Modified in project - " + projectName + ")";
     const MODIFIEDMSG = "Modified in project";
     let mark = "";
     mark = "";
-    if (config["general"]["general"]["pypath"] != undefined) {
+    if (projectName !== undefined && config["general"]["general"]["pypath"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-pypath").innerHTML = mark;
     mark = "";
-    if (config["general"]["general"]["makepath"] != undefined) {
+    if (projectName !== undefined && config["general"]["general"]["makepath"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-makepath").innerHTML = mark;
     mark = "";
-    if (config["general"]["general"]["go_to_definition_vhdl"] != undefined) {
+    if (projectName !== undefined && config["general"]["general"]["go_to_definition_vhdl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-go_to_definition_vhdl").innerHTML = mark;
     mark = "";
-    if (config["general"]["general"]["go_to_definition_verilog"] != undefined) {
+    if (projectName !== undefined && config["general"]["general"]["go_to_definition_verilog"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-go_to_definition_verilog").innerHTML = mark;
     mark = "";
-    if (config["general"]["general"]["developer_mode"] != undefined) {
+    if (projectName !== undefined && config["general"]["general"]["developer_mode"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-developer_mode").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["language"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["language"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-language").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["symbol_vhdl"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["symbol_vhdl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-symbol_vhdl").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["symbol_verilog"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["symbol_verilog"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-symbol_verilog").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["dependency_graph"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["dependency_graph"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-dependency_graph").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["self_contained"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["self_contained"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-self_contained").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["fsm"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["fsm"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-fsm").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["ports"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["ports"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-ports").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["generics"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["generics"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-generics").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["instantiations"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["instantiations"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-instantiations").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["signals"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["signals"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-signals").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["constants"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["constants"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-constants").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["types"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["types"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-types").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["process"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["process"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-process").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["functions"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["functions"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-functions").innerHTML = mark;
     mark = "";
-    if (config["documentation"]["general"]["magic_config_path"] != undefined) {
+    if (projectName !== undefined && config["documentation"]["general"]["magic_config_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-magic_config_path").innerHTML = mark;
     mark = "";
-    if (config["editor"]["general"]["stutter_comment_shortcuts"] != undefined) {
+    if (projectName !== undefined && config["editor"]["general"]["stutter_comment_shortcuts"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_comment_shortcuts").innerHTML = mark;
     mark = "";
-    if (config["editor"]["general"]["stutter_block_width"] != undefined) {
+    if (projectName !== undefined && config["editor"]["general"]["stutter_block_width"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_block_width").innerHTML = mark;
     mark = "";
-    if (config["editor"]["general"]["stutter_max_width"] != undefined) {
+    if (projectName !== undefined && config["editor"]["general"]["stutter_max_width"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_max_width").innerHTML = mark;
     mark = "";
-    if (config["editor"]["general"]["stutter_delimiters"] != undefined) {
+    if (projectName !== undefined && config["editor"]["general"]["stutter_delimiters"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_delimiters").innerHTML = mark;
     mark = "";
-    if (config["editor"]["general"]["stutter_bracket_shortcuts"] != undefined) {
+    if (projectName !== undefined && config["editor"]["general"]["stutter_bracket_shortcuts"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_bracket_shortcuts").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["general"]["formatter_verilog"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["general"]["formatter_verilog"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-general-formatter_verilog").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["general"]["formatter_vhdl"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["general"]["formatter_vhdl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-general-formatter_vhdl").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["istyle"]["style"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["istyle"]["style"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-istyle-style").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["istyle"]["indentation_size"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["istyle"]["indentation_size"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-istyle-indentation_size").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["s3sv"]["one_bind_per_line"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["s3sv"]["one_bind_per_line"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-s3sv-one_bind_per_line").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["s3sv"]["one_declaration_per_line"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["s3sv"]["one_declaration_per_line"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-s3sv-one_declaration_per_line").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["s3sv"]["use_tabs"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["s3sv"]["use_tabs"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-s3sv-use_tabs").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["s3sv"]["indentation_size"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["s3sv"]["indentation_size"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-s3sv-indentation_size").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["verible"]["format_args"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["verible"]["format_args"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-verible-format_args").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["keyword_case"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["keyword_case"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-keyword_case").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["name_case"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["name_case"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-name_case").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["indentation"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["indentation"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-indentation").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["align_port_generic"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["align_port_generic"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-align_port_generic").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["align_comment"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["align_comment"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-align_comment").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["remove_comments"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["remove_comments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-remove_comments").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["remove_reports"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["remove_reports"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-remove_reports").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["check_alias"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["check_alias"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-check_alias").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["new_line_after_then"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_then"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_then").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["new_line_after_semicolon"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_semicolon"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_semicolon").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["new_line_after_else"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_else"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_else").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["new_line_after_port"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_port"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_port").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["standalone"]["new_line_after_generic"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_generic"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_generic").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["svg"]["configuration"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["svg"]["configuration"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-svg-configuration").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["svg"]["core_number"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["svg"]["core_number"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-svg-core_number").innerHTML = mark;
     mark = "";
-    if (config["formatter"]["svg"]["aditional_arguments"] != undefined) {
+    if (projectName !== undefined && config["formatter"]["svg"]["aditional_arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-svg-aditional_arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["general"]["linter_vhdl"] != undefined) {
+    if (projectName !== undefined && config["linter"]["general"]["linter_vhdl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-linter_vhdl").innerHTML = mark;
     mark = "";
-    if (config["linter"]["general"]["linter_verilog"] != undefined) {
+    if (projectName !== undefined && config["linter"]["general"]["linter_verilog"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-linter_verilog").innerHTML = mark;
     mark = "";
-    if (config["linter"]["general"]["lstyle_verilog"] != undefined) {
+    if (projectName !== undefined && config["linter"]["general"]["lstyle_verilog"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-lstyle_verilog").innerHTML = mark;
     mark = "";
-    if (config["linter"]["general"]["lstyle_vhdl"] != undefined) {
+    if (projectName !== undefined && config["linter"]["general"]["lstyle_vhdl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-lstyle_vhdl").innerHTML = mark;
     mark = "";
-    if (config["linter"]["ghdl"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["ghdl"]["arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-ghdl-arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["icarus"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["icarus"]["arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-icarus-arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["modelsim"]["vhdl_arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["modelsim"]["vhdl_arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-modelsim-vhdl_arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["modelsim"]["verilog_arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["modelsim"]["verilog_arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-modelsim-verilog_arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["verible"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["verible"]["arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-verible-arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["verilator"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["verilator"]["arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-verilator-arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["vivado"]["vhdl_arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["vivado"]["vhdl_arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vivado-vhdl_arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["vivado"]["verilog_arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["vivado"]["verilog_arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vivado-verilog_arguments").innerHTML = mark;
     mark = "";
-    if (config["linter"]["vsg"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"]["vsg"]["arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vsg-arguments").innerHTML = mark;
     mark = "";
-    if (config["schematic"]["general"]["backend"] != undefined) {
+    if (projectName !== undefined && config["schematic"]["general"]["backend"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-backend").innerHTML = mark;
     mark = "";
-    if (config["schematic"]["general"]["extra"] != undefined) {
+    if (projectName !== undefined && config["schematic"]["general"]["extra"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-extra").innerHTML = mark;
     mark = "";
-    if (config["schematic"]["general"]["args"] != undefined) {
+    if (projectName !== undefined && config["schematic"]["general"]["args"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-args").innerHTML = mark;
     mark = "";
-    if (config["templates"]["general"]["header_file_path"] != undefined) {
+    if (projectName !== undefined && config["templates"]["general"]["header_file_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_templates-general-header_file_path").innerHTML = mark;
     mark = "";
-    if (config["templates"]["general"]["indent"] != undefined) {
+    if (projectName !== undefined && config["templates"]["general"]["indent"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_templates-general-indent").innerHTML = mark;
     mark = "";
-    if (config["templates"]["general"]["clock_generation_style"] != undefined) {
+    if (projectName !== undefined && config["templates"]["general"]["clock_generation_style"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_templates-general-clock_generation_style").innerHTML = mark;
     mark = "";
-    if (config["templates"]["general"]["instance_style"] != undefined) {
+    if (projectName !== undefined && config["templates"]["general"]["instance_style"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_templates-general-instance_style").innerHTML = mark;
     mark = "";
-    if (config["tools"]["general"]["select_tool"] != undefined) {
+    if (projectName !== undefined && config["tools"]["general"]["select_tool"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-select_tool").innerHTML = mark;
     mark = "";
-    if (config["tools"]["general"]["gtkwave_installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["general"]["gtkwave_installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-gtkwave_installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["general"]["gtkwave_extra_arguments"] != undefined) {
+    if (projectName !== undefined && config["tools"]["general"]["gtkwave_extra_arguments"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-gtkwave_extra_arguments").innerHTML = mark;
     mark = "";
-    if (config["tools"]["general"]["execution_mode"] != undefined) {
+    if (projectName !== undefined && config["tools"]["general"]["execution_mode"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-execution_mode").innerHTML = mark;
     mark = "";
-    if (config["tools"]["general"]["waveform_viewer"] != undefined) {
+    if (projectName !== undefined && config["tools"]["general"]["waveform_viewer"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-waveform_viewer").innerHTML = mark;
     mark = "";
-    if (config["tools"]["osvvm"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["osvvm"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-osvvm-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["osvvm"]["tclsh_binary"] != undefined) {
+    if (projectName !== undefined && config["tools"]["osvvm"]["tclsh_binary"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-osvvm-tclsh_binary").innerHTML = mark;
     mark = "";
-    if (config["tools"]["osvvm"]["simulator_name"] != undefined) {
+    if (projectName !== undefined && config["tools"]["osvvm"]["simulator_name"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-osvvm-simulator_name").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ascenlint"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ascenlint"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ascenlint-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ascenlint"]["ascentlint_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ascenlint"]["ascentlint_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ascenlint-ascentlint_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["cocotb"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["cocotb"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["cocotb"]["simulator_name"] != undefined) {
+    if (projectName !== undefined && config["tools"]["cocotb"]["simulator_name"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-simulator_name").innerHTML = mark;
     mark = "";
-    if (config["tools"]["cocotb"]["compile_args"] != undefined) {
+    if (projectName !== undefined && config["tools"]["cocotb"]["compile_args"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-compile_args").innerHTML = mark;
     mark = "";
-    if (config["tools"]["cocotb"]["run_args"] != undefined) {
+    if (projectName !== undefined && config["tools"]["cocotb"]["run_args"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-run_args").innerHTML = mark;
     mark = "";
-    if (config["tools"]["cocotb"]["plusargs"] != undefined) {
+    if (projectName !== undefined && config["tools"]["cocotb"]["plusargs"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-plusargs").innerHTML = mark;
     mark = "";
-    if (config["tools"]["diamond"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["diamond"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-diamond-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["diamond"]["part"] != undefined) {
+    if (projectName !== undefined && config["tools"]["diamond"]["part"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-diamond-part").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ghdl"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ghdl"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ghdl"]["waveform"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ghdl"]["waveform"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-waveform").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ghdl"]["analyze_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ghdl"]["analyze_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-analyze_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ghdl"]["run_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ghdl"]["run_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-run_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icarus"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icarus"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icarus-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icarus"]["timescale"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icarus"]["timescale"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icarus-timescale").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icarus"]["iverilog_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icarus"]["iverilog_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icarus-iverilog_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["pnr"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-pnr").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["arch"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["arch"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-arch").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["output_format"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["output_format"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-output_format").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["yosys_as_subtool"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["yosys_as_subtool"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-yosys_as_subtool").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["makefile_name"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["makefile_name"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-makefile_name").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["arachne_pnr_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["arachne_pnr_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-arachne_pnr_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["nextpnr_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["nextpnr_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-nextpnr_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["icestorm"]["yosys_synth_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["icestorm"]["yosys_synth_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-yosys_synth_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ise"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ise"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ise"]["family"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ise"]["family"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-family").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ise"]["device"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ise"]["device"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-device").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ise"]["package"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ise"]["package"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-package").innerHTML = mark;
     mark = "";
-    if (config["tools"]["ise"]["speed"] != undefined) {
+    if (projectName !== undefined && config["tools"]["ise"]["speed"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-speed").innerHTML = mark;
     mark = "";
-    if (config["tools"]["isem"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["isem"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-isem-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["isem"]["fuse_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["isem"]["fuse_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-isem-fuse_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["isem"]["isim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["isem"]["isim_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-isem-isim_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["modelsim"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["modelsim"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-modelsim-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["modelsim"]["vcom_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["modelsim"]["vcom_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-modelsim-vcom_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["modelsim"]["vlog_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["modelsim"]["vlog_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-modelsim-vlog_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["modelsim"]["vsim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["modelsim"]["vsim_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-modelsim-vsim_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["morty"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["morty"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-morty-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["morty"]["morty_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["morty"]["morty_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-morty-morty_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["quartus"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["quartus"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["quartus"]["family"] != undefined) {
+    if (projectName !== undefined && config["tools"]["quartus"]["family"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-family").innerHTML = mark;
     mark = "";
-    if (config["tools"]["quartus"]["device"] != undefined) {
+    if (projectName !== undefined && config["tools"]["quartus"]["device"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-device").innerHTML = mark;
     mark = "";
-    if (config["tools"]["quartus"]["cable"] != undefined) {
+    if (projectName !== undefined && config["tools"]["quartus"]["cable"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-cable").innerHTML = mark;
     mark = "";
-    if (config["tools"]["quartus"]["board_device_index"] != undefined) {
+    if (projectName !== undefined && config["tools"]["quartus"]["board_device_index"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-board_device_index").innerHTML = mark;
     mark = "";
-    if (config["tools"]["quartus"]["pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"]["quartus"]["pnr"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-pnr").innerHTML = mark;
     mark = "";
-    if (config["tools"]["quartus"]["dse_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["quartus"]["dse_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-dse_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["quartus"]["quartus_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["quartus"]["quartus_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-quartus_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["radiant"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["radiant"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-radiant-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["radiant"]["part"] != undefined) {
+    if (projectName !== undefined && config["tools"]["radiant"]["part"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-radiant-part").innerHTML = mark;
     mark = "";
-    if (config["tools"]["rivierapro"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["rivierapro"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-rivierapro-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["rivierapro"]["compilation_mode"] != undefined) {
+    if (projectName !== undefined && config["tools"]["rivierapro"]["compilation_mode"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-rivierapro-compilation_mode").innerHTML = mark;
     mark = "";
-    if (config["tools"]["rivierapro"]["vlog_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["rivierapro"]["vlog_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-rivierapro-vlog_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["rivierapro"]["vsim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["rivierapro"]["vsim_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-rivierapro-vsim_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["spyglass"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["spyglass"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["spyglass"]["methodology"] != undefined) {
+    if (projectName !== undefined && config["tools"]["spyglass"]["methodology"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-methodology").innerHTML = mark;
     mark = "";
-    if (config["tools"]["spyglass"]["goals"] != undefined) {
+    if (projectName !== undefined && config["tools"]["spyglass"]["goals"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-goals").innerHTML = mark;
     mark = "";
-    if (config["tools"]["spyglass"]["spyglass_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["spyglass"]["spyglass_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-spyglass_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["spyglass"]["rule_parameters"] != undefined) {
+    if (projectName !== undefined && config["tools"]["spyglass"]["rule_parameters"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-rule_parameters").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiyosys"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiyosys"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiyosys-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiyosys"]["tasknames"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiyosys"]["tasknames"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiyosys-tasknames").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiflow"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiflow"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiflow"]["package"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiflow"]["package"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-package").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiflow"]["part"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiflow"]["part"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-part").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiflow"]["vendor"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiflow"]["vendor"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-vendor").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiflow"]["pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiflow"]["pnr"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-pnr").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiflow"]["vpr_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiflow"]["vpr_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-vpr_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["symbiflow"]["environment_script"] != undefined) {
+    if (projectName !== undefined && config["tools"]["symbiflow"]["environment_script"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-environment_script").innerHTML = mark;
     mark = "";
-    if (config["tools"]["trellis"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["trellis"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["trellis"]["arch"] != undefined) {
+    if (projectName !== undefined && config["tools"]["trellis"]["arch"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-arch").innerHTML = mark;
     mark = "";
-    if (config["tools"]["trellis"]["output_format"] != undefined) {
+    if (projectName !== undefined && config["tools"]["trellis"]["output_format"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-output_format").innerHTML = mark;
     mark = "";
-    if (config["tools"]["trellis"]["yosys_as_subtool"] != undefined) {
+    if (projectName !== undefined && config["tools"]["trellis"]["yosys_as_subtool"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-yosys_as_subtool").innerHTML = mark;
     mark = "";
-    if (config["tools"]["trellis"]["makefile_name"] != undefined) {
+    if (projectName !== undefined && config["tools"]["trellis"]["makefile_name"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-makefile_name").innerHTML = mark;
     mark = "";
-    if (config["tools"]["trellis"]["script_name"] != undefined) {
+    if (projectName !== undefined && config["tools"]["trellis"]["script_name"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-script_name").innerHTML = mark;
     mark = "";
-    if (config["tools"]["trellis"]["nextpnr_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["trellis"]["nextpnr_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-nextpnr_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["trellis"]["yosys_synth_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["trellis"]["yosys_synth_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-yosys_synth_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vcs"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vcs"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vcs-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vcs"]["vcs_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vcs"]["vcs_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vcs-vcs_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vcs"]["run_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vcs"]["run_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vcs-run_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["verible"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["verible"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verible-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["verilator"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["verilator"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["verilator"]["mode"] != undefined) {
+    if (projectName !== undefined && config["tools"]["verilator"]["mode"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-mode").innerHTML = mark;
     mark = "";
-    if (config["tools"]["verilator"]["libs"] != undefined) {
+    if (projectName !== undefined && config["tools"]["verilator"]["libs"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-libs").innerHTML = mark;
     mark = "";
-    if (config["tools"]["verilator"]["verilator_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["verilator"]["verilator_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-verilator_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["verilator"]["make_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["verilator"]["make_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-make_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["verilator"]["run_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["verilator"]["run_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-run_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vivado"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vivado"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vivado"]["part"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vivado"]["part"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-part").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vivado"]["synth"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vivado"]["synth"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-synth").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vivado"]["pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vivado"]["pnr"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-pnr").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vivado"]["jtag_freq"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vivado"]["jtag_freq"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-jtag_freq").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vivado"]["hw_target"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vivado"]["hw_target"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-hw_target").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["simulator_name"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["simulator_name"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-simulator_name").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["runpy_mode"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["runpy_mode"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-runpy_mode").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["extra_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["extra_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-extra_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["enable_array_util_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["enable_array_util_lib"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_array_util_lib").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["enable_com_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["enable_com_lib"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_com_lib").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["enable_json4vhdl_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["enable_json4vhdl_lib"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_json4vhdl_lib").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["enable_osvvm_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["enable_osvvm_lib"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_osvvm_lib").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["enable_random_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["enable_random_lib"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_random_lib").innerHTML = mark;
     mark = "";
-    if (config["tools"]["vunit"]["enable_verification_components_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vunit"]["enable_verification_components_lib"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_verification_components_lib").innerHTML = mark;
     mark = "";
-    if (config["tools"]["xcelium"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["xcelium"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["xcelium"]["xmvhdl_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["xcelium"]["xmvhdl_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-xmvhdl_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["xcelium"]["xmvlog_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["xcelium"]["xmvlog_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-xmvlog_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["xcelium"]["xmsim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["xcelium"]["xmsim_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-xmsim_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["xcelium"]["xrun_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["xcelium"]["xrun_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-xrun_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["xsim"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["xsim"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xsim-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["xsim"]["xelab_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["xsim"]["xelab_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xsim-xelab_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["xsim"]["xsim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["xsim"]["xsim_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xsim-xsim_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["yosys"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["yosys"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["yosys"]["arch"] != undefined) {
+    if (projectName !== undefined && config["tools"]["yosys"]["arch"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-arch").innerHTML = mark;
     mark = "";
-    if (config["tools"]["yosys"]["output_format"] != undefined) {
+    if (projectName !== undefined && config["tools"]["yosys"]["output_format"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-output_format").innerHTML = mark;
     mark = "";
-    if (config["tools"]["yosys"]["yosys_as_subtool"] != undefined) {
+    if (projectName !== undefined && config["tools"]["yosys"]["yosys_as_subtool"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-yosys_as_subtool").innerHTML = mark;
     mark = "";
-    if (config["tools"]["yosys"]["makefile_name"] != undefined) {
+    if (projectName !== undefined && config["tools"]["yosys"]["makefile_name"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-makefile_name").innerHTML = mark;
     mark = "";
-    if (config["tools"]["yosys"]["script_name"] != undefined) {
+    if (projectName !== undefined && config["tools"]["yosys"]["script_name"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-script_name").innerHTML = mark;
     mark = "";
-    if (config["tools"]["yosys"]["yosys_synth_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["yosys"]["yosys_synth_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-yosys_synth_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["openfpga"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["openfpga"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-openfpga-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["openfpga"]["arch"] != undefined) {
+    if (projectName !== undefined && config["tools"]["openfpga"]["arch"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-openfpga-arch").innerHTML = mark;
     mark = "";
-    if (config["tools"]["openfpga"]["task_options"] != undefined) {
+    if (projectName !== undefined && config["tools"]["openfpga"]["task_options"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-openfpga-task_options").innerHTML = mark;
     mark = "";
-    if (config["tools"]["activehdl"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["activehdl"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-activehdl-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["nvc"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["nvc"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-nvc-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["questa"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["questa"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-questa-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-installation_path").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["target_device"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["target_device"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-target_device").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["vhdl_version"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["vhdl_version"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-vhdl_version").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["verilog_version"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["verilog_version"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-verilog_version").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["sv_version"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["sv_version"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-sv_version").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["optimization"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["optimization"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-optimization").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["effort"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["effort"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-effort").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["fsm_encoding"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["fsm_encoding"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-fsm_encoding").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["carry"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["carry"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-carry").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["pnr_netlist_language"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["pnr_netlist_language"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-pnr_netlist_language").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["dsp_limit"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["dsp_limit"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-dsp_limit").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["block_ram_limit"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["block_ram_limit"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-block_ram_limit").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["fast_synthesis"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["fast_synthesis"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-fast_synthesis").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["top_level"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["top_level"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-top_level").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["sim_source_list"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["sim_source_list"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-sim_source_list").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulate_rtl"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulate_rtl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulate_rtl").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["waveform_rtl"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["waveform_rtl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-waveform_rtl").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulator_rtl"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulator_rtl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulator_rtl").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulation_options_rtl"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulation_options_rtl"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulation_options_rtl").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulate_gate"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulate_gate"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulate_gate").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["waveform_gate"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["waveform_gate"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-waveform_gate").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulator_gate"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulator_gate"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulator_gate").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulation_options_gate"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulation_options_gate"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulation_options_gate").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulate_pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulate_pnr"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulate_pnr").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["waveform_pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["waveform_pnr"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-waveform_pnr").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulator_pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulator_pnr"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulator_pnr").innerHTML = mark;
     mark = "";
-    if (config["tools"]["raptor"]["simulation_options_pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"]["raptor"]["simulation_options_pnr"] != undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulation_options_pnr").innerHTML = mark;
