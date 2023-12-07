@@ -55,6 +55,8 @@ import { ChildProcess } from "child_process";
 import { p_result } from "../process/common";
 import { TaskStateManager } from "./tool/taskState";
 import { ProjectEmitter, e_event } from "./projectEmitter";
+import { LANGUAGE } from "../common/general";
+import { basename } from "path";
 
 export class Project_manager extends ConfigManager {
     /**  Name of the project */
@@ -470,9 +472,61 @@ export class Project_manager extends ConfigManager {
         return utils.get_edam_yaml(this.get_project_definition(), undefined, reference_path);
     }
 
+    public get_toml(reference_path?: string) {
+        type t_lib = {
+            name: string,
+            files: string[]
+        };
+
+        const libraries: t_lib[] = [];
+        const vhdl_sources = this.files.get(reference_path).filter((element) => {
+            return element.file_type === LANGUAGE.VHDL || file_utils.get_language_from_filepath(basename(element.name)) === LANGUAGE.VHDL;
+        });
+
+        for (const source of vhdl_sources) {
+
+            // Check if file in library
+            let file_in_library = false;
+
+            for (const library of libraries) {
+                if (library.name === source.logical_name) {
+                    file_in_library = true;
+                    library.files.push(source.name);
+                    break;
+                }
+            }
+            if (!file_in_library) {
+                libraries.push(<t_lib>{
+                    name: source.logical_name,
+                    files: [source.name]
+                });
+            }
+        }
+
+        let toml = "[libraries]\n\n";
+
+        for (const library of libraries) {
+            let files_in_library = "";
+            for (const file_in_library of library.files) {
+                files_in_library += `  '${file_in_library}',\n`;
+            }
+            if (library.name === undefined || library.name === '') {
+                library.name = 'work';
+            }
+            toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
+        }
+
+        return toml;
+    }
+
     public save_edam_yaml(output_path: string) {
         const edam_yaml = this.get_edam_yaml(output_path);
         file_utils.save_file_sync(output_path, edam_yaml);
+    }
+
+    public save_toml(output_path: string) {
+        const toml_text = this.get_toml(output_path);
+        file_utils.save_file_sync(output_path, toml_text);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -605,8 +659,7 @@ function diff_config<T extends Record<string, any>>(config1: T, config2: T): T {
         } else if (Array.isArray(value1) && Array.isArray(value2)) {
             if (value1.length === value2.length && value1.every((value, index) => value === value2[index])) {
                 differences[key] = undefined;
-            }
-            else {
+            } else {
                 differences[key] = value1;
             }
         } else if (value1 !== value2) {

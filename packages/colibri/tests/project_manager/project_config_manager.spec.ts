@@ -118,7 +118,7 @@ describe('ProjectManager Configuration', () => {
         expectedConfig.tools.ghdl.run_options = originalConfig.tools.ghdl.run_options;
         expect(projectManager.get_config()).toEqual(expectedConfig);
     });
-    
+
     it('should successfully overwrite a value after being changed in global config', () => {
         // Change a value from default to a different one
         const originalConfig = projectManager.get_config();
@@ -177,6 +177,17 @@ describe('ProjectManager Configuration', () => {
         const expectedConfig = get_default_config();
         expectedConfig.general.general.pypath = "second/path";
         expect(projectManager.get_config()).toEqual(expectedConfig);
+    });
+
+    it('should save and load configuration successfully', async () => {
+        // Change a config value
+        const originalConfig = projectManager.get_config();
+        originalConfig.general.general.pypath = "my/path";
+        projectManager.set_config(originalConfig);
+
+        const newProjectManager = await Project_manager.fromJson(projectManager.get_edam_json(), "", new ProjectEmitter());
+
+        expect(newProjectManager.get_config()).toEqual(originalConfig);
     });
 
 });
