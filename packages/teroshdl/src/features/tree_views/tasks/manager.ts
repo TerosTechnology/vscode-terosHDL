@@ -86,6 +86,7 @@ export class Tasks_manager extends BaseView{
         vscode.commands.registerCommand("teroshdl.view.tasks.stop", () => this.stop());
         vscode.commands.registerCommand("teroshdl.view.tasks.run", (item) => this.run(item));
         vscode.commands.registerCommand("teroshdl.view.tasks.clean", () => this.clean());
+        vscode.commands.registerCommand("teroshdl.view.tasks.device", () => this.device());
     }
 
     /**
@@ -171,6 +172,13 @@ export class Tasks_manager extends BaseView{
         }
     }
 
+    async device() {
+        const selectedProject = this.project_manager.get_selected_project();
+        const config = selectedProject.get_config();
+        const family = config.tools.quartus.family
+        const device = config.tools.quartus.device;
+        vscode.window.showInformationMessage(`Family: ${family}\nDevice: ${device}`);
+    }
 
     async clean() {
         if (this.checkRunning()) {

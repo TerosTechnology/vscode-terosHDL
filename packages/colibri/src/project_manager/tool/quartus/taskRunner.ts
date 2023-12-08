@@ -33,6 +33,8 @@ export function runTask(taskType: e_taskType, quartusDir: string,
     const binSTA = path_lib.join(quartusDir, "quartus_sta");
 
     const commandDeclaration: Record<e_taskType, string[]> = {
+        [e_taskType.CHANGEDEVICE]: [],
+        [e_taskType.SETTINGS]: [],
         [e_taskType.OPENFOLDER]: [],
         [e_taskType.QUARTUS_COMPILEDESIGN]: [
             `${binSyn} --dni --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
