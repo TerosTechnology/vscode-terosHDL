@@ -4626,6 +4626,11 @@ export const WEB_CONFIG = `
               set_config(message.config);
               set_mark(message.diff_config, message.projectName);
               document.getElementById("configTitle").innerHTML = message.title;
+              const tool = message.tool;
+              if (tool != undefined && tool != ""){
+                console.log("tool: " + tool)
+                enable_tab("tools", tool);
+              }
               break;
       }
   });

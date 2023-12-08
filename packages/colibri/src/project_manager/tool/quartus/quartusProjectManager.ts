@@ -167,6 +167,12 @@ export class QuartusProjectManager extends Project_manager {
                 }
             }
 
+            // Set config
+            const configCurrent = quartusProject.get_config();
+            configCurrent.tools.quartus.family = projectInfo.family;
+            configCurrent.tools.quartus.device = projectInfo.part;
+            quartusProject.set_config(configCurrent);
+
             // Add all files to project
             await quartusProject.add_file_from_array_no_quartus_update(projectFiles);
             await quartusProject.updateStatus(true);
@@ -317,6 +323,8 @@ export class QuartusProjectManager extends Project_manager {
             return artifact;
         }
         const reportSufix: Record<e_taskType, string> = {
+            [e_taskType.CHANGEDEVICE]: "",
+            [e_taskType.SETTINGS]: "",
             [e_taskType.OPENFOLDER]: "",
             [e_taskType.QUARTUS_ANALYSISSYNTHESIS]: "syn",
             [e_taskType.QUARTUS_ANALYSISELABORATION]: "syn",

@@ -8,6 +8,16 @@ export function getDefaultTaskList(): t_taskRep[] {
             "executionType": e_taskExecutionType.OPENFOLDER,
         },
         {
+            "name": e_taskType.SETTINGS,
+            "label": "Settings",
+            "executionType": e_taskExecutionType.OPENSETTINGS,
+        },
+        {
+            "name": e_taskType.CHANGEDEVICE,
+            "label": "Device",
+            "executionType": e_taskExecutionType.SIMPLECOMMAND,
+        },
+        {
             "name": e_taskType.QUARTUS_COMPILEDESIGN,
             "label": "Run during full compilation",
             "executionType": e_taskExecutionType.COMPLEXCOMMAND,

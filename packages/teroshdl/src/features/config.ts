@@ -30,8 +30,11 @@ import { Project } from './tree_views/project/element';
  * @param multiProject The multi-project manager instance.
  * @returns The project with the specified name, or undefined if not found.
  */
-function getProjectByName(name: string, multiProject: t_Multi_project_manager) {
+function getProjectByName(name: string | undefined, multiProject: t_Multi_project_manager) {
     try {
+        if (name === undefined) {
+            return multiProject.get_selected_project();
+        }
         return multiProject.get_project_by_name(name);
     }
     catch (error) {
@@ -61,7 +64,8 @@ export class Config_manager {
 
         const activation_command = 'teroshdl.configuration';
         vscode.commands.registerCommand(activation_command + ".global", async () => await this.createWebviewGlobal());
-        vscode.commands.registerCommand(activation_command + ".project", async (project) => await this.createWebviewProject(project));
+        vscode.commands.registerCommand(activation_command + ".project",
+            async (project, tabToOpen) => await this.createWebviewProject(project, tabToOpen));
 
 
         vscode.commands.registerCommand("teroshdl.view.project.export_configuration", () => this.exportConfig());
@@ -95,29 +99,35 @@ export class Config_manager {
         this.currentProjectName = undefined;
         this.currentConfig = teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config();
         const windowTitle = "TerosHDL Global Settings";
-        await this.createWebview(windowTitle);
+        await this.createWebview(windowTitle, "");
     }
 
     /**
      * Create a webview for the project configuration
      */
-    private async createWebviewProject(project: Project): Promise<void> {
-        const projectToConfig = getProjectByName(project.get_project_name(), this.multiProjectManager);
+    private async createWebviewProject(project: Project, tabToOpen: string): Promise<void> {
+        let projectName : string | undefined = undefined;
+        try {
+            projectName = project.get_project_name();
+        }
+        catch (error) {}
+
+        const projectToConfig = getProjectByName(projectName, this.multiProjectManager);
         if (projectToConfig === undefined) {
             return;
         }
 
         this.currentConfigIsGlobal = false;
-        this.currentProjectName = project.get_project_name();
+        this.currentProjectName = projectToConfig.get_name();
         this.currentConfig = projectToConfig.get_config();
         const windowTitle = `Project Settings - ${this.currentProjectName}`;
-        await this.createWebview(windowTitle);
+        await this.createWebview(windowTitle, tabToOpen);
     }
 
     /**
      * Create a webview
      */
-    private async createWebview(windowTitle: string): Promise<void> {
+    private async createWebview(windowTitle: string, tabToOpen: string): Promise<void> {
         if (this.panel === undefined) {
             this.panel = vscode.window.createWebviewPanel(
                 'catCoding',
@@ -166,7 +176,7 @@ export class Config_manager {
             this.panel.webview.html = this.getWebviewContent(this.panel.webview);
         }
         this.panel.title = windowTitle;
-        await this.updateWebConfig();
+        await this.updateWebConfig(tabToOpen);
     }
 
     /**
@@ -228,7 +238,7 @@ export class Config_manager {
             const file_content = teroshdl2.utils.file.read_file_sync(path_norm);
             const config = JSON.parse(file_content);
             this.setConfig(config);
-            this.updateWebConfig();
+            this.updateWebConfig("");
             vscode.window.showInformationMessage(`Settings loaded ${this.getMessageAlert()}`);
         });
     }
@@ -237,13 +247,14 @@ export class Config_manager {
      * Updates the web config by sending a message to the webview with the current Settings.
      * @returns A promise that resolves when the update is complete.
      */
-    private async updateWebConfig(): Promise<void> {
+    private async updateWebConfig(tabToOpen: string): Promise<void> {
         await this.panel?.webview.postMessage({
             command: "set_config",
             config: this.currentConfig,
             diff_config: this.getMark(),
             title: this.getTitle(),
             projectName: this.currentProjectName,
+            tool: tabToOpen,
         });
     }
 
@@ -267,7 +278,7 @@ export class Config_manager {
                 this.currentConfig = project.get_config();
             }
         }
-        await this.updateWebConfig();
+        await this.updateWebConfig("");
     }
 
     /**

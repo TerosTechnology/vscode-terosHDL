@@ -108,6 +108,23 @@ export class Task extends vscode.TreeItem {
                 arguments: [vscode.Uri.file(projectFolder)]
             };
         }
+        if (taskDefinition.executionType === teroshdl2.project_manager.tool_common.e_taskExecutionType.OPENSETTINGS) {
+            this.iconPath = get_icon("gear");
+            this.command = {
+                title: 'Settings',
+                command: 'teroshdl.configuration.project',
+                arguments: [undefined, "quartus"]
+            };
+        }
+        if (taskDefinition.executionType === teroshdl2.project_manager.tool_common.e_taskExecutionType.SIMPLECOMMAND &&
+            taskDefinition.name === teroshdl2.project_manager.tool_common.e_taskType.CHANGEDEVICE) {
+            this.iconPath = get_icon("verilog");
+            this.command = {
+                title: 'Settings',
+                command: 'teroshdl.view.tasks.device',
+                arguments: []
+            };
+        }
 
         if (taskDefinition.reports !== undefined) {
             if (taskDefinition.reports.includes(teroshdl2.project_manager.tool_common.e_reportType.REPORT)) {
