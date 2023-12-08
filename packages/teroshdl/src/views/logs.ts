@@ -15,7 +15,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
-import { Database } from 'sqlite3';
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as teroshdl2 from 'teroshdl2';
@@ -122,7 +121,7 @@ function openFileAtLine(filePath: string, lineNumber: number, columnNumber: numb
 export async function setLogs(bbddPath: string, webview: any,
     logLevelList: string[] | undefined, onlyFileLogs: boolean | undefined): Promise<void> {
 
-    const db = <Database>await teroshdl2.project_manager.utils.openDatabase(bbddPath);
+    const db = await teroshdl2.project_manager.utils.openDatabase(bbddPath);
     const messageList: any[] = [];
     try {
 
@@ -178,14 +177,7 @@ ${extraQuery1}
         OR aggregated_text IS NULL;
 `;
 
-        const rows = await new Promise((resolve, reject) => {
-            db.all(query, (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                else { resolve(rows); }
-            });
-        });
+        const rows = await teroshdl2.project_manager.utils.execQuery(db, query);
 
         if (rows) {
             for (const row of <any[]>rows) {

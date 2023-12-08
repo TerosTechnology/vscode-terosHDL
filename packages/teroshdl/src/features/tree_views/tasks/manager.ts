@@ -30,6 +30,7 @@ import { LogView } from "../../../views/logs";
 import * as tree_kill from 'tree-kill';
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
+import { getFamilyDeviceFromQuartusProject } from "../utils";
 
 enum e_VIEW_STATE {
     IDLE = 0,
@@ -38,7 +39,7 @@ enum e_VIEW_STATE {
     FAILED = 3
 }
 
-export class Tasks_manager extends BaseView{
+export class Tasks_manager extends BaseView {
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
     private logger: Logger;
@@ -178,6 +179,23 @@ export class Tasks_manager extends BaseView{
         const family = config.tools.quartus.family
         const device = config.tools.quartus.device;
         vscode.window.showInformationMessage(`Family: ${family}\nDevice: ${device}`);
+
+        // const msg = `Family: ${family}\nDevice: ${device}\n. Do you want to change it?`;
+        // const result = await vscode.window.showInformationMessage(
+        //     msg,
+        //     'Yes',
+        //     'No'
+        // );
+        // if (result === 'No') {
+        //     return;
+        // }
+
+        // const deviceFamily = await getFamilyDeviceFromQuartusProject(this.project_manager);
+        // if (deviceFamily !== undefined) {
+        //     config.tools.quartus.family = deviceFamily.family;
+        //     config.tools.quartus.device = deviceFamily.device;
+        //     selectedProject.set_config(config);
+        // }
     }
 
     async clean() {
@@ -259,12 +277,12 @@ export class Tasks_manager extends BaseView{
             return;
         }
 
-        const taskStatus = selectedProject.getTaskState(task);
-        if (taskStatus !== teroshdl2.project_manager.tool_common.e_taskState.FINISHED &&
-            report.element_type !== teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
-            showTaskWarningMessage(task);
-            return;
-        }
+        // const taskStatus = selectedProject.getTaskState(task);
+        // if (taskStatus !== teroshdl2.project_manager.tool_common.e_taskState.FINISHED &&
+        //     report.element_type !== teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
+        //     showTaskWarningMessage(task);
+        //     return;
+        // }
 
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.COMMAND) {
             shelljs.exec(report.command, { async: true, cwd: report.path });

@@ -226,7 +226,9 @@ export class Project_manager extends ConfigManager {
             const entity_name_of_file = hdl_utils.get_toplevel_from_path(file.name);
             if (entity_name_of_file === entity_name) {
                 this.toplevel_path.clear();
-                return this.add_toplevel_path(file.name);
+                const result = this.add_toplevel_path(file.name);
+                this.emitterProject.emitEvent(this.name, e_event.SELECT_TOPLEVEL);
+                return result;
             }
         }
         this.emitterProject.emitEvent(this.name, e_event.SELECT_TOPLEVEL);

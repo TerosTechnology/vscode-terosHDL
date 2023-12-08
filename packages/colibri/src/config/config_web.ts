@@ -4628,7 +4628,6 @@ export const WEB_CONFIG = `
               document.getElementById("configTitle").innerHTML = message.title;
               const tool = message.tool;
               if (tool != undefined && tool != ""){
-                console.log("tool: " + tool)
                 enable_tab("tools", tool);
               }
               break;

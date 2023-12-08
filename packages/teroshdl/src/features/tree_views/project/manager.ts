@@ -26,13 +26,11 @@ import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
 import { Logger } from "../../../logger";
 import { t_message_level, showMessage } from "../../../utils/utils";
-import { read_file_sync } from "teroshdl2/out/utils/file_utils";
 import * as yaml from "js-yaml";
-import { GlobalConfigManager } from "teroshdl2/out/config/config_manager";
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
 
-export class Project_manager extends BaseView{
+export class Project_manager extends BaseView {
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
     private emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter;
@@ -43,10 +41,10 @@ export class Project_manager extends BaseView{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, 
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
         emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter,
         run_output_manager: Run_output_manager, global_logger: Logger) {
-        
+
         super(e_viewType.PROJECT);
 
         this.set_commands();
@@ -189,7 +187,7 @@ export class Project_manager extends BaseView{
             }
             // Device family
             const family_list = await teroshdl2.project_manager.quartus
-                .getFamilyAndParts(GlobalConfigManager.getInstance().get_config());
+                .getFamilyAndParts(teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config());
             const family_list_string = family_list.map(x => x.family);
             let picker_family = await vscode.window.showQuickPick(family_list_string, {
                 placeHolder: "Device family",
@@ -211,7 +209,8 @@ export class Project_manager extends BaseView{
                 // Create project
                 const quartusProject =
                     await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromNewQuartusProject(
-                        GlobalConfigManager.getInstance().get_config(), project_name, picker_family, picker_part,
+                        teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config(),
+                        project_name, picker_family, picker_part,
                         working_directory[0], this.emitterProject);
 
                 // Add project to manager
@@ -228,7 +227,8 @@ export class Project_manager extends BaseView{
             // Create project
             const quartusProject =
                 await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromExistingQuartusProject(
-                    GlobalConfigManager.getInstance().get_config(), prj_path, this.emitterProject
+                    teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config(),
+                    prj_path, this.emitterProject
                 );
 
             // Add project to manager
@@ -243,7 +243,7 @@ export class Project_manager extends BaseView{
     async create_project_from_json(prj_path: string) {
         try {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
-                JSON.parse(read_file_sync(prj_path)), prj_path, this.emitterProject);
+                JSON.parse(teroshdl2.utils.file.read_file_sync(prj_path)), prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
         } catch (error) {
         }
@@ -252,7 +252,7 @@ export class Project_manager extends BaseView{
     async create_project_from_yaml(prj_path: string) {
         try {
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
-                yaml.load(read_file_sync(prj_path)), prj_path, this.emitterProject);
+                yaml.load(teroshdl2.utils.file.read_file_sync(prj_path)), prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
         } catch (error) {
         }
@@ -294,7 +294,7 @@ export class Project_manager extends BaseView{
 
     async check_dependencies() {
         const options: teroshdl2.process.python.python_options = {
-            path: GlobalConfigManager.getInstance().get_config().general.general.pypath
+            path: teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config().general.general.pypath
         };
 
         const intro_info = "-------> ";
@@ -342,7 +342,8 @@ export class Project_manager extends BaseView{
         }
 
         // Check make
-        const make_binary_dir = GlobalConfigManager.getInstance().get_config().general.general.makepath;
+        const make_binary_dir =
+            teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config().general.general.makepath;
         let make_binary_path = ("make");
         if (make_binary_dir !== "") {
             make_binary_path = path_lib.join(make_binary_dir, make_binary_path);

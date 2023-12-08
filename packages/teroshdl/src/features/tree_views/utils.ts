@@ -21,6 +21,7 @@ import * as path_lib from "path";
 import * as vscode from "vscode";
 import * as teroshdl2 from 'teroshdl2';
 import * as utils from "./utils";
+import { t_Multi_project_manager } from '../../type_declaration';
 
 const BASE_PATH_ICON = path_lib.join(__filename, "..", "..", "..", "..", "resources", "icon");
 
@@ -126,7 +127,7 @@ export async function add_sources_from_directory_and_subdirectories(prj: teroshd
             file_list = teroshdl2.utils.file.find_files_by_extensions_dir_and_subdir(directory_inst, []);
         }
 
-        const fileTerosDefList : teroshdl2.project_manager.common.t_file[] = [];
+        const fileTerosDefList: teroshdl2.project_manager.common.t_file[] = [];
         for (const file_inst of file_list) {
             const f: teroshdl2.project_manager.common.t_file = {
                 name: file_inst,
@@ -165,4 +166,37 @@ export async function add_sources_from_quartus(prj: teroshdl2.project_manager.pr
     for (const path of path_list) {
         await prj.add_file_from_quartus(path, is_manual);
     }
+}
+
+export async function getFamilyDeviceFromQuartusProject(_multiProject: t_Multi_project_manager)
+    : Promise<{ family: string, device: string } | undefined> {
+
+    const familyDevice = {
+        family: "",
+        device: ""
+    };
+
+    // Device family
+    const family_list = await teroshdl2.project_manager.quartus
+        .getFamilyAndParts(teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config());
+    const family_list_string = family_list.map(x => x.family);
+    let picker_family = await vscode.window.showQuickPick(family_list_string, {
+        placeHolder: "Device family",
+    });
+    if (picker_family === undefined) {
+        return undefined;
+    }
+    // Device part
+    const part_list = family_list.filter(x => x.family === picker_family)[0].part_list;
+
+    const picker_part = await vscode.window.showQuickPick(part_list, {
+        placeHolder: "Device",
+    });
+    if (picker_part === undefined) {
+        return undefined;
+    }
+
+    familyDevice.family = picker_family;
+    familyDevice.device = picker_part;
+    return familyDevice;
 }

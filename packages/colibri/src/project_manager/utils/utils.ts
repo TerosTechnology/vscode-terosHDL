@@ -21,7 +21,12 @@ import { t_project_definition } from "../project_definition";
 import { convert_to_yaml } from "./json2yaml";
 import * as file_utils from "../../utils/file_utils";
 import * as general from "../../common/general";
-import { Database } from 'sqlite3';
+// import { Database } from 'sqlite3';
+
+// const fs = require('fs');
+// const initSqlJs = require('sql-wasm.js');
+// const initSqlJs = require('/home/carlos/Desktop/fs/sql-wasm.js');
+const initSqlJs = require('sql.js');
 
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
     refrence_path?: string) {
@@ -93,32 +98,45 @@ export function get_file_type(filepath: string): string {
  * @param bbddPath Path to the database
  * @returns Promise with the database object
  */
-export function openDatabase(bbddPath: string) {
-    return new Promise((resolve, reject) => {
-        const db = new Database(bbddPath, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(db);
-            }
-        });
-    });
+export async function openDatabase(bbddPath: string) {
+    const fs = require('fs');
+    const filebuffer = fs.readFileSync(bbddPath);
+    const SQL = await initSqlJs();
+    const db = new SQL.Database(filebuffer);
+
+    return db;
 }
 
 /**
  * Close the database
  * @param db Database object
  */
-export async function closeDatabase(db: Database) {
+export async function closeDatabase(db: any) {
+    db.close();
+}
+
+/**
+ * Exec query in the database
+ * @param db Database object
+ * @param query Query to execute
+ * @returns Promise with the result of the query
+ */
+export async function execQuery(db: any, query: string): Promise<any[]> {
     try {
-        await new Promise<void>((resolve, reject) => {
-            db.close((err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
+        const result: any = db.exec(query);
+
+        const tableKeys = result[0].columns;
+        const tableValues = result[0].values;
+
+        const rows = tableValues.map((fila: any) => {
+            const objeto: any = {};
+            tableKeys.forEach((key: any, index: any) => {
+                objeto[key] = fila[index];
             });
+            return objeto;
         });
-    } catch (error) { /* empty */ }
+        return rows;
+    } catch (error) {
+        return [];
+    }
 }
