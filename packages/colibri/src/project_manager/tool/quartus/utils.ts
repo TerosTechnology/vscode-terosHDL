@@ -50,13 +50,28 @@ export class QuartusExecutionError extends Error {
  * Get Quartus binary directory.
  * @returns Quartus binary directory.
 **/
-export function getQuartusPath(_config: e_config): string {
+export function getQuartusPath(config: e_config): string {
+    // Try with config installation path
+    let quartusInstallationPath = config.tools.quartus.installation_path;
+    if (quartusInstallationPath !== "") {
+        if (file_utils.check_if_file(quartusInstallationPath)){
+            quartusInstallationPath = file_utils.get_directory(quartusInstallationPath);
+        }
+
+        const quartusBinPath = path_lib.join(quartusInstallationPath, "quartus");
+        if (file_utils.check_if_path_exist(quartusBinPath)) {
+            return quartusInstallationPath;
+        }
+    }
+
+    // Try with environment variable QUARTUS_ROOTDIR
     const QUARTUS_ROOTDIR = process.env.QUARTUS_ROOTDIR;
     if (QUARTUS_ROOTDIR !== undefined && QUARTUS_ROOTDIR !== "") {
         const quartusRootDir = path_lib.resolve(path_lib.join(QUARTUS_ROOTDIR, "bin"));
         return quartusRootDir;
     }
 
+    // Try with environment variable QSYS_ROOTDIR
     const QSYS_ROOTDIR = process.env.QSYS_ROOTDIR;
     if (QSYS_ROOTDIR !== undefined && QSYS_ROOTDIR !== "") {
         const quartusRootDir = path_lib.resolve(path_lib.join(QSYS_ROOTDIR, "..", "..", "quartus", "bin"));
