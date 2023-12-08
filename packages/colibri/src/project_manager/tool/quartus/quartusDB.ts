@@ -1,9 +1,8 @@
 // This code only can be used for Quartus boards
-import { Database } from 'sqlite3';
 import { TaskStateManager } from '../taskState';
 import { e_taskState, e_taskType } from '../common';
 import { check_if_path_exist } from '../../../utils/file_utils';
-import { openDatabase, closeDatabase } from '../../utils/utils';
+import { openDatabase, closeDatabase, execQuery } from '../../utils/utils';
 
 const taskNameInBBDD: Record<string, e_taskType> = {
     "Full Compilation": e_taskType.QUARTUS_COMPILEDESIGN,
@@ -47,27 +46,18 @@ function cleanList(taskManager: TaskStateManager, taskToClean: e_taskType[]) {
  * @param taskManager Task manager
  * @param bbddPath Path to the database
 */
-export async function setStatus(taskManager: TaskStateManager, bbddPath: string, 
+export async function setStatus(taskManager: TaskStateManager, bbddPath: string,
     deleteRunning: boolean): Promise<void> {
     if (!check_if_path_exist(bbddPath)) {
         cleanAll(taskManager);
     }
 
-    const db = <Database>await openDatabase(bbddPath);
+    const db = await openDatabase(bbddPath);
     try {
-        const rows = await new Promise((resolve, reject) => {
-            db.all('SELECT * FROM status', (err, rows) => {
-                if (err) {
-                    cleanAll(taskManager);
-                    reject(err);
-                }
-                else { resolve(rows); }
-            });
-        });
-
+        const rows: any[] = await execQuery(db, 'SELECT * FROM status');
         const taskToClean = Object.values(e_taskType);
 
-        if (rows) {
+        if (rows.length > 0) {
             for (const row of <any[]>rows) {
                 let status = row.status === "done" ? e_taskState.FINISHED : e_taskState.RUNNING;
                 const percent = parseInt(row.percent);

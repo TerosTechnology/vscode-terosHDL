@@ -67,7 +67,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
 
     get(reference_file_path?: string): t_file[] {
         if (reference_file_path !== undefined){
-            const new_files =  [...this.files];
+            const new_files =  this.files.map(obj => ({ ...obj }));
             for (let i = 0; i < new_files.length; i++) {
                 new_files[i].name = file_utils.get_relative_path(new_files[i].name, reference_file_path);
             }
