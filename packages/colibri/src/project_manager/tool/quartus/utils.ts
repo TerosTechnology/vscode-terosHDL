@@ -63,6 +63,17 @@ function normalizePath(path: string): string {
 /**
  * Get Quartus binary directory.
  * @returns Quartus binary directory.
+ */
+function getBinFolder(): string {
+    if (process.platform === "win32") {
+        return "bin64";
+    }
+    return "bin";
+}
+
+/**
+ * Get Quartus binary directory.
+ * @returns Quartus binary directory.
 **/
 export function getQuartusPath(config: e_config): string {
     // Try with config installation path
@@ -81,14 +92,14 @@ export function getQuartusPath(config: e_config): string {
     // Try with environment variable QUARTUS_ROOTDIR
     const QUARTUS_ROOTDIR = process.env.QUARTUS_ROOTDIR;
     if (QUARTUS_ROOTDIR !== undefined && QUARTUS_ROOTDIR !== "") {
-        const quartusRootDir = path_lib.resolve(path_lib.join(QUARTUS_ROOTDIR, "bin"));
+        const quartusRootDir = path_lib.resolve(path_lib.join(QUARTUS_ROOTDIR, getBinFolder()));
         return normalizePath(quartusRootDir);
     }
 
     // Try with environment variable QSYS_ROOTDIR
     const QSYS_ROOTDIR = process.env.QSYS_ROOTDIR;
     if (QSYS_ROOTDIR !== undefined && QSYS_ROOTDIR !== "") {
-        const quartusRootDir = path_lib.resolve(path_lib.join(QSYS_ROOTDIR, "..", "..", "quartus", "bin"));
+        const quartusRootDir = path_lib.resolve(path_lib.join(QSYS_ROOTDIR, "..", "..", "quartus", getBinFolder()));
         return normalizePath(quartusRootDir);
     }
 
@@ -100,7 +111,7 @@ export function getQuartusPath(config: e_config): string {
  * @returns qsys binary directory.
 **/
 export function getQsysPath(config: e_config): string {
-    const qsysPath = path_lib.resolve(path_lib.join(getQuartusPath(config), "..", "..", "qsys", "bin"));
+    const qsysPath = path_lib.resolve(path_lib.join(getQuartusPath(config), "..", "..", "qsys", getBinFolder()));
     return qsysPath;
 }
 
