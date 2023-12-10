@@ -31,7 +31,7 @@ import { Actions_manager } from "./actions/manager";
 import { Run_output_manager } from "./run_output";
 import { Watcher_manager } from "./watchers/manager";
 import { Output_manager } from "./output/manager";
-import { Logger } from "../../logger";
+import { Logger, debugLogger } from "../../logger";
 import { t_Multi_project_manager } from '../../type_declaration';
 import { Schematic_manager } from "../schematic";
 import { Dependency_manager } from "../dependency";
@@ -42,7 +42,6 @@ let multi_manager: t_Multi_project_manager;
 let viewList: any[] = [];
 
 export class Tree_view_manager {
-    private logger: Logger = new Logger();
     private statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
@@ -58,12 +57,12 @@ export class Tree_view_manager {
             new Project_manager(context, manager, emitterProject, run_output, global_logger),
             new Source_manager(context, manager),
             new TreeDependencyManager(context, manager, schematic_manager, dependency_manager),
-            new Runs_manager(context, manager, run_output, this.logger),
-            new Tasks_manager(context, manager, this.logger, logView),
-            new IpCatalogManager(context, manager, this.logger),
+            new Runs_manager(context, manager, run_output, debugLogger),
+            new Tasks_manager(context, manager, debugLogger, logView),
+            new IpCatalogManager(context, manager, debugLogger),
             new Actions_manager(context),
             new Watcher_manager(context, manager),
-            new Output_manager(context, manager, run_output, this.logger),
+            new Output_manager(context, manager, run_output, debugLogger),
         ];
 
         emitterProject.addProjectListener(this.runRefresh);
@@ -74,6 +73,21 @@ export class Tree_view_manager {
     }
 
     private async runRefresh(projectName: string, eventType: teroshdl2.project_manager.projectEmitter.e_event): Promise<void> {
+        if (eventType === teroshdl2.project_manager.projectEmitter.e_event.STDOUT_INFO) {
+            debugLogger.info(projectName);
+            return;
+        }
+        if (eventType === teroshdl2.project_manager.projectEmitter.e_event.STDOUT_WARNING) {
+            debugLogger.warn(projectName);
+            debugLogger.show();
+            return;
+        }
+        if (eventType === teroshdl2.project_manager.projectEmitter.e_event.STDOUT_ERROR) {
+            debugLogger.error(projectName);
+            debugLogger.show();
+            return;
+        }
+
         for (const view of viewList) {
             if (view.getRefreshEventList().includes(eventType)) {
                 view.refresh_tree();
@@ -87,6 +101,10 @@ export class Tree_view_manager {
             teroshdl2.project_manager.projectEmitter.e_event.EXEC_RUN,
             teroshdl2.project_manager.projectEmitter.e_event.FINISH_RUN,
             teroshdl2.project_manager.projectEmitter.e_event.UPDATE_TASK,
+            teroshdl2.project_manager.projectEmitter.e_event.SAVE_SETTINGS,
+            teroshdl2.project_manager.projectEmitter.e_event.STDOUT_INFO,
+            teroshdl2.project_manager.projectEmitter.e_event.STDOUT_WARNING,
+            teroshdl2.project_manager.projectEmitter.e_event.STDOUT_ERROR,
         ];
 
         if (refuseRefreshEventList.includes(eventType)) {

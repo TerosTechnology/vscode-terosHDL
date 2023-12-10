@@ -44,6 +44,10 @@ export enum e_event {
     FINISH_TASK = "finish_task",
     // Settings
     SAVE_SETTINGS = "save_settings",
+    // Common
+    STDOUT_INFO = "stdout_info",
+    STDOUT_ERROR = "stdout_error",
+    STDOUT_WARNING = "stdout_warning",
 }
 
 export class ProjectEmitter {
@@ -56,6 +60,10 @@ export class ProjectEmitter {
         }
         this.eventEmitter.emit("projectEvent", projectName, eventType);
         return true;
+    }
+
+    public emitEventLog(log: string, eventType: e_event): boolean {
+        return this.emitEvent(log, eventType);
     }
 
     public addProjectListener(listener: (projectName: string, eventType: e_event) => Promise<void>): void {

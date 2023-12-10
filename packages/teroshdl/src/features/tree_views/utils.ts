@@ -160,15 +160,16 @@ export async function add_sources_from_vivado(prj: teroshdl2.project_manager.pro
     });
 }
 
-export async function add_sources_from_quartus(prj: teroshdl2.project_manager.project_manager.Project_manager, is_manual: boolean) {
-    const path_list = await utils.get_from_open_dialog("Select Quartus project", false, true, false,
-        "Select Quartus project", { 'Quartus project (*.qsf)': ['qsf'] });
-    for (const path of path_list) {
-        await prj.add_file_from_quartus(path, is_manual);
-    }
-}
+// export async function add_sources_from_quartus(prj: teroshdl2.project_manager.project_manager.Project_manager, is_manual: boolean) {
+//     const path_list = await utils.get_from_open_dialog("Select Quartus project", false, true, false,
+//         "Select Quartus project", { 'Quartus project (*.qsf)': ['qsf'] });
+//     for (const path of path_list) {
+//         await prj.add_file_from_quartus(path, is_manual);
+//     }
+// }
 
-export async function getFamilyDeviceFromQuartusProject(_multiProject: t_Multi_project_manager)
+export async function getFamilyDeviceFromQuartusProject(_multiProject: t_Multi_project_manager, 
+    projectEmitter: teroshdl2.project_manager.projectEmitter.ProjectEmitter)
     : Promise<{ family: string, device: string } | undefined> {
 
     const familyDevice = {
@@ -178,7 +179,7 @@ export async function getFamilyDeviceFromQuartusProject(_multiProject: t_Multi_p
 
     // Device family
     const family_list = await teroshdl2.project_manager.quartus
-        .getFamilyAndParts(teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config());
+        .getFamilyAndParts(teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config(), projectEmitter);
     const family_list_string = family_list.map(x => x.family);
     let picker_family = await vscode.window.showQuickPick(family_list_string, {
         placeHolder: "Device family",
