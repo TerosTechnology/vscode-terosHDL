@@ -138,7 +138,7 @@ async function executeQuartusTcl(config: e_config, tcl_file: string, args: strin
 
     file_utils.remove_file(csv_file);
 
-    const stdout = `${cmd_result.command}\n${cmd_result.stdout}\n${cmd_result.stderr}`;
+    const stdout = `\n${cmd_result.command}\n${cmd_result.stdout}\n${cmd_result.stderr}\n`;
     if (cmd_result.successful) {
         emitterProject.emitEventLog(stdout, e_event.STDOUT_INFO);
     } else {
@@ -151,16 +151,16 @@ async function executeQuartusTcl(config: e_config, tcl_file: string, args: strin
 /**
  * Get Quartus project info.
  * @param config Configuration.
- * @param prj_path Path to Quartus project.
+ * @param projectPath Path to Quartus project.
  * @returns Quartus project info.
 **/
-export async function getProjectInfo(config: e_config, prj_path: string, emitterProject: ProjectEmitter)
+export async function getProjectInfo(config: e_config, projectPath: string, emitterProject: ProjectEmitter)
     : Promise<{
         name: string, currentRevision: string, topEntity: string, revisionList: string[],
         family: string, part: string
     }> {
 
-    const args = prj_path;
+    const args = `"${projectPath}"`;
     const tcl_file = path_lib.join(__dirname, 'bin', 'project_info.tcl');
 
     const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject);
@@ -265,7 +265,7 @@ export async function getFilesFromProject(config: e_config, projectPath: string,
     Promise<t_file[]> {
 
     const tcl_file = path_lib.join(__dirname, 'bin', 'get_files.tcl');
-    const args = projectPath;
+    const args = `"${projectPath}"`;
 
     const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject);
 
@@ -299,7 +299,7 @@ export async function executeCmdListQuartusProject(config: e_config, projectPath
 
     // Create temp file
     const tclFile = process_utils.create_temp_file(templateRender);
-    const args = projectPath;
+    const args = `"${projectPath}"`;
 
     const cmdResult = await executeQuartusTcl(config, tclFile, args, "", emitterProject);
 
@@ -426,7 +426,7 @@ export function cleanProject(projectName: string, config: e_config, projectPath:
 
     // Create temp file
     const tclFile = process_utils.create_temp_file(templateRender);
-    const args = projectPath;
+    const args = `"${projectPath}"`;
 
     const quartus_bin = path_lib.join(getQuartusPath(config), "quartus_sh");
 
