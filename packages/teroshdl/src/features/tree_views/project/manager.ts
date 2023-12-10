@@ -83,13 +83,13 @@ export class Project_manager extends BaseView {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     async add_project(item: element.Project) {
         const PROJECT_ADD_TYPES = [
-            "Empty project",
+            "Create an empty Generic project",
+            "Create an empty Intel® Quartus® Prime project",
+            "Load an existing Intel® Quartus® Prime project",
             "Load project from JSON EDAM",
             "Load project from YAML EDAM",
             "Load project from VUnit run.py",
             "Load an example project",
-            "Load Intel® Quartus® Prime project",
-            "New Intel® Quartus® Prime project",
         ];
 
         const picker_value = await vscode.window.showQuickPick(PROJECT_ADD_TYPES, {
@@ -109,8 +109,70 @@ export class Project_manager extends BaseView {
                 }
             }
         }
-        // Load from JSON EDAM
+        // Create new Quartus project
         else if (picker_value === PROJECT_ADD_TYPES[1]) {
+            // Working directory
+            const working_directory = await
+                utils.get_from_open_dialog("What is the working directory for this project?", true, false, false,
+                    "Choose", {});
+            if (working_directory.length !== 1) {
+                return;
+            }
+
+            // Project name
+            const project_name = await utils.get_from_input_box("What is the name of this project?", "Project name");
+            if (project_name === undefined) {
+                return;
+            }
+            try {
+                // Device family
+                const family_list = await teroshdl2.project_manager.quartus
+                    .getFamilyAndParts(teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config(),
+                        this.emitterProject);
+                const family_list_string = family_list.map(x => x.family);
+                let picker_family = await vscode.window.showQuickPick(family_list_string, {
+                    placeHolder: "Device family",
+                });
+                if (picker_family === undefined) {
+                    return;
+                }
+                // Device part
+                const part_list = family_list.filter(x => x.family === picker_family)[0].part_list;
+
+                const picker_part = await vscode.window.showQuickPick(part_list, {
+                    placeHolder: "Device",
+                });
+                if (picker_part === undefined) {
+                    return;
+                }
+
+                // Create project
+                const quartusProject =
+                    await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromNewQuartusProject(
+                        teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config(),
+                        project_name, picker_family, picker_part,
+                        working_directory[0], this.emitterProject);
+
+                // Add project to manager
+                this.project_manager.add_project(quartusProject);
+
+                const msg = `Intel@ Quartus@ Prime project ${quartusProject.get_name()} created.`;
+                showMessage(msg, t_message_level.INFO);
+            } catch (error) { 
+                const msg = "Intel@ Quartus@ Prime project can't be created. Check the TerosHDL: Debug output.";
+                showMessage(msg, t_message_level.WARNING);
+            }
+        }
+        // Load from Quartus
+        else if (picker_value === PROJECT_ADD_TYPES[2]) {
+            const path_list = await utils.get_from_open_dialog("Load Quartus project", false, true, false,
+                "Select Quartus project", { 'Quartus project (*.qsf)': ['qsf'] });
+            for (const path of path_list) {
+                await this.create_project_from_quartus(path);
+            }
+        }
+        // Load from JSON EDAM
+        else if (picker_value === PROJECT_ADD_TYPES[3]) {
             const path_list = await utils.get_from_open_dialog("Load project", false, true, true,
                 "Select JSON EDAM files", { 'JSON files (*.json, *.JSON)': ['json', 'JSON'] });
             for (const path of path_list) {
@@ -118,7 +180,7 @@ export class Project_manager extends BaseView {
             };
         }
         // Load from YAML EDAM
-        else if (picker_value === PROJECT_ADD_TYPES[2]) {
+        else if (picker_value === PROJECT_ADD_TYPES[4]) {
             const path_list = await utils.get_from_open_dialog("Load project", false, true, true,
                 "Select YAML EDAM files", { 'YAML files (*.yaml, *.yml)': ['yaml', 'yml'] });
             for (const path of path_list) {
@@ -126,7 +188,7 @@ export class Project_manager extends BaseView {
             };
         }
         // Load from VUnit
-        else if (picker_value === PROJECT_ADD_TYPES[3]) {
+        else if (picker_value === PROJECT_ADD_TYPES[5]) {
             // Create project
             const project_name = await utils.get_from_input_box("Set the project name", "Project name");
             if (project_name !== undefined) {
@@ -141,7 +203,7 @@ export class Project_manager extends BaseView {
             }
         }
         // Load an example
-        else if (picker_value === PROJECT_ADD_TYPES[4]) {
+        else if (picker_value === PROJECT_ADD_TYPES[6]) {
             const project_examples_types = ['Documenter examples', 'State machine examples',
                 'Xsim', 'GHDL', 'Icarus', 'IceStorm', 'ModelSim',
                 'Vivado', 'Yosys', 'VUnit', 'cocotb', 'raptor_counter', 'raptor_counter_vhdl',
@@ -161,64 +223,6 @@ export class Project_manager extends BaseView {
                     "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
                 await this.create_project_from_yaml(project_path);
             }
-        }
-        // Load from Quartus
-        else if (picker_value === PROJECT_ADD_TYPES[5]) {
-            const path_list = await utils.get_from_open_dialog("Load Quartus project", false, true, false,
-                "Select Quartus project", { 'Quartus project (*.qsf)': ['qsf'] });
-            for (const path of path_list) {
-                await this.create_project_from_quartus(path);
-            }
-        }
-        // Create new Quartus project
-        else if (picker_value === PROJECT_ADD_TYPES[6]) {
-            // Working directory
-            const working_directory = await
-                utils.get_from_open_dialog("What is the working directory for this project?", true, false, false,
-                    "Choose", {});
-            if (working_directory.length !== 1) {
-                return;
-            }
-
-            // Project name
-            const project_name = await utils.get_from_input_box("What is the name of this project?", "Project name");
-            if (project_name === undefined) {
-                return;
-            }
-            // Device family
-            const family_list = await teroshdl2.project_manager.quartus
-                .getFamilyAndParts(teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config());
-            const family_list_string = family_list.map(x => x.family);
-            let picker_family = await vscode.window.showQuickPick(family_list_string, {
-                placeHolder: "Device family",
-            });
-            if (picker_family === undefined) {
-                return;
-            }
-            // Device part
-            const part_list = family_list.filter(x => x.family === picker_family)[0].part_list;
-
-            const picker_part = await vscode.window.showQuickPick(part_list, {
-                placeHolder: "Device",
-            });
-            if (picker_part === undefined) {
-                return;
-            }
-
-            try {
-                // Create project
-                const quartusProject =
-                    await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromNewQuartusProject(
-                        teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config(),
-                        project_name, picker_family, picker_part,
-                        working_directory[0], this.emitterProject);
-
-                // Add project to manager
-                this.project_manager.add_project(quartusProject);
-
-                const msg = `Intel@ Quartus@ Prime project ${quartusProject.get_name()} created.`;
-                showMessage(msg, t_message_level.INFO);
-            } catch (error) { }
         }
     }
 

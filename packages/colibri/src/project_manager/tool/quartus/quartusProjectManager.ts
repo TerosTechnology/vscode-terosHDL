@@ -131,7 +131,7 @@ export class QuartusProjectManager extends Project_manager {
         : Promise<QuartusProjectManager> {
 
         try {
-            await createProject(config, projectDirectory, name, family, part);
+            await createProject(config, projectDirectory, name, family, part, emitterProject);
             const projectPath = path_lib.join(projectDirectory, `${name}.qsf`);
             const project = new QuartusProjectManager(name, projectPath, name, emitterProject);
             return project;
@@ -151,8 +151,8 @@ export class QuartusProjectManager extends Project_manager {
     static async fromExistingQuartusProject(config: e_config, project_path: string, emitterProject: ProjectEmitter)
         : Promise<QuartusProjectManager> {
         try {
-            const projectInfo = await getProjectInfo(config, project_path);
-            const projectFiles = await getFilesFromProject(config, project_path, true);
+            const projectInfo = await getProjectInfo(config, project_path, emitterProject);
+            const projectFiles = await getFilesFromProject(config, project_path, true, emitterProject);
 
             const quartusProject = new QuartusProjectManager(projectInfo.name, project_path,
                 projectInfo.currentRevision, emitterProject);
@@ -190,8 +190,9 @@ export class QuartusProjectManager extends Project_manager {
 
     async syncWithDisk(): Promise<void> {
         const config = super.get_config();
-        const quartusProjectInfo = await getProjectInfo(config, this.projectDiskPath);
-        const quartusProjectFileList = await getFilesFromProject(config, this.projectDiskPath, true);
+        const quartusProjectInfo = await getProjectInfo(config, this.projectDiskPath, this.emitterProject);
+        const quartusProjectFileList = await getFilesFromProject(config, this.projectDiskPath, true,
+            this.emitterProject);
 
         super.clearFiles();
         await super.add_file_from_array(quartusProjectFileList);
@@ -228,7 +229,7 @@ export class QuartusProjectManager extends Project_manager {
     public async add_file_from_array(file_list: t_file[]): Promise<t_action_result> {
         const config = super.get_config();
         try {
-            await addFilesToProject(config, this.projectDiskPath, file_list);
+            await addFilesToProject(config, this.projectDiskPath, file_list, this.emitterProject);
         } catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -245,7 +246,7 @@ export class QuartusProjectManager extends Project_manager {
 
         const config = super.get_config();
         try {
-            await removeFilesFromProject(config, this.projectDiskPath, fileListToRemove);
+            await removeFilesFromProject(config, this.projectDiskPath, fileListToRemove,  this.emitterProject);
         } catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -269,7 +270,7 @@ export class QuartusProjectManager extends Project_manager {
 
         const config = super.get_config();
         try {
-            await removeFilesFromProject(config, this.projectDiskPath, [fileToDelete]);
+            await removeFilesFromProject(config, this.projectDiskPath, [fileToDelete], this.emitterProject);
         } catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -282,7 +283,7 @@ export class QuartusProjectManager extends Project_manager {
     }
 
     public async getIpCatalog(): Promise<t_ipCatalogRep[]> {
-        const projectInfo = await getProjectInfo(this.get_config(), this.projectDiskPath);
+        const projectInfo = await getProjectInfo(this.get_config(), this.projectDiskPath, this.emitterProject);
         try {
             return await getIpCatalog(this.get_config(), projectInfo.family, this.projectDiskPath);
         }

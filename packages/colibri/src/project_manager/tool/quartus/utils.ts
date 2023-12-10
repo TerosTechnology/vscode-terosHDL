@@ -47,6 +47,20 @@ export class QuartusExecutionError extends Error {
 }
 
 /**
+ * Normalize path with spaces
+ * @param path Path to normalize
+ * @returns path normalized
+**/
+function normalizePath(path: string): string {
+    const regex = /[\s\t]/;
+
+    if (regex.test(path)) {
+        return `"${path}"`;
+    }
+    return path;
+}
+
+/**
  * Get Quartus binary directory.
  * @returns Quartus binary directory.
 **/
@@ -54,13 +68,13 @@ export function getQuartusPath(config: e_config): string {
     // Try with config installation path
     let quartusInstallationPath = config.tools.quartus.installation_path;
     if (quartusInstallationPath !== "") {
-        if (file_utils.check_if_file(quartusInstallationPath)){
+        if (file_utils.check_if_file(quartusInstallationPath)) {
             quartusInstallationPath = file_utils.get_directory(quartusInstallationPath);
         }
 
         const quartusBinPath = path_lib.join(quartusInstallationPath, "quartus");
         if (file_utils.check_if_path_exist(quartusBinPath)) {
-            return quartusInstallationPath;
+            return normalizePath(quartusInstallationPath);
         }
     }
 
@@ -68,14 +82,14 @@ export function getQuartusPath(config: e_config): string {
     const QUARTUS_ROOTDIR = process.env.QUARTUS_ROOTDIR;
     if (QUARTUS_ROOTDIR !== undefined && QUARTUS_ROOTDIR !== "") {
         const quartusRootDir = path_lib.resolve(path_lib.join(QUARTUS_ROOTDIR, "bin"));
-        return quartusRootDir;
+        return normalizePath(quartusRootDir);
     }
 
     // Try with environment variable QSYS_ROOTDIR
     const QSYS_ROOTDIR = process.env.QSYS_ROOTDIR;
     if (QSYS_ROOTDIR !== undefined && QSYS_ROOTDIR !== "") {
         const quartusRootDir = path_lib.resolve(path_lib.join(QSYS_ROOTDIR, "..", "..", "quartus", "bin"));
-        return quartusRootDir;
+        return normalizePath(quartusRootDir);
     }
 
     return "";
@@ -98,20 +112,27 @@ export function getQsysPath(config: e_config): string {
  * @param cwd Current working directory.
  * @returns Result of execution.
 **/
-async function executeQuartusTcl(config: e_config, tcl_file: string, args: string, cwd: string):
-    Promise<{ result: p_result, csv_content: string }> {
+async function executeQuartusTcl(config: e_config, tcl_file: string, args: string,
+    cwd: string, emitterProject: ProjectEmitter): Promise<{ result: p_result, csv_content: string }> {
 
     const quartus_bin = path_lib.join(getQuartusPath(config), "quartus_sh");
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");
 
-    const cmd = `${quartus_bin} -t ${tcl_file} ${csv_file} ${args}`;
+    const cmd = `${quartus_bin} -t "${tcl_file}" "${csv_file}" ${args}`;
     const cmd_result = await (new process_teros.Process(undefined)).exec_wait(cmd, { cwd: cwd });
 
     const csv_content = await file_utils.read_file_sync(csv_file);
 
     file_utils.remove_file(csv_file);
+
+    const stdout = `${cmd_result.command}\n${cmd_result.stdout}\n${cmd_result.stderr}`;
+    if (cmd_result.successful) {
+        emitterProject.emitEventLog(stdout, e_event.STDOUT_INFO);
+    } else {
+        emitterProject.emitEventLog(stdout, e_event.STDOUT_ERROR);
+    }
 
     return { result: cmd_result, csv_content: csv_content };
 }
@@ -122,7 +143,7 @@ async function executeQuartusTcl(config: e_config, tcl_file: string, args: strin
  * @param prj_path Path to Quartus project.
  * @returns Quartus project info.
 **/
-export async function getProjectInfo(config: e_config, prj_path: string)
+export async function getProjectInfo(config: e_config, prj_path: string, emitterProject: ProjectEmitter)
     : Promise<{
         name: string, currentRevision: string, topEntity: string, revisionList: string[],
         family: string, part: string
@@ -131,7 +152,7 @@ export async function getProjectInfo(config: e_config, prj_path: string)
     const args = prj_path;
     const tcl_file = path_lib.join(__dirname, 'bin', 'project_info.tcl');
 
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "");
+    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject);
 
     const result = {
         prj_name: "",
@@ -189,11 +210,11 @@ export async function getProjectInfo(config: e_config, prj_path: string)
  * @param config Configuration.
  * @returns Quartus project info.
 **/
-export async function getFamilyAndParts(config: e_config): Promise<t_board_list[]> {
+export async function getFamilyAndParts(config: e_config, emitterProject: ProjectEmitter): Promise<t_board_list[]> {
     const tcl_file = path_lib.join(__dirname, 'bin', 'get_boards.tcl');
     const args = "";
 
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "");
+    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject);
     if (!cmd_result.result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
@@ -228,13 +249,14 @@ export async function getFamilyAndParts(config: e_config): Promise<t_board_list[
  * @param is_manual True if the files are added manually.
  * @returns Quartus project info.
 **/
-export async function getFilesFromProject(config: e_config, projectPath: string, is_manual: boolean):
+export async function getFilesFromProject(config: e_config, projectPath: string, is_manual: boolean,
+    emitterProject: ProjectEmitter):
     Promise<t_file[]> {
 
     const tcl_file = path_lib.join(__dirname, 'bin', 'get_files.tcl');
     const args = projectPath;
 
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "");
+    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject);
 
     if (!cmd_result.result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
@@ -258,8 +280,8 @@ export async function getFilesFromProject(config: e_config, projectPath: string,
  * @param projectPath Path to Quartus project.
  * @param cmdList List of commands to execute.
 **/
-export async function executeCmdListQuartusProject(config: e_config, projectPath: string, cmdList: string[])
-    : Promise<t_loader_action_result> {
+export async function executeCmdListQuartusProject(config: e_config, projectPath: string, cmdList: string[],
+    emitterProject: ProjectEmitter): Promise<t_loader_action_result> {
 
     const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl.nj'));
     const templateRender = nunjucks.renderString(templateContent, { "cmd_list": cmdList });
@@ -268,7 +290,7 @@ export async function executeCmdListQuartusProject(config: e_config, projectPath
     const tclFile = process_utils.create_temp_file(templateRender);
     const args = projectPath;
 
-    const cmdResult = await executeQuartusTcl(config, tclFile, args, "");
+    const cmdResult = await executeQuartusTcl(config, tclFile, args, "", emitterProject);
 
     const result: t_loader_action_result = {
         successful: cmdResult.result.successful,
@@ -287,7 +309,8 @@ export async function executeCmdListQuartusProject(config: e_config, projectPath
  * @param projectPath Path to Quartus project.
  * @param fileList List of files to add.
 **/
-export async function addFilesToProject(config: e_config, projectPath: string, fileList: t_file[]): Promise<void> {
+export async function addFilesToProject(config: e_config, projectPath: string, fileList: t_file[],
+    emitterProject: ProjectEmitter): Promise<void> {
 
     const cmd_list: string[] = [];
     for (const file of fileList) {
@@ -298,7 +321,7 @@ export async function addFilesToProject(config: e_config, projectPath: string, f
         cmd_list.push(cmd);
     }
 
-    const result = await executeCmdListQuartusProject(config, projectPath, cmd_list);
+    const result = await executeCmdListQuartusProject(config, projectPath, cmd_list, emitterProject);
     if (!result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
@@ -310,7 +333,8 @@ export async function addFilesToProject(config: e_config, projectPath: string, f
  * @param projectPath Path to Quartus project.
  * @param fileList List of files to add.
 **/
-export async function removeFilesFromProject(config: e_config, projectPath: string, fileList: t_file[]): Promise<void> {
+export async function removeFilesFromProject(config: e_config, projectPath: string, fileList: t_file[],
+    emitterProject: ProjectEmitter): Promise<void> {
     const cmd_list: string[] = [];
     for (const file of fileList) {
         let cmd = `set_global_assignment -remove -name ${LANGUAGE_MAP[file.file_type]} ${file.name}`;
@@ -327,7 +351,7 @@ export async function removeFilesFromProject(config: e_config, projectPath: stri
         cmd_list.push(cmd);
     }
 
-    const result = await executeCmdListQuartusProject(config, projectPath, cmd_list);
+    const result = await executeCmdListQuartusProject(config, projectPath, cmd_list, emitterProject);
     if (!result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
@@ -341,12 +365,12 @@ export async function removeFilesFromProject(config: e_config, projectPath: stri
  * @returns Quartus project info.
 **/
 export async function createProject(config: e_config, projectDirectory: string, name: string,
-    family: string, part: string): Promise<void> {
+    family: string, part: string, emitterProject: ProjectEmitter): Promise<void> {
 
     const tcl_file = path_lib.join(__dirname, 'bin', 'create_project.tcl');
     const args = `"${name}" "${family}" "${part}"`;
 
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, projectDirectory);
+    const cmd_result = await executeQuartusTcl(config, tcl_file, args, projectDirectory, emitterProject);
     if (!cmd_result.result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
@@ -375,7 +399,7 @@ export async function setTopLevelPath(config: e_config, projectPath: string, top
     if (entityName === "") {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
-    const result = await executeCmdListQuartusProject(config, projectPath, [cmd]);
+    const result = await executeCmdListQuartusProject(config, projectPath, [cmd], new ProjectEmitter());
     if (!result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }

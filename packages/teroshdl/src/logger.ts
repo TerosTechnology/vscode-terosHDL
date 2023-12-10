@@ -27,7 +27,6 @@ export class Logger {
             name = 'TerosHDL: Tool manager';
         }
         this.output_channel = vscode.window.createOutputChannel(name, {log: true});
-        // this.output_channel.logLevel = vscode.LogLevel.Debug;
     }
 
     clear() {
@@ -73,3 +72,5 @@ export class Logger {
         this.output_channel.error(msg);
     }
 }
+
+export const debugLogger: Logger = new Logger("TerosHDL: Debug");

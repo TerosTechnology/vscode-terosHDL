@@ -18,23 +18,21 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as vscode from 'vscode';
-//Extension manager
 import * as release_notes_webview from "./utils/webview/release_notes";
 import { ExtensionManager } from "./utils/webview/utils";
-//Utils
-
-// TerosHDL
 import { Teroshdl } from './teroshdl';
-import { Logger } from './logger';
+import { Logger, debugLogger } from './logger';
 
 export async function activate(context: vscode.ExtensionContext) {
 
-    console.log('Congratulations, your extension "TerosHDL" is now active!');
+    debugLogger.info('Congratulations, your extension "TerosHDL" is now active!');
 
     const extension_manager = new ExtensionManager();
 
     const global_logger = new Logger("TerosHDL: Global");
     global_logger.clear();
+
+    debugLogger.clear();
     
     try {
         await extension_manager.init();

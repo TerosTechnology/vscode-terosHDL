@@ -35,9 +35,8 @@ import { Stutter_mode_manager } from "./features/stutter_mode";
 import { Config_manager } from "./features/config";
 import { Tree_view_manager } from "./features/tree_views/manager";
 import * as teroshdl2 from 'teroshdl2';
-import * as events from "events";
 import { Comander } from "./features/comander/run";
-import { Logger } from "./logger";
+import { Logger, debugLogger } from "./logger";
 import { Dependency_manager } from './features/dependency';
 import { LogView } from './views/logs';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
@@ -75,44 +74,44 @@ export class Teroshdl {
         await this.init_multi_project_manager();
 
         this.init_language_provider();
-        this.global_logger.debug("activated language provider");
+        debugLogger.info("activated language provider");
 
         this.init_template_manager();
-        this.global_logger.debug("activated template manager");
+        debugLogger.info("activated template manager");
 
         this.init_documenter();
-        this.global_logger.debug("activated documenter");
+        debugLogger.info("activated documenter");
 
         this.init_state_machine();
-        this.global_logger.debug("activated state machine");
+        debugLogger.info("activated state machine");
 
         const schematic = this.init_schematic();
-        this.global_logger.debug("activated schematic");
+        debugLogger.info("activated schematic");
 
         this.init_linter();
-        this.global_logger.debug("activated linter");
+        debugLogger.info("activated linter");
 
         this.init_formatter();
-        this.global_logger.debug("activated formatter");
+        debugLogger.info("activated formatter");
 
         this.init_completions();
-        this.global_logger.debug("activated completions");
+        debugLogger.info("activated completions");
 
         this.init_number_hover();
-        this.global_logger.debug("activated hover");
+        debugLogger.debug("activated hover");
 
         this.init_shutter_mode();
-        this.global_logger.debug("activated shutter mode");
+        debugLogger.info("activated shutter mode");
 
         this.init_config();
-        this.global_logger.debug("activated config viewer");
+        debugLogger.info("activated config viewer");
 
         const dependency = this.init_dependency();
         this.init_tree_views(schematic, dependency);
-        this.global_logger.debug("activated views");
+        debugLogger.info("activated views");
 
         this.init_comander();
-        this.global_logger.debug("activated comander");
+        debugLogger.info("activated comander");
     }
 
     private async init_multi_project_manager() {
@@ -120,7 +119,7 @@ export class Teroshdl {
             GlobalConfigManager.getInstance().load();
             await this.manager.load(this.emitterProject);
         } catch (error) {
-            this.global_logger.warn("There have been errors loading project list from disk.");
+            debugLogger.warn("There have been errors loading project list from disk.");
         }
     }
 

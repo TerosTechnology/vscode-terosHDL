@@ -133,10 +133,10 @@ export class Source_manager extends BaseView {
                 else if (picker_value === element_types[4]) {
                     await utils.add_sources_from_directory_and_subdirectories(prj, false);
                 }
-                // Add from Quartus
-                else if (picker_value === element_types[5]) {
-                    await utils.add_sources_from_quartus(prj, true);
-                }
+                // // Add from Quartus
+                // else if (picker_value === element_types[5]) {
+                //     await utils.add_sources_from_quartus(prj, true);
+                // }
             }
             // Add library
             else {

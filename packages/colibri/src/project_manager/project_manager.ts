@@ -49,7 +49,6 @@ import { t_linter_name, l_options } from "../linter/common";
 import { get_files_from_csv } from "./prj_loaders/csv_loader";
 import { get_files_from_vivado } from "./prj_loaders/vivado_loader";
 import { get_files_from_vunit } from "./prj_loaders/vunit_loader";
-import { getFilesFromProject, QuartusExecutionError } from "./tool/quartus/utils";
 import { t_taskRep } from "./tool/common";
 import { ChildProcess } from "child_process";
 import { p_result } from "../process/common";
@@ -288,17 +287,6 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // File
     ////////////////////////////////////////////////////////////////////////////
-    async add_file_from_quartus(vivado_path: string, is_manual: boolean)
-        : Promise<void> {
-
-        try {
-            const fileList = await getFilesFromProject(this.get_config(), vivado_path, is_manual);
-            this.add_file_from_array(fileList);
-        } catch (error) {
-            throw new QuartusExecutionError("Error in Quartus execution");
-        }
-    }
-
     async add_file_from_vivado(vivado_path: string, is_manual: boolean)
         : Promise<t_action_result> {
 
