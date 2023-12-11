@@ -566,7 +566,7 @@ export class Project_manager extends ConfigManager {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public getArtifact(_taskType: e_taskType, _reportType: e_reportType): t_test_artifact {
+    public async getArtifact(_taskType: e_taskType, _reportType: e_reportType): Promise<t_test_artifact> {
         return {} as t_test_artifact;
     }
 

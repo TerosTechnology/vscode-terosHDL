@@ -74,16 +74,16 @@ export class Tasks_manager extends BaseView {
      * Sets up the commands for the task manager.
      */
     set_commands() {
-        vscode.commands.registerCommand("teroshdl.view.tasks.report", (item) =>
-            this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORT));
-        vscode.commands.registerCommand("teroshdl.view.tasks.timing_analyzer", (item) =>
-            this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TIMINGANALYZER));
-        vscode.commands.registerCommand("teroshdl.view.tasks.technology_map_viewer", (item) =>
-            this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TECHNOLOGYMAPVIEWER));
-        vscode.commands.registerCommand("teroshdl.view.tasks.snapshotviewer", (item) =>
-            this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.SNAPSHOPVIEWER));
-        vscode.commands.registerCommand("teroshdl.view.tasks.logs", (item) =>
-            this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORTDB));
+        vscode.commands.registerCommand("teroshdl.view.tasks.report", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORT));
+        vscode.commands.registerCommand("teroshdl.view.tasks.timing_analyzer", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TIMINGANALYZER));
+        vscode.commands.registerCommand("teroshdl.view.tasks.technology_map_viewer", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TECHNOLOGYMAPVIEWER));
+        vscode.commands.registerCommand("teroshdl.view.tasks.snapshotviewer", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.SNAPSHOPVIEWER));
+        vscode.commands.registerCommand("teroshdl.view.tasks.logs", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORTDB));
 
         vscode.commands.registerCommand("teroshdl.view.tasks.stop", () => this.stop());
         vscode.commands.registerCommand("teroshdl.view.tasks.run", (item) => this.run(item));
@@ -265,10 +265,10 @@ export class Tasks_manager extends BaseView {
         return false;
     }
 
-    openReport(taskItem: element.Task, reportType: teroshdl2.project_manager.tool_common.e_reportType) {
+    async openReport(taskItem: element.Task, reportType: teroshdl2.project_manager.tool_common.e_reportType) {
         const selectedProject = this.project_manager.get_selected_project();
         const task = taskItem.taskDefinition.name;
-        const report = selectedProject.getArtifact(task, reportType);
+        const report = await selectedProject.getArtifact(task, reportType);
         if (reportType === teroshdl2.project_manager.tool_common.e_reportType.TECHNOLOGYMAPVIEWER) {
             vscode.window.showWarningMessage("Technology Map Viewer is not supported yet.");
             return;
@@ -298,6 +298,12 @@ export class Tasks_manager extends BaseView {
             }
             vscode.window.showTextDocument(vscode.Uri.file(report.path));
         }
+        if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY
+            && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.HTML) {
+            const content = report.content;
+            vscode.commands.executeCommand('teroshdl.openwebview', content);
+        }
+
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.LOG
             && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
             if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {

@@ -5,7 +5,7 @@ import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
     QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath,
-    getProjectInfo, getFilesFromProject, createProject, getQuartusPath, cleanProject,
+    getProjectInfo, getFilesFromProject, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
 import { e_config } from "../../../config/config_declaration";
@@ -70,7 +70,7 @@ export class QuartusProjectManager extends Project_manager {
         );
 
         const folderVersion = getVersionDirectory(basePath);
-        const newQuartusDatabaseStatusPath = path_lib.join(basePath, folderVersion, "legacy", "/1", "runlog.db");
+        const newQuartusDatabaseStatusPath = path_lib.join(basePath, folderVersion, "legacy", "1", "runlog.db");
         this.quartusDatabaseStatusPath = newQuartusDatabaseStatusPath;
 
         // Status watcher
@@ -312,7 +312,7 @@ export class QuartusProjectManager extends Project_manager {
         return exec_i;
     }
 
-    public getArtifact(taskType: e_taskType, reportType: e_reportType): t_test_artifact {
+    public async getArtifact(taskType: e_taskType, reportType: e_reportType): Promise<t_test_artifact> {
         if (reportType === e_reportType.TIMINGANALYZER) {
             const quartusBin = path_lib.join(getQuartusPath(this.get_config()), "quartus_staw");
             const command = `${quartusBin} ${this.get_name()} -c ${this.currentRevision}`;
@@ -342,17 +342,35 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.QUARTUS_TIMING]: "sta",
             [e_taskType.QUARTUS_COMPILEDESIGN]: "",
             [e_taskType.QUARTUS_IPGENERATION]: "",
-            [e_taskType.QUARTUS_EARLYTIMINGANALYSIS]: "sta",
+            [e_taskType.QUARTUS_EARLYTIMINGANALYSIS]: "synthesized.sta",
             [e_taskType.QUARTUS_FITTERIMPLEMENT]: "",
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {
-            const reportName = `${this.currentRevision}.${reportSufix[taskType]}.rpt`;
-            const reportPath = path_lib.join(get_directory(this.projectDiskPath), reportName);
+            // const reportName = `${this.currentRevision}.${reportSufix[taskType]}.rpt`;
+            // const reportPath = path_lib.join(get_directory(this.projectDiskPath), reportName);
 
+            // const artifact: t_test_artifact = {
+            //     name: "Report",
+            //     path: reportPath,
+            //     command: "",
+            //     artifact_type: e_artifact_type.SUMMARY,
+            //     element_type: e_element_type.TEXT_FILE,
+            //     content: undefined
+            // };
+
+            const basePath = path_lib.join(
+                get_directory(this.projectDiskPath), "qdb", "_compiler", this.currentRevision, "_flat",
+            );
+            const folderVersion = getVersionDirectory(basePath);
+            const reportDirectory = path_lib.join(basePath, folderVersion, "_all", "1");
+            const reportName = `report.${reportSufix[taskType]}.rdb`;
+
+            const reportPath = path_lib.join(reportDirectory, reportName);
+            
             const artifact: t_test_artifact = {
                 name: "Report",
-                path: reportPath,
+                path: await createRPTReportFromRDB(this.get_config(), reportPath),
                 command: "",
                 artifact_type: e_artifact_type.SUMMARY,
                 element_type: e_element_type.TEXT_FILE,
@@ -362,6 +380,7 @@ export class QuartusProjectManager extends Project_manager {
         }
 
         reportSufix[e_taskType.QUARTUS_IPGENERATION] = "ipg";
+        reportSufix[e_taskType.QUARTUS_EARLYTIMINGANALYSIS] =  "sta",
         reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORTDB && reportKeys.includes(taskType)) {
             const reportName = `${this.currentRevision}.${reportSufix[taskType]}.qmsgdb`;
@@ -381,5 +400,3 @@ export class QuartusProjectManager extends Project_manager {
     }
 
 }
-
-
