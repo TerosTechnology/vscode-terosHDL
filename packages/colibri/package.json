@@ -73,7 +73,8 @@
         "wavedrom": "3.3.0",
         "web-tree-sitter": "^0.20.7",
         "pyodide": "0.24.1",
-        "sql.js": "^1.9.0"
+        "sql.js": "^1.9.0",
+        "@yowasp/yosys": "^0.37.58-dev.635"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.21.0",
