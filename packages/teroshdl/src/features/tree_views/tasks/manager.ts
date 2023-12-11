@@ -22,7 +22,7 @@ import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as events from "events";
 import * as teroshdl2 from 'teroshdl2';
-import { Logger } from "../../../logger";
+import { Logger, debugLogger } from "../../../logger";
 import { RedTextDecorator } from "./element";
 import { ChildProcess } from "child_process";
 import * as shelljs from 'shelljs';
@@ -47,6 +47,7 @@ export class Tasks_manager extends BaseView {
     private latesRunTask: ChildProcess | undefined = undefined;
     private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined | string = undefined;
     private logView: LogView;
+    private statusBar: vscode.StatusBarItem | undefined = undefined;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -117,7 +118,7 @@ export class Tasks_manager extends BaseView {
         }
 
         this.state = e_VIEW_STATE.RUNNING;
-        const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+        this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
 
         try {
             const selectedProject = this.project_manager.get_selected_project();
@@ -138,11 +139,11 @@ export class Tasks_manager extends BaseView {
             // }
 
             const task = taskItem.taskDefinition.name;
-            statusBarItem.text = `$(sync~spin) Running Quartus task: ${task} ...`;
-            statusBarItem.show();
+            this.setStatusBarText(undefined);
+            this.statusBar.show();
 
             const exec_i = selectedProject.runTask(task, (result: teroshdl2.process.common.p_result) => {
-                statusBarItem.hide();
+                this.hideStatusBar();
                 this.state = e_VIEW_STATE.IDLE;
                 // Refresh view to set the finish decorators
                 this.refresh_tree();
@@ -168,7 +169,7 @@ export class Tasks_manager extends BaseView {
         catch (error) {
             // Refresh view to set the finish decorators
             this.refresh_tree();
-            statusBarItem.hide();
+            this.hideStatusBar();
             this.state = e_VIEW_STATE.IDLE;
         }
     }
@@ -213,13 +214,13 @@ export class Tasks_manager extends BaseView {
         if (result === 'Yes') {
             this.state = e_VIEW_STATE.RUNNING;
 
-            const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-            statusBarItem.text = `$(sync~spin) Running Quartus task: Clean Project...`;
-            statusBarItem.show();
+            this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+            this.setStatusBarText("Clean Project");
+            this.statusBar.show();
             try {
                 const selectedProject = this.project_manager.get_selected_project();
                 const exec_i = selectedProject.cleallAllProject((result: teroshdl2.process.common.p_result) => {
-                    statusBarItem.hide();
+                    this.hideStatusBar();
                     this.state = e_VIEW_STATE.IDLE;
                     // Refresh view to set the finish decorators
                     this.refresh_tree();
@@ -243,7 +244,7 @@ export class Tasks_manager extends BaseView {
             }
             catch (error) { }
             finally {
-                statusBarItem.hide();
+                this.hideStatusBar();
                 this.state = e_VIEW_STATE.IDLE;
                 // Refresh view to set the finish decorators
                 this.refresh_tree();
@@ -290,7 +291,9 @@ export class Tasks_manager extends BaseView {
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY
             && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.TEXT_FILE) {
             if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {
-                vscode.window.showWarningMessage("The report database does not exist.");
+                debugLogger.show();
+                debugLogger.warn(`The report ${report.path} does not exist.`);
+                vscode.window.showWarningMessage("The report does not exist.");
                 return;
             }
             vscode.window.showTextDocument(vscode.Uri.file(report.path));
@@ -298,6 +301,8 @@ export class Tasks_manager extends BaseView {
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.LOG
             && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
             if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {
+                debugLogger.show();
+                debugLogger.warn(`The report ${report.path} does not exist.`);
                 vscode.window.showWarningMessage("The report database does not exist.");
                 return;
             }
@@ -305,7 +310,29 @@ export class Tasks_manager extends BaseView {
         }
     }
 
+    setStatusBarText(text: string | undefined) {
+        if (this.statusBar !== undefined) {
+            if (text === undefined) {
+                this.statusBar.text = `$(sync~spin) Running Quartus task...`;
+            }
+            else {
+                this.statusBar.text = `$(sync~spin) Running Quartus task: ${text}...`;
+            }
+        }
+    }
+
+    hideStatusBar() {
+        if (this.statusBar !== undefined) {
+            this.statusBar.hide();
+        }
+    }
+
     refresh_tree() {
+        const selected_project = this.project_manager.get_selected_project();
+        const currentTask = selected_project.getTaskStatus().currentTask;
+        if (currentTask !== undefined && this.statusBar !== undefined) {
+            this.setStatusBarText(currentTask);
+        }
         this.tree.refresh();
     }
 }

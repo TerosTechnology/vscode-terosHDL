@@ -193,7 +193,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     async refresh(): Promise<void> {
         try {
             const selected_project = this.project_manager.get_selected_project();
-            const groupTaskList = selected_project.getBuildSteps();
+            const groupTaskList = selected_project.getTaskStatus();
 
             const projectFolder = teroshdl2.utils.file.get_directory(selected_project.projectDiskPath);
 
@@ -206,7 +206,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
                 return tasks;
             }
 
-            const taskView = createTasks(groupTaskList);
+            const taskView = createTasks(groupTaskList.taskList);
 
 
             this.data = taskView;
