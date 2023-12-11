@@ -301,6 +301,10 @@
                     levelClass = 'log-warning log-level';
                     symbol = '⚠️';
                     break;
+                case 'Critical Warning':
+                    levelClass = 'log-warning log-level';
+                    symbol = '⚠️';
+                    break;
                 case 'Info':
                     levelClass = 'log-info log-level';
                     symbol = 'ℹ️';
@@ -370,6 +374,7 @@
             }
             if (document.getElementById('checkbox-warning').checked) {
                 logLevelList.push('warning');
+                logLevelList.push('critical warning');
             }
             if (document.getElementById('checkbox-info').checked) {
                 logLevelList.push('info');
