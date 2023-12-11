@@ -444,3 +444,46 @@ export function cleanProject(projectName: string, config: e_config, projectPath:
     });
     return exec_i;
 }
+
+export async function createHTMLReportFromRDB(config: e_config, rdbPath: string): Promise<string> {
+    const tmpFile = process_utils.create_temp_file("");
+    const htmlFile = tmpFile + ".html";
+
+    let htmlContent = "";
+
+    try {
+        const opt_exec = { cwd: path_lib.dirname(rdbPath) };
+        const p = new Process();
+
+        const binPath = path_lib.join(getQuartusPath(config), "rdb_convert");
+        const cmd = `${binPath} --input ${rdbPath} --output ${htmlFile}`;
+
+        const result = await p.exec_wait(cmd, opt_exec);
+
+        if (result.successful) {
+            htmlContent = file_utils.read_file_sync(htmlFile);
+        }
+
+    } catch (error) { /* empty */ }
+    finally {
+        file_utils.remove_file(tmpFile);
+        file_utils.remove_file(htmlFile);
+    }
+    return htmlContent;
+}
+
+export async function createRPTReportFromRDB(config: e_config, rdbPath: string): Promise<string> {
+    const rptFile = rdbPath + ".rpt";
+    file_utils.remove_file(rptFile);
+
+    try {
+        const opt_exec = { cwd: path_lib.dirname(rdbPath) };
+        const p = new Process();
+
+        const binPath = path_lib.join(getQuartusPath(config), "rdb_convert");
+        const cmd = `${binPath} --input ${rdbPath} --output ${rptFile}`;
+
+        await p.exec_wait(cmd, opt_exec);
+    } catch (error) { /* empty */ }
+    return rptFile;
+}

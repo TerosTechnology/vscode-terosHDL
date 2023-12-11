@@ -67,7 +67,8 @@ export function getDefaultTaskList(): t_taskRep[] {
                             "executionType": e_taskExecutionType.COMPLEXCOMMAND,
                             "reports": [
                                 e_reportType.REPORTDB,
-                                e_reportType.REPORT, e_reportType.TIMINGANALYZER,
+                                e_reportType.REPORT, 
+                                e_reportType.TIMINGANALYZER,
                                 // e_reportType.TECHNOLOGYMAPVIEWER,
                             ],
                             "status": e_taskState.IDLE,
@@ -82,6 +83,7 @@ export function getDefaultTaskList(): t_taskRep[] {
                     "label": "Not run during full compilation",
                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
                     "reports": [
+                        e_reportType.REPORT,
                         e_reportType.REPORTDB,
                         e_reportType.TIMINGANALYZER,
                     ],
