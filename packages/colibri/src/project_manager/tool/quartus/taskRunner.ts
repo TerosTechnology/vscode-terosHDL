@@ -65,8 +65,6 @@ export function runTask(taskType: e_taskType, quartusDir: string,
             [
                 `${binIP} --dni ${projectName} -c ${revisionName} --run_default_mode_op`,
                 `${binSyn} --dni --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
-                `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --plan --place`,
-                `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --route`,
                 `${binSTA} ${projectName} -c ${revisionName} --post_syn`,
             ],
         [e_taskType.QUARTUS_FITTER]:
@@ -89,7 +87,6 @@ export function runTask(taskType: e_taskType, quartusDir: string,
             ],
         [e_taskType.QUARTUS_PLACE]:
             [
-                `${binIP} --dni ${projectName} -c ${revisionName} --run_default_mode_op`,
                 `${binIP} --dni ${projectName} -c ${revisionName} --run_default_mode_op`,
                 `${binSyn} --dni --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
                 `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --plan --place`,

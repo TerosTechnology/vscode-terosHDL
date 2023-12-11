@@ -22,11 +22,11 @@ import * as vscode from "vscode";
 export class Logger {
     private output_channel: vscode.LogOutputChannel;
 
-    constructor(name = ""){
-        if (name === ""){
+    constructor(name = "") {
+        if (name === "") {
             name = 'TerosHDL: Tool manager';
         }
-        this.output_channel = vscode.window.createOutputChannel(name, {log: true});
+        this.output_channel = vscode.window.createOutputChannel(name, { log: true });
     }
 
     clear() {
@@ -47,29 +47,34 @@ export class Logger {
         }
     }
 
-    log(msg: string){
+    log(msg: string) {
         this.info(msg);
     }
 
-    debug(msg: string, enable_show = false){
+    debug(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.debug(msg);
+        this.output_channel.debug(this.replaceFilePath(msg));
     }
-    warn(msg: string, enable_show = false){
+    warn(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.warn(msg);
+        this.output_channel.warn(this.replaceFilePath(msg));
     }
-    info(msg: string, enable_show = false){
+    info(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.info(msg);
+        this.output_channel.info(this.replaceFilePath(msg));
     }
-    trace(msg: string, enable_show = false){
+    trace(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.trace(msg);
+        this.output_channel.trace(this.replaceFilePath(msg));
     }
-    error(msg: string, enable_show = false){
+    error(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.error(msg);
+        this.output_channel.error(this.replaceFilePath(msg));
+    }
+    replaceFilePath(input: string): string {
+        return input;
+        const regex = /file:? ?"?([\/\w.-]+(\s[\/\w.-]+)*)"?\s?/ig;
+        return input.replace(regex, 'file://$1');
     }
 }
 
