@@ -83,7 +83,6 @@ export function getDefaultTaskList(): t_taskRep[] {
                     "executionType": e_taskExecutionType.COMPLEXCOMMAND,
                     "reports": [
                         e_reportType.REPORTDB,
-                        e_reportType.REPORT, 
                         e_reportType.TIMINGANALYZER,
                     ],
                     "icon": e_iconType.TIME,
