@@ -246,7 +246,7 @@ export class QuartusProjectManager extends Project_manager {
 
         const config = super.get_config();
         try {
-            await removeFilesFromProject(config, this.projectDiskPath, fileListToRemove,  this.emitterProject);
+            await removeFilesFromProject(config, this.projectDiskPath, fileListToRemove, this.emitterProject);
         } catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -278,8 +278,11 @@ export class QuartusProjectManager extends Project_manager {
         return super.delete_file(name, logical_name);
     }
 
-    public getBuildSteps(): t_taskRep[] {
-        return this.taskStateManager.getTaskList();
+    public getTaskStatus(): { "taskList": t_taskRep[], "currentTask": e_taskType | undefined } {
+        return {
+            "taskList": this.taskStateManager.getTaskList(),
+            "currentTask": this.taskStateManager.getCurrentTask()
+        };
     }
 
     public async getIpCatalog(): Promise<t_ipCatalogRep[]> {
@@ -295,6 +298,7 @@ export class QuartusProjectManager extends Project_manager {
     public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
         const config = super.get_config();
 
+        this.taskStateManager.setCurrentTask(undefined);
         const quartusDir = getQuartusPath(config);
         const projectDir = get_directory(this.projectDiskPath);
         return runTask(taskType, quartusDir, projectDir, this.get_name(), this.currentRevision,
@@ -338,7 +342,7 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.QUARTUS_TIMING]: "sta",
             [e_taskType.QUARTUS_COMPILEDESIGN]: "",
             [e_taskType.QUARTUS_IPGENERATION]: "",
-            [e_taskType.QUARTUS_EARLYTIMINGANALYSIS]: "",
+            [e_taskType.QUARTUS_EARLYTIMINGANALYSIS]: "sta",
             [e_taskType.QUARTUS_FITTERIMPLEMENT]: "",
         };
         let reportKeys = Object.keys(reportSufix);

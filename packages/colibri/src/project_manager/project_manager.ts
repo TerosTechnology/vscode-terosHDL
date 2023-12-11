@@ -544,8 +544,8 @@ export class Project_manager extends ConfigManager {
         return await this.tools_manager.get_test_list(this.get_project_definition());
     }
 
-    public getBuildSteps(): t_taskRep[] {
-        return [];
+    public getTaskStatus(): { "taskList": t_taskRep[], "currentTask": e_taskType | undefined } {
+        return { "taskList": [], "currentTask": undefined };
     }
 
     public async getIpCatalog(): Promise<t_ipCatalogRep[]> {

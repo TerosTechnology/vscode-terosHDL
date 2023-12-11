@@ -22,9 +22,18 @@ import { e_taskState, e_taskType, t_taskRep } from "./common";
 export class TaskStateManager {
 
     private taskList: t_taskRep[] = [];
+    private currentTask: e_taskType | undefined = undefined;
 
     constructor(taskList: t_taskRep[]) {
         this.taskList = taskList;
+    }
+
+    setCurrentTask(task: e_taskType | undefined) {
+        this.currentTask = task;
+    }
+
+    getCurrentTask(): e_taskType | undefined {
+        return this.currentTask;
     }
 
     updateTask(taskType: e_taskType, status: e_taskState, percent: number| undefined, success: boolean | undefined, 

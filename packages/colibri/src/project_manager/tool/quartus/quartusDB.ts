@@ -10,7 +10,7 @@ const taskNameInBBDD: Record<string, e_taskType> = {
     "Analysis & Synthesis": e_taskType.QUARTUS_ANALYSISSYNTHESIS,
     "Analysis & Elaboration": e_taskType.QUARTUS_ANALYSISELABORATION,
     "Synthesis": e_taskType.QUARTUS_SYNTHESIS,
-    "none1": e_taskType.QUARTUS_EARLYTIMINGANALYSIS,
+    "Early Timing Analysis": e_taskType.QUARTUS_EARLYTIMINGANALYSIS,
     "Fitter": e_taskType.QUARTUS_FITTER,
     "Fitter (Implement)": e_taskType.QUARTUS_FITTERIMPLEMENT,
     "Plan": e_taskType.QUARTUS_PLAN,
@@ -71,6 +71,12 @@ export async function setStatus(taskManager: TaskStateManager, bbddPath: string,
                 const name = row.name;
                 if (name in taskNameInBBDD) {
                     const taskType = taskNameInBBDD[name];
+
+                    if (row.status === "running" && parseInt(row.percent) > 0
+                        && parseInt(row.errors) === 0 && parseInt(row.success) === 0) {
+                        taskManager.setCurrentTask(taskNameInBBDD[row.name]);
+                    }
+
                     if (!deleteRunning || row.status !== "running") {
                         if (taskToClean.includes(taskType)) {
                             taskToClean.splice(taskToClean.indexOf(taskType), 1);
