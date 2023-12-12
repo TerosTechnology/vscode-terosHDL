@@ -19,6 +19,7 @@ import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
+    RevealOutputChannelOn
 } from 'vscode-languageclient/node';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
@@ -64,6 +65,7 @@ export class Rusthdl_lsp {
         // Options to control the language client
         let clientOptions: LanguageClientOptions = {
             documentSelector: [{ scheme: 'file', language: 'vhdl' }],
+            revealOutputChannelOn: RevealOutputChannelOn.Never,
         };
 
         // Create the language client

@@ -110,6 +110,11 @@ export class Tree_view_manager {
             teroshdl2.project_manager.projectEmitter.e_event.STDOUT_INFO,
             teroshdl2.project_manager.projectEmitter.e_event.STDOUT_WARNING,
             teroshdl2.project_manager.projectEmitter.e_event.STDOUT_ERROR,
+            teroshdl2.project_manager.projectEmitter.e_event.ADD_PROJECT,
+        ];
+
+        const allowedRefreshEventList = [
+            teroshdl2.project_manager.projectEmitter.e_event.SELECT_PROJECT,
         ];
 
         if (refuseRefreshEventList.includes(eventType)) {
@@ -117,8 +122,11 @@ export class Tree_view_manager {
         }
 
         try {
-            multi_manager.get_selected_project().save_toml(path_lib.join(os.homedir(), ".vhdl_ls.toml"));
-            vscode.commands.executeCommand("teroshdl.vhdlls.restart");
+            const selectedProject = multi_manager.get_selected_project().get_name();
+            if (selectedProject === projectName || allowedRefreshEventList.includes(eventType)) {
+                multi_manager.get_selected_project().save_toml(path_lib.join(os.homedir(), ".vhdl_ls.toml"));
+                vscode.commands.executeCommand("teroshdl.vhdlls.restart");
+            }
         } catch (error) {
             return;
         }
