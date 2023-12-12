@@ -27,11 +27,11 @@
                 },
                 {
                     "id": "teroshdl-view-source",
-                    "name": "Sources"
+                    "name": "Files"
                 },
                 {
                     "id": "teroshdl-view-dependency",
-                    "name": "Dependencies tree"
+                    "name": "Hierarchy"
                 },
                 {
                     "id": "teroshdl-view-watcher",
