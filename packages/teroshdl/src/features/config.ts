@@ -67,9 +67,25 @@ export class Config_manager {
         vscode.commands.registerCommand(activation_command + ".project",
             async (project, tabToOpen) => await this.createWebviewProject(project, tabToOpen));
 
-
+        vscode.commands.registerCommand("teroshdl.configuration.refresh", () => this.refresh());
         vscode.commands.registerCommand("teroshdl.view.project.export_configuration", () => this.exportConfig());
         vscode.commands.registerCommand("teroshdl.view.project.load_configuration", () => this.loadConfigFromFile());
+    }
+
+    /**
+     * Refreshes the configuration.
+     */
+    public refresh() {
+        if (this.currentConfigIsGlobal) {
+            this.currentConfig = teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config();
+        }
+        else {
+            const project = getProjectByName(this.currentProjectName, this.multiProjectManager);
+            if (project !== undefined) {
+                this.currentConfig = project.get_config();
+            }
+        }
+        this.updateWebConfig("");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,7 +289,7 @@ export class Config_manager {
         else {
             const project = getProjectByName(this.currentProjectName, this.multiProjectManager);
             if (project !== undefined) {
-                project.set_config(config);
+                await project.set_config(config);
                 this.multiProjectManager.save();
                 this.currentConfig = project.get_config();
             }

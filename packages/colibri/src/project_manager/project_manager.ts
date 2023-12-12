@@ -77,7 +77,7 @@ export class Project_manager extends ConfigManager {
     protected emitterProject: ProjectEmitter;
     /** Linter */
     private linter = new Linter();
-    public taskStateManager: TaskStateManager = new TaskStateManager([]);
+    private _taskStateManager: TaskStateManager = new TaskStateManager([]);
 
     constructor(name: string, emitterProject: ProjectEmitter) {
         super(get_undefined_config());
@@ -108,6 +108,14 @@ export class Project_manager extends ConfigManager {
                 }
             });
         }), emitterProject);
+    }
+
+    set taskStateManager(taskStateManager: TaskStateManager) {
+        this._taskStateManager = taskStateManager;
+    }
+
+    get taskStateManager(): TaskStateManager {
+        return this._taskStateManager;
     }
 
     set projectDiskPath(projectDiskPath: string) {
@@ -193,7 +201,7 @@ export class Project_manager extends ConfigManager {
         });
 
         if (jsonContent?.["configuration"] !== undefined) {
-            prj.set_config(get_config_from_json(jsonContent?.["configuration"]));
+            await prj.set_config(get_config_from_json(jsonContent?.["configuration"]));
         }
 
         return prj;
@@ -401,7 +409,7 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // Config
     ////////////////////////////////////////////////////////////////////////////
-    public set_config(config: e_config): void {
+    public async set_config(config: e_config): Promise<void> {
         super.set_config(diff_config(config, GlobalConfigManager.getInstance().get_config()));
         this.emitterProject.emitEvent(this.name, e_event.SAVE_SETTINGS);
     }
@@ -504,6 +512,10 @@ export class Project_manager extends ConfigManager {
                 library.name = 'work';
             }
             toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
+        }
+
+        if (libraries.length === 0) {
+            toml += "work.files = []\n\n";
         }
 
         return toml;

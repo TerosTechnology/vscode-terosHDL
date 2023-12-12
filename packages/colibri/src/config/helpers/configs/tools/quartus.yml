@@ -2,35 +2,39 @@ installation_path:
   description: "Installation path:"
   type: string
   value: ""
+
 family:
   description: "FPGA family (e.g. Cyclone V)."
   type: string
   value: ""
+  disabled: true
+
 device:
   description: "FPGA device (e.g. 5CSXFC6D6F31C8ES)."
   type: string
   value: ""
-cable:
-  description: "Specifies the FPGA’s JTAG programming cable. Use the tool jtagconfig to determine the available cables."
-  type: string
-  value: ""
-board_device_index:
-  description: "Specifies the FPGA’s device number in the JTAG chain. The device index specifies the device where the flash programmer looks for the Nios® II JTAG debug module. JTAG devices are numbered relative to the JTAG chain, starting at 1. Use the tool jtagconfig to determine the index."
-  type: string
-  value: ""
-pnr:
-  description: "P&R tool. one (to just run synthesis)."
+  disabled: true
+
+optimization_mode:
+  description: "Specifies your overall optimization focus for implementation of your synthesized logic. By default, the Compiler uses a balanced mode respecting the design's timing constraints. Use alternate modes to specify a different optimization focus. High effort modes enable additional optimizations that increase compilation time. Aggressive modes may increase compilation time and may also be detrimental to other optimizations."
   type: select
   options:
-    default: "Default"
-    dse: "Run Design Space Explorer"
-    none: "Run synthesis"
-  value: "none"
-dse_options:
-  description: "Command-line options for Design Space Explorer."
-  type: array
-  value: []
-quartus_options:
-  description: "Extra command-line options for Quartus."
-  type: array
-  value: []
+    BALANCED: "Balanced (normal flow)"
+    HIGH_PERFORMANCE_EFFORT: "High Performance Effort"
+    HIGH_PERFORMANCE_EFFORT_WITH_MAXIMUM_PLACEMENT_EFFORT: "High Performance with Maximum Placement Effort"
+    HIGH_PERFORMANCE_WITH_AGGRESSIVE_POWER_EFFORT: "High Performance with Aggressive Power Effort"
+    SUPERIOR_PERFORMANCE: "Superior Performance (adds synthesis optimization for speed)"
+    SUPERIOR_PERFORMANCE_WITH_MAXIMUM_PLACEMENT_EFFORT: "Superior Performance with Maximum Placement Effort"
+    AGGRESSIVE_AREA: "Aggressive Area (reduces performance)"
+    HIGH_PLACEMENT_ROUTABILITY_EFFORT: "High Placement Routability Effort"
+    HIGH_PACKING_ROUTABILITY_EFFORT: "High Packing Routability Effort"
+    OPTIMIZE_NETLIST_FOR_ROUTABILITY: "Optimize Netlist for Routability"
+    AGGRESSIVE_POWER: "Aggressive Power (reduces performance)"
+    AGGRESSIVE_COMPILE_TIME: "Agressive Compile Time (reduces performance)"
+    FAST_FUNCTIONAL_TEST: "Fast Functional Test (reduces performance)"
+  value: "BALANCED"
+
+allow_register_retiming:
+  description: "Allow Register Retiming."
+  type: boolean
+  value: true

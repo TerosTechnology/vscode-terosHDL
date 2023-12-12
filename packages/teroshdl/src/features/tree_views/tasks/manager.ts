@@ -48,11 +48,13 @@ export class Tasks_manager extends BaseView {
     private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined | string = undefined;
     private logView: LogView;
     private statusBar: vscode.StatusBarItem | undefined = undefined;
+    private emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logger: Logger, logView: LogView) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logger: Logger, logView: LogView,
+        emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter) {
 
         super(e_viewType.TASKS);
 
@@ -62,6 +64,7 @@ export class Tasks_manager extends BaseView {
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
         this.logView = logView;
+        this.emitterProject = emitterProject;
 
         const provider = new RedTextDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
@@ -179,24 +182,27 @@ export class Tasks_manager extends BaseView {
         const config = selectedProject.get_config();
         const family = config.tools.quartus.family
         const device = config.tools.quartus.device;
-        vscode.window.showInformationMessage(`Family: ${family}\nDevice: ${device}`);
+        // vscode.window.showInformationMessage(`Family: ${family}\nDevice: ${device}`);
 
-        // const msg = `Family: ${family}\nDevice: ${device}\n. Do you want to change it?`;
-        // const result = await vscode.window.showInformationMessage(
-        //     msg,
-        //     'Yes',
-        //     'No'
-        // );
-        // if (result === 'No') {
-        //     return;
-        // }
+        const msg = `Family: ${family}\nDevice: ${device}\n. Do you want to change it?`;
+        const result = await vscode.window.showInformationMessage(
+            msg,
+            'Yes',
+            'No'
+        );
+        if (result === 'No') {
+            return;
+        }
 
-        // const deviceFamily = await getFamilyDeviceFromQuartusProject(this.project_manager);
-        // if (deviceFamily !== undefined) {
-        //     config.tools.quartus.family = deviceFamily.family;
-        //     config.tools.quartus.device = deviceFamily.device;
-        //     selectedProject.set_config(config);
-        // }
+        const deviceFamily = await getFamilyDeviceFromQuartusProject(this.project_manager, this.emitterProject);
+        if (deviceFamily !== undefined &&
+            deviceFamily.family !== "" && deviceFamily.device !== ""
+            && deviceFamily.family !== undefined && deviceFamily.device !== undefined &&
+            deviceFamily.family !== family && deviceFamily.device !== device) {
+            config.tools.quartus.family = deviceFamily.family;
+            config.tools.quartus.device = deviceFamily.device;
+            selectedProject.set_config(config);
+        }
     }
 
     async clean() {

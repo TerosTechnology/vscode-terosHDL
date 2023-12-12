@@ -1,6 +1,6 @@
 // This code only can be used for Quartus boards
 
-import { e_config } from "../../../config/config_declaration";
+import { e_config, e_tools_quartus_optimization_mode } from "../../../config/config_declaration";
 import { p_result } from "../../../process/common";
 import { t_board_list, t_loader_action_result } from "../common";
 import * as process_utils from "../../../process/utils";
@@ -157,7 +157,8 @@ async function executeQuartusTcl(config: e_config, tcl_file: string, args: strin
 export async function getProjectInfo(config: e_config, projectPath: string, emitterProject: ProjectEmitter)
     : Promise<{
         name: string, currentRevision: string, topEntity: string, revisionList: string[],
-        family: string, part: string
+        family: string, part: string,
+        optimization_mode: e_tools_quartus_optimization_mode, allow_register_retiming: boolean
     }> {
 
     const args = `"${projectPath}"`;
@@ -172,11 +173,15 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         revision_list: [""],
         family: "",
         part: "",
+        optimization_mode: e_tools_quartus_optimization_mode.BALANCED,
+        allow_register_retiming: false,
     };
 
     if (!cmd_result.result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
+
+    let optimization_mode = "";
 
     try {
         const line_split = cmd_result.csv_content.trim().split(/\r\n|\n|\r/);
@@ -186,12 +191,14 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
 
         // General info
         const data_0 = line_split[0].split(',');
-        if (data_0.length === 5) {
+        if (data_0.length === 7) {
             result.prj_name = data_0[0].trim();
             result.prj_revision = data_0[1].trim();
             result.prj_top_entity = data_0[2].trim();
             result.family = data_0[3].trim();
             result.part = data_0[4].trim();
+            optimization_mode = data_0[5].trim().replace(/ /g, "_");
+            result.allow_register_retiming = data_0[6].trim() === "ON" ? true : false;
         } else {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -205,6 +212,17 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         throw new QuartusExecutionError("Error in Quartus execution");
     }
 
+    for (const key in e_tools_quartus_optimization_mode) {
+        if (e_tools_quartus_optimization_mode[key as keyof typeof e_tools_quartus_optimization_mode]
+            === optimization_mode) {
+
+            result.optimization_mode = e_tools_quartus_optimization_mode[
+                key as keyof typeof e_tools_quartus_optimization_mode
+            ];
+            break;
+        }
+    }
+
     const projectInfo = {
         name: result.prj_name,
         currentRevision: result.prj_revision,
@@ -212,6 +230,8 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         revisionList: result.revision_list,
         family: result.family,
         part: result.part,
+        optimization_mode: result.optimization_mode,
+        allow_register_retiming: result.allow_register_retiming,
     };
     return projectInfo;
 }
@@ -295,7 +315,8 @@ export async function executeCmdListQuartusProject(config: e_config, projectPath
     emitterProject: ProjectEmitter): Promise<t_loader_action_result> {
 
     const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl.nj'));
-    const templateRender = nunjucks.renderString(templateContent, { "cmd_list": cmdList });
+    const templateRender = nunjucks.renderString(
+        templateContent, { "cmd_list": cmdList }).replace(/&quot;/g, "\"");
 
     // Create temp file
     const tclFile = process_utils.create_temp_file(templateRender);
@@ -404,18 +425,29 @@ export async function createProject(config: e_config, projectDirectory: string, 
  * @param projectPath Path to Quartus project.
  * @param topLevelPath Top level path.
 **/
-export async function setTopLevelPath(config: e_config, projectPath: string, topLevelPath: string): Promise<void> {
+export async function setTopLevelPath(config: e_config, projectPath: string, topLevelPath: string,
+    emitterProject: ProjectEmitter): Promise<void> {
     const entityName = get_toplevel_from_path(topLevelPath);
     const cmd = `set_global_assignment -name TOP_LEVEL_ENTITY ${entityName}`;
     if (entityName === "") {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
-    const result = await executeCmdListQuartusProject(config, projectPath, [cmd], new ProjectEmitter());
+    const result = await executeCmdListQuartusProject(config, projectPath, [cmd], emitterProject);
     if (!result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
 }
 
+/**
+ * Cleans the project by executing Quartus' project_clean command.
+ * 
+ * @param projectName The name of the project.
+ * @param config The configuration object.
+ * @param projectPath The path to the project.
+ * @param emitter The project emitter object.
+ * @param callback The callback function to be called with the result.
+ * @returns The ChildProcess object representing the execution of the command.
+ */
 export function cleanProject(projectName: string, config: e_config, projectPath: string,
     emitter: ProjectEmitter, callback: (result: p_result) => void): ChildProcess {
 
@@ -445,6 +477,13 @@ export function cleanProject(projectName: string, config: e_config, projectPath:
     return exec_i;
 }
 
+/**
+ * Creates an HTML report from an RDB file.
+ * 
+ * @param config The configuration object.
+ * @param rdbPath The path to the RDB file.
+ * @returns A promise that resolves to the HTML content of the report.
+ */
 export async function createHTMLReportFromRDB(config: e_config, rdbPath: string): Promise<string> {
     const tmpFile = process_utils.create_temp_file("");
     const htmlFile = tmpFile + ".html";
@@ -472,6 +511,13 @@ export async function createHTMLReportFromRDB(config: e_config, rdbPath: string)
     return htmlContent;
 }
 
+/**
+ * Creates an RPT report file from an RDB file.
+ * 
+ * @param config The configuration object.
+ * @param rdbPath The path to the RDB file.
+ * @returns A promise that resolves to the path of the created RPT report file.
+ */
 export async function createRPTReportFromRDB(config: e_config, rdbPath: string): Promise<string> {
     const rptFile = rdbPath + ".rpt";
     file_utils.remove_file(rptFile);
@@ -486,4 +532,32 @@ export async function createRPTReportFromRDB(config: e_config, rdbPath: string):
         await p.exec_wait(cmd, opt_exec);
     } catch (error) { /* empty */ }
     return rptFile;
+}
+
+export async function setConfigToProject(config: e_config, projectPath: string,
+    emitterProject: ProjectEmitter): Promise<void> {
+
+    const cmdList: string[] = [];
+
+    // Allow Register Retiming
+    const allowRegisterRetiming = config.tools.quartus.allow_register_retiming;
+    let allow = "OFF";
+    if (allowRegisterRetiming) {
+        allow = "ON";
+    }
+    cmdList.push(`set_global_assignment -name ALLOW_REGISTER_RETIMING ${allow}`);
+
+    // Optimization mode
+    const optimizationMode = config.tools.quartus.optimization_mode.toLocaleUpperCase().replace(/_/g, " ");
+    cmdList.push(`set_global_assignment -name OPTIMIZATION_MODE ${optimizationMode}`);
+
+    // Family and device
+    const family = config.tools.quartus.family;
+    const device = config.tools.quartus.device;
+    // eslint-disable-next-line no-useless-escape
+    cmdList.push(`set_global_assignment -name FAMILY "${family}"`);
+    cmdList.push(`set_global_assignment -name DEVICE ${device}`);
+
+    // Optimization effort
+    await executeCmdListQuartusProject(config, projectPath, cmdList, emitterProject);
 }

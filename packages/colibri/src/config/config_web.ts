@@ -299,6 +299,7 @@ export const WEB_CONFIG = `
                     <div class="collapse" id="Tools">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a id="btn-tools-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
+                            <li><a id="btn-tools-quartus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Intel@ Quartus@ Prime</a></li>
                             <li><a id="btn-tools-osvvm" href="#" class="link-dark d-inline-flex text-decoration-none rounded">OSVVM</a></li>
                             <li><a id="btn-tools-ascenlint" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Ascenlint</a></li>
                             <li><a id="btn-tools-cocotb" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Cocotb</a></li>
@@ -310,7 +311,6 @@ export const WEB_CONFIG = `
                             <li><a id="btn-tools-isem" href="#" class="link-dark d-inline-flex text-decoration-none rounded">ISIM</a></li>
                             <li><a id="btn-tools-modelsim" href="#" class="link-dark d-inline-flex text-decoration-none rounded">ModelSim</a></li>
                             <li><a id="btn-tools-morty" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Morty</a></li>
-                            <li><a id="btn-tools-quartus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Quartus</a></li>
                             <li><a id="btn-tools-radiant" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Radiant</a></li>
                             <li><a id="btn-tools-rivierapro" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Rivierapro</a></li>
                             <li><a id="btn-tools-spyglass" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Spyglass</a></li>
@@ -351,7 +351,7 @@ export const WEB_CONFIG = `
                 Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong>
                 <span class="markConfig badge bg-secondary" id="mark_general-general-pypath"></span>
               </label>
-              <input class="form-control" id="general-general-pypath" rows="3"  value=""></input>
+                <input class="form-control" id="general-general-pypath" rows="3"  value=""></input>
             </div>
           
           
@@ -362,7 +362,7 @@ export const WEB_CONFIG = `
                 Make binary directory (e.g.: /usr/bin). Empty if you want to use the system path.
                 <span class="markConfig badge bg-secondary" id="mark_general-general-makepath"></span>
               </label>
-              <input class="form-control" id="general-general-makepath" rows="3"  value=""></input>
+                <input class="form-control" id="general-general-makepath" rows="3"  value=""></input>
             </div>
           
           
@@ -443,7 +443,7 @@ export const WEB_CONFIG = `
                 Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code>
                 <span class="markConfig badge bg-secondary" id="mark_documentation-general-symbol_vhdl"></span>
               </label>
-              <input class="form-control" id="documentation-general-symbol_vhdl" rows="3"  value="!"></input>
+                <input class="form-control" id="documentation-general-symbol_vhdl" rows="3"  value="!"></input>
             </div>
           
           
@@ -454,7 +454,7 @@ export const WEB_CONFIG = `
                 Special Verilog symbol at the begin of the comment to extract documentation. Example: <code>//! Code comment</code>
                 <span class="markConfig badge bg-secondary" id="mark_documentation-general-symbol_verilog"></span>
               </label>
-              <input class="form-control" id="documentation-general-symbol_verilog" rows="3"  value="!"></input>
+                <input class="form-control" id="documentation-general-symbol_verilog" rows="3"  value="!"></input>
             </div>
           
           
@@ -624,7 +624,7 @@ export const WEB_CONFIG = `
                 Magic config file path
                 <span class="markConfig badge bg-secondary" id="mark_documentation-general-magic_config_path"></span>
               </label>
-              <input class="form-control" id="documentation-general-magic_config_path" rows="3"  value=""></input>
+                <input class="form-control" id="documentation-general-magic_config_path" rows="3"  value=""></input>
             </div>
           
           
@@ -887,7 +887,7 @@ export const WEB_CONFIG = `
                 Extra command line arguments passed to the Verible tool
                 <span class="markConfig badge bg-secondary" id="mark_formatter-verible-format_args"></span>
               </label>
-              <input class="form-control" id="formatter-verible-format_args" rows="3"  value=""></input>
+                <input class="form-control" id="formatter-verible-format_args" rows="3"  value=""></input>
             </div>
           
           
@@ -943,7 +943,7 @@ export const WEB_CONFIG = `
                 Indentation.
                 <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-indentation"></span>
               </label>
-              <input class="form-control" id="formatter-standalone-indentation" rows="3"  value="  "></input>
+                <input class="form-control" id="formatter-standalone-indentation" rows="3"  value="  "></input>
             </div>
           
           
@@ -1111,7 +1111,7 @@ export const WEB_CONFIG = `
                 JSON or YAML configuration file.
                 <span class="markConfig badge bg-secondary" id="mark_formatter-svg-configuration"></span>
               </label>
-              <input class="form-control" id="formatter-svg-configuration" rows="3"  value=""></input>
+                <input class="form-control" id="formatter-svg-configuration" rows="3"  value=""></input>
             </div>
           
           
@@ -1133,7 +1133,7 @@ export const WEB_CONFIG = `
                 Additional arguments to pass to the VSG command.
                 <span class="markConfig badge bg-secondary" id="mark_formatter-svg-aditional_arguments"></span>
               </label>
-              <input class="form-control" id="formatter-svg-aditional_arguments" rows="3"  value=""></input>
+                <input class="form-control" id="formatter-svg-aditional_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1240,7 +1240,7 @@ export const WEB_CONFIG = `
                 Arguments.
                 <span class="markConfig badge bg-secondary" id="mark_linter-ghdl-arguments"></span>
               </label>
-              <input class="form-control" id="linter-ghdl-arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-ghdl-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1268,7 +1268,7 @@ export const WEB_CONFIG = `
                 Arguments.
                 <span class="markConfig badge bg-secondary" id="mark_linter-icarus-arguments"></span>
               </label>
-              <input class="form-control" id="linter-icarus-arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-icarus-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1296,7 +1296,7 @@ export const WEB_CONFIG = `
                 VHDL linter arguments.
                 <span class="markConfig badge bg-secondary" id="mark_linter-modelsim-vhdl_arguments"></span>
               </label>
-              <input class="form-control" id="linter-modelsim-vhdl_arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-modelsim-vhdl_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1307,7 +1307,7 @@ export const WEB_CONFIG = `
                 Verilog/SV linter arguments.
                 <span class="markConfig badge bg-secondary" id="mark_linter-modelsim-verilog_arguments"></span>
               </label>
-              <input class="form-control" id="linter-modelsim-verilog_arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-modelsim-verilog_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1335,7 +1335,7 @@ export const WEB_CONFIG = `
                 Arguments.
                 <span class="markConfig badge bg-secondary" id="mark_linter-verible-arguments"></span>
               </label>
-              <input class="form-control" id="linter-verible-arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-verible-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1363,7 +1363,7 @@ export const WEB_CONFIG = `
                 Arguments.
                 <span class="markConfig badge bg-secondary" id="mark_linter-verilator-arguments"></span>
               </label>
-              <input class="form-control" id="linter-verilator-arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-verilator-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1391,7 +1391,7 @@ export const WEB_CONFIG = `
                 VHDL linter arguments.
                 <span class="markConfig badge bg-secondary" id="mark_linter-vivado-vhdl_arguments"></span>
               </label>
-              <input class="form-control" id="linter-vivado-vhdl_arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-vivado-vhdl_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1402,7 +1402,7 @@ export const WEB_CONFIG = `
                 Verilog/SV linter arguments.
                 <span class="markConfig badge bg-secondary" id="mark_linter-vivado-verilog_arguments"></span>
               </label>
-              <input class="form-control" id="linter-vivado-verilog_arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-vivado-verilog_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1430,7 +1430,7 @@ export const WEB_CONFIG = `
                 JSON or YAML configuration file.
                 <span class="markConfig badge bg-secondary" id="mark_linter-vsg-arguments"></span>
               </label>
-              <input class="form-control" id="linter-vsg-arguments" rows="3"  value=""></input>
+                <input class="form-control" id="linter-vsg-arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1474,7 +1474,7 @@ export const WEB_CONFIG = `
                 Extra options passed before to run yowasp-yosys. Eg: conda activate base & 
                 <span class="markConfig badge bg-secondary" id="mark_schematic-general-extra"></span>
               </label>
-              <input class="form-control" id="schematic-general-extra" rows="3"  value=""></input>
+                <input class="form-control" id="schematic-general-extra" rows="3"  value=""></input>
             </div>
           
           
@@ -1485,7 +1485,7 @@ export const WEB_CONFIG = `
                 Arguments passed to Yosys
                 <span class="markConfig badge bg-secondary" id="mark_schematic-general-args"></span>
               </label>
-              <input class="form-control" id="schematic-general-args" rows="3"  value=""></input>
+                <input class="form-control" id="schematic-general-args" rows="3"  value=""></input>
             </div>
           
           
@@ -1513,7 +1513,7 @@ export const WEB_CONFIG = `
                 File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template
                 <span class="markConfig badge bg-secondary" id="mark_templates-general-header_file_path"></span>
               </label>
-              <input class="form-control" id="templates-general-header_file_path" rows="3"  value=""></input>
+                <input class="form-control" id="templates-general-header_file_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1524,7 +1524,7 @@ export const WEB_CONFIG = `
                 Indent
                 <span class="markConfig badge bg-secondary" id="mark_templates-general-indent"></span>
               </label>
-              <input class="form-control" id="templates-general-indent" rows="3"  value="  "></input>
+                <input class="form-control" id="templates-general-indent" rows="3"  value="  "></input>
             </div>
           
           
@@ -1613,7 +1613,7 @@ export const WEB_CONFIG = `
                 GTKWave installation directory.
                 <span class="markConfig badge bg-secondary" id="mark_tools-general-gtkwave_installation_path"></span>
               </label>
-              <input class="form-control" id="tools-general-gtkwave_installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-general-gtkwave_installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1624,7 +1624,7 @@ export const WEB_CONFIG = `
                 Extra arguments passed to GTKwave. E.g: --script=script.tcl
                 <span class="markConfig badge bg-secondary" id="mark_tools-general-gtkwave_extra_arguments"></span>
               </label>
-              <input class="form-control" id="tools-general-gtkwave_extra_arguments" rows="3"  value=""></input>
+                <input class="form-control" id="tools-general-gtkwave_extra_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -1666,6 +1666,94 @@ export const WEB_CONFIG = `
         <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
       </div>
   </div>
+    <div class="card h-100" id="tools-quartus">
+      <div class="card-header">
+        <h1 class="card-title">Tools: Intel@ Quartus@ Prime</h1>
+        <h6 class="card-subtitle mb-2 text-muted">The intuitive high-performance design environment. From design entry and synthesis to optimization, verification, and simulation, Intel® Quartus® Prime Design Software unlocks increased capabilities on devices with multi-million logic elements, providing designers with the ideal platform to meet next-generation design opportunities.</h6>
+      </div>
+      <div class="card-body overflow-auto">
+      
+          
+          
+            <div class="mb-3">
+              <label for="tools-quartus-installation_path" class="form-label">
+                Installation path:
+                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-installation_path"></span>
+              </label>
+                <input class="form-control" id="tools-quartus-installation_path" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-quartus-family" class="form-label">
+                FPGA family (e.g. Cyclone V).
+                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-family"></span>
+              </label>
+                <input class="form-control" id="tools-quartus-family" rows="3"  value="" disabled></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-quartus-device" class="form-label">
+                FPGA device (e.g. 5CSXFC6D6F31C8ES).
+                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-device"></span>
+              </label>
+                <input class="form-control" id="tools-quartus-device" rows="3"  value="" disabled></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-quartus-optimization_mode" class="form-label">
+                Specifies your overall optimization focus for implementation of your synthesized logic. By default, the Compiler uses a balanced mode respecting the design's timing constraints. Use alternate modes to specify a different optimization focus. High effort modes enable additional optimizations that increase compilation time. Aggressive modes may increase compilation time and may also be detrimental to other optimizations.
+                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-optimization_mode"></span>
+              </label>
+              <select class="form-select" aria-label="Specifies your overall optimization focus for implementation of your synthesized logic. By default, the Compiler uses a balanced mode respecting the design's timing constraints. Use alternate modes to specify a different optimization focus. High effort modes enable additional optimizations that increase compilation time. Aggressive modes may increase compilation time and may also be detrimental to other optimizations." id="tools-quartus-optimization_mode">
+                      <option value='BALANCED'>Balanced (normal flow)</option>
+                      <option value='HIGH_PERFORMANCE_EFFORT'>High Performance Effort</option>
+                      <option value='HIGH_PERFORMANCE_EFFORT_WITH_MAXIMUM_PLACEMENT_EFFORT'>High Performance with Maximum Placement Effort</option>
+                      <option value='HIGH_PERFORMANCE_WITH_AGGRESSIVE_POWER_EFFORT'>High Performance with Aggressive Power Effort</option>
+                      <option value='SUPERIOR_PERFORMANCE'>Superior Performance (adds synthesis optimization for speed)</option>
+                      <option value='SUPERIOR_PERFORMANCE_WITH_MAXIMUM_PLACEMENT_EFFORT'>Superior Performance with Maximum Placement Effort</option>
+                      <option value='AGGRESSIVE_AREA'>Aggressive Area (reduces performance)</option>
+                      <option value='HIGH_PLACEMENT_ROUTABILITY_EFFORT'>High Placement Routability Effort</option>
+                      <option value='HIGH_PACKING_ROUTABILITY_EFFORT'>High Packing Routability Effort</option>
+                      <option value='OPTIMIZE_NETLIST_FOR_ROUTABILITY'>Optimize Netlist for Routability</option>
+                      <option value='AGGRESSIVE_POWER'>Aggressive Power (reduces performance)</option>
+                      <option value='AGGRESSIVE_COMPILE_TIME'>Agressive Compile Time (reduces performance)</option>
+                      <option value='FAST_FUNCTIONAL_TEST'>Fast Functional Test (reduces performance)</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="tools-quartus-allow_register_retiming">
+                <label class="form-check-label" for="tools-quartus-allow_register_retiming">
+                  Allow Register Retiming.
+                  <span class="markConfig badge bg-secondary" id="mark_tools-quartus-allow_register_retiming"></span>
+                </label>
+              </div>
+            </div>
+          
+          
+          
+          
+      </div>
+      
+      <div class="card-footer">
+        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
+        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
+        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
+      </div>
+  </div>
     <div class="card h-100" id="tools-osvvm">
       <div class="card-header">
         <h1 class="card-title">Tools: OSVVM</h1>
@@ -1680,7 +1768,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-osvvm-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-osvvm-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-osvvm-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1691,7 +1779,7 @@ export const WEB_CONFIG = `
                 tclsh binary path. E.g: /usr/bin/tclsh8.6
                 <span class="markConfig badge bg-secondary" id="mark_tools-osvvm-tclsh_binary"></span>
               </label>
-              <input class="form-control" id="tools-osvvm-tclsh_binary" rows="3"  value=""></input>
+                <input class="form-control" id="tools-osvvm-tclsh_binary" rows="3"  value=""></input>
             </div>
           
           
@@ -1740,7 +1828,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-ascenlint-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-ascenlint-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-ascenlint-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1778,7 +1866,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-cocotb-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-cocotb-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1812,7 +1900,7 @@ export const WEB_CONFIG = `
                 Any arguments or flags to pass to the compile stage of the simulation.
                 <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-compile_args"></span>
               </label>
-              <input class="form-control" id="tools-cocotb-compile_args" rows="3"  value=""></input>
+                <input class="form-control" id="tools-cocotb-compile_args" rows="3"  value=""></input>
             </div>
           
           
@@ -1823,7 +1911,7 @@ export const WEB_CONFIG = `
                 Any argument to be passed to the “first” invocation of a simulator that runs via a TCL script. One motivating usage is to pass -noautoldlibpath to Questa to prevent it from loading the out-of-date libraries it ships with. Used by Aldec Riviera-PRO and Mentor Graphics Questa simulator.
                 <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-run_args"></span>
               </label>
-              <input class="form-control" id="tools-cocotb-run_args" rows="3"  value=""></input>
+                <input class="form-control" id="tools-cocotb-run_args" rows="3"  value=""></input>
             </div>
           
           
@@ -1834,7 +1922,7 @@ export const WEB_CONFIG = `
                 They are options that are starting with a plus (+) sign. They are passed to the simulator and are also available within cocotb as cocotb.plusargs. In the simulator, they can be read by the Verilog/SystemVerilog system functions $test$plusargs and $value$plusargs. The special plusargs +ntb_random_seed and +seed, if present, are evaluated to set the random seed value if RANDOM_SEED is not set. If both +ntb_random_seed and +seed are set, +ntb_random_seed is used.
                 <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-plusargs"></span>
               </label>
-              <input class="form-control" id="tools-cocotb-plusargs" rows="3"  value=""></input>
+                <input class="form-control" id="tools-cocotb-plusargs" rows="3"  value=""></input>
             </div>
           
           
@@ -1862,7 +1950,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-diamond-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-diamond-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-diamond-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1873,7 +1961,7 @@ export const WEB_CONFIG = `
                 FPGA part number (e.g. LFE5U-45F-6BG381C).
                 <span class="markConfig badge bg-secondary" id="mark_tools-diamond-part"></span>
               </label>
-              <input class="form-control" id="tools-diamond-part" rows="3"  value=""></input>
+                <input class="form-control" id="tools-diamond-part" rows="3"  value=""></input>
             </div>
           
           
@@ -1901,7 +1989,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-ghdl-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-ghdl-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-ghdl-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1963,7 +2051,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-icarus-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-icarus-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-icarus-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -1974,7 +2062,7 @@ export const WEB_CONFIG = `
                 Default timescale.
                 <span class="markConfig badge bg-secondary" id="mark_tools-icarus-timescale"></span>
               </label>
-              <input class="form-control" id="tools-icarus-timescale" rows="3"  value=""></input>
+                <input class="form-control" id="tools-icarus-timescale" rows="3"  value=""></input>
             </div>
           
           
@@ -2012,7 +2100,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-icestorm-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-icestorm-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2081,7 +2169,7 @@ export const WEB_CONFIG = `
                 Generated makefile name, defaults to $name.mk
                 <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-makefile_name"></span>
               </label>
-              <input class="form-control" id="tools-icestorm-makefile_name" rows="3"  value=""></input>
+                <input class="form-control" id="tools-icestorm-makefile_name" rows="3"  value=""></input>
             </div>
           
           
@@ -2139,7 +2227,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-ise-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-ise-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-ise-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2150,7 +2238,7 @@ export const WEB_CONFIG = `
                 FPGA family (e.g. spartan6).
                 <span class="markConfig badge bg-secondary" id="mark_tools-ise-family"></span>
               </label>
-              <input class="form-control" id="tools-ise-family" rows="3"  value=""></input>
+                <input class="form-control" id="tools-ise-family" rows="3"  value=""></input>
             </div>
           
           
@@ -2161,7 +2249,7 @@ export const WEB_CONFIG = `
                 FPGA device (e.g. xc6slx45).
                 <span class="markConfig badge bg-secondary" id="mark_tools-ise-device"></span>
               </label>
-              <input class="form-control" id="tools-ise-device" rows="3"  value=""></input>
+                <input class="form-control" id="tools-ise-device" rows="3"  value=""></input>
             </div>
           
           
@@ -2172,7 +2260,7 @@ export const WEB_CONFIG = `
                 FPGA package (e.g. csg324).
                 <span class="markConfig badge bg-secondary" id="mark_tools-ise-package"></span>
               </label>
-              <input class="form-control" id="tools-ise-package" rows="3"  value=""></input>
+                <input class="form-control" id="tools-ise-package" rows="3"  value=""></input>
             </div>
           
           
@@ -2183,7 +2271,7 @@ export const WEB_CONFIG = `
                 FPGA speed grade (e.g. -2).
                 <span class="markConfig badge bg-secondary" id="mark_tools-ise-speed"></span>
               </label>
-              <input class="form-control" id="tools-ise-speed" rows="3"  value=""></input>
+                <input class="form-control" id="tools-ise-speed" rows="3"  value=""></input>
             </div>
           
           
@@ -2211,7 +2299,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-isem-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-isem-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-isem-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2259,7 +2347,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-modelsim-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-modelsim-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-modelsim-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2317,7 +2405,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-morty-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-morty-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-morty-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2329,113 +2417,6 @@ export const WEB_CONFIG = `
                 <span class="markConfig badge bg-secondary" id="mark_tools-morty-morty_options"></span>
               </label>
               <input class="form-control" id="tools-morty-morty_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-quartus">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Quartus</h1>
-        <h6 class="card-subtitle mb-2 text-muted">The Quartus backend supports Intel Quartus Std and Pro editions to build systems and program the FPGA.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-installation_path"></span>
-              </label>
-              <input class="form-control" id="tools-quartus-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-family" class="form-label">
-                FPGA family (e.g. Cyclone V).
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-family"></span>
-              </label>
-              <input class="form-control" id="tools-quartus-family" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-device" class="form-label">
-                FPGA device (e.g. 5CSXFC6D6F31C8ES).
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-device"></span>
-              </label>
-              <input class="form-control" id="tools-quartus-device" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-cable" class="form-label">
-                Specifies the FPGA’s JTAG programming cable. Use the tool jtagconfig to determine the available cables.
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-cable"></span>
-              </label>
-              <input class="form-control" id="tools-quartus-cable" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-board_device_index" class="form-label">
-                Specifies the FPGA’s device number in the JTAG chain. The device index specifies the device where the flash programmer looks for the Nios® II JTAG debug module. JTAG devices are numbered relative to the JTAG chain, starting at 1. Use the tool jtagconfig to determine the index.
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-board_device_index"></span>
-              </label>
-              <input class="form-control" id="tools-quartus-board_device_index" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-pnr" class="form-label">
-                P&R tool. one (to just run synthesis).
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-pnr"></span>
-              </label>
-              <select class="form-select" aria-label="P&R tool. one (to just run synthesis)." id="tools-quartus-pnr">
-                      <option value='default'>Default</option>
-                      <option value='dse'>Run Design Space Explorer</option>
-                      <option value='none'>Run synthesis</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-dse_options" class="form-label">
-                Command-line options for Design Space Explorer. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-dse_options"></span>
-              </label>
-              <input class="form-control" id="tools-quartus-dse_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-quartus_options" class="form-label">
-                Extra command-line options for Quartus. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-quartus_options"></span>
-              </label>
-              <input class="form-control" id="tools-quartus-quartus_options" rows="3"></input>
             </div>
           
           
@@ -2462,7 +2443,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-radiant-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-radiant-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-radiant-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2473,7 +2454,7 @@ export const WEB_CONFIG = `
                 FPGA part number (e.g. LIFCL-40-9BG400C).
                 <span class="markConfig badge bg-secondary" id="mark_tools-radiant-part"></span>
               </label>
-              <input class="form-control" id="tools-radiant-part" rows="3"  value=""></input>
+                <input class="form-control" id="tools-radiant-part" rows="3"  value=""></input>
             </div>
           
           
@@ -2501,7 +2482,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-rivierapro-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-rivierapro-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-rivierapro-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2512,7 +2493,7 @@ export const WEB_CONFIG = `
                 Common or separate compilation, sep - for separate compilation, common - for common compilation.
                 <span class="markConfig badge bg-secondary" id="mark_tools-rivierapro-compilation_mode"></span>
               </label>
-              <input class="form-control" id="tools-rivierapro-compilation_mode" rows="3"  value=""></input>
+                <input class="form-control" id="tools-rivierapro-compilation_mode" rows="3"  value=""></input>
             </div>
           
           
@@ -2560,7 +2541,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-spyglass-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-spyglass-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-spyglass-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2571,7 +2552,7 @@ export const WEB_CONFIG = `
                 
                 <span class="markConfig badge bg-secondary" id="mark_tools-spyglass-methodology"></span>
               </label>
-              <input class="form-control" id="tools-spyglass-methodology" rows="3"  value=""></input>
+                <input class="form-control" id="tools-spyglass-methodology" rows="3"  value=""></input>
             </div>
           
           
@@ -2629,7 +2610,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-symbiyosys-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-symbiyosys-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-symbiyosys-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2667,7 +2648,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-symbiflow-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-symbiflow-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2678,7 +2659,7 @@ export const WEB_CONFIG = `
                 FPGA chip package (e.g. clg400-1).
                 <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-package"></span>
               </label>
-              <input class="form-control" id="tools-symbiflow-package" rows="3"  value=""></input>
+                <input class="form-control" id="tools-symbiflow-package" rows="3"  value=""></input>
             </div>
           
           
@@ -2689,7 +2670,7 @@ export const WEB_CONFIG = `
                 FPGA part type (e.g. xc7a50t).
                 <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-part"></span>
               </label>
-              <input class="form-control" id="tools-symbiflow-part" rows="3"  value=""></input>
+                <input class="form-control" id="tools-symbiflow-part" rows="3"  value=""></input>
             </div>
           
           
@@ -2700,7 +2681,7 @@ export const WEB_CONFIG = `
                 Target architecture. Currently only “xilinx” is supported.
                 <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-vendor"></span>
               </label>
-              <input class="form-control" id="tools-symbiflow-vendor" rows="3"  value=""></input>
+                <input class="form-control" id="tools-symbiflow-vendor" rows="3"  value=""></input>
             </div>
           
           
@@ -2724,7 +2705,7 @@ export const WEB_CONFIG = `
                 Additional vpr tool options. If not used, default options for the tool will be used.
                 <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-vpr_options"></span>
               </label>
-              <input class="form-control" id="tools-symbiflow-vpr_options" rows="3"  value=""></input>
+                <input class="form-control" id="tools-symbiflow-vpr_options" rows="3"  value=""></input>
             </div>
           
           
@@ -2735,7 +2716,7 @@ export const WEB_CONFIG = `
                 Optional bash script that will be sourced before each build step..
                 <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-environment_script"></span>
               </label>
-              <input class="form-control" id="tools-symbiflow-environment_script" rows="3"  value=""></input>
+                <input class="form-control" id="tools-symbiflow-environment_script" rows="3"  value=""></input>
             </div>
           
           
@@ -2763,7 +2744,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-trellis-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-trellis-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-trellis-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2817,7 +2798,7 @@ export const WEB_CONFIG = `
                 Generated makefile name, defaults to $name.mk
                 <span class="markConfig badge bg-secondary" id="mark_tools-trellis-makefile_name"></span>
               </label>
-              <input class="form-control" id="tools-trellis-makefile_name" rows="3"  value=""></input>
+                <input class="form-control" id="tools-trellis-makefile_name" rows="3"  value=""></input>
             </div>
           
           
@@ -2828,7 +2809,7 @@ export const WEB_CONFIG = `
                 Generated tcl script filename, defaults to $name.mk
                 <span class="markConfig badge bg-secondary" id="mark_tools-trellis-script_name"></span>
               </label>
-              <input class="form-control" id="tools-trellis-script_name" rows="3"  value=""></input>
+                <input class="form-control" id="tools-trellis-script_name" rows="3"  value=""></input>
             </div>
           
           
@@ -2876,7 +2857,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-vcs-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-vcs-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-vcs-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2924,7 +2905,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-verible-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-verible-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-verible-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -2952,7 +2933,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-verilator-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-verilator-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-verilator-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3035,7 +3016,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-vivado-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-vivado-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-vivado-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3046,7 +3027,7 @@ export const WEB_CONFIG = `
                 Part. Device identifier. e.g. xc7a35tcsg324-1.
                 <span class="markConfig badge bg-secondary" id="mark_tools-vivado-part"></span>
               </label>
-              <input class="form-control" id="tools-vivado-part" rows="3"  value=""></input>
+                <input class="form-control" id="tools-vivado-part" rows="3"  value=""></input>
             </div>
           
           
@@ -3057,7 +3038,7 @@ export const WEB_CONFIG = `
                 Synthesis tool. Allowed values are vivado (default) and yosys..
                 <span class="markConfig badge bg-secondary" id="mark_tools-vivado-synth"></span>
               </label>
-              <input class="form-control" id="tools-vivado-synth" rows="3"  value=""></input>
+                <input class="form-control" id="tools-vivado-synth" rows="3"  value=""></input>
             </div>
           
           
@@ -3093,7 +3074,7 @@ export const WEB_CONFIG = `
                 Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A.
                 <span class="markConfig badge bg-secondary" id="mark_tools-vivado-hw_target"></span>
               </label>
-              <input class="form-control" id="tools-vivado-hw_target" rows="3"  value=""></input>
+                <input class="form-control" id="tools-vivado-hw_target" rows="3"  value=""></input>
             </div>
           
           
@@ -3121,7 +3102,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-vunit-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-vunit-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-vunit-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3163,7 +3144,7 @@ export const WEB_CONFIG = `
                 VUnit options. Extra options for the VUnit test runner.
                 <span class="markConfig badge bg-secondary" id="mark_tools-vunit-extra_options"></span>
               </label>
-              <input class="form-control" id="tools-vunit-extra_options" rows="3"  value=""></input>
+                <input class="form-control" id="tools-vunit-extra_options" rows="3"  value=""></input>
             </div>
           
           
@@ -3269,7 +3250,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-xcelium-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-xcelium-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-xcelium-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3337,7 +3318,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-xsim-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-xsim-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-xsim-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3385,7 +3366,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-yosys-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-yosys-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-yosys-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3439,7 +3420,7 @@ export const WEB_CONFIG = `
                 Generated makefile name, defaults to $name.mk
                 <span class="markConfig badge bg-secondary" id="mark_tools-yosys-makefile_name"></span>
               </label>
-              <input class="form-control" id="tools-yosys-makefile_name" rows="3"  value=""></input>
+                <input class="form-control" id="tools-yosys-makefile_name" rows="3"  value=""></input>
             </div>
           
           
@@ -3450,7 +3431,7 @@ export const WEB_CONFIG = `
                 Generated tcl script filename, defaults to $name.mk
                 <span class="markConfig badge bg-secondary" id="mark_tools-yosys-script_name"></span>
               </label>
-              <input class="form-control" id="tools-yosys-script_name" rows="3"  value=""></input>
+                <input class="form-control" id="tools-yosys-script_name" rows="3"  value=""></input>
             </div>
           
           
@@ -3488,7 +3469,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-openfpga-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-openfpga-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-openfpga-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3499,7 +3480,7 @@ export const WEB_CONFIG = `
                 FPGA architecture e.g. sofa-hd, sofa-chd, sofa-qlhd and sofa-plus-hd
                 <span class="markConfig badge bg-secondary" id="mark_tools-openfpga-arch"></span>
               </label>
-              <input class="form-control" id="tools-openfpga-arch" rows="3"  value=""></input>
+                <input class="form-control" id="tools-openfpga-arch" rows="3"  value=""></input>
             </div>
           
           
@@ -3537,7 +3518,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-activehdl-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-activehdl-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-activehdl-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3565,7 +3546,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-nvc-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-nvc-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-nvc-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3593,7 +3574,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-questa-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-questa-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-questa-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3621,7 +3602,7 @@ export const WEB_CONFIG = `
                 Installation path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-installation_path"></span>
               </label>
-              <input class="form-control" id="tools-raptor-installation_path" rows="3"  value=""></input>
+                <input class="form-control" id="tools-raptor-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -3632,7 +3613,7 @@ export const WEB_CONFIG = `
                 Target device
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-target_device"></span>
               </label>
-              <input class="form-control" id="tools-raptor-target_device" rows="3"  value="1GE100"></input>
+                <input class="form-control" id="tools-raptor-target_device" rows="3"  value="1GE100"></input>
             </div>
           
           
@@ -3815,7 +3796,7 @@ export const WEB_CONFIG = `
                 Simulation top level path:
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-top_level"></span>
               </label>
-              <input class="form-control" id="tools-raptor-top_level" rows="3"  value=""></input>
+                <input class="form-control" id="tools-raptor-top_level" rows="3"  value=""></input>
             </div>
           
           
@@ -3849,7 +3830,7 @@ export const WEB_CONFIG = `
                 RTL waveform simulation
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-waveform_rtl"></span>
               </label>
-              <input class="form-control" id="tools-raptor-waveform_rtl" rows="3"  value="syn_tb_rtl.fst"></input>
+                <input class="form-control" id="tools-raptor-waveform_rtl" rows="3"  value="syn_tb_rtl.fst"></input>
             </div>
           
           
@@ -3875,7 +3856,7 @@ export const WEB_CONFIG = `
                 Simulation options
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulation_options_rtl"></span>
               </label>
-              <input class="form-control" id="tools-raptor-simulation_options_rtl" rows="3"  value="--stop-time=1000ns"></input>
+                <input class="form-control" id="tools-raptor-simulation_options_rtl" rows="3"  value="--stop-time=1000ns"></input>
             </div>
           
           
@@ -3899,7 +3880,7 @@ export const WEB_CONFIG = `
                 Gate waveform simulation
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-waveform_gate"></span>
               </label>
-              <input class="form-control" id="tools-raptor-waveform_gate" rows="3"  value="syn_tb_gate.fst"></input>
+                <input class="form-control" id="tools-raptor-waveform_gate" rows="3"  value="syn_tb_gate.fst"></input>
             </div>
           
           
@@ -3925,7 +3906,7 @@ export const WEB_CONFIG = `
                 Simulation options
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulation_options_gate"></span>
               </label>
-              <input class="form-control" id="tools-raptor-simulation_options_gate" rows="3"  value="--stop-time=1000ns"></input>
+                <input class="form-control" id="tools-raptor-simulation_options_gate" rows="3"  value="--stop-time=1000ns"></input>
             </div>
           
           
@@ -3949,7 +3930,7 @@ export const WEB_CONFIG = `
                 PNR waveform simulation
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-waveform_pnr"></span>
               </label>
-              <input class="form-control" id="tools-raptor-waveform_pnr" rows="3"  value="sim_pnr.fst"></input>
+                <input class="form-control" id="tools-raptor-waveform_pnr" rows="3"  value="sim_pnr.fst"></input>
             </div>
           
           
@@ -3975,7 +3956,7 @@ export const WEB_CONFIG = `
                 Simulation options
                 <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulation_options_pnr"></span>
               </label>
-              <input class="form-control" id="tools-raptor-simulation_options_pnr" rows="3"  value="--stop-time=1000ns"></input>
+                <input class="form-control" id="tools-raptor-simulation_options_pnr" rows="3"  value="--stop-time=1000ns"></input>
             </div>
           
           
@@ -4139,6 +4120,13 @@ export const WEB_CONFIG = `
     document.getElementById("tools-general").classList.remove('d-none');
     document.getElementById("tools-general").classList.add('d-none');
   }
+  if ("tools" == tp0 && "quartus" == tp1){
+    document.getElementById("tools-quartus").classList.remove('d-none');
+  }
+  else{
+    document.getElementById("tools-quartus").classList.remove('d-none');
+    document.getElementById("tools-quartus").classList.add('d-none');
+  }
   if ("tools" == tp0 && "osvvm" == tp1){
     document.getElementById("tools-osvvm").classList.remove('d-none');
   }
@@ -4215,13 +4203,6 @@ export const WEB_CONFIG = `
   else{
     document.getElementById("tools-morty").classList.remove('d-none');
     document.getElementById("tools-morty").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "quartus" == tp1){
-    document.getElementById("tools-quartus").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-quartus").classList.remove('d-none');
-    document.getElementById("tools-quartus").classList.add('d-none');
   }
   if ("tools" == tp0 && "radiant" == tp1){
     document.getElementById("tools-radiant").classList.remove('d-none');
@@ -4440,6 +4421,10 @@ export const WEB_CONFIG = `
     enable_tab("tools","general")
   });
 
+  document.getElementById("btn-tools-quartus").addEventListener("click", function() {
+    enable_tab("tools","quartus")
+  });
+
   document.getElementById("btn-tools-osvvm").addEventListener("click", function() {
     enable_tab("tools","osvvm")
   });
@@ -4482,10 +4467,6 @@ export const WEB_CONFIG = `
 
   document.getElementById("btn-tools-morty").addEventListener("click", function() {
     enable_tab("tools","morty")
-  });
-
-  document.getElementById("btn-tools-quartus").addEventListener("click", function() {
-    enable_tab("tools","quartus")
   });
 
   document.getElementById("btn-tools-radiant").addEventListener("click", function() {
@@ -4815,6 +4796,17 @@ export const WEB_CONFIG = `
     config["tools"]["general"]["execution_mode"] = element_value
     element_value = document.getElementById("tools-general-waveform_viewer").value;
     config["tools"]["general"]["waveform_viewer"] = element_value
+    config["tools"]["quartus"] = {}
+    element_value = document.getElementById("tools-quartus-installation_path").value;
+    config["tools"]["quartus"]["installation_path"] = element_value
+    element_value = document.getElementById("tools-quartus-family").value;
+    config["tools"]["quartus"]["family"] = element_value
+    element_value = document.getElementById("tools-quartus-device").value;
+    config["tools"]["quartus"]["device"] = element_value
+    element_value = document.getElementById("tools-quartus-optimization_mode").value;
+    config["tools"]["quartus"]["optimization_mode"] = element_value
+    element_value = document.getElementById("tools-quartus-allow_register_retiming").checked;
+    config["tools"]["quartus"]["allow_register_retiming"] = element_value
     config["tools"]["osvvm"] = {}
     element_value = document.getElementById("tools-osvvm-installation_path").value;
     config["tools"]["osvvm"]["installation_path"] = element_value
@@ -4949,29 +4941,6 @@ export const WEB_CONFIG = `
       element_value = [];
     }
     config["tools"]["morty"]["morty_options"] = element_value
-    config["tools"]["quartus"] = {}
-    element_value = document.getElementById("tools-quartus-installation_path").value;
-    config["tools"]["quartus"]["installation_path"] = element_value
-    element_value = document.getElementById("tools-quartus-family").value;
-    config["tools"]["quartus"]["family"] = element_value
-    element_value = document.getElementById("tools-quartus-device").value;
-    config["tools"]["quartus"]["device"] = element_value
-    element_value = document.getElementById("tools-quartus-cable").value;
-    config["tools"]["quartus"]["cable"] = element_value
-    element_value = document.getElementById("tools-quartus-board_device_index").value;
-    config["tools"]["quartus"]["board_device_index"] = element_value
-    element_value = document.getElementById("tools-quartus-pnr").value;
-    config["tools"]["quartus"]["pnr"] = element_value
-    element_value = document.getElementById("tools-quartus-dse_options").value.split(',');
-    if (element_value.length == 1 && element_value[0] == "") {
-      element_value = [];
-    }
-    config["tools"]["quartus"]["dse_options"] = element_value
-    element_value = document.getElementById("tools-quartus-quartus_options").value.split(',');
-    if (element_value.length == 1 && element_value[0] == "") {
-      element_value = [];
-    }
-    config["tools"]["quartus"]["quartus_options"] = element_value
     config["tools"]["radiant"] = {}
     element_value = document.getElementById("tools-radiant-installation_path").value;
     config["tools"]["radiant"]["installation_path"] = element_value
@@ -5345,6 +5314,11 @@ export const WEB_CONFIG = `
     document.getElementById("tools-general-gtkwave_extra_arguments").value = config["tools"]["general"]["gtkwave_extra_arguments"];
     document.getElementById("tools-general-execution_mode").value = config["tools"]["general"]["execution_mode"];
     document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
+    document.getElementById("tools-quartus-installation_path").value = config["tools"]["quartus"]["installation_path"];
+    document.getElementById("tools-quartus-family").value = config["tools"]["quartus"]["family"];
+    document.getElementById("tools-quartus-device").value = config["tools"]["quartus"]["device"];
+    document.getElementById("tools-quartus-optimization_mode").value = config["tools"]["quartus"]["optimization_mode"];
+    document.getElementById("tools-quartus-allow_register_retiming").checked = config["tools"]["quartus"]["allow_register_retiming"];
     document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];
     document.getElementById("tools-osvvm-tclsh_binary").value = config["tools"]["osvvm"]["tclsh_binary"];
     document.getElementById("tools-osvvm-simulator_name").value = config["tools"]["osvvm"]["simulator_name"];
@@ -5387,14 +5361,6 @@ export const WEB_CONFIG = `
     element_value = document.getElementById("tools-modelsim-vsim_options").value = String(config["tools"]["modelsim"]["vsim_options"]);
     document.getElementById("tools-morty-installation_path").value = config["tools"]["morty"]["installation_path"];
     element_value = document.getElementById("tools-morty-morty_options").value = String(config["tools"]["morty"]["morty_options"]);
-    document.getElementById("tools-quartus-installation_path").value = config["tools"]["quartus"]["installation_path"];
-    document.getElementById("tools-quartus-family").value = config["tools"]["quartus"]["family"];
-    document.getElementById("tools-quartus-device").value = config["tools"]["quartus"]["device"];
-    document.getElementById("tools-quartus-cable").value = config["tools"]["quartus"]["cable"];
-    document.getElementById("tools-quartus-board_device_index").value = config["tools"]["quartus"]["board_device_index"];
-    document.getElementById("tools-quartus-pnr").value = config["tools"]["quartus"]["pnr"];
-    element_value = document.getElementById("tools-quartus-dse_options").value = String(config["tools"]["quartus"]["dse_options"]);
-    element_value = document.getElementById("tools-quartus-quartus_options").value = String(config["tools"]["quartus"]["quartus_options"]);
     document.getElementById("tools-radiant-installation_path").value = config["tools"]["radiant"]["installation_path"];
     document.getElementById("tools-radiant-part").value = config["tools"]["radiant"]["part"];
     document.getElementById("tools-rivierapro-installation_path").value = config["tools"]["rivierapro"]["installation_path"];
@@ -5878,6 +5844,31 @@ export const WEB_CONFIG = `
     }
     document.getElementById("mark_tools-general-waveform_viewer").innerHTML = mark;
     mark = "";
+    if (projectName !== undefined && config["tools"]["quartus"]["installation_path"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-quartus-installation_path").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["quartus"]["family"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-quartus-family").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["quartus"]["device"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-quartus-device").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["quartus"]["optimization_mode"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-quartus-optimization_mode").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["quartus"]["allow_register_retiming"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-quartus-allow_register_retiming").innerHTML = mark;
+    mark = "";
     if (projectName !== undefined && config["tools"]["osvvm"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
@@ -6087,46 +6078,6 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-morty-morty_options").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["installation_path"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-quartus-installation_path").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["family"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-quartus-family").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["device"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-quartus-device").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["cable"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-quartus-cable").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["board_device_index"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-quartus-board_device_index").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["pnr"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-quartus-pnr").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["dse_options"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-quartus-dse_options").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["quartus_options"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-quartus-quartus_options").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["radiant"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;

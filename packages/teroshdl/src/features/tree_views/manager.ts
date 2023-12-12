@@ -58,7 +58,7 @@ export class Tree_view_manager {
             new Source_manager(context, manager),
             new TreeDependencyManager(context, manager, schematic_manager, dependency_manager),
             new Runs_manager(context, manager, run_output, debugLogger),
-            new Tasks_manager(context, manager, debugLogger, logView),
+            new Tasks_manager(context, manager, debugLogger, logView, emitterProject),
             new IpCatalogManager(context, manager, debugLogger),
             new Actions_manager(context),
             new Watcher_manager(context, manager),
@@ -87,6 +87,11 @@ export class Tree_view_manager {
             debugLogger.show();
             return;
         }
+
+        if (eventType === teroshdl2.project_manager.projectEmitter.e_event.SAVE_SETTINGS) {
+            vscode.commands.executeCommand("teroshdl.configuration.refresh");
+        }
+
 
         for (const view of viewList) {
             if (view.getRefreshEventList().includes(eventType)) {
