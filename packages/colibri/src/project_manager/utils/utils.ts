@@ -99,12 +99,17 @@ export function get_file_type(filepath: string): string {
  * @returns Promise with the database object
  */
 export async function openDatabase(bbddPath: string) {
-    const fs = require('fs');
-    const filebuffer = fs.readFileSync(bbddPath);
-    const SQL = await initSqlJs();
-    const db = new SQL.Database(filebuffer);
-
-    return db;
+    try {
+        const fs = require('fs');
+        const filebuffer = fs.readFileSync(bbddPath);
+        const SQL = await initSqlJs();
+        const db = new SQL.Database(filebuffer);
+    
+        return db;
+    }
+    catch (error) {
+        return undefined;
+    }
 }
 
 /**

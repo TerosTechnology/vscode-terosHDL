@@ -5,7 +5,7 @@ set csv_file_name [lindex $argv 0]
 set project_path [lindex $argv 1]
 
 #open Quartus project
-project_open -current_revision $project_path
+project_open -force -current_revision $project_path
 
 #open result file for writing
 set csv_file [open $csv_file_name w]
