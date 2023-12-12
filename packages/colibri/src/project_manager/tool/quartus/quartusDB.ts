@@ -50,6 +50,7 @@ export async function setStatus(taskManager: TaskStateManager, bbddPath: string,
     deleteRunning: boolean): Promise<void> {
     if (!check_if_path_exist(bbddPath)) {
         cleanAll(taskManager);
+        return;
     }
 
     const db = await openDatabase(bbddPath);
