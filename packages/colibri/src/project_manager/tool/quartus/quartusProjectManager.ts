@@ -4,11 +4,11 @@ import { e_project_type, t_action_result, t_file } from "../../common";
 import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
-    QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath,
+    QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath, setConfigToProject,
     getProjectInfo, getFilesFromProject, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
-import { e_config } from "../../../config/config_declaration";
+import { e_config, e_tools_quartus_optimization_mode } from "../../../config/config_declaration";
 import * as path_lib from 'path';
 import * as fs from 'fs';
 import { get_filename } from "../../../utils/file_utils";
@@ -168,10 +168,12 @@ export class QuartusProjectManager extends Project_manager {
             }
 
             // Set config
-            const configCurrent = quartusProject.get_config();
-            configCurrent.tools.quartus.family = projectInfo.family;
-            configCurrent.tools.quartus.device = projectInfo.part;
-            quartusProject.set_config(configCurrent);
+            await quartusProject.setConfigFromQuartusProject(
+                projectInfo.family,
+                projectInfo.part,
+                projectInfo.optimization_mode,
+                projectInfo.allow_register_retiming
+            );
 
             // Add all files to project
             await quartusProject.add_file_from_array_no_quartus_update(projectFiles);
@@ -183,6 +185,17 @@ export class QuartusProjectManager extends Project_manager {
         }
     }
 
+    private async setConfigFromQuartusProject(family: string, part: string,
+        optimizationMode: e_tools_quartus_optimization_mode, allowRegisterRetime: boolean) {
+
+        const configCurrent = this.get_config();
+        configCurrent.tools.quartus.family = family;
+        configCurrent.tools.quartus.device = part;
+        configCurrent.tools.quartus.optimization_mode = optimizationMode;
+        configCurrent.tools.quartus.allow_register_retiming = allowRegisterRetime;
+        await super.set_config(configCurrent);
+    }
+
     private async updateStatus(deleteRunning: boolean) {
         await setStatus(this.taskStateManager, this.quartusDatabaseStatusPath, deleteRunning);
         super.emitUpdateStatus();
@@ -190,21 +203,29 @@ export class QuartusProjectManager extends Project_manager {
 
     async syncWithDisk(): Promise<void> {
         const config = super.get_config();
-        const quartusProjectInfo = await getProjectInfo(config, this.projectDiskPath, this.emitterProject);
+        const projectInfo = await getProjectInfo(config, this.projectDiskPath, this.emitterProject);
         const quartusProjectFileList = await getFilesFromProject(config, this.projectDiskPath, true,
             this.emitterProject);
 
         super.clearFiles();
         await super.add_file_from_array(quartusProjectFileList);
 
-        if (quartusProjectInfo.topEntity !== "") {
+        if (projectInfo.topEntity !== "") {
             for (const file of quartusProjectFileList) {
-                if (get_filename(file.name, false) === quartusProjectInfo.topEntity) {
+                if (get_filename(file.name, false) === projectInfo.topEntity) {
                     super.add_toplevel_path(file.name);
                     break;
                 }
             }
         }
+
+        await this.setConfigFromQuartusProject(
+            projectInfo.family,
+            projectInfo.part,
+            projectInfo.optimization_mode,
+            projectInfo.allow_register_retiming
+        );
+
         super.notifyChanged();
     }
 
@@ -215,7 +236,7 @@ export class QuartusProjectManager extends Project_manager {
     public async add_toplevel_path(toplevel_path_inst: string): Promise<t_action_result> {
         const config = super.get_config();
         try {
-            await setTopLevelPath(config, this.projectDiskPath, toplevel_path_inst);
+            await setTopLevelPath(config, this.projectDiskPath, toplevel_path_inst, this.emitterProject);
         } catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -367,7 +388,7 @@ export class QuartusProjectManager extends Project_manager {
             const reportName = `report.${reportSufix[taskType]}.rdb`;
 
             const reportPath = path_lib.join(reportDirectory, reportName);
-            
+
             const artifact: t_test_artifact = {
                 name: "Report",
                 path: await createRPTReportFromRDB(this.get_config(), reportPath),
@@ -380,8 +401,8 @@ export class QuartusProjectManager extends Project_manager {
         }
 
         reportSufix[e_taskType.QUARTUS_IPGENERATION] = "ipg";
-        reportSufix[e_taskType.QUARTUS_EARLYTIMINGANALYSIS] =  "sta",
-        reportKeys = Object.keys(reportSufix);
+        reportSufix[e_taskType.QUARTUS_EARLYTIMINGANALYSIS] = "sta",
+            reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORTDB && reportKeys.includes(taskType)) {
             const reportName = `${this.currentRevision}.${reportSufix[taskType]}.qmsgdb`;
             const reportPath = path_lib.join(get_directory(this.quartusDatabaseStatusPath), reportName);
@@ -399,4 +420,8 @@ export class QuartusProjectManager extends Project_manager {
         return {} as t_test_artifact;
     }
 
+    public async set_config(config: e_config): Promise<void> {
+        await setConfigToProject(config, this.projectDiskPath, this.emitterProject);
+        super.set_config(config);
+    }
 }

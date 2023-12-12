@@ -339,7 +339,8 @@ describe('project_manager', () => {
         }
 
         it("should successfully handled a project without sources", () => {
-            expect(remove_spaces(project_manager.get_toml())).toBe(toml_header);
+            const expected = toml_header + "work.files=[]";
+            expect(remove_spaces(project_manager.get_toml())).toBe(expected);
         });
 
         it("should successfully handled a project without vhdl sources", async () => {
@@ -352,7 +353,8 @@ describe('project_manager', () => {
                 file_type: LANGUAGE.VERILOG,
                 file_version: VERILOG_LANG_VERSION.v2000,
             });
-            expect(remove_spaces(project_manager.get_toml())).toBe(toml_header);
+            const expected = toml_header + "work.files=[]";
+            expect(remove_spaces(project_manager.get_toml())).toBe(expected);
         });
 
         it("should handled a project with empty lib name", async () => {

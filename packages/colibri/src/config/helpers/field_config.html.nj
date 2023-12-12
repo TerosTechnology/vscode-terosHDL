@@ -46,7 +46,11 @@
                 {{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}
                 <span class="markConfig badge bg-secondary" id="mark_{{tp0}}-{{tp1}}-{{tp2}}"></span>
               </label>
-              <input class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"  value="{{type_declaration[tp0]['pages'][tp1][tp2]['value']}}"></input>
+              {%- if type_declaration[tp0]["pages"][tp1][tp2]["disabled"] == true %}
+                <input class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"  value="{{type_declaration[tp0]['pages'][tp1][tp2]['value']}}" disabled></input>
+              {%- else %}
+                <input class="form-control" id="{{tp0}}-{{tp1}}-{{tp2}}" rows="3"  value="{{type_declaration[tp0]['pages'][tp1][tp2]['value']}}"></input>
+              {%- endif %}
             </div>
           {# </li> #}
           {# Number #}

@@ -16,8 +16,10 @@ proc get_prj_info {csv_file} {
     set top_level_entity [get_global_assignment -name TOP_LEVEL_ENTITY]
     set family [get_global_assignment -name FAMILY]
     set part [get_global_assignment -name DEVICE]
+    set optimization_mode [get_global_assignment -name OPTIMIZATION_MODE]
+    set allow_register_retiming [get_global_assignment -name ALLOW_REGISTER_RETIMING]
 
-    puts $csv_file [join [ list $prj_name $prj_revision $top_level_entity $family $part] "," ]
+    puts $csv_file [join [ list $prj_name $prj_revision $top_level_entity $family $part $optimization_mode $allow_register_retiming] "," ]
 
     set revision_list [get_project_revisions]
     puts $csv_file [join [ list $revision_list ] "," ]
