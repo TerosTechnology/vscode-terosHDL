@@ -215,7 +215,7 @@ export type t_ipCatalogRep = {
     "display_name": string,
     "is_group": boolean,
     "supportedDeviceFamily"?: string[],
-    "children"?: t_ipCatalogRep[],
+    "children": t_ipCatalogRep[],
     "command"?: string,
 }
 
