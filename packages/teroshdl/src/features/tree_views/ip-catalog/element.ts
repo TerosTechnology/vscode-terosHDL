@@ -111,7 +111,8 @@ export class IpCatalogProvider extends BaseTreeDataProvider<TreeItem> {
             display_name: "Loading...",
             name: "loading",
             supportedDeviceFamily: [],
-            is_group: true
+            is_group: true,
+            children: []
         };
         this.data = [new CatalogElement(elementEmpty, undefined)];
         this._onDidChangeTreeData.fire();
