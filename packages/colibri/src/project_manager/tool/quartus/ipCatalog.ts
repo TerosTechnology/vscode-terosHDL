@@ -50,6 +50,7 @@ function convertToTree(components: t_IP[]): t_ipCatalogRep[] {
             supportedDeviceFamily: component.supportedDeviceFamily,
             is_group: false,
             command: component.command,
+            children: []
         });
     });
 
@@ -99,7 +100,7 @@ function getSupportedDeviceFamily(obj: any) {
     return tag2Value.split('///').map(element => element.trim());
 }
 
-export async function getIpCatalog(config: e_config, family: string | undefined, 
+export async function getIpCatalog(config: e_config, family: string | undefined,
     projectPath: string): Promise<t_ipCatalogRep[]> {
 
     const qpfProjectPath = projectPath.replace(".qsf", ".qpf");
@@ -122,10 +123,26 @@ export async function getIpCatalog(config: e_config, family: string | undefined,
         parseAttributeValue: false,
     });
     const obj = parser.parse(result.stdout);
-    const componentList = obj["catalog"]["component"].concat(obj["catalog"]["plugins"]);
+
+    let component_array: any[] = [];
+    let catalog_array = obj["catalog"];
+    if (!Array.isArray(obj["catalog"])) {
+        catalog_array = [obj["catalog"]];
+    }
+    for (const catalog of catalog_array) {
+        for (const item of ["component", "plugin"]) {
+            if (catalog[item] !== undefined) {
+                if (!Array.isArray(catalog[item])) {
+                    component_array = component_array.concat([catalog[item]]);
+                } else {
+                    component_array = component_array.concat(catalog[item]);
+                }
+            }
+        }
+    }
 
     const ipList: t_IP[] = [];
-    for (const component of componentList) {
+    for (const component of component_array) {
         try {
             const supportedDeviceFamily = getSupportedDeviceFamily(component);
             const name = component["@_name"];
