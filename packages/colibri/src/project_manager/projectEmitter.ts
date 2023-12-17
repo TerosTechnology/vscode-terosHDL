@@ -31,6 +31,7 @@ export enum e_event {
     ADD_SOURCE = "add_source",
     DELETE_SOURCE = "delete_source",
     SELECT_TOPLEVEL = "select_toplevel",
+    SELECT_TOPLEVEL_TESTBENCH = "select_toplevel_testbench",
     // Watchers
     ADD_WATCHER = "add_watcher",
     REMOVE_WATCHER = "remove_watcher",

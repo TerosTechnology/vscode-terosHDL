@@ -40,7 +40,7 @@ import { t_project_definition } from "./project_definition";
 import * as file_utils from "../utils/file_utils";
 import * as hdl_utils from "../utils/hdl_utils";
 import { ConfigManager, GlobalConfigManager } from "../config/config_manager";
-import { e_config, get_config_from_json, get_default_config } from "../config/config_declaration";
+import { e_config, e_tools_general_select_tool, get_config_from_json, get_default_config } from "../config/config_declaration";
 import * as utils from "./utils/utils";
 import * as python from "../process/python";
 import { l_error } from "../linter/common";
@@ -162,6 +162,26 @@ export class Project_manager extends ConfigManager {
     }
 
     ////////////////////////////////////////////////////////////////////////////
+    // Utils
+    ////////////////////////////////////////////////////////////////////////////
+    public getRunTitle(): string {
+        const currentTool = this.get_config().tools.general.select_tool;
+        const notTestbencheTool = [
+            e_tools_general_select_tool.icestorm,
+            e_tools_general_select_tool.ise,
+            e_tools_general_select_tool.openfpga,
+            e_tools_general_select_tool.quartus,
+            e_tools_general_select_tool.vivado,
+            e_tools_general_select_tool.raptor,
+        ];
+
+        if (notTestbencheTool.includes(currentTool)) {
+            return "DESIGN UNITS";
+        }
+        return "TESTBENCHES";
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
     static async fromJson(jsonContent: any, reference_path: string, emitterProject: ProjectEmitter): Promise<Project_manager> {
@@ -247,14 +267,35 @@ export class Project_manager extends ConfigManager {
     }
 
     /**
+     * Add testbench path to project. Delete de previous one.
+     * @param toplevel_path_inst Top level path to add.
+     * @returns Operation result
+    **/
+    public async setTestbench(filePath: string): Promise<t_action_result> {
+        this.toplevel_path.clear();
+        const result = this.toplevel_path.add(filePath);
+        this.emitterProject.emitEvent(this.name, e_event.SELECT_TOPLEVEL_TESTBENCH);
+        return result;
+    }
+
+    /**
      * Add top level path to project. Delete de previous one.
      * @param toplevel_path_inst Top level path to add.
      * @returns Operation result
     **/
-    public async add_toplevel_path(toplevel_path_inst: string): Promise<t_action_result> {
+    public async add_toplevel_path(toplevel_path_inst: string, emitEvent = true): Promise<t_action_result> {
+        // Save old top level path
+        const oldTopLevelList = this.toplevel_path.get();
+        let oldTopLevel = "";
+        if (oldTopLevelList.length > 0) {
+            oldTopLevel = oldTopLevelList[0];
+        }
+
         this.toplevel_path.clear();
         const result = this.toplevel_path.add(toplevel_path_inst);
-        this.emitterProject.emitEvent(this.name, e_event.SELECT_TOPLEVEL);
+        if (oldTopLevel !== toplevel_path_inst && emitEvent) {
+            this.emitterProject.emitEvent(this.name, e_event.SELECT_TOPLEVEL);
+        }
         return result;
     }
 
@@ -339,11 +380,13 @@ export class Project_manager extends ConfigManager {
         return result;
     }
 
-    public async add_file_from_array(file_list: t_file[]): Promise<t_action_result> {
+    public async add_file_from_array(file_list: t_file[], emitEvent = true): Promise<t_action_result> {
         file_list.forEach(file => {
             this.files.add(file);
         });
-        this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        if (emitEvent) {
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        }
         return {
             result: undefined,
             successful: true,
@@ -383,9 +426,11 @@ export class Project_manager extends ConfigManager {
         });
     }
 
-    public clearFiles() {
+    public clearFiles(emitEvent = true) {
         this.files.clear();
-        this.emitterProject.emitEvent(this.name, e_event.DELETE_SOURCE);
+        if (emitEvent) {
+            this.emitterProject.emitEvent(this.name, e_event.DELETE_SOURCE);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -409,9 +454,11 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // Config
     ////////////////////////////////////////////////////////////////////////////
-    public async set_config(config: e_config): Promise<void> {
+    public async set_config(config: e_config, emitEvent = true): Promise<void> {
         super.set_config(diff_config(config, GlobalConfigManager.getInstance().get_config()));
-        this.emitterProject.emitEvent(this.name, e_event.SAVE_SETTINGS);
+        if (emitEvent) {
+            this.emitterProject.emitEvent(this.name, e_event.SAVE_SETTINGS);
+        }
     }
 
     public get_config(): e_config {

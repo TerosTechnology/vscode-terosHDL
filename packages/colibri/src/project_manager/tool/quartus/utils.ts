@@ -154,7 +154,7 @@ async function executeQuartusTcl(config: e_config, tcl_file: string, args: strin
         }
         else {
             emitterProject.emitEventLog(stdout, e_event.STDOUT_ERROR);
-    
+
         }
     }
     return { result: cmd_result, csv_content: csv_content };
@@ -170,7 +170,9 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
     : Promise<{
         name: string, currentRevision: string, topEntity: string, revisionList: string[],
         family: string, part: string,
-        optimization_mode: e_tools_quartus_optimization_mode, allow_register_retiming: boolean
+        optimization_mode: e_tools_quartus_optimization_mode, allow_register_retiming: boolean,
+        eda_test_bench_file: string,
+        eda_test_bench_top_module: string,
     }> {
 
     const args = `"${projectPath}"`;
@@ -187,6 +189,8 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         part: "",
         optimization_mode: e_tools_quartus_optimization_mode.BALANCED,
         allow_register_retiming: false,
+        eda_test_bench_file: "",
+        eda_test_bench_top_module: "",
     };
 
     if (!cmd_result.result.successful) {
@@ -203,7 +207,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
 
         // General info
         const data_0 = line_split[0].split(',');
-        if (data_0.length === 7) {
+        if (data_0.length === 9) {
             result.prj_name = data_0[0].trim();
             result.prj_revision = data_0[1].trim();
             result.prj_top_entity = data_0[2].trim();
@@ -211,6 +215,9 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
             result.part = data_0[4].trim();
             optimization_mode = data_0[5].trim().replace(/ /g, "_");
             result.allow_register_retiming = data_0[6].trim() === "ON" ? true : false;
+            result.eda_test_bench_file = data_0[7].trim() === file_utils.get_directory(projectPath) 
+                ? "" : data_0[7].trim();
+            result.eda_test_bench_top_module = data_0[8].trim();
         } else {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -244,6 +251,8 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         part: result.part,
         optimization_mode: result.optimization_mode,
         allow_register_retiming: result.allow_register_retiming,
+        eda_test_bench_file: result.eda_test_bench_file,
+        eda_test_bench_top_module: result.eda_test_bench_top_module,
     };
     return projectInfo;
 }
@@ -445,6 +454,34 @@ export async function setTopLevelPath(config: e_config, projectPath: string, top
         throw new QuartusExecutionError("Error in Quartus execution");
     }
     const result = await executeCmdListQuartusProject(config, projectPath, [cmd], emitterProject);
+    if (!result.successful) {
+        throw new QuartusExecutionError("Error in Quartus execution");
+    }
+}
+
+/**
+ * Set top level path in Quartus project.
+ * @param config Configuration.
+ * @param projectPath Path to Quartus project.
+ * @param topLevelTestbenchPath Top level testbench path.
+ * @param emitterProject Project emitter.
+**/
+export async function setTopLevelTestbench(config: e_config, projectPath: string, topLevelTestbenchPath: string,
+    emitterProject: ProjectEmitter): Promise<void> {
+
+    const entityName = get_toplevel_from_path(topLevelTestbenchPath);
+    if (entityName === "") {
+        throw new QuartusExecutionError("Error in Quartus execution");
+    }
+
+    const cmd = [
+        "remove_all_global_assignments -name EDA_TEST_BENCH_FILE",
+        "remove_all_global_assignments -name EDA_TEST_BENCH_TOP_MODULE",
+        `set_global_assignment -name EDA_TEST_BENCH_FILE ${topLevelTestbenchPath} -section_id testbenchSet`,
+        `set_global_assignment -name EDA_TEST_BENCH_TOP_MODULE ${entityName} -section_id testbenchSet`
+    ];
+
+    const result = await executeCmdListQuartusProject(config, projectPath, cmd, emitterProject);
     if (!result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
