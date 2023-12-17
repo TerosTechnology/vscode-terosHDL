@@ -50,7 +50,7 @@
         "copy-project-manager-loaders": "shx cp -R ./src/project_manager/prj_loaders/ ./out/project_manager/",
         "copy-files": "npm run copy-process && npm run copy-parser && npm run copy-formatter && npm run copy-dependency && npm run copy-reporter && npm run copy-documenter && npm run copy-project-manager-raptor && npm run copy-project-manager-edalize && npm run copy-project-manager-vunit && npm run copy-project-manager-quartus && npm run copy-project-manager-loaders",
         "lint": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' eslint . --quiet --ext .ts",
-        "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --detectOpenHandles --forceExit"
+        "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand"
     },
     "directories": {
         "lib": "./lib",
