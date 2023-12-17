@@ -51,16 +51,19 @@ export class Config_manager {
     private currentConfig: teroshdl2.config.config_declaration.e_config;
     private currentConfigIsGlobal: boolean = true;
     private currentProjectName: string | undefined = undefined;
+    private emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, multiProjectManager: t_Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, multiProjectManager: t_Multi_project_manager,
+        emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter) {
 
         this.context = context;
         this.multiProjectManager = multiProjectManager;
         this.web_content = teroshdl2.config.WEB_CONFIG;
         this.currentConfig = teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config();
+        this.emitterProject = emitterProject;
 
         const activation_command = 'teroshdl.configuration';
         vscode.commands.registerCommand(activation_command + ".global", async () => await this.createWebviewGlobal());
@@ -169,11 +172,13 @@ export class Config_manager {
                             await this.setConfig(message.config);
                             this.sendChangeConfigCommand();
                             this.showSavedMessage();
+                            this.emitSaveSettings();
                             return;
                         case 'set_config_and_close':
                             await this.setConfigAndClose(message.config);
                             this.sendChangeConfigCommand();
                             this.showSavedMessage();
+                            this.emitSaveSettings();
                             return;
                         case 'close':
                             this.closePanel();
@@ -346,6 +351,12 @@ export class Config_manager {
      */
     private showSavedMessage() {
         vscode.window.showInformationMessage(`Settings saved ${this.getMessageAlert()}`);
+    }
+
+    private emitSaveSettings() {
+        if (this.currentConfigIsGlobal) {
+            this.emitterProject.emitEvent("", teroshdl2.project_manager.projectEmitter.e_event.SAVE_SETTINGS);
+        }
     }
 }
 

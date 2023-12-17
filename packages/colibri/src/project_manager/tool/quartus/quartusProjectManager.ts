@@ -6,15 +6,21 @@ import * as chokidar from "chokidar";
 import {
     QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath, setConfigToProject,
     getProjectInfo, getFilesFromProject, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
+    setTopLevelTestbench,
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
-import { e_config, e_tools_quartus_optimization_mode } from "../../../config/config_declaration";
+import {
+    e_config, e_tools_general_execution_mode,
+    e_tools_quartus_optimization_mode
+} from "../../../config/config_declaration";
 import * as path_lib from 'path';
 import * as fs from 'fs';
 import { get_filename } from "../../../utils/file_utils";
 import {
     e_artifact_type, e_element_type, e_reportType, e_taskType, t_ipCatalogRep, t_taskRep,
-    t_test_artifact
+    t_test_artifact,
+    t_test_declaration,
+    t_test_result
 } from "../common";
 import { p_result } from "../../../process/common";
 import { ChildProcess } from "child_process";
@@ -25,6 +31,11 @@ import { TaskStateManager } from "../taskState";
 import { setStatus } from "./quartusDB";
 import { GlobalConfigManager } from "../../../config/config_manager";
 import { ProjectEmitter, e_event } from "../../projectEmitter";
+import { get_toplevel_from_path } from "../../../utils/hdl_utils";
+import { Process } from "../../../process/process";
+import * as nunjucks from 'nunjucks';
+import * as file_utils from "../../../utils/file_utils";
+import * as process_utils from "../../../process/utils";
 
 function getVersionDirectory(basePath: string): string {
     const defaultVersionDirectory = "23.3.0";
@@ -51,6 +62,7 @@ export class QuartusProjectManager extends Project_manager {
     private quartusStatusWatcher: chokidar.FSWatcher | undefined = undefined;
     private quartusDatabaseStatusPath = "";
     private currentRevision: string;
+    private topLevelTestbench = "";
 
     constructor(name: string, projectPath: string, currentRevision: string,
         emitterProject: ProjectEmitter) {
@@ -175,6 +187,8 @@ export class QuartusProjectManager extends Project_manager {
                 projectInfo.allow_register_retiming
             );
 
+            quartusProject.setTopLevelTestbench(projectInfo.eda_test_bench_top_module);
+
             // Add all files to project
             await quartusProject.add_file_from_array_no_quartus_update(projectFiles);
             await quartusProject.updateStatus(true);
@@ -185,15 +199,20 @@ export class QuartusProjectManager extends Project_manager {
         }
     }
 
+    public setTopLevelTestbench(topLevelTestbench: string) {
+        this.topLevelTestbench = topLevelTestbench;
+    }
+
     private async setConfigFromQuartusProject(family: string, part: string,
-        optimizationMode: e_tools_quartus_optimization_mode, allowRegisterRetime: boolean) {
+        optimizationMode: e_tools_quartus_optimization_mode, allowRegisterRetime: boolean,
+        emitEvent = true) {
 
         const configCurrent = this.get_config();
         configCurrent.tools.quartus.family = family;
         configCurrent.tools.quartus.device = part;
         configCurrent.tools.quartus.optimization_mode = optimizationMode;
         configCurrent.tools.quartus.allow_register_retiming = allowRegisterRetime;
-        await super.set_config(configCurrent);
+        await super.set_config(configCurrent, emitEvent);
     }
 
     private async updateStatus(deleteRunning: boolean) {
@@ -207,13 +226,13 @@ export class QuartusProjectManager extends Project_manager {
         const quartusProjectFileList = await getFilesFromProject(config, this.projectDiskPath, true,
             this.emitterProject);
 
-        super.clearFiles();
-        await super.add_file_from_array(quartusProjectFileList);
+        super.clearFiles(false);
+        await super.add_file_from_array(quartusProjectFileList, false);
 
         if (projectInfo.topEntity !== "") {
             for (const file of quartusProjectFileList) {
                 if (get_filename(file.name, false) === projectInfo.topEntity) {
-                    super.add_toplevel_path(file.name);
+                    super.add_toplevel_path(file.name, false);
                     break;
                 }
             }
@@ -223,8 +242,10 @@ export class QuartusProjectManager extends Project_manager {
             projectInfo.family,
             projectInfo.part,
             projectInfo.optimization_mode,
-            projectInfo.allow_register_retiming
+            projectInfo.allow_register_retiming,
+            false,
         );
+        this.setTopLevelTestbench(projectInfo.eda_test_bench_top_module);
 
         super.notifyChanged();
     }
@@ -423,5 +444,124 @@ export class QuartusProjectManager extends Project_manager {
     public async set_config(config: e_config): Promise<void> {
         await setConfigToProject(config, this.projectDiskPath, this.emitterProject);
         super.set_config(config);
+    }
+
+    public getRunTitle(): string {
+        return "TESTBENCHES";
+    }
+
+    public async get_test_list(): Promise<t_test_declaration[]> {
+        try {
+            const projectInfo = await getProjectInfo(this.get_config(), this.projectDiskPath, this.emitterProject);
+            const eda_test_bench_file = projectInfo.eda_test_bench_file;
+            let eda_test_bench_top_module = projectInfo.eda_test_bench_top_module;
+
+            if (eda_test_bench_file === "") {
+                return [];
+            }
+
+            if (eda_test_bench_top_module === "") {
+                eda_test_bench_top_module = get_toplevel_from_path(eda_test_bench_file);
+            }
+
+            if (eda_test_bench_top_module === "") {
+                return [];
+            }
+
+            const testbench = {
+                suite_name: "",
+                name: eda_test_bench_top_module,
+                test_type: "",
+                filename: eda_test_bench_file,
+                location: undefined,
+            };
+            return [testbench];
+        }
+        catch (error) {
+            return [];
+        }
+    }
+
+    public async setTestbench(filePath: string): Promise<t_action_result> {
+        const result = {
+            result: undefined,
+            successful: false,
+            msg: "",
+        };
+        try {
+            setTopLevelTestbench(
+                this.get_config(), this.projectDiskPath, filePath, this.emitterProject
+            );
+            // this.emitterProject.emitEvent(this.get_name(), e_event.SELECT_TOPLEVEL_TESTBENCH);
+            result.successful = true;
+        }
+        catch (error) {
+            result.successful = false;
+        }
+        return result;
+    }
+
+    public async run(_test_list: t_test_declaration[],
+        callback: (result: t_test_result[]) => void,
+        callback_stream: (stream_c: any) => void): Promise<any> {
+
+        const config = this.get_config();
+        const cmdList: string[] = [];
+
+        const isCmdMode = config.tools.general.execution_mode === e_tools_general_execution_mode.cmd;
+        if (isCmdMode) {
+            cmdList.push("set sim_args [list simulation=[list --no_gui]]");
+            cmdList.push("execute_flow -simulation -flow_args $sim_args");
+        }
+        else {
+            cmdList.push("execute_flow -simulation");
+        }
+
+
+        const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl.nj'));
+        const templateRender = nunjucks.renderString(
+            templateContent, { "cmd_list": cmdList }).replace(/&quot;/g, "\"");
+
+        // Create temp file
+        const tclFile = process_utils.create_temp_file(templateRender);
+
+        const cwd = get_directory(this.projectDiskPath);
+        const opt_exec = { cwd: cwd };
+        const p = new Process();
+
+        const cmd = `quartus_sh -t "${tclFile}" "" "${this.projectDiskPath}"`;
+        const exec_i = p.exec(cmd, opt_exec, (result: p_result) => {
+            const resultOutput: t_test_result[] = [];
+            if (isCmdMode) {
+                const fileOut = process_utils.create_temp_file(result.stdout + result.stderr);
+                const artifact_build: t_test_artifact = {
+                    name: "Console output",
+                    path: fileOut,
+                    content: result.stdout + result.stderr,
+                    command: "",
+                    artifact_type: e_artifact_type.CONSOLE_LOG,
+                    element_type: e_element_type.TEXT_FILE
+                };
+
+                const test_result: t_test_result = {
+                    suite_name: "Simulation",
+                    name: this.topLevelTestbench,
+                    edam: "",
+                    config_summary_path: "",
+                    config: config,
+                    artifact: [artifact_build],
+                    build_path: cwd,
+                    successful: result.successful,
+                    stdout: result.stdout,
+                    stderr: result.stderr,
+                    time: 0,
+                    test_path: "",
+                };
+                resultOutput.push(test_result);
+            }
+            callback(resultOutput);
+        });
+        callback_stream(exec_i);
+        return exec_i;
     }
 }

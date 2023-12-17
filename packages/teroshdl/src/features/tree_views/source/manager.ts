@@ -180,9 +180,38 @@ export class Source_manager extends BaseView {
     async select_top(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
-            await prj.add_toplevel_path(item.get_name());
+            if (prj.getProjectType() !== teroshdl2.project_manager.common.e_project_type.QUARTUS) {
+                await prj.add_toplevel_path(item.get_name());
+            }
+
+            const project_examples_types = [
+                'Set as top level design', 
+                'Set as top level testbench (only for simulation)'
+            ];
+            let picker_value = await vscode.window.showQuickPick(project_examples_types, {
+                placeHolder: "Choose the type of top level",
+            });
+            if (picker_value !== undefined) {
+                if (picker_value === project_examples_types[0]) {
+                    const result = await prj.add_toplevel_path(item.get_name());
+                    this.showTopLevelMessage(result.successful, true);
+                }
+                else if (picker_value === project_examples_types[1]) {
+                    const result = await prj.setTestbench(item.get_name());
+                    this.showTopLevelMessage(result.successful, false);
+                }
+            }
         } catch (error) {
 
+        }
+    }
+
+    private showTopLevelMessage(successful: boolean, onlyFailed: boolean) {
+        if (successful === false && !onlyFailed === true) {
+            vscode.window.showErrorMessage("The testbench can not be set as top level testbench.");
+        }
+        else {
+            vscode.window.showInformationMessage("The testbench was set as top level testbench.");
         }
     }
 

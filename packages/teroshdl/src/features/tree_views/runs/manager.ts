@@ -33,12 +33,15 @@ export class Runs_manager extends BaseView{
     private run_output_manager: Run_output_manager;
     private logger: Logger;
     private last_run: any;
+    private treeView: vscode.TreeView<element.TreeItem>;
+    private projectEmitter: teroshdl2.project_manager.projectEmitter.ProjectEmitter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
-        run_output_manager: Run_output_manager, logger: Logger) {
+        run_output_manager: Run_output_manager, logger: Logger, 
+        projectEmitter: teroshdl2.project_manager.projectEmitter.ProjectEmitter) {
 
         super(e_viewType.RUNS);
 
@@ -48,9 +51,9 @@ export class Runs_manager extends BaseView{
         this.run_output_manager = run_output_manager;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager, run_output_manager);
+        this.projectEmitter = projectEmitter;
 
-        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(),
-            this.tree as element.BaseTreeDataProvider<element.Run>));
+        this.treeView = vscode.window.createTreeView(element.ProjectProvider.getViewID(), {treeDataProvider: this.tree});
     }
 
     set_commands() {
@@ -134,9 +137,17 @@ export class Runs_manager extends BaseView{
     refresh(result: teroshdl2.project_manager.tool_common.t_test_result[]) {
         this.run_output_manager.set_results(result);
         this.refresh_tree();
+        this.projectEmitter.emitEvent("", teroshdl2.project_manager.projectEmitter.e_event.FINISH_RUN);
     }
 
     refresh_tree() {
+        try {
+            const prj = this.project_manager.get_selected_project();
+            const title = prj.getRunTitle();
+            this.treeView.title = title;
+        }
+        catch (error) {}
+
         this.tree.refresh();
     }
 }

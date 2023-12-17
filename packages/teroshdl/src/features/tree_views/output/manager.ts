@@ -34,6 +34,7 @@ export class Output_manager extends BaseView{
     private run_output_manager: Run_output_manager;
     private project_manager: t_Multi_project_manager;
     private logger: Logger;
+    private treeView: vscode.TreeView<element.TreeItem>;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -51,11 +52,17 @@ export class Output_manager extends BaseView{
 
         vscode.commands.registerCommand("teroshdl.view.outputs.clean", (item) => this.clean());
 
-        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(),
-            this.tree as element.BaseTreeDataProvider<element.Output>));
+        this.treeView = vscode.window.createTreeView(element.ProjectProvider.getViewID(), {treeDataProvider: this.tree});
     }
 
     refresh_tree() {
+        try {
+            const prj = this.project_manager.get_selected_project();
+            const title = prj.getRunTitle();
+            this.treeView.title = title + " - OUTPUT";
+        }
+        catch (error) {}
+
         this.tree.refresh();
     }
 

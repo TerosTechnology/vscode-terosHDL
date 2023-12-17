@@ -57,7 +57,7 @@ export class Tree_view_manager {
             new Project_manager(context, manager, emitterProject, run_output, global_logger),
             new Source_manager(context, manager),
             new TreeDependencyManager(context, manager, schematic_manager, dependency_manager),
-            new Runs_manager(context, manager, run_output, debugLogger),
+            new Runs_manager(context, manager, run_output, debugLogger, emitterProject),
             new Tasks_manager(context, manager, debugLogger, logView, emitterProject),
             new IpCatalogManager(context, manager, debugLogger),
             new Actions_manager(context),

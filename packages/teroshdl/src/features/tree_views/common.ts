@@ -67,10 +67,12 @@ export const REFRESHLIST: Record<e_viewType, teroshdl2.project_manager.projectEm
     [e_viewType.RUNS]: [
         teroshdl2.project_manager.projectEmitter.e_event.GLOBAL_REFRESH,
         teroshdl2.project_manager.projectEmitter.e_event.SELECT_PROJECT,
+        teroshdl2.project_manager.projectEmitter.e_event.SELECT_TOPLEVEL_TESTBENCH,
         teroshdl2.project_manager.projectEmitter.e_event.REMOVE_PROJECT,
         teroshdl2.project_manager.projectEmitter.e_event.SELECT_TOPLEVEL,
         teroshdl2.project_manager.projectEmitter.e_event.EXEC_RUN,
         teroshdl2.project_manager.projectEmitter.e_event.FINISH_RUN,
+        teroshdl2.project_manager.projectEmitter.e_event.SAVE_SETTINGS,
     ],
     [e_viewType.SOURCE]: [
         teroshdl2.project_manager.projectEmitter.e_event.GLOBAL_REFRESH,

@@ -169,7 +169,7 @@ export class Teroshdl {
     }
 
     private init_config() {
-        new Config_manager(this.context, this.manager);
+        new Config_manager(this.context, this.manager, this.emitterProject);
     }
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {

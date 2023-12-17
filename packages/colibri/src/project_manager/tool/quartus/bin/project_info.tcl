@@ -19,7 +19,22 @@ proc get_prj_info {csv_file} {
     set optimization_mode [get_global_assignment -name OPTIMIZATION_MODE]
     set allow_register_retiming [get_global_assignment -name ALLOW_REGISTER_RETIMING]
 
-    puts $csv_file [join [ list $prj_name $prj_revision $top_level_entity $family $part $optimization_mode $allow_register_retiming] "," ]
+
+
+    set eda_test_bench_file ""
+    set collection [get_all_global_assignments -name EDA_TEST_BENCH_FILE -section_id testbenchSet]
+    foreach_in_collection file_inst $collection {
+        set filename [lindex $file_inst 2]
+        set eda_test_bench_file [resolve_file_path $filename]
+    }
+
+    set eda_test_bench_top_module ""
+    set collection [get_all_global_assignments -name EDA_TEST_BENCH_TOP_MODULE -section_id testbenchSet]
+    foreach_in_collection file_inst $collection {
+        set eda_test_bench_top_module [lindex $file_inst 2]
+    }
+
+    puts $csv_file [join [ list $prj_name $prj_revision $top_level_entity $family $part $optimization_mode $allow_register_retiming $eda_test_bench_file $eda_test_bench_top_module] "," ]
 
     set revision_list [get_project_revisions]
     puts $csv_file [join [ list $revision_list ] "," ]
