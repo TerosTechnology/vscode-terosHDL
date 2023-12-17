@@ -61,7 +61,7 @@ export class Project_manager extends BaseView {
     }
 
     public getRefreshEvent(): teroshdl2.project_manager.projectEmitter.e_event[] {
-        return []
+        return [];
     }
 
     open_doc() {
