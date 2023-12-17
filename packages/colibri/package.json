@@ -101,8 +101,7 @@
         "eslint": "^8.17.0",
         "jest-html-reporters": "^3.1.4",
         "shx": "^0.3.3",
-        "ts-jest": "^29.0.5",
-        "ts-node": "^10.2.1",
+        "ts-jest": "^29.1.1",
         "typedoc": "^0.23.9",
         "typedoc-theme-hierarchy": "^3.0.0",
         "typescript": "^4.5.4"
