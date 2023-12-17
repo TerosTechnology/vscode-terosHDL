@@ -59,3 +59,5 @@ export enum e_sentence {
     SWITCH = "switch",
     FOLDER_SEP = "folder_sep",
 }
+
+export const TIMEOUTMSG = "Timeout reached";

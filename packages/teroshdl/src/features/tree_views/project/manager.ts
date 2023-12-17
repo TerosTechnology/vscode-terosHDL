@@ -158,7 +158,7 @@ export class Project_manager extends BaseView {
 
                 const msg = `Intel@ Quartus@ Prime project ${quartusProject.get_name()} created.`;
                 showMessage(msg, t_message_level.INFO);
-            } catch (error) { 
+            } catch (error) {
                 const msg = "Intel@ Quartus@ Prime project can't be created. Check the TerosHDL: Debug output.";
                 showMessage(msg, t_message_level.WARNING);
             }
@@ -227,21 +227,31 @@ export class Project_manager extends BaseView {
     }
 
     async create_project_from_quartus(prj_path: string) {
-        try {
-            // Create project
-            const quartusProject =
-                await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromExistingQuartusProject(
-                    teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config(),
-                    prj_path, this.emitterProject
-                );
-
-            // Add project to manager
-            this.project_manager.add_project(quartusProject);
-
-            const msg = `Intel@ Quartus@ Prime project ${quartusProject.get_name()} loaded.`;
-            showMessage(msg, t_message_level.INFO);
-        } catch (error) {
-        }
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Loading Intel@ Quartus@ Project@...",
+            cancellable: false
+        }, (_progress, _token) => {
+            return new Promise<void>(async (resolve) => {
+                try {
+                    // Create project
+                    const quartusProject =
+                        await teroshdl2.project_manager.quartusProjectManager.QuartusProjectManager.fromExistingQuartusProject(
+                            teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config(),
+                            prj_path, this.emitterProject
+                        );
+                    // Add project to manager
+                    this.project_manager.add_project(quartusProject);
+                    const msg = `Intel@ Quartus@ Prime project ${quartusProject.get_name()} loaded.`;
+                    showMessage(msg, t_message_level.INFO);
+                    resolve();
+                } catch (error) {
+                    const msg = "Intel@ Quartus@ Prime project can't be loaded. Check the TerosHDL: Debug Output.";
+                    showMessage(msg, t_message_level.WARNING);
+                    resolve();
+                }
+            });
+        });
     }
 
     async create_project_from_json(prj_path: string) {

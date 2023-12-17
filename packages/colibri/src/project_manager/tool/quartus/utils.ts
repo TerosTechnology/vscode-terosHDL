@@ -1,7 +1,7 @@
 // This code only can be used for Quartus boards
 
 import { e_config, e_tools_quartus_optimization_mode } from "../../../config/config_declaration";
-import { p_result } from "../../../process/common";
+import { TIMEOUTMSG, p_result } from "../../../process/common";
 import { t_board_list, t_loader_action_result } from "../common";
 import * as process_utils from "../../../process/utils";
 import * as process_teros from "../../../process/process";
@@ -121,30 +121,42 @@ export function getQsysPath(config: e_config): string {
  * @param tcl_file Tcl file path.
  * @param args Arguments.
  * @param cwd Current working directory.
+ * @param emitterProject Project emitter.
+ * @param timeout Timeout in seconds.
  * @returns Result of execution.
 **/
 async function executeQuartusTcl(config: e_config, tcl_file: string, args: string,
-    cwd: string, emitterProject: ProjectEmitter): Promise<{ result: p_result, csv_content: string }> {
+    cwd: string, emitterProject: ProjectEmitter, timeout: number | undefined = undefined)
+    : Promise<{ result: p_result, csv_content: string }> {
 
     const quartus_bin = path_lib.join(getQuartusPath(config), "quartus_sh");
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");
 
+    const options = { cwd: cwd, timeout: timeout };
+
     const cmd = `${quartus_bin} -t "${tcl_file}" "${csv_file}" ${args}`;
-    const cmd_result = await (new process_teros.Process(undefined)).exec_wait(cmd, { cwd: cwd });
+    const cmd_result = await (new process_teros.Process(undefined)).exec_wait(cmd, options);
 
     const csv_content = await file_utils.read_file_sync(csv_file);
 
     file_utils.remove_file(csv_file);
 
-    const stdout = `\n${cmd_result.command}\n${cmd_result.stdout}\n${cmd_result.stderr}\n`;
+    let stdout = `\n${cmd_result.command}\n${cmd_result.stdout}\n${cmd_result.stderr}\n`;
     if (cmd_result.successful) {
         emitterProject.emitEventLog(stdout, e_event.STDOUT_INFO);
     } else {
-        emitterProject.emitEventLog(stdout, e_event.STDOUT_ERROR);
+        if (cmd_result.stderr === TIMEOUTMSG) {
+            const tclContent = file_utils.read_file_sync(tcl_file);
+            stdout += "TCL script executed: \n" + tclContent + "\n";
+            emitterProject.emitEventLog(stdout, e_event.STDOUT_ERROR);
+        }
+        else {
+            emitterProject.emitEventLog(stdout, e_event.STDOUT_ERROR);
+    
+        }
     }
-
     return { result: cmd_result, csv_content: csv_content };
 }
 
@@ -164,7 +176,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
     const args = `"${projectPath}"`;
     const tcl_file = path_lib.join(__dirname, 'bin', 'project_info.tcl');
 
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject);
+    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject, 6);
 
     const result = {
         prj_name: "",

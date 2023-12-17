@@ -38,12 +38,12 @@
                     "name": "Watchers"
                 },
                 {
-                    "id": "teroshdl-view-runs",
-                    "name": "Runs"
-                },
-                {
                     "id": "teroshdl-view-tasks",
                     "name": "Tasks"
+                },
+                {
+                    "id": "teroshdl-view-runs",
+                    "name": "Runs"
                 },
                 {
                     "id": "teroshdl-view-ip-catalog",
