@@ -80,7 +80,7 @@ export class IpCatalogManager extends BaseView{
         vscode.window.showInformationMessage(
             `Choose the IP in the IP Catalog view. After that, the template will be added the current cursor position.`
         );
-        this.refresh_tree()
+        this.refresh_tree();
     }
 
     refresh_tree() {

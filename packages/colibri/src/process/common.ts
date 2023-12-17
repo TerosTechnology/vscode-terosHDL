@@ -42,6 +42,7 @@ export type p_result = {
 /** Proccess options */
 export type p_options = {
     cwd: string;
+    timeout?: number;
 }
 
 /** Operative system name */

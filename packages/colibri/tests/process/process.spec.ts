@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as path_lib from "path";
-import {Process} from "../../src/process/process";
+import { Process } from "../../src/process/process";
 
 describe("Process", () => {
 
@@ -54,13 +54,39 @@ describe("Process", () => {
 
         const p = new Process();
         const folder_test = path_lib.join(__dirname, "sample_folder");
-        const result = await p.exec_wait(cmd, {cwd: folder_test});
+        const result = await p.exec_wait(cmd, { cwd: folder_test });
 
         expect(result.command).toBe(cmd);
         expect(result.return_value).toBe(0);
         expect(result.stderr).toBe("");
         expect(result.stdout).toContain("hi");
         expect(result.successful).toBeTruthy();
+    });
+
+    it(`Local: success exec with timeout`, async () => {
+        const cmd = "ls -l";
+
+        const p = new Process();
+        const folder_test = path_lib.join(__dirname, "sample_folder");
+        const result = await p.exec_wait(cmd, { cwd: folder_test, timeout: 3 });
+
+        expect(result.command).toBe(cmd);
+        expect(result.return_value).toBe(0);
+        expect(result.stderr).toBe("");
+        expect(result.stdout).toContain("hi");
+        expect(result.successful).toBeTruthy();
+    });
+
+    it(`Local: failed exec with timeout`, async () => {
+        const cmd = "sleep 2";
+
+        const p = new Process();
+        const result = await p.exec_wait(cmd, { cwd: __dirname, timeout: 0.1 });
+        expect(result.command).toBe(cmd);
+        expect(result.return_value).toBe(-1);
+        expect(result.stderr).toBe("Timeout reached");
+        expect(result.stdout).toBe("");
+        expect(result.successful).not.toBeTruthy();
     });
 
     ////////////////////////////////////////////////////////////////////////////
@@ -98,7 +124,7 @@ describe("Process", () => {
         const p = new Process();
         const folder_test = path_lib.join(__dirname, "sample_folder");
 
-        p.exec(cmd, {cwd: folder_test}, (result) => {
+        p.exec(cmd, { cwd: folder_test, timeout: 0 }, (result) => {
             expect(result.command).toBe(cmd);
             expect(result.return_value).toBe(0);
             expect(result.stderr).toBe("");

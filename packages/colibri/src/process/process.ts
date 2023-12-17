@@ -24,7 +24,8 @@ import { ChildProcess } from "child_process";
 export class Process {
     private p: Local_process;
     private DEFAULT_OPT: p_options = {
-        cwd: ""
+        cwd: "",
+        timeout: 0
     };
 
     constructor(_remote_config?: p_remote_configuration) {
@@ -49,7 +50,7 @@ export class Process {
      * @param callback Callback function
      * @returns Result of the execution
     **/
-    exec(command: string, opt: p_options | undefined, callback: (result: p_result) => void) : ChildProcess{
+    exec(command: string, opt: p_options | undefined, callback: (result: p_result) => void): ChildProcess {
         const opt_ins = (typeof opt === 'undefined') ? this.DEFAULT_OPT : opt;
         const exec_i = this.p?.exec(command, opt_ins, (result: p_result) => {
             callback(result);
