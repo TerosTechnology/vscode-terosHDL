@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { p_result, p_options } from "./common";
+import { p_result, p_options, TIMEOUTMSG } from "./common";
 import { ChildProcess, ExecException, exec } from "child_process";
 
 export class Local_process {
@@ -41,7 +41,7 @@ export class Local_process {
                     const result: p_result = {
                         command,
                         stdout: '',
-                        stderr: 'Timeout reached',
+                        stderr: TIMEOUTMSG,
                         return_value: -1,
                         successful: false,
                     };
