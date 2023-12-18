@@ -19,6 +19,7 @@
 import events = require("events");
 
 export enum e_event {
+    PROJECT_CHANGED = "project_changed", // Source, toplevel
     GLOBAL_REFRESH = "global_refresh",
     // Project
     ADD_PROJECT = "add_project",

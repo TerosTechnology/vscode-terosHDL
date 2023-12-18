@@ -157,6 +157,10 @@ export class Project_manager extends ConfigManager {
         this.emitterProject.emitEvent(this.name, e_event.GLOBAL_REFRESH);
     }
 
+    protected async notifyProjectChanged(): Promise<void> {
+        this.emitterProject.emitEvent(this.name, e_event.PROJECT_CHANGED);
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     public async syncWithDisk(): Promise<void> {
     }

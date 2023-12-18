@@ -34,6 +34,7 @@ export const REFRESHLIST: Record<e_viewType, teroshdl2.project_manager.projectEm
     [e_viewType.ACTIONS]: [
     ],
     [e_viewType.DEPENDENCY]: [
+        teroshdl2.project_manager.projectEmitter.e_event.PROJECT_CHANGED,
         teroshdl2.project_manager.projectEmitter.e_event.GLOBAL_REFRESH,
         teroshdl2.project_manager.projectEmitter.e_event.SELECT_PROJECT,
         teroshdl2.project_manager.projectEmitter.e_event.REMOVE_PROJECT,
@@ -65,6 +66,7 @@ export const REFRESHLIST: Record<e_viewType, teroshdl2.project_manager.projectEm
         teroshdl2.project_manager.projectEmitter.e_event.SELECT_PROJECT,
     ],
     [e_viewType.RUNS]: [
+        teroshdl2.project_manager.projectEmitter.e_event.PROJECT_CHANGED,
         teroshdl2.project_manager.projectEmitter.e_event.GLOBAL_REFRESH,
         teroshdl2.project_manager.projectEmitter.e_event.SELECT_PROJECT,
         teroshdl2.project_manager.projectEmitter.e_event.SELECT_TOPLEVEL_TESTBENCH,
@@ -75,6 +77,7 @@ export const REFRESHLIST: Record<e_viewType, teroshdl2.project_manager.projectEm
         teroshdl2.project_manager.projectEmitter.e_event.SAVE_SETTINGS,
     ],
     [e_viewType.SOURCE]: [
+        teroshdl2.project_manager.projectEmitter.e_event.PROJECT_CHANGED,
         teroshdl2.project_manager.projectEmitter.e_event.GLOBAL_REFRESH,
         teroshdl2.project_manager.projectEmitter.e_event.SELECT_PROJECT,
         teroshdl2.project_manager.projectEmitter.e_event.REMOVE_PROJECT,
@@ -92,6 +95,7 @@ export const REFRESHLIST: Record<e_viewType, teroshdl2.project_manager.projectEm
         teroshdl2.project_manager.projectEmitter.e_event.SAVE_SETTINGS,
     ],
     [e_viewType.WATCHERS]: [
+        teroshdl2.project_manager.projectEmitter.e_event.PROJECT_CHANGED,
         teroshdl2.project_manager.projectEmitter.e_event.GLOBAL_REFRESH,
         teroshdl2.project_manager.projectEmitter.e_event.SELECT_PROJECT,
         teroshdl2.project_manager.projectEmitter.e_event.REMOVE_PROJECT,
