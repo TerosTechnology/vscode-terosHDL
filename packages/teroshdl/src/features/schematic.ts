@@ -28,7 +28,7 @@ import * as fs from 'fs';
 import * as yosys from './yosys';
 import * as shell from 'shelljs';
 import * as nunjucks from 'nunjucks';
-import { Logger } from '../logger';
+import { globalLogger } from '../logger';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 const activation_command = 'teroshdl.netlist.viewer';
@@ -39,20 +39,17 @@ export class Schematic_manager extends Base_webview {
     private working_directory = "";
     private output_path = "";
     private childp;
-    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager,
-        mode_project: boolean) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, mode_project: boolean) {
 
         super(context, manager, path_lib.join(context.extensionPath, 'resources', 'webviews',
             'netlist_viewer', 'netlist_viewer.html'), activation_command, id);
 
         this.working_directory = os.tmpdir();
         this.output_path = path_lib.join(this.working_directory, 'teroshdl_yosys_output.json');
-        this.logger = logger;
     }
 
     get_webview_content(webview: vscode.Webview) {
@@ -173,7 +170,7 @@ export class Schematic_manager extends Base_webview {
                     let path_norm = utils.normalize_path(fileInfos?.path);
 
                     fs.writeFileSync(path_norm, svg);
-                    this.logger.info(`Schematic saved in: ${path_norm}`, true);
+                    globalLogger.info(`Schematic saved in: ${path_norm}`, true);
                 }
             });
         }
@@ -253,7 +250,7 @@ export class Schematic_manager extends Base_webview {
 
             return await this.run_yosys_script(top_level, file_array, this.output_path);
         } catch (error) {
-            this.logger.error("Select a project first.", false);
+            globalLogger.error("Select a project first.", false);
             return "";
         }
 
@@ -282,7 +279,7 @@ export class Schematic_manager extends Base_webview {
 
         let cmd_files = yosys.get_yosys_read_file(sources, backend, this.working_directory);
         if (cmd_files === undefined) {
-            this.logger.error(`Error procesing the schematic`, true);
+            globalLogger.error(`Error procesing the schematic`, true);
             netlist.empty = true;
             return netlist;
         }
@@ -315,7 +312,7 @@ export class Schematic_manager extends Base_webview {
         command += '\n';
 
         let element = this;
-        this.logger.info(command);
+        globalLogger.info(command);
 
         return new Promise(resolve => {
             element.childp = shell.exec(command, { async: true, cwd: this.working_directory }, async function (code, stdout, stderr) {
@@ -333,19 +330,17 @@ export class Schematic_manager extends Base_webview {
                     resolve(netlist_svg);
                 }
                 else {
-                    selfm.logger.error("Yosys failed.", true);
+                    globalLogger.error("Yosys failed.", true);
                     netlist.empty = true;
                     resolve(netlist);
                 }
             });
 
-            const selfm = this;
-
             element.childp.stdout.on('data', function (data) {
-                selfm.logger.info(data);
+                globalLogger.info(data);
             });
             element.childp.stderr.on('data', function (data) {
-                selfm.logger.append(data);
+                globalLogger.append(data);
             });
         });
     }
@@ -378,7 +373,7 @@ export class Schematic_manager extends Base_webview {
             output_yosys.result = await netlistsvg.render(skin, jsonp, undefined, undefined, config);
         } catch (error) {
             console.log(error);
-            this.logger.error("Generating the schematic graph. The graph exceeds the maximum size.", true);
+            globalLogger.error("Generating the schematic graph. The graph exceeds the maximum size.", true);
             return "";
         }
 

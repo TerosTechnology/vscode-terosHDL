@@ -22,14 +22,13 @@ import * as path_lib from 'path';
 import * as fs from 'fs';
 import { t_Multi_project_manager } from '../type_declaration';
 import * as nunjucks from 'nunjucks';
-import { Logger } from '../logger';
+import { globalLogger } from '../logger';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 const base_path = "dependencies_viewer";
 
 export class Dependency_manager {
 
-    private logger: Logger;
     private context: vscode.ExtensionContext;
     protected panel: vscode.WebviewPanel | undefined;
     protected manager: t_Multi_project_manager;
@@ -40,7 +39,7 @@ export class Dependency_manager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
 
         const activation_command = 'teroshdl.dependency.viewer';
         const id = "dependency_viewer";
@@ -49,7 +48,6 @@ export class Dependency_manager {
         // super(context, manager, resource_path, activation_command, id);
         this.context = context;
         this.manager = manager;
-        this.logger = logger;
     }
 
     get_webview_content(webview: vscode.Webview) {
@@ -140,14 +138,14 @@ export class Dependency_manager {
             const python_path = GlobalConfigManager.getInstance().get_config().general.general.pypath;
             const result = await selected_project.get_dependency_graph(python_path);
             if (result.successful === false) {
-                this.logger.error("Error while getting dependency graph.", true);
-                this.logger.error(result.msg, true);
+                globalLogger.error("Error while getting dependency graph.", true);
+                globalLogger.error(result.msg, true);
                 return "";
             }
             this.dependencies = result.result;
             await this.panel?.webview.postMessage({ command: "update", message: result.result });
         } catch (error) {
-            this.logger.error("Select a project first.", false);
+            globalLogger.error("Select a project first.", false);
             return "";
         }
     }
@@ -164,7 +162,7 @@ export class Dependency_manager {
             });
         if (result !== undefined) {
             fs.writeFileSync(result.fsPath, svg);
-            this.logger.info(`Dependency graph image saved in: ${result.fsPath}`, true);
+            globalLogger.info(`Dependency graph image saved in: ${result.fsPath}`, true);
         }
     }
 

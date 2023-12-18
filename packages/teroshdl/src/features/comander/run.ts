@@ -25,19 +25,17 @@ import { t_Multi_project_manager } from '../../type_declaration';
 import { OS } from "teroshdl2/out/process/common";
 import { get_os } from "teroshdl2/out/process/utils";
 import * as path_lib from 'path';
-import { Logger } from '../../logger';
+import { globalLogger } from '../../logger';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 export class Comander {
 
     private manager: t_Multi_project_manager;
     private report_webview: Base_webview;
-    private logger: Logger;
 
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logger: Logger) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
         this.manager = manager;
         this.report_webview = new Base_webview(context);
-        this.logger = logger;
     }
 
     public init() {
@@ -47,7 +45,7 @@ export class Comander {
     }
 
     private open_file(args: vscode.Uri) {
-        this.logger.info(`Opening the file: ${args.fsPath}`);
+        globalLogger.info(`Opening the file: ${args.fsPath}`);
         vscode.workspace.openTextDocument(args).then(doc => {
             vscode.window.showTextDocument(doc);
         });
@@ -55,7 +53,7 @@ export class Comander {
 
     private open_waveform(args: vscode.Uri) {
         const file_path = args.fsPath;
-        this.logger.info(`Opening the waveform: ${file_path}`);
+        globalLogger.info(`Opening the waveform: ${file_path}`);
 
         let gtkwave_binary = "gtkwave";
         const os_i = get_os();

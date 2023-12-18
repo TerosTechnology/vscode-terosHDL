@@ -22,16 +22,15 @@ import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as teroshdl2 from 'teroshdl2';
 import { Run_output_manager } from "../run_output";
-import { Logger } from "../../../logger";
 import * as tree_kill from 'tree-kill';
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
+import { toolLogger } from "../../../logger";
 
 export class Runs_manager extends BaseView{
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
     private run_output_manager: Run_output_manager;
-    private logger: Logger;
     private last_run: any;
     private treeView: vscode.TreeView<element.TreeItem>;
     private projectEmitter: teroshdl2.project_manager.projectEmitter.ProjectEmitter;
@@ -40,14 +39,13 @@ export class Runs_manager extends BaseView{
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
-        run_output_manager: Run_output_manager, logger: Logger, 
+        run_output_manager: Run_output_manager, 
         projectEmitter: teroshdl2.project_manager.projectEmitter.ProjectEmitter) {
 
         super(e_viewType.RUNS);
 
         this.set_commands();
 
-        this.logger = logger;
         this.run_output_manager = run_output_manager;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager, run_output_manager);
@@ -107,7 +105,7 @@ export class Runs_manager extends BaseView{
                     };
                     test_list = [test];
                 }
-                this.logger.show();
+                toolLogger.show();
                 const selfm = this;
                 const p = new Promise<void>(resolve => {
                     prj.run(test_list,
@@ -120,10 +118,10 @@ export class Runs_manager extends BaseView{
                         (function (stream_c: any) {
                             selfm.last_run = stream_c;
                             stream_c.stdout.on('data', function (data: any) {
-                                selfm.logger.log(data);
+                                toolLogger.log(data);
                             });
                             stream_c.stderr.on('data', function (data: any) {
-                                selfm.logger.log(data);
+                                toolLogger.log(data);
                             });
                         }),
                     );

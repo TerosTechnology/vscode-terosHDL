@@ -48,10 +48,9 @@ export class Teroshdl {
     private context: vscode.ExtensionContext;
     private manager: t_Multi_project_manager;
     private emitterProject = new teroshdl2.project_manager.projectEmitter.ProjectEmitter();
-    private global_logger: Logger;
     private logView;
 
-    constructor(context: vscode.ExtensionContext, global_logger: Logger) {
+    constructor(context: vscode.ExtensionContext) {
         this.logView = new LogView(context);
 
         context.subscriptions.push(vscode.window.registerWebviewViewProvider(
@@ -67,7 +66,6 @@ export class Teroshdl {
             file_prj_path);
         GlobalConfigManager.newInstance(file_config_path);
         this.context = context;
-        this.global_logger = global_logger;
     }
 
     public async init_teroshdl() {
@@ -129,23 +127,23 @@ export class Teroshdl {
     }
 
     private init_template_manager() {
-        new Template_manager(this.context, this.global_logger, this.manager);
+        new Template_manager(this.context, this.manager);
     }
 
     private init_documenter() {
-        new Documenter_manager(this.context, this.global_logger, this.manager);
+        new Documenter_manager(this.context, this.manager);
     }
 
     private init_state_machine() {
-        new State_machine_manager(this.context, this.global_logger, this.manager);
+        new State_machine_manager(this.context, this.manager);
     }
 
     private init_schematic() {
-        return new Schematic_manager(this.context, this.global_logger, this.manager, false);
+        return new Schematic_manager(this.context, this.manager, false);
     }
 
     private init_dependency() {
-        return new Dependency_manager(this.context, this.global_logger, this.manager);
+        return new Dependency_manager(this.context, this.manager);
     }
 
     private init_linter() {
@@ -153,7 +151,7 @@ export class Teroshdl {
     }
 
     private init_formatter() {
-        new Formatter_manager(this.context, this.global_logger, this.manager);
+        new Formatter_manager(this.context, this.manager);
     }
 
     private init_completions() {
@@ -174,10 +172,10 @@ export class Teroshdl {
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
         new Tree_view_manager(this.context, this.manager, this.emitterProject, schematic_manager,
-            dependency_manager, this.global_logger, this.logView);
+            dependency_manager, this.logView);
     }
 
     private init_comander() {
-        new Comander(this.context, this.manager, this.global_logger).init();
+        new Comander(this.context, this.manager).init();
     }
 }

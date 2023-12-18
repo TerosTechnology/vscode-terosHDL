@@ -21,7 +21,7 @@ import * as vscode from 'vscode';
 import * as release_notes_webview from "./utils/webview/release_notes";
 import { ExtensionManager } from "./utils/webview/utils";
 import { Teroshdl } from './teroshdl';
-import { Logger, debugLogger } from './logger';
+import { globalLogger, toolLogger, debugLogger } from './logger';
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -29,11 +29,10 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const extension_manager = new ExtensionManager();
 
-    const global_logger = new Logger("TerosHDL: Global");
-    global_logger.clear();
-
+    globalLogger.clear();
+    toolLogger.clear();
     debugLogger.clear();
-    
+
     try {
         await extension_manager.init();
         const releaseNotesView = new release_notes_webview.ReleaseNotesWebview(context);
@@ -47,6 +46,6 @@ export async function activate(context: vscode.ExtensionContext) {
         console.log(e);
     }
 
-    const teroshdl = new Teroshdl(context, global_logger);
+    const teroshdl = new Teroshdl(context);
     await teroshdl.init_teroshdl();
 }
