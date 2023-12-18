@@ -41,3 +41,23 @@ proc get_prj_info {csv_file} {
 }
 
 get_prj_info $csv_file
+
+#procedure for write all files in Quartus collection to a csv line
+proc process_files {csv_file collection} {
+    foreach_in_collection hdl_file $collection {
+        set filename [get_assignment_info $hdl_file -value]
+        set path [resolve_file_path $filename]
+        set library [get_assignment_info $hdl_file -library]
+        set library [expr {[string length $library]>0 ? $library : ""}]
+
+        puts $csv_file [join [ list $library $path] "," ]
+    }
+}
+
+process_files $csv_file [get_all_assignments -name VHDL_FILE -type global]
+process_files $csv_file [get_all_assignments -name VERILOG_FILE -type global]
+process_files $csv_file [get_all_assignments -name SYSTEMVERILOG_FILE -type global]
+process_files $csv_file [get_all_assignments -name SDC_FILE -type global]
+process_files $csv_file [get_all_assignments -name QIP_FILE -type global]
+process_files $csv_file [get_all_assignments -name IP_FILE -type global]
+process_files $csv_file [get_all_assignments -name QSYS_FILE -type global]

@@ -173,6 +173,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         optimization_mode: e_tools_quartus_optimization_mode, allow_register_retiming: boolean,
         eda_test_bench_file: string,
         eda_test_bench_top_module: string,
+        file_list: t_file[],
     }> {
 
     const args = `"${projectPath}"`;
@@ -191,6 +192,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         allow_register_retiming: false,
         eda_test_bench_file: "",
         eda_test_bench_top_module: "",
+        file_list: [] as t_file[],
     };
 
     if (!cmd_result.result.successful) {
@@ -201,9 +203,6 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
 
     try {
         const line_split = cmd_result.csv_content.trim().split(/\r\n|\n|\r/);
-        if (line_split.length !== 2) {
-            throw new QuartusExecutionError("Error in Quartus execution");
-        }
 
         // General info
         const data_0 = line_split[0].split(',');
@@ -215,7 +214,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
             result.part = data_0[4].trim();
             optimization_mode = data_0[5].trim().replace(/ /g, "_");
             result.allow_register_retiming = data_0[6].trim() === "ON" ? true : false;
-            result.eda_test_bench_file = data_0[7].trim() === file_utils.get_directory(projectPath) 
+            result.eda_test_bench_file = data_0[7].trim() === file_utils.get_directory(projectPath)
                 ? "" : data_0[7].trim();
             result.eda_test_bench_top_module = data_0[8].trim();
         } else {
@@ -227,6 +226,14 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         const revision_list = data_1.map((s: string) => s.trim());
         result.revision_list = revision_list;
 
+        // File list
+        if (line_split.length > 2) {
+            const fileListStr = line_split.slice(2).join('\n');
+            const csvFileList = process_utils.create_temp_file(fileListStr);
+            const fileList = get_files_from_csv(csvFileList, false).file_list;
+            file_utils.remove_file(csvFileList);
+            result.file_list = fileList;
+        }
     } catch (error) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
@@ -253,6 +260,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         allow_register_retiming: result.allow_register_retiming,
         eda_test_bench_file: result.eda_test_bench_file,
         eda_test_bench_top_module: result.eda_test_bench_top_module,
+        file_list: result.file_list,
     };
     return projectInfo;
 }
@@ -292,38 +300,6 @@ export async function getFamilyAndParts(config: e_config, emitterProject: Projec
         throw new QuartusExecutionError("Error in Quartus execution");
     }
     return boardList;
-}
-
-/**
- * Get files from Quartus project.
- * @param config Configuration.
- * @param projectPath Path to Quartus project.
- * @param is_manual True if the files are added manually.
- * @returns Quartus project info.
-**/
-export async function getFilesFromProject(config: e_config, projectPath: string, is_manual: boolean,
-    emitterProject: ProjectEmitter):
-    Promise<t_file[]> {
-
-    const tcl_file = path_lib.join(__dirname, 'bin', 'get_files.tcl');
-    const args = `"${projectPath}"`;
-
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject);
-
-    if (!cmd_result.result.successful) {
-        throw new QuartusExecutionError("Error in Quartus execution");
-    }
-
-    // Create temp file csv
-    const csv_file = process_utils.create_temp_file("");
-    file_utils.save_file_sync(csv_file, cmd_result.csv_content);
-
-    const result_csv = get_files_from_csv(csv_file, is_manual);
-
-    // Delete temp file
-    file_utils.remove_file(csv_file);
-
-    return result_csv.file_list;
 }
 
 /**

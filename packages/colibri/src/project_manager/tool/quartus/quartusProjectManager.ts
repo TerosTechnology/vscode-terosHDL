@@ -5,7 +5,7 @@ import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
     QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath, setConfigToProject,
-    getProjectInfo, getFilesFromProject, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
+    getProjectInfo, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
     setTopLevelTestbench,
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
@@ -63,6 +63,8 @@ export class QuartusProjectManager extends Project_manager {
     private quartusDatabaseStatusPath = "";
     private currentRevision: string;
     private topLevelTestbench = "";
+    private latestIpCatalog: t_ipCatalogRep[] = [];
+    private latestFamily = "";
 
     constructor(name: string, projectPath: string, currentRevision: string,
         emitterProject: ProjectEmitter) {
@@ -164,7 +166,7 @@ export class QuartusProjectManager extends Project_manager {
         : Promise<QuartusProjectManager> {
         try {
             const projectInfo = await getProjectInfo(config, project_path, emitterProject);
-            const projectFiles = await getFilesFromProject(config, project_path, true, emitterProject);
+            const projectFiles = projectInfo.file_list;
 
             const quartusProject = new QuartusProjectManager(projectInfo.name, project_path,
                 projectInfo.currentRevision, emitterProject);
@@ -223,8 +225,7 @@ export class QuartusProjectManager extends Project_manager {
     async syncWithDisk(): Promise<void> {
         const config = super.get_config();
         const projectInfo = await getProjectInfo(config, this.projectDiskPath, this.emitterProject);
-        const quartusProjectFileList = await getFilesFromProject(config, this.projectDiskPath, true,
-            this.emitterProject);
+        const quartusProjectFileList = projectInfo.file_list;
 
         super.clearFiles(false);
         await super.add_file_from_array(quartusProjectFileList, false);
@@ -246,8 +247,7 @@ export class QuartusProjectManager extends Project_manager {
             false,
         );
         this.setTopLevelTestbench(projectInfo.eda_test_bench_top_module);
-
-        super.notifyChanged();
+        super.notifyProjectChanged();
     }
 
     public async add_toplevel_path_no_quartus_update(toplevel_path_inst: string): Promise<t_action_result> {
@@ -261,7 +261,7 @@ export class QuartusProjectManager extends Project_manager {
         } catch (error) {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
-        return super.add_toplevel_path(toplevel_path_inst);
+        return super.add_toplevel_path(toplevel_path_inst, false);
     }
 
     public async add_file(file: t_file): Promise<t_action_result> {
@@ -328,9 +328,15 @@ export class QuartusProjectManager extends Project_manager {
     }
 
     public async getIpCatalog(): Promise<t_ipCatalogRep[]> {
-        const projectInfo = await getProjectInfo(this.get_config(), this.projectDiskPath, this.emitterProject);
+        const family = this.get_config().tools.quartus.family;
+        if (this.latestFamily === family) {
+            return this.latestIpCatalog;
+        }
+        this.latestFamily = family;
         try {
-            return await getIpCatalog(this.get_config(), projectInfo.family, this.projectDiskPath);
+            const result = await getIpCatalog(this.get_config(), family, this.projectDiskPath);
+            this.latestIpCatalog = result;
+            return result;
         }
         catch (error) {
             return [];
@@ -389,18 +395,6 @@ export class QuartusProjectManager extends Project_manager {
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {
-            // const reportName = `${this.currentRevision}.${reportSufix[taskType]}.rpt`;
-            // const reportPath = path_lib.join(get_directory(this.projectDiskPath), reportName);
-
-            // const artifact: t_test_artifact = {
-            //     name: "Report",
-            //     path: reportPath,
-            //     command: "",
-            //     artifact_type: e_artifact_type.SUMMARY,
-            //     element_type: e_element_type.TEXT_FILE,
-            //     content: undefined
-            // };
-
             const basePath = path_lib.join(
                 get_directory(this.projectDiskPath), "qdb", "_compiler", this.currentRevision, "_flat",
             );
@@ -492,7 +486,6 @@ export class QuartusProjectManager extends Project_manager {
             setTopLevelTestbench(
                 this.get_config(), this.projectDiskPath, filePath, this.emitterProject
             );
-            // this.emitterProject.emitEvent(this.get_name(), e_event.SELECT_TOPLEVEL_TESTBENCH);
             result.successful = true;
         }
         catch (error) {
