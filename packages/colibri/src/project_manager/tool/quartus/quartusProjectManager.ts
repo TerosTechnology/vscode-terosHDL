@@ -502,6 +502,14 @@ export class QuartusProjectManager extends Project_manager {
         const cmdList: string[] = [];
 
         const isCmdMode = config.tools.general.execution_mode === e_tools_general_execution_mode.cmd;
+
+        const waveFilePath = config.tools.quartus.wave_file_questa;
+        if (waveFilePath !== "") {
+            // eslint-disable-next-line max-len
+            cmdList.push(`set_global_assignment -remove -name EDA_SIMULATION_WAVE_FILE_QUESTA_INTEL ${waveFilePath} -section_id testbenchSet`);
+            // eslint-disable-next-line max-len
+            cmdList.push(`set_global_assignment -name EDA_SIMULATION_WAVE_FILE_QUESTA_INTEL ${waveFilePath} -section_id testbenchSet`);
+        }
         if (isCmdMode) {
             cmdList.push("set sim_args [list simulation=[list --no_gui]]");
             cmdList.push("execute_flow -simulation -flow_args $sim_args");

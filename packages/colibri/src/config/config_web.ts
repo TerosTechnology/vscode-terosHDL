@@ -1746,6 +1746,17 @@ export const WEB_CONFIG = `
           
           
           
+            <div class="mb-3">
+              <label for="tools-quartus-wave_file_questa" class="form-label">
+                Custom waves file path for simulations:
+                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-wave_file_questa"></span>
+              </label>
+                <input class="form-control" id="tools-quartus-wave_file_questa" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
       </div>
       
       <div class="card-footer">
@@ -4807,6 +4818,8 @@ export const WEB_CONFIG = `
     config["tools"]["quartus"]["optimization_mode"] = element_value
     element_value = document.getElementById("tools-quartus-allow_register_retiming").checked;
     config["tools"]["quartus"]["allow_register_retiming"] = element_value
+    element_value = document.getElementById("tools-quartus-wave_file_questa").value;
+    config["tools"]["quartus"]["wave_file_questa"] = element_value
     config["tools"]["osvvm"] = {}
     element_value = document.getElementById("tools-osvvm-installation_path").value;
     config["tools"]["osvvm"]["installation_path"] = element_value
@@ -5319,6 +5332,7 @@ export const WEB_CONFIG = `
     document.getElementById("tools-quartus-device").value = config["tools"]["quartus"]["device"];
     document.getElementById("tools-quartus-optimization_mode").value = config["tools"]["quartus"]["optimization_mode"];
     document.getElementById("tools-quartus-allow_register_retiming").checked = config["tools"]["quartus"]["allow_register_retiming"];
+    document.getElementById("tools-quartus-wave_file_questa").value = config["tools"]["quartus"]["wave_file_questa"];
     document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];
     document.getElementById("tools-osvvm-tclsh_binary").value = config["tools"]["osvvm"]["tclsh_binary"];
     document.getElementById("tools-osvvm-simulator_name").value = config["tools"]["osvvm"]["simulator_name"];
@@ -5868,6 +5882,11 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-allow_register_retiming").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["quartus"]["wave_file_questa"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-quartus-wave_file_questa").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["osvvm"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;

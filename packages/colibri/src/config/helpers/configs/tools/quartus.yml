@@ -38,3 +38,8 @@ allow_register_retiming:
   description: "Allow Register Retiming."
   type: boolean
   value: true
+
+wave_file_questa:
+  description: "Custom waves file path for simulations:"
+  type: string
+  value: ""
