@@ -236,7 +236,7 @@
   icon: book
   where: ["editor/title"]
 
-- name: quartus.add_ip
-  title: Add Quartus IP core
-  group: "TerosHDL"
-  where: ["editor/context"]
+# - name: quartus.add_ip
+#   title: Add Quartus IP core
+#   group: "TerosHDL"
+#   where: ["editor/context"]

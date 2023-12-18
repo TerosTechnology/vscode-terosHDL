@@ -78,4 +78,6 @@ export class Logger {
     }
 }
 
+export const globalLogger: Logger = new Logger("TerosHDL: Global");
+export const toolLogger: Logger = new Logger("TerosHDL: Tool Manager");
 export const debugLogger: Logger = new Logger("TerosHDL: Debug");

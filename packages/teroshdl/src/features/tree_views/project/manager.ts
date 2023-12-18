@@ -24,7 +24,7 @@ import { t_Multi_project_manager } from '../../../type_declaration';
 import * as teroshdl2 from 'teroshdl2';
 import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
-import { Logger } from "../../../logger";
+import { globalLogger } from "../../../logger";
 import { t_message_level, showMessage } from "../../../utils/utils";
 import * as yaml from "js-yaml";
 import { BaseView } from "../baseView";
@@ -36,20 +36,18 @@ export class Project_manager extends BaseView {
     private emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter;
     private run_output_manager: Run_output_manager;
     private context: vscode.ExtensionContext;
-    private global_logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
         emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter,
-        run_output_manager: Run_output_manager, global_logger: Logger) {
+        run_output_manager: Run_output_manager) {
 
         super(e_viewType.PROJECT);
 
         this.set_commands();
 
-        this.global_logger = global_logger;
         this.emitterProject = emitterProject;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
@@ -315,7 +313,7 @@ export class Project_manager extends BaseView {
         const intro_warning = "----> ";
         const intro_error = "------> ";
 
-        this.global_logger.info('Checking dependencies...', true);
+        globalLogger.info('Checking dependencies...', true);
 
         // Check python
         const python_result = await teroshdl2.process.python.get_python_path(options);
@@ -323,11 +321,11 @@ export class Project_manager extends BaseView {
             const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#2-python3";
             const doc_msg = this.get_doc_msg(doc_msg_link);
 
-            this.global_logger.error(`${intro_error}Python not found. If you are using system path try setting the complete Python path. ${doc_msg}`);
+            globalLogger.error(`${intro_error}Python not found. If you are using system path try setting the complete Python path. ${doc_msg}`);
         }
         else {
-            this.global_logger.info(`${intro_info} Python found: ${python_result.python_path}`);
-            this.global_logger.info(`${intro_info} Python found in path: ${python_result.python_complete_path}`);
+            globalLogger.info(`${intro_info} Python found: ${python_result.python_path}`);
+            globalLogger.info(`${intro_info} Python found in path: ${python_result.python_complete_path}`);
 
             const package_list = ["vunit", "cocotb", "edalize"];
             const package_list_optional = ["cocotb"];
@@ -342,15 +340,15 @@ export class Project_manager extends BaseView {
                     const doc_msg = this.get_doc_msg(doc_msg_link);
 
                     if (package_list_optional.includes(package_name)) {
-                        this.global_logger.warn(`${intro_warning} ${package_name} (optional installation) not found. ${doc_msg}`);
+                        globalLogger.warn(`${intro_warning} ${package_name} (optional installation) not found. ${doc_msg}`);
                     }
                     else {
-                        this.global_logger.error(`${intro_error} ${package_name} ${optional_msg} not found. ${doc_msg}`);
+                        globalLogger.error(`${intro_error} ${package_name} ${optional_msg} not found. ${doc_msg}`);
 
                     }
                 }
                 else {
-                    this.global_logger.info(`${intro_info} ${package_name} found ${optional_msg}`);
+                    globalLogger.info(`${intro_info} ${package_name} found ${optional_msg}`);
                 }
             }
         }
@@ -368,12 +366,12 @@ export class Project_manager extends BaseView {
         if (!make_result.successful) {
             const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#4-make";
             const doc_msg = this.get_doc_msg(doc_msg_link);
-            this.global_logger.error(`${intro_error}Make not found in path: ${make_binary_path}. Check that the path is correct. ${doc_msg}`);
-            this.global_logger.error(make_result.stderr);
-            this.global_logger.error(make_result.stdout);
+            globalLogger.error(`${intro_error}Make not found in path: ${make_binary_path}. Check that the path is correct. ${doc_msg}`);
+            globalLogger.error(make_result.stderr);
+            globalLogger.error(make_result.stdout);
         }
         else {
-            this.global_logger.info(`${intro_info} Make found in path: ${make_binary_path}.`);
+            globalLogger.info(`${intro_info} Make found in path: ${make_binary_path}.`);
         }
     }
 }

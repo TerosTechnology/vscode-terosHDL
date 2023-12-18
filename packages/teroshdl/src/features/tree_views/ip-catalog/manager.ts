@@ -22,24 +22,22 @@ import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as events from "events";
 import * as shelljs from 'shelljs';
-import { Logger } from "../../../logger";
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
+import { debugLogger, globalLogger } from "../../../logger";
 
 export class IpCatalogManager extends BaseView{
     private tree: element.IpCatalogProvider;
     private project_manager: t_Multi_project_manager;
-    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logger: Logger) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
 
         super(e_viewType.IP_CATALOG);
 
         this.project_manager = manager;
-        this.logger = logger;
         this.tree = new element.IpCatalogProvider(manager);
 
         this.set_commands();
@@ -48,14 +46,14 @@ export class IpCatalogManager extends BaseView{
     }
 
     set_commands() {
-        vscode.commands.registerCommand("teroshdl.quartus.add_ip", () => this.add_ip());
+        // vscode.commands.registerCommand("teroshdl.quartus.add_ip", () => this.add_ip());
         vscode.commands.registerCommand("teroshdl.quartus.create_ip", (element) => this.create_ip(element));
     }
 
     async create_ip(element: element.CatalogElement) {
         const cmd = element.elementDefinition.command;
-        this.logger.info(`Creating IP: ${cmd}`);
-        this.logger.show();
+        debugLogger.info(`Creating IP: ${cmd}`);
+        debugLogger.show();
         if (cmd !== undefined) {
             shelljs.exec(cmd, { async: true });
         }

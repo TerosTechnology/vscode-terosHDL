@@ -20,9 +20,7 @@
 import * as vscode from "vscode";
 import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';
-import * as events from "events";
 import * as teroshdl2 from 'teroshdl2';
-import { Logger, debugLogger } from "../../../logger";
 import { RedTextDecorator } from "./element";
 import { ChildProcess } from "child_process";
 import * as shelljs from 'shelljs';
@@ -31,6 +29,7 @@ import * as tree_kill from 'tree-kill';
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
 import { getFamilyDeviceFromQuartusProject } from "../utils";
+import { toolLogger } from "../../../logger";
 
 enum e_VIEW_STATE {
     IDLE = 0,
@@ -42,7 +41,6 @@ enum e_VIEW_STATE {
 export class Tasks_manager extends BaseView {
     private tree: element.ProjectProvider;
     private project_manager: t_Multi_project_manager;
-    private logger: Logger;
     private state: e_VIEW_STATE = e_VIEW_STATE.IDLE;
     private latesRunTask: ChildProcess | undefined = undefined;
     private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined | string = undefined;
@@ -53,14 +51,13 @@ export class Tasks_manager extends BaseView {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logger: Logger, logView: LogView,
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logView: LogView,
         emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter) {
 
         super(e_viewType.TASKS);
 
         this.set_commands();
 
-        this.logger = logger;
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
         this.logView = logView;
@@ -105,7 +102,7 @@ export class Tasks_manager extends BaseView {
                     if (err) {
                         console.error(err);
                     } else {
-                        this.logger.warn(`${this.latestTask} stopped.`);
+                        toolLogger.warn(`${this.latestTask} stopped.`);
                         vscode.window.showInformationMessage(`${this.latestTask} stopped successfully.`);
                     }
                 });
@@ -156,16 +153,16 @@ export class Tasks_manager extends BaseView {
             // Refresh view to set the running decorators
             this.refresh_tree();
 
-            this.logger.show(true);
+            toolLogger.show(true);
             if (exec_i.stdout) {
                 exec_i.stdout.on('data', (data: string) => {
-                    this.logger.log(data);
+                    toolLogger.log(data);
                 });
             }
 
             if (exec_i.stderr) {
                 exec_i.stderr.on('data', (data: string) => {
-                    this.logger.log(data);
+                    toolLogger.log(data);
                 });
             }
         }
@@ -235,16 +232,16 @@ export class Tasks_manager extends BaseView {
                 // Refresh view to set the running decorators
                 this.refresh_tree();
 
-                this.logger.show(true);
+                toolLogger.show(true);
                 if (exec_i.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
-                        this.logger.log(data);
+                        toolLogger.log(data);
                     });
                 }
 
                 if (exec_i.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
-                        this.logger.log(data);
+                        toolLogger.log(data);
                     });
                 }
             }
@@ -297,8 +294,8 @@ export class Tasks_manager extends BaseView {
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY
             && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.TEXT_FILE) {
             if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {
-                debugLogger.show();
-                debugLogger.warn(`The report ${report.path} does not exist.`);
+                toolLogger.show();
+                toolLogger.warn(`The report ${report.path} does not exist.`);
                 vscode.window.showWarningMessage("The report does not exist.");
                 return;
             }
@@ -313,8 +310,8 @@ export class Tasks_manager extends BaseView {
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.LOG
             && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
             if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {
-                debugLogger.show();
-                debugLogger.warn(`The report ${report.path} does not exist.`);
+                toolLogger.show();
+                toolLogger.warn(`The report ${report.path} does not exist.`);
                 vscode.window.showWarningMessage("The report database does not exist.");
                 return;
             }

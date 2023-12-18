@@ -25,19 +25,18 @@ import * as nunjucks from 'nunjucks';
 import * as fs from 'fs';
 import { t_Multi_project_manager } from '../type_declaration';
 import { Base_webview } from './base_webview';
-import { Logger } from '../logger';
+import { globalLogger } from '../logger';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 
 export class Documenter_manager extends Base_webview {
 
     private documenter: teroshdl2.documenter.documenter.Documenter | undefined;
-    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
 
         const activation_command = 'teroshdl.documentation.module';
         const id = "documenter";
@@ -45,7 +44,6 @@ export class Documenter_manager extends Base_webview {
         const resource_path = path_lib.join(context.extensionPath, 'resources', 'webviews', 'documenter', 'index.html');
         super(context, manager, resource_path, activation_command, id);
         this.context = context;
-        this.logger = logger;
     }
 
     get_webview_content(webview: vscode.Webview) {
@@ -161,7 +159,7 @@ export class Documenter_manager extends Base_webview {
     // }
 
     private show_export_message(path_exp: string) {
-        this.logger.info(`Document saved in the path: ${path_exp}`, true);
+        globalLogger.info(`Document saved in the path: ${path_exp}`, true);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

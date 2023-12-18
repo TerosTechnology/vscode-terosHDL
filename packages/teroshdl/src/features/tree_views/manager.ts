@@ -31,7 +31,7 @@ import { Actions_manager } from "./actions/manager";
 import { Run_output_manager } from "./run_output";
 import { Watcher_manager } from "./watchers/manager";
 import { Output_manager } from "./output/manager";
-import { Logger, debugLogger } from "../../logger";
+import { debugLogger } from "../../logger";
 import { t_Multi_project_manager } from '../../type_declaration';
 import { Schematic_manager } from "../schematic";
 import { Dependency_manager } from "../dependency";
@@ -47,22 +47,22 @@ export class Tree_view_manager {
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager,
         emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter,
         schematic_manager: Schematic_manager,
-        dependency_manager: Dependency_manager, global_logger: Logger,
+        dependency_manager: Dependency_manager,
         logView: LogView) {
 
         context.subscriptions.push(this.statusbar);
         multi_manager = manager;
 
         viewList = [
-            new Project_manager(context, manager, emitterProject, run_output, global_logger),
+            new Project_manager(context, manager, emitterProject, run_output),
             new Source_manager(context, manager),
             new TreeDependencyManager(context, manager, schematic_manager, dependency_manager),
-            new Runs_manager(context, manager, run_output, debugLogger, emitterProject),
-            new Tasks_manager(context, manager, debugLogger, logView, emitterProject),
-            new IpCatalogManager(context, manager, debugLogger),
+            new Runs_manager(context, manager, run_output, emitterProject),
+            new Tasks_manager(context, manager, logView, emitterProject),
+            new IpCatalogManager(context, manager),
             new Actions_manager(context),
             new Watcher_manager(context, manager),
-            new Output_manager(context, manager, run_output, debugLogger),
+            new Output_manager(context, manager, run_output),
         ];
 
         emitterProject.addProjectListener(this.runRefresh);

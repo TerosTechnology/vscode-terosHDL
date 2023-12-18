@@ -21,18 +21,16 @@ import * as vscode from 'vscode';
 import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../type_declaration';
-import { Logger } from '../logger';
+import { globalLogger } from '../logger';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 export class Template_manager {
     private manager: t_Multi_project_manager;
-    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context, logger: Logger, manager: t_Multi_project_manager) {
-        this.logger = logger;
+    constructor(context, manager: t_Multi_project_manager) {
         this.manager = manager;
         vscode.commands.registerCommand("teroshdl.generate_template", () => this.get_template());
     }
@@ -76,10 +74,10 @@ export class Template_manager {
 
         //Error
         if (template === undefined || template === '') {
-            this.logger.error("Make sure that the cursor is in the active document and select a valid file.", true);
+            globalLogger.error("Make sure that the cursor is in the active document and select a valid file.", true);
         }
         else {
-            this.logger.info("Template copied to clipboard.", true);
+            globalLogger.info("Template copied to clipboard.", true);
             vscode.env.clipboard.writeText(template);
         }
     }

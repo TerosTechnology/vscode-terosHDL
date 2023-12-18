@@ -25,25 +25,23 @@ import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
 import * as nunjucks from 'nunjucks';
 import { Base_webview } from './base_webview';
-import { Logger } from '../logger';
+import { globalLogger } from '../logger';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 export class State_machine_manager extends Base_webview {
 
     private state_machines;
-    private logger: Logger;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, logger: Logger, manager: t_Multi_project_manager) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager) {
 
         const activation_command = 'teroshdl.state_machine.viewer';
         const id = "state_machine";
 
         const resource_path = path_lib.join(context.extensionPath, 'resources', 'webviews', 'state_machine_viewer', 'state_machine_viewer.html');
         super(context, manager, resource_path, activation_command, id);
-        this.logger = logger;
     }
 
     get_webview_content(webview: vscode.Webview) {
@@ -284,12 +282,12 @@ export class State_machine_manager extends Base_webview {
                 for (let i = 0; i < this.state_machines.svg.length; ++i) {
                     let custom_path = path_lib.join(dir_name, `${inputName}_${i}.svg`);
                     fs.writeFileSync(custom_path, this.state_machines.svg[i].image);
-                    this.logger.info(`State machine image saved in: ${custom_path}`, true);
+                    globalLogger.info(`State machine image saved in: ${custom_path}`, true);
                 }
             }
         }
         else {
-            this.logger.error("Error saving state machine images.", true);
+            globalLogger.error("Error saving state machine images.", true);
         }
     }
 
