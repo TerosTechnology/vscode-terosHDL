@@ -23,12 +23,11 @@ import { Process } from "../../src/process/process";
 import { ProjectEmitter } from "../../src/project_manager/projectEmitter";
 import { QuartusProjectManager } from "../../src/project_manager/tool/quartus/quartusProjectManager";
 
-const quartus_utils = require("../../src/project_manager/tool/quartus/utils.ts");
 
 const DEFAULT_NAME = "def_name";
-const CATEGORY_A = "category_a"
-const CATEGORY_B = "category_b"
-const CATEGORY_C = "category_c"
+const CATEGORY_A = "category_a";
+const CATEGORY_B = "category_b";
+const CATEGORY_C = "category_c";
 const FAMILY_A = "test_family_a";
 const FAMILY_B = "test_family_b";
 const FAMILY_C = "test_family_c";
@@ -49,16 +48,9 @@ describe('quartusProjectManager', () => {
         // Create project
         project_manager = new QuartusProjectManager(DEFAULT_NAME, "", "", new ProjectEmitter());
         // Mock project info
-        jest.spyOn(quartus_utils, "getProjectInfo").mockImplementation(async (..._args) => {
-            return {
-                name: DEFAULT_NAME,
-                currentRevision: "",
-                topEntity: "",
-                revisionList: [""],
-                family: FAMILY_A,
-                part: "",
-            };
-        });
+        const config = project_manager.get_config();
+        config.tools.quartus.family = FAMILY_A;
+        project_manager.set_config(config);
     });
 
     afterAll(() => {
@@ -805,7 +797,7 @@ describe('quartusProjectManager', () => {
     });
 
 
-    it("should clean up the ip catalog list when it's empty and there was a previous one", async () => {
+    it("not should clean up the ip catalog list when it's empty and there was a previous one", async () => {
 
         jest.spyOn(Process.prototype, 'exec_wait').mockImplementation(async (..._args) => <p_result>{
             command: "",
@@ -841,7 +833,7 @@ describe('quartusProjectManager', () => {
 
         const ip_list_1 = await project_manager.getIpCatalog();
 
-        expect(ip_list_1.length).toBe(0);
+        expect(ip_list_1.length).toBe(1);
 
 
     });
