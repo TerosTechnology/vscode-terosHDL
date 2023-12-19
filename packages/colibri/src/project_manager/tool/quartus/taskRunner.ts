@@ -34,6 +34,7 @@ export function runTask(taskType: e_taskType, quartusDir: string,
 
     const commandDeclaration: Record<e_taskType, string[]> = {
         [e_taskType.CHANGEDEVICE]: [],
+        [e_taskType.QUARTUS_RTL_ANALYZER]: [],
         [e_taskType.SETTINGS]: [],
         [e_taskType.OPENFOLDER]: [],
         [e_taskType.QUARTUS_COMPILEDESIGN]: [

@@ -38,6 +38,7 @@ export enum e_taskType {
     QUARTUS_ROUTE = "Route",
     QUARTUS_FITTERFINALIZE = "Fitter (Finalize)",
     QUARTUS_TIMING = "Timing Analysis (Signoff)",
+    QUARTUS_RTL_ANALYZER = "RTL Analyzer",
     // Common
     OPENFOLDER = "Open Project Folder",
     SETTINGS = "Settings",
@@ -160,6 +161,7 @@ export const ListOfTasksRun: Record<e_taskType, e_taskType[]> = {
         e_taskType.QUARTUS_FITTERFINALIZE,
         e_taskType.QUARTUS_TIMING,
     ],
+    [e_taskType.QUARTUS_RTL_ANALYZER]: []
 };
 
 export enum e_iconType {
@@ -167,6 +169,7 @@ export enum e_iconType {
     TIME = "time",
     WAVEFORM = "waveform",
     CHIP = "chip",
+    LENS = "lens",
 }
 
 export enum e_reportType {

@@ -30,6 +30,7 @@ import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
 import { getFamilyDeviceFromQuartusProject } from "../utils";
 import { toolLogger } from "../../../logger";
+import { openRTLAnalyzer } from "./quartus_utils";
 
 enum e_VIEW_STATE {
     IDLE = 0,
@@ -113,6 +114,11 @@ export class Tasks_manager extends BaseView {
     }
 
     async run(taskItem: element.Task) {
+        if (taskItem.taskDefinition.name === teroshdl2.project_manager.tool_common.e_taskType.QUARTUS_RTL_ANALYZER) {
+            openRTLAnalyzer(this.project_manager, this.emitterProject);
+            return;
+        }
+
         if (this.checkRunning()) {
             return;
         }
@@ -122,21 +128,6 @@ export class Tasks_manager extends BaseView {
 
         try {
             const selectedProject = this.project_manager.get_selected_project();
-
-            // const taskStatus = selectedProject.getTaskState(taskItem.taskDefinition.name);
-            // if (taskStatus === teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
-            //     const msg = `${taskItem.taskDefinition.name} has already run successfully. Do you want to run the task again?`;
-            //     const result = await vscode.window.showInformationMessage(
-            //         msg,
-            //         'Yes',
-            //         'No'
-            //     );
-
-            //     if (result === 'No') {
-            //         this.state = e_VIEW_STATE.IDLE;
-            //         return;
-            //     }
-            // }
 
             const task = taskItem.taskDefinition.name;
             this.setStatusBarText(undefined);
@@ -179,7 +170,6 @@ export class Tasks_manager extends BaseView {
         const config = selectedProject.get_config();
         const family = config.tools.quartus.family;
         const device = config.tools.quartus.device;
-        // vscode.window.showInformationMessage(`Family: ${family}\nDevice: ${device}`);
 
         const msg = `Family: ${family}\nDevice: ${device}\n. Do you want to change it?`;
         const result = await vscode.window.showInformationMessage(
@@ -280,13 +270,6 @@ export class Tasks_manager extends BaseView {
             vscode.window.showWarningMessage("Snapshop Viewer is not supported yet.");
             return;
         }
-
-        // const taskStatus = selectedProject.getTaskState(task);
-        // if (taskStatus !== teroshdl2.project_manager.tool_common.e_taskState.FINISHED &&
-        //     report.element_type !== teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
-        //     showTaskWarningMessage(task);
-        //     return;
-        // }
 
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.COMMAND) {
             shelljs.exec(report.command, { async: true, cwd: report.path });

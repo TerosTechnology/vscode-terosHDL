@@ -392,6 +392,7 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.QUARTUS_IPGENERATION]: "",
             [e_taskType.QUARTUS_EARLYTIMINGANALYSIS]: "synthesized.sta",
             [e_taskType.QUARTUS_FITTERIMPLEMENT]: "",
+            [e_taskType.QUARTUS_RTL_ANALYZER]: "",
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {
@@ -530,7 +531,8 @@ export class QuartusProjectManager extends Project_manager {
         const opt_exec = { cwd: cwd };
         const p = new Process();
 
-        const cmd = `quartus_sh -t "${tclFile}" "" "${this.projectDiskPath}"`;
+        const quartusBin = path_lib.join(getQuartusPath(this.get_config()), "quartus_sh");
+        const cmd = `${quartusBin} -t "${tclFile}" "" "${this.projectDiskPath}"`;
         const exec_i = p.exec(cmd, opt_exec, (result: p_result) => {
             const resultOutput: t_test_result[] = [];
             if (isCmdMode) {
