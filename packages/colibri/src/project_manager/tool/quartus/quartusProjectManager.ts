@@ -392,6 +392,7 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.QUARTUS_IPGENERATION]: "",
             [e_taskType.QUARTUS_EARLYTIMINGANALYSIS]: "synthesized.sta",
             [e_taskType.QUARTUS_FITTERIMPLEMENT]: "",
+            [e_taskType.QUARTUS_ASSEMBLER]: "asm",
             [e_taskType.QUARTUS_RTL_ANALYZER]: "",
         };
         let reportKeys = Object.keys(reportSufix);

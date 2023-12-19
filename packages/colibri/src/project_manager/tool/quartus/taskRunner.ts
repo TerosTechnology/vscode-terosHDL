@@ -31,6 +31,7 @@ export function runTask(taskType: e_taskType, quartusDir: string,
     const binSyn = path_lib.join(quartusDir, "quartus_syn");
     const binFit = path_lib.join(quartusDir, "quartus_fit");
     const binSTA = path_lib.join(quartusDir, "quartus_sta");
+    const binASM = path_lib.join(quartusDir, "quartus_asm");
 
     const commandDeclaration: Record<e_taskType, string[]> = {
         [e_taskType.CHANGEDEVICE]: [],
@@ -42,6 +43,7 @@ export function runTask(taskType: e_taskType, quartusDir: string,
             `${binSyn} --dni --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
             `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
             `${binSTA} ${projectName} -c ${revisionName} --mode=finalize`,
+            `${binASM} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
         ],
         [e_taskType.QUARTUS_IPGENERATION]: [
             `${binIP} --dni ${projectName} -c ${revisionName} --run_default_mode_op`,
@@ -110,6 +112,13 @@ export function runTask(taskType: e_taskType, quartusDir: string,
                 `${binSyn} --dni --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
                 `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
                 `${binSTA} ${projectName} -c ${revisionName} --mode=finalize`,
+            ],
+        [e_taskType.QUARTUS_ASSEMBLER]:
+            [
+                `${binIP} --dni ${projectName} -c ${revisionName} --run_default_mode_op`,
+                `${binSyn} --dni --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
+                `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
+                `${binASM} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
             ],
     };
     const commandToRun = commandDeclaration[taskType];
