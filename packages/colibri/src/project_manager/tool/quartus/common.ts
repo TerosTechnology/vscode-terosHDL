@@ -205,6 +205,19 @@ export function getDefaultTaskList(): t_taskRep[] {
                     "icon": e_iconType.TIME,
                     "status": e_taskState.IDLE,
                 },
+                {
+                    "name": e_taskType.QUARTUS_ASSEMBLER,
+                    "label": "Run during full compilation",
+                    "success": undefined,
+                    "elapsed_time": undefined,
+                    "percent": undefined,
+                    "executionType": e_taskExecutionType.COMPLEXCOMMAND,
+                    "reports": [
+                        e_reportType.REPORTDB,
+                        e_reportType.REPORT,
+                    ],
+                    "status": e_taskState.IDLE,
+                },
             ]
         },
     ];

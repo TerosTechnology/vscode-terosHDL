@@ -18,6 +18,7 @@ const taskNameInBBDD: Record<string, e_taskType> = {
     "Route": e_taskType.QUARTUS_ROUTE,
     "Fitter (Finalize)": e_taskType.QUARTUS_FITTERFINALIZE,
     "Timing Analysis (Finalize)": e_taskType.QUARTUS_TIMING,
+    "Assembler": e_taskType.QUARTUS_ASSEMBLER,
 };
 
 /**

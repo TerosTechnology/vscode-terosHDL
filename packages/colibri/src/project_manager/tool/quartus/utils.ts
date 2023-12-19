@@ -407,17 +407,6 @@ export async function createProject(config: e_config, projectDirectory: string, 
 }
 
 /**
- * Clean Quartus project.
- * @param config Configuration.
- * @param projectPath Path to Quartus project.
-**/
-// export async function cleanProject(config: e_config, projectPath: string): Promise<t_loader_action_result> {
-//     const cmd = "project_clean";
-//     const result = await executeCmdListQuartusProject(config, projectPath, [cmd]);
-//     return result;
-// }
-
-/**
  * Set top level path in Quartus project.
  * @param config Configuration.
  * @param projectPath Path to Quartus project.
