@@ -94,6 +94,9 @@ export class Task extends vscode.TreeItem {
             else if (taskDefinition.icon === teroshdl2.project_manager.tool_common.e_iconType.TIME) {
                 this.iconPath = get_icon("clock");
             }
+            else if (taskDefinition.icon === teroshdl2.project_manager.tool_common.e_iconType.LENS) {
+                this.iconPath = get_icon("search");
+            }
             this.command = {
                 command: "teroshdl.view.tasks.run",
                 title: "Run",

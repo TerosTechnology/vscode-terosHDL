@@ -1,5 +1,12 @@
 import { e_iconType, e_reportType, e_taskExecutionType, e_taskState, e_taskType, t_taskRep } from "../common";
 
+export enum e_rtlType {
+    ELABORATED = "elaborated",
+    INSTRUMENTED = "instrumented",
+    CONSTRAINED = "constrained",
+    SWEPT = "swept",
+}
+
 export function getDefaultTaskList(): t_taskRep[] {
     const taskList: t_taskRep[] = [
         {
@@ -16,6 +23,17 @@ export function getDefaultTaskList(): t_taskRep[] {
             "name": e_taskType.CHANGEDEVICE,
             "label": "Device",
             "executionType": e_taskExecutionType.SIMPLECOMMAND,
+        },
+        {
+            "name": e_taskType.QUARTUS_RTL_ANALYZER,
+            "label": "",
+            "success": undefined,
+            "elapsed_time": undefined,
+            "percent": undefined,
+            "executionType": e_taskExecutionType.SIMPLECOMMAND,
+            "reports": [],
+            "icon": e_iconType.LENS,
+            "status": e_taskState.IDLE,
         },
         {
             "name": e_taskType.QUARTUS_COMPILEDESIGN,
@@ -67,7 +85,7 @@ export function getDefaultTaskList(): t_taskRep[] {
                             "executionType": e_taskExecutionType.COMPLEXCOMMAND,
                             "reports": [
                                 e_reportType.REPORTDB,
-                                e_reportType.REPORT, 
+                                e_reportType.REPORT,
                                 e_reportType.TIMINGANALYZER,
                                 // e_reportType.TECHNOLOGYMAPVIEWER,
                             ],

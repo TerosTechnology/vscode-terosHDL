@@ -16,6 +16,7 @@ import * as process from 'process';
 import { ChildProcess } from "child_process";
 import { Process } from "../../../process/process";
 import { ProjectEmitter, e_event } from "../../projectEmitter";
+import { e_rtlType } from "./common";
 
 export const LANGUAGE_MAP: Record<LANGUAGE, string> = {
     [LANGUAGE.VHDL]: "VHDL_FILE",
@@ -584,5 +585,15 @@ export async function setConfigToProject(config: e_config, projectPath: string,
     cmdList.push(`set_global_assignment -name DEVICE ${device}`);
 
     // Optimization effort
+    await executeCmdListQuartusProject(config, projectPath, cmdList, emitterProject);
+}
+
+export async function openRTLAnalyzer(config: e_config, projectPath: string, emitterProject: ProjectEmitter,
+    rtlType: e_rtlType): Promise<void> {
+
+    const cmdList: string[] = [
+        `tmwq_open_rtl_analyzer dms_path::user_runs::default_run::${rtlType}`,
+    ];
+
     await executeCmdListQuartusProject(config, projectPath, cmdList, emitterProject);
 }
