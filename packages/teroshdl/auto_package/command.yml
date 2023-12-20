@@ -80,6 +80,13 @@
   when: "viewItem == library"
   group: "inline"
 
+- name: view.source.properties
+  title: "File Properties"
+  icon: gear
+  where: ["view/item/context"]
+  when: "viewItem == source"
+  group: "inline"
+
 - name: view.source.delete_source
   title: "Delete source"
   icon: dash

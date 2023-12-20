@@ -150,6 +150,18 @@ export class Source_manager extends BaseView {
         }
     }
 
+    async showFileProperties(item: element.Source_tree_element) {
+        try {
+            const prj = this.project_manager.get_selected_project();
+            if (prj.getProjectType() === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
+
+            }
+            else {
+                vscode.window.showInformationMessage("File properties are only available for Quartus projects");
+            }
+        } catch (error) { }
+    }
+
     async add_source_to_library(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
@@ -185,7 +197,7 @@ export class Source_manager extends BaseView {
             }
 
             const project_examples_types = [
-                'Set as top level design', 
+                'Set as top level design',
                 'Set as top level testbench (only for simulation)'
             ];
             let picker_value = await vscode.window.showQuickPick(project_examples_types, {
