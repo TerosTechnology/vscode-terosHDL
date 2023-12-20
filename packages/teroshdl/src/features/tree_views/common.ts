@@ -28,10 +28,13 @@ export enum e_viewType {
     SOURCE,
     TASKS,
     WATCHERS,
+    TIMING,
 }
 
 export const REFRESHLIST: Record<e_viewType, teroshdl2.project_manager.projectEmitter.e_event[]> = {
     [e_viewType.ACTIONS]: [
+    ],
+    [e_viewType.TIMING]: [
     ],
     [e_viewType.DEPENDENCY]: [
         teroshdl2.project_manager.projectEmitter.e_event.PROJECT_CHANGED,

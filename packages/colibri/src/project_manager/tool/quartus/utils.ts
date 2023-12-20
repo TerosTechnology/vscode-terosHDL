@@ -9,7 +9,7 @@ import * as file_utils from "../../../utils/file_utils";
 import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import * as path_lib from "path";
 import { get_files_from_csv } from "../../prj_loaders/csv_loader";
-import { t_file } from "../../common";
+import { t_file, t_timing_node, t_timing_path } from "../../common";
 import { LANGUAGE } from "../../../common/general";
 import * as nunjucks from 'nunjucks';
 import * as process from 'process';
@@ -112,7 +112,7 @@ export function getQuartusPath(config: e_config): string {
  * @returns qsys binary directory.
 **/
 export function getQsysPath(config: e_config): string {
-    const qsysPath = path_lib.resolve(path_lib.join(getQuartusPath(config), "..", "..", "qsys", getBinFolder()));
+    const qsysPath = path_lib.resolve(path_lib.join(getQuartusPath(config), "..", "..", "qsys", "bin"));
     return qsysPath;
 }
 
@@ -126,11 +126,15 @@ export function getQsysPath(config: e_config): string {
  * @param timeout Timeout in seconds.
  * @returns Result of execution.
 **/
-async function executeQuartusTcl(config: e_config, tcl_file: string, args: string,
-    cwd: string, emitterProject: ProjectEmitter, timeout: number | undefined = undefined)
+async function executeQuartusTcl(is_sta: boolean, config: e_config, tcl_file: string, args: string,
+    cwd: string, emitterProject: ProjectEmitter, timeout: number | undefined)
     : Promise<{ result: p_result, csv_content: string }> {
 
-    const quartus_bin = path_lib.join(getQuartusPath(config), "quartus_sh");
+    let binaryName = "quartus_sh";
+    if (is_sta) {
+        binaryName = "quartus_sta";
+    }
+    const quartus_bin = path_lib.join(getQuartusPath(config), binaryName);
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");
@@ -180,7 +184,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
     const args = `"${projectPath}"`;
     const tcl_file = path_lib.join(__dirname, 'bin', 'project_info.tcl');
 
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject, 6);
+    const cmd_result = await executeQuartusTcl(false, config, tcl_file, args, "", emitterProject, 6);
 
     const result = {
         prj_name: "",
@@ -280,7 +284,7 @@ export async function getFamilyAndParts(config: e_config, emitterProject: Projec
     const tcl_file = path_lib.join(__dirname, 'bin', 'get_boards.tcl');
     const args = "";
 
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, "", emitterProject);
+    const cmd_result = await executeQuartusTcl(false, config, tcl_file, args, "", emitterProject, undefined);
     if (!cmd_result.result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
@@ -325,7 +329,7 @@ export async function executeCmdListQuartusProject(config: e_config, projectPath
     const tclFile = process_utils.create_temp_file(templateRender);
     const args = `"${projectPath}"`;
 
-    const cmdResult = await executeQuartusTcl(config, tclFile, args, "", emitterProject);
+    const cmdResult = await executeQuartusTcl(false, config, tclFile, args, "", emitterProject, undefined);
 
     const result: t_loader_action_result = {
         successful: cmdResult.result.successful,
@@ -405,7 +409,8 @@ export async function createProject(config: e_config, projectDirectory: string, 
     const tcl_file = path_lib.join(__dirname, 'bin', 'create_project.tcl');
     const args = `"${name}" "${family}" "${part}"`;
 
-    const cmd_result = await executeQuartusTcl(config, tcl_file, args, projectDirectory, emitterProject);
+    const cmd_result = await executeQuartusTcl(false, config, tcl_file, args, projectDirectory, emitterProject,
+        undefined);
     if (!cmd_result.result.successful) {
         throw new QuartusExecutionError("Error in Quartus execution");
     }
@@ -552,6 +557,35 @@ export async function createRPTReportFromRDB(config: e_config, rdbPath: string):
         await p.exec_wait(cmd, opt_exec);
     } catch (error) { /* empty */ }
     return rptFile;
+}
+
+export async function getTimingReport(config: e_config, projectPath: string, emitterProject: ProjectEmitter)
+    : Promise<t_timing_path[]> {
+
+    const args = `"${projectPath}"`;
+    const tcl_file = path_lib.join(__dirname, 'bin', 'get_timing_report.tcl');
+
+    const cmd_result = await executeQuartusTcl(true, config, tcl_file, args, "", emitterProject, undefined);
+    if (!cmd_result.result.successful) {
+        return [];
+    }
+
+    const paths = cmd_result.csv_content.split(/Path \d+\n/).slice(1); // Divide y omite la primera cadena vacía
+    const result = paths.map((path, index) => {
+        const nodes = path.trim().split('\n').map(nodeString => {
+            const parts = nodeString.split(',');
+            return {
+                name: parts[0],
+                path: parts[1],
+                line: parseInt(parts[2], 10)
+            } as t_timing_node;
+        });
+        return {
+            name: `Path ${index + 1}`,
+            nodeList: nodes
+        } as t_timing_path;
+    });
+    return result;
 }
 
 export async function setConfigToProject(config: e_config, projectPath: string,

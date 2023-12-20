@@ -13,9 +13,14 @@
             ],
             "panel": [
                 {
-                "id": "teroshdl-messages-view",
-                "title": "TerosHDL: log report",
-                "icon": "fancy.icon"
+                    "id": "teroshdl-messages-view",
+                    "title": "TerosHDL: log report",
+                    "icon": "fancy.icon"
+                },
+                {
+                    "id": "teroshdl-timing-view",
+                    "title": "TerosHDL: Timing",
+                    "icon": "fancy.icon"
                 }
             ]
         },
@@ -63,6 +68,12 @@
                     "type": "webview",
                     "id": "teroshdl-report-logs",
                     "name": "Report Logs"
+                }
+            ],
+            "teroshdl-timing-view": [
+                {
+                    "id": "teroshdl-view-timing",
+                    "name": "Timing Report"
                 }
             ]
         },

@@ -21,7 +21,8 @@
 import {
     t_file, t_action_result, t_watcher,
     e_watcher_type,
-    e_project_type
+    e_project_type,
+    t_timing_path
 } from "./common";
 import * as  manager_watcher from "./list_manager/watcher";
 import * as  manager_file from "./list_manager/file";
@@ -641,6 +642,10 @@ export class Project_manager extends ConfigManager {
 
     protected emitUpdateStatus() {
         this.emitterProject.emitEvent(this.name, e_event.UPDATE_TASK);
+    }
+
+    public async getTimingReport(): Promise<t_timing_path[]> {
+        return [];
     }
 }
 

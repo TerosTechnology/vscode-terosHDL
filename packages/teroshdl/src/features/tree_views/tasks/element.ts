@@ -128,6 +128,15 @@ export class Task extends vscode.TreeItem {
                 arguments: []
             };
         }
+        if (taskDefinition.executionType === teroshdl2.project_manager.tool_common.e_taskExecutionType.SIMPLECOMMAND &&
+            taskDefinition.name === teroshdl2.project_manager.tool_common.e_taskType.SHOW_TIMING_REPORT) {
+            this.iconPath = get_icon("output");
+            this.command = {
+                title: 'Settings',
+                command: 'teroshdl.view.tasks.show_timing_report',
+                arguments: []
+            };
+        }
 
         if (taskDefinition.reports !== undefined) {
             if (taskDefinition.reports.includes(teroshdl2.project_manager.tool_common.e_reportType.REPORT)) {
