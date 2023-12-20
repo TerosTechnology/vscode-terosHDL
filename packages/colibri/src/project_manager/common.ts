@@ -19,6 +19,19 @@
 
 import { t_version_inst, LANGUAGE } from "../common/general";
 
+////////////////////////////////////////////////////////////////////////////////
+// Timing
+////////////////////////////////////////////////////////////////////////////////
+export type t_timing_node = {
+    name: string;
+    path: string;
+    line: number;
+}
+
+export type t_timing_path = {
+    name: string;
+    nodeList: t_timing_node[];
+}
 
 /** Type of project */
 export enum e_project_type {

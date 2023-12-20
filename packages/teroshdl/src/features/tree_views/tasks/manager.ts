@@ -31,6 +31,7 @@ import { e_viewType } from "../common";
 import { getFamilyDeviceFromQuartusProject } from "../utils";
 import { toolLogger } from "../../../logger";
 import { openRTLAnalyzer } from "./quartus_utils";
+import { Timing_manager } from "../timing/manager";
 
 enum e_VIEW_STATE {
     IDLE = 0,
@@ -46,6 +47,7 @@ export class Tasks_manager extends BaseView {
     private latesRunTask: ChildProcess | undefined = undefined;
     private latestTask: teroshdl2.project_manager.tool_common.e_taskType | undefined | string = undefined;
     private logView: LogView;
+    private timingManager: Timing_manager;
     private statusBar: vscode.StatusBarItem | undefined = undefined;
     private emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter;
 
@@ -53,7 +55,7 @@ export class Tasks_manager extends BaseView {
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logView: LogView,
-        emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter) {
+        timingManager: Timing_manager, emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter) {
 
         super(e_viewType.TASKS);
 
@@ -63,6 +65,7 @@ export class Tasks_manager extends BaseView {
         this.tree = new element.ProjectProvider(manager);
         this.logView = logView;
         this.emitterProject = emitterProject;
+        this.timingManager = timingManager;
 
         const provider = new RedTextDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));

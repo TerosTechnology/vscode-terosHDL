@@ -44,6 +44,7 @@ export enum e_taskType {
     OPENFOLDER = "Open Project Folder",
     SETTINGS = "Settings",
     CHANGEDEVICE = "Device",
+    SHOW_TIMING_REPORT = "Show Timing Report",
 }
 
 export enum e_iconType {
@@ -52,6 +53,7 @@ export enum e_iconType {
     WAVEFORM = "waveform",
     CHIP = "chip",
     LENS = "lens",
+    REPORT = "report",
 }
 
 export enum e_reportType {

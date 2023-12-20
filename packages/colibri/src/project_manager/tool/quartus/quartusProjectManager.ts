@@ -1,12 +1,12 @@
 // This code only can be used for Quartus boards
 
-import { e_project_type, t_action_result, t_file } from "../../common";
+import { e_project_type, t_action_result, t_file, t_timing_path } from "../../common";
 import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
     QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath, setConfigToProject,
     getProjectInfo, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
-    setTopLevelTestbench,
+    setTopLevelTestbench, getTimingReport
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
 import {
@@ -379,6 +379,7 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.CHANGEDEVICE]: "",
             [e_taskType.SETTINGS]: "",
             [e_taskType.OPENFOLDER]: "",
+            [e_taskType.SHOW_TIMING_REPORT]: "",
             [e_taskType.QUARTUS_ANALYSISSYNTHESIS]: "syn",
             [e_taskType.QUARTUS_ANALYSISELABORATION]: "syn",
             [e_taskType.QUARTUS_SYNTHESIS]: "syn",
@@ -567,5 +568,10 @@ export class QuartusProjectManager extends Project_manager {
         });
         callback_stream(exec_i);
         return exec_i;
+    }
+
+    public async getTimingReport(): Promise<t_timing_path[]> {
+        const timingReport = await getTimingReport(this.get_config(), this.projectDiskPath, this.emitterProject);
+        return timingReport;
     }
 }
