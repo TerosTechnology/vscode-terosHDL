@@ -31,7 +31,7 @@ import { TaskStateManager } from "../taskState";
 import { setStatus } from "./quartusDB";
 import { GlobalConfigManager } from "../../../config/config_manager";
 import { ProjectEmitter, e_event } from "../../projectEmitter";
-import { get_toplevel_from_path } from "../../../utils/hdl_utils";
+// import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import { Process } from "../../../process/process";
 import * as nunjucks from 'nunjucks';
 import * as file_utils from "../../../utils/file_utils";
@@ -449,26 +449,26 @@ export class QuartusProjectManager extends Project_manager {
     public async get_test_list(): Promise<t_test_declaration[]> {
         try {
             const projectInfo = await getProjectInfo(this.get_config(), this.projectDiskPath, this.emitterProject);
-            const eda_test_bench_file = projectInfo.eda_test_bench_file;
-            let eda_test_bench_top_module = projectInfo.eda_test_bench_top_module;
+            // const eda_test_bench_file = projectInfo.eda_test_bench_file_list;
+            const eda_test_bench_top_module = projectInfo.eda_test_bench_top_module;
 
-            if (eda_test_bench_file === "") {
-                return [];
-            }
+            // if (eda_test_bench_file === "") {
+            //     return [];
+            // }
 
-            if (eda_test_bench_top_module === "") {
-                eda_test_bench_top_module = get_toplevel_from_path(eda_test_bench_file);
-            }
+            // if (eda_test_bench_top_module === "") {
+            //     eda_test_bench_top_module = get_toplevel_from_path(eda_test_bench_file);
+            // }
 
-            if (eda_test_bench_top_module === "") {
-                return [];
-            }
+            // if (eda_test_bench_top_module === "") {
+            //     return [];
+            // }
 
             const testbench = {
                 suite_name: "",
                 name: eda_test_bench_top_module,
                 test_type: "",
-                filename: eda_test_bench_file,
+                filename: "",
                 location: undefined,
             };
             return [testbench];

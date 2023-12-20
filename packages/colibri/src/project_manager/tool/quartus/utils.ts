@@ -172,7 +172,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         name: string, currentRevision: string, topEntity: string, revisionList: string[],
         family: string, part: string,
         optimization_mode: e_tools_quartus_optimization_mode, allow_register_retiming: boolean,
-        eda_test_bench_file: string,
+        eda_test_bench_file_list: string[],
         eda_test_bench_top_module: string,
         file_list: t_file[],
     }> {
@@ -191,7 +191,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         part: "",
         optimization_mode: e_tools_quartus_optimization_mode.BALANCED,
         allow_register_retiming: false,
-        eda_test_bench_file: "",
+        eda_test_bench_file_list: [] as string[],
         eda_test_bench_top_module: "",
         file_list: [] as t_file[],
     };
@@ -207,7 +207,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
 
         // General info
         const data_0 = line_split[0].split(',');
-        if (data_0.length === 9) {
+        if (data_0.length === 8) {
             result.prj_name = data_0[0].trim();
             result.prj_revision = data_0[1].trim();
             result.prj_top_entity = data_0[2].trim();
@@ -215,9 +215,9 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
             result.part = data_0[4].trim();
             optimization_mode = data_0[5].trim().replace(/ /g, "_");
             result.allow_register_retiming = data_0[6].trim() === "ON" ? true : false;
-            result.eda_test_bench_file = data_0[7].trim() === file_utils.get_directory(projectPath)
-                ? "" : data_0[7].trim();
-            result.eda_test_bench_top_module = data_0[8].trim();
+            // result.eda_test_bench_file = data_0[7].trim() === file_utils.get_directory(projectPath)
+            //     ? "" : data_0[7].trim();
+            result.eda_test_bench_top_module = data_0[7].trim();
         } else {
             throw new QuartusExecutionError("Error in Quartus execution");
         }
@@ -227,9 +227,14 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         const revision_list = data_1.map((s: string) => s.trim());
         result.revision_list = revision_list;
 
-        // File list
+        // Testbench file list
         if (line_split.length > 2) {
-            const fileListStr = line_split.slice(2).join('\n');
+            result.eda_test_bench_file_list = line_split[2].split(',').map((s: string) => s.trim());
+        }
+
+        // File list
+        if (line_split.length > 3) {
+            const fileListStr = line_split.slice(3).join('\n');
             const csvFileList = process_utils.create_temp_file(fileListStr);
             const fileList = get_files_from_csv(csvFileList, false).file_list;
             file_utils.remove_file(csvFileList);
@@ -259,7 +264,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         part: result.part,
         optimization_mode: result.optimization_mode,
         allow_register_retiming: result.allow_register_retiming,
-        eda_test_bench_file: result.eda_test_bench_file,
+        eda_test_bench_file_list: result.eda_test_bench_file_list,
         eda_test_bench_top_module: result.eda_test_bench_top_module,
         file_list: result.file_list,
     };
