@@ -30,6 +30,13 @@ export type t_timing_node = {
 
 export type t_timing_path = {
     name: string;
+    levelsNumber: number;
+    fromNodeName: string;
+    toNodeName: string;
+    fromPath: string;
+    toPath: string;
+    fromLine: number;
+    toLine: number;
     nodeList: t_timing_node[];
 }
 

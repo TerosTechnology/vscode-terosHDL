@@ -38,8 +38,10 @@ import * as teroshdl2 from 'teroshdl2';
 import { Comander } from "./features/comander/run";
 import { Logger, debugLogger } from "./logger";
 import { Dependency_manager } from './features/dependency';
-import { LogView } from './views/logs';
+import { LogView, getLogView } from './views/logs';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
+import { TimingReportView, getTimingReportView } from './views/timing/timing_report';
+import { getPathDetailsView } from './views/timing/path_details';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -48,15 +50,10 @@ export class Teroshdl {
     private context: vscode.ExtensionContext;
     private manager: t_Multi_project_manager;
     private emitterProject = new teroshdl2.project_manager.projectEmitter.ProjectEmitter();
-    private logView;
+    private logView: LogView;
+    private timingView: TimingReportView;
 
     constructor(context: vscode.ExtensionContext) {
-        this.logView = new LogView(context);
-
-        context.subscriptions.push(vscode.window.registerWebviewViewProvider(
-            'teroshdl-report-logs', this.logView, { webviewOptions: { retainContextWhenHidden: true } })
-        );
-
         const homedir = teroshdl2.utils.common.get_home_directory();
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
@@ -64,6 +61,10 @@ export class Teroshdl {
         this.manager = new teroshdl2.project_manager.multi_project_manager.Multi_project_manager(
             this.emitterProject,
             file_prj_path);
+
+        this.logView = getLogView(context);
+        this.timingView = getTimingReportView(context, this.manager, getPathDetailsView(context, this.manager));
+
         GlobalConfigManager.newInstance(file_config_path);
         this.context = context;
     }
@@ -172,7 +173,7 @@ export class Teroshdl {
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
         new Tree_view_manager(this.context, this.manager, this.emitterProject, schematic_manager,
-            dependency_manager, this.logView);
+            dependency_manager, this.logView, this.timingView);
     }
 
     private init_comander() {

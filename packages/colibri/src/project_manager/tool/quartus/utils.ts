@@ -570,22 +570,71 @@ export async function getTimingReport(config: e_config, projectPath: string, emi
         return [];
     }
 
-    const paths = cmd_result.csv_content.split(/Path \d+\n/).slice(1); // Divide y omite la primera cadena vacía
-    const result = paths.map((path, index) => {
-        const nodes = path.trim().split('\n').map(nodeString => {
-            const parts = nodeString.split(',');
-            return {
-                name: parts[0],
-                path: parts[1],
-                line: parseInt(parts[2], 10)
-            } as t_timing_node;
+    const pathSections = cmd_result.csv_content.split(/\n(?=Path .+)/);
+
+    return pathSections.map(section => {
+        const lines = section.trim().split('\n');
+        const pathName = lines[0];
+        const nodes = lines.slice(1).map(line => {
+            const [name, path, lineStr] = line.split(',');
+            return { name, path, line: parseInt(lineStr, 10) } as t_timing_node;
         });
+
+        const fromNodeName = nodes.length > 0 ? nodes[0].name : "";
+        const toNodeName = nodes.length > 0 ? nodes[nodes.length - 1].name : "";
+
+        const fromPath = nodes.length > 0 ? nodes[0].path : "";
+        const toPath = nodes.length > 0 ? nodes[nodes.length - 1].path : "";
+
+        const fromLine = nodes.length > 0 ? nodes[0].line : 0;
+        const toLine = nodes.length > 0 ? nodes[nodes.length - 1].line : 0;
+
         return {
-            name: `Path ${index + 1}`,
-            nodeList: nodes
+            name: pathName,
+            nodeList: nodes,
+            levelsNumber: nodes.length,
+            fromNodeName: fromNodeName,
+            toNodeName: toNodeName,
+            fromPath: fromPath,
+            toPath: toPath,
+            fromLine: fromLine,
+            toLine: toLine,
         } as t_timing_path;
     });
-    return result;
+
+    // const paths = cmd_result.csv_content.split(/Path \d+\n/).slice(1);
+    // const result = paths.map((path, index) => {
+    //     const nodes = path.trim().split('\n').map(nodeString => {
+    //         const parts = nodeString.split(',');
+    //         return {
+    //             name: parts[0],
+    //             path: parts[1],
+    //             line: parseInt(parts[2], 10)
+    //         } as t_timing_node;
+    //     });
+
+    //     const fromNodeName = nodes.length > 0 ? nodes[0].name : "";
+    //     const toNodeName = nodes.length > 0 ? nodes[nodes.length - 1].name : "";
+
+    //     const fromPath = nodes.length > 0 ? nodes[0].path : "";
+    //     const toPath = nodes.length > 0 ? nodes[nodes.length - 1].path : "";
+
+    //     const fromLine = nodes.length > 0 ? nodes[0].line : 0;
+    //     const toLine = nodes.length > 0 ? nodes[nodes.length - 1].line : 0;
+
+    //     return {
+    //         name: `Path ${index + 1}`,
+    //         nodeList: nodes,
+    //         levelsNumber: nodes.length,
+    //         fromNodeName: fromNodeName,
+    //         toNodeName: toNodeName,
+    //         fromPath: fromPath,
+    //         toPath: toPath,
+    //         fromLine: fromLine,
+    //         toLine: toLine,
+    //     } as t_timing_path;
+    // });
+    // return result;
 }
 
 export async function setConfigToProject(config: e_config, projectPath: string,

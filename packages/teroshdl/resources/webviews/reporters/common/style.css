@@ -1,0 +1,120 @@
+body {
+    padding-top: 10px;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f2f2f5;
+    font-size: 12px;
+}
+
+.align-middle {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #eff7fe;
+}
+
+.navbar,
+.navbar .form-control {
+    height: 40px;
+}
+
+.navbar-nav .nav-item {
+    margin-right: 10px;
+}
+
+.navbar-nav .nav-item:last-child {
+    margin-right: 0;
+}
+
+form {
+    margin-left: 60px;
+}
+
+#navbarNav .navbar-nav {
+    flex-grow: 1;
+}
+
+#navbarNav form {
+    margin-left: auto;
+}
+
+.fixed-size-search {
+    width: 310px;
+    height: 50px;
+}
+
+.table thead th {
+    border-top: none;
+}
+
+th {
+    white-space: nowrap;
+}
+
+thead {
+    user-select: none;
+}
+
+.table {
+    background-color: #ffffff;
+}
+
+.navbar {
+    padding-top: 0px;
+    background-color: #f2f2f5;
+}
+
+.table-responsive {
+    overflow-y: hidden;
+}
+
+.scrollable-body {
+    overflow-y: auto;
+}
+
+.table tbody tr th {
+    cursor: pointer;
+}
+
+.pointerStyle {
+    cursor: pointer;
+}
+
+
+.table-hover tbody tr:hover {
+    background-color: #eff7fe;
+}
+
+.hover-cell:hover {
+    background-color: #b7d7ff;
+    color: #333;
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+    max-height: 200px;
+    overflow-y: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+.fixed-header {
+    width: calc(100% - 1em); /* Ajustar según el ancho del scrollbar */
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 1020; /* Encima del cuerpo de la tabla */
+}
+
+.sorting {
+    display: inline;
+    font-size: 1em;
+    font-weight: 900;
+}
+
+.table thead {
+    font-size: 13px;
+}
+
+.numberCell {
+    font-weight: bold;
+}

@@ -19,6 +19,14 @@ import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as teroshdl2 from 'teroshdl2';
 
+export function getLogView(context: vscode.ExtensionContext): LogView {
+    const view = new LogView(context);
+    context.subscriptions.push(vscode.window.registerWebviewViewProvider(
+        'teroshdl-report-logs', view, { webviewOptions: { retainContextWhenHidden: true } })
+    );
+    return view
+}
+
 export class LogView implements vscode.WebviewViewProvider {
     private webview: vscode.Webview | undefined;
     private webviewView: vscode.WebviewView | undefined;
@@ -69,17 +77,38 @@ export class LogView implements vscode.WebviewViewProvider {
     }
 
     getHtmlForWebview() {
-        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', 'logs', 'index.html');
+        const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', 'reporters',
+            'logs', 'index.html');
         let template_str = teroshdl2.utils.file.read_file_sync(template_path);
 
         if (!this.webview) {
             return template_str;
         }
 
-        const css_bootstrap_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'webviews', 'common',
-            'bootstrap.min.css'));
+        const css_bootstrap_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
+            'webviews', 'common', 'bootstrap.min.css'));
 
         template_str = template_str.replace(/{{css_bootstrap_path}}/g, css_bootstrap_path.toString());
+
+        // Custom CSS
+        const css_custom_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
+            'webviews', 'reporters', 'logs', 'style.css'));
+        template_str = template_str.replace(/{{css_path_0}}/g, css_custom_path.toString());
+
+        // Common CSS
+        const css_common_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
+            'webviews', 'reporters', 'common', 'style.css'));
+        template_str = template_str.replace(/{{common_css}}/g, css_common_path.toString());
+
+        // Common JS
+        const js_common_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
+            'webviews', 'reporters', 'common', 'common.js'));
+        template_str = template_str.replace(/{{js_common}}/g, js_common_path.toString());
+
+        // Custom JS
+        const js_custom_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
+            'webviews', 'reporters', 'logs', 'script.js'));
+        template_str = template_str.replace(/{{js_path_0}}/g, js_custom_path.toString());
 
         return template_str;
     }
