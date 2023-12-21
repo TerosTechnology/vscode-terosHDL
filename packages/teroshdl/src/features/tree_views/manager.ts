@@ -37,6 +37,7 @@ import { t_Multi_project_manager } from '../../type_declaration';
 import { Schematic_manager } from "../schematic";
 import { Dependency_manager } from "../dependency";
 import { LogView } from "../../views/logs";
+import { TimingReportView } from "../../views/timing/timing_report";
 
 let run_output: Run_output_manager = new Run_output_manager();
 let multi_manager: t_Multi_project_manager;
@@ -49,7 +50,8 @@ export class Tree_view_manager {
         emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter,
         schematic_manager: Schematic_manager,
         dependency_manager: Dependency_manager,
-        logView: LogView) {
+        logView: LogView,
+        timingReportView: TimingReportView) {
 
         context.subscriptions.push(this.statusbar);
         multi_manager = manager;
@@ -62,7 +64,7 @@ export class Tree_view_manager {
             new TreeDependencyManager(context, manager, schematic_manager, dependency_manager),
             new Runs_manager(context, manager, run_output, emitterProject),
             timingManager,
-            new Tasks_manager(context, manager, logView, timingManager, emitterProject),
+            new Tasks_manager(context, manager, logView, emitterProject, timingReportView),
             new IpCatalogManager(context, manager),
             new Actions_manager(context),
             new Watcher_manager(context, manager),

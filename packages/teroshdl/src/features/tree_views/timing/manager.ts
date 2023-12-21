@@ -47,13 +47,13 @@ export class Timing_manager extends BaseView {
         const provider = new RedTextDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
 
-        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(),
-            this.tree as element.BaseTreeDataProvider<element.Timing>));
+        // context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(),
+        //     this.tree as element.BaseTreeDataProvider<element.Timing>));
     }
 
     set_commands() {
-        vscode.commands.registerCommand("teroshdl.view.tasks.show_timing_report", async (item) =>
-            await this.openTimingReport());
+        // vscode.commands.registerCommand("teroshdl.view.tasks.show_timing_report", async (item) =>
+        //     await this.openTimingReport());
     }
 
     private async openTimingReport() {
