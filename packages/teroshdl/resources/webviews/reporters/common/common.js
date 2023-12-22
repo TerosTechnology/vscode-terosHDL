@@ -41,23 +41,20 @@ function sortTable(column, headerElement) {
         rows = table.rows;
         for (i = 1; i < rows.length - 1; i++) {
             shouldSwitch = false;
-            x = rows[i].getElementsByTagName('TD')[column];
-            y = rows[i + 1].getElementsByTagName('TD')[column];
+            x = rows[i].getElementsByTagName('TD')[column].textContent.trim();
+            y = rows[i + 1].getElementsByTagName('TD')[column].textContent.trim();
 
-            // Comprobar si los valores son numéricos
-            var xVal = isNaN(x.innerHTML) ? x.innerHTML.toLowerCase() : parseFloat(x.innerHTML);
-            var yVal = isNaN(y.innerHTML) ? y.innerHTML.toLowerCase() : parseFloat(y.innerHTML);
+            var xVal = parseFloat(x);
+            var yVal = parseFloat(y);
 
-            if (dir === 'asc') {
-                if (xVal > yVal) {
-                    shouldSwitch = true;
-                    break;
-                }
-            } else {
-                if (xVal < yVal) {
-                    shouldSwitch = true;
-                    break;
-                }
+            if (isNaN(xVal) || isNaN(yVal)) {
+                xVal = x.toLowerCase();
+                yVal = y.toLowerCase();
+            }
+
+            if (dir === 'asc' ? xVal > yVal : xVal < yVal) {
+                shouldSwitch = true;
+                break;
             }
         }
         if (shouldSwitch) {

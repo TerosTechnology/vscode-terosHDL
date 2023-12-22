@@ -24,12 +24,16 @@ import { t_version_inst, LANGUAGE } from "../common/general";
 ////////////////////////////////////////////////////////////////////////////////
 export type t_timing_node = {
     name: string;
+    cell_location: string;
+    incremental_delay: number;
+    total_delay: number;
     path: string;
     line: number;
 }
 
 export type t_timing_path = {
     name: string;
+    slack: number;
     levelsNumber: number;
     fromNodeName: string;
     toNodeName: string;

@@ -574,10 +574,20 @@ export async function getTimingReport(config: e_config, projectPath: string, emi
 
     return pathSections.map(section => {
         const lines = section.trim().split('\n');
-        const pathName = lines[0];
+        const firstLineSplit = lines[0].split(',');
+
+        const pathName = firstLineSplit[0];
+        const slack = parseFloat(firstLineSplit[1]);
+        const levelsNumber = parseInt(firstLineSplit[2], 10);
+
+        let total_delay = 0;
         const nodes = lines.slice(1).map(line => {
-            const [name, path, lineStr] = line.split(',');
-            return { name, path, line: parseInt(lineStr, 10) } as t_timing_node;
+            const [name, cell_location, lineStr0, path, lineStr] = line.split(',');
+            const incremental_delay = parseFloat(lineStr0);
+            total_delay += incremental_delay;
+            total_delay = parseFloat(total_delay.toFixed(3));
+            return { name, cell_location, incremental_delay, total_delay,
+                path, line: parseInt(lineStr, 10) } as t_timing_node;
         });
 
         const fromNodeName = nodes.length > 0 ? nodes[0].name : "";
@@ -591,8 +601,9 @@ export async function getTimingReport(config: e_config, projectPath: string, emi
 
         return {
             name: pathName,
+            slack: slack,
             nodeList: nodes,
-            levelsNumber: nodes.length,
+            levelsNumber: levelsNumber,
             fromNodeName: fromNodeName,
             toNodeName: toNodeName,
             fromPath: fromPath,

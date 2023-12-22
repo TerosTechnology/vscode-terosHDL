@@ -251,6 +251,7 @@ const KeyWords: Array<string> = ["ABS", "ACCESS", "AFTER", "ALIAS", "ALL", "AND"
 const TypeNames: Array<string> = ["BOOLEAN", "BIT", "CHARACTER", "INTEGER", "TIME", "NATURAL", "POSITIVE", "STRING", "STD_LOGIC", "STD_LOGIC_VECTOR"];
 
 export function beautify(input: string, settings: BeautifierSettings) {
+    const isEndBreak = input[input.length - 1] === "\n" || input[input.length - 1] === "\r";
     input = input.replace(/\r\n/g, "\n");
     input = input.replace(/\n/g, "\r\n");
     let arr = input.split("\r\n");
@@ -335,6 +336,11 @@ export function beautify(input: string, settings: BeautifierSettings) {
     const escapedTexts = new RegExp("[" + ILBackslash + ILQuote + ILSingleQuote + "]", "g");
     input = input.replace(escapedTexts, "");
     input = input.replace(/\r\n/g, settings.EndOfLine);
+
+    if (isEndBreak) {
+        input += settings.EndOfLine;
+    }
+
     return input;
 }
 
