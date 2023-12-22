@@ -13,15 +13,26 @@ function create(pathDetailsList) {
                 line: pathDetail.line
             });
         });
-
+        // Total Delay
+        const cellTotalDelay = document.createElement('td');
+        cellTotalDelay.textContent = pathDetail.total_delay.toFixed(3);;
+        row.appendChild(cellTotalDelay);
+        // Incremental Delay
+        const cellIncrementalDelay = document.createElement('td');
+        cellIncrementalDelay.textContent = pathDetail.incremental_delay.toFixed(3);;
+        row.appendChild(cellIncrementalDelay);
+        // Cell location
+        const cellLocation = document.createElement('td');
+        cellLocation.textContent = pathDetail.cell_location;
+        row.appendChild(cellLocation);
         // Name
         const cellName = document.createElement('td');
         cellName.textContent = pathDetail.name;
         row.appendChild(cellName);
-        // Path
-        const cellPath = document.createElement('td');
-        cellPath.textContent = `${pathDetail.path}:${pathDetail.line}`;
-        row.appendChild(cellPath);
+        // // Path
+        // const cellPath = document.createElement('td');
+        // cellPath.textContent = `${pathDetail.path}:${pathDetail.line}`;
+        // row.appendChild(cellPath);
 
         tableBody.appendChild(row);
     });

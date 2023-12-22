@@ -118,3 +118,13 @@ thead {
 .numberCell {
     font-weight: bold;
 }
+
+.cellFail {
+    color: #DC3545;
+    font-weight: bold;
+}
+
+.cellOK {
+    color: #198754;
+    font-weight: bold;
+}
