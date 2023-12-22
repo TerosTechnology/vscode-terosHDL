@@ -184,7 +184,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
     const args = `"${projectPath}"`;
     const tcl_file = path_lib.join(__dirname, 'bin', 'project_info.tcl');
 
-    const cmd_result = await executeQuartusTcl(false, config, tcl_file, args, "", emitterProject, 6);
+    const cmd_result = await executeQuartusTcl(false, config, tcl_file, args, "", emitterProject, 22);
 
     const result = {
         prj_name: "",
