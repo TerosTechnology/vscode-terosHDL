@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_file, t_action_result, t_logical } from "../common";
+import { t_file, t_action_result, t_logical, e_source_type } from "../common";
 import * as file_utils from "../../utils/file_utils";
 import { Manager } from "./manager";
 import { Dependency_graph } from "../dependency/dependency";
@@ -40,14 +40,14 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         const non_lib_files: t_file[] = [];
 
         this.files.forEach(element => {
-            if (element.logical_name === ""){
+            if (element.logical_name === "") {
                 non_lib_files.push(element);
             }
-            else{
+            else {
                 lib_files.push(element);
             }
         });
-        
+
         this.files = lib_files.concat(non_lib_files);
     }
 
@@ -66,14 +66,14 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
     }
 
     get(reference_file_path?: string): t_file[] {
-        if (reference_file_path !== undefined){
-            const new_files =  this.files.map(obj => ({ ...obj }));
+        if (reference_file_path !== undefined) {
+            const new_files = this.files.map(obj => ({ ...obj }));
             for (let i = 0; i < new_files.length; i++) {
                 new_files[i].name = file_utils.get_relative_path(new_files[i].name, reference_file_path);
             }
             return new_files;
         }
-        return this.files;  
+        return this.files;
     }
 
     get_by_logical_name(): t_logical[] {
@@ -117,7 +117,8 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
             is_include_file: file.is_include_file,
             include_path: file.include_path,
             logical_name: file.logical_name,
-            is_manual: file.is_manual
+            is_manual: file.is_manual,
+            source_type: file.source_type,
         };
 
         this.files.push(complete_file);
@@ -146,7 +147,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         return result;
     }
 
-    delete_by_logical_name(logical_name: string) : t_action_result{
+    delete_by_logical_name(logical_name: string): t_action_result {
         const result: t_action_result = {
             result: "",
             successful: false,
@@ -169,7 +170,8 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
             logical_name: logical_name,
             is_manual: false,
             file_type: LANGUAGE.NONE,
-            file_version: undefined
+            file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         return this.add(magic_file);
     }

@@ -19,7 +19,7 @@
 
 import * as paht_lib from "path";
 
-import { t_file } from '../../src/project_manager/common';
+import { e_source_type, t_file } from '../../src/project_manager/common';
 import { Project_manager } from '../../src/project_manager/project_manager';
 import { LANGUAGE, VERILOG_LANG_VERSION, VHDL_LANG_VERSION } from "../../src/common/general";
 import { get_default_config } from '../../src/config/config_declaration';
@@ -67,6 +67,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         const file_1: t_file = {
@@ -77,6 +78,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         project_manager.add_file(file_0);
@@ -95,6 +97,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         const file_1: t_file = {
@@ -105,6 +108,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         const file_2: t_file = {
@@ -115,6 +119,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         project_manager.add_file(file_0);
@@ -146,6 +151,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         const file_1: t_file = {
@@ -156,6 +162,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         const file_2: t_file = {
@@ -166,6 +173,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         project_manager.add_file(file_0);
@@ -201,6 +209,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         const file_1: t_file = {
@@ -211,6 +220,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         project_manager.add_file(file_0);
@@ -231,6 +241,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         const file_1: t_file = {
@@ -241,6 +252,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         project_manager.add_file(file_0);
@@ -258,6 +270,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         const file_1: t_file = {
@@ -268,6 +281,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         project_manager.add_file(file_0);
@@ -289,6 +303,7 @@ describe('project_manager', () => {
             is_manual: false,
             file_type: LANGUAGE.VHDL,
             file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
         };
 
         project_manager.add_file(file_0);

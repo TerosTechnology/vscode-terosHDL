@@ -24,7 +24,7 @@ export function getLogView(context: vscode.ExtensionContext): LogView {
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(
         'teroshdl-report-logs', view, { webviewOptions: { retainContextWhenHidden: true } })
     );
-    return view
+    return view;
 }
 
 export class LogView implements vscode.WebviewViewProvider {

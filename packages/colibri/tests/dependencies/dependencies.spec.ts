@@ -18,7 +18,7 @@
 
 import * as path_lib from 'path';
 import { Dependency_graph} from '../../src/project_manager/dependency/dependency';
-import { t_file } from '../../src/project_manager/common';
+import { e_source_type, t_file } from '../../src/project_manager/common';
 import { LANGUAGE, VHDL_LANG_VERSION } from '../../src/common/general';
 
 const HELPER_FOLDER = path_lib.join(__dirname, 'helpers');
@@ -36,6 +36,7 @@ describe('dependencies', () => {
                 is_manual: false,
                 file_type: LANGUAGE.VHDL,
                 file_version: VHDL_LANG_VERSION.v2008,
+                source_type: e_source_type.NONE,
             },
             {
                 name: path_lib.join(HELPER_FOLDER, "half_adder.vhd"),
@@ -45,6 +46,7 @@ describe('dependencies', () => {
                 is_manual: false,
                 file_type: LANGUAGE.VHDL,
                 file_version: VHDL_LANG_VERSION.v2008,
+                source_type: e_source_type.NONE,
             }
         ];
         const compile_order = await dependency_graph.get_compile_order_pyodide(file_list);

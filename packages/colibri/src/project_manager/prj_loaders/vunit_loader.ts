@@ -18,7 +18,7 @@
 
 import { e_config } from "../../config/config_declaration";
 import { python } from "../../process/export_t";
-import { t_file } from "../common";
+import { e_source_type, t_file } from "../common";
 import { Vunit } from "../tool/vunit/vunit";
 import * as process_utils from "../../process/utils";
 import * as file_utils from "../../utils/file_utils";
@@ -51,7 +51,8 @@ export async function get_files_from_vunit(config: e_config, vunit_path: string,
                     logical_name: file.library_name,
                     is_manual: is_manual,
                     file_type: file_utils.get_language_from_filepath(file.file_name),
-                    file_version: file_utils.get_default_version_for_filepath(file.file_name)
+                    file_version: file_utils.get_default_version_for_filepath(file.file_name),
+                    source_type: e_source_type.NONE,
                 };
                 file_defined_list.push(file_declaration);
             });

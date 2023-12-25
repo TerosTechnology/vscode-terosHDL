@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as file_utils from "../../utils/file_utils";
-import { t_file } from "../common";
+import { e_source_type, t_file } from "../common";
 import { t_loader_file_list_result } from "../tool/common";
 
 export function get_files_from_csv(csv_path: string, is_manual: boolean): t_loader_file_list_result {
@@ -58,7 +58,8 @@ export function get_files_from_csv(csv_path: string, is_manual: boolean): t_load
                         logical_name: lib_inst,
                         is_manual: is_manual,
                         file_type: file_utils.get_language_from_filepath(complete_file_path),
-                        file_version: file_utils.get_default_version_for_filepath(complete_file_path)
+                        file_version: file_utils.get_default_version_for_filepath(complete_file_path),
+                        source_type: e_source_type.NONE,
                     };
                     result_file_list.push(file_edam);
                 }

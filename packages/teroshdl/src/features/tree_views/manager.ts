@@ -79,7 +79,7 @@ export class Tree_view_manager {
     }
 
     private async runRefresh(projectName: string, eventType: teroshdl2.project_manager.projectEmitter.e_event): Promise<void> {
-        console.log(eventType)
+        console.log(eventType);
         if (eventType === teroshdl2.project_manager.projectEmitter.e_event.STDOUT_INFO) {
             debugLogger.info(projectName);
             return;

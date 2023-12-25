@@ -23,7 +23,7 @@ import { createNodeDecoratorList, deleteDecorators } from './utils';
 
 export function getPathDetailsView(context: vscode.ExtensionContext, projectManager: t_Multi_project_manager): PathDetailsView {
     const view = new PathDetailsView(context, projectManager);
-    return view
+    return view;
 }
 
 export class PathDetailsView {
