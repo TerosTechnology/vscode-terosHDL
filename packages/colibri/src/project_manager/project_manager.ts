@@ -22,7 +22,8 @@ import {
     t_file, t_action_result, t_watcher,
     e_watcher_type,
     e_project_type,
-    t_timing_path
+    t_timing_path,
+    e_source_type
 } from "./common";
 import * as  manager_watcher from "./list_manager/watcher";
 import * as  manager_file from "./list_manager/file";
@@ -201,12 +202,14 @@ export class Project_manager extends ConfigManager {
             const is_manual = file?.["is_manual"] ?? true;
             const file_type = file_utils.get_language_from_filepath(name);
             const file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
+            const source_type = file?.["is_manual"] ?? e_source_type.NONE;
 
             prj.add_file({
                 name: name, is_include_file: is_include_file,
                 include_path: include_path, logical_name: logical_name,
                 is_manual: is_manual, file_type: file_type,
-                file_version: file_version
+                file_version: file_version,
+                source_type: source_type,
             });
         });
         // Toplevel

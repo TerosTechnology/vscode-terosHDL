@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { LANGUAGE } from '../../src/common/general';
-import { t_file } from '../../src/project_manager/common';
+import { e_source_type, t_file } from '../../src/project_manager/common';
 import {File_manager} from '../../src/project_manager/list_manager/file';
 
 describe('list_manager: file', () => {
@@ -37,6 +37,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
 
         const file_1 : t_file= {
@@ -47,6 +48,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
 
         const result_0 = file_manager.add(file_0);
@@ -68,6 +70,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
 
         file_manager.add(file);
@@ -86,6 +89,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         const expected_file : t_file = {
             name: '../example.py',
@@ -95,6 +99,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
 
         file_manager.add(file);
@@ -112,6 +117,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         const file_1 = {
             name: '/path/example1.py',
@@ -121,6 +127,7 @@ describe('list_manager: file', () => {
             is_manual: true,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
 
         file_manager.add(file_0);
@@ -145,6 +152,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
 
         file_manager.add(file);
@@ -161,6 +169,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
 
         file_manager.add(file);
@@ -182,6 +191,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         const file2 = {
             name: 'file2.py',
@@ -191,6 +201,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         const file3 = {
             name: 'file3.py',
@@ -200,6 +211,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         
         file_manager.add(file1);
@@ -226,6 +238,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         const file2 = {
             name: 'file2.py',
@@ -235,6 +248,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         const file3 = {
             name: 'file3.py',
@@ -244,6 +258,7 @@ describe('list_manager: file', () => {
             is_manual: false,
             file_type: LANGUAGE.PYTHON,
             file_version: undefined,
+            source_type: e_source_type.NONE,
         };
         
         file_manager.add(file1);

@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_file, t_action_result, t_action_compile_order } from "../common";
+import { t_file, t_action_result, t_action_compile_order, e_source_type } from "../common";
 import * as hdl_utils from "../../utils/hdl_utils";
 import * as file_utils from "../../utils/file_utils";
 import * as process_utils from "../../process/utils";
@@ -36,7 +36,7 @@ export class Dependency_graph {
      * @param  python_script_name Python script name
      * @returns Pyodide result
     **/
-    private async run_pydodide(file_list: t_file[], python_script_name: any) : Promise<python_result>{
+    private async run_pydodide(file_list: t_file[], python_script_name: any): Promise<python_result> {
         // Get python code
         const python_script_path = path_lib.join(__dirname, `${python_script_name}.py`);
         const python_script_content = file_utils.read_file_sync(python_script_path);
@@ -66,6 +66,7 @@ export class Dependency_graph {
                 logical_name: file_inst.logical_name,
                 is_manual: file_inst.is_manual,
                 file_version: file_inst.file_version,
+                source_type: file_inst.source_type,
             };
             prj_file_list_map.push(file_map);
         });
@@ -105,6 +106,7 @@ export class Dependency_graph {
                         logical_name: rawdata[i].logical_name,
                         is_manual: false,
                         file_version: file_utils.get_default_version_for_filepath(rawdata[i].name),
+                        source_type: e_source_type.NONE,
                     };
                     compile_order.push(file_inst);
                 }
@@ -214,6 +216,7 @@ export class Dependency_graph {
                         logical_name: rawdata[i].logical_name,
                         is_manual: false,
                         file_version: file_utils.get_default_version_for_filepath(rawdata[i].name),
+                        source_type: e_source_type.NONE,
                     };
                     compile_order.push(file_inst);
                 }

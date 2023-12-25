@@ -22,6 +22,7 @@ import * as vscode from "vscode";
 import * as teroshdl2 from 'teroshdl2';
 import * as utils from "./utils";
 import { t_Multi_project_manager } from '../../type_declaration';
+import { e_source_type } from "teroshdl2/out/project_manager/common";
 
 const BASE_PATH_ICON = path_lib.join(__filename, "..", "..", "..", "..", "resources", "icon");
 
@@ -100,7 +101,8 @@ export async function add_sources_from_open_dialog(prj: teroshdl2.project_manage
             logical_name: logical_name,
             is_manual: true,
             file_type: teroshdl2.utils.file.get_language_from_filepath(source_path),
-            file_version: teroshdl2.utils.file.get_default_version_for_filepath(source_path)
+            file_version: teroshdl2.utils.file.get_default_version_for_filepath(source_path),
+            source_type: e_source_type.NONE,
         };
         fileDefinitionList.push(f);
     }
@@ -136,7 +138,8 @@ export async function add_sources_from_directory_and_subdirectories(prj: teroshd
                 logical_name: "",
                 is_manual: true,
                 file_type: teroshdl2.utils.file.get_language_from_filepath(file_inst),
-                file_version: teroshdl2.utils.file.get_default_version_for_filepath(file_inst)
+                file_version: teroshdl2.utils.file.get_default_version_for_filepath(file_inst),
+                source_type: e_source_type.NONE,
             };
             fileTerosDefList.push(f);
         };

@@ -61,6 +61,12 @@ export enum e_file_type {
     VLOGDEFINE = "vlogdefine"
 }
 
+export enum e_source_type {
+    NONE = "none",
+    SIMULATION = "simulation",
+    SYNTHESIS = "synthesis"
+}
+
 export type t_logical = {
     name: string;
     file_list: t_file[];
@@ -97,6 +103,8 @@ export type t_file = {
     file_type: LANGUAGE;
     /** File version */
     file_version: t_version_inst;
+    /** Source type */
+    source_type: e_source_type;
 }
 
 /** Type of watcher */
