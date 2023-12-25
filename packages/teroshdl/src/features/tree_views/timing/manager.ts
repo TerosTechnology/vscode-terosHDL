@@ -64,7 +64,7 @@ export class Timing_manager extends BaseView {
             cancellable: false,
             title: 'Generating Timming Report'
         }, async (progress) => {
-            timmingReport = await selectProject.getTimingReport();
+            timmingReport = await selectProject.getTimingReport(10);
         });
 
         this.tree.refresh(timmingReport);

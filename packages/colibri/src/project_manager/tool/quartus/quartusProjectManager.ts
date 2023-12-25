@@ -379,7 +379,6 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.CHANGEDEVICE]: "",
             [e_taskType.SETTINGS]: "",
             [e_taskType.OPENFOLDER]: "",
-            [e_taskType.SHOW_TIMING_REPORT]: "",
             [e_taskType.QUARTUS_ANALYSISSYNTHESIS]: "syn",
             [e_taskType.QUARTUS_ANALYSISELABORATION]: "syn",
             [e_taskType.QUARTUS_SYNTHESIS]: "syn",
@@ -570,8 +569,9 @@ export class QuartusProjectManager extends Project_manager {
         return exec_i;
     }
 
-    public async getTimingReport(): Promise<t_timing_path[]> {
-        const timingReport = await getTimingReport(this.get_config(), this.projectDiskPath, this.emitterProject);
+    public async getTimingReport(numOfPaths: number): Promise<t_timing_path[]> {
+        const timingReport = await getTimingReport(this.get_config(), this.projectDiskPath, this.emitterProject,
+            numOfPaths);
         return timingReport;
     }
 }

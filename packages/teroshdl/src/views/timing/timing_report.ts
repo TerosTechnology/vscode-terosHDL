@@ -29,8 +29,8 @@ export function getTimingReportView(context: vscode.ExtensionContext, projectMan
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(
         'teroshdl-view-timing', view, { webviewOptions: { retainContextWhenHidden: true } })
     );
-    vscode.commands.registerCommand("teroshdl.view.tasks.show_timing_report", async () =>
-        await view.openTimingReport());
+    // vscode.commands.registerCommand("teroshdl.view.tasks.show_timing_report", async () =>
+    //     await view.openTimingReport());
     return view
 }
 
@@ -154,6 +154,9 @@ export class TimingReportView implements vscode.WebviewViewProvider {
                     case 'showPathDetails':
                         await this.showPathDetails(message.pathName);
                         return;
+                    case 'generate':
+                        await this.generateTimingReport(message.numPaths);
+                        return;
                 }
             },
             undefined,
@@ -175,26 +178,10 @@ export class TimingReportView implements vscode.WebviewViewProvider {
             return template_str;
         }
 
-        // Bootstrap
-        const css_bootstrap_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'common', 'bootstrap.min.css'));
-        template_str = template_str.replace(/{{css_bootstrap_path}}/g, css_bootstrap_path.toString());
-
-        // Common CSS
-        const css_common_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'common', 'style.css'));
-        template_str = template_str.replace(/{{css_common}}/g, css_common_path.toString());
-
-        // Common JS
-        const js_common_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'common', 'common.js'));
-        template_str = template_str.replace(/{{js_common}}/g, js_common_path.toString());
-
         // Custom JS
-        const js_custom_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'timing', 'script.js'));
-        template_str = template_str.replace(/{{js_path_0}}/g, js_custom_path.toString());
-
+        const js_timing = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
+            'webviews', 'reporters', 'timing', 'wb', 'webviewTimingReport.js'));
+        template_str = template_str.replace(/{{webviewUri}}/g, js_timing.toString());
 
         return template_str;
     }
@@ -205,7 +192,7 @@ export class TimingReportView implements vscode.WebviewViewProvider {
         }
     }
 
-    public async openTimingReport() {
+    private async generateTimingReport(numOfPaths: number) {
         const selectProject = await this.projectManager.get_selected_project();
         // let timmingReport: teroshdl2.project_manager.common.t_timing_path[] = [];
         await vscode.window.withProgress({
@@ -213,7 +200,7 @@ export class TimingReportView implements vscode.WebviewViewProvider {
             cancellable: false,
             title: 'Generating Timming Report'
         }, async (progress) => {
-            this.timmingReport = await selectProject.getTimingReport();
+            this.timmingReport = await selectProject.getTimingReport(numOfPaths);
             this.sendTimingReport();
             this.createDecoratorList(undefined);
         });

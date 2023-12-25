@@ -44,7 +44,6 @@ export enum e_taskType {
     OPENFOLDER = "Open Project Folder",
     SETTINGS = "Settings",
     CHANGEDEVICE = "Device",
-    SHOW_TIMING_REPORT = "Show Timing Report",
 }
 
 export enum e_iconType {

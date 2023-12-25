@@ -644,7 +644,7 @@ export class Project_manager extends ConfigManager {
         this.emitterProject.emitEvent(this.name, e_event.UPDATE_TASK);
     }
 
-    public async getTimingReport(): Promise<t_timing_path[]> {
+    public async getTimingReport(_numOfPaths: number): Promise<t_timing_path[]> {
         return [];
     }
 }

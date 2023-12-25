@@ -83,32 +83,17 @@ export class PathDetailsView {
 
     private getHtmlForWebview() {
         const template_path = path_lib.join(this.context.extensionPath, 'resources', 'webviews', 'reporters',
-            'timing', 'path_details.html');
+            'timing', 'timing_details.html');
         let template_str = teroshdl2.utils.file.read_file_sync(template_path);
 
         if (!this.webview) {
             return template_str;
         }
 
-        // Bootstrap
-        const css_bootstrap_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 
-        'webviews', 'common', 'bootstrap.min.css'));
-        template_str = template_str.replace(/{{css_bootstrap_path}}/g, css_bootstrap_path.toString());
-
-        // Common CSS
-        const css_custom_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'common', 'style.css'));
-        template_str = template_str.replace(/{{css_common}}/g, css_custom_path.toString());
-
-        // Common JS
-        const js_common_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'common', 'common.js'));
-        template_str = template_str.replace(/{{js_common}}/g, js_common_path.toString());
-
         // Custom JS
-        const js_custom_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'timing', 'path_details_script.js'));
-        template_str = template_str.replace(/{{js_path_0}}/g, js_custom_path.toString());
+        const js_timing = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
+            'webviews', 'reporters', 'timing', 'wb', 'webviewTimingDetails.js'));
+        template_str = template_str.replace(/{{webviewUri}}/g, js_timing.toString());
 
         return template_str;
     }
