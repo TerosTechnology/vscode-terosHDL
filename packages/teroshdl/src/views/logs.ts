@@ -85,30 +85,10 @@ export class LogView implements vscode.WebviewViewProvider {
             return template_str;
         }
 
-        const css_bootstrap_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'common', 'bootstrap.min.css'));
-
-        template_str = template_str.replace(/{{css_bootstrap_path}}/g, css_bootstrap_path.toString());
-
-        // Custom CSS
-        const css_custom_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'logs', 'style.css'));
-        template_str = template_str.replace(/{{css_path_0}}/g, css_custom_path.toString());
-
-        // Common CSS
-        const css_common_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'common', 'style.css'));
-        template_str = template_str.replace(/{{common_css}}/g, css_common_path.toString());
-
-        // Common JS
-        const js_common_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'common', 'common.js'));
-        template_str = template_str.replace(/{{js_common}}/g, js_common_path.toString());
-
         // Custom JS
-        const js_custom_path = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
-            'webviews', 'reporters', 'logs', 'script.js'));
-        template_str = template_str.replace(/{{js_path_0}}/g, js_custom_path.toString());
+        const js_timing = this.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
+            'webviews', 'reporters', 'logs', 'wb', 'webviewLogs.js'));
+        template_str = template_str.replace(/{{webviewUri}}/g, js_timing.toString());
 
         return template_str;
     }

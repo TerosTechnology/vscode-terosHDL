@@ -38,7 +38,6 @@ export function runTask(taskType: e_taskType, quartusDir: string,
         [e_taskType.QUARTUS_RTL_ANALYZER]: [],
         [e_taskType.SETTINGS]: [],
         [e_taskType.OPENFOLDER]: [],
-        [e_taskType.SHOW_TIMING_REPORT]: [],
         [e_taskType.QUARTUS_COMPILEDESIGN]: [
             `${binIP} --dni ${projectName} -c ${revisionName} --run_default_mode_op`,
             `${binSyn} --dni --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,

@@ -6,46 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timing Report</title>
 
-    <!-- Custom JS -->
-    <script type="text/javascript" src="{{js_path_0}}"></script>
-    <script type="text/javascript" src="{{js_common}}"></script>
+    <style>
+        /***********************************************************************
+        Header
+        ***********************************************************************/
+        .header {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{css_bootstrap_path}}" type="text/css" />
+        .header vscode-button {
+            margin-right: 10px;
+        }
 
-    <!-- Common CSS -->
-    <link rel="stylesheet" href="{{css_common}}" type="text/css" />
+        .header vscode-text-field {
+            width: 50px;
+            margin-right: 60px;
+        }
+        
+        .header span {
+            user-select: none;
+        }
+    </style>
+
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="table-responsive" id="tableContainer">
-            <div class="table-wrapper-scroll-y" id="scrollableTableContainer">
-                <table class="table table-hover" id="tableReport">
-                    <thead class="fixed-header pointerStyle">
-                        <tr>
-                            <th scope="col" onclick="sortTable(0, this)"># <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(1, this)">Logic Levels <span class="sorting">&#8597;</span></th>
-                            <!-- <th scope="col" onclick="sortTable(2, this)">Launch Clock <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(3, this)">Latch Clock <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(4, this)">SDC Exception <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(5, this)">Data Arrival Time <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(6, this)">Data Required Time <span class="sorting">&#8597;</span></th> -->
-                            <th scope="col" onclick="sortTable(2, this)">Slack (ns) <span class="sorting">&#8597;</span></th>
-                            <!-- <th scope="col" onclick="sortTable(8, this)">Worst-Case Operating Conditions <span class="sorting">&#8597;</span></th> -->
-                            <th scope="col" onclick="sortTable(3, this)">From <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(4, this)">To <span class="sorting">&#8597;</span></th>
-                        </tr>
-                    </thead>
-                    <tbody class="scrollable-body">
-                        <tr>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+
+    <div class="header">
+        <vscode-button id="generate-button">Generate Report</vscode-button>
+        <vscode-text-field id="num-paths" type="number" value="10"></vscode-text-field>
+        <span>paths</span>
     </div>
-    </div>
+
+    <vscode-divider></vscode-divider>
+
+    <vscode-data-grid id="basic-grid" generate-header="sticky" grid-template-columns="50px 140px 140px 120px">
+        <vscode-data-grid-row row-type="sticky-header">
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="1"></vscode-data-grid-cell>
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="2" id="h0"># <span
+                    class="sorting">&#8597;</span></vscode-data-grid-cell>
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="3" id="h1">Logic Levels <span
+                    class="sorting">&#8597;</span></vscode-data-grid-cell>
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="4" id="h2">Slack (ns) <span
+                    class="sorting">&#8597;</span></vscode-data-grid-cell>
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="5" id="h3">From <span
+                    class="sorting">&#8597;</span></vscode-data-grid-cell>
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="6" id="h4">To <span
+                    class="sorting">&#8597;</span></vscode-data-grid-cell>
+        </vscode-data-grid-row>
+    </vscode-data-grid>
+
+    <script type="module" src="{{webviewUri}}"></script>
 </body>
 
 </html>

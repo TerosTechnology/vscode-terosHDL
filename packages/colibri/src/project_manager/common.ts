@@ -24,6 +24,7 @@ import { t_version_inst, LANGUAGE } from "../common/general";
 ////////////////////////////////////////////////////////////////////////////////
 export type t_timing_node = {
     name: string;
+    index: number;
     cell_location: string;
     incremental_delay: number;
     total_delay: number;
@@ -33,6 +34,7 @@ export type t_timing_node = {
 
 export type t_timing_path = {
     name: string;
+    index: number;
     slack: number;
     levelsNumber: number;
     fromNodeName: string;
