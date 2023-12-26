@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path Details</title>
+
+    <style>
+        /***********************************************************************
+        Header
+        ***********************************************************************/
+        .table {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="table">
+        <vscode-data-grid id="basic-grid" generate-header="sticky" grid-template-columns="50px 80px 140px 120px">
+            <vscode-data-grid-row row-type="sticky-header">
+                <vscode-data-grid-cell cell-type="columnheader" grid-column="1">
+                    <vscode-checkbox id="select-all"></vscode-checkbox>
+                </vscode-data-grid-cell>
+                <vscode-data-grid-cell cell-type="columnheader" grid-column="2" id="h0"># <span
+                        class="sorting">&#8597;</span></vscode-data-grid-cell>
+                <vscode-data-grid-cell cell-type="columnheader" grid-column="3" id="h1">Total Delay (ns) <span
+                        class="sorting">&#8597;</span></vscode-data-grid-cell>
+                <vscode-data-grid-cell cell-type="columnheader" grid-column="4" id="h2">Incremental Delay (ns) <span
+                        class="sorting">&#8597;</span></vscode-data-grid-cell>
+                <vscode-data-grid-cell cell-type="columnheader" grid-column="5" id="h3">Cell Location <span
+                        class="sorting">&#8597;</span></vscode-data-grid-cell>
+                <vscode-data-grid-cell cell-type="columnheader" grid-column="6" id="h4">Element <span
+                        class="sorting">&#8597;</span></vscode-data-grid-cell>
+            </vscode-data-grid-row>
+        </vscode-data-grid>
+    </div>
+
+    <script type="module" src="{{webviewUri}}"></script>
+</body>
+</html>

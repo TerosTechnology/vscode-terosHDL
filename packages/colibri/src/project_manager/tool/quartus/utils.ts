@@ -559,10 +559,10 @@ export async function createRPTReportFromRDB(config: e_config, rdbPath: string):
     return rptFile;
 }
 
-export async function getTimingReport(config: e_config, projectPath: string, emitterProject: ProjectEmitter)
-    : Promise<t_timing_path[]> {
+export async function getTimingReport(config: e_config, projectPath: string, emitterProject: ProjectEmitter,
+    numOfPaths: number): Promise<t_timing_path[]> {
 
-    const args = `"${projectPath}"`;
+    const args = `"${projectPath}" "${numOfPaths}"`;
     const tcl_file = path_lib.join(__dirname, 'bin', 'get_timing_report.tcl');
 
     const cmd_result = await executeQuartusTcl(true, config, tcl_file, args, "", emitterProject, undefined);
@@ -572,7 +572,10 @@ export async function getTimingReport(config: e_config, projectPath: string, emi
 
     const pathSections = cmd_result.csv_content.split(/\n(?=Path .+)/);
 
+    let indexPath = 0;
     return pathSections.map(section => {
+        ++indexPath;
+
         const lines = section.trim().split('\n');
         const firstLineSplit = lines[0].split(',');
 
@@ -581,12 +584,14 @@ export async function getTimingReport(config: e_config, projectPath: string, emi
         const levelsNumber = parseInt(firstLineSplit[2], 10);
 
         let total_delay = 0;
+        let indexNode = 0;
         const nodes = lines.slice(1).map(line => {
+            ++indexNode;
             const [name, cell_location, lineStr0, path, lineStr] = line.split(',');
             const incremental_delay = parseFloat(lineStr0);
             total_delay += incremental_delay;
             total_delay = parseFloat(total_delay.toFixed(3));
-            return { name, cell_location, incremental_delay, total_delay,
+            return { name, index: indexNode, cell_location, incremental_delay, total_delay,
                 path, line: parseInt(lineStr, 10) } as t_timing_node;
         });
 
@@ -601,6 +606,7 @@ export async function getTimingReport(config: e_config, projectPath: string, emi
 
         return {
             name: pathName,
+            index: indexPath,
             slack: slack,
             nodeList: nodes,
             levelsNumber: levelsNumber,
@@ -612,40 +618,6 @@ export async function getTimingReport(config: e_config, projectPath: string, emi
             toLine: toLine,
         } as t_timing_path;
     });
-
-    // const paths = cmd_result.csv_content.split(/Path \d+\n/).slice(1);
-    // const result = paths.map((path, index) => {
-    //     const nodes = path.trim().split('\n').map(nodeString => {
-    //         const parts = nodeString.split(',');
-    //         return {
-    //             name: parts[0],
-    //             path: parts[1],
-    //             line: parseInt(parts[2], 10)
-    //         } as t_timing_node;
-    //     });
-
-    //     const fromNodeName = nodes.length > 0 ? nodes[0].name : "";
-    //     const toNodeName = nodes.length > 0 ? nodes[nodes.length - 1].name : "";
-
-    //     const fromPath = nodes.length > 0 ? nodes[0].path : "";
-    //     const toPath = nodes.length > 0 ? nodes[nodes.length - 1].path : "";
-
-    //     const fromLine = nodes.length > 0 ? nodes[0].line : 0;
-    //     const toLine = nodes.length > 0 ? nodes[nodes.length - 1].line : 0;
-
-    //     return {
-    //         name: `Path ${index + 1}`,
-    //         nodeList: nodes,
-    //         levelsNumber: nodes.length,
-    //         fromNodeName: fromNodeName,
-    //         toNodeName: toNodeName,
-    //         fromPath: fromPath,
-    //         toPath: toPath,
-    //         fromLine: fromLine,
-    //         toLine: toLine,
-    //     } as t_timing_path;
-    // });
-    // return result;
 }
 
 export async function setConfigToProject(config: e_config, projectPath: string,

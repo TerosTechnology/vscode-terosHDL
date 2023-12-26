@@ -5,102 +5,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log Viewer</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="{{css_bootstrap_path}}" type="text/css" />
+    <style>
+        /***********************************************************************
+        Header
+        ***********************************************************************/
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px
+        }
 
-    <!-- Common CSS -->
-    <link rel="stylesheet" href="{{common_css}}" type="text/css" />
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{css_path_0}}" type="text/css" />
-
-    <!-- Custom JS -->
-    <script type="text/javascript" src="{{js_path_0}}"></script>
-
-    <!-- Common JS -->
-    <script type="text/javascript" src="{{js_common}}"></script>
+        .header vscode-text-field {
+            float: right;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container-fluid">
 
-        <nav class="navbar navbar-expand">
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <button
-                            class="btn fixed-size-button active btn btn-outline-danger d-flex align-items-center justify-content-center"
-                            type="button">
-                            <input id="checkbox-error" type="checkbox" class="btn-checkbox"
-                                aria-label="Checkbox for following text input" checked>
-                            <span class="label-button">
-                                Errors
-                            </span>
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button
-                            class="btn fixed-size-button active btn-outline-warning d-flex align-items-center justify-content-center"
-                            type="button">
-                            <input id="checkbox-warning" type="checkbox" class="btn-checkbox"
-                                aria-label="Checkbox for following text input" checked>
-                            <span class="label-button">
-                                Warning
-                            </span>
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button
-                            class="btn fixed-size-button active btn-outline-primary d-flex align-items-center justify-content-center"
-                            type="button">
-                            <input id="checkbox-info" type="checkbox" class="btn-checkbox"
-                                aria-label="Checkbox for following text input" checked>
-                            <span class="label-button">
-                                Info
-                            </span>
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button
-                            class="btn fixed-size-button btn-outline-secondary d-flex align-items-center justify-content-center last-button"
-                            type="button">
-                            <input id="checkbox-file" type="checkbox" class="btn-checkbox"
-                                aria-label="Checkbox for following text input">
-                            <span class="label-button">
-                                Only file logs
-                            </span>
-                        </button>
-                    </li>
-                    <form class="d-flex">
-                        <input class="form-control fixed-size-search" type="search" placeholder="Search"
-                            aria-label="Search" id="search-input">
-                    </form>
-                </ul>
-            </div>
-        </nav>
-
-        <div class="table-responsive" id="tableContainer">
-            <div class="table-wrapper-scroll-y" id="scrollableTableContainer">
-                <table class="table table-hover" id="tableReport">
-                    <thead class="fixed-header pointerStyle">
-                        <tr>
-                            <th scope="col" onclick="sortTable(0, this)" class="log-level text-center">Level <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(1, this)" class="log-time text-center">Time <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(2, this)" class="log-description text-left">Description <span class="sorting">&#8597;</span></th>
-                            <th scope="col" onclick="sortTable(3, this)" class="log-location text-left">Location <span class="sorting">&#8597;</span></th>
-                        </tr>
-                    </thead>
-                    <tbody class="scrollable-body">
-                        <tr>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div class="header">
+        <div class="checkbox-group">
+            <vscode-checkbox checked id="checkbox-error">Errors</vscode-checkbox>
+            <vscode-checkbox checked id="checkbox-warning">Warning</vscode-checkbox>
+            <vscode-checkbox checked id="checkbox-info">Info</vscode-checkbox>
         </div>
 
+        <vscode-text-field id="search-input" placeholder="Filter"></vscode-text-field>
     </div>
+
+    <vscode-divider></vscode-divider>
+
+    <vscode-data-grid id="basic-grid" generate-header="sticky" grid-template-columns="120px 200px">
+        <vscode-data-grid-row row-type="sticky-header">
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="1" id="h0">Level</vscode-data-grid-cell>
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="2" id="h1">Time</vscode-data-grid-cell>
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="3" id="h2">Description</vscode-data-grid-cell>
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="4" id="h3">Location</vscode-data-grid-cell>
+        </vscode-data-grid-row>
+    </vscode-data-grid>
+
+    <script type="module" src="{{webviewUri}}"></script>
 </body>
 
 </html>

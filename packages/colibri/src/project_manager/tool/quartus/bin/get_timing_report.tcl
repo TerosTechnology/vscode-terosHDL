@@ -15,6 +15,7 @@ proc get_info_for_cell { cell_id } {
 
 set csv_file_name [lindex $argv 0]
 set project_path [lindex $argv 1]
+set num_of_paths [lindex $argv 2]
 
 #open result file for writing
 set csv_file [open $csv_file_name w]
@@ -26,8 +27,7 @@ qsta_utility::auto_CRU "create_timing_netlist"
 # Main part of the script
 ################################################################################
 # For now, ignore the clock paths with path_only
-# Get 10 paths. If you want more, increase the number 10
-set critical_paths [get_timing_paths -npaths 10 -detail path_only]
+set critical_paths [get_timing_paths -npaths [expr {$num_of_paths}] -detail path_only]
 
 # For printing out which path we're on
 set on_path 1

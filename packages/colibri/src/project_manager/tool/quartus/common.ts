@@ -25,12 +25,6 @@ export function getDefaultTaskList(): t_taskRep[] {
             "executionType": e_taskExecutionType.SIMPLECOMMAND,
         },
         {
-            "name": e_taskType.SHOW_TIMING_REPORT,
-            "label": "Show Timing Report",
-            "executionType": e_taskExecutionType.SIMPLECOMMAND,
-            "icon": e_iconType.REPORT,
-        },
-        {
             "name": e_taskType.QUARTUS_RTL_ANALYZER,
             "label": "",
             "success": undefined,
