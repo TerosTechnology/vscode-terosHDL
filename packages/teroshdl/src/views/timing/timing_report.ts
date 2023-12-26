@@ -55,11 +55,11 @@ export class TimingReportView implements vscode.WebviewViewProvider {
 
 
         context.subscriptions.push(
-            vscode.window.onDidChangeActiveTextEditor((e) => this.createDecoratorList(e)),
+            vscode.window.onDidChangeActiveTextEditor((e) => this.createDecoratorList()),
         );
     }
 
-    private createDecoratorList(document: vscode.TextEditor | undefined) {
+    private createDecoratorList() {
         const visibleEditors = vscode.window.visibleTextEditors;
         deleteDecorators(this.decoratorList);
         visibleEditors.forEach(editor => {
@@ -85,11 +85,20 @@ export class TimingReportView implements vscode.WebviewViewProvider {
                         return;
                     case 'updateDecorators':
                         this.pathSelectionList = message.selectionList;
-                        await this.createDecoratorList(undefined);
+                        await this.createDecoratorList();
                         return;
                 }
             },
             undefined,
+            context.subscriptions
+        );
+
+        webviewView.onDidDispose(
+            () => {
+                deleteDecorators(this.decoratorList);
+                this.pathSelectionList = [];
+            },
+            null,
             context.subscriptions
         );
 
@@ -132,7 +141,7 @@ export class TimingReportView implements vscode.WebviewViewProvider {
         }, async (progress) => {
             this.timmingReport = await selectProject.getTimingReport(numOfPaths);
             this.sendTimingReport();
-            this.createDecoratorList(undefined);
+            this.createDecoratorList();
         });
     }
 

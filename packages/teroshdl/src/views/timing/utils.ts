@@ -52,7 +52,7 @@ export function createDecoratorList(editor: vscode.TextEditor | undefined,
                 if (timingNode.path === filePath && pathSelectionList.includes(timingPath.index)) {
                     const slackMsg = slackMsgBase + "[from]";
                     setDecoration(editor, timingNode.line - 1, slackMsg,
-                        !lineRegistry.includes(timingNode.line), isRed, decoratorList);
+                        !lineRegistry.includes(timingNode.line), isRed, decoratorList, false);
                     // Prevent create multiple decorators in the same place
                     lineRegistry.push(timingNode.line);
                 }
@@ -62,7 +62,7 @@ export function createDecoratorList(editor: vscode.TextEditor | undefined,
                     const slackMsg = slackMsgBase + "[to]";
                     timingNode = nodeList[nodeList.length - 1];
                     setDecoration(editor, timingNode.line - 1, slackMsg,
-                        !lineRegistry.includes(timingNode.line), isRed, decoratorList);
+                        !lineRegistry.includes(timingNode.line), isRed, decoratorList, false);
 
                     // Prevent create multiple decorators in the same place
                     lineRegistry.push(timingNode.line);
@@ -74,8 +74,40 @@ export function createDecoratorList(editor: vscode.TextEditor | undefined,
     }
 }
 
+export function createNodeDecoratorList(editor: vscode.TextEditor | undefined,
+    timingNodeList: teroshdl2.project_manager.common.t_timing_node[],
+    slack: number,
+    decoratorList: vscode.TextEditorDecorationType[], pathSelectionList: number[]): void {
+
+    try {
+        if (editor === undefined) {
+            editor = vscode.window.activeTextEditor;
+        }
+        if (editor === undefined) {
+            return;
+        }
+
+        const filePath = editor.document.fileName;
+
+        const lineRegistry: number[] = [];
+        for (const timingNode of timingNodeList) {
+            const isRed = slack < 0;
+            const slackMs = `Node ${timingNode.index}[incr.delay=${timingNode.incremental_delay.toFixed(3)}ns]`;
+
+            if (timingNode.path === filePath && pathSelectionList.includes(timingNode.index)) {
+                setDecoration(editor, timingNode.line - 1, slackMs,
+                    !lineRegistry.includes(timingNode.line), isRed, decoratorList, true);
+                // Prevent create multiple decorators in the same place
+                lineRegistry.push(timingNode.line);
+            }
+        }
+    }
+    catch (error) {
+    }
+}
+
 export function setDecoration(editor: vscode.TextEditor, line: number, slackMsg: string, setBackground: boolean, isRed: boolean,
-    decoratorList: vscode.TextEditorDecorationType[]): void {
+    decoratorList: vscode.TextEditorDecorationType[], lowMode: boolean): void {
 
     // const message = new vscode.MarkdownString(
     //     `Incremental delay: *s**`,
@@ -113,10 +145,18 @@ export function setDecoration(editor: vscode.TextEditor, line: number, slackMsg:
 
     if (setBackground) {
         if (isRed) {
-            decoratorOptions.backgroundColor = 'rgba(255, 0, 0, 0.3)';
+            let redColor = 255;
+            if (lowMode) {
+                redColor = redColor/2;
+            }
+            decoratorOptions.backgroundColor = `rgba(0, ${redColor}, 0, 0.3)`;
         }
         else {
-            decoratorOptions.backgroundColor = 'rgba(0, 255, 0, 0.3)';
+            let greenColor = 255;
+            if (lowMode) {
+                greenColor = greenColor/2;
+            }
+            decoratorOptions.backgroundColor = `rgba(0, ${greenColor}, 0, 0.3)`;
         }
     }
 

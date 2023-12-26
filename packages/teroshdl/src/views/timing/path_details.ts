@@ -19,6 +19,7 @@ import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../../type_declaration';
+import { createNodeDecoratorList, deleteDecorators } from './utils';
 
 export function getPathDetailsView(context: vscode.ExtensionContext, projectManager: t_Multi_project_manager): PathDetailsView {
     const view = new PathDetailsView(context, projectManager);
@@ -29,15 +30,23 @@ export class PathDetailsView {
     private webview: vscode.Webview | undefined;
     private context: vscode.ExtensionContext;
     private projectManager: t_Multi_project_manager;
-    private timmingReport: teroshdl2.project_manager.common.t_timing_path[] = [];
+    private pathDetails: teroshdl2.project_manager.common.t_timing_node[] = [];
     protected panel: vscode.WebviewPanel | undefined;
+    private pathSelectionList: number[] = [];
+    private decoratorList: vscode.TextEditorDecorationType[] = [];
 
     constructor(context: vscode.ExtensionContext, projectManager: t_Multi_project_manager) {
         this.context = context;
         this.projectManager = projectManager;
+
+        context.subscriptions.push(
+            vscode.window.onDidChangeActiveTextEditor((e) => this.createDecoratorList()),
+        );
     }
 
     async showPathDetails(pathDetails: teroshdl2.project_manager.common.t_timing_node[], pathName: string) {
+        this.pathDetails = pathDetails;
+
         if (this.panel === undefined) {
             this.panel = vscode.window.createWebviewPanel(
                 'catCoding',
@@ -55,6 +64,10 @@ export class PathDetailsView {
                         case 'open':
                             openFileAtLine(message.file, message.line, 0);
                             return;
+                        case 'updateDecorators':
+                            this.pathSelectionList = message.selectionList;
+                            this.createDecoratorList();
+                            return;
                     }
                 },
                 undefined,
@@ -69,6 +82,8 @@ export class PathDetailsView {
             this.panel.onDidDispose(
                 () => {
                     this.panel = undefined;
+                    deleteDecorators(this.decoratorList);
+                    this.pathSelectionList = [];
                 },
                 null,
                 this.context.subscriptions
@@ -79,6 +94,23 @@ export class PathDetailsView {
         }
         this.panel.title = `Details: ${pathName.replace("Path ", 'Path #')}`;
         await this.sendPathDetails(pathDetails);
+    }
+
+    private createDecoratorList() {
+        const visibleEditors = vscode.window.visibleTextEditors;
+        deleteDecorators(this.decoratorList);
+        visibleEditors.forEach(editor => {
+            createNodeDecoratorList(editor, this.pathDetails, this.getSlack(), this.decoratorList, this.pathSelectionList);
+        });
+    }
+
+    private getSlack(): number {
+        try {
+            return this.pathDetails[this.pathDetails.length - 1].total_delay;
+        }
+        catch (error) {
+            return 0;
+        }
     }
 
     private getHtmlForWebview() {

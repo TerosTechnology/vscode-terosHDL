@@ -9,6 +9,7 @@ import {
     vsCodeTextField,
     vsCodeTag,
     vsCodeLink,
+    vsCodeCheckbox
 } from "@vscode/webview-ui-toolkit";
 
 
@@ -21,6 +22,7 @@ provideVSCodeDesignSystem().register(
     vsCodeTextField(),
     vsCodeTag(),
     vsCodeLink(),
+    vsCodeCheckbox()
 );
 
 declare const acquireVsCodeApi: () => any;
@@ -30,6 +32,7 @@ const vscode = acquireVsCodeApi();
 // Table
 ////////////////////////////////////////////////////////////////////////////////
 let latestTimingReport: any[] = [];
+let selectionList: number[] = [];
 
 function create(timingReportList) {
     latestTimingReport = timingReportList;
@@ -49,25 +52,46 @@ function create(timingReportList) {
 
     timingReportList.forEach((timingPath) => {
         const row = document.createElement('vscode-data-grid-row');
+        // Selection
+        const cellSelection = document.createElement('vscode-data-grid-cell');
+        cellSelection.setAttribute('grid-column', "1");
+
+        const checkSelection = document.createElement('vscode-checkbox') as HTMLInputElement;
+        checkSelection.setAttribute('id', `check-${timingPath.index}`);
+        checkSelection.addEventListener('change', function () {
+            const indexNumber = <number>timingPath.index;
+            if (checkSelection.checked) {
+                selectionList.push(indexNumber);
+            }
+            else {
+                const index = selectionList.findIndex(item => item === indexNumber);
+                if (index !== -1) {
+                    selectionList.splice(index, 1);
+                }
+            }
+            updateDecorators();
+        });
+        cellSelection.appendChild(checkSelection);
+        row.appendChild(cellSelection);
         // Name
         const cellName = document.createElement('vscode-data-grid-cell');
-        cellName.setAttribute('grid-column', "1");
+        cellName.setAttribute('grid-column', "2");
         cellName.classList.add('numberCell');
         cellName.textContent = timingPath.index;
         row.appendChild(cellName);
         // Total Delay
         const cellTotalDelay = document.createElement('vscode-data-grid-cell');
-        cellTotalDelay.setAttribute('grid-column', "2");
+        cellTotalDelay.setAttribute('grid-column', "3");
         cellTotalDelay.textContent = timingPath.total_delay.toFixed(3);;
         row.appendChild(cellTotalDelay);
         // Incremental Delay
         const cellIncrementalDelay = document.createElement('vscode-data-grid-cell');
-        cellIncrementalDelay.setAttribute('grid-column', "3");
+        cellIncrementalDelay.setAttribute('grid-column', "4");
         cellIncrementalDelay.textContent = timingPath.incremental_delay.toFixed(3);;
         row.appendChild(cellIncrementalDelay);
         // Cell location
         const cellLocation = document.createElement('vscode-data-grid-cell');
-        cellLocation.setAttribute('grid-column', "4");
+        cellLocation.setAttribute('grid-column', "5");
         
         const linkLocation = document.createElement('vscode-link');
         linkLocation.textContent = timingPath.cell_location;
@@ -84,7 +108,7 @@ function create(timingReportList) {
         row.appendChild(cellLocation);
         // Name
         const cellNameT = document.createElement('vscode-data-grid-cell');
-        cellNameT.setAttribute('grid-column', "5");
+        cellNameT.setAttribute('grid-column', "6");
         cellNameT.textContent = timingPath.name;
         row.appendChild(cellNameT);
 
@@ -100,6 +124,55 @@ window.addEventListener('message', (event) => {
             break;
     }
 });
+
+////////////////////////////////////////////////////////////////////////////////
+// Decorators
+////////////////////////////////////////////////////////////////////////////////
+function updateDecorators() {
+    vscode.postMessage({
+        command: 'updateDecorators',
+        selectionList: selectionList,
+    });
+}
+
+const selectAllButton = document.getElementById('select-all') as HTMLInputElement;
+if (selectAllButton) {
+    selectAllButton.addEventListener('change', function () {
+        if (selectAllButton.checked) {
+            selectAll();
+        }
+        else {
+            deSelectAll();
+        }
+    });
+}
+
+function selectAll() {
+    for (const timingPath of latestTimingReport) {
+        const checkSelection = document.getElementById(`check-${timingPath.index}`) as HTMLInputElement;
+        if (checkSelection) {
+            checkSelection.checked = true;
+        }
+    }
+
+    selectionList = [];
+    latestTimingReport.forEach((timingPath) => {
+        selectionList.push(timingPath.index);
+    });
+    updateDecorators();
+}
+
+function deSelectAll() {
+    for (const timingPath of latestTimingReport) {
+        const checkSelection = document.getElementById(`check-${timingPath.index}`) as HTMLInputElement;
+        if (checkSelection) {
+            checkSelection.checked = false;
+        }
+    }
+
+    selectionList = [];
+    updateDecorators();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Sort Table
