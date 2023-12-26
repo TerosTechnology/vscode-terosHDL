@@ -49,15 +49,6 @@ function create(timingReportList) {
 
     timingReportList.forEach((timingPath) => {
         const row = document.createElement('vscode-data-grid-row');
-        row.style.cursor = 'pointer';
-        row.addEventListener('click', function (e: any) {
-            vscode.postMessage({
-                command: 'open',
-                file: timingPath.path,
-                line: timingPath.line
-            });
-        });
-
         // Name
         const cellName = document.createElement('vscode-data-grid-cell');
         cellName.setAttribute('grid-column', "1");
@@ -77,9 +68,18 @@ function create(timingReportList) {
         // Cell location
         const cellLocation = document.createElement('vscode-data-grid-cell');
         cellLocation.setAttribute('grid-column', "4");
-
+        
         const linkLocation = document.createElement('vscode-link');
         linkLocation.textContent = timingPath.cell_location;
+        linkLocation.setAttribute('title', `${timingPath.path}:${timingPath.line}`);
+        linkLocation.addEventListener('click', function (e: any) {
+            vscode.postMessage({
+                command: 'open',
+                file: timingPath.path,
+                line: timingPath.line
+            });
+        });
+
         cellLocation.appendChild(linkLocation);
         row.appendChild(cellLocation);
         // Name
