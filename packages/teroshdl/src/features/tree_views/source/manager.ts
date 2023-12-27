@@ -27,6 +27,7 @@ import * as shelljs from 'shelljs';
 import { open_file } from "../../../utils/utils";
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
+import { SourcetDecorator } from "./element";
 
 export class Source_manager extends BaseView {
     private tree: element.ProjectProvider;
@@ -43,6 +44,9 @@ export class Source_manager extends BaseView {
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
 
+        const provider = new SourcetDecorator();
+        context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
+
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as element.BaseTreeDataProvider<element.Source_tree_element>));
     }
 
@@ -54,6 +58,7 @@ export class Source_manager extends BaseView {
         vscode.commands.registerCommand("teroshdl.view.source.delete_library", (item) => this.delete_library(item));
         vscode.commands.registerCommand("teroshdl.view.source.delete_source", (item) => this.delete_source(item));
         vscode.commands.registerCommand("teroshdl.view.source.open", (item) => this.openSource(item));
+        vscode.commands.registerCommand("teroshdl.view.source.properties", async (item) => await this.modifyFileProperties(item));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +111,6 @@ export class Source_manager extends BaseView {
                     "Load from VUnit run.py",
                     "Add all HDL files from a directory and subdirectories",
                     "Add all files from a directory",
-                    // "Load from Intel® Quartus® Prime project"
                 ];
                 const picker_value = await utils.get_picker_value(element_types, "Add from:");
                 // Add from browser
@@ -133,10 +137,6 @@ export class Source_manager extends BaseView {
                 else if (picker_value === element_types[4]) {
                     await utils.add_sources_from_directory_and_subdirectories(prj, false);
                 }
-                // // Add from Quartus
-                // else if (picker_value === element_types[5]) {
-                //     await utils.add_sources_from_quartus(prj, true);
-                // }
             }
             // Add library
             else {
@@ -148,18 +148,6 @@ export class Source_manager extends BaseView {
         } catch (error) {
 
         }
-    }
-
-    async showFileProperties(item: element.Source_tree_element) {
-        try {
-            const prj = this.project_manager.get_selected_project();
-            if (prj.getProjectType() === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
-
-            }
-            else {
-                vscode.window.showInformationMessage("File properties are only available for Quartus projects");
-            }
-        } catch (error) { }
     }
 
     async add_source_to_library(item: element.Source_tree_element) {
@@ -194,6 +182,7 @@ export class Source_manager extends BaseView {
             const prj = this.project_manager.get_selected_project();
             if (prj.getProjectType() !== teroshdl2.project_manager.common.e_project_type.QUARTUS) {
                 await prj.add_toplevel_path(item.get_name());
+                return;
             }
 
             const project_examples_types = [
@@ -229,6 +218,35 @@ export class Source_manager extends BaseView {
 
     refresh_tree() {
         this.tree.refresh();
+    }
+
+    private async modifyFileProperties(element: element.Source_tree_element) {
+        try {
+            const prj = this.project_manager.get_selected_project();
+            if (prj.getProjectType() === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
+                const OPTIONLIST = [
+                    "Set as testbench file (only for simulation)",
+                    "Set as synthesis file",
+                ];
+                const picker_value = await vscode.window.showQuickPick(OPTIONLIST, {
+                    placeHolder: "Set file type",
+                });
+                if (picker_value === undefined) {
+                    return;
+                }
+                if (picker_value === OPTIONLIST[0]) {
+                    await prj.modifyFileSourceType(element.get_name(), element.get_logical_name(),
+                        teroshdl2.project_manager.common.e_source_type.SIMULATION);
+                }
+                else if (picker_value === OPTIONLIST[1]) {
+                    await prj.modifyFileSourceType(element.get_name(), element.get_logical_name(),
+                        teroshdl2.project_manager.common.e_source_type.SYNTHESIS);
+                }
+            }
+            else {
+                vscode.window.showInformationMessage("File properties are not available for Generic projects");
+            }
+        } catch (error) { }
     }
 }
 

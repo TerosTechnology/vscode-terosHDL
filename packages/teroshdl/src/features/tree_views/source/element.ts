@@ -22,12 +22,15 @@ import * as vscode from "vscode";
 import { get_icon } from "../utils";
 import * as path_lib from 'path';
 import * as teroshdl2 from "teroshdl2";
+import { ThemeColor } from "vscode";
 
 export const VIEW_ID = "teroshdl-view-source";
 enum SOURCE_TREE_ELEMENT {
     SOURCE = "source",
     LIBRARY = "library",
 }
+
+const URISTRINGINIT = "teroshdl:/";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elements
@@ -37,7 +40,10 @@ export class Source_tree_element extends vscode.TreeItem {
     private logical_name: string = "";
     private name: string = "";
 
-    constructor(element_type: SOURCE_TREE_ELEMENT, name: string, is_manual: boolean, select_check: boolean, logical_name: string, children?: any[]) {
+    constructor(element_type: SOURCE_TREE_ELEMENT, name: string, is_manual: boolean,
+        select_check: boolean, logical_name: string,
+        sourceType: teroshdl2.project_manager.common.e_source_type, children?: any[]) {
+
         super(
             name,
             children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed
@@ -47,6 +53,10 @@ export class Source_tree_element extends vscode.TreeItem {
         this.logical_name = logical_name;
         this.tooltip = name;
         this.name = name;
+        this.resourceUri = vscode.Uri.parse(URISTRINGINIT + sourceType);
+        if (sourceType === teroshdl2.project_manager.common.e_source_type.SIMULATION) {
+            this.description = "Testbench file";
+        }
 
         if (element_type === SOURCE_TREE_ELEMENT.LIBRARY) {
             this.label = name;
@@ -147,11 +157,16 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
                         if (toplevel.length !== 0 && toplevel[0] === name) {
                             select_check = true;
                         }
-                        children_list.push(new Source_tree_element(SOURCE_TREE_ELEMENT.SOURCE, name, is_manual, select_check, logical_name));
+                        children_list.push(new Source_tree_element(
+                            SOURCE_TREE_ELEMENT.SOURCE, name, is_manual, select_check, 
+                            logical_name, file_inst.source_type
+                        ));
                     }
                 });
                 if (logical_inst.name !== "") {
-                    source_view.push(new Source_tree_element(SOURCE_TREE_ELEMENT.LIBRARY, logical_inst.name, false, false, logical_inst.name, children_list));
+                    source_view.push(new Source_tree_element(SOURCE_TREE_ELEMENT.LIBRARY, logical_inst.name, 
+                        false, false, logical_inst.name, teroshdl2.project_manager.common.e_source_type.NONE,
+                        children_list));
                 }
                 else {
                     empty_logical = children_list;
@@ -181,3 +196,24 @@ export class TreeItem extends vscode.TreeItem {
     }
 }
 
+export class SourcetDecorator implements vscode.FileDecorationProvider {
+    onDidChangeFileDecorations?: vscode.Event<vscode.Uri | vscode.Uri[]>;
+    provideFileDecoration(uri: vscode.Uri): vscode.ProviderResult<vscode.FileDecoration> {
+        if (uri.path === "/" + teroshdl2.project_manager.common.e_source_type.SIMULATION) {
+            return {
+                badge: "T",
+                tooltip: "Testbench file",
+            };
+        }
+        else if (uri.path === "/" + teroshdl2.project_manager.common.e_source_type.SYNTHESIS) {
+            return {
+                tooltip: "Synthesis file",
+            };
+        }
+        else if (uri.path === "/" + teroshdl2.project_manager.common.e_source_type.NONE) {
+            return {
+                tooltip: "Synthesis file",
+            };
+        }
+    }
+}

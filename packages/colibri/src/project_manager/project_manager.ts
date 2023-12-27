@@ -344,6 +344,21 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // File
     ////////////////////////////////////////////////////////////////////////////
+    public async modifyFileSourceType(filePath: string, logicalName: string, 
+        newSourceType: e_source_type) : Promise<boolean> {
+        for (const file of this.files.get()) {
+            if (file.name === filePath && file.logical_name === logicalName) {
+                if (file.source_type !== newSourceType) {
+                    file.source_type = newSourceType;
+                    this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
+    }
+
     async add_file_from_vivado(vivado_path: string, is_manual: boolean)
         : Promise<t_action_result> {
 

@@ -31,7 +31,6 @@ import { Actions_manager } from "./actions/manager";
 import { Run_output_manager } from "./run_output";
 import { Watcher_manager } from "./watchers/manager";
 import { Output_manager } from "./output/manager";
-import { Timing_manager } from "./timing/manager";
 import { debugLogger } from "../../logger";
 import { t_Multi_project_manager } from '../../type_declaration';
 import { Schematic_manager } from "../schematic";
@@ -56,14 +55,11 @@ export class Tree_view_manager {
         context.subscriptions.push(this.statusbar);
         multi_manager = manager;
 
-        const timingManager = new Timing_manager(context, manager, emitterProject);
-
         viewList = [
             new Project_manager(context, manager, emitterProject, run_output),
             new Source_manager(context, manager),
             new TreeDependencyManager(context, manager, schematic_manager, dependency_manager),
             new Runs_manager(context, manager, run_output, emitterProject),
-            timingManager,
             new Tasks_manager(context, manager, logView, emitterProject, timingReportView),
             new IpCatalogManager(context, manager),
             new Actions_manager(context),

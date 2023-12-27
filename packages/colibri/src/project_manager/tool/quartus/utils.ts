@@ -9,7 +9,7 @@ import * as file_utils from "../../../utils/file_utils";
 import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import * as path_lib from "path";
 import { get_files_from_csv } from "../../prj_loaders/csv_loader";
-import { t_file, t_timing_node, t_timing_path } from "../../common";
+import { e_source_type, t_file, t_timing_node, t_timing_path } from "../../common";
 import { LANGUAGE } from "../../../common/general";
 import * as nunjucks from 'nunjucks';
 import * as process from 'process';
@@ -186,6 +186,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
 
     const cmd_result = await executeQuartusTcl(false, config, tcl_file, args, "", emitterProject, 22);
 
+    let testbenchFileList: string[] = [];
     const result = {
         prj_name: "",
         prj_revision: "",
@@ -219,8 +220,6 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
             result.part = data_0[4].trim();
             optimization_mode = data_0[5].trim().replace(/ /g, "_");
             result.allow_register_retiming = data_0[6].trim() === "ON" ? true : false;
-            // result.eda_test_bench_file = data_0[7].trim() === file_utils.get_directory(projectPath)
-            //     ? "" : data_0[7].trim();
             result.eda_test_bench_top_module = data_0[7].trim();
         } else {
             throw new QuartusExecutionError("Error in Quartus execution");
@@ -233,7 +232,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
 
         // Testbench file list
         if (line_split.length > 2) {
-            result.eda_test_bench_file_list = line_split[2].split(',').map((s: string) => s.trim());
+            testbenchFileList = line_split[2].split(',').map((s: string) => s.trim());
         }
 
         // File list
@@ -241,6 +240,13 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
             const fileListStr = line_split.slice(3).join('\n');
             const csvFileList = process_utils.create_temp_file(fileListStr);
             const fileList = get_files_from_csv(csvFileList, false).file_list;
+
+            for (const file of fileList) {
+                if (testbenchFileList.includes(file.name)) {
+                    file.source_type = e_source_type.SIMULATION;
+                }
+            }
+
             file_utils.remove_file(csvFileList);
             result.file_list = fileList;
         }
@@ -268,7 +274,7 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         part: result.part,
         optimization_mode: result.optimization_mode,
         allow_register_retiming: result.allow_register_retiming,
-        eda_test_bench_file_list: result.eda_test_bench_file_list,
+        eda_test_bench_file_list: testbenchFileList,
         eda_test_bench_top_module: result.eda_test_bench_top_module,
         file_list: result.file_list,
     };
@@ -451,11 +457,38 @@ export async function setTopLevelTestbench(config: e_config, projectPath: string
     }
 
     const cmd = [
-        "remove_all_global_assignments -name EDA_TEST_BENCH_FILE",
-        "remove_all_global_assignments -name EDA_TEST_BENCH_TOP_MODULE",
         `set_global_assignment -name EDA_TEST_BENCH_FILE ${topLevelTestbenchPath} -section_id testbenchSet`,
+        "remove_all_global_assignments -name EDA_TEST_BENCH_TOP_MODULE",
         `set_global_assignment -name EDA_TEST_BENCH_TOP_MODULE ${entityName} -section_id testbenchSet`
     ];
+
+    const result = await executeCmdListQuartusProject(config, projectPath, cmd, emitterProject);
+    if (!result.successful) {
+        throw new QuartusExecutionError("Error in Quartus execution");
+    }
+}
+
+/**
+ * Set testebench file in Quartus project.
+ * @param config Configuration.
+ * @param projectPath Path to Quartus project.
+ * @param testenchPath Testbench path.
+ * @param emitterProject Project emitter.
+**/
+export async function setTestbenchFileList(config: e_config, projectPath: string, testbenchFileList: t_file[],
+    emitterProject: ProjectEmitter): Promise<void> {
+
+    const cmd = [
+        "remove_all_global_assignments -name EDA_TEST_BENCH_FILE",
+    ];
+
+    for (const file of testbenchFileList) {
+        let libCMD = "";
+        if (file.logical_name !== "") {
+            libCMD = ` -library ${file.logical_name}`;
+        }
+        cmd.push(`set_global_assignment -name EDA_TEST_BENCH_FILE ${file.name} -section_id testbenchSet ${libCMD}`);
+    }
 
     const result = await executeCmdListQuartusProject(config, projectPath, cmd, emitterProject);
     if (!result.successful) {
@@ -591,8 +624,10 @@ export async function getTimingReport(config: e_config, projectPath: string, emi
             const incremental_delay = parseFloat(lineStr0);
             total_delay += incremental_delay;
             total_delay = parseFloat(total_delay.toFixed(3));
-            return { name, index: indexNode, cell_location, incremental_delay, total_delay,
-                path, line: parseInt(lineStr, 10) } as t_timing_node;
+            return {
+                name, index: indexNode, cell_location, incremental_delay, total_delay,
+                path, line: parseInt(lineStr, 10)
+            } as t_timing_node;
         });
 
         const fromNodeName = nodes.length > 0 ? nodes[0].name : "";
