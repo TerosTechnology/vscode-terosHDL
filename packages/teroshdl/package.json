@@ -33,6 +33,7 @@
         "url": "https://github.com/TerosTechnology/vscode-terosHDL/issues"
     },
     "main": "./out/extension.js",
+
     "contributes": {
         "viewsContainers": {
             "activitybar": [
@@ -118,7 +119,8 @@
                 "view": "teroshdl-view-actions",
                 "contents": "[Open Global Settings Menu](command:teroshdl.configuration.global)\n[Export Settings](command:teroshdl.view.project.export_configuration)\n[Load Settings](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)\n[Check dependencies](command:teroshdl.check_dependencies)"
             }
-        ],
+      ],
+
         "grammars": [
             {
                 "language": "vhdl",
@@ -157,203 +159,257 @@
             }
         ],
         "menus": {
-            "editor/context": [],
+            "editor/context": [
+
+            ],
             "explorer/context": [
+
                 {
                     "when": "resourceLangId == gtkw_wavebin || resourceLangId == gtkw_waveconfig || resourceLangId == vcd",
+
                     "command": "teroshdl.waveform",
                     "group": "navigation"
                 }
+                        
             ],
             "view/title": [
+
                 {
                     "when": "view == teroshdl-project",
+
                     "command": "teroshdl.view.project.add",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-source",
+
                     "command": "teroshdl.view.source.save_project",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-source",
+
                     "command": "teroshdl.view.source.add",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-dependency",
+
                     "command": "teroshdl.view.dependency.refresh",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-dependency",
+
                     "command": "teroshdl.view.dependency.schematic",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-dependency",
+
                     "command": "teroshdl.view.dependency.viewer",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-runs",
+
                     "command": "teroshdl.view.runs.run_all",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-runs",
+
                     "command": "teroshdl.view.runs.stop",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-runs",
+
                     "command": "teroshdl.view.runs.refresh",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-tasks",
+
                     "command": "teroshdl.view.tasks.stop",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-tasks",
+
                     "command": "teroshdl.view.tasks.clean",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-watcher",
+
                     "command": "teroshdl.view.watcher.add",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "view == teroshdl-view-output",
+
                     "command": "teroshdl.view.outputs.clean",
                     "group": "navigation"
                 }
+                        
             ],
             "view/item/context": [
-                {
-                    "when": "viewItem == project",
-                    "command": "teroshdl.configuration.project",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == project",
-                    "command": "teroshdl.view.project.delete",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == project",
-                    "command": "teroshdl.view.project.rename",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == library",
-                    "command": "teroshdl.view.source.add_source_to_library",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == library",
-                    "command": "teroshdl.view.source.delete_library",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == source",
-                    "command": "teroshdl.view.source.properties",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == source",
-                    "command": "teroshdl.view.source.delete_source",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == source",
-                    "command": "teroshdl.view.source.select_toplevel",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == run",
-                    "command": "teroshdl.view.runs.run",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem =~ /logs/",
-                    "command": "teroshdl.view.tasks.logs",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem =~ /report/",
-                    "command": "teroshdl.view.tasks.report",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem =~ /timinganalyzer/",
-                    "command": "teroshdl.view.tasks.timing_analyzer",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem =~ /technologymapviewer/",
-                    "command": "teroshdl.view.tasks.technology_map_viewer",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem =~ /snapshotviewer/",
-                    "command": "teroshdl.view.tasks.snapshotviewer",
-                    "group": "inline"
-                },
-                {
-                    "when": "viewItem == watcher",
-                    "command": "teroshdl.view.watcher.delete",
-                    "group": "inline"
-                }
+            
+                    {
+                        "when": "viewItem == project",
+                        "command": "teroshdl.configuration.project",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == project",
+                        "command": "teroshdl.view.project.delete",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == project",
+                        "command": "teroshdl.view.project.rename",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == library",
+                        "command": "teroshdl.view.source.add_source_to_library",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == library",
+                        "command": "teroshdl.view.source.delete_library",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == source",
+                        "command": "teroshdl.view.source.properties",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == source",
+                        "command": "teroshdl.view.source.delete_source",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == source",
+                        "command": "teroshdl.view.source.select_toplevel",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == run",
+                        "command": "teroshdl.view.runs.run",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /logs/",
+                        "command": "teroshdl.view.tasks.logs",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /report/",
+                        "command": "teroshdl.view.tasks.report",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /timinganalyzer/",
+                        "command": "teroshdl.view.tasks.timing_analyzer",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /technologymapviewer/",
+                        "command": "teroshdl.view.tasks.technology_map_viewer",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem =~ /snapshotviewer/",
+                        "command": "teroshdl.view.tasks.snapshotviewer",
+                        "group": "inline"
+                    }
+                            
+                    ,{
+                        "when": "viewItem == watcher",
+                        "command": "teroshdl.view.watcher.delete",
+                        "group": "inline"
+                    }
+                            
             ],
             "editor/title": [
+
                 {
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.generate_template",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.state_machine.viewer",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.netlist.viewer",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.format",
                     "group": "navigation"
-                },
-                {
+                }
+                        
+                ,{
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.documentation.module",
                     "group": "navigation"
                 }
+                        
             ]
         },
         "commands": [
             {
                 "command": "teroshdl.go_to_parent",
                 "title": "Go to parent file"
-            },
+            }, 
             {
                 "command": "teroshdl.open",
                 "title": "Open file with TerosHDL"
-            },
+            }, 
             {
                 "command": "teroshdl.configuration.global",
                 "title": "TerosHDL: Open Global Settings Menu"
-            },
+            }, 
             {
                 "command": "teroshdl.waveform",
                 "title": "Open waveform viewer"
-            },
+            }, 
             {
                 "command": "teroshdl.view.project.add",
                 "icon": {
@@ -361,7 +417,7 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add project"
-            },
+            }, 
             {
                 "command": "teroshdl.configuration.project",
                 "icon": {
@@ -369,7 +425,7 @@
                     "dark": "resources/icon/dark/gear.svg"
                 },
                 "title": "Open Project Settings"
-            },
+            }, 
             {
                 "command": "teroshdl.view.project.delete",
                 "icon": {
@@ -377,7 +433,7 @@
                     "dark": "resources/icon/dark/chrome-close.svg"
                 },
                 "title": "Delete project"
-            },
+            }, 
             {
                 "command": "teroshdl.view.project.rename",
                 "icon": {
@@ -385,7 +441,7 @@
                     "dark": "resources/icon/dark/edit.svg"
                 },
                 "title": "Rename project"
-            },
+            }, 
             {
                 "command": "teroshdl.view.source.save_project",
                 "icon": {
@@ -393,7 +449,7 @@
                     "dark": "resources/icon/dark/save.svg"
                 },
                 "title": "Save Project"
-            },
+            }, 
             {
                 "command": "teroshdl.view.source.add",
                 "icon": {
@@ -401,7 +457,7 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add"
-            },
+            }, 
             {
                 "command": "teroshdl.view.source.add_source_to_library",
                 "icon": {
@@ -409,7 +465,7 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add to library"
-            },
+            }, 
             {
                 "command": "teroshdl.view.source.delete_library",
                 "icon": {
@@ -417,7 +473,7 @@
                     "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete library"
-            },
+            }, 
             {
                 "command": "teroshdl.view.source.properties",
                 "icon": {
@@ -425,7 +481,7 @@
                     "dark": "resources/icon/dark/gear.svg"
                 },
                 "title": "File Properties"
-            },
+            }, 
             {
                 "command": "teroshdl.view.source.delete_source",
                 "icon": {
@@ -433,7 +489,7 @@
                     "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete source"
-            },
+            }, 
             {
                 "command": "teroshdl.view.source.select_toplevel",
                 "icon": {
@@ -441,7 +497,7 @@
                     "dark": "resources/icon/dark/check.svg"
                 },
                 "title": "Select source as toplevel"
-            },
+            }, 
             {
                 "command": "teroshdl.view.dependency.refresh",
                 "icon": {
@@ -449,7 +505,7 @@
                     "dark": "resources/icon/dark/refresh.svg"
                 },
                 "title": "Refresh"
-            },
+            }, 
             {
                 "command": "teroshdl.view.dependency.schematic",
                 "icon": {
@@ -457,7 +513,7 @@
                     "dark": "resources/icon/dark/list-tree.svg"
                 },
                 "title": "Schematic viewer"
-            },
+            }, 
             {
                 "command": "teroshdl.view.dependency.viewer",
                 "icon": {
@@ -465,7 +521,7 @@
                     "dark": "resources/icon/dark/dep.svg"
                 },
                 "title": "Dependencies viewer"
-            },
+            }, 
             {
                 "command": "teroshdl.view.runs.run_all",
                 "icon": {
@@ -473,7 +529,7 @@
                     "dark": "resources/icon/dark/run-all.svg"
                 },
                 "title": "Run all"
-            },
+            }, 
             {
                 "command": "teroshdl.view.runs.stop",
                 "icon": {
@@ -481,7 +537,7 @@
                     "dark": "resources/icon/dark/stop.svg"
                 },
                 "title": "Stop"
-            },
+            }, 
             {
                 "command": "teroshdl.view.runs.refresh",
                 "icon": {
@@ -489,7 +545,7 @@
                     "dark": "resources/icon/dark/refresh.svg"
                 },
                 "title": "Refresh"
-            },
+            }, 
             {
                 "command": "teroshdl.view.runs.run",
                 "icon": {
@@ -497,7 +553,7 @@
                     "dark": "resources/icon/dark/run.svg"
                 },
                 "title": "Run"
-            },
+            }, 
             {
                 "command": "teroshdl.view.tasks.stop",
                 "icon": {
@@ -505,7 +561,7 @@
                     "dark": "resources/icon/dark/stop.svg"
                 },
                 "title": "Stop"
-            },
+            }, 
             {
                 "command": "teroshdl.view.tasks.clean",
                 "icon": {
@@ -513,7 +569,7 @@
                     "dark": "resources/icon/dark/trash.svg"
                 },
                 "title": "Clean project"
-            },
+            }, 
             {
                 "command": "teroshdl.view.tasks.logs",
                 "icon": {
@@ -521,7 +577,7 @@
                     "dark": "resources/icon/dark/database.svg"
                 },
                 "title": "Open Log"
-            },
+            }, 
             {
                 "command": "teroshdl.view.tasks.report",
                 "icon": {
@@ -529,7 +585,7 @@
                     "dark": "resources/icon/dark/output.svg"
                 },
                 "title": "Open Report"
-            },
+            }, 
             {
                 "command": "teroshdl.view.tasks.timing_analyzer",
                 "icon": {
@@ -537,7 +593,7 @@
                     "dark": "resources/icon/dark/watch.svg"
                 },
                 "title": "Open Timing Analyzer"
-            },
+            }, 
             {
                 "command": "teroshdl.view.tasks.technology_map_viewer",
                 "icon": {
@@ -545,7 +601,7 @@
                     "dark": "resources/icon/dark/search.svg"
                 },
                 "title": "Open Technology Map Viewer"
-            },
+            }, 
             {
                 "command": "teroshdl.view.tasks.snapshotviewer",
                 "icon": {
@@ -553,7 +609,7 @@
                     "dark": "resources/icon/dark/eye.svg"
                 },
                 "title": "Open Snapshop Viewer"
-            },
+            }, 
             {
                 "command": "teroshdl.view.watcher.add",
                 "icon": {
@@ -561,7 +617,7 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add"
-            },
+            }, 
             {
                 "command": "teroshdl.view.watcher.delete",
                 "icon": {
@@ -569,7 +625,7 @@
                     "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete watcher"
-            },
+            }, 
             {
                 "command": "teroshdl.view.outputs.clean",
                 "icon": {
@@ -577,7 +633,7 @@
                     "dark": "resources/icon/dark/trash.svg"
                 },
                 "title": "Clean project"
-            },
+            }, 
             {
                 "command": "teroshdl.generate_template",
                 "icon": {
@@ -585,7 +641,7 @@
                     "dark": "resources/icon/dark/file-code.svg"
                 },
                 "title": "TerosHDL: Generate template"
-            },
+            }, 
             {
                 "command": "teroshdl.state_machine.viewer",
                 "icon": {
@@ -593,7 +649,7 @@
                     "dark": "resources/icon/dark/state-machine.svg"
                 },
                 "title": "State machine viewer"
-            },
+            }, 
             {
                 "command": "teroshdl.netlist.viewer",
                 "icon": {
@@ -601,7 +657,7 @@
                     "dark": "resources/icon/dark/list-tree.svg"
                 },
                 "title": "Schematic viewer"
-            },
+            }, 
             {
                 "command": "teroshdl.format",
                 "icon": {
@@ -609,7 +665,7 @@
                     "dark": "resources/icon/dark/check.svg"
                 },
                 "title": "Format"
-            },
+            }, 
             {
                 "command": "teroshdl.documentation.module",
                 "icon": {
@@ -620,111 +676,71 @@
             }
         ],
         "languages": [
-            {
-                "id": "vhdl",
-                "aliases": [
-                    "VHDL",
-                    "vhdl"
-                ],
-                "configuration": "./configs/vhdl.configuration.json",
-                "extensions": [
-                    ".vhd",
-                    ".vho",
-                    ".vhdl",
-                    ".vhd"
-                ]
-            },
-            {
-                "id": "verilog",
-                "aliases": [
-                    "Verilog",
-                    "verilog"
-                ],
-                "configuration": "./configs/verilog.configuration.json",
-                "extensions": [
-                    ".v",
-                    ".vh",
-                    ".vl"
-                ]
-            },
-            {
-                "id": "systemverilog",
-                "aliases": [
-                    "System Verilog",
-                    "systemverilog"
-                ],
-                "configuration": "./configs/systemverilog.configuration.json",
-                "extensions": [
-                    ".sv",
-                    ".svh",
-                    ".SV"
-                ]
-            },
-            {
-                "id": "vcd",
-                "extensions": [
-                    ".vcd"
-                ]
-            },
-            {
-                "id": "gtkw_waveconfig",
-                "extensions": [
-                    ".gtkw"
-                ]
-            },
-            {
-                "id": "gtkw_wavebin",
-                "extensions": [
-                    ".fst",
-                    ".ghw"
-                ]
-            },
-            {
-                "id": "tcl",
-                "aliases": [
-                    "TCL",
-                    "tcl"
-                ],
-                "configuration": "./configs/tcl.configuration.json",
-                "extensions": [
-                    ".tcl",
-                    ".pro"
-                ]
-            },
-            {
-                "id": "ucf",
-                "aliases": [
-                    "vivado ucf",
-                    "ucf constraints"
-                ],
-                "configuration": "./configs/ucfconstraints.configuration.json",
-                "extensions": [
-                    ".ucf"
-                ]
-            },
-            {
-                "id": "xdc",
-                "aliases": [
-                    "vivado xdc",
-                    "xdc constraints"
-                ],
-                "configuration": "./configs/xdcconstraints.configuration.json",
-                "extensions": [
-                    ".xdc",
-                    ".sdc"
-                ]
-            },
-            {
-                "id": "ldc",
-                "aliases": [
-                    "lattice constraints"
-                ],
-                "configuration": "./configs/xdcconstraints.configuration.json",
-                "extensions": [
-                    ".ldc",
-                    ".pdc"
-                ]
-            }
+
+        {
+            "id": "vhdl",
+            "aliases": ["VHDL", "vhdl"],
+            "configuration": "./configs/vhdl.configuration.json",
+            "extensions": [".vhd", ".vho", ".vhdl", ".vhd"]
+        }
+
+        ,{
+            "id": "verilog",
+            "aliases": ["Verilog", "verilog"],
+            "configuration": "./configs/verilog.configuration.json",
+            "extensions": [".v", ".vh", ".vl"]
+        }
+
+        ,{
+            "id": "systemverilog",
+            "aliases": ["System Verilog", "systemverilog"],
+            "configuration": "./configs/systemverilog.configuration.json",
+            "extensions": [".sv", ".svh", ".SV"]
+        }
+
+        ,{
+            "id": "vcd",
+            "extensions": [".vcd"]
+        }
+
+        ,{
+            "id": "gtkw_waveconfig",
+            "extensions": [".gtkw"]
+        }
+
+        ,{
+            "id": "gtkw_wavebin",
+            "extensions": [".fst", ".ghw"]
+        }
+
+        ,{
+            "id": "tcl",
+            "aliases": ["TCL", "tcl"],
+            "configuration": "./configs/tcl.configuration.json",
+            "extensions": [".tcl", ".pro"]
+        }
+
+        ,{
+            "id": "ucf",
+            "aliases": ["vivado ucf", "ucf constraints"],
+            "configuration": "./configs/ucfconstraints.configuration.json",
+            "extensions": [".ucf"]
+        }
+
+        ,{
+            "id": "xdc",
+            "aliases": ["vivado xdc", "xdc constraints"],
+            "configuration": "./configs/xdcconstraints.configuration.json",
+            "extensions": [".xdc", ".sdc"]
+        }
+
+        ,{
+            "id": "ldc",
+            "aliases": ["lattice constraints"],
+            "configuration": "./configs/xdcconstraints.configuration.json",
+            "extensions": [".ldc", ".pdc"]
+        }
+
         ],
         "snippets": [
             {
@@ -756,6 +772,7 @@
                 "path": "./snippets/verilog/verilog.json"
             }
         ],
+
         "keybindings": [
             {
                 "command": "teroshdl.go_to_parent",
@@ -765,29 +782,27 @@
             }
         ]
     },
+
     "scripts": {
-        "build-package": "cd auto_package && ./gen.sh",
-        "clean": "shx rm -rf out",
-        "vscode:prepublish": "npm run generate-examples & npm run compile",
-        "compile": "tsc -p ./",
-        "lint": "eslint src --ext ts",
-        "watch": "npm run generate-examples & tsc -watch -p ./",
-        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh",
-        "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib",
-        "package": "npm run pre-package & vsce package --yarn --allow-star-activation",
+        "build-package": "cd auto_package && ./gen.sh", 
+        "clean": "shx rm -rf out", 
+        "vscode:prepublish": "npm run generate-examples & npm run compile", 
+        "compile": "tsc -p ./", 
+        "lint": "eslint src --ext ts", 
+        "watch": "npm run generate-examples & tsc -watch -p ./", 
+        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
+        "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib", 
+        "package": "npm run pre-package & vsce package --yarn --allow-star-activation", 
         "auto-package": "cd auto_package & ./gen.sh"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",
         "@types/node-fetch": "2.5.7",
-        "@types/nunjucks": "^3.1.4",
         "@types/semver": "6.2.0",
-        "@vscode/webview-ui-toolkit": "^1.4.0",
         "abort-controller": "3.0.0",
         "fs-extra": "8.1.0",
         "js-yaml": "^3.13.1",
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
-        "nunjucks": "^3.2.0",
         "open": "8.3.0",
         "proper-lockfile": "4.1.1",
         "semver": "7.3.5",
@@ -795,9 +810,12 @@
         "temp": "^0.9.0",
         "teroshdl2": "../colibri",
         "tmp": "0.2.1",
-        "tree-kill": "1.2.2",
         "vscode-languageclient": "7.0.0-next.6",
-        "xml2js": "0.4.23"
+        "xml2js": "0.4.23",
+        "nunjucks": "^3.2.0",
+        "@types/nunjucks": "^3.1.4",
+        "tree-kill": "1.2.2",
+        "@vscode/webview-ui-toolkit": "^1.4.0"
     },
     "devDependencies": {
         "@types/glob": "^7.1.1",
@@ -805,11 +823,12 @@
         "@types/vscode": "^1.45.0",
         "@typescript-eslint/eslint-plugin": "^5.10.2",
         "@typescript-eslint/parser": "^5.10.2",
-        "esbuild": "^0.16.17",
         "eslint": "^6.8.0",
         "glob": "^7.1.6",
         "js-yaml": "^3.13.1",
+        "typescript": "4.5.5",
         "shx": "^0.3.3",
-        "typescript": "4.5.5"
+        "esbuild": "^0.16.17"
     }
+
 }
