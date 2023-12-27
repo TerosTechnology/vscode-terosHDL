@@ -6,11 +6,21 @@ proc get_info_for_cell { cell_id } {
   set cell_names_db_id [get_cell_info -name_obj $cell_id]
   # Get the names DB ID of the cell, and its file location string
   set file_loc [get_name_info -info file_location $cell_names_db_id]
-  # File location is of the form <file name>(<line num>)
-  # Extract the file path and the line number separately
-  regexp {(.*?)\((\d+)\)} $file_loc -> file_path line_num
+  # # File location is of the form <file name>(<line num>)
+  # # Extract the file path and the line number separately
+  # regexp {(.*?)\((\d+)\)} $file_loc -> file_path line_num
 
-  return [dict create "cell_name" $cell_name "cell_location" $cell_location "cell_file_path" $file_path "cell_file_line" $line_num]    
+  # return [dict create "cell_name" $cell_name "cell_location" $cell_location "cell_file_path" $file_path "cell_file_line" $line_num]    
+
+  set result [regexp {(.*?)\((\d+)\)} $file_loc -> file_path line_num]
+
+  if {$result} {
+      return [dict create "cell_name" $cell_name "cell_location" $cell_location "cell_file_path" $file_path "cell_file_line" $line_num]
+  } else {
+      puts "Error in regex for: $file_loc"
+      return [dict create "cell_name" $cell_name "cell_location" $cell_location "cell_file_path" "" "cell_file_line" "0"]
+  }
+
 }
 
 set csv_file_name [lindex $argv 0]
