@@ -1,12 +1,12 @@
 // This code only can be used for Quartus boards
 
-import { e_project_type, t_action_result, t_file, t_timing_path } from "../../common";
+import { e_project_type, e_source_type, t_action_result, t_file, t_timing_path } from "../../common";
 import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
     QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath, setConfigToProject,
     getProjectInfo, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
-    setTopLevelTestbench, getTimingReport
+    setTopLevelTestbench, getTimingReport, setTestbenchFileList
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
 import {
@@ -268,6 +268,17 @@ export class QuartusProjectManager extends Project_manager {
         return await this.add_file_from_array([file]);
     }
 
+    public async modifyFileSourceType(filePath: string, logicalName: string, 
+        newSourceType: e_source_type) : Promise<boolean> {
+
+        const result = await super.modifyFileSourceType(filePath, logicalName, newSourceType);
+        if (result) {
+            const allTestenchFiles = super.get_file().filter(file => file.source_type === e_source_type.SIMULATION);
+            await setTestbenchFileList(this.get_config(), this.projectDiskPath, allTestenchFiles, this.emitterProject);
+        }
+        return result;
+    }
+
     public async add_file_from_array(file_list: t_file[]): Promise<t_action_result> {
         const config = super.get_config();
         try {
@@ -449,20 +460,7 @@ export class QuartusProjectManager extends Project_manager {
     public async get_test_list(): Promise<t_test_declaration[]> {
         try {
             const projectInfo = await getProjectInfo(this.get_config(), this.projectDiskPath, this.emitterProject);
-            // const eda_test_bench_file = projectInfo.eda_test_bench_file_list;
             const eda_test_bench_top_module = projectInfo.eda_test_bench_top_module;
-
-            // if (eda_test_bench_file === "") {
-            //     return [];
-            // }
-
-            // if (eda_test_bench_top_module === "") {
-            //     eda_test_bench_top_module = get_toplevel_from_path(eda_test_bench_file);
-            // }
-
-            // if (eda_test_bench_top_module === "") {
-            //     return [];
-            // }
 
             const testbench = {
                 suite_name: "",

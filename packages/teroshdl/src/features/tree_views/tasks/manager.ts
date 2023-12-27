@@ -21,7 +21,7 @@ import * as vscode from "vscode";
 import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as teroshdl2 from 'teroshdl2';
-import { RedTextDecorator } from "./element";
+import { TaskDecorator } from "./element";
 import { ChildProcess } from "child_process";
 import * as shelljs from 'shelljs';
 import { LogView } from "../../../views/logs";
@@ -65,7 +65,7 @@ export class Tasks_manager extends BaseView {
         this.logView = logView;
         this.emitterProject = emitterProject;
 
-        const provider = new RedTextDecorator();
+        const provider = new TaskDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
 
         context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(),

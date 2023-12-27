@@ -241,8 +241,7 @@ export class TreeItem extends vscode.TreeItem {
     }
 }
 
-
-export class RedTextDecorator implements vscode.FileDecorationProvider {
+export class TaskDecorator implements vscode.FileDecorationProvider {
     onDidChangeFileDecorations?: vscode.Event<vscode.Uri | vscode.Uri[]>;
     provideFileDecoration(uri: vscode.Uri): vscode.ProviderResult<vscode.FileDecoration> {
         if (uri.path === "/" + teroshdl2.project_manager.tool_common.e_taskState.RUNNING) {
