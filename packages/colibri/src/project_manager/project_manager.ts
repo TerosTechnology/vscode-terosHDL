@@ -23,7 +23,8 @@ import {
     e_watcher_type,
     e_project_type,
     t_timing_path,
-    e_source_type
+    e_source_type,
+    e_timing_mode
 } from "./common";
 import * as  manager_watcher from "./list_manager/watcher";
 import * as  manager_file from "./list_manager/file";
@@ -344,8 +345,8 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // File
     ////////////////////////////////////////////////////////////////////////////
-    public async modifyFileSourceType(filePath: string, logicalName: string, 
-        newSourceType: e_source_type) : Promise<boolean> {
+    public async modifyFileSourceType(filePath: string, logicalName: string,
+        newSourceType: e_source_type): Promise<boolean> {
         for (const file of this.files.get()) {
             if (file.name === filePath && file.logical_name === logicalName) {
                 if (file.source_type !== newSourceType) {
@@ -662,7 +663,7 @@ export class Project_manager extends ConfigManager {
         this.emitterProject.emitEvent(this.name, e_event.UPDATE_TASK);
     }
 
-    public async getTimingReport(_numOfPaths: number): Promise<t_timing_path[]> {
+    public async getTimingReport(_numOfPaths: number, _timingMode: e_timing_mode): Promise<t_timing_path[]> {
         return [];
     }
 }

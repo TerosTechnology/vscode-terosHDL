@@ -1,6 +1,6 @@
 // This code only can be used for Quartus boards
 
-import { e_project_type, e_source_type, t_action_result, t_file, t_timing_path } from "../../common";
+import { e_project_type, e_source_type, e_timing_mode, t_action_result, t_file, t_timing_path } from "../../common";
 import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
@@ -567,9 +567,9 @@ export class QuartusProjectManager extends Project_manager {
         return exec_i;
     }
 
-    public async getTimingReport(numOfPaths: number): Promise<t_timing_path[]> {
+    public async getTimingReport(numOfPaths: number, timingMode: e_timing_mode): Promise<t_timing_path[]> {
         const timingReport = await getTimingReport(this.get_config(), this.projectDiskPath, this.emitterProject,
-            numOfPaths);
+            numOfPaths, timingMode);
         return timingReport;
     }
 }

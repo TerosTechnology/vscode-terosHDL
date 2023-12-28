@@ -8,16 +8,11 @@ proc get_info_for_cell { cell_id } {
   set file_loc [get_name_info -info file_location $cell_names_db_id]
   # # File location is of the form <file name>(<line num>)
   # # Extract the file path and the line number separately
-  # regexp {(.*?)\((\d+)\)} $file_loc -> file_path line_num
-
-  # return [dict create "cell_name" $cell_name "cell_location" $cell_location "cell_file_path" $file_path "cell_file_line" $line_num]    
-
   set result [regexp {(.*?)\((\d+)\)} $file_loc -> file_path line_num]
 
   if {$result} {
       return [dict create "cell_name" $cell_name "cell_location" $cell_location "cell_file_path" $file_path "cell_file_line" $line_num]
   } else {
-      puts "Error in regex for: $file_loc"
       return [dict create "cell_name" $cell_name "cell_location" $cell_location "cell_file_path" "" "cell_file_line" "0"]
   }
 
@@ -26,12 +21,13 @@ proc get_info_for_cell { cell_id } {
 set csv_file_name [lindex $argv 0]
 set project_path [lindex $argv 1]
 set num_of_paths [lindex $argv 2]
+set mode [lindex $argv 3]
 
 #open result file for writing
 set csv_file [open $csv_file_name w]
 
 project_open -force -current_revision "$project_path"
-qsta_utility::auto_CRU "create_timing_netlist"
+qsta_utility::auto_CRU "create_timing_netlist -snapshot $mode"
 
 ################################################################################
 # Main part of the script

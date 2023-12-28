@@ -9,7 +9,7 @@ import * as file_utils from "../../../utils/file_utils";
 import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import * as path_lib from "path";
 import { get_files_from_csv } from "../../prj_loaders/csv_loader";
-import { e_source_type, t_file, t_timing_node, t_timing_path } from "../../common";
+import { e_source_type, e_timing_mode, t_file, t_timing_node, t_timing_path } from "../../common";
 import { LANGUAGE } from "../../../common/general";
 import * as nunjucks from 'nunjucks';
 import * as process from 'process';
@@ -593,9 +593,14 @@ export async function createRPTReportFromRDB(config: e_config, rdbPath: string):
 }
 
 export async function getTimingReport(config: e_config, projectPath: string, emitterProject: ProjectEmitter,
-    numOfPaths: number): Promise<t_timing_path[]> {
+    numOfPaths: number, timingMode: e_timing_mode): Promise<t_timing_path[]> {
 
-    const args = `"${projectPath}" "${numOfPaths}"`;
+    let strMode = "final";
+    if (timingMode === e_timing_mode.EARLY) {
+        strMode = "synthesized";
+    }
+
+    const args = `"${projectPath}" "${numOfPaths}" "${strMode}"`;
     const tcl_file = path_lib.join(__dirname, 'bin', 'get_timing_report.tcl');
 
     const cmd_result = await executeQuartusTcl(true, config, tcl_file, args, "", emitterProject, undefined);

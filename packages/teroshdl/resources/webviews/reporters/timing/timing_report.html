@@ -22,11 +22,15 @@
 
         .header vscode-text-field {
             width: 50px;
-            margin-right: 60px;
+            margin-right: 55px;
         }
-        
+
         .header span {
             user-select: none;
+        }
+
+        .dropdown-container {
+            margin-left: 20px;
         }
     </style>
 
@@ -36,13 +40,22 @@
 
     <div class="header">
         <vscode-button id="generate-button">Generate Report</vscode-button>
+
         <vscode-text-field id="num-paths" type="number" value="10"></vscode-text-field>
         <span>paths</span>
+
+        <div class="dropdown-container">
+            <vscode-dropdown>
+                <vscode-option>Early Timing Report</vscode-option>
+                <vscode-option>Final Timing Report</vscode-option>
+            </vscode-dropdown>
+        </div>
+
     </div>
 
     <vscode-divider></vscode-divider>
 
-    <vscode-data-grid id="basic-grid" generate-header="sticky" grid-template-columns="50px 140px 140px 120px">
+    <vscode-data-grid id="basic-grid" generate-header="sticky" grid-template-columns="50px 140px 140px 120px 1fr 1fr">
         <vscode-data-grid-row row-type="sticky-header">
             <vscode-data-grid-cell cell-type="columnheader" grid-column="1"></vscode-data-grid-cell>
             <vscode-data-grid-cell cell-type="columnheader" grid-column="2" id="h0"># <span
