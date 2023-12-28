@@ -28,6 +28,8 @@ import {
     vsCodeTag,
     vsCodeLink,
     vsCodeCheckbox,
+    vsCodeDropdown,
+    vsCodeOption,
 } from "@vscode/webview-ui-toolkit";
 
 
@@ -41,6 +43,8 @@ provideVSCodeDesignSystem().register(
     vsCodeTag(),
     vsCodeLink(),
     vsCodeCheckbox(),
+    vsCodeDropdown(),
+    vsCodeOption(),
 );
 
 declare const acquireVsCodeApi: () => any;
@@ -130,38 +134,51 @@ function createTimingReport(timingReportList) {
         // From
         const cellFrom = document.createElement('vscode-data-grid-cell');
         cellFrom.setAttribute('grid-column', "5");
-        cellFrom.classList.add('hover-cell');
-        cellFrom.addEventListener('click', function () {
-            vscode.postMessage({
-                command: 'open',
-                file: timingPath.fromPath,
-                line: timingPath.fromLine
+
+        if (timingPath.fromPath !== "") {
+            cellFrom.addEventListener('click', function () {
+                vscode.postMessage({
+                    command: 'open',
+                    file: timingPath.fromPath,
+                    line: timingPath.fromLine
+                });
             });
-        });
-        cellFrom.setAttribute('title', `${timingPath.fromPath}:${timingPath.fromLine}`);
+            cellFrom.setAttribute('title', `${timingPath.fromPath}:${timingPath.fromLine}`);
+    
+            const linkFrom = document.createElement('vscode-link');
+            linkFrom.textContent = timingPath.fromNodeName;
+    
+            cellFrom.appendChild(linkFrom);
+        }
+        else {
+            cellFrom.textContent = timingPath.fromNodeName;
+        }
 
-        const linkFrom = document.createElement('vscode-link');
-        linkFrom.textContent = timingPath.fromNodeName;
-
-        cellFrom.appendChild(linkFrom);
         row.appendChild(cellFrom);
         // To
         const cellTo = document.createElement('vscode-data-grid-cell');
         cellTo.setAttribute('grid-column', "6");
-        cellTo.classList.add('hover-cell');
-        cellTo.setAttribute('title', `${timingPath.toPath}:${timingPath.toLine}`);
-        cellTo.addEventListener('click', function () {
-            vscode.postMessage({
-                command: 'open',
-                file: timingPath.toPath,
-                line: timingPath.toLine
+
+
+        if (timingPath.fromPath !== "") {
+            cellTo.setAttribute('title', `${timingPath.toPath}:${timingPath.toLine}`);
+            cellTo.addEventListener('click', function () {
+                vscode.postMessage({
+                    command: 'open',
+                    file: timingPath.toPath,
+                    line: timingPath.toLine
+                });
             });
-        });
+    
+            const linkTo = document.createElement('vscode-link');
+            linkTo.textContent = timingPath.toNodeName;
+    
+            cellTo.appendChild(linkTo);
+        }
+        else {
+            cellTo.textContent = timingPath.toNodeName;
+        }
 
-        const linkTo = document.createElement('vscode-link');
-        linkTo.textContent = timingPath.toNodeName;
-
-        cellTo.appendChild(linkTo);
         row.appendChild(cellTo);
         tableBody.appendChild(row);
     });
@@ -195,9 +212,23 @@ function generate() {
     if (!numPaths) {
         return;
     }
+
+    // Get timing mode
+    let mode = "";
+    const modeElementList = document.querySelectorAll('vscode-option');
+    console.log(modeElementList)
+    for (let i = 0; i <  modeElementList.length; i++) {
+        const modeElement = modeElementList[i] as HTMLInputElement;
+        if (modeElement["selected"]) {
+            mode = modeElement.value;
+            break;
+        }
+    }
+
     vscode.postMessage({
         command: 'generate',
-        numPaths: parseInt(numPaths)
+        numPaths: parseInt(numPaths),
+        timingMode: mode,
     });
 }
 

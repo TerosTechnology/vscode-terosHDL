@@ -19,7 +19,7 @@ import * as vscode from 'vscode';
 import * as path_lib from 'path';
 import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../../type_declaration';
-import { createNodeDecoratorList, deleteDecorators } from './utils';
+import { createNodeDecoratorList, deleteDecorators, openFileAtLine } from './utils';
 
 export function getPathDetailsView(context: vscode.ExtensionContext, projectManager: t_Multi_project_manager): PathDetailsView {
     const view = new PathDetailsView(context, projectManager);
@@ -34,6 +34,7 @@ export class PathDetailsView {
     protected panel: vscode.WebviewPanel | undefined;
     private pathSelectionList: number[] = [];
     private decoratorList: vscode.TextEditorDecorationType[] = [];
+    private slack: number = 0;
 
     constructor(context: vscode.ExtensionContext, projectManager: t_Multi_project_manager) {
         this.context = context;
@@ -44,8 +45,11 @@ export class PathDetailsView {
         );
     }
 
-    async showPathDetails(pathDetails: teroshdl2.project_manager.common.t_timing_node[], pathName: string) {
+    async showPathDetails(slack: number, pathDetails: teroshdl2.project_manager.common.t_timing_node[], 
+        pathName: string) {
+
         this.pathDetails = pathDetails;
+        this.slack = slack;
 
         if (this.panel === undefined) {
             this.panel = vscode.window.createWebviewPanel(
@@ -59,10 +63,10 @@ export class PathDetailsView {
             );
 
             this.panel.webview.onDidReceiveMessage(
-                message => {
+                async message => {
                     switch (message.command) {
                         case 'open':
-                            openFileAtLine(message.file, message.line, 0);
+                            await openFileAtLine(message.file, message.line, 0);
                             return;
                         case 'updateDecorators':
                             this.pathSelectionList = message.selectionList;
@@ -100,17 +104,8 @@ export class PathDetailsView {
         const visibleEditors = vscode.window.visibleTextEditors;
         deleteDecorators(this.decoratorList);
         visibleEditors.forEach(editor => {
-            createNodeDecoratorList(editor, this.pathDetails, this.getSlack(), this.decoratorList, this.pathSelectionList);
+            createNodeDecoratorList(editor, this.pathDetails, this.slack, this.decoratorList, this.pathSelectionList);
         });
-    }
-
-    private getSlack(): number {
-        try {
-            return this.pathDetails[this.pathDetails.length - 1].total_delay;
-        }
-        catch (error) {
-            return 0;
-        }
     }
 
     private getHtmlForWebview() {
@@ -135,20 +130,4 @@ export class PathDetailsView {
             await this.webview.postMessage({ command: "update", pathDetails: pathDetails });
         }
     }
-}
-
-/**
- * Open a file at a specific line
- * @param filePath Path to the file
- * @param lineNumber Line number
- * @param columnNumber Column number
- */
-function openFileAtLine(filePath: string, lineNumber: number, columnNumber: number): void {
-    const uri = vscode.Uri.file(filePath);
-    const position = new vscode.Position(lineNumber - 1, columnNumber);
-    const range = new vscode.Range(position, position);
-
-    vscode.window.showTextDocument(uri, {
-        selection: range
-    });
 }

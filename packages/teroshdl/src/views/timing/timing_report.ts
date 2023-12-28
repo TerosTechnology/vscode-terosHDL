@@ -22,7 +22,7 @@ import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../../type_declaration';
 import { PathDetailsView } from './path_details';
 import { get_icon } from '../../features/tree_views/utils';
-import { createDecoratorList, deleteDecorators } from './utils';
+import { createDecoratorList, deleteDecorators, openFileAtLine } from './utils';
 
 export function getTimingReportView(context: vscode.ExtensionContext, projectManager: t_Multi_project_manager,
     pathDetailsView: PathDetailsView): TimingReportView {
@@ -31,8 +31,6 @@ export function getTimingReportView(context: vscode.ExtensionContext, projectMan
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(
         'teroshdl-view-timing', view, { webviewOptions: { retainContextWhenHidden: true } })
     );
-    // vscode.commands.registerCommand("teroshdl.view.tasks.show_timing_report", async () =>
-    //     await view.openTimingReport());
     return view
 }
 
@@ -75,13 +73,13 @@ export class TimingReportView implements vscode.WebviewViewProvider {
             async message => {
                 switch (message.command) {
                     case 'open':
-                        openFileAtLine(message.file, message.line, 0);
+                        await openFileAtLine(message.file, message.line, 0);
                         return;
                     case 'showPathDetails':
                         await this.showPathDetails(message.pathName);
                         return;
                     case 'generate':
-                        await this.generateTimingReport(message.numPaths);
+                        await this.generateTimingReport(message.numPaths, message.timingMode);
                         return;
                     case 'updateDecorators':
                         this.pathSelectionList = message.selectionList;
@@ -131,7 +129,10 @@ export class TimingReportView implements vscode.WebviewViewProvider {
         }
     }
 
-    private async generateTimingReport(numOfPaths: number) {
+    private async generateTimingReport(numOfPaths: number, mode: string) {
+        const timingMode = mode === 'Early Timing Report' ? teroshdl2.project_manager.common.e_timing_mode.EARLY : 
+            teroshdl2.project_manager.common.e_timing_mode.FINAL;
+
         const selectProject = await this.projectManager.get_selected_project();
         // let timmingReport: teroshdl2.project_manager.common.t_timing_path[] = [];
         await vscode.window.withProgress({
@@ -139,7 +140,7 @@ export class TimingReportView implements vscode.WebviewViewProvider {
             cancellable: false,
             title: 'Generating Timming Report'
         }, async (progress) => {
-            this.timmingReport = await selectProject.getTimingReport(numOfPaths);
+            this.timmingReport = await selectProject.getTimingReport(numOfPaths, timingMode);
             this.sendTimingReport();
             this.createDecoratorList();
         });
@@ -148,25 +149,9 @@ export class TimingReportView implements vscode.WebviewViewProvider {
     public async showPathDetails(pathName: string) {
         for (const pathNode of this.timmingReport) {
             if (pathNode.name === pathName) {
-                await this.pathDetailsView.showPathDetails(pathNode.nodeList, pathName);
+                await this.pathDetailsView.showPathDetails(pathNode.slack ,pathNode.nodeList, pathName);
                 break;
             }
         }
     }
-}
-
-/**
- * Open a file at a specific line
- * @param filePath Path to the file
- * @param lineNumber Line number
- * @param columnNumber Column number
- */
-function openFileAtLine(filePath: string, lineNumber: number, columnNumber: number): void {
-    const uri = vscode.Uri.file(filePath);
-    const position = new vscode.Position(lineNumber - 1, columnNumber);
-    const range = new vscode.Range(position, position);
-
-    vscode.window.showTextDocument(uri, {
-        selection: range
-    });
 }

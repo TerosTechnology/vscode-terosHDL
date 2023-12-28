@@ -147,14 +147,14 @@ export function setDecoration(editor: vscode.TextEditor, line: number, slackMsg:
         if (isRed) {
             let redColor = 255;
             if (lowMode) {
-                redColor = redColor/2;
+                redColor = redColor / 2;
             }
-            decoratorOptions.backgroundColor = `rgba(0, ${redColor}, 0, 0.3)`;
+            decoratorOptions.backgroundColor = `rgba(${redColor}, 0, 0, 0.3)`;
         }
         else {
             let greenColor = 255;
             if (lowMode) {
-                greenColor = greenColor/2;
+                greenColor = greenColor / 2;
             }
             decoratorOptions.backgroundColor = `rgba(0, ${greenColor}, 0, 0.3)`;
         }
@@ -163,5 +163,37 @@ export function setDecoration(editor: vscode.TextEditor, line: number, slackMsg:
     const decorationType = vscode.window.createTextEditorDecorationType(decoratorOptions);
     decoratorList.push(decorationType);
     editor.setDecorations(decorationType, [decorationOptions]);
-    // activeEditor.setDecorations(decorationType, []);
+}
+
+/**
+ * Open a file at a specific line
+ * @param filePath Path to the file
+ * @param lineNumber Line number
+ * @param columnNumber Column number
+ */
+export async function openFileAtLine(filePath: string, lineNumber: number, columnNumber: number): Promise<void> {
+    if (!teroshdl2.utils.file.check_if_path_exist(filePath)) {
+        vscode.window.showWarningMessage(`File ${filePath} does not exist`);
+        return;
+    }
+
+    const uri = vscode.Uri.file(filePath);
+    const position = new vscode.Position(lineNumber - 1, columnNumber);
+    const range = new vscode.Range(position, position);
+
+    try {
+        await vscode.window.showTextDocument(uri, {
+            selection: range,
+            viewColumn: vscode.ViewColumn.One
+        });
+    }
+    catch (error: any) {
+        const errorMsg = error.message;
+        let msg = errorMsg.charAt(0).toUpperCase() + errorMsg.slice(1);
+        if (errorMsg.includes("binary")) {
+            msg = "The file is encrypted, so it cannot be opened"
+        }
+
+        vscode.window.showWarningMessage(msg);
+    }
 }
