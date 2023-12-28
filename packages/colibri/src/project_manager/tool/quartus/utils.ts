@@ -11,7 +11,6 @@ import * as path_lib from "path";
 import { get_files_from_csv } from "../../prj_loaders/csv_loader";
 import { e_source_type, e_timing_mode, t_file, t_timing_node, t_timing_path } from "../../common";
 import { LANGUAGE } from "../../../common/general";
-import * as nunjucks from 'nunjucks';
 import * as process from 'process';
 import { ChildProcess } from "child_process";
 import { Process } from "../../../process/process";
@@ -327,9 +326,7 @@ export async function getFamilyAndParts(config: e_config, emitterProject: Projec
 export async function executeCmdListQuartusProject(config: e_config, projectPath: string, cmdList: string[],
     emitterProject: ProjectEmitter): Promise<t_loader_action_result> {
 
-    const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl.nj'));
-    const templateRender = nunjucks.renderString(
-        templateContent, { "cmd_list": cmdList }).replace(/&quot;/g, "\"");
+    const templateRender = getTemplateRender(cmdList);
 
     // Create temp file
     const tclFile = process_utils.create_temp_file(templateRender);
@@ -511,8 +508,7 @@ export function cleanProject(projectName: string, config: e_config, projectPath:
 
     const cmdList = ["project_clean"];
 
-    const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl.nj'));
-    const templateRender = nunjucks.renderString(templateContent, { "cmd_list": cmdList });
+    const templateRender = getTemplateRender(cmdList);
 
     // Create temp file
     const tclFile = process_utils.create_temp_file(templateRender);
@@ -696,4 +692,18 @@ export async function openRTLAnalyzer(config: e_config, projectPath: string, emi
     ];
 
     await executeCmdListQuartusProject(config, projectPath, cmdList, emitterProject);
+}
+
+
+export function getTemplateRender(cmdList: string[]) {
+    const templateRender = `
+    set csv_file_name [lindex $argv 0]
+    set project_path [lindex $argv 1]
+    
+    #open Quartus project
+    project_open -force -current_revision $project_path
+    
+    ${cmdList.join("\n")}
+`;
+    return templateRender;
 }

@@ -6,7 +6,7 @@ import * as chokidar from "chokidar";
 import {
     QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath, setConfigToProject,
     getProjectInfo, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
-    setTopLevelTestbench, getTimingReport, setTestbenchFileList
+    setTopLevelTestbench, getTimingReport, setTestbenchFileList, getTemplateRender
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
 import {
@@ -33,8 +33,6 @@ import { GlobalConfigManager } from "../../../config/config_manager";
 import { ProjectEmitter, e_event } from "../../projectEmitter";
 // import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import { Process } from "../../../process/process";
-import * as nunjucks from 'nunjucks';
-import * as file_utils from "../../../utils/file_utils";
 import * as process_utils from "../../../process/utils";
 
 function getVersionDirectory(basePath: string): string {
@@ -268,8 +266,8 @@ export class QuartusProjectManager extends Project_manager {
         return await this.add_file_from_array([file]);
     }
 
-    public async modifyFileSourceType(filePath: string, logicalName: string, 
-        newSourceType: e_source_type) : Promise<boolean> {
+    public async modifyFileSourceType(filePath: string, logicalName: string,
+        newSourceType: e_source_type): Promise<boolean> {
 
         const result = await super.modifyFileSourceType(filePath, logicalName, newSourceType);
         if (result) {
@@ -518,10 +516,7 @@ export class QuartusProjectManager extends Project_manager {
             cmdList.push("execute_flow -simulation");
         }
 
-
-        const templateContent = file_utils.read_file_sync(path_lib.join(__dirname, 'bin', 'cmd_exec.tcl.nj'));
-        const templateRender = nunjucks.renderString(
-            templateContent, { "cmd_list": cmdList }).replace(/&quot;/g, "\"");
+        const templateRender = getTemplateRender(cmdList);
 
         // Create temp file
         const tclFile = process_utils.create_temp_file(templateRender);
