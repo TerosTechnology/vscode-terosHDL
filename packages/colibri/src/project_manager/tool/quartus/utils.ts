@@ -356,7 +356,7 @@ export async function addFilesToProject(config: e_config, projectPath: string, f
 
     const cmd_list: string[] = [];
     for (const file of fileList) {
-        let cmd = `set_global_assignment -name ${LANGUAGE_MAP[file.file_type]} ${file.name}`;
+        let cmd = `set_global_assignment -name ${LANGUAGE_MAP[file.file_type]} ${escapeBackslashes(file.name)}`;
         if (file.logical_name !== "") {
             cmd += ` -library ${file.logical_name}`;
         }
@@ -379,13 +379,13 @@ export async function removeFilesFromProject(config: e_config, projectPath: stri
     emitterProject: ProjectEmitter): Promise<void> {
     const cmd_list: string[] = [];
     for (const file of fileList) {
-        let cmd = `set_global_assignment -remove -name ${LANGUAGE_MAP[file.file_type]} ${file.name}`;
+        let cmd = `set_global_assignment -remove -name ${LANGUAGE_MAP[file.file_type]} ${escapeBackslashes(file.name)}`;
         if (file.logical_name !== "") {
             cmd += ` -library ${file.logical_name}`;
         }
         cmd_list.push(cmd);
 
-        const fileRelative = file_utils.get_relative_path(file.name, projectPath);
+        const fileRelative = escapeBackslashes(file_utils.get_relative_path(file.name, projectPath));
         cmd = `set_global_assignment -remove -name ${LANGUAGE_MAP[file.file_type]} ${fileRelative}`;
         if (file.logical_name !== "") {
             cmd += ` -library ${file.logical_name}`;
@@ -454,7 +454,8 @@ export async function setTopLevelTestbench(config: e_config, projectPath: string
     }
 
     const cmd = [
-        `set_global_assignment -name EDA_TEST_BENCH_FILE ${topLevelTestbenchPath} -section_id testbenchSet`,
+        // eslint-disable-next-line max-len
+        `set_global_assignment -name EDA_TEST_BENCH_FILE ${escapeBackslashes(topLevelTestbenchPath)} -section_id testbenchSet`,
         "remove_all_global_assignments -name EDA_TEST_BENCH_TOP_MODULE",
         `set_global_assignment -name EDA_TEST_BENCH_TOP_MODULE ${entityName} -section_id testbenchSet`
     ];
@@ -484,7 +485,8 @@ export async function setTestbenchFileList(config: e_config, projectPath: string
         if (file.logical_name !== "") {
             libCMD = ` -library ${file.logical_name}`;
         }
-        cmd.push(`set_global_assignment -name EDA_TEST_BENCH_FILE ${file.name} -section_id testbenchSet ${libCMD}`);
+        // eslint-disable-next-line max-len
+        cmd.push(`set_global_assignment -name EDA_TEST_BENCH_FILE ${escapeBackslashes(file.name)} -section_id testbenchSet ${libCMD}`);
     }
 
     const result = await executeCmdListQuartusProject(config, projectPath, cmd, emitterProject);
@@ -706,4 +708,12 @@ export function getTemplateRender(cmdList: string[]) {
     ${cmdList.join("\n")}
 `;
     return templateRender;
+}
+
+export function escapeBackslashes(path: string): string {
+    // check if windows
+    if (process.platform === "win32") {
+        return path.replace(/\\/g, '\\\\');
+    }
+    return path;
 }

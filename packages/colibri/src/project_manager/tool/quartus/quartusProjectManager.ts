@@ -6,7 +6,7 @@ import * as chokidar from "chokidar";
 import {
     QuartusExecutionError, addFilesToProject, removeFilesFromProject, setTopLevelPath, setConfigToProject,
     getProjectInfo, createProject, getQuartusPath, cleanProject, createRPTReportFromRDB,
-    setTopLevelTestbench, getTimingReport, setTestbenchFileList, getTemplateRender
+    setTopLevelTestbench, getTimingReport, setTestbenchFileList, getTemplateRender, escapeBackslashes
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
 import {
@@ -504,9 +504,9 @@ export class QuartusProjectManager extends Project_manager {
         const waveFilePath = config.tools.quartus.wave_file_questa;
         if (waveFilePath !== "") {
             // eslint-disable-next-line max-len
-            cmdList.push(`set_global_assignment -remove -name EDA_SIMULATION_WAVE_FILE_QUESTA_INTEL ${waveFilePath} -section_id testbenchSet`);
+            cmdList.push(`set_global_assignment -remove -name EDA_SIMULATION_WAVE_FILE_QUESTA_INTEL ${escapeBackslashes(waveFilePath)} -section_id testbenchSet`);
             // eslint-disable-next-line max-len
-            cmdList.push(`set_global_assignment -name EDA_SIMULATION_WAVE_FILE_QUESTA_INTEL ${waveFilePath} -section_id testbenchSet`);
+            cmdList.push(`set_global_assignment -name EDA_SIMULATION_WAVE_FILE_QUESTA_INTEL ${escapeBackslashes(waveFilePath)} -section_id testbenchSet`);
         }
         if (isCmdMode) {
             cmdList.push("set sim_args [list simulation=[list --no_gui]]");
