@@ -191,6 +191,13 @@
                 ,{
                     "when": "view == teroshdl-view-source",
 
+                    "command": "teroshdl.view.source.search",
+                    "group": "navigation"
+                }
+                        
+                ,{
+                    "when": "view == teroshdl-view-source",
+
                     "command": "teroshdl.view.source.add",
                     "group": "navigation"
                 }
@@ -449,6 +456,14 @@
                     "dark": "resources/icon/dark/save.svg"
                 },
                 "title": "Save Project"
+            }, 
+            {
+                "command": "teroshdl.view.source.search",
+                "icon": {
+                    "light": "resources/icon/light/search.svg",
+                    "dark": "resources/icon/dark/search.svg"
+                },
+                "title": "Search"
             }, 
             {
                 "command": "teroshdl.view.source.add",

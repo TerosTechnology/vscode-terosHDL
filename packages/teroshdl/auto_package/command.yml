@@ -60,6 +60,12 @@
   where: ["view/title"]
   when: "view == teroshdl-view-source"
 
+- name: view.source.search
+  title: "Search"
+  icon: search
+  where: ["view/title"]
+  when: "view == teroshdl-view-source"
+
 - name: view.source.add
   title: "Add"
   icon: add

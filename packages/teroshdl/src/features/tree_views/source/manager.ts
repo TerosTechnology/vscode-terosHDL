@@ -51,6 +51,7 @@ export class Source_manager extends BaseView {
     }
 
     set_commands() {
+        vscode.commands.registerCommand("teroshdl.view.source.search", () => this.search());
         vscode.commands.registerCommand("teroshdl.view.source.save_project", () => this.save_project());
         vscode.commands.registerCommand("teroshdl.view.source.select_toplevel", (item) => this.select_top(item));
         vscode.commands.registerCommand("teroshdl.view.source.add", async () => await this.add());
@@ -82,6 +83,11 @@ export class Source_manager extends BaseView {
         else {
             open_file(vscode.Uri.file(name));
         }
+    }
+
+    async search() {
+        vscode.commands.executeCommand(element.ProjectProvider.getViewID() + ".focus")
+        await vscode.commands.executeCommand('list.find');
     }
 
     async save_project() {
