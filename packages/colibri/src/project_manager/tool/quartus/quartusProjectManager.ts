@@ -460,6 +460,10 @@ export class QuartusProjectManager extends Project_manager {
             const projectInfo = await getProjectInfo(this.get_config(), this.projectDiskPath, this.emitterProject);
             const eda_test_bench_top_module = projectInfo.eda_test_bench_top_module;
 
+            if (eda_test_bench_top_module === "") {
+                return [];
+            }
+
             const testbench = {
                 suite_name: "",
                 name: eda_test_bench_top_module,
