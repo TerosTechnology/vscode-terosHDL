@@ -21,6 +21,13 @@ import { LANGUAGE } from '../common/general';
 import { e_config } from './config_declaration';
 import { t_linter_name, LINTER_MODE, l_options } from '../linter/common';
 
+/**
+ * Returns the name of the linter based on the language, mode, and configuration.
+ * @param lang The language of the file.
+ * @param mode The mode of the linter (ERRORS or STYLE).
+ * @param config The configuration object.
+ * @returns The name of the linter.
+ */
 export function get_linter_name(lang: LANGUAGE, mode: LINTER_MODE, config: e_config): t_linter_name {
     if (lang === LANGUAGE.VHDL && mode === LINTER_MODE.ERRORS) {
         return config.linter.general.linter_vhdl;
@@ -38,6 +45,10 @@ export function get_linter_name(lang: LANGUAGE, mode: LINTER_MODE, config: e_con
     }
 }
 
+/**
+ * Retrieves the linter options.
+ * @returns The linter options object.
+ */
 export function get_linter_options() {
     const options: l_options = {
         path: '',
