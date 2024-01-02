@@ -20,6 +20,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Languages
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Enum representing different programming languages.
+ */
 export enum LANGUAGE {
     VHDL = "vhdlSource",
     VERILOG = "verilogSource",
@@ -47,12 +50,18 @@ export enum LANGUAGE {
 ////////////////////////////////////////////////////////////////////////////////
 // Versions
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Enum representing the versions of VHDL language.
+ */
 export enum VHDL_LANG_VERSION {
     v2008 = "2008",
     v93 = "93",
     v2000 = "2000",
 }
 
+/**
+ * Enum representing the versions of the Verilog language.
+ */
 export enum VERILOG_LANG_VERSION {
     v2000 = "2000",
     v2005 = "2005",
@@ -61,6 +70,10 @@ export enum VERILOG_LANG_VERSION {
 export type t_version_inst = VHDL_LANG_VERSION | VERILOG_LANG_VERSION | undefined;
 export type t_versions = (t_version_inst)[] | undefined;
 
+/**
+ * List of language versions.
+ * @typedef {Record<LANGUAGE, t_versions>} LANGUAGE_VERSIONS_LIST
+ */
 export const LANGUAGE_VERSIONS_LIST: Record<LANGUAGE, t_versions> = {
     [LANGUAGE.VHDL]: Object.values(VHDL_LANG_VERSION),
     [LANGUAGE.VERILOG]: Object.values(VERILOG_LANG_VERSION),
@@ -86,6 +99,9 @@ export const LANGUAGE_VERSIONS_LIST: Record<LANGUAGE, t_versions> = {
 ////////////////////////////////////////////////////////////////////////////////
 // Extensions
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * A mapping of file extensions to language types.
+ */
 export const LANGUAGE_EXTENSION_LIST: { [key: string]: LANGUAGE } = {
     // VHDL
     "vhd": LANGUAGE.VHDL,

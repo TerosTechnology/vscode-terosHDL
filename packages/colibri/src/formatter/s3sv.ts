@@ -31,6 +31,10 @@ export class S3sv extends Base_formatter {
     }
 
     public async format_from_code(code: string, opt: cfg.e_formatter_s3sv): Promise<common.f_result> {
+        return await this.format_from_code_with_pyodide(code, opt);
+    }
+
+    public async format_from_code_with_pyodide(code: string, opt: cfg.e_formatter_s3sv): Promise<common.f_result> {
 
         const python_file = path_lib.join(__dirname, 'bin', 's3sv', 's3sv.py');
         const python_code = read_file_sync(python_file);
