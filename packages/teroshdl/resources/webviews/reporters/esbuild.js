@@ -16,8 +16,24 @@ const webviewConfigLogs = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./logs.ts"],
-  outfile: "./wb/webviewLogs.js",
+  entryPoints: ["./logs/logs.ts"],
+  outfile: "./logs/wb/webviewLogs.js",
+};
+
+const webviewConfigTimingReport = {
+  ...baseConfig,
+  target: "es2020",
+  format: "esm",
+  entryPoints: ["./timing/timing.ts"],
+  outfile: "./timing/wb/webviewTimingReport.js",
+};
+
+const webviewConfigTimingDetails = {
+  ...baseConfig,
+  target: "es2020",
+  format: "esm",
+  entryPoints: ["./timing/timing_details.ts"],
+  outfile: "./timing/wb/webviewTimingDetails.js",
 };
 
 // This watch config adheres to the conventions of the esbuild-problem-matchers
@@ -49,12 +65,16 @@ const watchConfig = {
       console.log("[watch] build started");
       await build({
         ...webviewConfigLogs,
+        ...webviewConfigTimingReport,
+        ...webviewConfigTimingDetails,
         ...watchConfig,
       });
       console.log("[watch] build finished");
     } else {
       // Build extension and webview code
       await build(webviewConfigLogs);
+      await build(webviewConfigTimingReport);
+      await build(webviewConfigTimingDetails);
       console.log("build complete");
     }
   } catch (err) {
