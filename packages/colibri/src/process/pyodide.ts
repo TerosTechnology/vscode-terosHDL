@@ -18,6 +18,7 @@
 
 import * as path_lib from 'path';
 import { read_file_sync, get_file_extension } from '../utils/file_utils';
+import { loadPyodide } from 'pyodide';
 
 export type python_result = {
     code: string;
@@ -61,8 +62,10 @@ export class Pyodide {
     **/
     async load() {
         if (this.pyodide === null) {
-            const { loadPyodide } = require("pyodide");
+            console.log("Loading pyodide");
+            console.log(loadPyodide);
             this.pyodide = await loadPyodide();
+            console.log("Pyodide loaded");
         }
         return this.pyodide;
     }
@@ -97,6 +100,7 @@ export class Pyodide {
             return result;
         }
         catch (error: any) {
+            console.log(error);
             result.stderr = error.message;
             result.successful = false;
             result.return_value = -1;

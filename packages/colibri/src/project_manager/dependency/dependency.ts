@@ -48,8 +48,10 @@ export class Dependency_graph {
             file_list_reduced.push(hdl_file_list.name);
         });
 
+        console.log("pass0")
         const pyodide = new Pyodide();
         const file_list_map = await pyodide.write_file_list(file_list_reduced);
+        console.log("pass1")
 
         type t_file_map = t_file & {
             name_map: string;
@@ -74,8 +76,11 @@ export class Dependency_graph {
         const args = {
             "project_sources": prj_file_list_map,
         };
+        console.log("pass2")
 
         const result = await pyodide.exec_python_code(python_script_content, [PACKAGE_MAP.vunit], args);
+        console.log("pass3")
+
         return result;
     }
 
@@ -131,8 +136,10 @@ export class Dependency_graph {
      * @returns Dependency tree
     **/
     public async get_dependency_tree_pyodide(file_list: t_file[]) {
+        console.log("get_dependency_tree_pyodide")
         const result = await this.run_pydodide(file_list, "vunit_dependencies_standalone_pyodide");
-
+        console.log("get_dependency_tree_pyodide result", result)
+        
         const result_return: t_action_result = {
             result: "",
             successful: true,

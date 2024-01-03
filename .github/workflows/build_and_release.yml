@@ -46,20 +46,20 @@ jobs:
       - name: Prepare colibri
         run: |
           cd packages/colibri
-          yarn install
-          yarn build
+          DISABLE_V8_COMPILE_CACHE=1 yarn install
+          DISABLE_V8_COMPILE_CACHE=1 yarn build
 
       - name: Prepare teroshdl
         run: |
           cd packages/teroshdl
-          yarn install
+          DISABLE_V8_COMPILE_CACHE=1 yarn install
 
       - name: Build
         id: build
         run: |
           npm install -g @vscode/vsce
           cd packages/teroshdl
-          yarn package
+          DISABLE_V8_COMPILE_CACHE=1 yarn package
 
           file=`ls *.vsix`
           echo ${{ env.version }}
