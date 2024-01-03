@@ -1,4 +1,5 @@
 // This code only can be used for Quartus boards
+
 import { TaskStateManager } from '../taskState';
 import { e_taskState, e_taskType } from '../common';
 import { check_if_path_exist } from '../../../utils/file_utils';

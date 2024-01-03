@@ -1,3 +1,5 @@
+// This code only can be used for Quartus boards
+
 import { e_iconType, e_reportType, e_taskExecutionType, e_taskState, e_taskType, t_taskRep } from "../common";
 
 export enum e_rtlType {

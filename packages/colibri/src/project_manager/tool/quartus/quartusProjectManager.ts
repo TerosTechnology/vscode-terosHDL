@@ -358,7 +358,7 @@ export class QuartusProjectManager extends Project_manager {
         this.taskStateManager.setCurrentTask(undefined);
         const quartusDir = getQuartusPath(config);
         const projectDir = get_directory(this.projectDiskPath);
-        return runTask(taskType, quartusDir, projectDir, this.get_name(), this.currentRevision,
+        return runTask(taskType, this.taskStateManager, quartusDir, projectDir, this.get_name(), this.currentRevision,
             this.emitterProject, callback);
     }
 
