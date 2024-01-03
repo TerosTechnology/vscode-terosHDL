@@ -53,7 +53,7 @@ export class Tasks_manager extends BaseView {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logView: LogView, 
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logView: LogView,
         emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter, timingReportView: TimingReportView) {
 
         super(e_viewType.TASKS);
@@ -124,13 +124,28 @@ export class Tasks_manager extends BaseView {
             return;
         }
 
-        this.state = e_VIEW_STATE.RUNNING;
         this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
 
         try {
             const selectedProject = this.project_manager.get_selected_project();
 
             const task = taskItem.taskDefinition.name;
+            const taskStatus = selectedProject.getTaskState(task);
+
+            if (taskStatus === teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
+                const msg = `${taskItem.taskDefinition.name} has already run successfully. Do you want to run the task again?`;
+                const result = await vscode.window.showInformationMessage(
+                    msg,
+                    'Yes',
+                    'No'
+                );
+                if (result === 'No') {
+                    return;
+                }
+            }
+
+            this.state = e_VIEW_STATE.RUNNING;
+
             this.setStatusBarText(undefined);
             this.statusBar.show();
 
