@@ -1491,6 +1491,17 @@ export const WEB_CONFIG = `
           
           
           
+            <div class="mb-3">
+              <label for="schematic-general-args_ghdl" class="form-label">
+                Arguments passed to GHDL
+                <span class="markConfig badge bg-secondary" id="mark_schematic-general-args_ghdl"></span>
+              </label>
+                <input class="form-control" id="schematic-general-args_ghdl" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
       </div>
       
       <div class="card-footer">
@@ -4785,6 +4796,8 @@ export const WEB_CONFIG = `
     config["schematic"]["general"]["extra"] = element_value
     element_value = document.getElementById("schematic-general-args").value;
     config["schematic"]["general"]["args"] = element_value
+    element_value = document.getElementById("schematic-general-args_ghdl").value;
+    config["schematic"]["general"]["args_ghdl"] = element_value
     config["templates"] = {}
     config["templates"]["general"] = {}
     element_value = document.getElementById("templates-general-header_file_path").value;
@@ -5318,6 +5331,7 @@ export const WEB_CONFIG = `
     document.getElementById("schematic-general-backend").value = config["schematic"]["general"]["backend"];
     document.getElementById("schematic-general-extra").value = config["schematic"]["general"]["extra"];
     document.getElementById("schematic-general-args").value = config["schematic"]["general"]["args"];
+    document.getElementById("schematic-general-args_ghdl").value = config["schematic"]["general"]["args_ghdl"];
     document.getElementById("templates-general-header_file_path").value = config["templates"]["general"]["header_file_path"];
     document.getElementById("templates-general-indent").value = config["templates"]["general"]["indent"];
     document.getElementById("templates-general-clock_generation_style").value = config["templates"]["general"]["clock_generation_style"];
@@ -5812,6 +5826,11 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-args").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["schematic"]["general"]["args_ghdl"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_schematic-general-args_ghdl").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["templates"]["general"]["header_file_path"] != undefined) {
       mark = MODIFIEDMSG;
