@@ -19,7 +19,7 @@
 
 import * as teroshdl2 from 'teroshdl2';
 
-export function get_yosys_read_file(sources, backend, working_directory) {
+export function get_yosys_read_file(sources, backend, working_directory, ghdlExtraOptions: string) {
     let vhdl_files: string[] = [];
     let verilog_files: string[] = [];
     for (let i = 0; i < sources.length; i++) {
@@ -27,7 +27,7 @@ export function get_yosys_read_file(sources, backend, working_directory) {
         const path_lib = require('path');
 
         let relative_path_file = element;
-        if (backend !== teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl 
+        if (backend !== teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl
             && backend !== teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl_module) {
             const fs = require('fs');
             let filename = path_lib.basename(element);
@@ -40,13 +40,13 @@ export function get_yosys_read_file(sources, backend, working_directory) {
         if (lang === teroshdl2.common.general.LANGUAGE.VHDL) {
             vhdl_files.push(relative_path_file);
         }
-        else if (lang === teroshdl2.common.general.LANGUAGE.VERILOG 
+        else if (lang === teroshdl2.common.general.LANGUAGE.VERILOG
             || lang === teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG) {
             verilog_files.push(relative_path_file);
         }
 
     }
-    if (vhdl_files.length > 0 && backend !== teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl 
+    if (vhdl_files.length > 0 && backend !== teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl
         && backend !== teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl_module) {
         return undefined;
     }
@@ -54,7 +54,7 @@ export function get_yosys_read_file(sources, backend, working_directory) {
     let more = '';
     let cmd = '';
     if (vhdl_files.length > 0) {
-        cmd += get_yosys_read_file_command_vhdl(vhdl_files);
+        cmd += get_yosys_read_file_command_vhdl(vhdl_files, ghdlExtraOptions);
         more = '; ';
     }
     if (verilog_files.length > 0) {
@@ -63,8 +63,13 @@ export function get_yosys_read_file(sources, backend, working_directory) {
     return cmd;
 }
 
-export function get_yosys_read_file_command_vhdl(sources) {
-    let cmd = 'ghdl --std=08 -fsynopsys';
+export function get_yosys_read_file_command_vhdl(sources, extraOptions: string) {
+    let options = "--std=08 -fsynopsys";
+    if (extraOptions !== "") {
+        options = extraOptions;
+    }
+
+    let cmd = `ghdl ${options}`;
     for (let i = 0; i < sources.length; i++) {
         const element = sources[i];
         cmd += ` ${element}`;

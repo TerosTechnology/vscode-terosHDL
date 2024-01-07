@@ -17,3 +17,8 @@ args:
   description: "Arguments passed to Yosys"
   type: string
   value: ""
+
+args_ghdl:
+  description: "Arguments passed to GHDL"
+  type: string
+  value: ""

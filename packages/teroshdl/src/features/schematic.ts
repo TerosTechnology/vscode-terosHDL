@@ -269,7 +269,12 @@ export class Schematic_manager extends Base_webview {
             'empty': false
         };
 
-        const config = GlobalConfigManager.getInstance().get_config();
+        let config = GlobalConfigManager.getInstance().get_config();
+        try {
+            const selectedProject = this.manager.get_selected_project();
+            config = selectedProject.get_config();
+        }
+        catch (error) {}
 
         const backend = config.schematic.general.backend;
         const custom_argumens = config.schematic.general.args;
@@ -277,7 +282,7 @@ export class Schematic_manager extends Base_webview {
 
         let yosys_path = config.tools.yosys.installation_path;
 
-        let cmd_files = yosys.get_yosys_read_file(sources, backend, this.working_directory);
+        let cmd_files = yosys.get_yosys_read_file(sources, backend, this.working_directory, config.schematic.general.args_ghdl);
         if (cmd_files === undefined) {
             globalLogger.error(`Error procesing the schematic`, true);
             netlist.empty = true;
