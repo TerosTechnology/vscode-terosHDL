@@ -1,4 +1,5 @@
 const { build } = require("esbuild");
+const path = require("path");
 
 //@ts-check
 /** @typedef {import('esbuild').BuildOptions} BuildOptions **/
@@ -16,24 +17,24 @@ const webviewConfigLogs = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./logs/logs.ts"],
-  outfile: "./logs/wb/webviewLogs.js",
+  entryPoints: [path.join(__dirname, "logs", "logs.ts")],
+  outfile: path.join(__dirname, "logs", "wb", "webviewLogs.js"),
 };
 
 const webviewConfigTimingReport = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./timing/timing.ts"],
-  outfile: "./timing/wb/webviewTimingReport.js",
+  entryPoints: [path.join(__dirname, "timing", "timing.ts")],
+  outfile: path.join(__dirname, "timing", "wb", "webviewTimingReport.js"),
 };
 
 const webviewConfigTimingDetails = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./timing/timing_details.ts"],
-  outfile: "./timing/wb/webviewTimingDetails.js",
+  entryPoints: [path.join(__dirname, "timing", "timing_details.ts")],
+  outfile: path.join(__dirname, "timing", "wb", "webviewTimingDetails.js"),
 };
 
 // This watch config adheres to the conventions of the esbuild-problem-matchers

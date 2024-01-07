@@ -1,1 +1,0 @@
-NODE_ENV=production node ./esbuild.js

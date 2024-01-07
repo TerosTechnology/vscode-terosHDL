@@ -802,13 +802,14 @@
         "build-package": "cd auto_package && ./gen.sh", 
         "clean": "shx rm -rf out", 
         "vscode:prepublish": "npm run generate-examples & npm run compile", 
-        "compile": "tsc -p ./", 
+        "compile": "npm run-script build-webviews & tsc -p ./", 
         "lint": "eslint src --ext ts", 
-        "watch": "npm run generate-examples & tsc -watch -p ./", 
+        "watch": "tsc --watch --p ./ & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"", 
         "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
         "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib", 
         "package": "npm run pre-package & vsce package --yarn --allow-star-activation", 
-        "auto-package": "cd auto_package & ./gen.sh"
+        "auto-package": "cd auto_package & ./gen.sh", 
+        "build-webviews": "NODE_ENV=production node resources/webviews/reporters/esbuild.js"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",
@@ -843,7 +844,8 @@
         "js-yaml": "^3.13.1",
         "typescript": "4.5.5",
         "shx": "^0.3.3",
-        "esbuild": "^0.16.17"
+        "esbuild": "^0.16.17",
+        "nodemon": "^3.0.2"
     }
 
 }

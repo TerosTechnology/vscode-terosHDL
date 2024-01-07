@@ -8,13 +8,13 @@
   command: "npm run generate-examples & npm run compile"
 
 - name: "compile"
-  command: "tsc -p ./"
+  command: "npm run-script build-webviews & tsc -p ./"
 
 - name: "lint"
   command: "eslint src --ext ts"
 
 - name: "watch"
-  command: "npm run generate-examples & tsc -watch -p ./"
+  command: tsc --watch --p ./ & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"
 
 - name: "generate-examples"
   command: "cd ./resources/project_manager; ./copy_examples.sh"
@@ -27,3 +27,6 @@
 
 - name: "auto-package"
   command: "cd auto_package & ./gen.sh"
+
+- name : "build-webviews"
+  command: "NODE_ENV=production node resources/webviews/reporters/esbuild.js"
