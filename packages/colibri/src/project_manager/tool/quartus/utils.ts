@@ -689,11 +689,19 @@ export async function setConfigToProject(config: e_config, projectPath: string,
 export async function openRTLAnalyzer(config: e_config, projectPath: string, emitterProject: ProjectEmitter,
     rtlType: e_rtlType): Promise<void> {
 
-    const cmdList: string[] = [
-        `tmwq_open_rtl_analyzer dms_path::user_runs::default_run::${rtlType}`,
-    ];
+    const tcl_file = path_lib.join(__dirname, 'bin', 'open_rtl_analyzer.tcl');
+    const quartus_bin = path_lib.join(getQuartusPath(config), "quartus");
 
-    await executeCmdListQuartusProject(config, projectPath, cmdList, emitterProject);
+    const cmd = `${quartus_bin} --keep_open -t "${tcl_file}" "${projectPath}" "${rtlType}"`;
+
+    const options = { cwd: path_lib.dirname(projectPath)};
+    const result = await (new process_teros.Process(undefined)).exec_wait(cmd, options);
+    let logLevel = e_event.STDOUT_INFO;
+    if (!result.successful) {
+        logLevel = e_event.STDOUT_ERROR;
+    }
+    const outputString = `${result.command}\n${result.stdout}\n${result.stderr}\n`;
+    emitterProject.emitEventLog(outputString, logLevel);
 }
 
 
