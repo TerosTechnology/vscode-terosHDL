@@ -692,7 +692,8 @@ export async function openRTLAnalyzer(config: e_config, projectPath: string, emi
     const tcl_file = path_lib.join(__dirname, 'bin', 'open_rtl_analyzer.tcl');
     const quartus_bin = path_lib.join(getQuartusPath(config), "quartus");
 
-    const cmd = `${quartus_bin} --keep_open -t "${tcl_file}" "${projectPath}" "${rtlType}"`;
+    // eslint-disable-next-line max-len
+    const cmd = `${quartus_bin} --keep_open -t "${escapeBackslashes(tcl_file)}" "${projectPath}" "${rtlType}"`;
 
     const options = { cwd: path_lib.dirname(projectPath)};
     const result = await (new process_teros.Process(undefined)).exec_wait(cmd, options);
