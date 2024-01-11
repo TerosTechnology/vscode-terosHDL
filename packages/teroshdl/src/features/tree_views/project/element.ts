@@ -21,9 +21,11 @@ import { t_Multi_project_manager } from '../../../type_declaration';
 import * as vscode from "vscode";
 import { get_icon } from "../utils";
 import * as teroshdl2 from 'teroshdl2';
+import { ThemeColor } from 'vscode';
 
 
 export const VIEW_ID = "teroshdl-project";
+const URISTRINGINIT = "teroshdl:/";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elements
@@ -53,18 +55,20 @@ export class Project extends vscode.TreeItem {
             title: "Select project",
             arguments: [this],
         };
-        if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS && isOpen) {
-            this.iconPath = get_icon("folder-active");
+
+
+        let iconName = "folder";
+        this.description = "Generic Project";
+        if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
+            this.description = "Quartus Project";
+            iconName = "quartus";
         }
-        else if (projectType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
-            this.iconPath = get_icon("folder");
+        
+        if (isOpen) {
+            this.resourceUri = vscode.Uri.parse(`${URISTRINGINIT}project-active`);
+            iconName += "-active";
         }
-        else if (isOpen) {
-            this.iconPath = get_icon("folder-active");
-        }
-        else {
-            this.iconPath = get_icon("folder");
-        }
+        this.iconPath = get_icon(iconName);
     }
 
     public get_project_name(): string {
@@ -130,14 +134,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             }
 
             const prjType = prj.getProjectType();
-            if (prjType === teroshdl2.project_manager.common.e_project_type.QUARTUS) {
-                label = `${prj_name} [Quartus]`;
-            }
-            else {
-                label = `${prj_name} [TerosHDL]`;
-            }
-
-            prj_view.push(new Project(prjType, prj.get_name(), label, isOpen));
+            prj_view.push(new Project(prjType, prj.get_name(), prj_name, isOpen));
         });
         this.data = prj_view;
         this._onDidChangeTreeData.fire();
@@ -156,3 +153,13 @@ export class TreeItem extends vscode.TreeItem {
     }
 }
 
+export class ProjectDecorator implements vscode.FileDecorationProvider {
+    onDidChangeFileDecorations?: vscode.Event<vscode.Uri | vscode.Uri[]>;
+    provideFileDecoration(uri: vscode.Uri): vscode.ProviderResult<vscode.FileDecoration> {
+        if (uri.path.includes("project-active") && uri.scheme === "teroshdl") {
+            return {
+                color: new ThemeColor("charts.green"),
+            };
+        }
+    }
+}

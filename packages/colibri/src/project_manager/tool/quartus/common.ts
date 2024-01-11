@@ -27,6 +27,11 @@ export function getDefaultTaskList(): t_taskRep[] {
             "executionType": e_taskExecutionType.SIMPLECOMMAND,
         },
         {
+            "name": e_taskType.TCLCONSOLE,
+            "label": "Tcl Console",
+            "executionType": e_taskExecutionType.SIMPLECOMMAND,
+        },
+        {
             "name": e_taskType.QUARTUS_RTL_ANALYZER,
             "label": "",
             "success": undefined,

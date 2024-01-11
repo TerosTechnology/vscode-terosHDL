@@ -28,7 +28,7 @@ import { LogView } from "../../../views/logs";
 import * as tree_kill from 'tree-kill';
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
-import { getFamilyDeviceFromQuartusProject } from "../utils";
+import { getFamilyDeviceFromQuartusProject, get_icon } from "../utils";
 import { toolLogger } from "../../../logger";
 import { openRTLAnalyzer } from "./quartus_utils";
 import { TimingReportView } from "../../../views/timing/timing_report";
@@ -91,6 +91,7 @@ export class Tasks_manager extends BaseView {
         vscode.commands.registerCommand("teroshdl.view.tasks.run", (item) => this.run(item));
         vscode.commands.registerCommand("teroshdl.view.tasks.clean", () => this.clean());
         vscode.commands.registerCommand("teroshdl.view.tasks.device", () => this.device());
+        vscode.commands.registerCommand("teroshdl.view.tasks.console", () => this.openConsole());
     }
 
     /**
@@ -178,6 +179,31 @@ export class Tasks_manager extends BaseView {
             this.refresh_tree();
             this.hideStatusBar();
             this.state = e_VIEW_STATE.IDLE;
+        }
+    }
+
+    async openConsole() {
+        try {
+            const selectedProject = this.project_manager.get_selected_project();
+            const consoleDefinition = selectedProject.getTerminalCommand();
+            if (!consoleDefinition) {
+                return;
+            }
+            const terminal = vscode.window.createTerminal({
+                name: consoleDefinition.name,
+                shellPath: consoleDefinition.command,
+                shellArgs: consoleDefinition.options,
+                isTransient: true,
+                iconPath: {
+                    light: vscode.Uri.file(get_icon(consoleDefinition.iconName).light),
+                    dark: vscode.Uri.file(get_icon(consoleDefinition.iconName).dark)
+                }
+            });
+            terminal.show();
+            terminal.sendText(consoleDefinition.postCommand);
+        }
+        catch (error) {
+            return;
         }
     }
 

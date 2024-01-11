@@ -51,6 +51,14 @@ export type t_timing_path = {
     nodeList: t_timing_node[];
 }
 
+export type t_terminalCommandDefinition = {
+    command: string;
+    options: string[];
+    postCommand: string;
+    name: string;
+    iconName: string,
+}
+
 /** Type of project */
 export enum e_project_type {
     GENERIC = "genericProject",

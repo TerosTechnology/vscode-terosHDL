@@ -27,9 +27,15 @@ import { e_source_type } from "teroshdl2/out/project_manager/common";
 const BASE_PATH_ICON = path_lib.join(__filename, "..", "..", "..", "..", "resources", "icon");
 
 export function get_icon(name: string) {
+    let extension = "svg";
+    const pathToCheck = path_lib.join(BASE_PATH_ICON, "dark", `${name}.svg`);
+    if (!teroshdl2.utils.file.check_if_path_exist(pathToCheck)) {
+        extension = "png";
+    }
+
     const icon_path = {
-        dark: path_lib.join(BASE_PATH_ICON, "dark", `${name}.svg`),
-        light: path_lib.join(BASE_PATH_ICON, "light", `${name}.svg`)
+        dark: path_lib.join(BASE_PATH_ICON, "dark", `${name}.${extension}`),
+        light: path_lib.join(BASE_PATH_ICON, "light", `${name}.${extension}`)
     };
     return icon_path;
 }

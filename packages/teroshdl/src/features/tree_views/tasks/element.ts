@@ -69,12 +69,7 @@ export class Task extends vscode.TreeItem {
             // taskDefinition.name,
             children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
         );
-        // if (taskDefinition.success === false) {
-        //     this.resourceUri = vscode.Uri.parse(URISTRINGINIT + teroshdl2.project_manager.tool_common.e_taskState.FAILED);
-        // }
-        // else {
-            this.resourceUri = vscode.Uri.parse(URISTRINGINIT + taskDefinition.status);
-        // }
+        this.resourceUri = vscode.Uri.parse(URISTRINGINIT + taskDefinition.status);
         // Common
         this.children = children;
         // Element
@@ -119,6 +114,14 @@ export class Task extends vscode.TreeItem {
                 arguments: [undefined, "quartus"]
             };
         }
+        if (taskDefinition.name === teroshdl2.project_manager.tool_common.e_taskType.TCLCONSOLE) {
+            this.iconPath = get_icon("console");
+            this.command = {
+                title: 'Open Console',
+                command: 'teroshdl.view.tasks.console',
+                arguments: []
+            };
+        }
         if (taskDefinition.executionType === teroshdl2.project_manager.tool_common.e_taskExecutionType.SIMPLECOMMAND &&
             taskDefinition.name === teroshdl2.project_manager.tool_common.e_taskType.CHANGEDEVICE) {
             this.iconPath = get_icon("verilog");
@@ -128,15 +131,6 @@ export class Task extends vscode.TreeItem {
                 arguments: []
             };
         }
-        // if (taskDefinition.executionType === teroshdl2.project_manager.tool_common.e_taskExecutionType.SIMPLECOMMAND &&
-        //     taskDefinition.name === teroshdl2.project_manager.tool_common.e_taskType.SHOW_TIMING_REPORT) {
-        //     this.iconPath = get_icon("output");
-        //     this.command = {
-        //         title: 'Settings',
-        //         command: 'teroshdl.view.tasks.show_timing_report',
-        //         arguments: []
-        //     };
-        // }
 
         if (taskDefinition.reports !== undefined) {
             if (taskDefinition.reports.includes(teroshdl2.project_manager.tool_common.e_reportType.REPORT)) {

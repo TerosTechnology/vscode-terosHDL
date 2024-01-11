@@ -1,6 +1,7 @@
 // This code only can be used for Quartus boards
 
-import { e_project_type, e_source_type, e_timing_mode, t_action_result, t_file, t_timing_path } from "../../common";
+import { e_project_type, e_source_type, e_timing_mode, t_action_result, t_file, t_terminalCommandDefinition, 
+    t_timing_path } from "../../common";
 import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
@@ -385,6 +386,7 @@ export class QuartusProjectManager extends Project_manager {
             return artifact;
         }
         const reportSufix: Record<e_taskType, string> = {
+            [e_taskType.TCLCONSOLE]: "",
             [e_taskType.CHANGEDEVICE]: "",
             [e_taskType.SETTINGS]: "",
             [e_taskType.OPENFOLDER]: "",
@@ -494,6 +496,17 @@ export class QuartusProjectManager extends Project_manager {
             result.successful = false;
         }
         return result;
+    }
+
+    public getTerminalCommand(): t_terminalCommandDefinition | undefined{
+        const definitionCommand = {
+            command: path_lib.join(getQuartusPath(this.get_config()), "quartus_sh"),
+            options: ["-s"],
+            postCommand: `project_open -force -current_revision ${this._projectDiskPath}`,
+            name: `Quartus: ${this.get_name()}`,
+            iconName: "quartus",
+        };
+        return definitionCommand;
     }
 
     public async run(_test_list: t_test_declaration[],

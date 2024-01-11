@@ -24,7 +24,8 @@ import {
     e_project_type,
     t_timing_path,
     e_source_type,
-    e_timing_mode
+    e_timing_mode,
+    t_terminalCommandDefinition
 } from "./common";
 import * as  manager_watcher from "./list_manager/watcher";
 import * as  manager_file from "./list_manager/file";
@@ -665,6 +666,10 @@ export class Project_manager extends ConfigManager {
 
     public async getTimingReport(_numOfPaths: number, _timingMode: e_timing_mode): Promise<t_timing_path[]> {
         return [];
+    }
+
+    public getTerminalCommand(): t_terminalCommandDefinition | undefined{
+        return undefined;
     }
 }
 
