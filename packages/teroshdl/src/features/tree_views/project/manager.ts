@@ -55,7 +55,11 @@ export class Project_manager extends BaseView {
 
         this.context = context;
 
-        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as element.BaseTreeDataProvider<element.Project>));
+        const provider = new element.ProjectDecorator();
+        context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
+
+        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), 
+            this.tree as element.BaseTreeDataProvider<element.Project>));
     }
 
     public getRefreshEvent(): teroshdl2.project_manager.projectEmitter.e_event[] {

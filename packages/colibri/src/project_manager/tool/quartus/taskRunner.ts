@@ -10,6 +10,7 @@ import { ProjectEmitter, e_event } from "../../projectEmitter";
 import { TaskStateManager } from "../taskState";
 
 const taskDependencies: Record<e_taskType, e_taskType[]> = {
+    [e_taskType.TCLCONSOLE]: [],
     [e_taskType.CHANGEDEVICE]: [],
     [e_taskType.QUARTUS_RTL_ANALYZER]: [],
     [e_taskType.SETTINGS]: [],
@@ -145,6 +146,7 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
     const binASM = path_lib.join(quartusDir, "quartus_asm");
 
     const commandDeclaration: Record<e_taskType, string> = {
+        [e_taskType.TCLCONSOLE]: "",
         [e_taskType.CHANGEDEVICE]: "",
         [e_taskType.QUARTUS_RTL_ANALYZER]:
             "",

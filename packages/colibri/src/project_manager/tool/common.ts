@@ -44,6 +44,7 @@ export enum e_taskType {
     OPENFOLDER = "Open Project Folder",
     SETTINGS = "Settings",
     CHANGEDEVICE = "Device",
+    TCLCONSOLE = "Tcl Console",
 }
 
 export enum e_iconType {
