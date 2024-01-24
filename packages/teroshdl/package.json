@@ -807,7 +807,7 @@
         "watch": "tsc --watch --p ./ & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"", 
         "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
         "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib", 
-        "package": "npm run pre-package & vsce package --yarn --allow-star-activation", 
+        "package": "npm run pre-package & vsce package --yarn --pre-release --allow-star-activation", 
         "auto-package": "cd auto_package & ./gen.sh", 
         "build-webviews": "NODE_ENV=production node resources/webviews/reporters/esbuild.js"
     },
