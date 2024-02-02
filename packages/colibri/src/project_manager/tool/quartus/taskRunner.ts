@@ -191,7 +191,7 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
             `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --route`,
 
         [e_taskType.QUARTUS_FITTERFINALIZE]:
-            `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --retime --finalize`,
+            `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --finalize`,
 
         [e_taskType.QUARTUS_TIMING]:
             `${binSTA} ${projectName} -c ${revisionName} --mode=finalize`,
