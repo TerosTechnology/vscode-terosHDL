@@ -227,3 +227,10 @@ export type t_loader_action_result = {
     successful: boolean;
     msg: string;
 }
+
+export const terminalTypeMap = new Map<string, string>([
+    ["Quartus Prime Shell", "quartus_sh"],
+    ["Quartus Prime Fitter", "quartus_fit"],
+    ["Quartus Prime Compiler Database Interface", "quartus_cdb"],
+    ["Quartus Prime Timing Analyzer", "quartus_sta"],
+]);

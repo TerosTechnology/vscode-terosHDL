@@ -498,12 +498,13 @@ export class QuartusProjectManager extends Project_manager {
         return result;
     }
 
-    public getTerminalCommand(): t_terminalCommandDefinition | undefined{
+    public getTerminalCommand(shellType: string): t_terminalCommandDefinition | undefined{
+        const binary = shellType.toString().toLowerCase();
         const definitionCommand = {
-            command: path_lib.join(getQuartusPath(this.get_config()), "quartus_sh"),
+            command: path_lib.join(getQuartusPath(this.get_config()), binary),
             options: ["-s"],
             postCommand: `project_open -force -current_revision ${this._projectDiskPath}`,
-            name: `Quartus: ${this.get_name()}`,
+            name: `Quartus (${binary}): ${this.get_name()}`,
             iconName: "quartus",
         };
         return definitionCommand;

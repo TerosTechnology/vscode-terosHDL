@@ -185,7 +185,19 @@ export class Tasks_manager extends BaseView {
     async openConsole() {
         try {
             const selectedProject = this.project_manager.get_selected_project();
-            const consoleDefinition = selectedProject.getTerminalCommand();
+
+            const terminalTypeList = [...teroshdl2.project_manager.tool_common.terminalTypeMap.keys()];
+            const pickerValue = await vscode.window.showQuickPick(terminalTypeList, {
+                placeHolder: "Select the Shell.",
+            });
+
+            if (pickerValue === undefined) {
+                return;
+            }
+
+            const consoleDefinition = selectedProject.getTerminalCommand(
+                teroshdl2.project_manager.tool_common.terminalTypeMap.get(pickerValue) as string
+            );
             if (!consoleDefinition) {
                 return;
             }
