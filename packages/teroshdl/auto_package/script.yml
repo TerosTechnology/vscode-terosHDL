@@ -23,10 +23,10 @@
   command: "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib"
 
 - name: "package"
-  command: "npm run pre-package & vsce package --pre-release --yarn --allow-star-activation"
+  command: "npm run pre-package & vsce package --yarn --allow-star-activation"
 
 - name: "package-prerelease"
-  command: "npm run pre-package & vsce package --yarn --allow-star-activation"
+  command: "npm run pre-package & vsce package --pre-release -o ./pre-release.vsix --yarn --allow-star-activation"
 
 - name: "auto-package"
   command: "cd auto_package & ./gen.sh"

@@ -70,86 +70,16 @@ jobs:
           ls ${{ github.workspace }}
           mv $file ${{ github.workspace }}/$file_ver
 
-      - name: Archive vsix
-        uses: actions/upload-artifact@v3
-        with:
-          name: teroshld
-          path: |
-            *.vsix
-
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/dev'
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          automatic_release_tag: "${{ env.version }}"
-          files: |
-            *.vsix
-
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        if: github.ref == 'refs/heads/dev'
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: true
-          automatic_release_tag: latest
-          files: |
-            *.vsix
-
-
-  ##############################################################################
-  # Build TerosHDL
-  ##############################################################################
-  build-pre-release:
-    name: Build .vsix
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set version stable
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/dev'
-        run: |
-          PACKAGE_VERSION=$(cat packages/teroshdl/package.json \
-            | grep version \
-            | head -1 \
-            | awk -F: '{ print $2 }' \
-            | sed 's/[",]//g')
-
-          echo "version=$PACKAGE_VERSION" >> $GITHUB_ENV
-
-      - name: Set version dev
-        if: github.ref == 'refs/heads/dev'
-        run: |
-          now=`date +"%Y-%m-%d__%H:%M"`
-          echo "version=$now" >> $GITHUB_ENV
-
-      - name: Set version pull request
-        if: github.event == 'pull_request'
-        run: |
-          now=`date +"%Y-%m-%d__%H:%M"`
-          echo "version=$now" >> $GITHUB_ENV
-
-      - name: Prepare colibri
-        run: |
-          cd packages/colibri
-          yarn install
-          yarn build
-
-      - name: Prepare teroshdl
-        run: |
-          cd packages/teroshdl
-          yarn install
-
-      - name: Build
-        id: build
+      - name: Build Pre Release
+        id: build-pre-release
         run: |
           npm install -g @vscode/vsce
           cd packages/teroshdl
           yarn package-prerelease
-
-          file=`ls *.vsix`
+              
+          file=`ls *pre-release.vsix`
           echo ${{ env.version }}
-          file_ver="${{ env.version }}_${file}_pre-release"
+          file_ver="${{ env.version }}_prerelease_${file}"
           file_ver="${file_ver/:/"_"}"
           file_ver="${file_ver/ /""}"
           echo "${{ github.workspace }}/$file_ver"
