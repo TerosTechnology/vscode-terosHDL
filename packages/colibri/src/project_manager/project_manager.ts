@@ -613,7 +613,9 @@ export class Project_manager extends ConfigManager {
         const python_result = await python.get_python_path(
             { "path": this.get_config().general.general.pypath });
 
-        await this.files.order(python_result.python_path);
+        const compileOrderPath = this.get_config().tools.general.manual_compilation_order;
+
+        await this.files.order(python_result.python_path, compileOrderPath);
         const prj_def = this.get_project_definition();
 
         return this.tools_manager.run(prj_def, test_list, callback, callback_stream);

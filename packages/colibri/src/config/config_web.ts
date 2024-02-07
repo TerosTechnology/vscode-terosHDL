@@ -1669,6 +1669,17 @@ export const WEB_CONFIG = `
           
           
           
+            <div class="mb-3">
+              <label for="tools-general-manual_compilation_order" class="form-label">
+                Path to the file with the manual compilation order.
+                <span class="markConfig badge bg-secondary" id="mark_tools-general-manual_compilation_order"></span>
+              </label>
+                <input class="form-control" id="tools-general-manual_compilation_order" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
       </div>
       
       <div class="card-footer">
@@ -4820,6 +4831,8 @@ export const WEB_CONFIG = `
     config["tools"]["general"]["execution_mode"] = element_value
     element_value = document.getElementById("tools-general-waveform_viewer").value;
     config["tools"]["general"]["waveform_viewer"] = element_value
+    element_value = document.getElementById("tools-general-manual_compilation_order").value;
+    config["tools"]["general"]["manual_compilation_order"] = element_value
     config["tools"]["quartus"] = {}
     element_value = document.getElementById("tools-quartus-installation_path").value;
     config["tools"]["quartus"]["installation_path"] = element_value
@@ -5341,6 +5354,7 @@ export const WEB_CONFIG = `
     document.getElementById("tools-general-gtkwave_extra_arguments").value = config["tools"]["general"]["gtkwave_extra_arguments"];
     document.getElementById("tools-general-execution_mode").value = config["tools"]["general"]["execution_mode"];
     document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
+    document.getElementById("tools-general-manual_compilation_order").value = config["tools"]["general"]["manual_compilation_order"];
     document.getElementById("tools-quartus-installation_path").value = config["tools"]["quartus"]["installation_path"];
     document.getElementById("tools-quartus-family").value = config["tools"]["quartus"]["family"];
     document.getElementById("tools-quartus-device").value = config["tools"]["quartus"]["device"];
@@ -5876,6 +5890,11 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-waveform_viewer").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["general"]["manual_compilation_order"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-general-manual_compilation_order").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["quartus"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;

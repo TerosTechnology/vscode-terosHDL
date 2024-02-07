@@ -52,3 +52,8 @@ waveform_viewer:
     # vcdrom: "VCDrom"
     gtkwave: "GTKWave"
   value: "tool"
+
+manual_compilation_order:
+  description: "Path to the file with the manual compilation order."
+  type: string
+  value: ""

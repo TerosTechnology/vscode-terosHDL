@@ -22,11 +22,36 @@ import * as file_utils from "../../utils/file_utils";
 import { Manager } from "./manager";
 import { Dependency_graph } from "../dependency/dependency";
 import { LANGUAGE } from "../../common/general";
+import { get_files_from_csv } from "../prj_loaders/csv_loader";
 
 export class File_manager extends Manager<t_file, undefined, string, string> {
     private files: t_file[] = [];
 
-    async order(python_path: string) {
+    async order(python_path: string, compileOrderPath: string) {
+        try {
+            if (compileOrderPath !== "") {
+                const orderResult = get_files_from_csv(compileOrderPath, false);
+                if (orderResult.successful && orderResult.file_list.length > 0) {
+                    const fileListInOrder = orderResult.file_list;
+    
+                    const orderedFiles = fileListInOrder.filter(fileInOrder =>
+                        this.files.some(file =>
+                            file.name === fileInOrder.name && file.logical_name === fileInOrder.logical_name
+                        )
+                    );
+    
+                    const remainingFiles = this.files.filter(file =>
+                        !fileListInOrder.some(fileInOrder =>
+                            file.name === fileInOrder.name && file.logical_name === fileInOrder.logical_name
+                        )
+                    );
+    
+                    this.files = [...orderedFiles, ...remainingFiles];
+                }
+            }
+        }
+        catch (error) { /* empty */ }
+
         // Get compile order from dependency graph
         const dep_manger = new Dependency_graph();
         const dep_result = await dep_manger.get_compile_order(this.files, python_path);

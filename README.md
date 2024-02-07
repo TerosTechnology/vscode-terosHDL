@@ -43,5 +43,5 @@ the European Commission's Next Generation Internet programme, under the aegis of
 Content and Technology under grant agreement No 957073.
 
 
-<img border=0 src="./packages/teroshdl//doc/nlnet-fundation-150x150.png" width="150" height="150"><img border=0 src="./packages/teroshdl/doc/logo.png" width="400" height="120">
+<img border=0 src="https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/resources/images/nlnet-fundation-150x150.png?raw=true" width="150" height="150"><img border=0 src="https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/resources/images/logo.png?raw=true" width="400" height="120">
 
