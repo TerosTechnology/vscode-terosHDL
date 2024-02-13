@@ -1,0 +1,3889 @@
+{
+  "abs": {
+    "prefix": "abs",
+    "body": "abs(x)",
+    "description": "Returns the absolute value of a number"
+  },
+  "built_in.abs=>int": {
+    "prefix": "built_in.abs=>int",
+    "body": [
+      "x = abs(-7.25)",
+      "print(x)"
+    ],
+    "description": "An example for using abs method"
+  },
+  "built_in.abs=>float": {
+    "prefix": "built_in.abs=>float",
+    "body": [
+      "x = abs(-20)",
+      "print(x)"
+    ],
+    "description": "An example for using abs method"
+  },
+  "built_in.abs=>complex": {
+    "prefix": "built_in.abs=>complex",
+    "body": [
+      "x = abs((3 - 4j))",
+      "print(x)"
+    ],
+    "description": "An example for using abs method"
+  },
+  "all": {
+    "prefix": "all",
+    "body": "all(iterable)",
+    "description": "Returns True if all items in an iterable object are true"
+  },
+  "built_in.all=>list_1": {
+    "prefix": "built_in.all=>list_1",
+    "body": [
+      "mylist = [True, True, True]",
+      "x = all(mylist)",
+      "print(x)",
+      "",
+      "# Return True"
+    ],
+    "description": "An example for using all with list"
+  },
+  "built_in.all=>list_2": {
+    "prefix": "built_in.all=>list_2",
+    "body": [
+      "mylist = [0, 1, 1]",
+      "x = all(mylist)",
+      "print(x)",
+      "",
+      "# Returns False because 0 is the same as False"
+    ],
+    "description": "An example for using all with list"
+  },
+  "built_in.all=>tuple": {
+    "prefix": "built_in.all=>tuple",
+    "body": [
+      "mytuple = (0, True, False)",
+      "x = all(mytuple)",
+      "print(x)",
+      "",
+      "# Returns False because both the first and the third items are False"
+    ],
+    "description": "An example for using all with tuple"
+  },
+  "built_in.all=>set": {
+    "prefix": "built_in.all=>set",
+    "body": [
+      "myset = {0, 1, 0}",
+      "x = all(myset)",
+      "print(x)",
+      "",
+      "# Returns False because both the first and the third items are False"
+    ],
+    "description": "An example for using all with set"
+  },
+  "built_in.all=>dictionary": {
+    "prefix": "built_in.all=>dictionary",
+    "body": [
+      "mydict = {0 : 'Apple', 1 : 'Orange'}",
+      "x = all(mydict)",
+      "print(x)",
+      "",
+      "# Returns False because the first key is false.",
+      "# For dictionaries the all() function checks the keys, not the values."
+    ],
+    "description": "An example for using all with dictionary"
+  },
+  "any": {
+    "prefix": "any",
+    "body": "any(iterable)",
+    "description": "Returns True if any item in an iterable object is true"
+  },
+  "built_in.any=>list_1": {
+    "prefix": "built_in.any=>list_1",
+    "body": [
+      "mylist = [False, True, False]",
+      "x = any(mylist)",
+      "print(x)",
+      "",
+      "# Return True"
+    ],
+    "description": "An example for using all with list"
+  },
+  "ascii": {
+    "prefix": "ascii",
+    "body": "ascii(object)",
+    "description": "Returns a readable version of an object. Replaces none-ascii characters with escape character"
+  },
+  "built_in.ascii=>_1": {
+    "prefix": "built_in.ascii=>_list_1",
+    "body": [
+      "x = ascii('My name is Ståle')",
+      "print(x)"
+    ],
+    "description": "An example for using ascii"
+  },
+  "bin": {
+    "prefix": "bin",
+    "body": "bin(x)",
+    "description": "Returns the binary version of a number"
+  },
+  "built_in.bin=>_1": {
+    "prefix": "built_in.bin=>_1",
+    "body": [
+      "x = bin(36)",
+      "print(x)",
+      "# Result : 0b100100"
+    ],
+    "description": "An example for using ascii"
+  },
+  "bool": {
+    "prefix": "bool",
+    "body": "bool(object)",
+    "description": "Returns the boolean value of the specified object"
+  },
+  "built_in.bool=>_1": {
+    "prefix": "built_in.bool=>_1",
+    "body": [
+      "x = bool(1)",
+      "print(x)",
+      "# Result : True"
+    ],
+    "description": "An example for using bool"
+  },
+  "bytearray": {
+    "prefix": "bytearray",
+    "body": "bytearray([source[, encoding[, errors]]])",
+    "description": "Returns an array of bytes"
+  },
+  "built_in.bytearray=>_1": {
+    "prefix": "built_in.bytearray=>_1",
+    "body": [
+      "x = bytearray(4)",
+      "print(x)"
+    ],
+    "description": "An example for using bool"
+  },
+  "bytes": {
+    "prefix": "bytes",
+    "body": "bytes(x, encoding, error)",
+    "description": "Returns a bytes object"
+  },
+  "built_in.bytes=>_1": {
+    "prefix": "built_in.bytes=>_1",
+    "body": [
+      "x = x = bytes(4)",
+      "print(x)"
+    ],
+    "description": "An example for using bytes"
+  },
+  "callable": {
+    "prefix": "callable",
+    "body": "callable(object)",
+    "description": "Returns True if the specified object is callable, otherwise False"
+  },
+  "built_in.callable=>_1": {
+    "prefix": "built_in.callable=>_1",
+    "body": [
+      "def x():",
+      "a = 5",
+      "",
+      "print(callable(x))"
+    ],
+    "description": "An example for using callable"
+  },
+  "built_in.callable=>_2": {
+    "prefix": "built_in.callable=>_2",
+    "body": [
+      "x = 5",
+      "",
+      "print(callable(x))"
+    ],
+    "description": "An example for using bytes"
+  },
+  "chr": {
+    "prefix": "chr",
+    "body": "chr(i)",
+    "description": "Returns a character from the specified Unicode code."
+  },
+  "built_in.chr=>_1": {
+    "prefix": "built_in.chr=>_1",
+    "body": [
+      "x = chr(97)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using bytes"
+  },
+  "classmethod": {
+    "prefix": "classmethod",
+    "body": "classmethod(function)",
+    "description": "Converts a method into a class method"
+  },
+  "compile": {
+    "prefix": "compile",
+    "body": "compile(source, filename, mode, flag, dont_inherit, optimize)",
+    "description": "Returns the specified source as an object, ready to be executed"
+  },
+  "built_in.compile=>_1": {
+    "prefix": "built_in.compile=>_1",
+    "body": [
+      "mytext = 'print(55)'",
+      "x = compile('mytext', 'test', 'eval')",
+      "exec(x)"
+    ],
+    "description": "An example for using compile"
+  },
+  "built_in.compile=>_2": {
+    "prefix": "built_in.compile=>_1",
+    "body": [
+      "mytext = 'print(55)\nprint(88)'",
+      "x = compile('mytext', 'test', 'exec')",
+      "exec(x)"
+    ],
+    "description": "An example for using compile"
+  },
+  "complex": {
+    "prefix": "complex",
+    "body": "complex(real, imaginary)",
+    "description": "Returns a complex number"
+  },
+  "built_in.complex=>_1": {
+    "prefix": "built_in.complex=>_1",
+    "body": [
+      "x = complex(3, 5)",
+      "print(x)"
+    ],
+    "description": "An example for using complex"
+  },
+  "built_in.complex=>_2": {
+    "prefix": "built_in.complex=>_2",
+    "body": [
+      "x = complex('3+5j')",
+      "print(x)"
+    ],
+    "description": "An example for using complex"
+  },
+  "delattr": {
+    "prefix": "delattr",
+    "body": "delattr(object, attribute)",
+    "description": "Deletes the specified attribute (property or method) from the specified object"
+  },
+  "built_in.delattr=>_1": {
+    "prefix": "built_in.delattr=>_1",
+    "body": [
+      "class Person:",
+      " name = 'John'",
+      " age = 36",
+      " country = 'Norway'",
+      "",
+      "delattr(Person, 'age')",
+      "# The Person object will no longer contain an age property"
+    ],
+    "description": "An example for using delattr"
+  },
+  "dict": {
+    "prefix": "dict",
+    "body": "dict(keyword arguments)",
+    "description": "Returns a dictionary (Array)"
+  },
+  "built_in.dict=>_1": {
+    "prefix": "built_in.dict=>_1",
+    "body": [
+      "x = dict(name = 'John', age = 36, country = 'Norway')",
+      "print(x)"
+    ],
+    "description": "An example for using dict"
+  },
+  "dir": {
+    "prefix": "dir",
+    "body": "dir(object)",
+    "description": "Returns a list of the specified object's properties and methods"
+  },
+  "built_in.dir=>": {
+    "prefix": "built_in.dir=>",
+    "body": [
+      "class Person:",
+      " name = 'John'",
+      " age = 36",
+      " country = 'Norway'",
+      "print(dir(Person))"
+    ],
+    "description": "An example for using dict"
+  },
+  "divmod": {
+    "prefix": "divmod",
+    "body": "divmod(divident, divisor)",
+    "description": "Returns the quotient and the remainder when argument1 is divided by argument2"
+  },
+  "built_in.divmod=>_1": {
+    "prefix": "built_in.divmod=>_1",
+    "body": [
+      "x = divmod(5, 2)",
+      "print(x)"
+    ],
+    "description": "An example for using divmod"
+  },
+  "enumerate": {
+    "prefix": "enumerate",
+    "body": "enumerate(iterable, start)",
+    "description": "Takes a collection (e.g. a tuple) and returns it as an enumerate object"
+  },
+  "built_in.enumerate=>_1": {
+    "prefix": "built_in.enumerate=>_1",
+    "body": [
+      "x = ('apple', 'banana', 'cherry')",
+      "y = enumerate(x)",
+      "",
+      "print(list(y))"
+    ],
+    "description": "An example for using enumerate"
+  },
+  "eval": {
+    "prefix": "eval",
+    "body": "eval(expression, globals, locals)",
+    "description": "Evaluates and executes an expression"
+  },
+  "built_in.eval=>_1": {
+    "prefix": "built_in.eval=>_1",
+    "body": [
+      "x = 'print(55)'",
+      "eval(x)"
+    ],
+    "description": "An example for using eval"
+  },
+  "exec": {
+    "prefix": "exec",
+    "body": "exec(object, globals, locals)",
+    "description": "Executes the specified code (or object)"
+  },
+  "built_in.exec=>_1": {
+    "prefix": "built_in.exec=>_1",
+    "body": [
+      "x = 'age = 25\nprint(age)'",
+      "exec(x)"
+    ],
+    "description": "An example for using exec"
+  },
+  "filter": {
+    "prefix": "filter",
+    "body": "filter(function, iterable)",
+    "description": "Use a filter function to exclude items in an iterable object"
+  },
+  "built_in.filter=>_1": {
+    "prefix": "built_in.filter=>_1",
+    "body": [
+      "ages = [5, 12, 17, 18, 24, 32]",
+      "",
+      "def myFunc(x):",
+      " if x < 18:",
+      "   return False",
+      " else:",
+      "   return True",
+      "",
+      "adults = filter(myFunc, ages)",
+      "",
+      "for x in adults:",
+      " print(x)"
+    ],
+    "description": "An example for using filter"
+  },
+  "float": {
+    "prefix": "float",
+    "body": "float(value)",
+    "description": "Returns a floating point number"
+  },
+  "built_in.float=>_1": {
+    "prefix": "built_in.float=>_1",
+    "body": [
+      "x = float(3)",
+      "print(x)"
+    ],
+    "description": "An example for using float"
+  },
+  "built_in.float=>_2": {
+    "prefix": "built_in.float=>_2",
+    "body": [
+      "x = float('3.500')",
+      "print(x)"
+    ],
+    "description": "An example for using float"
+  },
+  "format": {
+    "prefix": "format",
+    "body": "format(value, format)",
+    "description": "Formats a specified value"
+  },
+  "built_in.format=>_1": {
+    "prefix": "built_in.format=>_1",
+    "body": [
+      "x = format(0.5, '%')",
+      "print(x)"
+    ],
+    "description": "An example for using format"
+  },
+  "built_in.format=>_1": {
+    "prefix": "built_in.format=>_1",
+    "body": [
+      "x = format(255, 'x')",
+      "print(x)"
+    ],
+    "description": "An example for using format"
+  },
+  "frozenset": {
+    "prefix": "frozenset",
+    "body": "frozenset(iterable)",
+    "description": "Returns a frozenset object"
+  },
+  "built_in.frozenset=>_1": {
+    "prefix": "built_in.frozenset=>_1",
+    "body": [
+      "mylist = ['apple', 'banana', 'cherry']",
+      "x = frozenset(mylist)",
+      "print(x)"
+    ],
+    "description": "An example for using frozenset"
+  },
+  "built_in.frozenset=>_2": {
+    "prefix": "built_in.frozenset=>_2",
+    "body": [
+      "mylist = ['apple', 'banana', 'cherry']",
+      "x = frozenset(mylist)",
+      "x[1] = 'strawberry'",
+      "print(x)"
+    ],
+    "description": "An example for using frozenset"
+  },
+  "getattr": {
+    "prefix": "getattr",
+    "body": "getattr(object, attribute, default)",
+    "description": "Returns the value of the specified attribute (property or method)"
+  },
+  "built_in.frozenset=>_3": {
+    "prefix": "built_in.frozenset=>_3",
+    "body": [
+      "class Person:",
+      " name = 'John'",
+      " age = 36",
+      " country = 'Norway'",
+      "",
+      "x = getattr(Person, 'age')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using frozenset"
+  },
+  "globals": {
+    "prefix": "globals",
+    "body": "globals()",
+    "description": "Returns the current global symbol table as a dictionary"
+  },
+  "built_in.globals=>_1": {
+    "prefix": "built_in.globals=>_1",
+    "body": [
+      "x = globals()",
+      "print(x)"
+    ],
+    "description": "An example for using globals"
+  },
+  "built_in.globals=>_2": {
+    "prefix": "built_in.globals=>_2",
+    "body": [
+      "x = globals()",
+      "print(x['__file__'])"
+    ],
+    "description": "An example for using globals"
+  },
+  "hasattr": {
+    "prefix": "hasattr",
+    "body": "hasattr(object, attribute)",
+    "description": "Returns True if the specified object has the specified attribute (property/method)"
+  },
+  "built_in.hasattr=>": {
+    "prefix": "built_in.hasattr=>",
+    "body": [
+      "class Person:",
+      " name = 'John'",
+      " age = 36",
+      " country = 'Norway'",
+      "",
+      "x = hasattr(Person, 'age')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using hasattr"
+  },
+  "hash": {
+    "prefix": "hash",
+    "body": "hash(object)",
+    "description": "Returns the hash value of a specified object"
+  },
+  "help": {
+    "prefix": "help",
+    "body": "help(object)",
+    "description": "Executes the built-in help system"
+  },
+  "hex": {
+    "prefix": "hex",
+    "body": "hex(number)",
+    "description": "Converts a number into a hexadecimal value"
+  },
+  "built_in.hex=>": {
+    "prefix": "built_in.hex=>",
+    "body": [
+      "x = hex(255)",
+      "print(x)"
+    ],
+    "description": "An example for using hasattr"
+  },
+  "int": {
+    "prefix": "int",
+    "body": "int(value, base)",
+    "description": "Returns an integer number"
+  },
+  "built_in.int=>_1": {
+    "prefix": "built_in.int=>_1",
+    "body": [
+      "x = int(3.5)",
+      "print(x)"
+    ],
+    "description": "An example for using int"
+  },
+  "built_in.int=>_2": {
+    "prefix": "built_in.int=>_2",
+    "body": [
+      "x = int('12')",
+      "print(x)"
+    ],
+    "description": "An example for using int"
+  },
+  "id": {
+    "prefix": "id",
+    "body": "id(object)",
+    "description": "Returns the id of an object"
+  },
+  "built_in.id=>": {
+    "prefix": "built_in.id=>",
+    "body": [
+      "class Foo:",
+      "b = 5",
+      "",
+      "dummyFoo = Foo()",
+      "print('id of dummyFoo =',id(dummyFoo))"
+    ],
+    "description": "An example for using id"
+  },
+  "input": {
+    "prefix": "input",
+    "body": "input(prompt)",
+    "description": "Allowing user input"
+  },
+  "built_in.input=>_1": {
+    "prefix": "built_in.input=>_1",
+    "body": [
+      "x = input('Enter your name:')",
+      "print('Hello, ' + x)"
+    ],
+    "description": "An example for using input"
+  },
+  "built_in.input=>_2": {
+    "prefix": "built_in.input=>_2",
+    "body": [
+      "print('Enter your name:')",
+      "x = input()",
+      "print('Hello, ' + x)"
+    ],
+    "description": "An example for using input"
+  },
+  "isinstance": {
+    "prefix": "isinstance",
+    "body": "isinstance(object, type)",
+    "description": "Returns True if a specified object is an instance of a specified object"
+  },
+  "built_in.isinstance=>_1": {
+    "prefix": "built_in.isinstance=>_1",
+    "body": [
+      "x = isinstance(5, int)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using isinstance"
+  },
+  "built_in.isinstance=>_2": {
+    "prefix": "built_in.isinstance=>_2",
+    "body": [
+      "x = isinstance('Hello', (float, int, str, list, dict, tuple))",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using isinstance"
+  },
+  "built_in.isinstance=>_3": {
+    "prefix": "built_in.isinstance=>_3",
+    "body": [
+      "class myObj:",
+      " name = 'John'",
+      "",
+      "y = myObj()",
+      "",
+      "x = isinstance(y, myObj)",
+      "print(x)"
+    ],
+    "description": "An example for using isinstance"
+  },
+  "issubclass": {
+    "prefix": "issubclass",
+    "body": "issubclass(object, subclass)",
+    "description": "Returns True if a specified class is a subclass of a specified object"
+  },
+  "built_in.issubclass=>": {
+    "prefix": "built_in.issubclass=>",
+    "body": [
+      "class myAge:",
+      " age = 36",
+      "",
+      "class myObj(myAge):",
+      " name = 'John'",
+      " age = myAge",
+      "",
+      " x = issubclass(myObj, myAge)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using isinstance"
+  },
+  "iter": {
+    "prefix": "iter",
+    "body": "iter(object, subclass)",
+    "description": "Returns an iterator object"
+  },
+  "built_in.iter=>": {
+    "prefix": "built_in.iter=>",
+    "body": [
+      "x = iter(['apple', 'banana', 'cherry'])",
+      "print(next(x))",
+      "print(next(x))",
+      "print(next(x))"
+    ],
+    "description": "An example for using iter"
+  },
+  "len": {
+    "prefix": "len",
+    "body": "len(s)",
+    "description": "Returns the length of an object"
+  },
+  "built_in.len=>_1": {
+    "prefix": "built_in.len=>_1",
+    "body": [
+      "mylist = ['apple', 'banana', 'cherry']",
+      "x = len(mylist)"
+    ],
+    "description": "An example for using len"
+  },
+  "built_in.len=>_2": {
+    "prefix": "built_in.len=>_2",
+    "body": [
+      "mylist = 'Hello'",
+      "x = len(mylist)"
+    ],
+    "description": "An example for using len"
+  },
+  "list": {
+    "prefix": "list",
+    "body": "list([iterable])",
+    "description": "Returns a list"
+  },
+  "built_in.list=>": {
+    "prefix": "built_in.list=>",
+    "body": [
+      "x = list(('apple', 'banana', 'cherry'))",
+      "print(x)"
+    ],
+    "description": "An example for using list"
+  },
+  "locals": {
+    "prefix": "locals",
+    "body": "locals()",
+    "description": "Returns an updated dictionary of the current local symbol table"
+  },
+  "built_in.locals=>_1": {
+    "prefix": "built_in.locals=>_1",
+    "body": [
+      "x = locals()",
+      "print(x)"
+    ],
+    "description": "An example for using locals"
+  },
+  "built_in.locals=>_2": {
+    "prefix": "built_in.locals=>_2",
+    "body": [
+      "x = locals()",
+      "print(x['__file__'])"
+    ],
+    "description": "An example for using locals"
+  },
+  "map": {
+    "prefix": "map",
+    "body": "map(function, iterables)",
+    "description": "Returns the specified iterator with the specified function applied to each item"
+  },
+  "built_in.map=>_1": {
+    "prefix": "built_in.map=>_1",
+    "body": [
+      "def myfunc(n):",
+      " return len(n)",
+      "",
+      "x = map(myfunc, ('apple', 'banana', 'cherry'))",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using map"
+  },
+  "built_in.map=>_2": {
+    "prefix": "built_in.map=>_2",
+    "body": [
+      "def myfunc(a, b):",
+      " return a + b",
+      "",
+      "x = map(myfunc, ('apple', 'banana', 'cherry'), ('orange', 'lemon', 'pineapple'))",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using map"
+  },
+  "max": {
+    "prefix": "max",
+    "body": "max(iterable)",
+    "description": "Returns the largest item in an iterable"
+  },
+  "built_in.max=>_1": {
+    "prefix": "built_in.max=>_1",
+    "body": [
+      "x = max(5, 10)",
+      "print(x)"
+    ],
+    "description": "An example for using max"
+  },
+  "built_in.max=>_2": {
+    "prefix": "built_in.max=>_2",
+    "body": [
+      "x = max('Mike', 'John', 'Vicky')",
+      "print(x)"
+    ],
+    "description": "An example for using max"
+  },
+  "built_in.max=>_3": {
+    "prefix": "built_in.max=>_3",
+    "body": [
+      "a = (1, 5, 3, 9)",
+      "x = max(a)",
+      "print(x)"
+    ],
+    "description": "An example for using max"
+  },
+  "memoryview": {
+    "prefix": "memoryview",
+    "body": "memoryview(obj)",
+    "description": "Returns a memory view object"
+  },
+  "built_in.memoryview=>": {
+    "prefix": "built_in.memoryview=>",
+    "body": [
+      "x = memoryview(b'Hello')",
+      "print(x)",
+      "",
+      "#return the Unicode of the first character",
+      "print(x[0])",
+      "",
+      "#return the Unicode of the second character",
+      "print(x[1])"
+    ],
+    "description": "An example for using memoryview"
+  },
+  "min": {
+    "prefix": "min",
+    "body": "min(iterable)",
+    "description": "Returns the smallest item in an iterable"
+  },
+  "built_in.min=>_1": {
+    "prefix": "built_in.min=>_1",
+    "body": [
+      "x = min(5, 10)",
+      "print(x)"
+    ],
+    "description": "An example for using min"
+  },
+  "built_in.min=>_2": {
+    "prefix": "built_in.min=>_2",
+    "body": [
+      "x = min('Mike', 'John', 'Vicky')",
+      "print(x)"
+    ],
+    "description": "An example for using min"
+  },
+  "built_in.min=>_3": {
+    "prefix": "built_in.min=>_3",
+    "body": [
+      "a = (1, 5, 3, 9)",
+      "x = min(a)",
+      "print(x)"
+    ],
+    "description": "An example for using min"
+  },
+  "next": {
+    "prefix": "next",
+    "body": "next(iterable, default)",
+    "description": "Returns the next item in an iterable"
+  },
+  "built_in.next=>_1": {
+    "prefix": "built_in.next=>_1",
+    "body": [
+      "mylist = iter(['apple', 'banana', 'cherry'])",
+      "x = next(mylist)",
+      "print(x)",
+      "x = next(mylist)",
+      "print(x)",
+      "x = next(mylist)",
+      "print(x)"
+    ],
+    "description": "An example for using next"
+  },
+  "built_in.next=>_2": {
+    "prefix": "built_in.next=>_2",
+    "body": [
+      "mylist = iter(['apple', 'banana', 'cherry'])",
+      "x = next(mylist, 'orange')",
+      "print(x)",
+      "x = next(mylist, 'orange')",
+      "print(x)",
+      "x = next(mylist, 'orange')",
+      "print(x)",
+      "x = next(mylist, 'orange')",
+      "print(x)"
+    ],
+    "description": "An example for using next"
+  },
+  "object": {
+    "prefix": "object",
+    "body": "object()",
+    "description": "Returns a new object"
+  },
+  "built_in.object=>": {
+    "prefix": "built_in.object=>",
+    "body": [
+      "x = object()",
+      "print(dir(x))"
+    ],
+    "description": "An example for using object"
+  },
+  "oct": {
+    "prefix": "oct",
+    "body": "oct(x)",
+    "description": "Converts a number into an octal"
+  },
+  "built_in.oct=>": {
+    "prefix": "built_in.oct=>",
+    "body": [
+      "x = oct(12)",
+      "print(x)"
+    ],
+    "description": "An example for using oct"
+  },
+  "open": {
+    "prefix": "open",
+    "body": "open(file, mode)",
+    "description": "Opens a file and returns a file object"
+  },
+  "built_in.open=>": {
+    "prefix": "built_in.open=>",
+    "body": [
+      "f = open('demofile.txt', 'r')",
+      "print(f.read())"
+    ],
+    "description": "An example for using open"
+  },
+  "ord": {
+    "prefix": "ord",
+    "body": "ord(c)",
+    "description": "Given a string of length one, return an integer representing the Unicode code point of the character when the argument is a unicode object, or the value of the byte when the argument is an 8-bit string."
+  },
+  "built_in.ord=>": {
+    "prefix": "built_in.ord=>",
+    "body": [
+      "x=ord('a')",
+      "print(x)"
+    ],
+    "description": "An example for using ord"
+  },
+  "pow": {
+    "prefix": "pow",
+    "body": "pow(x, y)",
+    "description": "Return x to the power y"
+  },
+  "built_in.pow=>": {
+    "prefix": "built_in.pow=>",
+    "body": [
+      "x=pow(2,5)",
+      "print(x)"
+    ],
+    "description": "An example for using pow"
+  },
+  "print": {
+    "prefix": "print",
+    "body": "print(object(s), separator=separator, end=end, file=file, flush=flush)",
+    "description": "Prints to the standard output device"
+  },
+  "built_in.print=>_1": {
+    "prefix": "built_in.print=>_1",
+    "body": [
+      "print('Hello', 'how are you?')"
+    ],
+    "description": "An example for using print"
+  },
+  "built_in.print=>_2": {
+    "prefix": "built_in.print=>_2",
+    "body": [
+      "x = ('apple', 'banana', 'cherry')",
+      "print(x)"
+    ],
+    "description": "An example for using print"
+  },
+  "built_in.print=>_3": {
+    "prefix": "built_in.print=>_3",
+    "body": [
+      "print('Hello', 'how are you?', sep=' ---')"
+    ],
+    "description": "An example for using print"
+  },
+  "property": {
+    "prefix": "property",
+    "body": "property(fget=None, fset=None, fdel=None, doc=None)",
+    "description": "Gets, sets, deletes a property"
+  },
+  "built_in.property=>": {
+    "prefix": "built_in.property=>",
+    "body": [
+      "class C:",
+      "    def __init__(self):",
+      "        self._x = None",
+      "    def getx(self):",
+      "        return self._x",
+      "    def setx(self, value):",
+      "        self._x = value",
+      "    def delx(self):",
+      "        del self._x",
+      "    x = property(getx, setx, delx, 'I'm the 'x' property.')"
+    ],
+    "description": "An example for using property"
+  },
+  "range": {
+    "prefix": "range",
+    "body": "range(start, stop, step)",
+    "description": "Returns a sequence of numbers, starting from 0 and increments by 1 (by default)"
+  },
+  "built_in.range=>_1": {
+    "prefix": "built_in.range=>_1",
+    "body": [
+      "x = range(6)",
+      "for n in x:",
+      "  print(n)"
+    ],
+    "description": "An example for using range"
+  },
+  "built_in.range=>_2": {
+    "prefix": "built_in.range=>_2",
+    "body": [
+      "x = range(3, 6)",
+      "for n in x:",
+      "  print(n)"
+    ],
+    "description": "An example for using range"
+  },
+  "built_in.range=>_3": {
+    "prefix": "built_in.range=>_3",
+    "body": [
+      "x = range(3, 20, 2)",
+      "for n in x:",
+      "  print(n)"
+    ],
+    "description": "An example for using range"
+  },
+  "repr": {
+    "prefix": "repr",
+    "body": "repr(object)",
+    "description": "Returns a readable version of an object"
+  },
+  "reversed": {
+    "prefix": "reversed",
+    "body": "reversed(seq)",
+    "description": "Returns a reversed iterator"
+  },
+  "built_in.reversed=>": {
+    "prefix": "built_in.reversed=>",
+    "body": [
+      "alph = ['a', 'b', 'c', 'd']",
+      "ralph = reversed(alph)",
+      "for x in ralph:",
+      "  print(x)"
+    ],
+    "description": "An example for using reversed"
+  },
+  "round": {
+    "prefix": "round",
+    "body": "round(number[, ndigits])",
+    "description": "Rounds a numbers"
+  },
+  "built_in.round=>_1": {
+    "prefix": "built_in.round=>_1",
+    "body": [
+      "x = round(5.76543, 2)",
+      "print(x)"
+    ],
+    "description": "An example for using round"
+  },
+  "built_in.round=>_2": {
+    "prefix": "built_in.round=>_2",
+    "body": [
+      "x = round(5.76543)",
+      "print(x)"
+    ],
+    "description": "An example for using round"
+  },
+  "set": {
+    "prefix": "set",
+    "body": "set(iterable)",
+    "description": "Returns a new set object"
+  },
+  "built_in.set=>": {
+    "prefix": "built_in.set=>",
+    "body": [
+      "x = set(('apple', 'banana', 'cherry'))",
+      "print(x)"
+    ],
+    "description": "An example for using set"
+  },
+  "setattr": {
+    "prefix": "setattr",
+    "body": "setattr(object, name, value)",
+    "description": "Sets an attribute (property/method) of an object"
+  },
+  "built_in.setattr=>": {
+    "prefix": "built_in.setattr=>",
+    "body": [
+      "class Person:",
+      "  name = 'John'",
+      "  age = 36",
+      "  country = 'Norway'",
+      "setattr(Person, 'age', 40)",
+      "# The age property will now have the value: 40",
+      "x = getattr(Person, 'age')",
+      "print(x)"
+    ],
+    "description": "An example for using setattr"
+  },
+  "slice": {
+    "prefix": "slice",
+    "body": "slice(start, end, step)",
+    "description": "Returns a slice object"
+  },
+  "built_in.slice=>_1": {
+    "prefix": "built_in.slice=>_1",
+    "body": [
+      "a = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')",
+      "x = slice(2)",
+      "print(a[x])"
+    ],
+    "description": "An example for using slice"
+  },
+  "built_in.slice=>_2": {
+    "prefix": "built_in.slice=>_2",
+    "body": [
+      "a = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')",
+      "x = slice(3, 5)",
+      "print(a[x])"
+    ],
+    "description": "An example for using slice"
+  },
+  "built_in.slice=>_3": {
+    "prefix": "built_in.slice=>_3",
+    "body": [
+      "a = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')",
+      "x = slice(0, 8, 3)",
+      "print(a[x])"
+    ],
+    "description": "An example for using slice"
+  },
+  "sorted": {
+    "prefix": "sorted",
+    "body": "sorted(iterable, key=key, reverse=reverse)",
+    "description": "Returns a sorted list"
+  },
+  "built_in.sorted=>_1": {
+    "prefix": "built_in.sorted=>_1",
+    "body": [
+      "a = ('b', 'g', 'a', 'd', 'f', 'c', 'h', 'e')",
+      "x = sorted(a)",
+      "print(x)"
+    ],
+    "description": "An example for using sorted"
+  },
+  "built_in.sorted=>_2": {
+    "prefix": "built_in.sorted=>_2",
+    "body": [
+      "a = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')",
+      "x = sorted(a, reverse=True)",
+      "print(x)"
+    ],
+    "description": "An example for using sorted"
+  },
+  "built_in.sorted=>_3": {
+    "prefix": "built_in.sorted=>_3",
+    "body": [
+      "a = ('b', 'g', 'a', 'd', 'f', 'c', 'h', 'e')",
+      "x = sorted(a)",
+      "print(x)"
+    ],
+    "description": "An example for using sorted"
+  },
+  "staticmethod": {
+    "prefix": "staticmethod",
+    "body": "staticmethod(function)",
+    "description": "Converts a method into a static method"
+  },
+  "str": {
+    "prefix": "str",
+    "body": "str(object, encoding=encoding, errors=errors)",
+    "description": "Returns a string object"
+  },
+  "built_in.str=>": {
+    "prefix": "built_in.str=>",
+    "body": [
+      "x = str(3.5)",
+      "print(x)"
+    ],
+    "description": "An example for using str"
+  },
+  "sum": {
+    "prefix": "sum",
+    "body": "sum(iterable, start)",
+    "description": "Sums the items of an iterator"
+  },
+  "built_in.sum=>_1": {
+    "prefix": "built_in.sum=>_1",
+    "body": [
+      "a = (1, 2, 3, 4, 5)",
+      "x = sum(a)",
+      "print(x)"
+    ],
+    "description": "An example for using sum"
+  },
+  "built_in.sum=>_2": {
+    "prefix": "built_in.sum=>_2",
+    "body": [
+      "a = (1, 2, 3, 4, 5)",
+      "x = sum(a, 7)",
+      "print(x)"
+    ],
+    "description": "An example for using sum"
+  },
+  "super": {
+    "prefix": "super",
+    "body": "super(type[, object-or-type])",
+    "description": "Return a proxy object that delegates method calls to a parent or sibling class of type."
+  },
+  "tuple": {
+    "prefix": "tuple",
+    "body": "tuple(iterable)",
+    "description": "Returns a tuple"
+  },
+  "built_in.tuple=>": {
+    "prefix": "built_in.tuple=>",
+    "body": [
+      "x = tuple(('apple', 'banana', 'cherry'))",
+      "print(x)"
+    ],
+    "description": "An example for using tuple"
+  },
+  "type": {
+    "prefix": "type",
+    "body": "type(object, bases, dict)",
+    "description": "Returns the type of an object"
+  },
+  "built_in.type=>": {
+    "prefix": "built_in.type=>",
+    "body": [
+      "a = ('apple', 'banana', 'cherry')",
+      "b = 'Hello World'",
+      "c = 33",
+      "x = type(a)",
+      "y = type(b)",
+      "z = type(c)"
+    ],
+    "description": "An example for using type"
+  },
+  "unichr": {
+    "prefix": "unichr",
+    "body": "unichr(i)",
+    "description": "Return the Unicode string of one character whose Unicode code is the integer i."
+  },
+  "vars": {
+    "prefix": "vars",
+    "body": "vars(object)",
+    "description": "Returns the __dict__ property of an object"
+  },
+  "built_in.vars=>": {
+    "prefix": "built_in.vars=>",
+    "body": [
+      "class Person:",
+      "  name = 'John'",
+      "  age = 36",
+      "  country = 'norway'",
+      "x = vars(Person)"
+    ],
+    "description": "An example for using vars"
+  },
+  "zip": {
+    "prefix": "zip",
+    "body": "zip(iterator1, iterqator2, iterator3 ...)",
+    "description": "Returns an iterator, from two or more iterators"
+  },
+  "built_in.zip=>_1": {
+    "prefix": "built_in.zip=>_1",
+    "body": [
+      "a = ('John', 'Charles', 'Mike')",
+      "b = ('Jenny', 'Christy', 'Monica')",
+      "x = zip(a, b)",
+      "#use the tuple() function to display a readable version of the result:",
+      "print(tuple(x))"
+    ],
+    "description": "An example for using zip"
+  },
+  "built_in.zip=>_2": {
+    "prefix": "built_in.zip=>_2",
+    "body": [
+      "a = ('John', 'Charles', 'Mike')",
+      "b = ('Jenny', 'Christy', 'Monica', 'Vicky')",
+      "x = zip(a, b)",
+      "#use the tuple() function to display a readable version of the result:",
+      "print(tuple(x))"
+    ],
+    "description": "An example for using zip"
+  },
+  "if": {
+    "prefix": "if",
+    "body": [
+      "if condition:",
+      "  pass"
+    ],
+    "description": "if Statements"
+  },
+  "ifelif": {
+    "prefix": "ifelif",
+    "body": [
+      "if condition:",
+      "  pass",
+      "elif condition:",
+      "  pass"
+    ],
+    "description": "if/else if Statements"
+  },
+  "ifelifelse": {
+    "prefix": "ifelifelse",
+    "body": [
+      "if condition:",
+      "  pass",
+      "elif condition:",
+      "  pass",
+      "else:",
+      "  pass"
+    ],
+    "description": "if/else if/else Statements"
+  },
+  "ifel": {
+    "prefix": "ifelse",
+    "body": [
+      "if condition:",
+      "  pass",
+      "else:",
+      "  pass"
+    ],
+    "description": "if/else Statements"
+  },
+  "elif": {
+    "prefix": "else",
+    "body": [
+      "else:",
+      "  pass"
+    ],
+    "description": "else Statements"
+  },
+  "ifshort": {
+    "prefix": "ifshort",
+    "body": "print('A') if a > b else print('A')",
+    "description": "ifshort Statements"
+  },
+  "lambda": {
+    "prefix": "lambda",
+    "body": "lambda arguments : expression",
+    "description": "A lambda function can take any number of arguments, but can only have one expression."
+  },
+  "for": {
+    "prefix": "for",
+    "body": [
+      "for item in range:",
+      " "
+    ],
+    "description": "for Statements"
+  },
+  "for=>": {
+    "prefix": "for=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "for x in fruits:",
+      "  print(x)"
+    ],
+    "description": "An example for using for"
+  },
+  "for=>through_a_string": {
+    "prefix": "for=>through_a_string",
+    "body": [
+      "for x in 'banana':",
+      "  print(x)"
+    ],
+    "description": "An example for using for"
+  },
+  "for=>break_statement": {
+    "prefix": "for=>break_statement",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "for x in fruits:",
+      " print(x)",
+      " if x == 'banana':",
+      "   break"
+    ],
+    "description": "An example for using for"
+  },
+  "for=>continue_statement": {
+    "prefix": "for=>continue_statement",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "for x in fruits:",
+      " print(x)",
+      " if x == 'banana':",
+      "   continue",
+      " print(x)"
+    ],
+    "description": "An example for using for"
+  },
+  "for=>range_function_1": {
+    "prefix": "for=>range_function_1",
+    "body": [
+      "for x in range(6):",
+      " print(x)"
+    ],
+    "description": "An example for using for"
+  },
+  "for=>range_function_2": {
+    "prefix": "for=>range_function_2",
+    "body": [
+      "for x in range(2, 6):",
+      " print(x)"
+    ],
+    "description": "An example for using for"
+  },
+  "for=>range_function_3": {
+    "prefix": "for=>range_function_3",
+    "body": [
+      "for x in range(2, 30, 3):",
+      " print(x)"
+    ],
+    "description": "An example for using for"
+  },
+  "for=>for_else": {
+    "prefix": "for=>for_else",
+    "body": [
+      "for x in range(2, 6):",
+      " print(x)",
+      "else:",
+      " print('Finally finished!')"
+    ],
+    "description": "An example for using for"
+  },
+  "for=>nested_loops": {
+    "prefix": "for=>for_else",
+    "body": [
+      "adj = ['red', 'big', 'tasty']",
+      "fruits = ['apple', 'banana', 'cherry']",
+      "for x in adj:",
+      "  for y in fruits:",
+      "    print(x, y)"
+    ],
+    "description": "An example for using for"
+  },
+  "while": {
+    "prefix": "while",
+    "body": [
+      "while expression:",
+      "  pass"
+    ],
+    "description": "while Statements"
+  },
+  "while_else": {
+    "prefix": "while_else",
+    "body": [
+      "while expression:",
+      "  pass",
+      "else:",
+      "  pass"
+    ],
+    "description": "while Statements"
+  },
+  "while=>": {
+    "prefix": "while=>",
+    "body": [
+      "i = 1",
+      "while i < 6:",
+      "  print(i)",
+      "  i += 1"
+    ],
+    "description": "while Statements"
+  },
+  "while=>break_statement": {
+    "prefix": "while=>break_statement",
+    "body": [
+      "i = 1",
+      "while i < 6:",
+      " print(i)",
+      "  if i == 3:",
+      "    break",
+      "  i += 1"
+    ],
+    "description": "while Statements"
+  },
+  "while=>continue_statement": {
+    "prefix": "while=>continue_statement",
+    "body": [
+      "i = 1",
+      "while i < 6:",
+      "  i += 1",
+      "  print(i)",
+      "  if i == 3:",
+      "    continue",
+      "  print(i)"
+    ],
+    "description": "while Statements"
+  },
+  "function": {
+    "prefix": "function=>",
+    "body": [
+      "def name(args):",
+      " pass"
+    ],
+    "description": "Defining Function"
+  },
+  "def": {
+    "prefix": "def=>",
+    "body": [
+      "def name(args):",
+      " pass"
+    ],
+    "description": "Defining Function"
+  },
+  "def=>with_default_value": {
+    "prefix": "def=>with_default_value",
+    "body": [
+      "def name(name, lastName='john')",
+      " pass"
+    ],
+    "description": "Defining Function wqith default values"
+  },
+  "capitalize": {
+    "prefix": ".capitalize",
+    "body": ".capitalize()",
+    "description": "Converts the first character to upper case"
+  },
+  "string.capitalize=>_1": {
+    "prefix": "string.capitalize=>_1",
+    "body": [
+      "txt = hello, and welcome to my world.",
+      "",
+      "x = txt.capitalize()",
+      "",
+      "print (x)"
+    ],
+    "description": "An example for using capitalize"
+  },
+  "string.capitalize=>_2": {
+    "prefix": "string.capitalize=>_2",
+    "body": [
+      "txt = '36 is my age.'",
+      "",
+      "x = txt.capitalize()",
+      "",
+      "print (x)"
+    ],
+    "description": "An example for using capitalize"
+  },
+  "casefold": {
+    "prefix": ".casefold",
+    "body": ".casefold()",
+    "description": "Converts string into lower case"
+  },
+  "string.casefold=>": {
+    "prefix": "string.casefold=>",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "x = txt.casefold()",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using casefold"
+  },
+  "center": {
+    "prefix": ".center",
+    "body": ".center()",
+    "description": "Returns a centered string"
+  },
+  "string.center=>_1": {
+    "prefix": "string.center=>_1",
+    "body": [
+      "txt = 'banana'",
+      "",
+      "x = txt.center(20)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using center"
+  },
+  "string.center=>_2": {
+    "prefix": "string.center=>_2",
+    "body": [
+      "txt = 'banana'",
+      "",
+      "x = txt.center(20,'O')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using center"
+  },
+  "string.count": {
+    "prefix": ".count",
+    "body": ".count()",
+    "description": "Returns the number of times a specified value occurs in a string"
+  },
+  "string.count=>_1": {
+    "prefix": "string.count=>_1",
+    "body": [
+      "txt = 'I love apples, apple are my favorite fruit'",
+      "",
+      "x = txt.count('apple')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using count"
+  },
+  "string.count=>_2": {
+    "prefix": "string.count=>_2",
+    "body": [
+      "txt = 'I love apples, apple are my favorite fruit'",
+      "",
+      "x = txt.count('apple', 10, 24)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using count"
+  },
+  "encode": {
+    "prefix": ".encode",
+    "body": ".encode()",
+    "description": "Returns an encoded version of the string"
+  },
+  "string.encode=>": {
+    "prefix": "string.encode=>",
+    "body": [
+      "txt = 'My name is Ståle'",
+      "",
+      "x = txt.encode()",
+      "",
+      "print()"
+    ],
+    "description": "An example for using encode"
+  },
+  "string.encode=>": {
+    "prefix": "string.encode=>",
+    "body": [
+      "txt = 'My name is Ståle'",
+      "",
+      "print(txt.encode(encoding='ascii',errors='backslashreplace')",
+      "print(txt.encode(encoding='ascii',errors='ignore')",
+      "print(txt.encode(encoding='ascii',errors='namereplace')",
+      "print(txt.encode(encoding='ascii',errors='replace')",
+      "print(txt.encode(encoding='ascii',errors='xmlcharrefreplace')",
+      "print(txt.encode(encoding='ascii',errors='strict')"
+    ],
+    "description": "An example for using encode"
+  },
+  "endswith": {
+    "prefix": ".endswith",
+    "body": ".endswith()",
+    "description": "Returns true if the string ends with the specified value"
+  },
+  "string.endswith=>_1": {
+    "prefix": "string.endswith=>_1",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "x = txt.endswith('.')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using endswith"
+  },
+  "string.endswith=>_2": {
+    "prefix": "string.endswith=>_2",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "x = txt.endswith('my world.', 5, 11)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using endswith"
+  },
+  "expandtabs": {
+    "prefix": ".expandtabs",
+    "body": ".expandtabs()",
+    "description": "Sets the tab size of the string"
+  },
+  "string.expandtabs=>_1": {
+    "prefix": "string.expandtabs=>_1",
+    "body": [
+      "txt = 'H\te\tl\tl\to'",
+      "",
+      "x = txt.expandtabs(2)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using expandtabs"
+  },
+  "string.expandtabs=>_2": {
+    "prefix": "string.expandtabs=>_2",
+    "body": [
+      "txt = 'H\te\tl\tl\to'",
+      "",
+      "print(txt)",
+      "print(txt.expandtabs())",
+      "print(txt.expandtabs(2))",
+      "print(txt.expandtabs(4))",
+      "print(txt.expandtabs(10))"
+    ],
+    "description": "An example for using expandtabs"
+  },
+  "find": {
+    "prefix": ".find",
+    "body": ".find()",
+    "description": "Searches the string for a specified value and returns the position of where it was found"
+  },
+  "string.find=>_1": {
+    "prefix": "string.find=>_1",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "",
+      "x = txt.find('welcome')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using find"
+  },
+  "string.find=>_2": {
+    "prefix": "string.find=>_2",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "x = txt.find('e')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using find"
+  },
+  "string.find=>_3": {
+    "prefix": "string.find=>_3",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "x = txt.find('e', 5, 10)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using find"
+  },
+  "string.find=>_4": {
+    "prefix": "string.find=>_4",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "print(txt.find('q'))",
+      "print(txt.index('q'))"
+    ],
+    "description": "An example for using find"
+  },
+  "format": {
+    "prefix": ".format",
+    "body": ".format()",
+    "description": "Formats specified values in a string"
+  },
+  "string.format=>": {
+    "prefix": "string.format=>",
+    "body": [
+      "# default arguments",
+      "print('Hello {}, your balance is {}.'.format('Adam', 230.2346))",
+      "",
+      "# positional arguments",
+      "print('Hello {0}, your balance is {1}.'.format('Adam', 230.2346))",
+      "",
+      "# keyword arguments",
+      "print('Hello {name}, your balance is {blc}.'.format(name='Adam', blc=230.2346))",
+      "",
+      "# mixed arguments",
+      "print('Hello {0}, your balance is {blc}.'.format('Adam', blc=230.2346))"
+    ],
+    "description": "An example for using format"
+  },
+  "format_map": {
+    "prefix": ".format_map",
+    "body": ".format_map()",
+    "description": "Formats specified values in a string"
+  },
+  "string.format_map=>": {
+    "prefix": "string.format_map=>",
+    "body": [
+      "point = {'x':4,'y':-5}",
+      "print('{x} {y}'.format_map(point))",
+      "",
+      "point = {'x':4,'y':-5, 'z': 0}",
+      "print('{x} {y} {z}'.format_map(point))"
+    ],
+    "description": "An example for using format_map"
+  },
+  "index": {
+    "prefix": ".index",
+    "body": ".index()",
+    "description": "Searches the string for a specified value and returns the position of where it was found"
+  },
+  "string.index=>_1": {
+    "prefix": "string.index=>_1",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "",
+      "x = txt.index('welcome')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using index"
+  },
+  "string.index=>_2": {
+    "prefix": "string.index=>_2",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "x = txt.index('e')",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using index"
+  },
+  "string.index=>_3": {
+    "prefix": "string.index=>_3",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "x = txt.index('e', 5, 10)",
+      "",
+      "print(x)"
+    ],
+    "description": "An example for using index"
+  },
+  "string.index=>_4": {
+    "prefix": "string.index=>_4",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "",
+      "print(txt.find('q'))",
+      "print(txt.index('q'))"
+    ],
+    "description": "An example for using index"
+  },
+  "isalnum": {
+    "prefix": ".isalnum",
+    "body": ".isalnum()",
+    "description": "Returns True if all characters in the string are alphanumeric"
+  },
+  "string.isalnum=>": {
+    "prefix": "string.isalnum=>",
+    "body": [
+      "txt = 'Company12'",
+      "x = txt.isalnum()",
+      "print(x)"
+    ],
+    "description": "An example for using isalnum"
+  },
+  "string.isalnum=>": {
+    "prefix": "string.isalnum=>",
+    "body": [
+      "txt = 'Company 12'",
+      "x = txt.isalnum()",
+      "print(x)"
+    ],
+    "description": "An example for using isalnum"
+  },
+  "isalpha": {
+    "prefix": ".isalpha",
+    "body": ".isalpha()",
+    "description": "Returns True if all characters in the string are in the alphabet"
+  },
+  "string.isalpha=>": {
+    "prefix": "string.isalpha=>",
+    "body": [
+      "txt = 'Company10'",
+      "x = txt.isalpha()",
+      "print(x)"
+    ],
+    "description": "An example for using isalpha"
+  },
+  "isdecimal": {
+    "prefix": ".isdecimal",
+    "body": ".isdecimal()",
+    "description": "Returns True if all characters in the string are decimals"
+  },
+  "string.isdecimal=>": {
+    "prefix": "string.isdecimal=>",
+    "body": [
+      "txt = '\u0033' #unicode for 3",
+      "x = txt.isdecimal()",
+      "print(x)"
+    ],
+    "description": "An example for using isdecimal"
+  },
+  "string.isdecimal=>": {
+    "prefix": "string.isdecimal=>",
+    "body": [
+      "a = '\u0030' #unicode for 0",
+      "b = '\u0047' #unicode for G",
+      "print(a.isdecimal())",
+      "print(b.isdecimal())"
+    ],
+    "description": "An example for using isdecimal"
+  },
+  "isdigit": {
+    "prefix": ".isdigit",
+    "body": ".isdigit()",
+    "description": "Returns True if all characters in the string are digits"
+  },
+  "string.isdigit=>": {
+    "prefix": "string.isdigit=>",
+    "body": [
+      "txt = '50800'",
+      "x = txt.isdigit()",
+      "print(x)"
+    ],
+    "description": "An example for using isdigit"
+  },
+  "string.isdigit=>": {
+    "prefix": "string.isdigit=>",
+    "body": [
+      "a = '\u0030' #unicode for 0",
+      "b = '\u00B2' #unicode for ²",
+      "print(a.isdigit())",
+      "print(b.isdigit())"
+    ],
+    "description": "An example for using isdigit"
+  },
+  "isidentifier": {
+    "prefix": ".isidentifier",
+    "body": ".isidentifier()",
+    "description": "Returns True if the string is an identifier"
+  },
+  "string.isidentifier=>": {
+    "prefix": "string.isidentifier=>",
+    "body": [
+      "txt = 'Demo'",
+      "x = txt.isidentifier()",
+      "print(x)"
+    ],
+    "description": "An example for using isidentifier"
+  },
+  "string.isidentifier=>": {
+    "prefix": "string.isidentifier=>",
+    "body": [
+      "a = 'MyFolder'",
+      "b = 'Demo002'",
+      "c = '2bring'",
+      "d = 'my demo'",
+      "print(a.isidentifier())",
+      "print(b.isidentifier())",
+      "print(c.isidentifier())",
+      "print(d.isidentifier())"
+    ],
+    "description": "An example for using isidentifier"
+  },
+  "islower": {
+    "prefix": ".islower",
+    "body": ".islower()",
+    "description": "Returns True if all characters in the string are lower case"
+  },
+  "string.islower=>": {
+    "prefix": "string.islower=>",
+    "body": [
+      "txt = 'hello world!'",
+      "x = txt.islower()",
+      "print(x)"
+    ],
+    "description": "An example for using islower"
+  },
+  "string.islower=>": {
+    "prefix": "string.islower=>",
+    "body": [
+      "a = 'Hello world!'",
+      "b = 'hello 123'",
+      "c = 'mynameisPeter'",
+      "print(a.islower())",
+      "print(b.islower())",
+      "print(c.islower())"
+    ],
+    "description": "An example for using islower"
+  },
+  "isnumeric": {
+    "prefix": ".isnumeric",
+    "body": ".isnumeric()",
+    "description": "Returns True if all characters in the string are numeric"
+  },
+  "string.isnumeric=>": {
+    "prefix": "string.isnumeric=>",
+    "body": [
+      "txt = '565543'",
+      "x = txt.isnumeric()",
+      "print(x)"
+    ],
+    "description": "An example for using isnumeric"
+  },
+  "string.isnumeric=>": {
+    "prefix": "string.isnumeric=>",
+    "body": [
+      "a = '\u0030' #unicode for 0",
+      "b = '\u00B2' #unicode for &sup2;",
+      "c = '10km2'",
+      "print(a.isnumeric())",
+      "print(b.isnumeric())",
+      "print(c.isnumeric())"
+    ],
+    "description": "An example for using isnumeric"
+  },
+  "isprintable": {
+    "prefix": ".isprintable",
+    "body": ".isprintable()",
+    "description": "Returns True if all characters in the string are printable"
+  },
+  "string.isprintable=>": {
+    "prefix": "string.isprintable=>",
+    "body": [
+      "txt = 'Hello! Are you #1?'",
+      "x = txt.isprintable()",
+      "print(x)"
+    ],
+    "description": "An example for using isprintable"
+  },
+  "string.isprintable=>": {
+    "prefix": "string.isprintable=>",
+    "body": [
+      "txt = 'Hello!\nAre you #1?'",
+      "x = txt.isprintable()",
+      "print(x)"
+    ],
+    "description": "An example for using isprintable"
+  },
+  "isspace": {
+    "prefix": ".isspace",
+    "body": ".isspace()",
+    "description": "Returns True if all characters in the string are whitespaces"
+  },
+  "string.isspace=>": {
+    "prefix": "string.isspace=>",
+    "body": [
+      "txt = '   '",
+      "x = txt.isspace()",
+      "print(x)"
+    ],
+    "description": "An example for using isspace"
+  },
+  "string.isspace=>": {
+    "prefix": "string.isspace=>",
+    "body": [
+      "txt = '   s   '",
+      "x = txt.isspace()",
+      "print(x)"
+    ],
+    "description": "An example for using isspace"
+  },
+  "istitle": {
+    "prefix": ".istitle",
+    "body": ".istitle()",
+    "description": "Returns True if the string follows the rules of a title"
+  },
+  "string.istitle=>": {
+    "prefix": "string.istitle=>",
+    "body": [
+      "txt = 'Hello, And Welcome To My World!'",
+      "x = txt.istitle()",
+      "print(x)"
+    ],
+    "description": "An example for using istitle"
+  },
+  "string.istitle=>": {
+    "prefix": "string.istitle=>",
+    "body": [
+      "a = 'HELLO, AND WELCOME TO MY WORLD'",
+      "b = 'Hello'",
+      "c = '22 Names'",
+      "d = 'This Is %'!?'",
+      "print(a.istitle())",
+      "print(b.istitle())",
+      "print(c.istitle())",
+      "print(d.istitle())"
+    ],
+    "description": "An example for using istitle"
+  },
+  "isupper": {
+    "prefix": ".isupper",
+    "body": ".isupper()",
+    "description": "Returns True if all characters in the string are upper case"
+  },
+  "string.isupper=>": {
+    "prefix": "string.isupper=>",
+    "body": [
+      "txt = 'THIS IS NOW!'",
+      "x = txt.isupper()",
+      "print(x)"
+    ],
+    "description": "An example for using isupper"
+  },
+  "string.isupper=>": {
+    "prefix": "string.isupper=>",
+    "body": [
+      "a = 'Hello World!'",
+      "b = 'hello 123'",
+      "c = 'MY NAME IS PETER'",
+      "print(a.isupper())",
+      "print(b.isupper())",
+      "print(c.isupper())"
+    ],
+    "description": "An example for using isupper"
+  },
+  "join": {
+    "prefix": ".join",
+    "body": ".join()",
+    "description": "Joins the elements of an iterable to the end of the string"
+  },
+  "string.join=>": {
+    "prefix": "string.join=>",
+    "body": [
+      "myTuple = ('John', 'Peter', 'Vicky')",
+      "x = '#'.join(myTuple)",
+      "print(x)"
+    ],
+    "description": "An example for using join"
+  },
+  "string.join=>": {
+    "prefix": "string.join=>",
+    "body": [
+      "myDict = {'name': 'John', 'country': 'Norway'}",
+      "mySeparator = 'TEST'",
+      "x = mySeparator.join(myDict)",
+      "print(x)"
+    ],
+    "description": "An example for using join"
+  },
+  "ljust": {
+    "prefix": ".ljust",
+    "body": ".ljust()",
+    "description": "Returns a left justified version of the string"
+  },
+  "string.ljust=>": {
+    "prefix": "string.ljust=>",
+    "body": [
+      "txt = 'banana'",
+      "x = txt.ljust(20)",
+      "print(x, 'is my favorite fruit.')"
+    ],
+    "description": "An example for using ljust"
+  },
+  "string.ljust=>": {
+    "prefix": "string.ljust=>",
+    "body": [
+      "txt = 'banana'",
+      "x = txt.ljust(20, 'O')",
+      "print(x)"
+    ],
+    "description": "An example for using ljust"
+  },
+  "lower": {
+    "prefix": ".lower",
+    "body": ".lower()",
+    "description": "Converts a string into lower case"
+  },
+  "string.lower=>": {
+    "prefix": "string.lower=>",
+    "body": [
+      "txt = 'Hello my FRIENDS'",
+      "x = txt.lower()",
+      "print(x)"
+    ],
+    "description": "An example for using lower"
+  },
+  "lstrip": {
+    "prefix": ".lstrip",
+    "body": ".lstrip()",
+    "description": "Returns a left trim version of the string"
+  },
+  "string.lstrip=>": {
+    "prefix": "string.lstrip=>",
+    "body": [
+      "txt = '     banana     '",
+      "x = txt.lstrip()",
+      "print('of all fruits', x, 'is my favorite')"
+    ],
+    "description": "An example for using lstrip"
+  },
+  "string.lstrip=>": {
+    "prefix": "string.lstrip=>",
+    "body": [
+      "txt = ',,,,,ssaaww.....banana'",
+      "x = txt.lstrip(',.asw')",
+      "print(x)"
+    ],
+    "description": "An example for using lstrip"
+  },
+  "maketrans": {
+    "prefix": ".maketrans",
+    "body": ".maketrans()",
+    "description": "Returns a translation table to be used in translations"
+  },
+  "string.maketrans=>": {
+    "prefix": "string.maketrans=>",
+    "body": [
+      "# example dictionary",
+      "dict = {'a': '123', 'b': '456', 'c': '789'}",
+      "string = 'abc'",
+      "print(string.maketrans(dict))"
+    ],
+    "description": "An example for using maketrans"
+  },
+  "string.maketrans=>": {
+    "prefix": "string.maketrans=>",
+    "body": [
+      "# example dictionary",
+      "dict = {97: '123', 98: '456', 99: '789'}",
+      "string = 'abc'",
+      "print(string.maketrans(dict))"
+    ],
+    "description": "An example for using maketrans"
+  },
+  "partition": {
+    "prefix": ".partition",
+    "body": ".partition()",
+    "description": "Returns a tuple where the string is parted into three parts"
+  },
+  "string.partition=>": {
+    "prefix": "string.partition=>",
+    "body": [
+      "txt = 'I could eat bananas all day'",
+      "x = txt.partition('bananas')",
+      "print(x)"
+    ],
+    "description": "An example for using partition"
+  },
+  "string.partition=>": {
+    "prefix": "string.partition=>",
+    "body": [
+      "txt = 'I could eat bananas all day'",
+      "x = txt.partition('apples')",
+      "print(x)"
+    ],
+    "description": "An example for using partition"
+  },
+  "replace": {
+    "prefix": ".replace",
+    "body": ".replace(x, y)",
+    "description": "Returns a string where a specified value is replaced with a specified value"
+  },
+  "string.replace=>": {
+    "prefix": "string.replace=>",
+    "body": [
+      "txt 'I like bananas'",
+      "x = txt.replace('bananas', 'apples')",
+      "print(x)"
+    ],
+    "description": "An example for using replace"
+  },
+  "string.replace=>": {
+    "prefix": "string.replace=>",
+    "body": [
+      "txt = 'one one was a race horse, two two was one too.'",
+      "x = txt.replace('one', 'three')",
+      "print(x)"
+    ],
+    "description": "An example for using replace"
+  },
+  "string.replace=>": {
+    "prefix": "string.replace=>",
+    "body": [
+      "txt = 'one one was a race horse, two two was one too.'",
+      "x = txt.replace('one', 'three', 2)",
+      "print(x)"
+    ],
+    "description": "An example for using replace"
+  },
+  "rfind": {
+    "prefix": ".rfind",
+    "body": ".rfind()",
+    "description": "Searches the string for a specified value and returns the last position of where it was found"
+  },
+  "string.rfind=>": {
+    "prefix": "string.rfind=>",
+    "body": [
+      "txt = 'Mi casa, su casa.'",
+      "x = txt.rfind('casa')",
+      "print(x)"
+    ],
+    "description": "An example for using rfind"
+  },
+  "string.rfind=>": {
+    "prefix": "string.rfind=>",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "x = txt.rfind('e')",
+      "print(x)"
+    ],
+    "description": "An example for using rfind"
+  },
+  "string.rfind=>": {
+    "prefix": "string.rfind=>",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "x = txt.rfind('e', 5, 10)",
+      "print(x)"
+    ],
+    "description": "An example for using rfind"
+  },
+  "string.rfind=>": {
+    "prefix": "string.rfind=>",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "print(txt.rfind('q'))",
+      "print(txt.rindex('q'))"
+    ],
+    "description": "An example for using rfind"
+  },
+  "rindex": {
+    "prefix": ".rindex",
+    "body": ".rindex()",
+    "description": "Searches the string for a specified value and returns the last position of where it was found"
+  },
+  "string.rindex=>": {
+    "prefix": "string.rindex=>",
+    "body": [
+      "txt = 'Mi casa, su casa.'",
+      "x = txt.rindex('casa')",
+      "print(x)"
+    ],
+    "description": "An example for using rindex"
+  },
+  "string.rindex=>": {
+    "prefix": "string.rindex=>",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "x = txt.rindex('e')",
+      "print(x)"
+    ],
+    "description": "An example for using rindex"
+  },
+  "string.rindex=>": {
+    "prefix": "string.rindex=>",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "x = txt.rindex('e', 5, 10)",
+      "print(x)"
+    ],
+    "description": "An example for using rindex"
+  },
+  "string.rindex=>": {
+    "prefix": "string.rindex=>",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "print(txt.rfind('q'))",
+      "print(txt.rindex('q'))"
+    ],
+    "description": "An example for using rindex"
+  },
+  "rpartition": {
+    "prefix": ".rpartition",
+    "body": ".rpartition()",
+    "description": "Returns a tuple where the string is parted into three parts"
+  },
+  "string.rpartition=>": {
+    "prefix": "string.rpartition=>",
+    "body": [
+      "txt = 'I could eat bananas all day, bananas are my favorite fruit'",
+      "x = txt.rpartition('bananas')",
+      "print(x)"
+    ],
+    "description": "An example for using rpartition"
+  },
+  "string.rpartition=>": {
+    "prefix": "string.rpartition=>",
+    "body": [
+      "txt = 'I could eat bananas all day, bananas are my favorite fruit'",
+      "x = txt.rpartition('apples')",
+      "print(x)"
+    ],
+    "description": "An example for using rpartition"
+  },
+  "rsplit": {
+    "prefix": ".rsplit",
+    "body": ".rsplit()",
+    "description": "Returns a right trim version of the string"
+  },
+  "string.rsplit=>": {
+    "prefix": "string.rsplit=>",
+    "body": [
+      "txt = 'apple, banana, cherry'",
+      "x = txt.rsplit(', ')",
+      "print(x)"
+    ],
+    "description": "An example for using rsplit"
+  },
+  "string.rsplit=>": {
+    "prefix": "string.rsplit=>",
+    "body": [
+      "txt = 'apple, banana, cherry'",
+      "# setting the max parameter to 1, will return a list with 2 elements!",
+      "x = txt.rsplit(', ', 1)",
+      "print(x)"
+    ],
+    "description": "An example for using rsplit"
+  },
+  "string.rsplit=>": {
+    "prefix": "string.rsplit=>",
+    "body": [
+      "txt = 'banana,,,,,ssaaww.....'",
+      "x = txt.rstrip(',.asw')",
+      "print(x)"
+    ],
+    "description": "An example for using rsplit"
+  },
+  "split": {
+    "prefix": ".split",
+    "body": ".split()",
+    "description": "Splits the string at the specified separator, and returns a list"
+  },
+  "string.split=>": {
+    "prefix": "string.split=>",
+    "body": [
+      "txt = 'welcome to the jungle'",
+      "x = txt.split()",
+      "print(x)"
+    ],
+    "description": "An example for using split"
+  },
+  "string.split=>": {
+    "prefix": "string.split=>",
+    "body": [
+      "txt = 'hello, my name is Peter, I am 26 years old'",
+      "x = txt.split(', ')",
+      "print(x)"
+    ],
+    "description": "An example for using split"
+  },
+  "string.split=>": {
+    "prefix": "string.split=>",
+    "body": [
+      "txt = 'apple#banana#cherry#orange'",
+      "x = txt.split('#')",
+      "print(x)"
+    ],
+    "description": "An example for using split"
+  },
+  "string.split=>": {
+    "prefix": "string.split=>",
+    "body": [
+      "txt = 'apple#banana#cherry#orange'",
+      "# setting the max parameter to 1, will return a list with 2 elements!",
+      "x = txt.split('#', 1)",
+      "print(x)"
+    ],
+    "description": "An example for using split"
+  },
+  "splitlines": {
+    "prefix": ".splitlines",
+    "body": ".splitlines()",
+    "description": "Splits the string at line breaks and returns a list"
+  },
+  "string.splitlines=>": {
+    "prefix": "string.splitlines=>",
+    "body": [
+      "txt = 'Thank you for the music\nWelcome to the jungle'",
+      "x = txt.splitlines()",
+      "print(x)"
+    ],
+    "description": "An example for using splitlines"
+  },
+  "string.splitlines=>": {
+    "prefix": "string.splitlines=>",
+    "body": [
+      "txt = 'Thank you for the music\nWelcome to the jungle'",
+      "x = txt.splitlines(True)",
+      "print(x)"
+    ],
+    "description": "An example for using splitlines"
+  },
+  "startswith": {
+    "prefix": ".startswith",
+    "body": ".startswith()",
+    "description": "Returns true if the string starts with the specified value"
+  },
+  "string.startswith=>": {
+    "prefix": "string.startswith=>",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "x = txt.startswith('Hello')",
+      "print(x)"
+    ],
+    "description": "An example for using startswith"
+  },
+  "string.startswith=>": {
+    "prefix": "string.startswith=>",
+    "body": [
+      "txt = 'Hello, welcome to my world.'",
+      "x = txt.startswith('wel', 7, 20)",
+      "print(x)"
+    ],
+    "description": "An example for using startswith"
+  },
+  "swapcase": {
+    "prefix": ".swapcase",
+    "body": ".swapcase()",
+    "description": "Swaps cases, lower case becomes upper case and vice versa"
+  },
+  "string.swapcase=>": {
+    "prefix": "string.swapcase=>",
+    "body": [
+      "txt = 'Hello My Name Is PETER'",
+      "x = txt.swapcase()",
+      "print(x)"
+    ],
+    "description": "An example for using swapcase"
+  },
+  "title": {
+    "prefix": ".title",
+    "body": ".title()",
+    "description": "Converts the first character of each word to upper case"
+  },
+  "string.title=>": {
+    "prefix": "string.title=>",
+    "body": [
+      "txt = 'Welcome to my world'",
+      "x = txt.title()",
+      "print(x)"
+    ],
+    "description": "An example for using title"
+  },
+  "string.title=>": {
+    "prefix": "string.title=>",
+    "body": [
+      "txt = 'Welcome to my 2nd world'",
+      "x = txt.title()",
+      "print(x)"
+    ],
+    "description": "An example for using title"
+  },
+  "string.title=>": {
+    "prefix": "string.title=>",
+    "body": [
+      "txt = 'hello b2b2b2 and 3g3g3g'",
+      "x = txt.title()",
+      "print(x)"
+    ],
+    "description": "An example for using title"
+  },
+  "translate": {
+    "prefix": ".translate",
+    "body": ".translate()",
+    "description": "Returns a translated string"
+  },
+  "string.translate=>": {
+    "prefix": "string.translate=>",
+    "body": [
+      "# translation table - a dictionary",
+      "translation = {97: None, 98: None, 99: 105}",
+      "",
+      "string = 'abcdef'",
+      "print('Original string:', string)",
+      "",
+      "# translate string",
+      "print('Translated string:', string.translate(translation))"
+    ],
+    "description": "An example for using translate"
+  },
+  "upper": {
+    "prefix": ".upper",
+    "body": ".upper()",
+    "description": "Converts a string into upper case"
+  },
+  "string.upper=>": {
+    "prefix": "string.upper=>",
+    "body": [
+      "txt = 'Hello my friends'",
+      "x = txt.upper()",
+      "print(x)"
+    ],
+    "description": "An example for using upper"
+  },
+  "zfill": {
+    "prefix": ".zfill",
+    "body": ".zfill()",
+    "description": "Fills the string with a specified number of 0 values at the beginning"
+  },
+  "string.zfill=>": {
+    "prefix": "string.zfill=>",
+    "body": [
+      "txt = '50'",
+      "x = txt.zfill(10)",
+      "print(x)"
+    ],
+    "description": "An example for using zfill"
+  },
+  "append": {
+    "prefix": ".append",
+    "body": ".append()",
+    "description": "Adds an element at the end of the list"
+  },
+  "list.append=>": {
+    "prefix": "list.append=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "fruits.append('orange')",
+      "print(fruits)"
+    ],
+    "description": "An example for using append"
+  },
+  "list.append=>": {
+    "prefix": "list.append=>",
+    "body": [
+      "a = ['apple', 'banana', 'cherry']",
+      "b = ['Ford', 'BMW', 'Volvo']",
+      "a.append(b)",
+      "print(a)"
+    ],
+    "description": "An example for using append"
+  },
+  "clear": {
+    "prefix": ".clear",
+    "body": ".clear()",
+    "description": "Removes all the elements from the list"
+  },
+  "list.clear=>": {
+    "prefix": "list.clear=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "fruits.clear()",
+      "print(fruits)"
+    ],
+    "description": "An example for using clear"
+  },
+  "copy": {
+    "prefix": ".copy",
+    "body": ".copy()",
+    "description": "Returns a copy of the list"
+  },
+  "list.copy=>": {
+    "prefix": "list.copy=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "x = fruits.copy()",
+      "print(x)"
+    ],
+    "description": "An example for using copy"
+  },
+  "list.count": {
+    "prefix": ".count",
+    "body": ".count",
+    "description": "Returns the number of elements with the specified value"
+  },
+  "list.count=>": {
+    "prefix": "list.count=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "x = fruits.count('cherry')",
+      "print(x)"
+    ],
+    "description": "An example for using count"
+  },
+  "list.count=>": {
+    "prefix": "list.count=>",
+    "body": [
+      "fruits = [1, 4, 2, 9, 7, 8, 9, 3, 1]",
+      "x = fruits.count(9)",
+      "print(x)"
+    ],
+    "description": "An example for using count"
+  },
+  "extend": {
+    "prefix": ".extend",
+    "body": ".extend()",
+    "description": "Add the elements of a list (or any iterable), to the end of the current list"
+  },
+  "list.extend=>": {
+    "prefix": "list.extend=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "points = (1, 4, 5, 9)",
+      "fruits.extend(points)",
+      "print(fruits)"
+    ],
+    "description": "An example for using extend"
+  },
+  "index": {
+    "prefix": ".index",
+    "body": ".index()",
+    "description": "Returns the index of the first element with the specified value"
+  },
+  "list.index=>": {
+    "prefix": "list.index=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "x = fruits.index('cherry')",
+      "print(x)"
+    ],
+    "description": "An example for using index"
+  },
+  "list.index=>": {
+    "prefix": "list.index=>",
+    "body": [
+      "fruits = [4, 55, 64, 32, 16, 32]",
+      "x = fruits.index(32)",
+      "print(x)"
+    ],
+    "description": "An example for using index"
+  },
+  "insert": {
+    "prefix": ".insert",
+    "body": ".insert()",
+    "description": "Adds an element at the specified position"
+  },
+  "list.insert=>": {
+    "prefix": "list.insert=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "x = fruits.insert(1, 'orange')",
+      "print(x)"
+    ],
+    "description": "An example for using insert"
+  },
+  "pop": {
+    "prefix": ".pop",
+    "body": ".pop()",
+    "description": "Removes the element at the specified position"
+  },
+  "list.pop=>": {
+    "prefix": "list.pop=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "fruits.pop(1)",
+      "print(fruits)"
+    ],
+    "description": "An example for using pop"
+  },
+  "remove": {
+    "prefix": ".remove",
+    "body": ".remove()",
+    "description": "Removes the first item with the specified value"
+  },
+  "list.remove=>": {
+    "prefix": "list.remove=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "fruits.remove('banana')",
+      "print(fruits)"
+    ],
+    "description": "An example for using remove"
+  },
+  "reverse": {
+    "prefix": ".reverse",
+    "body": ".reverse()",
+    "description": "Reverses the order of the list"
+  },
+  "list.reverse=>": {
+    "prefix": "list.reverse=>",
+    "body": [
+      "fruits = ['apple', 'banana', 'cherry']",
+      "fruits.reverse()",
+      "print(fruits)"
+    ],
+    "description": "An example for using reverse"
+  },
+  "sort": {
+    "prefix": ".sort",
+    "body": ".sort()",
+    "description": "Sorts the list"
+  },
+  "list.sort=>": {
+    "prefix": "list.sort=>",
+    "body": [
+      "cars = ['Ford', 'BMW', 'Volvo']",
+      "cars.sort()",
+      "print(cars)"
+    ],
+    "description": "An example for using sort"
+  },
+  "list.sort=>": {
+    "prefix": "list.sort=>",
+    "body": [
+      "cars = ['Ford', 'BMW', 'Volvo']",
+      "cars.sort(reverse=True)",
+      "print(cars)"
+    ],
+    "description": "An example for using sort"
+  },
+  "list.sort=>": {
+    "prefix": "list.sort=>",
+    "body": [
+      "# A function that returns the length of the value:",
+      "def myFunc(e):",
+      "  return len(e)",
+      "cars = ['Ford', 'Mitsubishi', 'BMW', 'VW']",
+      "cars.sort(key=myFunc)",
+      "print(cars)"
+    ],
+    "description": "An example for using sort"
+  },
+  "list.sort=>": {
+    "prefix": "list.sort=>",
+    "body": [
+      "# A function that returns the length of the value:",
+      "def myFunc(e):",
+      "  return len(e)",
+      "cars = ['Ford', 'Mitsubishi', 'BMW', 'VW']",
+      "cars.sort(reverse=True, key=myFunc)",
+      "print(cars)"
+    ],
+    "description": "An example for using sort"
+  },
+  "comprehensions": {
+    "prefix": "comp=>",
+    "body": "[ expression for item in list if conditional ]",
+    "description": "List Comprehensions"
+  },
+  "list.comp=>_1": {
+    "prefix": "list.comp=>_1",
+    "body": [
+      "x = [i for i in range(10)]",
+      "print(x)"
+    ],
+    "description": "An example for using list comprehension"
+  },
+  "list.comp=>_2": {
+    "prefix": "list.comp=>_2",
+    "body": [
+      "x = [x**2 for x in range(10)]",
+      "print(x)"
+    ],
+    "description": "An example for using list comprehension"
+  },
+  "list.comp=>_3": {
+    "prefix": "list.comp=>_3",
+    "body": [
+      "list1 = [3,4,5]",
+      "multiplied = [item*3 for item in list1]",
+      "print(multiplied)"
+    ],
+    "description": "An example for using list comprehension"
+  },
+  "list.comp=>_4": {
+    "prefix": "list.comp=>_4",
+    "body": [
+      "listOfWords = ['this','is','a','list','of','words']",
+      "items = [ word[0] for word in listOfWords ]",
+      "print(items)"
+    ],
+    "description": "An example for using list comprehension"
+  },
+  "list.comp=>_5": {
+    "prefix": "list.comp=>_5",
+    "body": [
+      "x = [double(x) for x in range(10) if x%2==0]",
+      "print(x)"
+    ],
+    "description": "An example for using list comprehension"
+  },
+  "clear": {
+    "prefix": ".clear",
+    "body": ".clear()",
+    "description": "Removes all the elements from the dictionary"
+  },
+  "dictionary.clear=>": {
+    "prefix": "dictionary.clear=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "car.clear()",
+      "print(car)"
+    ],
+    "description": "An example for using clear"
+  },
+  "copy": {
+    "prefix": ".copy",
+    "body": ".copy()",
+    "description": "Returns a copy of the dictionary"
+  },
+  "dictionary.copy=>": {
+    "prefix": "dictionary.copy=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.copy()",
+      "print(x)"
+    ],
+    "description": "An example for using copy"
+  },
+  "fromkeys": {
+    "prefix": ".fromkeys",
+    "body": ".fromkeys(x, y)",
+    "description": "Returns a dictionary with the specified keys and values"
+  },
+  "dictionary.fromkeys=>": {
+    "prefix": "dictionary.fromkeys=>",
+    "body": [
+      "x = ('key1', 'key2', 'key3')",
+      "y = 0",
+      "thisdict = dict.fromkeys(x, y)",
+      "print(thisdict)"
+    ],
+    "description": "An example for using fromkeys"
+  },
+  "dictionary.fromkeys=>": {
+    "prefix": "dictionary.fromkeys=>",
+    "body": [
+      "x = ('key1', 'key2', 'key3')",
+      "thisdict = dict.fromkeys(x)",
+      "print(thisdict)"
+    ],
+    "description": "An example for using fromkeys"
+  },
+  "get": {
+    "prefix": ".get",
+    "body": ".get()",
+    "description": "Returns the value of the specified key"
+  },
+  "dictionary.get=>": {
+    "prefix": "dictionary.get=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.get('model')",
+      "print(x)"
+    ],
+    "description": "An example for using get"
+  },
+  "dictionary.get=>": {
+    "prefix": "dictionary.get=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.get('price', 15000)",
+      "print(x)"
+    ],
+    "description": "An example for using get"
+  },
+  "items": {
+    "prefix": ".items",
+    "body": ".items()",
+    "description": "Returns a list containing the a tuple for each key value pair"
+  },
+  "dictionary.items=>": {
+    "prefix": "dictionary.items=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.items()",
+      "print(x)"
+    ],
+    "description": "An example for using items"
+  },
+  "dictionary.items=>": {
+    "prefix": "dictionary.items=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.items()",
+      "car['year'] = 2018",
+      "print(x)"
+    ],
+    "description": "An example for using items"
+  },
+  "keys": {
+    "prefix": ".keys",
+    "body": ".keys()",
+    "description": "Returns a list containing the dictionary's keys"
+  },
+  "dictionary.keys=>": {
+    "prefix": "dictionary.keys=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.keys()",
+      "print(x)"
+    ],
+    "description": "An example for using keys"
+  },
+  "dictionary.keys=>": {
+    "prefix": "dictionary.keys=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.keys()",
+      "car['color'] = 'white'",
+      "print(x)"
+    ],
+    "description": "An example for using keys"
+  },
+  "pop": {
+    "prefix": ".pop",
+    "body": ".pop()",
+    "description": "Removes the element with the specified key"
+  },
+  "dictionary.pop=>": {
+    "prefix": "dictionary.pop=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "car.pop('model')",
+      "print(car)"
+    ],
+    "description": "An example for using pop"
+  },
+  "popitem": {
+    "prefix": ".popitem",
+    "body": ".popitem()",
+    "description": "Removes the last inserted key-value pai"
+  },
+  "dictionary.popitem=>": {
+    "prefix": "dictionary.popitem=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "car.popitem()",
+      "print(car)"
+    ],
+    "description": "An example for using popitem"
+  },
+  "setdefault": {
+    "prefix": ".setdefault",
+    "body": ".setdefault()",
+    "description": "Returns the value of the specified key. If the key does not exist: insert the key, with the specified value"
+  },
+  "dictionary.setdefault=>": {
+    "prefix": "dictionary.setdefault=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.setdefault('model', 'Bronco')",
+      "print(x)"
+    ],
+    "description": "An example for using setdefault"
+  },
+  "dictionary.setdefault=>": {
+    "prefix": "dictionary.setdefault=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.setdefault('color', 'white')",
+      "print(x)"
+    ],
+    "description": "An example for using setdefault"
+  },
+  "update": {
+    "prefix": ".update",
+    "body": ".update()",
+    "description": "Updates the dictionary with the specified key-value pairs"
+  },
+  "dictionary.update=>": {
+    "prefix": "dictionary.update=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "car.update({'color': 'White'})",
+      "print(car)"
+    ],
+    "description": "An example for using update"
+  },
+  "values": {
+    "prefix": ".values",
+    "body": ".values()",
+    "description": "Returns a list of all the values in the dictionary"
+  },
+  "dictionary.values=>": {
+    "prefix": "dictionary.values=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.values()",
+      "print(x)"
+    ],
+    "description": "An example for using values"
+  },
+  "dictionary.values=>": {
+    "prefix": "dictionary.values=>",
+    "body": [
+      "car = {",
+      "  'brand': 'Ford',",
+      "  'model': 'Mustang',",
+      "  'year': 1964",
+      "}",
+      "x = car.values()",
+      "car['year'] = 2018",
+      "print(x)"
+    ],
+    "description": "An example for using values"
+  },
+  "tuple.count": {
+    "prefix": ".count",
+    "body": ".count(value)",
+    "description": "Returns the number of times a specified value occurs in a tuple"
+  },
+  "tuple.count=>": {
+    "prefix": "tuple.count=>",
+    "body": [
+      "thistuple = (1, 3, 7, 8, 7, 5, 4, 6, 8, 5)",
+      "x = thistuple.count(5)",
+      "print(x)"
+    ],
+    "description": "An example for using count"
+  },
+  "index": {
+    "prefix": ".index",
+    "body": ".index(value)",
+    "description": "Searches the tuple for a specified value and returns the position of where it was found"
+  },
+  "tuple.index=>": {
+    "prefix": "tuple.index=>",
+    "body": [
+      "thistuple = (1, 3, 7, 8, 7, 5, 4, 6, 8, 5)",
+      "x = thistuple.index(8)",
+      "print(x)"
+    ],
+    "description": "An example for using index"
+  },
+  "add": {
+    "prefix": ".add",
+    "body": ".add()",
+    "description": "Adds an element to the set"
+  },
+  "sets.add=>": {
+    "prefix": "sets.add=>",
+    "body": [
+      "fruits = {'apple', 'banana', 'cherry'}",
+      "fruits.add('orange') ",
+      "print(fruits)"
+    ],
+    "description": "An example for using add"
+  },
+  "clear": {
+    "prefix": ".clear",
+    "body": ".clear()",
+    "description": "Removes all the elements from the set"
+  },
+  "sets.clear=>": {
+    "prefix": "sets.clear=>",
+    "body": [
+      "fruits = {'apple', 'banana', 'cherry'}",
+      "fruits.clear()",
+      "print(fruits)"
+    ],
+    "description": "An example for using clear"
+  },
+  "copy": {
+    "prefix": ".copy",
+    "body": ".copy()",
+    "description": "Returns a copy of the set"
+  },
+  "sets.copy=>": {
+    "prefix": "sets.copy=>",
+    "body": [
+      "fruits = {'apple', 'banana', 'cherry'}",
+      "x = fruits.copy()",
+      "print(x)"
+    ],
+    "description": "An example for using copy"
+  },
+  "difference": {
+    "prefix": ".difference",
+    "body": "x.difference(y)",
+    "description": "Returns a set containing the difference between two or more sets"
+  },
+  "sets.difference=>_1": {
+    "prefix": "sets.difference=>_1",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "z = x.difference(y)",
+      "print(z)"
+    ],
+    "description": "An example for using difference"
+  },
+  "sets.difference=>_2": {
+    "prefix": "sets.difference=>_2",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "z = y.difference(x) ",
+      "print(z)"
+    ],
+    "description": "An example for using difference"
+  },
+  "difference_update": {
+    "prefix": ".difference_update",
+    "body": "x.difference_update(y)",
+    "description": "Removes the items in this set that are also included in another, specified set"
+  },
+  "sets.difference_update=>": {
+    "prefix": "sets.difference_update=>",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "x.difference_update(y)",
+      "print(x)"
+    ],
+    "description": "An example for using difference_update"
+  },
+  "discard": {
+    "prefix": ".discard",
+    "body": ".discard()",
+    "description": "Remove the specified item"
+  },
+  "sets.discard=>": {
+    "prefix": "sets.discard=>",
+    "body": [
+      "fruits = {'apple', 'banana', 'cherry'}",
+      "fruits.discard('banana') ",
+      "print(fruits)"
+    ],
+    "description": "An example for using discard"
+  },
+  "intersection": {
+    "prefix": ".intersection",
+    "body": "x.intersection(y)",
+    "description": "Returns a set, that is the intersection of two other sets"
+  },
+  "sets.intersection=>_1": {
+    "prefix": "sets.intersection=>_1",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "z = x.intersection(y)",
+      "print(z)"
+    ],
+    "description": "An example for using intersection"
+  },
+  "sets.intersection=>_2": {
+    "prefix": "sets.intersection=>_2",
+    "body": [
+      "x = {'a', 'b', 'c'}",
+      "y = {'c', 'd', 'e'}",
+      "z = {'f', 'g', 'c'}",
+      "result = x.intersection(y, z)",
+      "print(result)"
+    ],
+    "description": "An example for using intersection"
+  },
+  "intersection_update": {
+    "prefix": ".intersection_update",
+    "body": "x.intersection_update(y)",
+    "description": "Removes the items in this set that are not present in other, specified set(s)"
+  },
+  "sets.intersection_update=>_1": {
+    "prefix": "sets.intersection_update=>_1",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "x.intersection_update(y)",
+      "print(x)"
+    ],
+    "description": "An example for using intersection_update"
+  },
+  "sets.intersection_update=>_2": {
+    "prefix": "sets.intersection_update=>_2",
+    "body": [
+      "x = {'a', 'b', 'c'}",
+      "y = {'c', 'd', 'e'}",
+      "z = {'f', 'g', 'c'}",
+      "x.intersection_update(y, z)",
+      "print(x)"
+    ],
+    "description": "An example for using intersection_update"
+  },
+  "isdisjoint": {
+    "prefix": ".isdisjoint",
+    "body": "x.isdisjoint(y)",
+    "description": "Returns whether two sets have a intersection or not"
+  },
+  "sets.isdisjoint=>_1": {
+    "prefix": "sets.isdisjoint=>_1",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'facebook'}",
+      "z = ",
+      "print(z)"
+    ],
+    "description": "An example for using isdisjoint"
+  },
+  "sets.isdisjoint=>_2": {
+    "prefix": "sets.isdisjoint=>_2",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "z = x.isdisjoint(y) ",
+      "print(z)"
+    ],
+    "description": "An example for using isdisjoint"
+  },
+  "issubset": {
+    "prefix": ".issubset",
+    "body": "x.issubset(y)",
+    "description": "Returns whether another set contains this set or not"
+  },
+  "sets.issubset=>_1": {
+    "prefix": "sets.sets.issubset=>_1",
+    "body": [
+      "x = {'a', 'b', 'c'}",
+      "y = {'f', 'e', 'd', 'c', 'b', 'a'}",
+      "z = x.issubset(y) ",
+      "print(z)"
+    ],
+    "description": "An example for using issubset"
+  },
+  "sets.issubset=>_2": {
+    "prefix": "sets.issubset=>_2",
+    "body": [
+      "x = {'a', 'b', 'c'}",
+      "y = {'f', 'e', 'd', 'c', 'b'}",
+      "z = x.issubset(y) ",
+      "print(z)"
+    ],
+    "description": "An example for using issubset"
+  },
+  "issuperset": {
+    "prefix": ".issuperset",
+    "body": "x.issuperset(y)",
+    "description": "Returns whether this set contains another set or not"
+  },
+  "sets.issuperset=>_1": {
+    "prefix": "sets.issuperset=>_1",
+    "body": [
+      "x = {'f', 'e', 'd', 'c', 'b', 'a'}",
+      "y = {'a', 'b', 'c'}",
+      "z = x.issuperset(y) ",
+      "print(z)"
+    ],
+    "description": "An example for using issuperset"
+  },
+  "sets.issuperset=>_2": {
+    "prefix": "sets.issuperset=>_2",
+    "body": [
+      "x = {'f', 'e', 'd', 'c', 'b'}",
+      "y = {'a', 'b', 'c'}",
+      "z = x.issuperset(y) ",
+      "print(z)"
+    ],
+    "description": "An example for using issuperset"
+  },
+  "pop": {
+    "prefix": ".pop",
+    "body": ".pop()",
+    "description": "Removes the specified element"
+  },
+  "sets.pop=>": {
+    "prefix": "sets.pop=>",
+    "body": [
+      "fruits = {'apple', 'banana', 'cherry'}",
+      "fruits.pop() ",
+      "print(fruits)"
+    ],
+    "description": "An example for using pop"
+  },
+  "remove": {
+    "prefix": ".remove",
+    "body": ".remove()",
+    "description": "Removes the specified element"
+  },
+  "sets.remove=>": {
+    "prefix": "sets.remove=>",
+    "body": [
+      "fruits = {'apple', 'banana', 'cherry'}",
+      "fruits.remove('banana') ",
+      "print(fruits)"
+    ],
+    "description": "An example for using remove"
+  },
+  "symmetric_difference": {
+    "prefix": ".symmetric_difference",
+    "body": "x.symmetric_difference(y)",
+    "description": "Returns a set with the symmetric differences of two sets"
+  },
+  "sets.symmetric_difference=>": {
+    "prefix": "sets.symmetric_difference=>",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "z = x.symmetric_difference(y) ",
+      "print(z)"
+    ],
+    "description": "An example for using symmetric_difference"
+  },
+  "symmetric_difference_update": {
+    "prefix": ".symmetric_difference_update",
+    "body": "x.symmetric_difference_update(y)",
+    "description": "inserts the symmetric differences from this set and another"
+  },
+  "sets.symmetric_difference_update=>": {
+    "prefix": "sets.symmetric_difference_update=>",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "x.symmetric_difference_update(y) ",
+      "print(x)"
+    ],
+    "description": "An example for using symmetric_difference_update"
+  },
+  "union": {
+    "prefix": ".union",
+    "body": "x.union(y)",
+    "description": "Return a set containing the union of sets"
+  },
+  "sets.union=>_1": {
+    "prefix": "sets.union=>_1",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "z = x.union(y) ",
+      "print(z)"
+    ],
+    "description": "An example for using union"
+  },
+  "sets.union=>_2": {
+    "prefix": "sets.union=>_2",
+    "body": [
+      "x = {'a', 'b', 'c'}",
+      "y = {'f', 'd', 'a'}",
+      "z = {'c', 'd', 'e'}",
+      "result = x.union(y, z) ",
+      "print(result)"
+    ],
+    "description": "An example for using union"
+  },
+  "update": {
+    "prefix": ".update",
+    "body": "x.update(y)",
+    "description": "Update the set with the union of this set and others"
+  },
+  "sets.update=>": {
+    "prefix": "sets.update=>",
+    "body": [
+      "x = {'apple', 'banana', 'cherry'}",
+      "y = {'google', 'microsoft', 'apple'}",
+      "x.update(y) ",
+      "print(x)"
+    ],
+    "description": "An example for using update"
+  },
+  "class": {
+    "prefix": "class=>",
+    "body": [
+      "class MyClass:",
+      "  pass"
+    ],
+    "description": "python class"
+  },
+  "__init__": {
+    "prefix": "__init__=>",
+    "body": [
+      "def __init__(self, name, age):",
+      "  self.name = name",
+      "  self.age = age"
+    ],
+    "description": "__init__ method"
+  },
+  "__iter__": {
+    "prefix": "__iter__=>",
+    "body": [
+      "def __iter__(self):",
+      "  self.a = 1",
+      "  return self"
+    ],
+    "description": "__iter__ method"
+  },
+  "__next__": {
+    "prefix": "__next__=>",
+    "body": [
+      "def __next__(self):",
+      "  x = self.a",
+      "  self.a += 1",
+      "  return x"
+    ],
+    "description": "__next__ method"
+  },
+  "import": {
+    "prefix": "import=>",
+    "body": "import mymodule as mx",
+    "description": "import module"
+  },
+  "import_gdsfactory": {
+    "prefix": "importg",
+    "body": "import gdsfactory as gf",
+    "description": "import gdsfactory"
+  },
+  "import_gdsfactory_short": {
+    "prefix": "igf",
+    "body": "import gdsfactory as gf",
+    "description": "import gdsfactory"
+  },
+  "gfcell": {
+    "prefix": "@gf=>",
+    "body": [
+      "@gf.cell",
+      "def ${1:<name>}()->gf.Component:",
+      "  c = gf.Component()",
+      "  return c"
+    ],
+    "description": "new gdsfactory component factory"
+  },
+  "ifmain": {
+    "prefix": "ifmain",
+    "body": [
+      "if __name__ == '__main__':",
+      "  "
+    ],
+    "description": "top level main module"
+  },
+  "tryexcept": {
+    "prefix": "trye=>",
+    "body": [
+      "try:",
+      "  print(x)",
+      "except:",
+      "  print('An exception occurred')"
+    ],
+    "description": "tryexcept method"
+  },
+  "tryexceptfinally": {
+    "prefix": "tryef=>",
+    "body": [
+      "try:",
+      "  print(x)",
+      "except:",
+      "  print('Something went wrong')",
+      "finally:",
+      "  print('The try except is finished')"
+    ],
+    "description": "tryexceptfinally method"
+  },
+  "openFile": {
+    "prefix": "file=>openFile",
+    "body": [
+      "f = open('demofile.txt', 'r')",
+      "print(f.read())"
+    ],
+    "description": "open a file"
+  },
+  "openFileReadLine": {
+    "prefix": "file=>openFileReadLine",
+    "body": [
+      "f = open('demofile.txt', 'r')",
+      "print(f.readline())"
+    ],
+    "description": "Read one line of the file"
+  },
+  "writeExistFile": {
+    "prefix": "file=>writeExistFile",
+    "body": [
+      "f = open('demofile.txt', 'a')",
+      "f.write('Now the file has one more line!')"
+    ],
+    "description": "Write to an Existing File"
+  },
+  "writeOwerWrite": {
+    "prefix": "file=>writeOwerWrite",
+    "body": [
+      "f = open('demofile.txt', 'w')",
+      "f.write('Woops! I have deleted the content!')"
+    ],
+    "description": "Open a file and overwrite the content"
+  },
+  "createFileIfDoesNotExist": {
+    "prefix": "file=>createFileIfDoesNotExist",
+    "body": "f = open('myfile.txt', 'w')",
+    "description": "Create a new file if it does not exist"
+  },
+  "createFile": {
+    "prefix": "file=>createFile",
+    "body": "f = open('myfile.txt', 'x')",
+    "description": "Create a new file"
+  },
+  "deleteFile": {
+    "prefix": "file=>deleteFile",
+    "body": [
+      "#import os",
+      "os.remove('demofile.txt')"
+    ],
+    "description": "delete a file"
+  },
+  "class=>_1": {
+    "prefix": "class=>_1",
+    "body": [
+      "class Person:",
+      "    pass  # An empty block",
+      "p = Person()",
+      "print(p)"
+    ],
+    "description": "oop inheritance example"
+  },
+  "class=>inheritance_1": {
+    "prefix": "class=>inheritance_1",
+    "body": [
+      "class Bird:",
+      "",
+      "   def __init__(self):",
+      "     print('Bird is ready')",
+      "",
+      "   def whoisThis(self):",
+      "     print('Bird')",
+      "",
+      "   def swim(self):",
+      "     print('Swim faster')",
+      "",
+      "# child class",
+      "class Penguin(Bird):",
+      "",
+      "   def __init__(self):",
+      "     # call super() function",
+      "     super().__init__()",
+      "     print('Penguin is ready')",
+      "",
+      "   def whoisThis(self):",
+      "     print('Penguin')",
+      "",
+      "   def run(self):",
+      "     print('Run faster')",
+      "",
+      "peggy = Penguin()",
+      "peggy.whoisThis()",
+      "peggy.swim()",
+      "peggy.run()"
+    ],
+    "description": "oop inheritance example"
+  },
+  "class=>inheritance_2": {
+    "prefix": "class=>inheritance_2",
+    "body": [
+      "class SchoolMember:",
+      "    '''Represents any school member.'''",
+      "    def __init__(self, name, age):",
+      "        self.name = name",
+      "        self.age = age",
+      "        print('(Initialized SchoolMember: {})'.format(self.name))",
+      "    def tell(self):",
+      "        '''Tell my details.'''",
+      "        print('Name:{} Age:{}'.format(self.name, self.age), end=' ')",
+      "class Teacher(SchoolMember):",
+      "    '''Represents a teacher.'''",
+      "    def __init__(self, name, age, salary):",
+      "        SchoolMember.__init__(self, name, age)",
+      "        self.salary = salary",
+      "        print('(Initialized Teacher: {})'.format(self.name))",
+      "    def tell(self):",
+      "        SchoolMember.tell(self)",
+      "        print('Salary: {:d}'.format(self.salary))",
+      "class Student(SchoolMember):",
+      "    '''Represents a student.'''",
+      "    def __init__(self, name, age, marks):",
+      "        SchoolMember.__init__(self, name, age)",
+      "        self.marks = marks",
+      "        print('(Initialized Student: {})'.format(self.name))",
+      "    def tell(self):",
+      "        SchoolMember.tell(self)",
+      "        print('Marks: {:d}'.format(self.marks))",
+      "t = Teacher('Mrs. Shrividya', 40, 30000)",
+      "s = Student('Swaroop', 25, 75)",
+      "# prints a blank line",
+      "print()",
+      "members = [t, s]",
+      "for member in members:",
+      "    # Works for both Teachers and Students",
+      "    member.tell()"
+    ],
+    "description": "oop inheritance example"
+  },
+  "class=>with_attribute_1": {
+    "prefix": "class=>with_attribute_1",
+    "body": [
+      "class Parrot:",
+      "",
+      "# class attribute",
+      " species = 'bird'",
+      "",
+      "# instance attribute",
+      " def __init__(self, name, age):",
+      "    self.name = name",
+      "    self.age = age",
+      "",
+      "# instantiate the Parrot class",
+      "blu = Parrot('Blu', 10)",
+      "woo = Parrot('woo', 15)",
+      "",
+      "# access the class attributes",
+      "print('Blu is a {}'.format(blu.__class__.species))",
+      "print('Woo is also a {}'.format(woo.__class__.species))",
+      "# access the instance attributes",
+      "print('{} is {} years old'.format( blu.name, blu.age))",
+      "print('{} is {} years old'.format( woo.name, woo.age))"
+    ],
+    "description": "class with attribute example"
+  },
+  "class=>with_attribute_2": {
+    "prefix": "class=>with_attribute_2",
+    "body": [
+      "class Person:",
+      "    def __init__(self, name):",
+      "        self.name = name",
+      "    def say_hi(self):",
+      "        print('Hello, my name is', self.name)",
+      "p = Person('Swaroop')",
+      "p.say_hi()",
+      "# The previous 2 lines can also be written as",
+      "# Person('Swaroop').say_hi()"
+    ],
+    "description": "class with attribute example"
+  },
+  "class=>with_attribute_3": {
+    "prefix": "class=>with_attribute_3",
+    "body": [
+      "class Robot:",
+      "    '''Represents a robot, with a name.'''",
+      "    # A class variable, counting the number of robots",
+      "    population = 0",
+      "    def __init__(self, name):",
+      "        '''Initializes the data.'''",
+      "        self.name = name",
+      "        print('(Initializing {})'.format(self.name))",
+      "        # When this person is created, the robot",
+      "        # adds to the population",
+      "        Robot.population += 1",
+      "    def die(self):",
+      "        '''I am dying.'''",
+      "        print('{} is being destroyed!'.format(self.name))",
+      "        Robot.population -= 1",
+      "        if Robot.population == 0:",
+      "            print('{} was the last one.'.format(self.name))",
+      "        else:",
+      "            print('There are still {:d} robots working.'.format(",
+      "                Robot.population))",
+      "    def say_hi(self):",
+      "        '''Greeting by the robot.",
+      "        Yeah, they can do that.'''",
+      "        print('Greetings, my masters call me {}.'.format(self.name))",
+      "    @classmethod",
+      "    def how_many(cls):",
+      "        '''Prints the current population.'''",
+      "        print('We have {:d} robots.'.format(cls.population))",
+      "droid1 = Robot('R2-D2')",
+      "droid1.say_hi()",
+      "Robot.how_many()",
+      "droid2 = Robot('C-3PO')",
+      "droid2.say_hi()",
+      "Robot.how_many()",
+      "print('Robots can do some work here.')",
+      "print('Robots have finished their work. So lets destroy them.')",
+      "droid1.die()",
+      "droid2.die()",
+      "Robot.how_many()"
+    ],
+    "description": "class with attribute example"
+  },
+  "class=>with_method_1": {
+    "prefix": "class=>with_method_1",
+    "body": [
+      "class Parrot:",
+      "",
+      "# instance attributes",
+      " def __init__(self, name, age):",
+      "   self.name = name",
+      "   self.age = age",
+      "",
+      "# instance method",
+      " def sing(self, song):",
+      "   return '{} sings {}'.format(self.name, song)",
+      "",
+      " def dance(self):",
+      "   return '{} is now dancing'.format(self.name)",
+      "",
+      "# instantiate the object",
+      "blu = Parrot('Blu', 10)",
+      "# call our instance methods",
+      "print(blu.sing('Happy'))",
+      "print(blu.dance())"
+    ],
+    "description": "class with method example"
+  },
+  "class=>with_method_2": {
+    "prefix": "class=>with_method_2",
+    "body": [
+      "class Person:",
+      "    def say_hi(self):",
+      "        print('Hello, how are you?')",
+      "p = Person()",
+      "p.say_hi()",
+      "# The previous 2 lines can also be written as",
+      "# Person().say_hi()"
+    ],
+    "description": "class with method example"
+  },
+  "class=>encapsulation": {
+    "prefix": "class=>encapsulation",
+    "body": [
+      "class Computer:",
+      "",
+      " def __init__(self):",
+      "   self.__maxprice = 900",
+      "",
+      " def sell(self):",
+      "   print('Selling Price: {}'.format(self.__maxprice))",
+      "",
+      " def setMaxPrice(self, price):",
+      "   self.__maxprice = price",
+      "",
+      "c = Computer()",
+      "c.sell()",
+      "",
+      "# change the price",
+      "c.__maxprice = 1000",
+      "c.sell()",
+      "",
+      "# using setter function",
+      "c.setMaxPrice(1000)",
+      "c.sell()"
+    ],
+    "description": "class encapsulation example"
+  },
+  "class=>polymorphism": {
+    "prefix": "class=>polymorphism",
+    "body": [
+      "class Parrot:",
+      "",
+      " def fly(self):",
+      "   print('Parrot can fly')",
+      "",
+      " def swim(self):",
+      "   print('Parrot can not swim')",
+      "",
+      "class Penguin:",
+      "",
+      " def fly(self):",
+      "   print('Penguin can not fly')",
+      "",
+      " def swim(self):",
+      "   print('Penguin can swim')",
+      "",
+      "# common interface",
+      "def flying_test(bird):",
+      "  bird.fly()",
+      "",
+      "#instantiate objects",
+      "blu = Parrot()",
+      "peggy = Penguin()",
+      "",
+      "# passing the object",
+      "flying_test(blu)",
+      "flying_test(peggy)"
+    ],
+    "description": "class polymorphism example"
+  },
+  "class=>polymorphism": {
+    "prefix": "class=>polymorphism",
+    "body": [
+      "class Parrot:",
+      "",
+      " def fly(self):",
+      "   print('Parrot can fly')",
+      "",
+      " def swim(self):",
+      "   print('Parrot can not swim')",
+      "",
+      "class Penguin:",
+      "",
+      " def fly(self):",
+      "   print('Penguin can not fly')",
+      "",
+      " def swim(self):",
+      "   print('Penguin can swim')",
+      "",
+      "# common interface",
+      "def flying_test(bird):",
+      "  bird.fly()",
+      "",
+      "#instantiate objects",
+      "blu = Parrot()",
+      "peggy = Penguin()",
+      "",
+      "# passing the object",
+      "flying_test(blu)",
+      "flying_test(peggy)"
+    ],
+    "description": "class polymorphism example"
+  }
+}
