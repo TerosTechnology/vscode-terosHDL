@@ -29,6 +29,7 @@ import { Parser_interface } from "./parser_interface";
 import * as common_hdl from "../common";
 import * as Parser from "web-tree-sitter";
 
+
 export class Verilog_parser extends Ts_base_parser implements Parser_base {
     comment_symbol = "";
     loaded = false;
@@ -173,17 +174,16 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
                                 comments = '';
 
                             } else if (cursor.nodeType === 'task_identifier' ||
-                            cursor.nodeType === 'task_declaration') {
+                                cursor.nodeType === 'task_declaration') {
+                                last_element_position = cursor.startPosition.row;
+                                let new_tasks: common_hdl.Task_hdl[] =
+                                    elements_hdl.get_tasks(cursor.currentNode(), lines);
 
-                            last_element_position = cursor.startPosition.row;
-                            let new_tasks: common_hdl.Task_hdl[] =
-                                elements_hdl.get_tasks(cursor.currentNode(), lines);
-
-                            new_tasks = utils.set_description_to_array(new_tasks,
-                                comments, general_comments, this.comment_symbol);
-
-                            tasks_array = tasks_array.concat(new_tasks);
-                            comments = '';
+                                new_tasks = utils.set_description_to_array(new_tasks,
+                                    comments, general_comments, this.comment_symbol);
+                                
+                                tasks_array = tasks_array.concat(new_tasks);
+                                comments = '';
 
                             }
                             else if (cursor.nodeType === 'any_parameter_declaration') {
@@ -387,6 +387,10 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
 
         functions_array.forEach(element => {
             hdl_element.add_function(element);
+        });
+
+        tasks_array.forEach(element => {
+            hdl_element.add_task(element);
         });
 
         types_array.forEach(element => {
