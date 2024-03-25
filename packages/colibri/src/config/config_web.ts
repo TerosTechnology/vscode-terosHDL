@@ -616,7 +616,17 @@ export const WEB_CONFIG = `
               </select>
             </div>
           
-          
+            <div class="mb-3">
+            <label for="documentation-general-tasks" class="form-label">
+              Include tasks:
+              <span class="markConfig badge bg-secondary" id="mark_documentation-general-tasks"></span>
+            </label>
+            <select class="form-select" aria-label="Include tasks:" id="documentation-general-tasks">
+                    <option value='all'>All</option>
+                    <option value='only_commented'>Only commented</option>
+                    <option value='none'>None</option>
+            </select>
+          </div>
           
           
             <div class="mb-3">

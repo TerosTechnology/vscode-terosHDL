@@ -112,6 +112,7 @@ export type e_documentation_general = {
     types : e_documentation_general_types,
     process : e_documentation_general_process,
     functions : e_documentation_general_functions,
+    tasks : e_documentation_general_tasks,
     magic_config_path : string,
 };
     
@@ -820,6 +821,7 @@ export function get_default_config(): e_config {
                 types : e_documentation_general_types.all,
                 process : e_documentation_general_process.all,
                 functions : e_documentation_general_functions.all,
+                tasks : e_documentation_general_tasks.all,
                 magic_config_path : "",
             },
         },
