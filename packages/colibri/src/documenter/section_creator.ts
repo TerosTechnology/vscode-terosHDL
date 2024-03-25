@@ -484,8 +484,9 @@ export class Creator extends Section_creator_interface {
     ////////////////////////////////////////////////////////////////////////////
     get_task_section(hdl_element: common_hdl.Hdl_element,
         configuration: t_documenter_options, output_type: common_documenter.doc_output_type): string {
-
+        
         const translator = new translator_lib.Translator(configuration.language);
+
         let tasks = hdl_element.get_task_array();
         if (configuration.task_visibility === cfg.e_documentation_general_tasks.none) {
             return '';
@@ -497,7 +498,6 @@ export class Creator extends Section_creator_interface {
         let html = "";
         const converter = new showdown.Converter({ tables: true, ghCodeBlocks: true });
         converter.setFlavor('github');
-
         if (tasks.length !== 0) {
             //Title
             md += `\n## ${translator.get_str('Tasks')}\n`;
