@@ -480,6 +480,63 @@ export class Creator extends Section_creator_interface {
     }
 
     ////////////////////////////////////////////////////////////////////////////
+    // Task section
+    ////////////////////////////////////////////////////////////////////////////
+    get_task_section(hdl_element: common_hdl.Hdl_element,
+        configuration: t_documenter_options, output_type: common_documenter.doc_output_type): string {
+
+        const translator = new translator_lib.Translator(configuration.language);
+        let tasks = hdl_element.get_task_array();
+        if (configuration.task_visibility === cfg.e_documentation_general_tasks.none) {
+            return '';
+        }
+        if (configuration.task_visibility === cfg.e_documentation_general_tasks.only_commented) {
+            tasks = this.get_elements_with_description(tasks);
+        }
+        let md = "";
+        let html = "";
+        const converter = new showdown.Converter({ tables: true, ghCodeBlocks: true });
+        converter.setFlavor('github');
+
+        if (tasks.length !== 0) {
+            //Title
+            md += `\n## ${translator.get_str('Tasks')}\n`;
+            html += converter.makeHtml(`## ${translator.get_str('Tasks')}\n\n`);
+            for (let i = 0; i < tasks.length; ++i) {
+                if (tasks[i].info.name !== '') {
+                    let arguments_str = tasks[i].arguments;
+                    if (arguments_str === '') {
+                        arguments_str = '()';
+                    }
+                    
+                    // eslint-disable-next-line max-len
+                    const name = tasks[i].info.name;
+                    arguments_str = arguments_str
+                        .replace(/;/g, ';<br><span style="padding-left:20px">')
+                        .replace(/,/g, ',<br><span style="padding-left:20px">');
+                    // eslint-disable-next-line max-len
+                    const section = `- ${name} <font id="task_arguments">${arguments_str}</font>\n`;
+                    md += section;
+                    html += converter.makeHtml(section);
+
+                    const description = tasks[i].info.description.replace('\n', '');
+                    if (description !== '') {
+                        const description_element = `**${translator.get_str('Description')}**\n ${description}\n`;
+                        md += '  - ' + description;
+                        html += '<div id="descriptions">' + converter.makeHtml(description_element) + '</div>';
+                    }
+                }
+            }
+        }
+        if (output_type === common_documenter.doc_output_type.HTML) {
+            return html;
+        }
+        return md;
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////
     // Instantiation section
     ////////////////////////////////////////////////////////////////////////////
     get_instantiation_section(hdl_element: common_hdl.Hdl_element,

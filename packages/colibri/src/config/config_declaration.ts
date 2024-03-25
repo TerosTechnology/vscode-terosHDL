@@ -513,6 +513,11 @@ export enum e_documentation_general_functions {
     only_commented = "only_commented",
     none = "none",
 }
+export enum e_documentation_general_tasks {
+    all = "all",
+    only_commented = "only_commented",
+    none = "none",
+}
 export enum e_formatter_general_formatter_verilog {
     istyle = "istyle",
     s3sv = "s3sv",
