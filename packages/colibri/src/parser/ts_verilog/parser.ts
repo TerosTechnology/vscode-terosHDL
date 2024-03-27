@@ -117,6 +117,7 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
         let signals_array: common_hdl.Signal_hdl[] = [];
         let constants_array: common_hdl.Constant_hdl[] = [];
         let functions_array: common_hdl.Function_hdl[] = [];
+        let tasks_array: common_hdl.Task_hdl[] = [];
         let instantiations_array: common_hdl.Instantiation_hdl[] = [];
         let ports_array: common_hdl.Port_hdl[] = [];
         let generics_array: common_hdl.Port_hdl[] = [];
@@ -169,6 +170,18 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
                                     comments, general_comments, this.comment_symbol);
 
                                 functions_array = functions_array.concat(new_functions);
+                                comments = '';
+
+                            } else if (cursor.nodeType === 'task_identifier' ||
+                                cursor.nodeType === 'task_declaration') {
+                                last_element_position = cursor.startPosition.row;
+                                let new_tasks: common_hdl.Task_hdl[] =
+                                    elements_hdl.get_tasks(cursor.currentNode(), lines);
+
+                                new_tasks = utils.set_description_to_array(new_tasks,
+                                    comments, general_comments, this.comment_symbol);
+                                
+                                tasks_array = tasks_array.concat(new_tasks);
                                 comments = '';
 
                             }
@@ -373,6 +386,10 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
 
         functions_array.forEach(element => {
             hdl_element.add_function(element);
+        });
+
+        tasks_array.forEach(element => {
+            hdl_element.add_task(element);
         });
 
         types_array.forEach(element => {

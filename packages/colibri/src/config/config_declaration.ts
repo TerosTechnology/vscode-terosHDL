@@ -112,6 +112,7 @@ export type e_documentation_general = {
     types : e_documentation_general_types,
     process : e_documentation_general_process,
     functions : e_documentation_general_functions,
+    tasks : e_documentation_general_tasks,
     magic_config_path : string,
 };
     
@@ -513,6 +514,11 @@ export enum e_documentation_general_functions {
     only_commented = "only_commented",
     none = "none",
 }
+export enum e_documentation_general_tasks {
+    all = "all",
+    only_commented = "only_commented",
+    none = "none",
+}
 export enum e_formatter_general_formatter_verilog {
     istyle = "istyle",
     s3sv = "s3sv",
@@ -815,6 +821,7 @@ export function get_default_config(): e_config {
                 types : e_documentation_general_types.all,
                 process : e_documentation_general_process.all,
                 functions : e_documentation_general_functions.all,
+                tasks : e_documentation_general_tasks.all,
                 magic_config_path : "",
             },
         },

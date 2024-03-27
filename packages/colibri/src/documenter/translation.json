@@ -111,6 +111,10 @@
         "english": "Functions",
         "russian": "Функции"
     },
+    "Tasks": {
+        "english": "Tasks",
+        "russian": "Задачи"
+    },
     "return": {
         "english": "return",
         "russian": "возвращает"

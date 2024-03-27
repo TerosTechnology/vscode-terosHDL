@@ -79,6 +79,7 @@ export type t_documenter_options = {
     constant_visibility: cfg.e_documentation_general_constants;
     type_visibility: cfg.e_documentation_general_types;
     function_visibility: cfg.e_documentation_general_functions;
+    task_visibility: cfg.e_documentation_general_tasks;
     instantiation_visibility: cfg.e_documentation_general_instantiations;
     process_visibility: cfg.e_documentation_general_process;
     language: cfg.e_documentation_general_language;

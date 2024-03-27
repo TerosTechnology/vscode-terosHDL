@@ -103,6 +103,15 @@ functions:
     none: "None"
   value: "all"
 
+tasks:
+  description: "Include tasks:"
+  type: select
+  options:
+    all: "All"
+    only_commented: "Only commented"
+    none: "None"
+  value: "all"
+
 magic_config_path:
   description: "Magic config file path"
   type: string

@@ -142,6 +142,7 @@ export class Documenter_manager extends Base_webview {
             constant_visibility: config.documentation.general.constants,
             type_visibility: config.documentation.general.types,
             function_visibility: config.documentation.general.functions,
+            task_visibility: config.documentation.general.tasks,
             instantiation_visibility: config.documentation.general.instantiations,
             process_visibility: config.documentation.general.process,
             language: config.documentation.general.language,

@@ -34,6 +34,7 @@ export enum TYPE_HDL_ELEMENT {
     CONSTANT = "constant",
     TYPE = "type",
     FUNCTION = "function",
+    TASK = "task",
     GENERIC = "generic",
     PORT = "port",
     VIRTUAL_BUS = "virtual_bus",
@@ -80,6 +81,12 @@ export type Function_hdl = {
     return: string;
 };
 
+export type Task_hdl = {
+    hdl_element_type: TYPE_HDL_ELEMENT.TASK;
+    info: Common_info;
+    type: string;
+    arguments: string;
+};
 
 export type Virtual_bus_hdl = {
     hdl_element_type: TYPE_HDL_ELEMENT.VIRTUAL_BUS;
@@ -141,6 +148,7 @@ export class Hdl_element {
     private constant_array: Constant_hdl[] = [];
     private type_array: Type_hdl[] = [];
     private function_array: Function_hdl[] = [];
+    private task_array: Task_hdl[] = [];
     private generic_array: Port_hdl[] = [];
     private port_array: Port_hdl[] = [];
     private instantiation_array: Instantiation_hdl[] = [];
@@ -205,6 +213,13 @@ export class Hdl_element {
         return this.function_array;
     }
 
+    public add_task(element: Task_hdl) {
+        this.task_array.push(element);
+    }
+    public get_task_array(): Task_hdl[] {
+        return this.task_array;
+    }
+
     public add_generic(element: Port_hdl) {
         this.generic_array.push(element);
     }
@@ -267,6 +282,7 @@ export class Hdl_element {
             this.constant_array.length === 0 &&
             this.type_array.length === 0 &&
             this.function_array.length === 0 &&
+            this.task_array.length === 0 &&
             this.generic_array.length === 0 &&
             this.port_array.length === 0 &&
             this.instantiation_array.length === 0 &&
