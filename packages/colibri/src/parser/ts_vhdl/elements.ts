@@ -73,9 +73,9 @@ export function get_full_type_declaration(p: any): common_hdl.Type_hdl[] {
     let type = "";
     //let type_elemet : common_hdl.Type_hdl;
     let record_array : common_hdl.Record_hdl[] = [];
-    const enum_array : common_hdl.Enum_hdl[] = [];
+    let enum_array : common_hdl.Enum_hdl[] = [];
     let is_record = false;
-    //let is_enum : boolean = false;
+    let is_enum = false;
     const break_p = false;
     const cursor = p.walk();
     const line = cursor.startPosition.row;
@@ -85,8 +85,8 @@ export function get_full_type_declaration(p: any): common_hdl.Type_hdl[] {
             name = cursor.nodeText;
         }
         else if (cursor.nodeType === 'enumeration_type_definition') {
-            const type_definition = cursor.nodeText;
-            type = utils_hdl.remove_break_line(utils_hdl.remove_comments(type_definition));
+            enum_array = get_enum_elements(cursor.currentNode(), ''); 
+            is_enum = true;
         }
         else if (cursor.nodeType === 'unbounded_array_definition') {
             const type_definition = cursor.nodeText;
@@ -111,7 +111,7 @@ export function get_full_type_declaration(p: any): common_hdl.Type_hdl[] {
         },
         type: type.trim(),
         inline_comment: "",
-        is_enum: false, //is_enum,
+        is_enum: is_enum,
         is_record: is_record,
         record_elements: record_array,
         enum_elements: enum_array,
@@ -492,6 +492,60 @@ export function get_record_elements(p: any, comment_symbol: string): common_hdl.
                 description: inline_comment[i]
             },
             type: type[i],
+            inline_comment: inline_comment[i]
+        };
+        elements_array.push(element);
+    }
+
+    return elements_array;
+}
+
+export function get_enum_elements(p: any, comment_symbol: string): common_hdl.Enum_hdl[] {
+    const break_p = false;
+    const elements_array: common_hdl.Enum_hdl[] = [];
+    const identifiers = [];
+    const inline_comment = [];
+    //const type = [];
+    let line = undefined;
+    const cursor = p.walk();
+
+    cursor.gotoFirstChild();
+    do {
+        if (cursor.nodeType === 'identifier') {
+            const full_element = cursor.nodeText;
+            //const splitted_element = full_element.split(':');
+            //splitted_element[0] = splitted_element[0].replace(' ','');
+            //splitted_element[1] = splitted_element[1].replace(';','');
+            //splitted_element[1] = splitted_element[1].replace(' ','');
+            identifiers.push(full_element);
+            //type.push(splitted_element[1]);
+            line = cursor.startPosition.row;
+        }
+        else if (cursor.nodeType === 'comment') {
+            let txt_comment = cursor.nodeText.slice(2);
+            if (txt_comment[0] === comment_symbol || comment_symbol === '') {
+                if (txt_comment.charAt(txt_comment.length - 1) === '\n'
+                    || txt_comment.charAt(txt_comment.length - 1) === '\r') {
+                    txt_comment = txt_comment.slice(0, -1);
+                }
+                txt_comment = txt_comment.replace('!', '');
+                inline_comment.push(txt_comment.trimStart());
+            }
+        }
+    } while (cursor.gotoNextSibling() === true && break_p === false);
+
+    for (let i = 0; i < identifiers.length; ++i) {
+        const element: common_hdl.Enum_hdl = {
+            hdl_element_type: common_hdl.TYPE_HDL_ELEMENT.ENUM,
+            info: {
+                position: {
+                    line: line,
+                    column: 0
+                },
+                name: identifiers[i],
+                description: inline_comment[i]
+            },
+            type: "",
             inline_comment: inline_comment[i]
         };
         elements_array.push(element);
