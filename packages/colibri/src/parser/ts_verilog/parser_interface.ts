@@ -567,6 +567,11 @@ export class Parser_interface {
                         description: ""
                     },
                     type: type[0].text,
+                    inline_comment: "",
+                    is_enum: false,
+                    is_record: false,
+                    enum_elements: [],
+                    record_elements: [],
                     logic: []
                 };
 

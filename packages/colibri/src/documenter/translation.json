@@ -103,6 +103,14 @@
         "english": "Types",
         "russian": "Типы"
     },
+    "Records": {
+        "english": "Records",
+        "russian": "TBD"
+    },
+    "Enums": {
+        "english": "Enums",
+        "russian": "TBD"
+    },
     "Name": {
         "english": "Name",
         "russian": "Название"
