@@ -72,6 +72,7 @@ export type Enum_hdl = {
     hdl_element_type: TYPE_HDL_ELEMENT.ENUM;
     info: Common_info;
     type: string;
+    inline_comment: string;
 };
 
 export type Record_hdl = {

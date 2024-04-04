@@ -392,6 +392,25 @@ export class Creator extends Section_creator_interface {
                     md += record_tables_str;
                 }
             }
+            if (types.length !== 0 && configuration.type_visibility !== cfg.e_documentation_general_types.none) {
+                let enum_tables_str = "";
+                for (let i = 0; i < types.length; ++i) {
+                    if (types[i].is_enum === true){
+                        // Create a table for each record.
+                        enum_tables_str += `\n### *` + types[i].info.name + `*\n`;
+                        if(types[i].info.description){
+                            enum_tables_str += types[i].info.description + `\n`;
+                        }
+                        enum_tables_str += this.get_doc_enums(types[i].enum_elements, translator);
+                        enum_tables_str += '\n';
+                    }
+                }
+                //If there are no records, avoid printing the table.
+                if(enum_tables_str){
+                    md += `\n## ${translator.get_str('Enums')}\n\n`;
+                    md += enum_tables_str;
+                }
+            }
         }
         return this.transform(md, output_type);
     }
@@ -854,6 +873,20 @@ export class Creator extends Section_creator_interface {
                     .replace(/;/g, ';<br><span style="padding-left:20px">')
                     .replace(/,/g, ',<br><span style="padding-left:20px">')
                     .replace(/{/g, '{<br><span style="padding-left:20px">'),
+                    description
+                ]);
+        }
+        const text = markdown_table.get_table(table, undefined) + '\n';
+        return text;
+    }
+
+    get_doc_enums(enums: common_hdl.Enum_hdl[], translator: translator_lib.Translator) {
+        const table = [];
+        table.push([translator.get_str("Name"), translator.get_str("Description")]);
+        for (let i = 0; i < enums.length; ++i) {
+            const description = utils.normalize_description(enums[i].inline_comment);
+            table.push(
+                [enums[i].info.name,
                     description
                 ]);
         }
