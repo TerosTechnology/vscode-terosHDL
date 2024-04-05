@@ -511,9 +511,6 @@ export class Creator extends Section_creator_interface {
                     
                     // eslint-disable-next-line max-len
                     const name = tasks[i].info.name;
-                    arguments_str = arguments_str
-                        .replace(/;/g, ';<br><span style="padding-left:20px">')
-                        .replace(/,/g, ',<br><span style="padding-left:20px">');
                     // eslint-disable-next-line max-len
                     const section = `- ${name} <font id="task_arguments">${arguments_str}</font>\n`;
                     md += section;
