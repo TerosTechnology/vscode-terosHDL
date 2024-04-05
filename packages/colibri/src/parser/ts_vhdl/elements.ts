@@ -91,6 +91,10 @@ export function get_full_type_declaration(p: any): common_hdl.Type_hdl[] {
         else if (cursor.nodeType === 'unbounded_array_definition') {
             const type_definition = cursor.nodeText;
             type = utils_hdl.remove_break_line(utils_hdl.remove_comments(type_definition));
+        }        
+        else if (cursor.nodeType === 'numeric_type_definition') {
+            const type_definition = cursor.nodeText;
+            type = utils_hdl.remove_break_line(utils_hdl.remove_comments(type_definition));
         }
         else if (cursor.nodeType === 'record_type_definition') {
             record_array = get_record_elements(cursor.currentNode(), ''); 
@@ -451,6 +455,8 @@ export function get_record_elements(p: any, comment_symbol: string): common_hdl.
     const elements_array: common_hdl.Record_hdl[] = [];
     const identifiers = [];
     const inline_comment = [];
+    let txt_comment = "";
+    let has_comment = true;
     const type = [];
     let line = undefined;
     const cursor = p.walk();
@@ -458,6 +464,11 @@ export function get_record_elements(p: any, comment_symbol: string): common_hdl.
     cursor.gotoFirstChild();
     do {
         if (cursor.nodeType === 'element_declaration') {
+            //if last identifier doesnt have comment, push empty string to avoid comment shifting.
+            if(!has_comment){
+                inline_comment.push("");
+            }
+            has_comment = false;
             const full_element = cursor.nodeText;
             const splitted_element = full_element.split(':');
             splitted_element[0] = splitted_element[0].replace(' ','');
@@ -468,15 +479,18 @@ export function get_record_elements(p: any, comment_symbol: string): common_hdl.
             line = cursor.startPosition.row;
         }
         else if (cursor.nodeType === 'comment') {
-            let txt_comment = cursor.nodeText.slice(2);
+            txt_comment = cursor.nodeText.slice(2);
             if (txt_comment[0] === comment_symbol || comment_symbol === '') {
                 if (txt_comment.charAt(txt_comment.length - 1) === '\n'
                     || txt_comment.charAt(txt_comment.length - 1) === '\r') {
                     txt_comment = txt_comment.slice(0, -1);
                 }
-                txt_comment = txt_comment.replace('!', '');
+                if(txt_comment){
+                    txt_comment = txt_comment.replace('!', ''); //TODO: BUG?
+                }
                 inline_comment.push(txt_comment.trimStart());
             }
+            has_comment = true;
         }
     } while (cursor.gotoNextSibling() === true && break_p === false);
 
@@ -505,13 +519,18 @@ export function get_enum_elements(p: any, comment_symbol: string): common_hdl.En
     const elements_array: common_hdl.Enum_hdl[] = [];
     const identifiers = [];
     const inline_comment = [];
-    //const type = [];
+    let has_comment = true;
     let line = undefined;
     const cursor = p.walk();
 
     cursor.gotoFirstChild();
     do {
         if (cursor.nodeType === 'identifier') {
+            //if last identifier doesnt have comment, push empty string to avoid comment shifting.
+            if(!has_comment){
+                inline_comment.push("");
+            }
+            has_comment = false;
             const full_element = cursor.nodeText;
             //const splitted_element = full_element.split(':');
             //splitted_element[0] = splitted_element[0].replace(' ','');
@@ -531,6 +550,7 @@ export function get_enum_elements(p: any, comment_symbol: string): common_hdl.En
                 txt_comment = txt_comment.replace('!', '');
                 inline_comment.push(txt_comment.trimStart());
             }
+            has_comment = true;
         }
     } while (cursor.gotoNextSibling() === true && break_p === false);
 
