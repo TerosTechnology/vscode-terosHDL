@@ -89,6 +89,9 @@ async function run(hdl_type: string, hdl_lang: LANGUAGE, output_type_inst: commo
     if (output_type_inst === common_documenter.doc_output_type.HTML) {
         check_html(hdl_type, hdl_lang);
     }
+    else{
+        check_md(hdl_type, hdl_lang);
+    }
 }
 
 function check_html(hdl_type: string, hdl_lang: LANGUAGE) {
@@ -99,6 +102,24 @@ function check_html(hdl_type: string, hdl_lang: LANGUAGE) {
     const output_content = read_file_sync(output_path);
     const expected_result_fix = normalize_breakline_windows(expected_content);
     expect(expected_result_fix).toBe(output_content);
+}
+
+function check_md(hdl_type: string, hdl_lang: LANGUAGE) {
+    const expected_path = paht_lib.join(C_OUTPUT_BASE_PATH, 
+                        'expected', 
+                        `${hdl_type}_${hdl_lang}_markdown`, 
+                        'output.markdown');
+    const output_path = paht_lib.join(C_OUTPUT_BASE_PATH, 
+                        'out', 
+                        `${hdl_type}_${hdl_lang}_markdown`, 
+                        'output.markdown');
+
+    let expected_content = read_file_sync(expected_path);
+    let output_content = read_file_sync(output_path);
+    expected_content = expected_content.replace(/wavedrom_[a-zA-Z0-9]+.svg/g, "wavedrom_XYZ.svg");
+    output_content = output_content.replace(/wavedrom_[a-zA-Z0-9]+.svg/g, "wavedrom_XYZ.svg");
+    //const expected_result_fix = normalize_breakline_windows(expected_content);
+    expect(expected_content).toBe(output_content);
 }
 
 function get_input(hdl_type: string, hdl_lang: LANGUAGE) {
