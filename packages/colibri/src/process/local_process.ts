@@ -27,22 +27,7 @@ export class Local_process {
             let options = {
                 cwd: opt.cwd,
                 maxBuffer: 1024 * 1024 * 1024,
-                shell: ""
             };
-            if (process.platform === 'win32') {
-                options = {
-                    cwd: opt.cwd,
-                    maxBuffer: 1024 * 1024 * 1024,
-                    shell: "powershell.exe"
-                };
-            }
-            else{
-                options = {
-                    cwd: opt.cwd,
-                    maxBuffer: 1024 * 1024 * 1024,
-                    shell: ""
-                };
-            }
 
             const timeoutSeconds = opt.timeout || 0; // Get the timeout from opt.timeout or set it to 0 if not defined
             const timeoutMs = timeoutSeconds * 1000; // Convert seconds to milliseconds
@@ -94,22 +79,10 @@ export class Local_process {
     }
 
     exec(command: string, opt: p_options, callback: (result: p_result) => void): ChildProcess {
-        let options = {
-            cwd: opt.cwd,
-            shell: ""
+        const options = {
+            cwd: opt.cwd
         };
-        if (process.platform === 'win32') {
-            options = {
-                cwd: opt.cwd,
-                shell: "powershell.exe"
-            };
-        }
-        else{
-            options = {
-                cwd: opt.cwd,
-                shell: ""
-            };
-        }
+
         const exec_i = exec(command, options, (error: ExecException | null, stdout: string, stderr: string) => {
             let error_code = 0;
             let successful = true;

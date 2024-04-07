@@ -19,7 +19,7 @@ image:
 
 
 
-![alt text](wavedrom_lH1q0.svg "title")
+![alt text](wavedrom_5aOi0.svg "title")
 
  
 
@@ -27,7 +27,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_uQCk1.svg "title")
+![alt text](wavedrom_GNn11.svg "title")
 
  
 
@@ -114,10 +114,10 @@ Example of bitfield:
 - label_1: ( a, b )
 - unnamed: (  )
   - **Description**
-  Comment multiline with **markdown**
+  Comment multiline with **markdown**
 
 ## Instantiations
 
 - uut_0: half_adder
-  -  Instantation with label- unnamed: half_adder
-  -  Instantiation without label
+  -  Instantation with label- unnamed: half_adder
+  -  Instantiation without label

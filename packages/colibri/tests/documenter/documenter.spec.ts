@@ -100,8 +100,12 @@ function check_html(hdl_type: string, hdl_lang: LANGUAGE) {
 
     const expected_content = read_file_sync(expected_path);
     const output_content = read_file_sync(output_path);
-    const expected_result_fix = normalize_breakline_windows(expected_content);
-    expect(expected_result_fix).toBe(output_content);
+    if (process.platform === 'win32') {
+        const expected_result_fix = normalize_breakline_windows(expected_content);    
+        expect(expected_result_fix).toBe(output_content);
+    }
+    expect(expected_content).toBe(output_content);
+
 }
 
 function check_md(hdl_type: string, hdl_lang: LANGUAGE) {
