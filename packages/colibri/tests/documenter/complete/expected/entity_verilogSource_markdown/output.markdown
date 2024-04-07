@@ -1,23 +1,45 @@
 
 # Entity: test_entity_name 
-- **File**: entity.verilog
-- **Author:** Miguel de Cervantes
-- **Version:** 1.0.1
-- **Brief:** Some description can be added here also in multi-lines
+- **File**: entity.verilogSource
+- **Author:**  Miguel de Cervantes
+- **Version:**  1.0.1
+- **Brief:**  Some description can be added here
 
 ## Diagram
 ![Diagram](test_entity_name.svg "Diagram")
 ## Description
 
- This is an entity description.<br>  Example of description beakline<br>  Example of Wavedrom  image:	<br> ![alt text](wavedrom_mNRm0.svg "title") <br>  Example of bitfield:<br> ![alt text](wavedrom_9bcU1.svg "title") <br> 
+This is an entity description.
+also in multi-lines
+
+Example of description beakline
+
+Example of Wavedrom
+image:
+
+
+
+![alt text](wavedrom_FZKR0.svg "title")
+
+ 
+
+Example of bitfield:
+
+
+
+![alt text](wavedrom_Q6wM1.svg "title")
+
+ 
+
+
 ## Generics
 
-| Generic name | Type | Value | Description             |
-| ------------ | ---- | ----- | ----------------------- |
-| a            |      | 8     | Inline comment          |
-| b            |      | 9     | Over comment  multiline |
-| c            |      | 10    |                         |
-| d            |      | 11    |                         |
+| Generic name | Type | Value | Description              |
+| ------------ | ---- | ----- | ------------------------ |
+| a            |      | 8     | Inline comment           |
+| b            |      | 9     | Over comment  multiline |
+| c            |      | 10    |                          |
+| d            |      | 11    |                          |
 
 ## Ports
 
@@ -52,13 +74,13 @@
 
 ## Functions
 - sum <font id="function_arguments">(input [7:0] a,<br><span style="padding-left:20px"> b;<br><span style="padding-left:20px">)</font> <font id="function_return">return ([7:0])</font>
-  -  function comment multiline
+  -  function comment multiline
 
 ## Processes
 - label_0: ( @(posedge a) )
   - **Type:** always
   - **Description**
-  always comment  multiline 
+  always comment  multiline 
 - unnamed: (  )
   - **Type:** always_comb
 - label_1: (  )
@@ -68,7 +90,7 @@
 - unnamed: ( @(posedge clk) )
   - **Type:** always
   - **Description**
-  Example of   state machine 
+  Example of   state machine 
 
 ## Instantiations
 
@@ -77,4 +99,4 @@
 ## State machines
 
 - Example of
-state machine![Diagram_state_machine_0]( stm_test_entity_name_00.svg "Diagram")
+state machine![Diagram_state_machine_0]( fsm_test_entity_name_00.svg "Diagram")
