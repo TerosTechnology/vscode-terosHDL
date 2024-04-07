@@ -25,7 +25,12 @@ describe('Common Utils', () => {
     });
 
     it('get_home_directory', () => {
-        expect(common_utils.get_home_directory()).toMatch(/\/home\/[a-z]+/);
+        if (process.platform === 'win32') {
+            expect(common_utils.get_home_directory()).toContain("C:");
+        }
+        else{
+            expect(common_utils.get_home_directory()).toMatch(/\/home\/[a-z]+/);
+        }
     });
 });
 

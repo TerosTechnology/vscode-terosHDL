@@ -1,0 +1,60 @@
+`ifndef SMC_IF 
+  `define SMC_IF
+  `include "slot_mem.svh"
+
+import commonTypes_pkg::*;
+
+//! type comment description
+typedef struct packed
+{
+  logic l_0;      
+  logic l_1;     
+} slot_t;  
+
+//! interface 0
+//! description
+interface interface_0 #(
+    parameter PARAMETER_0 = 15   
+);
+  //! description custom
+  ep_lookup_t              ep_lookup;
+  logic                    logic_0; //! description logic 0
+  logic [PARAMETER_0-1:0] logic_1; //! description logic 1
+
+  //! modport 0 multiline 
+  //! description with **markdown**
+  modport mod_port_0(
+    input input_0,
+    output output_0
+  );
+  
+  //! modport 1 multiline 
+  //! description with **markdown**
+   modport mod_port_1(
+    input input_0,
+    output output_0
+  );
+endinterface  
+
+//! interface 0
+//! description
+interface interface_1 #(
+    //! paramter description
+    parameter PARAMETER_0 = 15   
+);
+  ep_lookup_t              ep_lookup;
+  logic                    logic_0;
+  logic [PARAMETER_0-1:0] logic_1;
+
+  modport mod_port_0(
+    input input_0,
+    output output_0
+  );
+  
+   modport mod_port_1(
+    input input_0,
+    output output_0
+  );
+endinterface  
+
+`endif

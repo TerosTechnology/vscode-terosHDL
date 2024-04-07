@@ -1,0 +1,16 @@
+package test_pkg;
+    parameter a=8;
+    parameter b=9;
+    parameter c=10;
+
+    function [7:0] sum;  
+        input [7:0] a, b;  
+        begin  
+            sum = a + b;  
+        end  
+    endfunction
+
+    typedef enum {ADD, SUB} op_list;
+
+    typedef struct {logic [4:0] a, b; logic [9:0] m;} port_t;
+endpackage
