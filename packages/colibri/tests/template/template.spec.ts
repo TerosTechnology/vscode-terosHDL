@@ -23,6 +23,7 @@ import * as cfg from "../../src/config/config_declaration";
 import * as cfg_aux from "../../src/config/auxiliar_config";
 import { read_file_sync } from "../../src/utils/file_utils";
 import { LANGUAGE } from "../../src/common/general";
+import { normalize_breakline_windows } from "../../src/utils/common_utils";
 import { equal } from "assert";
 import * as paht_lib from 'path';
 import * as fs from 'fs';
@@ -161,8 +162,8 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
                     const input_path = paht_lib.join(__dirname, `expected_${TEST_TYPE}`,
                         `${extension}_${template_type.id}.${extension}`);
                     const expected = read_file_sync(input_path);
-
-                    equal(template, expected);
+                    const expected_result_fix = normalize_breakline_windows(expected);
+                    equal(template, expected_result_fix);
                 });
             });
 
@@ -200,7 +201,7 @@ describe('Template utils', function () {
         const input_path = paht_lib.join(__dirname, "expected_with_generic", 
             "vhdl_hdl_element_instance_no_header.vhdl");
         const expected = read_file_sync(input_path);
-
-        equal(result, expected);
+        const expected_result_fix = normalize_breakline_windows(expected);
+        equal(result, expected_result_fix);
     });
 });
