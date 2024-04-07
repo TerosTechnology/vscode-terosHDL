@@ -1094,167 +1094,40 @@
   <article class="markdown-body">
 
 <div id="teroshdl" class='templateTerosHDL'>
-<ul>
-<li><strong>File</strong>: interface.systemverilog</li>
-</ul><h1 id="interface-interface_0">Interface: interface_0</h1><p>interface 0  description </p><h2 id="parameters">Parameters</h2><table>
-<thead>
-<tr>
-<th id="name">Name</th>
-<th id="default_value">Default value</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PARAMETER_0</td>
-<td>15</td>
-<td></td>
-</tr>
-</tbody>
-</table><h2 id="signals">Signals</h2><table>
+<h1 id="package-test_pkg">Package: test_pkg</h1><ul>
+<li><strong>File</strong>: package.systemVerilogSource</li>
+</ul><h2 id="constants">Constants</h2>
+<table>
 <thead>
 <tr>
 <th id="name">Name</th>
 <th id="type">Type</th>
+<th id="value">Value</th>
 <th id="description">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>logic_0</td>
-<td>logic</td>
-<td>description logic 0</td>
-</tr>
-<tr>
-<td>logic_1</td>
-<td>logic [PARAMETER_0-1:0]</td>
-<td>description logic 1</td>
-</tr>
-</tbody>
-</table><h2 id="modports">Modports</h2><ul>
-<li>Name: <strong>mod_port_0</strong></li>
-</ul><p>modport 0 multiline   description with <strong>markdown</strong> </p><table>
-<thead>
-<tr>
-<th id="port_name">Port name</th>
-<th id="direction">Direction</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input_0</td>
-<td>input</td>
+<td>a</td>
+<td></td>
+<td>8</td>
 <td></td>
 </tr>
 <tr>
-<td>output_0</td>
-<td>output</td>
+<td>b</td>
+<td></td>
+<td>9</td>
+<td></td>
+</tr>
+<tr>
+<td>c</td>
+<td></td>
+<td>10</td>
 <td></td>
 </tr>
 </tbody>
-</table><ul>
-<li>Name: <strong>mod_port_1</strong></li>
-</ul><p>modport 1 multiline   description with <strong>markdown</strong> </p><table>
-<thead>
-<tr>
-<th id="port_name">Port name</th>
-<th id="direction">Direction</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input_0</td>
-<td>input</td>
-<td></td>
-</tr>
-<tr>
-<td>output_0</td>
-<td>output</td>
-<td></td>
-</tr>
-</tbody>
-</table><h1 id="interface-interface_1">Interface: interface_1</h1><p>interface 0  description </p><h2 id="parameters">Parameters</h2><table>
-<thead>
-<tr>
-<th id="name">Name</th>
-<th id="default_value">Default value</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PARAMETER_0</td>
-<td>15</td>
-<td>paramter description</td>
-</tr>
-</tbody>
-</table><h2 id="signals">Signals</h2><table>
-<thead>
-<tr>
-<th id="name">Name</th>
-<th id="type">Type</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>logic_0</td>
-<td>logic</td>
-<td></td>
-</tr>
-<tr>
-<td>logic_1</td>
-<td>logic [PARAMETER_0-1:0]</td>
-<td></td>
-</tr>
-</tbody>
-</table><h2 id="modports">Modports</h2><ul>
-<li>Name: <strong>mod_port_0</strong></li>
-</ul><table>
-<thead>
-<tr>
-<th id="port_name">Port name</th>
-<th id="direction">Direction</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input_0</td>
-<td>input</td>
-<td></td>
-</tr>
-<tr>
-<td>output_0</td>
-<td>output</td>
-<td></td>
-</tr>
-</tbody>
-</table><ul>
-<li>Name: <strong>mod_port_1</strong></li>
-</ul><table>
-<thead>
-<tr>
-<th id="port_name">Port name</th>
-<th id="direction">Direction</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input_0</td>
-<td>input</td>
-<td></td>
-</tr>
-<tr>
-<td>output_0</td>
-<td>output</td>
-<td></td>
-</tr>
-</tbody>
-</table><h2 id="types">Types</h2>
+</table>
+<h2 id="types">Types</h2>
 <table>
 <thead>
 <tr>
@@ -1265,12 +1138,19 @@
 </thead>
 <tbody>
 <tr>
-<td>slot_t</td>
-<td>struct packed {<br><span style="padding-left:20px">   logic l_0;<br><span style="padding-left:20px">         logic l_1;<br><span style="padding-left:20px">      }</td>
-<td>type comment description</td>
+<td>op_list</td>
+<td>enum {<br><span style="padding-left:20px">ADD,<br><span style="padding-left:20px"> SUB}</td>
+<td></td>
+</tr>
+<tr>
+<td>port_t</td>
+<td>struct {<br><span style="padding-left:20px">logic [4:0] a,<br><span style="padding-left:20px"> b;<br><span style="padding-left:20px"> logic [9:0] m;<br><span style="padding-left:20px">}</td>
+<td></td>
 </tr>
 </tbody>
-</table>
+</table><h2 id="functions">Functions</h2><ul>
+<li>sum <font id="function_arguments">(input [7:0] a,<br><span style="padding-left:20px"> b;<br><span style="padding-left:20px">)</font> <font id="function_return">return ([7:0])</font></li>
+</ul>
         <br><br><br><br><br><br>
     </article class="markdown-body">
     </body>

@@ -1,10 +1,11 @@
 
 # Package: test_package_name 
-- **File**: package.vhdl
+- **File**: package.vhdlSource
 
 ## Description
 
- Package comments
+Package comments
+
 ## Signals
 
 | Name | Type                         | Description          |
@@ -21,11 +22,15 @@
 | e    | integer | 0     |                                 |
 | f    | integer | 0     |                                 |
 
-## Types
+## Enums
 
-| Name    | Type                                             | Description |
-| ------- | ------------------------------------------------ | ----------- |
-| state_0 | (INIT,<br><span style="padding-left:20px"> ENDS) |             |
+
+### *state_0*
+| Name | Description |
+| ---- | ----------- |
+| INIT |             |
+| ENDS |             |
+
 
 ## Functions
 - counter <font id="function_arguments">(signal minutes: in integer;<br><span style="padding-left:20px"> signal seconds: out integer)</font> <font id="function_return">return ()</font>

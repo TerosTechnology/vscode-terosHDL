@@ -1,6 +1,6 @@
 
 # Package: test_pkg 
-- **File**: package.systemverilog
+- **File**: package.systemVerilogSource
 
 ## Constants
 

@@ -25,14 +25,15 @@ import * as common_process from "../../src/process/common";
 import { get_os } from "../../src/process/utils";
 import * as cfg from "../../src/config/config_declaration";
 import { t_documenter_options } from "../../src/config/auxiliar_config";
-import { equal } from "assert";
+import { normalize_breakline_windows } from "../../src/utils/common_utils";
+import { read_file_sync } from '../../src/utils/file_utils';
 
 const C_OUTPUT_BASE_PATH = paht_lib.join(__dirname, 'complete');
 
 const output_types = [common_documenter.doc_output_type.HTML, common_documenter.doc_output_type.MARKDOWN];
 
 output_types.forEach(output_type_inst => {
-    describe.skip(`Check documenter creator with ${output_type_inst}`, function () {
+    describe(`Check documenter creator with ${output_type_inst}`, function () {
 
         const system_os = get_os();
         if (system_os === common_process.OS.WINDOWS || system_os === common_process.OS.MAC) {
@@ -94,17 +95,17 @@ function check_html(hdl_type: string, hdl_lang: LANGUAGE) {
     const expected_path = paht_lib.join(C_OUTPUT_BASE_PATH, 'expected', `${hdl_type}_${hdl_lang}_html`, 'output.html');
     const output_path = paht_lib.join(C_OUTPUT_BASE_PATH, 'out', `${hdl_type}_${hdl_lang}_html`, 'output.html');
 
-    const expected_content = fs.readFileSync(expected_path).toString('utf8');
-    const output_content = fs.readFileSync(output_path).toString('utf8');
-
-    equal(expected_content, output_content);
+    const expected_content = read_file_sync(expected_path);
+    const output_content = read_file_sync(output_path);
+    const expected_result_fix = normalize_breakline_windows(expected_content);
+    expect(expected_result_fix).toBe(output_content);
 }
 
 function get_input(hdl_type: string, hdl_lang: LANGUAGE) {
     const input_path =
         paht_lib.join(C_OUTPUT_BASE_PATH, `${hdl_type}.${hdl_lang}`);
 
-    const hdl_code = fs.readFileSync(input_path).toString();
+    const hdl_code = read_file_sync(input_path);
 
     return { path: input_path, hdl_code: hdl_code };
 }
