@@ -18,6 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as os from 'os';
+import * as file_utils from '../utils/file_utils';
 
 /**
  * Create a random string of a given length
@@ -41,6 +42,28 @@ export function makeid(length: number): string {
 export function get_home_directory(): string {
     const home_directory = os.homedir();
     return home_directory;
+}
+
+/**
+ * Normalize breakline in windows by removing carriage return
+ * @param  {string} txt Text
+ */
+export function normalize_breakline_windows(txt: string): string {
+    if (process.platform === 'win32') {
+        return txt.replace(/\r\n/g, '\n');
+    }
+    else {
+        return txt;
+    }
+}
+
+/**
+ * Delete and create the directory
+ * @param  {string} path_dir Path directory
+ */
+export function setup_folder(path_dir: string) {
+    file_utils.remove_directory(path_dir);
+    file_utils.create_directory(path_dir);
 }
 
 // /**

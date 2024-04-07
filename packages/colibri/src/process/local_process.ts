@@ -24,10 +24,25 @@ export class Local_process {
 
     async exec_wait(command: string, opt: p_options): Promise<p_result> {
         return new Promise((resolve) => {
-            const options = {
+            let options = {
                 cwd: opt.cwd,
                 maxBuffer: 1024 * 1024 * 1024,
+                shell: ""
             };
+            if (process.platform === 'win32') {
+                options = {
+                    cwd: opt.cwd,
+                    maxBuffer: 1024 * 1024 * 1024,
+                    shell: "powershell.exe"
+                };
+            }
+            else{
+                options = {
+                    cwd: opt.cwd,
+                    maxBuffer: 1024 * 1024 * 1024,
+                    shell: ""
+                };
+            }
 
             const timeoutSeconds = opt.timeout || 0; // Get the timeout from opt.timeout or set it to 0 if not defined
             const timeoutMs = timeoutSeconds * 1000; // Convert seconds to milliseconds
