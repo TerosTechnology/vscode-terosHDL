@@ -19,6 +19,7 @@
 import * as path_lib from 'path';
 import { S3sv } from '../../src/formatter/s3sv';
 import * as cfg from "../../src/config/config_declaration";
+import { normalize_breakline_windows } from "../../src/utils/common_utils";
 import { read_file_sync, save_file_sync,create_directory, remove_directory } from '../../src/utils/file_utils';
 
 const C_OUTPUT_BASE_PATH = path_lib.join(__dirname, "out");
@@ -55,7 +56,8 @@ describe('s3sv', () => {
 
         expect(result.successful).toBe(true);
         const expected_result = read_file_sync(path_lib.join(__dirname, 'helpers', 'sample_expected.v'));
-        expect(result.code_formatted).toBe(expected_result);
+        const expected_result_fix = normalize_breakline_windows(expected_result);
+        expect(result.code_formatted).toBe(expected_result_fix);
     });
 
 });
