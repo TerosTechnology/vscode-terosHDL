@@ -22,8 +22,8 @@ import * as cfg from "../../../src/config/config_declaration";
 import * as common_documenter from "../../../src/documenter/common";
 import { Documenter } from "../../../src/documenter/documenter";
 import { t_documenter_options } from "../../../src/config/auxiliar_config";
-import { HDL_LANG } from "../../../src/common/general";
-import { get_language } from "../../../src/common/utils";
+import { LANGUAGE } from "../../../src/common/general";
+import { get_language_from_filepath } from "../../../src/utils/file_utils";
 import { equal } from "assert";
 
 export enum MODE {
@@ -37,8 +37,8 @@ const DEBUG_SELECTED_FILE = "example_2.v";
 const C_INPUT_BASE_PATH_VHDL = paht_lib.join(__dirname, 'vhdl');
 const C_INPUT_BASE_PATH_VERILOG = paht_lib.join(__dirname, 'verilog');
 
-const input_vhdl = file_utils.read_directory(C_INPUT_BASE_PATH_VHDL);
-const input_verilog = file_utils.read_directory(C_INPUT_BASE_PATH_VERILOG);
+const input_vhdl = file_utils.read_directory(C_INPUT_BASE_PATH_VHDL,false);
+const input_verilog = file_utils.read_directory(C_INPUT_BASE_PATH_VERILOG,false);
 const input_total = input_vhdl.concat(input_verilog);
 
 // Expected
@@ -67,7 +67,7 @@ async function run(input: string, output_type_inst: common_documenter.doc_output
     const output_path = get_path(input, MODE.OUT, output_type_inst);
 
     const input_content = file_utils.read_file_sync(input);
-    const input_lang = get_language(input);
+    const input_lang = get_language_from_filepath(input);
 
     await documenter.save_document(input_content, input_lang, configuration, input, output_path, output_type_inst);
     check_output(input, output_type_inst);
@@ -95,10 +95,10 @@ function get_path(input: string, mode: MODE, output_type: common_documenter.doc_
     }
 
     const input_filename = file_utils.get_filename(input, false);
-    const input_lang = get_language(input);
+    const input_lang = get_language_from_filepath(input);
 
     let lang_out = "vhdl";
-    if (input_lang !== HDL_LANG.VHDL) {
+    if (input_lang !== LANGUAGE.VHDL) {
         lang_out = "verilog";
     }
     const output_path = paht_lib.join(base_path, `${input_filename}_${lang_out}${extension}`);

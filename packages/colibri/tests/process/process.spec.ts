@@ -123,7 +123,11 @@ describe("Process", () => {
             expect(result.command).toBe(cmd);
             expect(result.return_value).toBe(0);
             expect(result.stderr).toBe("");
-            expect(result.stdout).toContain("total");
+            if (process.platform === 'win32') {
+                expect(result.stdout).toContain("Directory");
+            }else{
+                expect(result.stdout).toContain("total");
+            }
             expect(result.successful).toBeTruthy();
         });
     });
