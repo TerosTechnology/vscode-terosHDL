@@ -33,7 +33,7 @@ fs.mkdirSync(C_OUTPUT_BASE_PATH, { recursive: true });
 const creator = new section_creator.Creator();
 const hdl_element = create_hdl_element();
 const output_types = [common_documenter.doc_output_type.HTML, common_documenter.doc_output_type.MARKDOWN];
-const input_name = 'input_path';
+const input_name = 'EntityExample';
 
 output_types.forEach(output_type_inst => {
     describe(`Check sections creator with ${output_type_inst}`, function () {
@@ -68,16 +68,16 @@ output_types.forEach(output_type_inst => {
             check(section_name, output_type_inst, false);
         });
 
-        it.skip(`Info section`, function () {
+        it(`Info section`, function () {
             const section_name = "info";
             const section = creator.get_info_section(hdl_element, configuration, output_type_inst);
             save_output(section, section_name, output_type_inst);
             check(section_name, output_type_inst, false);
         });
 
-        it.skip(`Diagram section`, function () {
+        it(`Diagram section`, function () {
             const section_name = "diagram";
-            const svg_path = paht_lib.join(C_OUTPUT_BASE_PATH, 'input_path.svg');
+            const svg_path = C_OUTPUT_BASE_PATH; //paht_lib.join(C_OUTPUT_BASE_PATH, 'path_svg');
             const section = creator.get_diagram_section(hdl_element, configuration, svg_path, output_type_inst);
             save_output(section, section_name, output_type_inst);
             check(section_name, output_type_inst, true);
@@ -100,7 +100,7 @@ output_types.forEach(output_type_inst => {
             check(section_name, output_type_inst, false);
         });
 
-        it.skip(`Description section`, function () {
+        it(`Description section`, function () {
             // if (output_type_inst === common_documenter.doc_output_type.MARKDOWN) {
             //     this.skip();
             // }
@@ -155,20 +155,19 @@ function check(section_name: string, extension: string, check_svg: boolean) {
     let expected = normalize_breakline_windows(fs.readFileSync(exp_path).toString('utf8'));
     let actual = normalize_breakline_windows(fs.readFileSync(actual_path).toString('utf8'));
 
+    expected = expected.replace(/wavedrom_[a-zA-Z0-9]+.svg/g, "wavedrom_XYZ.svg");
+    actual = actual.replace(/wavedrom_[a-zA-Z0-9]+.svg/g, "wavedrom_XYZ.svg");
+
     // let check = expected.equals(actual);
-    equal(expected, actual);
+    equal(actual, expected);
 
     if (check_svg === true) {
         exp_path = paht_lib.join(__dirname, 'section_creator', 'expected', `${input_name}.svg`);
         actual_path = paht_lib.join(__dirname, 'section_creator', 'out', `${input_name}.svg`);
 
-        expected = fs.readFileSync(exp_path).toString();
-        actual = fs.readFileSync(actual_path).toString();
-
-        // check = expected.equals(actual);
+        expected = normalize_breakline_windows(fs.readFileSync(exp_path).toString('utf8'));
+        actual = normalize_breakline_windows(fs.readFileSync(actual_path).toString('utf8'));
         equal(expected, actual);
-
-        equal(true, check);
     }
 }
 
