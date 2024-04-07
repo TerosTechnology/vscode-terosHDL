@@ -24,7 +24,7 @@ export class Local_process {
 
     async exec_wait(command: string, opt: p_options): Promise<p_result> {
         return new Promise((resolve) => {
-            let options = {
+            const options = {
                 cwd: opt.cwd,
                 maxBuffer: 1024 * 1024 * 1024,
             };
