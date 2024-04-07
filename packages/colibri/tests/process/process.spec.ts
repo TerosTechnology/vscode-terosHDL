@@ -114,7 +114,7 @@ describe("Process", () => {
     it(`Local: exec`, () => {
         let cmd = "";
         if (process.platform === 'win32') {
-            cmd = "ls";
+            cmd = "dir";
         }else{
             cmd = "ls -l";
         }
