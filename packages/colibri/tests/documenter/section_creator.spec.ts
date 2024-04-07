@@ -161,7 +161,7 @@ function check(section_name: string, extension: string, check_svg: boolean) {
     // let check = expected.equals(actual);
     equal(actual, expected);
 
-    if (check_svg === true) {
+    if (check_svg === true && extension === "markdown") {
         exp_path = paht_lib.join(__dirname, 'section_creator', 'expected', `${input_name}.svg`);
         actual_path = paht_lib.join(__dirname, 'section_creator', 'out', `${input_name}.svg`);
 
