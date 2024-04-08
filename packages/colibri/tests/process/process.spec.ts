@@ -28,7 +28,7 @@ describe("Process", () => {
     it(`Local: exec_wait`, async () => {
         let cmd = "";
         if (process.platform === 'win32') {
-            cmd = "ls";
+            cmd = "dir";
         }else{
             cmd = "ls -l";
         }
@@ -63,7 +63,7 @@ describe("Process", () => {
     it(`Local: exec_wait with cwd`, async () => {
         let cmd = "";
         if (process.platform === 'win32') {
-            cmd = "ls";
+            cmd = "dir";
         }else{
             cmd = "ls -l";
         }
@@ -81,7 +81,7 @@ describe("Process", () => {
     it(`Local: success exec with timeout`, async () => {
         let cmd = "";
         if (process.platform === 'win32') {
-            cmd = "ls";
+            cmd = "dir";
         }else{
             cmd = "ls -l";
         }
@@ -98,14 +98,15 @@ describe("Process", () => {
 
     it(`Local: failed exec with timeout`, async () => {
         const cmd = "sleep 2";
-
-        const p = new Process();
-        const result = await p.exec_wait(cmd, { cwd: __dirname, timeout: 0.1 });
-        expect(result.command).toBe(cmd);
-        expect(result.return_value).toBe(-1);
-        expect(result.stderr).toBe("Timeout reached");
-        expect(result.stdout).toBe("");
-        expect(result.successful).not.toBeTruthy();
+        if (process.platform !== 'win32') {
+            const p = new Process();
+            const result = await p.exec_wait(cmd, { cwd: __dirname, timeout: 0.1 });
+            expect(result.command).toBe(cmd);
+            expect(result.return_value).toBe(-1);
+            expect(result.stderr).toBe("Timeout reached");
+            expect(result.stdout).toBe("");
+            expect(result.successful).not.toBeTruthy();
+        }
     });
 
     ////////////////////////////////////////////////////////////////////////////
