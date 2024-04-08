@@ -19,7 +19,7 @@ image:
 
 
 
-![alt text](wavedrom_586m0.svg "title")
+![alt text](wavedrom_AZFA0.svg "title")
 
  
 
@@ -27,7 +27,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_sCZ01.svg "title")
+![alt text](wavedrom_RQRg1.svg "title")
 
  
 

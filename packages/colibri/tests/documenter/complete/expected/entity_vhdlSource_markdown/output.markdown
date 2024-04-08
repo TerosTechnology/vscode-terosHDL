@@ -12,6 +12,27 @@
 This is an entity description 5
 multiline.
 
+
+Example of multiline code snipet:
+``` C
+int* versions = 0x0080000000 ;
+int* major = 0x0090000000 ;
+int* minor = 0x00A0000000 ;
+int* patch = 0x00B0000000 ;
+print_version();
+```
+
+Example of multiline code snipet:
+``` VHDL
+function sum(a : integer := 0; b : integer := 0)
+return integer is
+variable result : integer;
+begin
+result <= a + b;
+return result;
+end function;
+```
+
 Example of description beakline
 
 Example of Wavedrom
@@ -19,7 +40,7 @@ image:
 
 
 
-![alt text](wavedrom_5aOi0.svg "title")
+![alt text](wavedrom_6tpc0.svg "title")
 
  
 
@@ -27,7 +48,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_GNn11.svg "title")
+![alt text](wavedrom_siHz1.svg "title")
 
  
 
@@ -91,16 +112,70 @@ Example of bitfield:
 | ez   | integer | 0     | Comment inline for **constant** |
 | fz   | integer | 0     | Comment inline for **constant** |
 
+## Types
+
+| Name            | Type                | Description       |
+| --------------- | ------------------- | ----------------- |
+| my_custom_type0 | range 0 to 1000     | my type comment 0 |
+| my_custom_type1 | range -5 to 5       | my type comment 1 |
+| my_custom_type2 | range -1000 to 5000 | my type comment 2 |
+
+## Records
+
+
+### *sample_record1*
+ Sample record type 1
+
+| Name       | Type                          | Description        |
+| ---------- | ----------------------------- | ------------------ |
+| single_bit | std_logic                     | Comment single_bit |
+| byte_data  | std_logic_vector (7 downto 0) | comment byte_data  |
+
+
+### *sample_record2*
+ Sample record type 2
+
+| Name       | Type                          | Description        |
+| ---------- | ----------------------------- | ------------------ |
+| valid      | std_logic                     | Comment valid      |
+| byte_data1 | std_logic_vector (7 downto 0) | comment byte_data1 |
+| byte_data2 | std_logic_vector (7 downto 0) | comment byte_data2 |
+| byte_data3 | std_logic_vector (7 downto 0) | comment byte_data3 |
+
+
 ## Enums
 
 
 ### *state_0*
  Type
- description
+ description without state comments
 
 | Name | Description |
 | ---- | ----------- |
 | INIT |             |
+| S1   |             |
+| S2   |             |
+| S3   |             |
+
+
+### *t_fsm1*
+ My FSM...
+
+| Name | Description     |
+| ---- | --------------- |
+| FSM1 | FSM1 comment... |
+| FSM2 | FSM2 comment... |
+| FSM3 | FSM3 comment... |
+
+
+### *t_fsm2*
+ My FSM 2...
+
+| Name  | Description      |
+| ----- | ---------------- |
+| FSM_A | FSM_A comment... |
+| FSM_B | FSM_B comment... |
+| FSM_C | FSM_C comment... |
 
 
 ## Functions

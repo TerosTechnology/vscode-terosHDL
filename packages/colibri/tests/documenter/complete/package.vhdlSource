@@ -12,7 +12,40 @@ package test_package_name is
     constant d : integer := 8;
     constant e,f : integer := 0;
   
+    --! My type
+    type my_custom_type0 is range 0 to 1000; --! my type comment 0
+    type my_custom_type1 is range -5 to 5; --! my type comment 1
+    type my_custom_type2 is range -1000 to 5000; --! my type comment 2
+
+    --! Type Enum without descriptions
     type state_0 is (INIT, ENDS);
+
+    --! My FSM...
+    type t_fsm1 is (FSM1, --! FSM1 comment...
+        FSM2, --! FSM2 comment...
+        FSM3 --! FSM3 comment...
+    );
+
+    --! My FSM 2...
+    type t_fsm2 is (FSM_A, --! FSM_A comment...
+        FSM_B, --! FSM_B comment...
+        FSM_C --! FSM_C comment...
+    );
+
+
+    --! Sample record type 1
+    type sample_record1 is record
+        single_bit : std_logic; --! Comment single_bit
+        byte_data : std_logic_vector (7 downto 0); --! comment byte_data
+    end record sample_record1;
+
+    --! Sample record type 2
+    type sample_record2 is record
+        valid : std_logic; --! Comment valid
+        byte_data1 : std_logic_vector (7 downto 0); --! comment byte_data1
+        byte_data2 : std_logic_vector (7 downto 0); --! comment byte_data2
+        byte_data3 : std_logic_vector (7 downto 0); --! comment byte_data3
+    end record sample_record2;
 
     --! Description procedure
     procedure counter(signal minutes: in integer; signal seconds: out integer);
