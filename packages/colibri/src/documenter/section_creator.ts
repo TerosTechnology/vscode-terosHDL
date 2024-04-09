@@ -456,19 +456,19 @@ export class Creator extends Section_creator_interface {
                     }
                     // eslint-disable-next-line max-len
                     const name = functions[i].info.name;
-                    arguments_str = arguments_str
-                        .replace(/;/g, ';<br><span style="padding-left:20px">')
-                        .replace(/,/g, ',<br><span style="padding-left:20px">');
+
                     // eslint-disable-next-line max-len
-                    const section = `- ${name} <font id="function_arguments">${arguments_str}</font> <font id="function_return">${return_str}</font>\n`;
+                    const section = `- <p style="font-weight:bold;">${name} ${arguments_str}</p>\n`;
                     md += section;
                     html += converter.makeHtml(section);
 
                     const description = functions[i].info.description.replace('\n', '');
                     if (description !== '') {
-                        const description_element = `**${translator.get_str('Description')}**\n ${description}\n`;
+
                         md += '  - ' + description;
-                        html += '<div id="descriptions">' + converter.makeHtml(description_element) + '</div>';
+                        html += '<div id="descriptions">' + 
+                            translator.get_str('Description') + '</div>';
+                        html += '<div id="descriptions_content">' + description + '</div>';
                     }
                 }
             }
@@ -512,15 +512,17 @@ export class Creator extends Section_creator_interface {
                     // eslint-disable-next-line max-len
                     const name = tasks[i].info.name;
                     // eslint-disable-next-line max-len
-                    const section = `- ${name} <font id="task_arguments">${arguments_str}</font>\n`;
+                    const section = `- <p style="font-weight:bold;">${name} ${arguments_str}</p>\n`;
                     md += section;
                     html += converter.makeHtml(section);
 
                     const description = tasks[i].info.description.replace('\n', '');
                     if (description !== '') {
-                        const description_element = `**${translator.get_str('Description')}**\n ${description}\n`;
+
                         md += '  - ' + description;
-                        html += '<div id="descriptions">' + converter.makeHtml(description_element) + '</div>';
+                        html += '<div id="descriptions">' + 
+                            translator.get_str('Description') + '</div>';
+                        html += '<div id="descriptions_content">' + description + '</div>';
                     }
                 }
             }

@@ -106,6 +106,12 @@ export const html_style_preview = `
 #descriptions{
   margin-left:5.5%;
   margin-right:3%;
+  font-weight:bold;
+}
+
+#descriptions_content{
+  margin-left:9%;
+  margin-right:3%;
 }
 
 .markdown-body .anchor {
