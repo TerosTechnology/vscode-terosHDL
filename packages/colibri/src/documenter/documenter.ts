@@ -86,13 +86,27 @@ export class Documenter extends section_creator.Creator {
         save: boolean, input_path: string, output_svg_dir: string, extra_top_space: boolean,
         output_type: common_documenter.doc_output_type): Promise<result_type> {
             
-        let code_fix;
+        let code_fix = "";
         // const svg_dir_path = path_lib.dirname(output_svg_dir);
         // const filename_svg = path_lib.basename(input_path, path_lib.extname(input_path));
 
         // Fix multiline code in HTML:
         if (output_type === common_documenter.doc_output_type.HTML) {
-            code_fix = code.replace(/```[^]*```/g, function(match){return match.replace(/\n/g, '\n--! \n');});
+            if(lang === LANGUAGE.VHDL){
+                const vhdl_symbol = configuration.vhdl_symbol;
+                code_fix = code.replace(/```[^]*```/g, function(match){
+                    return match.replace(/\n/g, '\n--' + vhdl_symbol +' \n');});
+            }            
+            else if(lang === LANGUAGE.VERILOG || lang === LANGUAGE.SYSTEMVERILOG){
+                const verilog_symbol = configuration.verilog_symbol;
+                code_fix = code.replace(/```[^]*```/g, function(match){
+                    return match.replace(/\n/g, '\n//' + verilog_symbol +' \n');});
+            }
+            else
+            {
+                code_fix = code;
+            }
+
         }else{
             code_fix = code;
         }

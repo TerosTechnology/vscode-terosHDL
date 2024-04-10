@@ -19,7 +19,7 @@ image:
 
 
 
-![alt text](wavedrom_AZFA0.svg "title")
+![alt text](wavedrom_r4ag0.svg "title")
 
  
 
@@ -27,10 +27,28 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_RQRg1.svg "title")
+![alt text](wavedrom_1NmJ1.svg "title")
 
  
 
+Example of multiline code snipet:
+``` C
+int* versions = 0x0080000000 ;
+int* major = 0x0090000000 ;
+int* minor = 0x00A0000000 ;
+int* patch = 0x00B0000000 ;
+print_version();
+```
+Example of multiline code snipet:
+``` VHDL
+function sum(a : integer := 0; b : integer := 0)
+return integer is
+variable result : integer;
+begin
+result <= a + b;
+return result;
+end function;
+```
 
 ## Generics
 
