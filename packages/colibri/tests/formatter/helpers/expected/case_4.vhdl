@@ -2,14 +2,12 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity test_entity_name is
-  generic
-  (
+  generic (
     a    : integer;
     b    : std_logic := '1';
     c, d : std_logic_vector(1 downto 0)
   );
-  port
-  (
+  port (
     e    : in std_logic;                               -- comment 0
     f    : out std_logic;                              -- comment 1
     g    : inout std_logic;                            -- comment 2

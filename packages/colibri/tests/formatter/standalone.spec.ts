@@ -37,6 +37,99 @@ describe('standalone_vhdl', () => {
     beforeAll(() => {
         create_output();
     });
+    it('vhdl_case_0', async () => {
+        const code_to_format = path_lib.join(__dirname, 'helpers', 'case_0.vhd');
+        const code = read_file_sync(code_to_format);
+
+        const config: cfg.e_formatter_standalone = {
+            keyword_case: cfg.e_formatter_standalone_keyword_case.lowercase,
+            name_case: cfg.e_formatter_standalone_name_case.lowercase,
+            indentation: "  ",
+            align_port_generic: true,
+            align_comment: false,
+            remove_comments: true,
+            remove_reports: false,
+            check_alias: true,
+            new_line_after_then: cfg.e_formatter_standalone_new_line_after_then.new_line,
+            new_line_after_semicolon: cfg.e_formatter_standalone_new_line_after_semicolon.new_line,
+            new_line_after_else: cfg.e_formatter_standalone_new_line_after_else.new_line,
+            new_line_after_port: cfg.e_formatter_standalone_new_line_after_port.new_line,
+            new_line_after_generic: cfg.e_formatter_standalone_new_line_after_generic.new_line
+        };
+
+        const formatter = new Standalone_vhdl();
+        const result = await formatter.format_from_code(code, config);
+
+        const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_0.vhd');
+        save_file_sync(output_path, result.code_formatted);
+
+        expect(result.successful).toBe(true);
+        const expected_result = read_file_sync(path_lib.join(C_EXPECTED_BASE_PATH, 'case_0.vhd'));
+        const expected_result_fix = normalize_breakline_windows(expected_result);
+        expect(result.code_formatted).toBe(expected_result_fix);
+    });
+    it('vhdl_case_0b', async () => {
+        const code_to_format = path_lib.join(__dirname, 'helpers', 'case_0b.vhd');
+        const code = read_file_sync(code_to_format);
+
+        const config: cfg.e_formatter_standalone = {
+            keyword_case: cfg.e_formatter_standalone_keyword_case.uppercase,
+            name_case: cfg.e_formatter_standalone_name_case.uppercase,
+            indentation: "  ",
+            align_port_generic: true,
+            align_comment: false,
+            remove_comments: true,
+            remove_reports: false,
+            check_alias: true,
+            new_line_after_then: cfg.e_formatter_standalone_new_line_after_then.new_line,
+            new_line_after_semicolon: cfg.e_formatter_standalone_new_line_after_semicolon.new_line,
+            new_line_after_else: cfg.e_formatter_standalone_new_line_after_else.new_line,
+            new_line_after_port: cfg.e_formatter_standalone_new_line_after_port.new_line,
+            new_line_after_generic: cfg.e_formatter_standalone_new_line_after_generic.new_line
+        };
+
+        const formatter = new Standalone_vhdl();
+        const result = await formatter.format_from_code(code, config);
+
+        const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_0b.vhd');
+        save_file_sync(output_path, result.code_formatted);
+
+        expect(result.successful).toBe(true);
+        const expected_result = read_file_sync(path_lib.join(C_EXPECTED_BASE_PATH, 'case_0b.vhd'));
+        const expected_result_fix = normalize_breakline_windows(expected_result);
+        expect(result.code_formatted).toBe(expected_result_fix);
+    });
+    it('vhdl_case_0c', async () => {
+        const code_to_format = path_lib.join(__dirname, 'helpers', 'case_0c.vhd');
+        const code = read_file_sync(code_to_format);
+
+        const config: cfg.e_formatter_standalone = {
+            keyword_case: cfg.e_formatter_standalone_keyword_case.uppercase,
+            name_case: cfg.e_formatter_standalone_name_case.uppercase,
+            indentation: "  ",
+            align_port_generic: true,
+            align_comment: false,
+            remove_comments: true,
+            remove_reports: false,
+            check_alias: true,
+            new_line_after_then: cfg.e_formatter_standalone_new_line_after_then.new_line,
+            new_line_after_semicolon: cfg.e_formatter_standalone_new_line_after_semicolon.new_line,
+            new_line_after_else: cfg.e_formatter_standalone_new_line_after_else.new_line,
+            new_line_after_port: cfg.e_formatter_standalone_new_line_after_port.no_new_line,
+            new_line_after_generic: cfg.e_formatter_standalone_new_line_after_generic.no_new_line
+        };
+
+        const formatter = new Standalone_vhdl();
+        const result = await formatter.format_from_code(code, config);
+
+        const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_0c.vhd');
+        save_file_sync(output_path, result.code_formatted);
+
+        expect(result.successful).toBe(true);
+        const expected_result = read_file_sync(path_lib.join(C_EXPECTED_BASE_PATH, 'case_0c.vhd'));
+        const expected_result_fix = normalize_breakline_windows(expected_result);
+        expect(result.code_formatted).toBe(expected_result_fix);
+    });
     it('vhdl_case_1', async () => {
         const code_to_format = path_lib.join(__dirname, 'helpers', 'case_1.vhd');
         const code = read_file_sync(code_to_format);
@@ -44,7 +137,7 @@ describe('standalone_vhdl', () => {
         const config: cfg.e_formatter_standalone = {
             keyword_case: cfg.e_formatter_standalone_keyword_case.lowercase,
             name_case: cfg.e_formatter_standalone_name_case.lowercase,
-            indentation: "    ",
+            indentation: "  ",
             align_port_generic: true,
             align_comment: true,
             remove_comments: false,
@@ -53,7 +146,7 @@ describe('standalone_vhdl', () => {
             new_line_after_then: cfg.e_formatter_standalone_new_line_after_then.new_line,
             new_line_after_semicolon: cfg.e_formatter_standalone_new_line_after_semicolon.new_line,
             new_line_after_else: cfg.e_formatter_standalone_new_line_after_else.new_line,
-            new_line_after_port: cfg.e_formatter_standalone_new_line_after_port.new_line,
+            new_line_after_port: cfg.e_formatter_standalone_new_line_after_port.no_new_line,
             new_line_after_generic: cfg.e_formatter_standalone_new_line_after_generic.new_line
         };
 
