@@ -23,6 +23,7 @@ import { normalize_breakline_windows } from "../../src/utils/common_utils";
 import { read_file_sync, save_file_sync,create_directory, remove_directory } from '../../src/utils/file_utils';
 
 const C_OUTPUT_BASE_PATH = path_lib.join(__dirname, "out");
+const C_EXPECTED_BASE_PATH = path_lib.join(__dirname, "helpers/expected");
 
 function create_output() {
     remove_directory(C_OUTPUT_BASE_PATH);
@@ -51,11 +52,11 @@ describe('s3sv', () => {
         const formatter = new S3sv();
         const result = await formatter.format_from_code(code, config);
 
-        const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'sample_formatted.v');
+        const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'sample.v');
         save_file_sync(output_path, result.code_formatted);
 
         expect(result.successful).toBe(true);
-        const expected_result = read_file_sync(path_lib.join(__dirname, 'helpers', 'sample_expected.v'));
+        const expected_result = read_file_sync(path_lib.join(C_EXPECTED_BASE_PATH, 'sample.v'));
         const expected_result_fix = normalize_breakline_windows(expected_result);
         expect(result.code_formatted).toBe(expected_result_fix);
     });
