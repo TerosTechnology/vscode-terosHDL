@@ -29,6 +29,27 @@
 //!   {bits: 12, name: 'imm[11:0]', attr: 'I-immediate[11:0]', type: 3}
 //! ]}
 
+//! Example of multiline code snipet:
+//! ``` C
+//!    int* versions = 0x0080000000 ;
+//!    int* major = 0x0090000000 ;
+//!    int* minor = 0x00A0000000 ;
+//!    int* patch = 0x00B0000000 ;
+//!    print_version();
+//! ```
+
+
+//! Example of multiline code snipet:
+//! ``` VHDL
+//!    function sum(a : integer := 0; b : integer := 0)
+//!        return integer is 
+//!     variable result : integer;
+//!    begin
+//!     result <= a + b;
+//!     return result;
+//!    end function;
+//! ```
+
 module test_entity_name 
     #(
         parameter a=8, //!Inline comment 
