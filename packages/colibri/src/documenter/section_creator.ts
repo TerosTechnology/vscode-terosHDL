@@ -59,6 +59,12 @@ export class Creator extends Section_creator_interface {
         return description.replace(/\r/g, ' ').replace(/\n/g, ' ');
     }
 
+    // Add scape char to SystemVerilog macro (`) to avoid code tag in HTML
+    apply_macro_fix_in_html(code: string): string {
+        // (?<!``): Avoids code comment match with this: ``` 
+        return code.replace(/(?<!``)`(\w+)/g, "\\`" + "$1"); 
+    }
+
     transform(markdown_str: string, output_type: common_documenter.doc_output_type): string {
         if (output_type === common_documenter.doc_output_type.HTML) {
             return this.converter.makeHtml(markdown_str);
@@ -325,7 +331,16 @@ export class Creator extends Section_creator_interface {
                 md += this.get_doc_ports(element.port_list, [], translator);
             }
         }
-        return this.transform(md, output_type);
+        
+        let md_fix = "";
+        if(output_type === common_documenter.doc_output_type.HTML){
+            // Add scape char to SystemVerilog macro to avoid code tag in HTML
+            md_fix = this.apply_macro_fix_in_html(md); 
+        }
+        else{
+            md_fix = md;
+        }     
+        return this.transform(md_fix, output_type);  
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -412,7 +427,16 @@ export class Creator extends Section_creator_interface {
                 }
             }
         }
-        return this.transform(md, output_type);
+
+        let md_fix = "";
+        if(output_type === common_documenter.doc_output_type.HTML){
+            // Add scape char to SystemVerilog macro to avoid code tag in HTML
+            md_fix = this.apply_macro_fix_in_html(md); 
+        }
+        else{
+            md_fix = md;
+        }     
+        return this.transform(md_fix, output_type);  
     }
 
     ////////////////////////////////////////////////////////////////////////////

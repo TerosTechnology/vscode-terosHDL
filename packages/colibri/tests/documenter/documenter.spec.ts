@@ -76,7 +76,12 @@ output_types.forEach(output_type_inst => {
 
             await run(hdl_type, hdl_lang, output_type_inst);
         });
+        it(`Module SystemVerilog`, async function () {
+            const hdl_lang = LANGUAGE.SYSTEMVERILOG;
+            const hdl_type = 'module';
 
+            await run(hdl_type, hdl_lang, output_type_inst);
+        });
     });
 });
 

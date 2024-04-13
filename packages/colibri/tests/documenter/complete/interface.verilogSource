@@ -4,6 +4,8 @@
 
 import commonTypes_pkg::*;
 
+`define XYZ_OP 1024
+
 // //! type comment description
 // typedef struct packed
 // {
@@ -20,6 +22,7 @@ interface interface_0 #(
   ep_lookup_t                   ep_lookup;
   logic                         logic_0;  //! description logic 0
   logic       [PARAMETER_0-1:0] logic_1;  //! description logic 1
+  logic       [`XYZ_OP-1:0] logic_2;  //! description logic 2
 
   //! modport 0 multiline 
   //! description with **markdown**

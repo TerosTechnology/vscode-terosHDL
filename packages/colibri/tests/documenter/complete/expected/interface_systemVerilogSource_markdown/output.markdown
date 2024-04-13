@@ -8,10 +8,11 @@
 | PARAMETER_0 | 15            |             |
 ## Signals
 
-| Name    | Type                    | Description         |
-| ------- | ----------------------- | ------------------- |
-| logic_0 | logic                   | description logic 0 |
-| logic_1 | logic [PARAMETER_0-1:0] | description logic 1 |
+| Name    | Type                      | Description         |
+| ------- | ------------------------- | ------------------- |
+| logic_0 | logic                     | description logic 0 |
+| logic_1 | logic [PARAMETER_0-1:0]   | description logic 1 |
+| logic_2 | logic       [`XYZ_OP-1:0] | description logic 2 |
 ## Modports
 
 - Name: **mod_port_0**

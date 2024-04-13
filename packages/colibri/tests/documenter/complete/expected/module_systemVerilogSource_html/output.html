@@ -1094,172 +1094,10 @@
   <article class="markdown-body">
 
 <div id="teroshdl" class='templateTerosHDL'>
-<ul>
-<li><strong>File</strong>: interface.systemVerilogSource</li>
-</ul><h1 id="interface-interface_0">Interface: interface_0</h1><p>interface 0  description </p><h2 id="parameters">Parameters</h2><table>
-<thead>
-<tr>
-<th id="name">Name</th>
-<th id="default_value">Default value</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PARAMETER_0</td>
-<td>15</td>
-<td></td>
-</tr>
-</tbody>
-</table><h2 id="signals">Signals</h2><table>
-<thead>
-<tr>
-<th id="name">Name</th>
-<th id="type">Type</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>logic_0</td>
-<td>logic</td>
-<td>description logic 0</td>
-</tr>
-<tr>
-<td>logic_1</td>
-<td>logic [PARAMETER_0-1:0]</td>
-<td>description logic 1</td>
-</tr>
-<tr>
-<td>logic_2</td>
-<td>logic       [`XYZ_OP-1:0]</td>
-<td>description logic 2</td>
-</tr>
-</tbody>
-</table><h2 id="modports">Modports</h2><ul>
-<li>Name: <strong>mod_port_0</strong></li>
-</ul><p>modport 0 multiline   description with <strong>markdown</strong> </p><table>
-<thead>
-<tr>
-<th id="port_name">Port name</th>
-<th id="direction">Direction</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input_0</td>
-<td>input</td>
-<td></td>
-</tr>
-<tr>
-<td>output_0</td>
-<td>output</td>
-<td></td>
-</tr>
-</tbody>
-</table><ul>
-<li>Name: <strong>mod_port_1</strong></li>
-</ul><p>modport 1 multiline   description with <strong>markdown</strong> </p><table>
-<thead>
-<tr>
-<th id="port_name">Port name</th>
-<th id="direction">Direction</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input_0</td>
-<td>input</td>
-<td></td>
-</tr>
-<tr>
-<td>output_0</td>
-<td>output</td>
-<td></td>
-</tr>
-</tbody>
-</table><h1 id="interface-interface_1">Interface: interface_1</h1><p>interface 0  description </p><h2 id="parameters">Parameters</h2><table>
-<thead>
-<tr>
-<th id="name">Name</th>
-<th id="default_value">Default value</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PARAMETER_0</td>
-<td>15</td>
-<td>paramter description</td>
-</tr>
-</tbody>
-</table><h2 id="signals">Signals</h2><table>
-<thead>
-<tr>
-<th id="name">Name</th>
-<th id="type">Type</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>logic_0</td>
-<td>logic</td>
-<td></td>
-</tr>
-<tr>
-<td>logic_1</td>
-<td>logic [PARAMETER_0-1:0]</td>
-<td></td>
-</tr>
-</tbody>
-</table><h2 id="modports">Modports</h2><ul>
-<li>Name: <strong>mod_port_0</strong></li>
-</ul><table>
-<thead>
-<tr>
-<th id="port_name">Port name</th>
-<th id="direction">Direction</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input_0</td>
-<td>input</td>
-<td></td>
-</tr>
-<tr>
-<td>output_0</td>
-<td>output</td>
-<td></td>
-</tr>
-</tbody>
-</table><ul>
-<li>Name: <strong>mod_port_1</strong></li>
-</ul><table>
-<thead>
-<tr>
-<th id="port_name">Port name</th>
-<th id="direction">Direction</th>
-<th id="description">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>input_0</td>
-<td>input</td>
-<td></td>
-</tr>
-<tr>
-<td>output_0</td>
-<td>output</td>
-<td></td>
-</tr>
-</tbody>
-</table><h2 id="types">Types</h2>
+<h1 id="entity-test">Entity: test</h1><ul>
+<li><strong>File</strong>: module.systemVerilogSource</li>
+</ul><h2 id="diagram">Diagram</h2>
+<h2 id="signals">Signals</h2>
 <table>
 <thead>
 <tr>
@@ -1270,9 +1108,19 @@
 </thead>
 <tbody>
 <tr>
-<td>slot_t</td>
-<td>struct packed {<br><span style="padding-left:20px">   logic l_0;<br><span style="padding-left:20px">         logic l_1;<br><span style="padding-left:20px">      }</td>
-<td>type comment description</td>
+<td>testReg [0:`A-1]</td>
+<td>reg [`A-1:0]</td>
+<td></td>
+</tr>
+<tr>
+<td>testReg [0:`BCD-1]</td>
+<td>reg [`BCD-1:0]</td>
+<td></td>
+</tr>
+<tr>
+<td>testReg [0:`XYZ_OP-1]</td>
+<td>reg [`XYZ_OP-1:0]</td>
+<td></td>
 </tr>
 </tbody>
 </table>
