@@ -50,6 +50,10 @@
 //!    end function;
 //! ```
 
+`define A 1024
+`define BCD 1024
+`define XYZ_OP 1024
+
 module test_entity_name 
     #(
         parameter a=8, //!Inline comment 
@@ -70,6 +74,9 @@ module test_entity_name
         // port comment 2
         // multiline
         input wire h,
+        input reg ['A:0] macro_ex1, //! 'A is a macro
+        input reg ['BCD:0] macro_ex2, //! 'BCD is a macro
+        input reg ['XYZ_OP:0] macro_ex3, //! 'XYZ_OP is a macro
         input reg [7:0] i, j,
         input wire [9:0] k,
         // over comment port
@@ -89,6 +96,7 @@ module test_entity_name
     wire m;
     wire n, p;
     reg [1:0] q;
+    reg ['XYZ_OP:0] P;
 
     localparam r = 2;
 

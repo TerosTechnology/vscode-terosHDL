@@ -19,7 +19,7 @@ image:
 
 
 
-![alt text](wavedrom_r4ag0.svg "title")
+![alt text](wavedrom_RmdD0.svg "title")
 
  
 
@@ -27,7 +27,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_1NmJ1.svg "title")
+![alt text](wavedrom_NgZK1.svg "title")
 
  
 
@@ -61,28 +61,32 @@ end function;
 
 ## Ports
 
-| Port name      | Direction | Type                        | Description    |
-| -------------- | --------- | --------------------------- | -------------- |
-| smc_client_tts |           | slot_mem_bcast_if.smc_bcast | Comment 00     |
-| smc_pk         |           | slot_if.smc                 | Comment 11     |
-| smc_rt         |           | slot_dc_if.smc_dc           |                |
-| e              | input     |                             | port comment   |
-| f              | output    |                             | port comment 1 |
-| g              | input     |                             |                |
-| h              | input     | wire                        |                |
-| i              | input     | [7:0]                       |                |
-| j              |           |                             |                |
-| k              | input     | wire [9:0]                  |                |
-| l              | output    | wire [9:0]                  |                |
+| Port name      | Direction | Type                        | Description        |
+| -------------- | --------- | --------------------------- | ------------------ |
+| smc_client_tts |           | slot_mem_bcast_if.smc_bcast | Comment 00         |
+| smc_pk         |           | slot_if.smc                 | Comment 11         |
+| smc_rt         |           | slot_dc_if.smc_dc           |                    |
+| e              | input     |                             | port comment       |
+| f              | output    |                             | port comment 1     |
+| g              | input     |                             |                    |
+| h              | input     | wire                        |                    |
+| macro_ex1      | input     | ['A:0]                      | 'A is a macro      |
+| macro_ex2      | input     | ['BCD:0]                    | 'BCD is a macro    |
+| macro_ex3      | input     | ['XYZ_OP:0]                 | 'XYZ_OP is a macro |
+| i              | input     | [7:0]                       |                    |
+| j              |           |                             |                    |
+| k              | input     | wire [9:0]                  |                    |
+| l              | output    | wire [9:0]                  |                    |
 
 ## Signals
 
-| Name | Type      | Description     |
-| ---- | --------- | --------------- |
-| m    | wire      | comment in wire |
-| n    | wire      |                 |
-| p    | wire      |                 |
-| q    | reg [1:0] |                 |
+| Name | Type            | Description     |
+| ---- | --------------- | --------------- |
+| m    | wire            | comment in wire |
+| n    | wire            |                 |
+| p    | wire            |                 |
+| q    | reg [1:0]       |                 |
+| P    | reg ['XYZ_OP:0] |                 |
 
 ## Constants
 
