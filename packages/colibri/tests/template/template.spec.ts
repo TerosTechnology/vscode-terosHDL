@@ -151,9 +151,22 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
                         extension = "vhdl";
                     }
 
+                    let lang_template = LANGUAGE.NONE;
+                    const template_def = common.get_template_definition(language);
+                    for (let i = 0; i < template_def.lang_list.length; i++) {
+                        if (template_type.id === template_def.id_list[i]) {
+                            lang_template = template_def.lang_list[i];
+                            break;
+                        }
+                    }
+
                     const template_manager = await generate_template_manager(language);
                     const inst_hdl = code_hdl[counter];
-                    const template = await template_manager.generate(inst_hdl, template_type.id, config);
+                    const template = await template_manager.generate(inst_hdl, 
+                                                                    template_type.id, 
+                                                                    config, 
+                                                                    lang_template);
+
                     const output_path = paht_lib.join(C_OUTPUT_BASE_PATH,
                         `${extension}_${template_type.id}.${extension}`);
                     fs.writeFileSync(output_path, template);
