@@ -70,7 +70,7 @@ export class Template_manager {
         const template_manager = new teroshdl2.template.manager.Template_manager(lang);
 
         const options = this.get_config();
-        const template = await template_manager.generate(code, select_id, options);
+        const template = await template_manager.generate(code, select_id, options, lang_template);
 
         //Error
         if (template === undefined || template === '') {
