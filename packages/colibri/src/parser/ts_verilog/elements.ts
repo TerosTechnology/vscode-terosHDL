@@ -389,20 +389,16 @@ function get_task_name(input: any, lines: any): string {
 function get_function_arguments(input: any, lines: any): string {
     const arr_0 = utils_hdl.search_multiple_in_tree(input, 'tf_port_list');
     let input_name = '(';
-    console.log('input:'+ input)
-    console.log('lines:'+ lines)
-    if (arr_0.length != 0) {
+    console.log('input:'+ input);
+    console.log('lines:'+ lines);
+    if (arr_0.length !== 0) {
         const arr_1 = utils_hdl.search_multiple_in_tree(input, 'tf_port_item1');
 
         for (let i = 0; i < arr_1.length; i++) {
         
             input_name = input_name + utils_hdl.extract_data(arr_1[i], lines) + ', ';
         }
-        
-    } else {
-        input_name = input_name + utils_hdl.extract_data(arr_0[0], lines);
     }
-
     input_name = input_name + ')';
     return input_name;
 }
@@ -410,20 +406,16 @@ function get_function_arguments(input: any, lines: any): string {
 function get_task_arguments(input: any, lines: any): string {
     const arr_0 = utils_hdl.search_multiple_in_tree(input, 'tf_port_list');
     let input_name = '(';
-    console.log('input:'+ input)
-    console.log('lines:'+ lines)
-    if (arr_0.length != 0) {
+    console.log('input:'+ input);
+    console.log('lines:'+ lines);
+    if (arr_0.length !== 0) {
         const arr_1 = utils_hdl.search_multiple_in_tree(input, 'tf_port_item1');
 
         for (let i = 0; i < arr_1.length; i++) {
         
             input_name = input_name + utils_hdl.extract_data(arr_1[i], lines) + ', ';
         }
-        
-    } else {
-        input_name = input_name + utils_hdl.extract_data(arr_0[0], lines);
     }
-
     input_name = input_name + ')';
     return input_name;
 }
