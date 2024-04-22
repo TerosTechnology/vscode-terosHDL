@@ -23,6 +23,7 @@ import * as cfg from "../../src/config/config_declaration";
 import * as cfg_aux from "../../src/config/auxiliar_config";
 import { read_file_sync } from "../../src/utils/file_utils";
 import { LANGUAGE } from "../../src/common/general";
+import { normalize_breakline_windows } from "../../src/utils/common_utils";
 import { equal } from "assert";
 import * as paht_lib from 'path';
 import * as fs from 'fs';
@@ -150,9 +151,22 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
                         extension = "vhdl";
                     }
 
+                    let lang_template = LANGUAGE.NONE;
+                    const template_def = common.get_template_definition(language);
+                    for (let i = 0; i < template_def.lang_list.length; i++) {
+                        if (template_type.id === template_def.id_list[i]) {
+                            lang_template = template_def.lang_list[i];
+                            break;
+                        }
+                    }
+
                     const template_manager = await generate_template_manager(language);
                     const inst_hdl = code_hdl[counter];
-                    const template = await template_manager.generate(inst_hdl, template_type.id, config);
+                    const template = await template_manager.generate(inst_hdl, 
+                                                                    template_type.id, 
+                                                                    config, 
+                                                                    lang_template);
+
                     const output_path = paht_lib.join(C_OUTPUT_BASE_PATH,
                         `${extension}_${template_type.id}.${extension}`);
                     fs.writeFileSync(output_path, template);
@@ -161,8 +175,8 @@ TEST_TYPE_LIST.forEach(TEST_TYPE => {
                     const input_path = paht_lib.join(__dirname, `expected_${TEST_TYPE}`,
                         `${extension}_${template_type.id}.${extension}`);
                     const expected = read_file_sync(input_path);
-
-                    equal(template, expected);
+                    const expected_result_fix = normalize_breakline_windows(expected);
+                    equal(template, expected_result_fix);
                 });
             });
 
@@ -200,7 +214,7 @@ describe('Template utils', function () {
         const input_path = paht_lib.join(__dirname, "expected_with_generic", 
             "vhdl_hdl_element_instance_no_header.vhdl");
         const expected = read_file_sync(input_path);
-
-        equal(result, expected);
+        const expected_result_fix = normalize_breakline_windows(expected);
+        equal(result, expected_result_fix);
     });
 });

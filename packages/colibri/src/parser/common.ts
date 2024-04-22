@@ -33,6 +33,8 @@ export enum TYPE_HDL_ELEMENT {
     SIGNAL = "signal",
     CONSTANT = "constant",
     TYPE = "type",
+    ENUM = "enum",
+    RECORD = "record",
     FUNCTION = "function",
     TASK = "task",
     GENERIC = "generic",
@@ -66,10 +68,29 @@ export type Constant_hdl = {
     default_value: string;
 };
 
+export type Enum_hdl = {
+    hdl_element_type: TYPE_HDL_ELEMENT.ENUM;
+    info: Common_info;
+    type: string;
+    inline_comment: string;
+};
+
+export type Record_hdl = {
+    hdl_element_type: TYPE_HDL_ELEMENT.RECORD;
+    info: Common_info;
+    type: string;
+    inline_comment: string;
+};
+
 export type Type_hdl = {
     hdl_element_type: TYPE_HDL_ELEMENT.TYPE;
     info: Common_info;
     type: string;
+    inline_comment: string;
+    is_record : boolean;
+    is_enum : boolean;
+    record_elements: Record_hdl[];
+    enum_elements: Enum_hdl[];
     logic: Logic_hdl[];
 };
 

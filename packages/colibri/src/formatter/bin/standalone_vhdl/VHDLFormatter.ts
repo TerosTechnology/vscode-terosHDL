@@ -169,6 +169,7 @@ function SetKeywordCase(input: string, keywordcase: string, keywords: string[]):
     return input;
 }
 
+//TODO: bug fix
 export function SetNewLinesAfterSymbols(text: string, newLineSettings: NewLineSettings): string {
     if (newLineSettings == null) {
         return text;
@@ -176,7 +177,13 @@ export function SetNewLinesAfterSymbols(text: string, newLineSettings: NewLineSe
     if (newLineSettings.newLineAfter != null) {
         newLineSettings.newLineAfter.forEach(symbol => {
             const upper = symbol.toUpperCase();
-            const rexString = "(" + upper + ")[ ]?([^ \r\n@])";
+            let rexString = "";
+            if (upper === 'PORT' || upper === 'GENERIC'){
+                //Fix unwanted match when generic and/or port names contain "generic" or "port" keywords.
+                rexString = "[^A-Za-z0-9_](" + upper + ")[^A-Za-z0-9_][ ]?([^ \r\n@])";
+            }else{
+                rexString = "(" + upper + ")[ ]?([^ \r\n@])";
+            }
             let regex: any = null;
             if (upper.regexStartsWith(/\w/)) {
                 regex = new RegExp("\\b" + rexString, "g");

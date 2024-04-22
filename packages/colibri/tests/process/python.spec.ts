@@ -77,8 +77,12 @@ describe("Python", () => {
         const result_script = await python.exec_python_script(result.python_path, script, "", "");
 
         expect(result_script.successful).toBeTruthy();
-        expect(result_script.stdout).toBe("hello\nworld");
-
+        if (process.platform === 'win32') {
+            expect(result_script.stdout).toBe("hello\r\nworld");
+        }
+        else{
+            expect(result_script.stdout).toBe("hello\nworld");
+        }
     });
 
     it(`exec_python_script_async`, async () => {
@@ -104,6 +108,11 @@ describe("Python", () => {
 
         const result_script = await execute_python_script(result.python_path, script);
         expect(result_script.successful).toBeTruthy();
-        expect(result_script.stdout).toBe("hello\nworld");
+        if (process.platform === 'win32') {
+            expect(result_script.stdout).toBe("hello\r\nworld");
+        }
+        else{
+            expect(result_script.stdout).toBe("hello\nworld");
+        }
     });
 });

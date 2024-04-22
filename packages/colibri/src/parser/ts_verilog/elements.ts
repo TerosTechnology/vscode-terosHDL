@@ -130,6 +130,11 @@ export function get_types_pkg(tree: any, lines: any): common_hdl.Type_hdl[] {
                     description: ""
                 },
                 type: type.trim(),
+                inline_comment: "",
+                is_enum: false,
+                is_record: false,
+                enum_elements: [],
+                record_elements: [],
                 logic: []
             };
             if (type !== '') {

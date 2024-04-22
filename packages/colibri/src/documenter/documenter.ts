@@ -85,12 +85,38 @@ export class Documenter extends section_creator.Creator {
     async get_document(code: string, lang: LANGUAGE, configuration: t_documenter_options,
         save: boolean, input_path: string, output_svg_dir: string, extra_top_space: boolean,
         output_type: common_documenter.doc_output_type): Promise<result_type> {
-
         
-        code = await this.handle_include_sv(code,input_path)
+        // Replace the `include keyword with the file that should be included.
+        code = await this.handle_include_sv(code,input_path);
+
+        let code_fix = "";
+        // const svg_dir_path = path_lib.dirname(output_svg_dir);
+        // const filename_svg = path_lib.basename(input_path, path_lib.extname(input_path));
+        
 
 
-        const hdl_element: common_hdl.Hdl_element = await this.get_code_tree(code, lang, configuration);
+        // Fix multiline code in HTML:
+        if (output_type === common_documenter.doc_output_type.HTML) {
+            if(lang === LANGUAGE.VHDL){
+                const vhdl_symbol = configuration.vhdl_symbol;
+                code_fix = code.replace(/```[^]*```/g, function(match){
+                    return match.replace(/\n/g, '\n--' + vhdl_symbol +' \n');});
+            }            
+            else if(lang === LANGUAGE.VERILOG || lang === LANGUAGE.SYSTEMVERILOG){
+                const verilog_symbol = configuration.verilog_symbol;
+                code_fix = code.replace(/```[^]*```/g, function(match){
+                    return match.replace(/\n/g, '\n//' + verilog_symbol +' \n');});
+            }
+            else
+            {
+                code_fix = code;
+            }
+
+        }else{
+            code_fix = code;
+        }
+
+        const hdl_element: common_hdl.Hdl_element = await this.get_code_tree(code_fix, lang, configuration);
         if (hdl_element === undefined) {
             const result: result_type = {
                 document: '',
