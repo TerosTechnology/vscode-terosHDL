@@ -85,7 +85,10 @@ export class Documenter extends section_creator.Creator {
     async get_document(code: string, lang: LANGUAGE, configuration: t_documenter_options,
         save: boolean, input_path: string, output_svg_dir: string, extra_top_space: boolean,
         output_type: common_documenter.doc_output_type): Promise<result_type> {
-            
+        
+        // Replace the `include keyword with the file that should be included.
+        code = await this.handle_include_sv(code,input_path);
+
         let code_fix = "";
         // const svg_dir_path = path_lib.dirname(output_svg_dir);
         // const filename_svg = path_lib.basename(input_path, path_lib.extname(input_path));
@@ -282,4 +285,25 @@ export class Documenter extends section_creator.Creator {
         const fsm_list = await this.get_fsm(code, lang, configuration);
         return fsm_list.svg;
     }
+
+    //This function will find a `include precompiler directive in system verilog
+    //and pull that file into the code string.
+    //This allows for clean documentation when tasks/blocks may be seperated 
+    //out to help with file size
+    private async handle_include_sv(code: string, input_path:string){
+        while (code.search("`include") != -1){
+            const filename = code.substring(code.search("`include")).split("\"")[1];
+            let line_to_replace = code.substring(code.search("`include"));
+            line_to_replace = line_to_replace.substring(0,line_to_replace.search("\n"));
+            console.log(line_to_replace);
+
+            const include_file = path_lib.join(path_lib.dirname(input_path),filename);
+            const file_contents = fs.readFileSync(include_file).toString();
+            console.log(file_contents);
+            code = code.replace(line_to_replace,file_contents);
+            console.log(code); 
+        }
+        return code;
+    }
+
 }
