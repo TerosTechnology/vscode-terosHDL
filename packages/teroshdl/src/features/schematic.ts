@@ -25,11 +25,8 @@ import { t_Multi_project_manager } from '../type_declaration';
 import { Base_webview } from './base_webview';
 import * as os from 'os';
 import * as fs from 'fs';
-import * as yosys from './yosys';
-import * as shell from 'shelljs';
 import * as nunjucks from 'nunjucks';
 import { globalLogger } from '../logger';
-import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 const activation_command = 'teroshdl.netlist.viewer';
 const id = "netlist";
@@ -49,7 +46,6 @@ export class Schematic_manager extends Base_webview {
             'netlist_viewer', 'netlist_viewer.html'), activation_command, id);
 
         this.working_directory = os.tmpdir();
-        this.output_path = path_lib.join(this.working_directory, 'teroshdl_yosys_output.json');
     }
 
     get_webview_content(webview: vscode.Webview) {
@@ -144,7 +140,7 @@ export class Schematic_manager extends Base_webview {
     async update(vscode_document: utils.t_vscode_document) {
         this.last_document = vscode_document;
 
-        const schematic: any = await this.generate_from_file(vscode_document.filename);
+        const schematic: any = await this.generateFromfile(vscode_document.filename);
 
         if (schematic === undefined || schematic === '') {
             return;
@@ -179,12 +175,6 @@ export class Schematic_manager extends Base_webview {
     //////////////////////////////////////////////////////////////////////////////
     // Generate netlist
     //////////////////////////////////////////////////////////////////////////////
-    clear_enviroment(output_path) {
-        try {
-            fs.unlinkSync(output_path);
-        } catch (err) { }
-    }
-
     async generate_project_netlist() {
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Window,
@@ -193,7 +183,7 @@ export class Schematic_manager extends Base_webview {
         }, async (progress) => {
 
             progress.report({ increment: 0 });
-            const result = await this.generate_from_project();
+            const result = await this.generateFromProject();
             progress.report({ increment: 100 });
 
             await this.update_svg_in_html(result);
@@ -208,7 +198,7 @@ export class Schematic_manager extends Base_webview {
         }, async (progress) => {
 
             progress.report({ increment: 0 });
-            const result = await this.generate_from_file(path);
+            const result = await this.generateFromfile(path);
             progress.report({ increment: 100 });
 
             await this.update_svg_in_html(result);
@@ -223,32 +213,24 @@ export class Schematic_manager extends Base_webview {
         let result = '';
         if (netlist.empty === false) {
             result = netlist.result;
-            // result = Yosys_lib.normalize_netlist(result);
         }
 
         await this.panel?.webview.postMessage({ command: "update", result: result });
     }
 
-    async generate_from_project() {
+    async generateFromProject() {
         try {
-            const selected_project = this.manager.get_selected_project();
-            const sources = selected_project.get_project_definition().file_manager.get();
+            const selectedProject = this.manager.get_selected_project();
 
-            const file_array: string[] = [];
-            sources.forEach(source_inst => {
-                file_array.push(source_inst.name);
-            });
+            const topLevelPath = selectedProject.get_project_definition().toplevel_path_manager.get();
+            const fileList = selectedProject.get_project_definition().file_manager.get();
 
-            this.clear_enviroment(this.output_path);
-
-            const top_level_path = selected_project.get_project_definition().toplevel_path_manager.get();
-
-            let top_level = "";
-            if (top_level_path.length === 1) {
-                top_level = teroshdl2.utils.hdl.get_toplevel_from_path(top_level_path[0]);
+            let topLevel = "";
+            if (topLevelPath.length === 1) {
+                topLevel = teroshdl2.utils.hdl.get_toplevel_from_path(topLevelPath[0]);
             }
 
-            return await this.run_yosys_script(top_level, file_array, this.output_path);
+            return await this.run_yosys_script(topLevel, fileList);
         } catch (error) {
             globalLogger.error("Select a project first.", false);
             return "";
@@ -256,102 +238,77 @@ export class Schematic_manager extends Base_webview {
 
     }
 
-    async generate_from_file(file_path: string) {
-        this.clear_enviroment(this.output_path);
+    async generateFromfile(file_path: string) {
+        const language = teroshdl2.utils.file.get_language_from_filepath(file_path);
+        const fileVersion = teroshdl2.utils.file.get_default_version_for_filepath(file_path);
+        const file: teroshdl2.project_manager.common.t_file = {
+            name: file_path,
+            is_include_file: false,
+            include_path: '',
+            logical_name: '',
+            is_manual: false,
+            file_type: language,
+            file_version: fileVersion,
+            source_type: teroshdl2.project_manager.common.e_source_type.SYNTHESIS
 
-        return await this.run_yosys_script("", [file_path], this.output_path);
+        };
+        const topLevel = teroshdl2.utils.hdl.get_toplevel_from_path(file_path);
+        return await this.run_yosys_script(topLevel, [file]);
     }
 
-    async run_yosys_script(top_level: string, sources: string[], output_path: string) {
+    async run_yosys_script(topLevel: string, sources: teroshdl2.project_manager.common.t_file[]) {
         let netlist = {
             'result': '',
             'error': false,
             'empty': false
         };
 
-        let config = GlobalConfigManager.getInstance().get_config();
+        let config = teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config();
         try {
             const selectedProject = this.manager.get_selected_project();
             config = selectedProject.get_config();
         }
-        catch (error) {}
+        catch (error) { }
 
-        const backend = config.schematic.general.backend;
-        const custom_argumens = config.schematic.general.args;
-        const extra = config.schematic.general.extra;
+        return new Promise(async resolve => {
+            const handleStream = (result: teroshdl2.yosys.yosys.e_schematic_result): void => {
 
-        let yosys_path = config.tools.yosys.installation_path;
-
-        let cmd_files = yosys.get_yosys_read_file(sources, backend, this.working_directory, config.schematic.general.args_ghdl);
-        if (cmd_files === undefined) {
-            globalLogger.error(`Error procesing the schematic`, true);
-            netlist.empty = true;
-            return netlist;
-        }
-        let output_path_filename = path_lib.basename(output_path);
-        let top_level_cmd = "";
-        if (top_level !== "") {
-            top_level_cmd = `hierarchy -top ${top_level}`;
-        }
-        const script_code = `${cmd_files}; ${top_level_cmd}; proc; ${custom_argumens} ; write_json ${output_path_filename}; stat`;
-
-        let plugin = ``;
-        if (backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl_module) {
-            plugin = `-m ghdl`;
-        }
-        let command = `${extra} yowasp-yosys -p "${script_code}"`;
-        if (backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys
-            || backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl
-            || backend === teroshdl2.config.config_declaration.e_schematic_general_backend.yosys_ghdl_module) {
-            if (yosys_path === '') {
-                yosys_path = 'yosys';
-            }
-            else {
-                yosys_path = path_lib.join(yosys_path, 'yosys');
-                if (process.platform === "win32") {
-                    yosys_path += '.exe';
-                }
-            }
-            command = `${yosys_path} ${plugin} -p "${script_code}"`;
-        }
-        command += '\n';
-
-        let element = this;
-        globalLogger.info(command);
-
-        return new Promise(resolve => {
-            element.childp = shell.exec(command, { async: true, cwd: this.working_directory }, async function (code, stdout, stderr) {
-                if (code === 0) {
-                    let result_yosys = '';
-                    if (fs.existsSync(output_path)) {
-                        result_yosys = fs.readFileSync(output_path, { encoding: 'utf8', flag: 'r' });
-                    }
-                    result_yosys = JSON.parse(result_yosys);
+                if (result.sucessful) {
+                    const result_yosys = JSON.parse(result.schematic);
                     netlist.empty = false;
-                    netlist.result = result_yosys;
 
-                    let netlist_svg = await element.get_svg_from_json(netlist);
-
-                    resolve(netlist_svg);
+                    this.getSvgFromJson(result_yosys)
+                        .then(netlist_svg => {
+                            netlist.result = netlist_svg["result"];
+                            resolve(netlist);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
                 }
                 else {
                     globalLogger.error("Yosys failed.", true);
                     netlist.empty = true;
                     resolve(netlist);
                 }
-            });
+            };
 
-            element.childp.stdout.on('data', function (data) {
+            // Run Yosys
+            const exec_i = await teroshdl2.yosys.yosys.getSchematic(config, topLevel, sources, handleStream);
+
+            exec_i.stdout.on('data', function (data) {
                 globalLogger.info(data);
             });
-            element.childp.stderr.on('data', function (data) {
+            exec_i.stderr.on('data', function (data) {
                 globalLogger.append(data);
             });
+
         });
     }
 
-    async get_svg_from_json(output_yosys) {
-        output_yosys.result = yosys.normalize_netlist(output_yosys.result);
+    async getSvgFromJson(jsonSchematic: any) {
+        let outputYosys = { result: jsonSchematic };
+        outputYosys.result = normalizeNetlist(outputYosys.result);
         const netlistsvg = require("netlistsvg");
         const skinPath = path_lib.join(this.context.extensionPath, "resources",
             "webviews", "netlist_viewer", "default.svg");
@@ -373,21 +330,40 @@ export class Schematic_manager extends Base_webview {
             }
         };
 
-        let jsonp = output_yosys.result;
+        let jsonp = outputYosys.result;
         try {
-            output_yosys.result = await netlistsvg.render(skin, jsonp, undefined, undefined, config);
+            outputYosys.result = await netlistsvg.render(skin, jsonp, undefined, undefined, config);
         } catch (error) {
             console.log(error);
             globalLogger.error("Generating the schematic graph. The graph exceeds the maximum size.", true);
             return "";
         }
 
-        return output_yosys;
+        return outputYosys;
     }
 }
 
+export function normalizeNetlist(netlist: any) {
+    try {
+        let norm_netlist = netlist;
+        let modules = netlist.modules;
 
-
-
-
-
+        for (let module in modules) {
+            let cells_module = modules[module].cells;
+            for (let cell in cells_module) {
+                let cell_i = cells_module[cell];
+                if (cell_i.port_directions === undefined) {
+                    cell_i.port_directions = {};
+                    for (let port in cell_i.connections) {
+                        cell_i.port_directions[port] = 'input';
+                    }
+                }
+            }
+        }
+        norm_netlist.modules = modules;
+        return norm_netlist;
+    }
+    catch (e) {
+        return netlist;
+    }
+}

@@ -17,13 +17,4 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-export * as common from './common/export_t';
-export * as documenter from './documenter/export_t';
-export * as formatter from './formatter/export_t';
-export * as linter from './linter/export_t';
-export * as process from './process/export_t';
-export * as template from './template/export_t';
-export * as project_manager from './project_manager/export_t';
-export * as config from './config/export_t';
-export * as utils from './utils/export_t';
-export * as yosys from './yosys/export_t';
+export * as yosys from './yosys';

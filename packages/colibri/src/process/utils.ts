@@ -21,7 +21,9 @@ import { OS, e_sentence } from "./common";
 import * as os_lib from "os";
 import * as path_lib from 'path';
 import { makeid } from '../utils/common_utils';
+import * as file_utils from '../utils/file_utils';
 import * as fs from 'fs';
+import * as temp from 'temp';
 
 /**
  * Get the current operative system name
@@ -101,8 +103,6 @@ function get_sentence_windows(sentence_type: e_sentence): string {
  * @returns Temporal file path
 **/
 export function create_temp_file(content: string): string {
-    const temp = require('temp');
-
     const temp_file = temp.openSync();
     if (temp_file === undefined) {
         throw "Unable to create temporary file";
@@ -110,6 +110,10 @@ export function create_temp_file(content: string): string {
     fs.writeSync(temp_file.fd, content);
     fs.closeSync(temp_file.fd);
     return temp_file.path;
+}
+
+export function getTempFolder(): string {
+    return os_lib.tmpdir();
 }
 
 /**
@@ -130,4 +134,12 @@ export function get_random_folder_in_home_directory(): string {
     const random_id = makeid(5);
     const random_folder = path_lib.join(user_hom_dir, `.teroshdl_${random_id}_`);
     return random_folder;
+}
+
+export function createTempFileInHome(content: string): string {
+    const user_hom_dir = get_home_directory();
+    const random_id = makeid(5);
+    const filePath = path_lib.join(user_hom_dir, `.teroshdl_${random_id}`);
+    file_utils.save_file_sync(filePath, content);
+    return filePath;
 }
