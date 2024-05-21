@@ -1474,10 +1474,10 @@ export const WEB_CONFIG = `
                 <span class="markConfig badge bg-secondary" id="mark_schematic-general-backend"></span>
               </label>
               <select class="form-select" aria-label="Select the backend:" id="schematic-general-backend">
-                      <option value='yowasp'>YoWASP</option>
-                      <option value='yosys'>Yosys</option>
-                      <option value='yosys_ghdl'>GHDL + Yosys</option>
-                      <option value='yosys_ghdl_module'>GHDL (module) + Yosys</option>
+                      <option value='yowasp'>YoWASP (Only Verilog/SV)</option>
+                      <option value='yosys'>Yosys (Only Verilog/SV)</option>
+                      <option value='yosys_ghdl'>GHDL + Yosys (VHDL+Verilog/SV)</option>
+                      <option value='standalone'>Standalone (Verilog/SV)</option>
               </select>
             </div>
           

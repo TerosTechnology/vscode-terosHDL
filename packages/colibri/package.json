@@ -39,8 +39,8 @@
         "compile": "tsc -b tsconfig.json && npm run copy-files",
         "copy-files": "python3 copy_files.py",
         "lint": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' eslint . --quiet --ext .ts",
-        "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand",
-        "test-win": "node --trace-warnings --experimental-vm-modules ./node_modules/jest/bin/jest.js --forceExit --runInBand --detectOpenHandles"
+        "test-esm": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand",
+        "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config-not-esm.json"
     },
     "directories": {
         "lib": "./lib",
@@ -53,6 +53,7 @@
         "@oclif/plugin-plugins": "^2.0.1",
         "@types/node": "^17.0.31",
         "@types/nunjucks": "^3.1.4",
+        "@yowasp/yosys": "0.41.721",
         "chokidar": "3.5.3",
         "cli-color": "^2.0.3",
         "clone": "^2.1.2",
@@ -84,6 +85,7 @@
         "@types/cli-color": "^2.0.2",
         "@types/jest": "^29.4.3",
         "@types/js-yaml": "^4.0.5",
+        "@types/temp": "^0.9.4",
         "@typescript-eslint/eslint-plugin": "^5.27.0",
         "@typescript-eslint/parser": "^5.27.0",
         "assert": "^2.0.0",
