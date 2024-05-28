@@ -21,7 +21,7 @@ import { t_file, t_action_result, t_logical, e_source_type } from "../common";
 import * as file_utils from "../../utils/file_utils";
 import { Manager } from "./manager";
 import { Dependency_graph } from "../dependency/dependency";
-import { LANGUAGE } from "../../common/general";
+import { LANGUAGE, t_version_inst } from "../../common/general";
 import { get_files_from_csv } from "../prj_loaders/csv_loader";
 
 export class File_manager extends Manager<t_file, undefined, string, string> {
@@ -33,19 +33,19 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
                 const orderResult = get_files_from_csv(compileOrderPath, false);
                 if (orderResult.successful && orderResult.file_list.length > 0) {
                     const fileListInOrder = orderResult.file_list;
-    
+
                     const orderedFiles = fileListInOrder.filter(fileInOrder =>
                         this.files.some(file =>
                             file.name === fileInOrder.name && file.logical_name === fileInOrder.logical_name
                         )
                     );
-    
+
                     const remainingFiles = this.files.filter(file =>
                         !fileListInOrder.some(fileInOrder =>
                             file.name === fileInOrder.name && file.logical_name === fileInOrder.logical_name
                         )
                     );
-    
+
                     this.files = [...orderedFiles, ...remainingFiles];
                 }
             }
@@ -149,6 +149,31 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         };
 
         this.files.push(complete_file);
+        return result;
+    }
+
+    configureSource(name: string, logical_name: string, fileType: LANGUAGE, fileVersion: t_version_inst,
+        sourceType: e_source_type): t_action_result {
+
+        const result: t_action_result = {
+            result: "",
+            successful: true,
+            msg: ""
+        };
+        if (this.check_if_exists(name, logical_name) === false) {
+            result.successful = false;
+            result.msg = "Toplevel path doesn't exist";
+            return result;
+        }
+
+        for (let i = 0; i < this.files.length; i++) {
+            const fileInst = this.files[i];
+            if (fileInst.name === name && fileInst.logical_name === logical_name) {
+                fileInst.file_type = fileType;
+                fileInst.file_version = fileVersion;
+                fileInst.source_type = sourceType;
+            }
+        }
         return result;
     }
 

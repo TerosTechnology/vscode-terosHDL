@@ -47,6 +47,15 @@ export enum LANGUAGE {
     NONE = "none"
 }
 
+export function getLanguageEnumValue(value: string): LANGUAGE {
+    for (const key in LANGUAGE) {
+        if (LANGUAGE[key as keyof typeof LANGUAGE] === value) {
+            return LANGUAGE[key as keyof typeof LANGUAGE];
+        }
+    }
+    return LANGUAGE.NONE;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Versions
 ////////////////////////////////////////////////////////////////////////////////
@@ -95,6 +104,18 @@ export const LANGUAGE_VERSIONS_LIST: Record<LANGUAGE, t_versions> = {
     [LANGUAGE.IP]: undefined,
     [LANGUAGE.QSYS]: undefined,
 };
+
+export function getLanguageVersion(language: LANGUAGE, version: string | undefined): t_version_inst {
+    const versions = LANGUAGE_VERSIONS_LIST[language];
+    if (versions && version) {
+        for (const v of versions) {
+            if (v === version) {
+                return v;
+            }
+        }
+    }
+    return undefined;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Extensions
