@@ -80,6 +80,15 @@ export enum e_source_type {
     SYNTHESIS = "synthesis"
 }
 
+export function getSourceTypeEnumValue(value: string): e_source_type {
+    for (const key in e_source_type) {
+        if (e_source_type[key as keyof typeof e_source_type] === value) {
+            return e_source_type[key as keyof typeof e_source_type];
+        }
+    }
+    return e_source_type.NONE;
+}
+
 export type t_logical = {
     name: string;
     file_list: t_file[];

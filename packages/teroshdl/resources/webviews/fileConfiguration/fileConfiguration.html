@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        vscode-dropdown {
+           width: 100%;
+        }
+    </style>
+
+</head>
+
+<body>
+    <vscode-form-group>
+
+        <br><br>
+
+        <vscode-badge id="file-name"></vscode-badge>
+
+        <br><br>
+
+        <vscode-label for="file-type">File type:</vscode-label>
+        <vscode-dropdown id="file-type">
+        </vscode-dropdown>
+
+        <br><br><br>
+
+        <vscode-label for="file-version">File Version:</vscode-label>
+        <vscode-dropdown id="file-version">
+        </vscode-dropdown>
+
+        <br><br><br>
+
+        <vscode-label for="source-type">Source Type:</vscode-label>
+        <vscode-dropdown id="source-type">
+        </vscode-dropdown>
+
+        <br><br><br>
+
+        <vscode-button id="apply-button">Apply</vscode-button>
+
+    </vscode-form-group>
+    <script type="module" src="{{webviewUri}}"></script>
+</body>
+
+</html>

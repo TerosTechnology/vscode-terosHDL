@@ -204,7 +204,7 @@ export class Project_manager extends ConfigManager {
             const is_manual = file?.["is_manual"] ?? true;
             const file_type = file_utils.get_language_from_filepath(name);
             const file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
-            const source_type = file?.["is_manual"] ?? e_source_type.NONE;
+            const source_type = file?.["source_type"] ?? e_source_type.NONE;
 
             prj.add_file({
                 name: name, is_include_file: is_include_file,

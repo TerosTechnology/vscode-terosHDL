@@ -8,7 +8,7 @@
   command: "npm run generate-examples & npm run compile"
 
 - name: "compile"
-  command: "npm run-script build-webviews & tsc -p ./"
+  command: "npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./"
 
 - name: "lint"
   command: "eslint src --ext ts"
@@ -33,3 +33,6 @@
 
 - name : "build-webviews"
   command: "NODE_ENV=production node resources/webviews/reporters/esbuild.js"
+
+- name : "build-webviews-configuration"
+  command: "NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js"

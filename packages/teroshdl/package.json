@@ -802,7 +802,7 @@
         "build-package": "cd auto_package && ./gen.sh", 
         "clean": "shx rm -rf out", 
         "vscode:prepublish": "npm run generate-examples & npm run compile", 
-        "compile": "npm run-script build-webviews & tsc -p ./", 
+        "compile": "npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./", 
         "lint": "eslint src --ext ts", 
         "watch": "tsc --watch --p ./ & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"", 
         "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
@@ -810,7 +810,8 @@
         "package": "npm run pre-package & vsce package --yarn --allow-star-activation", 
         "package-prerelease": "npm run pre-package & vsce package --pre-release -o ./pre-release.vsix --yarn --allow-star-activation", 
         "auto-package": "cd auto_package & ./gen.sh", 
-        "build-webviews": "NODE_ENV=production node resources/webviews/reporters/esbuild.js"
+        "build-webviews": "NODE_ENV=production node resources/webviews/reporters/esbuild.js", 
+        "build-webviews-configuration": "NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",

@@ -42,6 +42,7 @@ import { LogView, getLogView } from './views/logs';
 import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 import { TimingReportView, getTimingReportView } from './views/timing/timing_report';
 import { getPathDetailsView } from './views/timing/path_details';
+import { ConfigurationFileWebview } from './views/configurationFile';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -172,6 +173,7 @@ export class Teroshdl {
     }
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
+        new ConfigurationFileWebview(this.context, this.manager);
         new Tree_view_manager(this.context, this.manager, this.emitterProject, schematic_manager,
             dependency_manager, this.logView, this.timingView);
     }

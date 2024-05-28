@@ -59,7 +59,6 @@ export class Source_manager extends BaseView {
         vscode.commands.registerCommand("teroshdl.view.source.delete_library", (item) => this.delete_library(item));
         vscode.commands.registerCommand("teroshdl.view.source.delete_source", (item) => this.delete_source(item));
         vscode.commands.registerCommand("teroshdl.view.source.open", (item) => this.openSource(item));
-        vscode.commands.registerCommand("teroshdl.view.source.properties", async (item) => await this.modifyFileProperties(item));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
