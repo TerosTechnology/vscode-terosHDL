@@ -26,14 +26,23 @@ describe("Process", () => {
     // exec_wait
     ////////////////////////////////////////////////////////////////////////////
     it(`Local: exec_wait`, async () => {
-        const cmd = "ls -l";
+        let cmd = "";
+        if (process.platform === 'win32') {
+            cmd = "dir";
+        }else{
+            cmd = "ls -l";
+        }
 
         const p = new Process();
         const result = await p.exec_wait(cmd, undefined);
         expect(result.command).toBe(cmd);
         expect(result.return_value).toBe(0);
         expect(result.stderr).toBe("");
-        expect(result.stdout).toContain("total");
+        if (process.platform === 'win32') {
+            expect(result.stdout).toContain("Directory");
+        }else{
+            expect(result.stdout).toContain("total");
+        }
         expect(result.successful).toBeTruthy();
     });
 
@@ -44,14 +53,20 @@ describe("Process", () => {
         const result = await p.exec_wait(cmd);
         expect(result.command).toBe(cmd);
         expect(result.return_value).toBe(-1);
-        expect(result.stderr).toBe("/bin/sh: 1: asdf: not found");
+        if (process.platform !== 'win32') {
+            expect(result.stderr).toBe("/bin/sh: 1: asdf: not found");
+        }
         expect(result.stdout).toBe("");
         expect(result.successful).not.toBeTruthy();
     });
 
     it(`Local: exec_wait with cwd`, async () => {
-        const cmd = "ls -l";
-
+        let cmd = "";
+        if (process.platform === 'win32') {
+            cmd = "dir";
+        }else{
+            cmd = "ls -l";
+        }
         const p = new Process();
         const folder_test = path_lib.join(__dirname, "sample_folder");
         const result = await p.exec_wait(cmd, { cwd: folder_test });
@@ -64,8 +79,12 @@ describe("Process", () => {
     });
 
     it(`Local: success exec with timeout`, async () => {
-        const cmd = "ls -l";
-
+        let cmd = "";
+        if (process.platform === 'win32') {
+            cmd = "dir";
+        }else{
+            cmd = "ls -l";
+        }
         const p = new Process();
         const folder_test = path_lib.join(__dirname, "sample_folder");
         const result = await p.exec_wait(cmd, { cwd: folder_test, timeout: 3 });
@@ -79,28 +98,37 @@ describe("Process", () => {
 
     it(`Local: failed exec with timeout`, async () => {
         const cmd = "sleep 2";
-
-        const p = new Process();
-        const result = await p.exec_wait(cmd, { cwd: __dirname, timeout: 0.1 });
-        expect(result.command).toBe(cmd);
-        expect(result.return_value).toBe(-1);
-        expect(result.stderr).toBe("Timeout reached");
-        expect(result.stdout).toBe("");
-        expect(result.successful).not.toBeTruthy();
+        if (process.platform !== 'win32') {
+            const p = new Process();
+            const result = await p.exec_wait(cmd, { cwd: __dirname, timeout: 0.1 });
+            expect(result.command).toBe(cmd);
+            expect(result.return_value).toBe(-1);
+            expect(result.stderr).toBe("Timeout reached");
+            expect(result.stdout).toBe("");
+            expect(result.successful).not.toBeTruthy();
+        }
     });
 
     ////////////////////////////////////////////////////////////////////////////
     // exec
     ////////////////////////////////////////////////////////////////////////////
     it(`Local: exec`, () => {
-        const cmd = "ls -l";
-
+        let cmd = "";
+        if (process.platform === 'win32') {
+            cmd = "dir";
+        }else{
+            cmd = "ls -l";
+        }
         const p = new Process();
         p.exec(cmd, undefined, (result) => {
             expect(result.command).toBe(cmd);
             expect(result.return_value).toBe(0);
             expect(result.stderr).toBe("");
-            expect(result.stdout).toContain("total");
+            if (process.platform === 'win32') {
+                expect(result.stdout).toContain("Directory");
+            }else{
+                expect(result.stdout).toContain("total");
+            }
             expect(result.successful).toBeTruthy();
         });
     });
@@ -112,15 +140,21 @@ describe("Process", () => {
         p.exec(cmd, undefined, (result) => {
             expect(result.command).toBe(cmd);
             expect(result.return_value).toBe(-1);
-            expect(result.stderr).toBe("/bin/sh: 1: asdf: not found");
+            if (process.platform !== 'win32') {
+                expect(result.stderr).toBe("/bin/sh: 1: asdf: not found");
+            }
             expect(result.stdout).toBe("");
             expect(result.successful).not.toBeTruthy();
         });
     });
 
     it(`Local: exec with cmd`, () => {
-        const cmd = "ls -l";
-
+        let cmd = "";
+        if (process.platform === 'win32') {
+            cmd = "ls";
+        }else{
+            cmd = "ls -l";
+        }
         const p = new Process();
         const folder_test = path_lib.join(__dirname, "sample_folder");
 

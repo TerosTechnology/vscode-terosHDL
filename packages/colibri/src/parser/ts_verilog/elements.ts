@@ -130,6 +130,11 @@ export function get_types_pkg(tree: any, lines: any): common_hdl.Type_hdl[] {
                     description: ""
                 },
                 type: type.trim(),
+                inline_comment: "",
+                is_enum: false,
+                is_record: false,
+                enum_elements: [],
+                record_elements: [],
                 logic: []
             };
             if (type !== '') {
@@ -339,6 +344,33 @@ export function get_functions(tree: any, lines: any): common_hdl.Function_hdl[] 
     return items;
 }
 
+
+export function get_tasks(tree: any, lines: any): common_hdl.Task_hdl[] {
+    const items = [];
+    const start_line = tree.startPosition.row;
+
+    const inputs = utils_hdl.search_multiple_in_tree(tree, 'task_body_declaration');
+    for (let x = 0; x < inputs.length; ++x) {
+        const element: common_hdl.Task_hdl = {
+            hdl_element_type: common_hdl.TYPE_HDL_ELEMENT.TASK,
+            info: {
+                position: {
+                    line: start_line,
+                    column: 0
+                },
+                name: get_task_name(inputs[x], lines),
+                description: ""
+            },
+            type: "",
+            arguments: get_task_arguments(inputs[x], lines)
+        };
+
+        items.push(element);
+    }
+    return items;
+}
+
+
 function get_function_name(input: any, lines: any): string {
     const arr = utils_hdl.search_multiple_in_tree(input, 'function_identifier');
     if (arr.length === 0) {
@@ -347,6 +379,17 @@ function get_function_name(input: any, lines: any): string {
     const input_name = utils_hdl.extract_data(arr[0], lines);
     return input_name;
 }
+
+function get_task_name(input: any, lines: any): string {
+    const arr = utils_hdl.search_multiple_in_tree(input, 'task_identifier');
+    if (arr.length === 0) {
+        return "undefined";
+    }
+    const input_name = utils_hdl.extract_data(arr[0], lines);
+    return input_name;
+}
+
+
 
 function get_function_arguments(input: any, lines: any): string {
     const arr_0 = utils_hdl.search_multiple_in_tree(input, 'tf_port_list');
@@ -361,6 +404,21 @@ function get_function_arguments(input: any, lines: any): string {
     const input_name = '(' + utils_hdl.extract_data(arr_0[0], lines) + ')';
     return input_name;
 }
+
+function get_task_arguments(input: any, lines: any): string {
+    const arr_0 = utils_hdl.search_multiple_in_tree(input, 'tf_port_list');
+    if (arr_0.length === 0) {
+        const arr_1 = utils_hdl.search_multiple_in_tree(input, 'tf_item_declaration');
+        if (arr_1.length === 0) {
+            return "";
+        }
+        const input_name = '(' + utils_hdl.extract_data(arr_1[0], lines) + ')';
+        return input_name;
+    }
+    const input_name = '(' + utils_hdl.extract_data(arr_0[0], lines) + ')';
+    return input_name;
+}
+
 
 function get_function_return(input: any, lines: any): string {
     const arr = utils_hdl.search_multiple_in_tree(input, 'function_data_type_or_implicit1');

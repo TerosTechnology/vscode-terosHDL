@@ -1,5 +1,5 @@
 {
-    "preset": "ts-jest",
+    "preset": "ts-jest/presets/default-esm",
     "testEnvironment": "node",
     "collectCoverage": true,
     "coverageDirectory": "coverage",
@@ -26,5 +26,16 @@
     ],
     "testPathIgnorePatterns": [
         "tests_impr"
-    ]
+    ],
+    "transform": {
+        "^.+\\.(ts|tsx)$": [
+            "ts-jest",
+            {
+                "useESM": true
+            }
+        ]
+    },
+    "moduleNameMapper": {
+        "^(\\.{1,2}/.*)\\.js$": "$1"
+    }
 }

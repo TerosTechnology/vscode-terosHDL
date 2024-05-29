@@ -112,6 +112,7 @@ function get_config() {
         signal_visibility: cfg.e_documentation_general_signals.all,
         constant_visibility: cfg.e_documentation_general_constants.all,
         type_visibility: cfg.e_documentation_general_types.all,
+        task_visibility: cfg.e_documentation_general_tasks.all,
         function_visibility: cfg.e_documentation_general_functions.all,
         instantiation_visibility: cfg.e_documentation_general_instantiations.all,
         process_visibility: cfg.e_documentation_general_process.all,

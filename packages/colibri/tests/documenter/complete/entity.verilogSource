@@ -1,0 +1,174 @@
+//! This is an entity description.
+//! @author Miguel de Cervantes
+//! @version 1.0.1
+//! @brief Some description can be added here
+//! also in multi-lines
+//!
+//! Example of description beakline
+//!
+//! Example of Wavedrom
+//! image:	
+//! { signal: [
+//!   { name: "pclk", wave: 'p.......' },
+//!   { name: "Pclk", wave: 'P.......' },
+//!   { name: "nclk", wave: 'n.......' },
+//!   { name: "Nclk", wave: 'N.......' },
+//!   {},
+//!   { name: 'clk0', wave: 'phnlPHNL' },
+//!   { name: 'clk1', wave: 'xhlhLHl.' },
+//!   { name: 'clk2', wave: 'hpHplnLn' },
+//!   { name: 'clk3', wave: 'nhNhplPl' },
+//!   { name: 'clk4', wave: 'xlh.L.Hx' },
+//! ]}
+//! Example of bitfield:
+//!   {reg: [
+//!   {bits: 7, name: 'opcode', attr: 'OP-IMM'},
+//!   {bits: 5, name: 'rd', attr: 'dest'},
+//!   {bits: 3, name: 'func3', attr: ['ADDI', 'SLTI', 'SLTIU', 'ANDI', 'ORI', 'XORI'], type: 4},
+//!   {bits: 5, name: 'rs1', attr: 'src'},
+//!   {bits: 12, name: 'imm[11:0]', attr: 'I-immediate[11:0]', type: 3}
+//! ]}
+
+//! Example of multiline code snipet:
+//! ``` C
+//!    int* versions = 0x0080000000 ;
+//!    int* major = 0x0090000000 ;
+//!    int* minor = 0x00A0000000 ;
+//!    int* patch = 0x00B0000000 ;
+//!    print_version();
+//! ```
+
+
+//! Example of multiline code snipet:
+//! ``` VHDL
+//!    function sum(a : integer := 0; b : integer := 0)
+//!        return integer is 
+//!     variable result : integer;
+//!    begin
+//!     result <= a + b;
+//!     return result;
+//!    end function;
+//! ```
+
+`define A 1024
+`define BCD 1024
+`define XYZ_OP 1024
+
+module test_entity_name 
+    #(
+        parameter a=8, //!Inline comment 
+        //! Over comment
+        //! multiline
+        parameter b=9, 
+        parameter c=10, d=11
+    )
+    (
+        //! comment 87
+        //! multiline
+        slot_mem_bcast_if.smc_bcast smc_client_tts, //! Comment 00
+        slot_if.smc smc_pk[b], //! Comment 11
+        slot_dc_if.smc_dc smc_rt,            
+        input e, //! port comment
+        output f, //! port comment 1
+        input reg g,
+        // port comment 2
+        // multiline
+        input wire h,
+        input reg ['A:0] macro_ex1, //! 'A is a macro
+        input reg ['BCD:0] macro_ex2, //! 'BCD is a macro
+        input reg ['XYZ_OP:0] macro_ex3, //! 'XYZ_OP is a macro
+        input reg [7:0] i, j,
+        input wire [9:0] k,
+        // over comment port
+        output wire [9:0] l
+    );  
+
+    //! function comment
+    //! multiline
+    function [7:0] sum;  
+        input [7:0] a, b;  
+        begin  
+            sum = a + b;  
+        end  
+    endfunction
+
+    //! comment in wire
+    wire m;
+    wire n, p;
+    reg [1:0] q;
+    reg ['XYZ_OP:0] P;
+
+    localparam r = 2;
+
+    //! always comment
+    //! multiline
+    always @(posedge a) begin : label_0
+    end
+
+    always_comb begin
+    end
+
+    // comment not parsed
+    always_ff begin : label_1
+    end
+
+    always_latch begin
+    end
+
+    //!instance description
+    test_entity_name 
+    #(
+      .a(a ),
+      .b(b ),
+      .c(c ),
+      .d (d )
+    )
+    test_entity_name_dut (
+      .e (e ),
+      .f (f ),
+      .g (g ),
+      .h (h ),
+      .i (i ),
+      .j (j ),
+      .k (k ),
+      .l  ( l)
+    );
+  
+    //! Example of 
+    //! state machine
+    always @(posedge clk)
+    begin
+        case (state)
+            s0: begin
+                if (m0 == 1) begin
+                    state = s1;
+                end
+                if (m1 == 0)
+                    state = s2;
+                else
+                    state = s3;
+                end
+            s1: begin
+                if (m2 == 1) begin
+                    state <= s1;
+                end
+                if (m3 == 0)
+                    state = s0;
+                end
+            s2: begin
+                if (m1 == 1) begin
+                    if (m2 == 0) 
+                        state = s1;
+                    else
+                        state = s3;
+                end
+                if (m3 == 1)
+                    state = s2;
+                else
+                    state = s3;
+            end
+        endcase
+    end
+
+
+endmodule

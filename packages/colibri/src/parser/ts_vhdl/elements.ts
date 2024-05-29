@@ -71,7 +71,11 @@ export function get_process(p: any): common_hdl.Process_hdl[] {
 export function get_full_type_declaration(p: any): common_hdl.Type_hdl[] {
     let name = "";
     let type = "";
-
+    //let type_elemet : common_hdl.Type_hdl;
+    let record_array : common_hdl.Record_hdl[] = [];
+    let enum_array : common_hdl.Enum_hdl[] = [];
+    let is_record = false;
+    let is_enum = false;
     const break_p = false;
     const cursor = p.walk();
     const line = cursor.startPosition.row;
@@ -81,16 +85,20 @@ export function get_full_type_declaration(p: any): common_hdl.Type_hdl[] {
             name = cursor.nodeText;
         }
         else if (cursor.nodeType === 'enumeration_type_definition') {
-            const type_definition = cursor.nodeText;
-            type = utils_hdl.remove_break_line(utils_hdl.remove_comments(type_definition));
+            enum_array = get_enum_elements(cursor.currentNode(), ''); 
+            is_enum = true;
         }
         else if (cursor.nodeType === 'unbounded_array_definition') {
             const type_definition = cursor.nodeText;
             type = utils_hdl.remove_break_line(utils_hdl.remove_comments(type_definition));
-        }
-        else if (cursor.nodeType === 'record_type_definition') {
+        }        
+        else if (cursor.nodeType === 'numeric_type_definition') {
             const type_definition = cursor.nodeText;
             type = utils_hdl.remove_break_line(utils_hdl.remove_comments(type_definition));
+        }
+        else if (cursor.nodeType === 'record_type_definition') {
+            record_array = get_record_elements(cursor.currentNode(), ''); 
+            is_record = true;
         }
     }
     while (cursor.gotoNextSibling() === true && break_p === false);
@@ -106,6 +114,11 @@ export function get_full_type_declaration(p: any): common_hdl.Type_hdl[] {
             description: ""
         },
         type: type.trim(),
+        inline_comment: "",
+        is_enum: is_enum,
+        is_record: is_record,
+        record_elements: record_array,
+        enum_elements: enum_array,
         logic: []
     };
     return [element];
@@ -361,7 +374,7 @@ export function get_generics_or_ports(p: any, comment_symbol: string): common_hd
                             elements_array[i].info.description = txt_comment.trimStart();
                             elements_array[i].inline_comment = txt_comment.trimStart();
                         }
-                        else {
+                        else {4
                             elements_array[i].info.description = txt_comment.slice(1).trimStart();
                             elements_array[i].inline_comment = txt_comment.slice(1).trimStart();
                         }
@@ -434,5 +447,129 @@ function get_port_generic_element(p: any): common_hdl.Port_hdl[] {
         };
         elements_array.push(element);
     }
+    return elements_array;
+}
+
+export function get_record_elements(p: any, comment_symbol: string): common_hdl.Record_hdl[] {
+    const break_p = false;
+    const elements_array: common_hdl.Record_hdl[] = [];
+    const identifiers = [];
+    const inline_comment = [];
+    let txt_comment = "";
+    let has_comment = true;
+    const type = [];
+    let line = undefined;
+    const cursor = p.walk();
+
+    cursor.gotoFirstChild();
+    do {
+        if (cursor.nodeType === 'element_declaration') {
+            //if last identifier doesnt have comment, push empty string to avoid comment shifting.
+            if(!has_comment){
+                inline_comment.push("");
+            }
+            has_comment = false;
+            const full_element = cursor.nodeText;
+            const splitted_element = full_element.split(':');
+            splitted_element[0] = splitted_element[0].replace(' ','');
+            splitted_element[1] = splitted_element[1].replace(';','');
+            splitted_element[1] = splitted_element[1].replace(' ','');
+            identifiers.push(splitted_element[0]);
+            type.push(splitted_element[1]);
+            line = cursor.startPosition.row;
+        }
+        else if (cursor.nodeType === 'comment') {
+            txt_comment = cursor.nodeText.slice(2);
+            if (txt_comment[0] === comment_symbol || comment_symbol === '') {
+                if (txt_comment.charAt(txt_comment.length - 1) === '\n'
+                    || txt_comment.charAt(txt_comment.length - 1) === '\r') {
+                    txt_comment = txt_comment.slice(0, -1);
+                }
+                if(txt_comment){
+                    txt_comment = txt_comment.replace('!', ''); //TODO: BUG?
+                }
+                inline_comment.push(txt_comment.trimStart());
+            }
+            has_comment = true;
+        }
+    } while (cursor.gotoNextSibling() === true && break_p === false);
+
+    for (let i = 0; i < identifiers.length; ++i) {
+        const element: common_hdl.Record_hdl = {
+            hdl_element_type: common_hdl.TYPE_HDL_ELEMENT.RECORD,
+            info: {
+                position: {
+                    line: line,
+                    column: 0
+                },
+                name: identifiers[i],
+                description: inline_comment[i]
+            },
+            type: type[i],
+            inline_comment: inline_comment[i]
+        };
+        elements_array.push(element);
+    }
+
+    return elements_array;
+}
+
+export function get_enum_elements(p: any, comment_symbol: string): common_hdl.Enum_hdl[] {
+    const break_p = false;
+    const elements_array: common_hdl.Enum_hdl[] = [];
+    const identifiers = [];
+    const inline_comment = [];
+    let has_comment = true;
+    let line = undefined;
+    const cursor = p.walk();
+
+    cursor.gotoFirstChild();
+    do {
+        if (cursor.nodeType === 'identifier') {
+            //if last identifier doesnt have comment, push empty string to avoid comment shifting.
+            if(!has_comment){
+                inline_comment.push("");
+            }
+            has_comment = false;
+            const full_element = cursor.nodeText;
+            //const splitted_element = full_element.split(':');
+            //splitted_element[0] = splitted_element[0].replace(' ','');
+            //splitted_element[1] = splitted_element[1].replace(';','');
+            //splitted_element[1] = splitted_element[1].replace(' ','');
+            identifiers.push(full_element);
+            //type.push(splitted_element[1]);
+            line = cursor.startPosition.row;
+        }
+        else if (cursor.nodeType === 'comment') {
+            let txt_comment = cursor.nodeText.slice(2);
+            if (txt_comment[0] === comment_symbol || comment_symbol === '') {
+                if (txt_comment.charAt(txt_comment.length - 1) === '\n'
+                    || txt_comment.charAt(txt_comment.length - 1) === '\r') {
+                    txt_comment = txt_comment.slice(0, -1);
+                }
+                txt_comment = txt_comment.replace('!', '');
+                inline_comment.push(txt_comment.trimStart());
+            }
+            has_comment = true;
+        }
+    } while (cursor.gotoNextSibling() === true && break_p === false);
+
+    for (let i = 0; i < identifiers.length; ++i) {
+        const element: common_hdl.Enum_hdl = {
+            hdl_element_type: common_hdl.TYPE_HDL_ELEMENT.ENUM,
+            info: {
+                position: {
+                    line: line,
+                    column: 0
+                },
+                name: identifiers[i],
+                description: inline_comment[i]
+            },
+            type: "",
+            inline_comment: inline_comment[i]
+        };
+        elements_array.push(element);
+    }
+
     return elements_array;
 }

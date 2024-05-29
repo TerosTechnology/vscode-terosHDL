@@ -620,6 +620,21 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
+              <label for="documentation-general-tasks" class="form-label">
+                Include tasks:
+                <span class="markConfig badge bg-secondary" id="mark_documentation-general-tasks"></span>
+              </label>
+              <select class="form-select" aria-label="Include tasks:" id="documentation-general-tasks">
+                      <option value='all'>All</option>
+                      <option value='only_commented'>Only commented</option>
+                      <option value='none'>None</option>
+              </select>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
               <label for="documentation-general-magic_config_path" class="form-label">
                 Magic config file path
                 <span class="markConfig badge bg-secondary" id="mark_documentation-general-magic_config_path"></span>
@@ -1459,10 +1474,10 @@ export const WEB_CONFIG = `
                 <span class="markConfig badge bg-secondary" id="mark_schematic-general-backend"></span>
               </label>
               <select class="form-select" aria-label="Select the backend:" id="schematic-general-backend">
-                      <option value='yowasp'>YoWASP</option>
-                      <option value='yosys'>Yosys</option>
-                      <option value='yosys_ghdl'>GHDL + Yosys</option>
-                      <option value='yosys_ghdl_module'>GHDL (module) + Yosys</option>
+                      <option value='yowasp'>YoWASP (Only Verilog/SV)</option>
+                      <option value='yosys'>Yosys (Only Verilog/SV)</option>
+                      <option value='yosys_ghdl'>GHDL + Yosys (VHDL+Verilog/SV)</option>
+                      <option value='standalone'>Standalone (Verilog/SV)</option>
               </select>
             </div>
           
@@ -4693,6 +4708,8 @@ export const WEB_CONFIG = `
     config["documentation"]["general"]["process"] = element_value
     element_value = document.getElementById("documentation-general-functions").value;
     config["documentation"]["general"]["functions"] = element_value
+    element_value = document.getElementById("documentation-general-tasks").value;
+    config["documentation"]["general"]["tasks"] = element_value
     element_value = document.getElementById("documentation-general-magic_config_path").value;
     config["documentation"]["general"]["magic_config_path"] = element_value
     config["editor"] = {}
@@ -5297,6 +5314,7 @@ export const WEB_CONFIG = `
     document.getElementById("documentation-general-types").value = config["documentation"]["general"]["types"];
     document.getElementById("documentation-general-process").value = config["documentation"]["general"]["process"];
     document.getElementById("documentation-general-functions").value = config["documentation"]["general"]["functions"];
+    document.getElementById("documentation-general-tasks").value = config["documentation"]["general"]["tasks"];
     document.getElementById("documentation-general-magic_config_path").value = config["documentation"]["general"]["magic_config_path"];
     document.getElementById("editor-general-stutter_comment_shortcuts").checked = config["editor"]["general"]["stutter_comment_shortcuts"];
     document.getElementById("editor-general-stutter_block_width").value = config["editor"]["general"]["stutter_block_width"];
@@ -5605,6 +5623,11 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-functions").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["documentation"]["general"]["tasks"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_documentation-general-tasks").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["documentation"]["general"]["magic_config_path"] != undefined) {
       mark = MODIFIEDMSG;

@@ -59,6 +59,12 @@ export class Creator extends Section_creator_interface {
         return description.replace(/\r/g, ' ').replace(/\n/g, ' ');
     }
 
+    // Add scape char to SystemVerilog macro (`) to avoid code tag in HTML
+    apply_macro_fix_in_html(code: string): string {
+        // (?<!``): Avoids code comment match with this: ``` 
+        return code.replace(/(?<!``)`(\w+)/g, "\\`" + "$1"); 
+    }
+
     transform(markdown_str: string, output_type: common_documenter.doc_output_type): string {
         if (output_type === common_documenter.doc_output_type.HTML) {
             return this.converter.makeHtml(markdown_str);
@@ -325,7 +331,16 @@ export class Creator extends Section_creator_interface {
                 md += this.get_doc_ports(element.port_list, [], translator);
             }
         }
-        return this.transform(md, output_type);
+        
+        let md_fix = "";
+        if(output_type === common_documenter.doc_output_type.HTML){
+            // Add scape char to SystemVerilog macro to avoid code tag in HTML
+            md_fix = this.apply_macro_fix_in_html(md); 
+        }
+        else{
+            md_fix = md;
+        }     
+        return this.transform(md_fix, output_type);  
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -366,11 +381,62 @@ export class Creator extends Section_creator_interface {
                 md += this.get_doc_constants(constants, translator);
             }
             if (types.length !== 0 && configuration.type_visibility !== cfg.e_documentation_general_types.none) {
-                md += `\n## ${translator.get_str('Types')}\n\n`;
-                md += this.get_doc_types(types, translator);
+                const types_str = this.get_doc_types(types, translator);
+                //If there are no types, avoid printing the table.
+                if(types_str){
+                    md += `\n## ${translator.get_str('Types')}\n\n`;
+                    md += types_str;
+                }
+            }            
+            if (types.length !== 0 && configuration.type_visibility !== cfg.e_documentation_general_types.none) {
+                let record_tables_str = "";
+                for (let i = 0; i < types.length; ++i) {
+                    if (types[i].is_record === true){
+                        // Create a table for each record.
+                        record_tables_str += `\n### *` + types[i].info.name + `*\n`;
+                        if(types[i].info.description){
+                            record_tables_str += types[i].info.description + `\n`;
+                        }
+                        record_tables_str += this.get_doc_records(types[i].record_elements, translator);
+                        record_tables_str += '\n';
+                    }
+                }
+                //If there are no records, avoid printing the table.
+                if(record_tables_str){
+                    md += `\n## ${translator.get_str('Records')}\n\n`;
+                    md += record_tables_str;
+                }
+            }
+            if (types.length !== 0 && configuration.type_visibility !== cfg.e_documentation_general_types.none) {
+                let enum_tables_str = "";
+                for (let i = 0; i < types.length; ++i) {
+                    if (types[i].is_enum === true){
+                        // Create a table for each record.
+                        enum_tables_str += `\n### *` + types[i].info.name + `*\n`;
+                        if(types[i].info.description){
+                            enum_tables_str += types[i].info.description + `\n`;
+                        }
+                        enum_tables_str += this.get_doc_enums(types[i].enum_elements, translator);
+                        enum_tables_str += '\n';
+                    }
+                }
+                //If there are no records, avoid printing the table.
+                if(enum_tables_str){
+                    md += `\n## ${translator.get_str('Enums')}\n\n`;
+                    md += enum_tables_str;
+                }
             }
         }
-        return this.transform(md, output_type);
+
+        let md_fix = "";
+        if(output_type === common_documenter.doc_output_type.HTML){
+            // Add scape char to SystemVerilog macro to avoid code tag in HTML
+            md_fix = this.apply_macro_fix_in_html(md); 
+        }
+        else{
+            md_fix = md;
+        }     
+        return this.transform(md_fix, output_type);  
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -478,6 +544,63 @@ export class Creator extends Section_creator_interface {
         }
         return md;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Task section
+    ////////////////////////////////////////////////////////////////////////////
+    get_task_section(hdl_element: common_hdl.Hdl_element,
+        configuration: t_documenter_options, output_type: common_documenter.doc_output_type): string {
+        
+        const translator = new translator_lib.Translator(configuration.language);
+
+        let tasks = hdl_element.get_task_array();
+        if (configuration.task_visibility === cfg.e_documentation_general_tasks.none) {
+            return '';
+        }
+        if (configuration.task_visibility === cfg.e_documentation_general_tasks.only_commented) {
+            tasks = this.get_elements_with_description(tasks);
+        }
+        let md = "";
+        let html = "";
+        const converter = new showdown.Converter({ tables: true, ghCodeBlocks: true });
+        converter.setFlavor('github');
+        if (tasks.length !== 0) {
+            //Title
+            md += `\n## ${translator.get_str('Tasks')}\n`;
+            html += converter.makeHtml(`## ${translator.get_str('Tasks')}\n\n`);
+            for (let i = 0; i < tasks.length; ++i) {
+                if (tasks[i].info.name !== '') {
+                    let arguments_str = tasks[i].arguments;
+                    if (arguments_str === '') {
+                        arguments_str = '()';
+                    }
+                    
+                    // eslint-disable-next-line max-len
+                    const name = tasks[i].info.name;
+                    arguments_str = arguments_str
+                        .replace(/;/g, ';<br><span style="padding-left:20px">')
+                        .replace(/,/g, ',<br><span style="padding-left:20px">');
+                    // eslint-disable-next-line max-len
+                    const section = `- ${name} <font id="task_arguments">${arguments_str}</font>\n`;
+                    md += section;
+                    html += converter.makeHtml(section);
+
+                    const description = tasks[i].info.description.replace('\n', '');
+                    if (description !== '') {
+                        const description_element = `**${translator.get_str('Description')}**\n ${description}\n`;
+                        md += '  - ' + description;
+                        html += '<div id="descriptions">' + converter.makeHtml(description_element) + '</div>';
+                    }
+                }
+            }
+        }
+        if (output_type === common_documenter.doc_output_type.HTML) {
+            return html;
+        }
+        return md;
+    }
+
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Instantiation section
@@ -737,14 +860,40 @@ export class Creator extends Section_creator_interface {
         return text;
     }
 
-    get_doc_types(tpyes: common_hdl.Type_hdl[], translator: translator_lib.Translator) {
+    get_doc_types(types: common_hdl.Type_hdl[], translator: translator_lib.Translator) {
         const table = [];
         table.push([translator.get_str("Name"), translator.get_str("Type"), translator.get_str("Description")]);
-        for (let i = 0; i < tpyes.length; ++i) {
-            const description = utils.normalize_description(tpyes[i].info.description);
+        for (let i = 0; i < types.length; ++i) {
+            if(types[i].is_enum === false && types[i].is_record === false){
+                const description = utils.normalize_description(types[i].info.description);
+                table.push(
+                    [types[i].info.name,
+                    types[i]['type'].replace(/\r/g, ' ').replace(/\n/g, ' ')
+                        .replace(/;/g, ';<br><span style="padding-left:20px">')
+                        .replace(/,/g, ',<br><span style="padding-left:20px">')
+                        .replace(/{/g, '{<br><span style="padding-left:20px">'),
+                        description
+                    ]);
+            }
+        }
+        let text = "";
+        if(table.length > 1){
+            text = markdown_table.get_table(table, undefined) + '\n';
+        }
+        else{
+            text = "";
+        }
+        return text;
+    }
+
+    get_doc_records(record: common_hdl.Record_hdl[], translator: translator_lib.Translator) {
+        const table = [];
+        table.push([translator.get_str("Name"), translator.get_str("Type"), translator.get_str("Description")]);
+        for (let i = 0; i < record.length; ++i) {
+            const description = utils.normalize_description(record[i].inline_comment);
             table.push(
-                [tpyes[i].info.name,
-                tpyes[i]['type'].replace(/\r/g, ' ').replace(/\n/g, ' ')
+                [record[i].info.name,
+                record[i]['type'].replace(/\r/g, ' ').replace(/\n/g, ' ')
                     .replace(/;/g, ';<br><span style="padding-left:20px">')
                     .replace(/,/g, ',<br><span style="padding-left:20px">')
                     .replace(/{/g, '{<br><span style="padding-left:20px">'),
@@ -754,4 +903,19 @@ export class Creator extends Section_creator_interface {
         const text = markdown_table.get_table(table, undefined) + '\n';
         return text;
     }
+
+    get_doc_enums(enums: common_hdl.Enum_hdl[], translator: translator_lib.Translator) {
+        const table = [];
+        table.push([translator.get_str("Name"), translator.get_str("Description")]);
+        for (let i = 0; i < enums.length; ++i) {
+            const description = utils.normalize_description(enums[i].inline_comment);
+            table.push(
+                [enums[i].info.name,
+                    description
+                ]);
+        }
+        const text = markdown_table.get_table(table, undefined) + '\n';
+        return text;
+    }
+
 }

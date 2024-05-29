@@ -12,3 +12,5 @@ yarn.lock
 package-lock.json
 test_folder
 *.save
+examples/yosys/**/*.json
+examples/yosys/**/*.out

@@ -26,3 +26,4 @@ export * as template from './template/export_t';
 export * as project_manager from './project_manager/export_t';
 export * as config from './config/export_t';
 export * as utils from './utils/export_t';
+export * as yosys from './yosys/export_t';

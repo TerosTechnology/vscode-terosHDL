@@ -2,10 +2,10 @@ backend:
   description: "Select the backend:"
   type: select
   options:
-    yowasp: "YoWASP"
-    yosys: "Yosys"
-    yosys_ghdl: "GHDL + Yosys"
-    yosys_ghdl_module: "GHDL (module) + Yosys"
+    yowasp: "YoWASP (Only Verilog/SV)"
+    yosys: "Yosys (Only Verilog/SV)"
+    yosys_ghdl: "GHDL + Yosys (VHDL+Verilog/SV)"
+    standalone: "Standalone (Verilog/SV)"
   value: "yowasp"
 
 extra:

@@ -27,26 +27,29 @@ import { get_template } from "./helpers/template";
 /** Template */
 export class Template_manager {
     private language: LANGUAGE = LANGUAGE.VHDL;
-    private comment_symbol = "//";
 
     /**
      * @param  {LANGUAGE} language Language name
      */
     constructor(language: LANGUAGE) {
-        if (language === LANGUAGE.VHDL) {
-            this.comment_symbol = '//';
-        }
-        else {
-            this.comment_symbol = '--';
-        }
         this.language = language;
     }
 
     /**
      * Get the text header from a file path
      * @param  {string} header_file_path File path with the header
+     * @param  {LANGUAGE} target_lang Target language 
      */
-    private get_header(header_file_path: string) {
+    private get_header(header_file_path: string, target_lang: LANGUAGE) {
+        let comment_symbol = "";
+
+        if(target_lang === LANGUAGE.VHDL){
+            comment_symbol = '--';
+        }
+        else{
+            comment_symbol = '//';
+        }
+
         if (header_file_path === '') {
             return '';
         }
@@ -57,7 +60,7 @@ export class Template_manager {
             let header = '';
             for (let i = 0; i < lines.length; i++) {
                 const element = lines[i];
-                header += `${this.comment_symbol}  ${element}\n`;
+                header += `${comment_symbol}  ${element}\n`;
             }
             return header + '\n';
         }
@@ -100,12 +103,21 @@ export class Template_manager {
      * @param  {string} code HDL code
      * @param  {common.TEMPLATE_NAME} template_type Template type
      * @param  {common.t_options} options Template options
+     * @param  {string} options Template options
+     * @param  {LANGUAGE} target_lang Target language 
      */
-    async generate(code: string, template_type: string, options: t_template_options) {
+    async generate(code: string, template_type: string, options: t_template_options, target_lang?: LANGUAGE) {
+        let target_language = LANGUAGE.VHDL;
         let norm_language = this.language;
         if (this.language === LANGUAGE.SYSTEMVERILOG) {
             norm_language = LANGUAGE.VERILOG;
         }
+
+        if(typeof target_lang === 'undefined'){
+            target_language = norm_language;
+        }else{
+            target_language = target_lang;
+        }   
 
         let template = '';
         const code_tree = await this.parse(code);
@@ -113,7 +125,7 @@ export class Template_manager {
             return template;
         }
         // Get header
-        const header = this.get_header(options.header_file_path);
+        const header = this.get_header(options.header_file_path, target_language);
         // Indent
         const indent = this.get_indent(options.indent_char);
         // Template parent
