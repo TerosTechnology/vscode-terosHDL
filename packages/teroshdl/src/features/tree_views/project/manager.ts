@@ -267,10 +267,13 @@ export class Project_manager extends BaseView {
 
     async create_project_from_yaml(prj_path: string) {
         try {
+            const fileContent = teroshdl2.utils.file.read_file_sync(prj_path)
+            const repJSON = yaml.load(fileContent, { json: true });
             const prj = await teroshdl2.project_manager.project_manager.Project_manager.fromJson(
-                yaml.load(teroshdl2.utils.file.read_file_sync(prj_path)), prj_path, this.emitterProject);
+                repJSON, prj_path, this.emitterProject);
             this.project_manager.add_project(prj);
         } catch (error) {
+            console.log(error)
         }
     }
 
