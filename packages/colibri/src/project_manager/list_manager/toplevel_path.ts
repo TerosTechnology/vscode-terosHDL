@@ -37,8 +37,6 @@ export class Toplevel_path_manager extends Manager<string, undefined, string, un
             const new_files =  [...this.toplevel_paths];
             for (let i = 0; i < new_files.length; i++) {
                 new_files[i] = file_utils.get_relative_path(new_files[i], reference_path);
-                // Replaces double back slash generated when running on Windows
-                new_files[i] = new_files[i].replace(/\\/g, '/');
             }
             return new_files;
         }

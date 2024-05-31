@@ -18,14 +18,9 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { t_project_definition } from "../project_definition";
-import { convert_to_yaml } from "./json2yaml";
 import * as file_utils from "../../utils/file_utils";
 import * as general from "../../common/general";
-// import { Database } from 'sqlite3';
-
-// const fs = require('fs');
-// const initSqlJs = require('sql-wasm.js');
-// const initSqlJs = require('/home/carlos/Desktop/fs/sql-wasm.js');
+import * as jsYaml from 'js-yaml';
 const initSqlJs = require('sql.js');
 
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
@@ -69,9 +64,9 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
 
 export function get_edam_yaml(prj: t_project_definition, top_level_list: undefined | string[],
     reference_path?: string) {
-    const edam_json = get_edam_json(prj, top_level_list, reference_path);
-    const edam_yaml = convert_to_yaml(edam_json);
-    return edam_yaml;
+    const edamJSON = get_edam_json(prj, top_level_list, reference_path);
+    const edamYaml = jsYaml.dump(edamJSON);
+    return edamYaml;
 }
 
 /**
