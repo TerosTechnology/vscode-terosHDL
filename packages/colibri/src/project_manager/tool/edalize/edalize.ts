@@ -77,7 +77,7 @@ export class Edalize extends Generic_tool_handler {
         const config = prj.config;
 
         // Save EDAM project in JSON file
-        let edam_json = get_edam_json(prj, top_level_list);
+        let edam_json = get_edam_json(prj, top_level_list, undefined, true);
         // Set waveform
         edam_json = this.set_waveform(config, edam_json);
 

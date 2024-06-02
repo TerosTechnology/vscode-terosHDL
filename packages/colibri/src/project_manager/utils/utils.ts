@@ -24,7 +24,7 @@ import * as jsYaml from 'js-yaml';
 const initSqlJs = require('sql.js');
 
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
-    refrence_path?: string) {
+    refrence_path?: string, standartized_file_type_notation = false) {
 
     // Set tool options in EDAM format
     const tool_name = prj.config.tools.general.select_tool;
@@ -97,7 +97,7 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
         project_disk_path: prj.project_disk_path,
         project_type: prj.project_type,
         toplevel: top_level,
-        files: edam_files,
+        files: standartized_file_type_notation ? edam_files : files,
         hooks: prj.hook_manager.get(),
         watchers: prj.watcher_manager.get(refrence_path),
         configuration: prj.config,
@@ -108,8 +108,8 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
 }
 
 export function get_edam_yaml(prj: t_project_definition, top_level_list: undefined | string[],
-    reference_path?: string) {
-    const edamJSON = get_edam_json(prj, top_level_list, reference_path);
+    reference_path?: string, standartized_file_type_notation = false) {
+    const edamJSON = get_edam_json(prj, top_level_list, reference_path, standartized_file_type_notation);
     const edamYaml = jsYaml.dump(edamJSON);
     return edamYaml;
 }
