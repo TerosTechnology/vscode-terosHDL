@@ -47,12 +47,57 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
         top_level = top_level_list[0];
     }
 
+    const files = prj.file_manager.get(refrence_path);
+
+    type t_edam_file = {
+        /** File name with (absolute or relative) path */
+        name: string;
+        /** Indicates if this file should be treated as an include file (default false) */
+        is_include_file: boolean;
+        /** When is_include_file is true, the directory containing the file will be 
+         * added to the include path. include_path allows setting an explicit directory to use instead */
+        include_path: string;
+        /** Logical name (e.g. VHDL/SystemVerilog library) of the file */
+        logical_name: string;
+        /** File type */
+        file_type: string;
+    }
+
+    const edam_files = files.map((file) => {
+        const edam_file_type = () => {
+            switch (file.file_type) {
+                case general.LANGUAGE.VHDL:
+                    if (file.file_version === general.VHDL_LANG_VERSION.v2008) {
+                        return `${file.file_type}-${file.file_version}`;
+                    }
+                    break;
+                case general.LANGUAGE.VERILOG:
+                    if (file.file_version === general.VERILOG_LANG_VERSION.v2005) {
+                        return `${file.file_type}-${file.file_version}`;
+                    }
+                    break;
+            }
+
+            return file.file_type.toString();
+        }
+
+        const edam_file: t_edam_file = {
+            name: file.name,
+            include_path: file.include_path,
+            is_include_file: file.is_include_file,
+            logical_name: file.logical_name,
+            file_type: edam_file_type()
+        };
+
+        return edam_file;
+    })
+
     const edam_json = {
         name: prj.name,
         project_disk_path: prj.project_disk_path,
         project_type: prj.project_type,
         toplevel: top_level,
-        files: prj.file_manager.get(refrence_path),
+        files: edam_files,
         hooks: prj.hook_manager.get(),
         watchers: prj.watcher_manager.get(refrence_path),
         configuration: prj.config,
