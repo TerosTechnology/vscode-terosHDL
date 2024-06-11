@@ -359,8 +359,10 @@ export class QuartusProjectManager extends Project_manager {
         this.taskStateManager.setCurrentTask(undefined);
         const quartusDir = getQuartusPath(config);
         const projectDir = get_directory(this.projectDiskPath);
+        const family = this.get_config().tools.quartus.family;
+
         return runTask(taskType, this.taskStateManager, quartusDir, projectDir, this.get_name(), this.currentRevision,
-            this.emitterProject, callback);
+            family, this.emitterProject, callback);
     }
 
     public cleallAllProject(callback: (result: p_result) => void): ChildProcess {

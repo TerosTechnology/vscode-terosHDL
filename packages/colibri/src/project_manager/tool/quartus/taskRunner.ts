@@ -136,7 +136,7 @@ function executeCommandList(projectName: string, commands: string[], cwd: string
 }
 
 export function runTask(taskType: e_taskType, taskManager: TaskStateManager, quartusDir: string,
-    projectDir: string, projectName: string, revisionName: string, emitter: ProjectEmitter,
+    projectDir: string, projectName: string, revisionName: string, family: string, emitter: ProjectEmitter,
     callback: (result: p_result) => void): ChildProcess {
 
     const binIP = path_lib.join(quartusDir, "quartus_ipgenerate");
@@ -144,6 +144,8 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
     const binFit = path_lib.join(quartusDir, "quartus_fit");
     const binSTA = path_lib.join(quartusDir, "quartus_sta");
     const binASM = path_lib.join(quartusDir, "quartus_asm");
+
+    const hyperFlexArchitectures = ["agilex", "stratix 10"];
 
     const commandDeclaration: Record<e_taskType, string> = {
         [e_taskType.TCLCONSOLE]: "",
@@ -191,7 +193,7 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
             `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --route`,
 
         [e_taskType.QUARTUS_FITTERFINALIZE]:
-            `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --finalize`,
+            `${binFit} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName} --retime --finalize`,
 
         [e_taskType.QUARTUS_TIMING]:
             `${binSTA} ${projectName} -c ${revisionName} --mode=finalize`,
@@ -208,7 +210,11 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
     for (const dep of dependencies) {
         const taskState = taskManager.getTaskState(dep);
         if (taskState !== e_taskState.FINISHED) {
-            cmdList.push(commandDeclaration[dep]);
+            let depCommand = commandDeclaration[dep];
+            if (!hyperFlexArchitectures.includes(family.toLocaleLowerCase())){
+                depCommand = depCommand.replace('--retime', '');
+            }
+            cmdList.push(depCommand);
         }
     }
 
