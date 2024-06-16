@@ -1,0 +1,50 @@
+module test_0 (clk);
+
+input clk;
+
+wire m0, m1, m2, m3, m4;
+
+localparam [1:0] 
+    s0 = 2'b00,
+    s1 = 2'b01, 
+    s2 = 2'b10,
+    s3 = 2'b11;
+
+reg [1:0] state; 
+
+
+always @(posedge clk)
+begin
+    case (state)
+        s0: begin
+            if (m0 == 1) begin
+                state = s1;
+            end
+            if (m1 == 0)
+                state = s2;
+            else
+                state = s3;
+            end
+        s1: begin
+            if (m2 == 1) begin
+                state <= s1;
+            end
+            if (m3 == 0)
+                state = s0;
+            end
+        s2: begin
+            if (m1 == 1) begin
+                if (m2 == 0) 
+                    state = s1;
+                else
+                    state = s3;
+            end
+            if (m3 == 1)
+                state = s2;
+            else
+                state = s3;
+        end
+    endcase
+end
+
+endmodule
