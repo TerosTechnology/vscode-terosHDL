@@ -23,7 +23,6 @@ import * as command_utils from '../../utils/command_utils';
 import * as printer from '../../utils/printer';
 import * as formatter_common from '../../formatter/common';
 import { Formatter } from '../../formatter/formatter';
-import * as logger from '../../logger/logger';
 import * as cfg from '../../config/config_declaration';
 import {e_formatter_verible_full} from '../../formatter/common';
 
@@ -211,14 +210,7 @@ export default class MyCLI extends Command {
         const formatter_name = flags.formatter;
         const python_path = flags['python-path'];
         const silent = flags.silent;
-        const verbose = flags.verbose;
-
-        if (verbose === true) {
-            logger.Logger.set_mode(logger.LOG_MODE.STDOUT);
-        }
-        else {
-            logger.Logger.set_mode(logger.LOG_MODE.SILENT);
-        }
+        // const verbose = flags.verbose;
 
         const cmd_current_dir = command_utils.get_current_directory();
 

@@ -88,7 +88,7 @@ export class Vsg extends Base_linter {
         }
 
         const msg = `Linting with command: ${command} `;
-        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
+        logger.Logger.log(msg);
 
         const P = new Process();
         await P.exec_wait(command);

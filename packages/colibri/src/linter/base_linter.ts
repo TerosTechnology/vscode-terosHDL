@@ -76,7 +76,7 @@ export abstract class Base_linter {
         const command = this.get_command(file, options);
         
         const msg = `Linting with command: ${command} `;
-        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
+        logger.Logger.log(msg);
         
         const P = new Process();
         const opt: p_options = {

@@ -24,7 +24,6 @@ import * as command_utils from '../../utils/command_utils';
 import * as printer from '../../utils/printer';
 import { Linter } from "../../linter/linter";
 import * as linter_common from '../../linter/common';
-import * as logger from '../../logger/logger';
 import * as reporter from '../../reporter/reporter';
 import * as cfg from '../../config/config_declaration';
 
@@ -338,14 +337,7 @@ export default class MyCLI extends Command {
         const linter_path = flags['linter-path'];
         const linter_arguments = flags['linter-arguments'];
         const silent = flags.silent;
-        const verbose = flags.verbose;
-
-        if (verbose === true) {
-            logger.Logger.set_mode(logger.LOG_MODE.STDOUT);
-        }
-        else {
-            logger.Logger.set_mode(logger.LOG_MODE.SILENT);
-        }
+        // const verbose = flags.verbose;
 
         const cmd_current_dir = command_utils.get_current_directory();
 
