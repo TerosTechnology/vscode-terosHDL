@@ -72,7 +72,7 @@ export class Istyle extends Base_formatter {
         command += `"${file}"`;
 
         const msg = `Formatting with command: ${command} `;
-        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
+        logger.Logger.log(msg);
 
         const P = new Process();
         const exec_result = await P.exec_wait(command);

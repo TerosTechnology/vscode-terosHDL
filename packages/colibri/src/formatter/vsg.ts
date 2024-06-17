@@ -52,7 +52,7 @@ export class Vsg extends Base_formatter {
         const code_formatted = fs.readFileSync(file, "utf8");
 
         const msg = `Formatting with command: ${command} `;
-        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
+        logger.Logger.log(msg);
 
         const result: common.f_result = {
             code_formatted: code_formatted,
