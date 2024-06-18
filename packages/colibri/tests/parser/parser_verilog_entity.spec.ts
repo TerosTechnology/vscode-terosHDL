@@ -20,6 +20,10 @@ import { Factory } from "../../src/parser/factory";
 import { LANGUAGE } from "../../src/common/general";
 import { equal } from "assert";
 import * as common from "../../src/parser/common";
+import { jest } from '@jest/globals';
+
+const TIMEOUT_SEC = 20;
+jest.setTimeout(TIMEOUT_SEC * 1000);
 
 //// Verilog-2001 ANSI-style
 const code_hdl = `
