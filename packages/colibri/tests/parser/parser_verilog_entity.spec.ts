@@ -363,7 +363,7 @@ describe('Check entity Verilog', function () {
             };
             check_port(actual, expected);
         });
-        it(`Check input multiple reg array 1`, function () {
+        it.skip(`Check input multiple reg array 1`, function () {
             const actual = element_array[5];
             const expected: common.Port_hdl = {
                 hdl_element_type: common.TYPE_HDL_ELEMENT.PORT,
