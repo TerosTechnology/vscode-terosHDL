@@ -21,6 +21,7 @@ import * as vscode from 'vscode';
 import * as release_notes_webview from "./utils/webview/release_notes";
 import { ExtensionManager } from "./utils/webview/utils";
 import { Teroshdl } from './teroshdl';
+import * as teroshdl2 from "teroshdl2";
 import { globalLogger, toolLogger, debugLogger } from './logger';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -28,10 +29,12 @@ export async function activate(context: vscode.ExtensionContext) {
     debugLogger.info('Congratulations, your extension "TerosHDL" is now active!');
 
     const extension_manager = new ExtensionManager();
-
+    
     globalLogger.clear();
     toolLogger.clear();
     debugLogger.clear();
+    
+    teroshdl2.logger.logger.Logger.setLogger(debugLogger);
 
     try {
         await extension_manager.init();

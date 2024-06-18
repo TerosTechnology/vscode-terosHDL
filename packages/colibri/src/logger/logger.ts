@@ -17,8 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import * as file_utils from '../utils/file_utils';
-
 export enum LOG_MODE {
     FILE = "file",
     STDOUT = "stout",
@@ -26,60 +24,83 @@ export enum LOG_MODE {
 }
 
 export enum T_SEVERITY {
-    ERROR = 2,
-    WARNING = 1,
-    INFO = 0
+    ERROR = 3,
+    WARNING = 2,
+    INFO = 1,
+    DEBUG = 0,
 }
 
-export class Logger {
-    static mode = LOG_MODE.STDOUT;
-    static severity = T_SEVERITY.INFO;
-    static output_path = "";
+export abstract class LoggerBase {
+    abstract error(msg: string): void;
+    abstract warn(msg: string): void;
+    abstract log(msg: string): void;
+    abstract debug(msg: string): void;
+    abstract trace(msg: string): void;
+}
 
-    static log(msg: string, severity = T_SEVERITY.INFO) {
-        if (this.is_print(severity) === false) {
-            return;
-        }
-        const msg_comlete = `[colibri2][${this.get_severty_name(severity)}]: ${msg}`;
-        if (this.mode === LOG_MODE.STDOUT) {
-            // eslint-disable-next-line no-console
-            console.log(msg_comlete);
-        }
-        else if (this.mode === LOG_MODE.FILE) {
-            file_utils.save_file_sync(this.output_path, `${msg_comlete}\n`, true);
-            return;
-        }
+class LoggerConsole extends LoggerBase {
+    private severity = T_SEVERITY.DEBUG;
+
+    error(msg: string) {
+        this._log(msg, T_SEVERITY.ERROR);
     }
 
-    static get_severty_name(severity: T_SEVERITY) {
-        if (severity === T_SEVERITY.ERROR) {
-            return "error";
-        }
-        else if (severity === T_SEVERITY.WARNING) {
-            return "warning";
-        }
-        else {
-            return "info";
-        }
+    warn(msg: string) {
+        this._log(msg, T_SEVERITY.WARNING);
     }
 
-    static is_print(severity: T_SEVERITY) {
+    log(msg: string) {
+        this._log(msg, T_SEVERITY.INFO);
+    }
+
+    debug(msg: string) {
+        this._log(msg, T_SEVERITY.DEBUG);
+    }
+
+    trace(msg: string) {
+        this._log(msg, T_SEVERITY.DEBUG);
+    }
+
+    private is_print(severity: T_SEVERITY) {
         if (severity >= this.severity) {
             return true;
         }
         return false;
     }
 
-    static set_output_path(path: string) {
-        file_utils.remove_file(path);
-        this.output_path = path;
+    private getSevertyName(severity: T_SEVERITY) {
+        if (severity === T_SEVERITY.INFO) {
+            return "info";
+        }
+        else if (severity === T_SEVERITY.WARNING) {
+            return "warning";
+        }
+        else if (severity === T_SEVERITY.ERROR) {
+            return "error";
+        }
+        else {
+            return "debug";
+        }
     }
 
-    static set_mode(mode: LOG_MODE) {
-        this.mode = mode;
+    private  _log(msg: string, severity = T_SEVERITY.INFO) {
+        if (this.is_print(severity) === false) {
+            return;
+        }
+        const msg_comlete = `[colibri2][${this.getSevertyName(severity)}]: ${msg}`;
+        // eslint-disable-next-line no-console
+        console.log(msg_comlete);
+    }
+}
+
+export class Logger {
+    static logger: LoggerBase = new LoggerConsole();
+
+    static log(msg: string) {
+        this.logger.log(msg);
     }
 
-    static set_severity(severity: T_SEVERITY) {
-        this.severity = severity;
+    static setLogger(logger: LoggerBase) {
+        this.logger = logger;
     }
 }

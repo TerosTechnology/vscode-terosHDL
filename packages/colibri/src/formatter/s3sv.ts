@@ -66,7 +66,7 @@ export class S3sv extends Base_formatter {
 
     public async format(file: string, opt: cfg.e_formatter_s3sv) {
         const msg = `Formatting with command s3sv `;
-        logger.Logger.log(msg, logger.T_SEVERITY.INFO);
+        logger.Logger.log(msg);
 
         const code = read_file_sync(file);
         const result_f = await this.format_from_code(code, opt);

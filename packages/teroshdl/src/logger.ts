@@ -18,11 +18,13 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as vscode from "vscode";
+import * as teroshdl2 from "teroshdl2";
 
-export class Logger {
+export class Logger extends teroshdl2.logger.logger.LoggerBase {
     private output_channel: vscode.LogOutputChannel;
 
     constructor(name = "") {
+        super();
         if (name === "") {
             name = 'TerosHDL: Tool manager';
         }
@@ -55,22 +57,27 @@ export class Logger {
         this.show(enable_show);
         this.output_channel.debug(this.replaceFilePath(msg));
     }
+
     warn(msg: string, enable_show = false) {
         this.show(enable_show);
         this.output_channel.warn(this.replaceFilePath(msg));
     }
+
     info(msg: string, enable_show = false) {
         this.show(enable_show);
         this.output_channel.info(this.replaceFilePath(msg));
     }
+    
     trace(msg: string, enable_show = false) {
         this.show(enable_show);
         this.output_channel.trace(this.replaceFilePath(msg));
     }
+
     error(msg: string, enable_show = false) {
         this.show(enable_show);
         this.output_channel.error(this.replaceFilePath(msg));
     }
+
     replaceFilePath(input: string): string {
         return input;
         const regex = /file:? ?"?([\/\w.-]+(\s[\/\w.-]+)*)"?\s?/ig;
