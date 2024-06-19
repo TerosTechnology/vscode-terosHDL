@@ -296,6 +296,9 @@ export class Schematic_manager extends Base_webview {
             // Run Yosys
             const exec_i = await teroshdl2.yosys.yosys.getSchematic(config, topLevel, sources, handleStream);
 
+            const cmd = `Executing: ${exec_i.spawnfile}  ${exec_i.spawnargs.join(" ")}`;
+            globalLogger.info(cmd);
+
             exec_i.stdout.on('data', function (data) {
                 globalLogger.info(data);
             });
