@@ -27,7 +27,7 @@ import { Logger } from "./ctags/Logger";
 import * as vscode from 'vscode';
 import { t_Multi_project_manager } from '../../type_declaration';
 import * as rusthdl_lib from './lsp/rust_hdl';
-import { GlobalConfigManager } from "teroshdl2/out/config/config_manager";
+import * as utils from '../../utils/utils';
 
 export type e_provider = {
     'completion': any,
@@ -107,7 +107,9 @@ export class LanguageProviderManager {
         let is_alive = false;
         let rusthdl; 
 
-        const enable_vhdl_provider = GlobalConfigManager.getInstance().get_config().general.general.go_to_definition_vhdl;
+        const config = utils.getConfig(this.manager);
+
+        const enable_vhdl_provider = config.general.general.go_to_definition_vhdl;
         if (enable_vhdl_provider === true) {
             rusthdl = new rusthdl_lib.Rusthdl_lsp(this.context, this.manager);
             is_alive = await rusthdl.run_rusthdl();
@@ -140,7 +142,8 @@ export class LanguageProviderManager {
         this.context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(verilogSelector, 
             this.provider_list.doc));
 
-        const enable_verilog_provider = GlobalConfigManager.getInstance().get_config().general.general.go_to_definition_verilog;
+        const config = utils.getConfig(this.manager);
+        const enable_verilog_provider = config.general.general.go_to_definition_verilog;
         if (enable_verilog_provider === true) {
             this.context.subscriptions.push(vscode.languages.registerHoverProvider(verilogSelector, 
                 this.provider_list.hover));

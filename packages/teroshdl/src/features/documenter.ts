@@ -26,8 +26,6 @@ import * as fs from 'fs';
 import { t_Multi_project_manager } from '../type_declaration';
 import { Base_webview } from './base_webview';
 import { globalLogger } from '../logger';
-import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
-
 
 export class Documenter_manager extends Base_webview {
 
@@ -134,7 +132,7 @@ export class Documenter_manager extends Base_webview {
     }
 
     private get_config(): teroshdl2.config.auxiliar_config.t_documenter_options {
-        const config = GlobalConfigManager.getInstance().get_config();
+        const config = utils.getConfig(this.manager);
         return <teroshdl2.config.auxiliar_config.t_documenter_options>{
             generic_visibility: config.documentation.general.generics,
             port_visibility: config.documentation.general.ports,

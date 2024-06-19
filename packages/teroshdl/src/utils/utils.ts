@@ -190,3 +190,14 @@ export function open_file(args: vscode.Uri) {
         vscode.window.showTextDocument(doc);
     });
 }
+
+export function getConfig(multiProjectManager: teroshdl2.project_manager.multi_project_manager.Multi_project_manager)
+    : teroshdl2.config.config_declaration.e_config {
+    try {
+        const selectedProject = multiProjectManager.get_selected_project();
+        return selectedProject.get_config();
+    }
+    catch (err) {
+        return teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config();
+    }
+}

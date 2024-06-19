@@ -32,7 +32,7 @@ import {
 import { t_Multi_project_manager } from '../type_declaration';
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
-import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
+import * as utils from '../utils/utils';
 
 const TRIGGER_CHARACTERS = [';', '.', "'", ',', '[', ']', '-', '\n'];
 
@@ -64,11 +64,12 @@ export class Stutter_mode_manager {
                         position: Position,
                         ch: string
                     ): ProviderResult<TextEdit[]> {
-                        const stutter_delimiters = GlobalConfigManager.getInstance().get_config().editor.general.stutter_delimiters;
-                        const stutter_bracket_shortcuts = GlobalConfigManager.getInstance().get_config().editor.general.stutter_bracket_shortcuts;
-                        const stutter_comment_shortcuts = GlobalConfigManager.getInstance().get_config().editor.general.stutter_comment_shortcuts;
-                        const stutter_block_width = GlobalConfigManager.getInstance().get_config().editor.general.stutter_block_width;
-                        const stutter_max_width = GlobalConfigManager.getInstance().get_config().editor.general.stutter_max_width;
+                        const config = utils.getConfig(element.manager);
+                        const stutter_delimiters = config.editor.general.stutter_delimiters;
+                        const stutter_bracket_shortcuts = config.editor.general.stutter_bracket_shortcuts;
+                        const stutter_comment_shortcuts = config.editor.general.stutter_comment_shortcuts;
+                        const stutter_block_width = config.editor.general.stutter_block_width;
+                        const stutter_max_width = config.editor.general.stutter_max_width;
 
                         let inComment = document.lineAt(position).text.match(/^.*--.*$/);
                         let linePrefix = document.lineAt(position).text.substr(0, position.character);
@@ -263,7 +264,8 @@ export class Stutter_mode_manager {
                         position: Position,
                         ch: string
                     ): ProviderResult<TextEdit[]> {
-                        const stutter_comment_shortcuts = GlobalConfigManager.getInstance().get_config().editor.general.stutter_comment_shortcuts;
+                        const config = utils.getConfig(element.manager);
+                        const stutter_comment_shortcuts = config.editor.general.stutter_comment_shortcuts;
 
                         let linePrefix = document.lineAt(position).text.substr(0, position.character);
                         switch (ch) {

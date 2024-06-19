@@ -21,7 +21,6 @@ import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../type_declaration';
 import * as utils from '../utils/utils';
-import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 enum LINTER_MODE {
     STYLE = "style",
@@ -50,19 +49,20 @@ class Linter {
     // Configuration
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private get_linter_name() {
+        const config = utils.getConfig(this.manager);
         if (this.lang === teroshdl2.common.general.LANGUAGE.VHDL && this.mode === LINTER_MODE.ERRORS) {
-            return GlobalConfigManager.getInstance().get_config().linter.general.linter_vhdl;
+            return config.linter.general.linter_vhdl;
         }
         else if ((this.lang === teroshdl2.common.general.LANGUAGE.VERILOG
             || this.lang === teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG)
             && this.mode === LINTER_MODE.ERRORS) {
-            return GlobalConfigManager.getInstance().get_config().linter.general.linter_verilog;
+            return config.linter.general.linter_verilog;
         }
         else if (this.lang === teroshdl2.common.general.LANGUAGE.VHDL && this.mode === LINTER_MODE.STYLE) {
-            return GlobalConfigManager.getInstance().get_config().linter.general.lstyle_vhdl;
+            return config.linter.general.lstyle_vhdl;
         }
         else {
-            return GlobalConfigManager.getInstance().get_config().linter.general.lstyle_verilog;
+            return config.linter.general.lstyle_verilog;
         }
     }
 
@@ -70,45 +70,46 @@ class Linter {
         let path = "";
         let argument = "";
         const linter_name = this.get_linter_name();
+        const config = utils.getConfig(this.manager);
 
         if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.ghdl){
-            path = GlobalConfigManager.getInstance().get_config().tools.ghdl.installation_path;
-            argument = GlobalConfigManager.getInstance().get_config().linter.ghdl.arguments;
+            path = config.tools.ghdl.installation_path;
+            argument = config.linter.ghdl.arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.modelsim &&
                 lang === teroshdl2.common.general.LANGUAGE.VHDL){
-            path = GlobalConfigManager.getInstance().get_config().tools.modelsim.installation_path;
-            argument = GlobalConfigManager.getInstance().get_config().linter.modelsim.vhdl_arguments;
+            path = config.tools.modelsim.installation_path;
+            argument = config.linter.modelsim.vhdl_arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.vivado &&
                 lang === teroshdl2.common.general.LANGUAGE.VHDL){
-            path = GlobalConfigManager.getInstance().get_config().tools.vivado.installation_path;
-            argument = GlobalConfigManager.getInstance().get_config().linter.vivado.vhdl_arguments;
+            path = config.tools.vivado.installation_path;
+            argument = config.linter.vivado.vhdl_arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.icarus){
-            path = GlobalConfigManager.getInstance().get_config().tools.icarus.installation_path;
-            argument = GlobalConfigManager.getInstance().get_config().linter.icarus.arguments;
+            path = config.tools.icarus.installation_path;
+            argument = config.linter.icarus.arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.modelsim &&
                 lang !== teroshdl2.common.general.LANGUAGE.VHDL){
-            path = GlobalConfigManager.getInstance().get_config().tools.modelsim.installation_path;
-            argument = GlobalConfigManager.getInstance().get_config().linter.modelsim.verilog_arguments;
+            path = config.tools.modelsim.installation_path;
+            argument = config.linter.modelsim.verilog_arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.verilator){
-            path = GlobalConfigManager.getInstance().get_config().tools.verilator.installation_path;
-            argument = GlobalConfigManager.getInstance().get_config().linter.verilator.arguments;
+            path = config.tools.verilator.installation_path;
+            argument = config.linter.verilator.arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_linter_verilog.vivado &&
                 lang !== teroshdl2.common.general.LANGUAGE.VHDL){
-            path = GlobalConfigManager.getInstance().get_config().tools.vivado.installation_path;
-            argument = GlobalConfigManager.getInstance().get_config().linter.vivado.verilog_arguments;
+            path = config.tools.vivado.installation_path;
+            argument = config.linter.vivado.verilog_arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_lstyle_vhdl.vsg){
-            argument = GlobalConfigManager.getInstance().get_config().linter.vsg.arguments;
+            argument = config.linter.vsg.arguments;
         }
         else if (linter_name === teroshdl2.config.config_declaration.e_linter_general_lstyle_verilog.verible){
-            path = GlobalConfigManager.getInstance().get_config().tools.verible.installation_path;
-            argument = GlobalConfigManager.getInstance().get_config().linter.verible.arguments;
+            path = config.tools.verible.installation_path;
+            argument = config.linter.verible.arguments;
         }
 
         const options: teroshdl2.linter.common.l_options = {

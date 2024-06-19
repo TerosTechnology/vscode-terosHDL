@@ -17,7 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import * as opn from 'open';
 import * as vscode from 'vscode';
 import * as shelljs from 'shelljs';
 import { Base_webview } from './web';
@@ -26,7 +25,7 @@ import { OS } from "teroshdl2/out/process/common";
 import { get_os } from "teroshdl2/out/process/utils";
 import * as path_lib from 'path';
 import { globalLogger } from '../../logger';
-import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
+import * as utils from '../../utils/utils';
 
 export class Comander {
 
@@ -52,6 +51,7 @@ export class Comander {
     }
 
     private open_waveform(args: vscode.Uri) {
+        const config = utils.getConfig(this.manager);
         const file_path = args.fsPath;
         globalLogger.info(`Opening the waveform: ${file_path}`);
 
@@ -62,14 +62,14 @@ export class Comander {
         }
 
         let gtkwave_path = "";
-        let base_path = GlobalConfigManager.getInstance().get_config().tools.general.gtkwave_installation_path;
+        let base_path = config.tools.general.gtkwave_installation_path;
         if (base_path !== "") {
             gtkwave_path = path_lib.join(base_path, gtkwave_binary);
         }
         else {
             gtkwave_path = gtkwave_binary;
         }
-        const extra_arguments = GlobalConfigManager.getInstance().get_config().tools.general.gtkwave_extra_arguments;
+        const extra_arguments = config.tools.general.gtkwave_extra_arguments;
 
         let command = `${gtkwave_path} ${file_path} ${extra_arguments}`;
         shelljs.exec(command, { async: true });
