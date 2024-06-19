@@ -29,6 +29,7 @@ import { t_message_level, showMessage, getConfig } from "../../../utils/utils";
 import * as yaml from "js-yaml";
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
+import { createProjectSandpiper } from "./utils";
 
 export class Project_manager extends BaseView {
     private tree: element.ProjectProvider;
@@ -92,6 +93,8 @@ export class Project_manager extends BaseView {
             "Load project from YAML EDAM",
             "Load project from VUnit run.py",
             "Load an example project",
+            "Create an empty SandPiper project",
+            "Load an existing SandPiper project",
         ];
 
         const picker_value = await vscode.window.showQuickPick(PROJECT_ADD_TYPES, {
@@ -225,6 +228,13 @@ export class Project_manager extends BaseView {
                     "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
                 await this.create_project_from_yaml(project_path);
             }
+        }
+        // new sandpiper project
+        else if (picker_value === PROJECT_ADD_TYPES[7]) {
+            createProjectSandpiper(this.project_manager, this.emitterProject);
+        }
+        // load sandpiper project
+        else if (picker_value === PROJECT_ADD_TYPES[8]) {
         }
     }
 

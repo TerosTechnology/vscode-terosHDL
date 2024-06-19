@@ -179,6 +179,7 @@ export class Project_manager extends ConfigManager {
             e_tools_general_select_tool.ise,
             e_tools_general_select_tool.openfpga,
             e_tools_general_select_tool.quartus,
+            e_tools_general_select_tool.sandpiper,
             e_tools_general_select_tool.vivado,
             e_tools_general_select_tool.raptor,
         ];

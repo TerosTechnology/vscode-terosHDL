@@ -21,6 +21,7 @@ import { e_project_type } from "./common";
 import { Project_manager } from "./project_manager";
 import * as file_utils from "../utils/file_utils";
 import { QuartusProjectManager } from "./tool/quartus/quartusProjectManager";
+import { SandpiperProjectManager } from "./tool/sandpiper/sandpiperProjectManager";
 import { ProjectEmitter, e_event } from "./projectEmitter";
 
 class ProjectNotFoundError extends Error {
@@ -111,7 +112,16 @@ export class Multi_project_manager {
                         this.add_project(
                             await QuartusProjectManager.fromJson(prj_info, this.sync_file_path, emitterProject)
                         );
-                    } else {
+                    }
+                    else if (prj_info.project_type === e_project_type.SANDPIPER) {
+                        const prj = await SandpiperProjectManager.fromJson(
+                            prj_info, this.sync_file_path, emitterProject
+                        );
+                        if (prj) {
+                            this.add_project(prj);
+                        }
+                    } 
+                    else {
                         this.add_project(
                             await Project_manager.fromJson(prj_info, this.sync_file_path, emitterProject)
                         );

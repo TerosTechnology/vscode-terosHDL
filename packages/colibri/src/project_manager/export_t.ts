@@ -24,5 +24,6 @@ export * as tool_common from './tool/common';
 export * as utils from './utils/utils';
 export * as projectEmitter from './projectEmitter';
 export * as quartusProjectManager from './tool/quartus/quartusProjectManager';
+export * as sandpiperProjectManager from './tool/sandpiper/sandpiperProjectManager';
 export * as quartusCommon from './tool/quartus/common';
 export * as quartus from './tool/quartus/utils';
