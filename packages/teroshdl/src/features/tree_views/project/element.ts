@@ -63,6 +63,9 @@ export class Project extends vscode.TreeItem {
             this.description = "Quartus Project";
             iconName = "quartus";
         }
+        else if (projectType === teroshdl2.project_manager.common.e_project_type.SANDPIPER) {
+            this.description = "Sandpiper Project";
+        }
         
         if (isOpen) {
             this.resourceUri = vscode.Uri.parse(`${URISTRINGINIT}project-active`);

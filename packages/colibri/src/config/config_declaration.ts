@@ -625,6 +625,7 @@ export enum e_tools_general_select_tool {
     xsim = "xsim",
     raptor = "raptor",
     radiant = "radiant",
+    sandpiper = "sandpiper",
 }
 export enum e_tools_general_execution_mode {
     gui = "gui",
@@ -1801,6 +1802,9 @@ export function get_config_from_json(json_config: any): e_config {
     }
     if ( current_value_72 === "radiant"){
         default_config['tools']['general']['select_tool'] = e_tools_general_select_tool.radiant;
+    }
+    if ( current_value_72 === "sandpiper"){
+        default_config['tools']['general']['select_tool'] = e_tools_general_select_tool.sandpiper;
     }
             
     // tools -> general -> gtkwave_installation_path

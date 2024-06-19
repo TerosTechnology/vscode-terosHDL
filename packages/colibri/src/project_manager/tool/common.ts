@@ -40,6 +40,8 @@ export enum e_taskType {
     QUARTUS_TIMING = "Timing Analysis (Signoff)",
     QUARTUS_RTL_ANALYZER = "RTL Analyzer",
     QUARTUS_ASSEMBLER = "Assembler (Generate programming files)",
+    // SandPiper tasks
+    SANDPIPER_TLVERILOGTOVERILOG = "TL-Verilog to Verilog",
     // Common
     OPENFOLDER = "Open Project Folder",
     SETTINGS = "Settings",

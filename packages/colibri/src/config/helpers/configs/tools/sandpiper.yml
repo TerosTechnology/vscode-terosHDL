@@ -1,0 +1,4 @@
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
