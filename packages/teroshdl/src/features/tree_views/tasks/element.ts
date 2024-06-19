@@ -201,7 +201,10 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             const selected_project = this.project_manager.get_selected_project();
             const groupTaskList = selected_project.getTaskStatus();
 
-            const projectFolder = teroshdl2.utils.file.get_directory(selected_project.projectDiskPath);
+            let projectFolder = selected_project.projectDiskPath;
+            if (teroshdl2.utils.file.check_if_file(projectFolder)) {
+                projectFolder = teroshdl2.utils.file.get_directory(selected_project.projectDiskPath);
+            }
 
             function createTasks(children, depth = 0) {
                 const tasks: Task[] = [];
