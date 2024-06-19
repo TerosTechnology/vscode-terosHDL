@@ -134,7 +134,7 @@ export function runYosysGhdl(config: e_config, topTevel: string, sources: t_file
 
     const cmd =
         // eslint-disable-next-line max-len
-        `${preArguments} ${yosysPath} -m ghdl -p 'ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat'`;
+        `${preArguments} ${yosysPath} -m ghdl -p 'ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} --work=work -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat'`;
 
     const opt_exec = { cwd: process_utils.get_home_directory() };
 
@@ -221,7 +221,7 @@ export async function runYosysStandalone(config: e_config, topTevel: string, sou
 }
 
 function getYosysReadFileCommandVhdl(filePath: string, logicalName: string): string {
-    const libraryCommand = logicalName !== "" ? `--work=${logicalName}` : "";
+    const libraryCommand = logicalName !== "" ? `--work=${logicalName}` : "--work=work";
     return `${libraryCommand} ${filePath}`;
 }
 
