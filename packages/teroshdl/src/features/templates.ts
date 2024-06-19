@@ -22,7 +22,6 @@ import * as utils from '../utils/utils';
 import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../type_declaration';
 import { globalLogger } from '../logger';
-import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 export class Template_manager {
     private manager: t_Multi_project_manager;
@@ -146,7 +145,7 @@ export class Template_manager {
     }
 
     private get_config(): teroshdl2.config.auxiliar_config.t_template_options {
-        const config = GlobalConfigManager.getInstance().get_config();
+        const config = utils.getConfig(this.manager);
         return <teroshdl2.config.auxiliar_config.t_template_options>{
             header_file_path: config.templates.general.header_file_path,
             indent_char: config.templates.general.indent,

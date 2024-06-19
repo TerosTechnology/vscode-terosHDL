@@ -263,7 +263,7 @@ export class Schematic_manager extends Base_webview {
             'empty': false
         };
 
-        let config = teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config();
+        let config = utils.getConfig(this.manager);
         try {
             const selectedProject = this.manager.get_selected_project();
             config = selectedProject.get_config();

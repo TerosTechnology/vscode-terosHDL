@@ -23,7 +23,7 @@ import * as fs from 'fs';
 import { t_Multi_project_manager } from '../type_declaration';
 import * as nunjucks from 'nunjucks';
 import { globalLogger } from '../logger';
-import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
+import * as utils from '../utils/utils';
 
 const base_path = "dependencies_viewer";
 
@@ -135,7 +135,8 @@ export class Dependency_manager {
         }
         try {
             const selected_project = this.manager.get_selected_project();
-            const python_path = GlobalConfigManager.getInstance().get_config().general.general.pypath;
+            const config = utils.getConfig(this.manager);
+            const python_path = config.general.general.pypath;
             const result = await selected_project.get_dependency_graph(python_path);
             if (result.successful === false) {
                 globalLogger.error("Error while getting dependency graph.", true);

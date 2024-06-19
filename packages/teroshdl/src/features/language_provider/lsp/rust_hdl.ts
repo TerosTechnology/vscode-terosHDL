@@ -12,6 +12,7 @@ import { ExtensionContext } from 'vscode';
 import util = require('util');
 import * as teroshdl2 from 'teroshdl2';
 import { t_Multi_project_manager } from '../../../type_declaration';
+import * as utils from '../../../utils/utils';
 
 const exec = util.promisify(require('child_process').exec);
 
@@ -21,7 +22,6 @@ import {
     ServerOptions,
     RevealOutputChannelOn
 } from 'vscode-languageclient/node';
-import { GlobalConfigManager } from 'teroshdl2/out/config/config_manager';
 
 
 const isWindows = process.platform === 'win32';
@@ -149,7 +149,8 @@ export class Rusthdl_lsp {
     }
 
     getServerOptionsEmbedded(context: ExtensionContext) {
-        const linter_name = GlobalConfigManager.getInstance().get_config().linter.general.linter_vhdl;
+        const config = utils.getConfig(this.manager);
+        const linter_name = config.linter.general.linter_vhdl;
         let args: string[] = [];
         if (linter_name !== teroshdl2.config.config_declaration.e_linter_general_linter_vhdl.none) {
             args = ['--no-lint'];

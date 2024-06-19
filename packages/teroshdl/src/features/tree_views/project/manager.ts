@@ -25,7 +25,7 @@ import * as teroshdl2 from 'teroshdl2';
 import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
 import { globalLogger } from "../../../logger";
-import { t_message_level, showMessage } from "../../../utils/utils";
+import { t_message_level, showMessage, getConfig } from "../../../utils/utils";
 import * as yaml from "js-yaml";
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
@@ -312,6 +312,7 @@ export class Project_manager extends BaseView {
     }
 
     async check_dependencies() {
+        const configCurrent = getConfig(this.project_manager);
         const options: teroshdl2.process.python.python_options = {
             path: teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config().general.general.pypath
         };
@@ -361,8 +362,7 @@ export class Project_manager extends BaseView {
         }
 
         // Check make
-        const make_binary_dir =
-            teroshdl2.config.configManager.GlobalConfigManager.getInstance().get_config().general.general.makepath;
+        const make_binary_dir = configCurrent.general.general.makepath;
         let make_binary_path = ("make");
         if (make_binary_dir !== "") {
             make_binary_path = path_lib.join(make_binary_dir, make_binary_path);
