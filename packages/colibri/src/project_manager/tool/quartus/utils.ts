@@ -16,6 +16,9 @@ import { ChildProcess } from "child_process";
 import { Process } from "../../../process/process";
 import { ProjectEmitter, e_event } from "../../projectEmitter";
 import { e_rtlType } from "./common";
+import axios from 'axios';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export const LANGUAGE_MAP: Record<LANGUAGE, string> = {
     [LANGUAGE.VHDL]: "VHDL_FILE",
@@ -705,6 +708,69 @@ export async function openRTLAnalyzer(config: e_config, projectPath: string, emi
     emitterProject.emitEventLog(outputString, logLevel);
 }
 
+export async function runTLVerilogToVerilogConversion(config: e_config, projectPath: string, emitterProject: ProjectEmitter): Promise<void> {
+    try {
+      
+        const inputFilePath = path.join(projectPath, 'input.tlv'); 
+        const tlvCode = fs.readFileSync(inputFilePath, 'utf8');
+
+        
+        const externSettings = config.sandpiper?.formattingSettings || [];
+        const args = `-i test.tlv -o test.sv --m4out out/m4out ${externSettings.join(" ")} --iArgs`;
+
+        const response = await axios.post(
+            "https://faas.makerchip.com/function/sandpiper-faas",
+            JSON.stringify({
+                args,
+                responseType: "json",
+                sv_url_inc: true,
+                files: {
+                    "test.tlv": tlvCode,
+                },
+            }),
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (response.status !== 200) {
+            throw new Error(`SandPiper SaaS request failed with status ${response.status}`);
+        }
+
+        const data = response.data;
+        if (data["out/test.sv"]) {
+            const verilog = (data["out/test.sv"] as string)
+                .replace(
+                    '`include "test_gen.sv"',
+                    "// gen included here\n" + data["out/test_gen.sv"]
+                )
+                .split("\n")
+                .filter((line) => !line.startsWith('`include "sp_default.vh"'))
+                .join("\n");
+
+            const outputFilePath = path.join(projectPath, "output.sv");
+            const genFilePath = path.join(projectPath, "output_gen.sv");
+
+            fs.writeFileSync(outputFilePath, verilog);
+            fs.writeFileSync(genFilePath, data["out/test_gen.sv"]);
+
+            emitterProject.emitEventLog(`Generated Verilog code saved to ${outputFilePath} and ${genFilePath}`, e_event.STDOUT_INFO);
+        } else {
+            throw new Error("SandPiper SaaS compilation failed: No output generated.");
+        }
+    } catch (error) {
+        let errorMessage = "SandPiper SaaS compilation failed: ";
+        if (axios.isAxiosError(error)) {
+            errorMessage += error.message;
+        } else {
+            errorMessage += String(error);
+        }
+        emitterProject.emitEventLog(errorMessage, e_event.STDOUT_ERROR);
+        throw new Error(errorMessage);
+    }
+}
 
 export function getTemplateRender(cmdList: string[]) {
     const templateRender = `
