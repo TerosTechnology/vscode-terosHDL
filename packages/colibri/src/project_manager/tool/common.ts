@@ -42,6 +42,7 @@ export enum e_taskType {
     QUARTUS_ASSEMBLER = "Assembler (Generate programming files)",
     // SandPiper tasks
     SANDPIPER_TLVERILOGTOVERILOG = "TL-Verilog to Verilog",
+    SANDPIPER_DIAGRAM_TAB = "Open Diagram Tab",
     // Common
     OPENFOLDER = "Open Project Folder",
     SETTINGS = "Settings",
