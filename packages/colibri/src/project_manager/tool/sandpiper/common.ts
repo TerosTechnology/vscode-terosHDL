@@ -19,6 +19,11 @@ export function getDefaultTaskList(): t_taskRep[] {
             "label": "Convert TL-Verilog to Verilog",
             "executionType": e_taskExecutionType.SIMPLECOMMAND,
         },
+        {
+            "name": e_taskType.SANDPIPER_DIAGRAM_TAB,
+            "label": "Open Diagram Tab",
+            "executionType": e_taskExecutionType.SIMPLECOMMAND,
+        },
     ];
     return taskList;
 }
