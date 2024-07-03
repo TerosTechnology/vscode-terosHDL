@@ -772,6 +772,58 @@ export async function runTLVerilogToVerilogConversion(config: e_config, projectP
     }
 }
 
+export async function generateSandpiperDiagram(projectPath: string, emitterProject: ProjectEmitter): Promise<string> {
+    try {
+        const inputFilePath = path.join(projectPath, 'input.tlv');
+        const tlvCode = fs.readFileSync(inputFilePath, 'utf8');
+
+        // const externSettings = config.sandpiper?.formattingSettings || [];
+        const args = `-i test.tlv --graphTrans --svg --iArgs`;
+
+        const response = await axios.post(
+            "https://faas.makerchip.com/function/sandpiper-faas",
+            JSON.stringify({
+                args,
+                responseType: "json",
+                sv_url_inc: true,
+                files: {
+                    "test.tlv": tlvCode,
+                },
+            }),
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (response.status !== 200) {
+            throw new Error(`SandPiper SaaS request failed with status ${response.status}`);
+        }
+
+        const data = response.data;
+        if (data["out/test.m5out_graph.svg"]) {
+            const outputFilePath = path.join(projectPath, "diagram.svg");
+            fs.writeFileSync(outputFilePath, data["out/test.m5out_graph.svg"]);
+
+            emitterProject.emitEventLog(`Generated SVG diagram saved to ${outputFilePath}`, e_event.STDOUT_INFO);
+            return outputFilePath;
+        } else {
+            throw new Error("SandPiper SaaS diagram generation failed: No SVG output generated.");
+        }
+    } catch (error) {
+        let errorMessage = "SandPiper SaaS diagram generation failed: ";
+        if (axios.isAxiosError(error)) {
+            errorMessage += error.message;
+        } else {
+            errorMessage += String(error);
+        }
+        emitterProject.emitEventLog(errorMessage, e_event.STDOUT_ERROR);
+        throw new Error(errorMessage);
+    }
+}
+
+
 export function getTemplateRender(cmdList: string[]) {
     const templateRender = `
     set csv_file_name [lindex $argv 0]
