@@ -32,7 +32,7 @@ import { getFamilyDeviceFromQuartusProject, get_icon } from "../utils";
 import { toolLogger } from "../../../logger";
 import { openRTLAnalyzer } from "./quartus_utils";
 import { TimingReportView } from "../../../views/timing/timing_report";
-
+import { runSandpiperConversion } from "./sandpiper_utils";
 enum e_VIEW_STATE {
     IDLE = 0,
     RUNNING = 1,
@@ -120,6 +120,11 @@ export class Tasks_manager extends BaseView {
             openRTLAnalyzer(this.project_manager, this.emitterProject);
             return;
         }
+        if (taskItem.taskDefinition.name === teroshdl2.project_manager.tool_common.e_taskType.SANDPIPER_TLVERILOGTOVERILOG) {
+            await runSandpiperConversion(this.project_manager, this.emitterProject);
+            return;
+        }
+
 
         if (this.checkRunning()) {
             return;
