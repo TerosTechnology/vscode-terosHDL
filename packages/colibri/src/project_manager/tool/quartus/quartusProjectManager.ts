@@ -409,6 +409,7 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.QUARTUS_RTL_ANALYZER]: "",
             [e_taskType.SANDPIPER_TLVERILOGTOVERILOG]: "",
             [e_taskType.SANDPIPER_DIAGRAM_TAB]:"",
+            [e_taskType.SANDPIPER_NAV_TLV_TAB]:""
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {

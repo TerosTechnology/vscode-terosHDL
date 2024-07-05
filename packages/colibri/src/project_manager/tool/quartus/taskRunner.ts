@@ -119,7 +119,8 @@ const taskDependencies: Record<e_taskType, e_taskType[]> = {
             e_taskType.QUARTUS_FITTERFINALIZE,
         ],
     [e_taskType.SANDPIPER_TLVERILOGTOVERILOG]: [],
-    [e_taskType.SANDPIPER_DIAGRAM_TAB]:[]
+    [e_taskType.SANDPIPER_DIAGRAM_TAB]:[],
+    [e_taskType.SANDPIPER_NAV_TLV_TAB]:[]
 };
 
 function executeCommandList(projectName: string, commands: string[], cwd: string, emitter: ProjectEmitter,
@@ -204,6 +205,7 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
             `${binASM} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
         [e_taskType.SANDPIPER_TLVERILOGTOVERILOG]: "",
         [e_taskType.SANDPIPER_DIAGRAM_TAB]:"",
+        [e_taskType.SANDPIPER_NAV_TLV_TAB]:"",
     };
 
     const cmdList: string[] = [];

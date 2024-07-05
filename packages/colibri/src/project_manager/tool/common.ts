@@ -43,6 +43,7 @@ export enum e_taskType {
     // SandPiper tasks
     SANDPIPER_TLVERILOGTOVERILOG = "TL-Verilog to Verilog",
     SANDPIPER_DIAGRAM_TAB = "Open Diagram Tab",
+    SANDPIPER_NAV_TLV_TAB = "Open Nav TLV Tab",
     // Common
     OPENFOLDER = "Open Project Folder",
     SETTINGS = "Settings",
