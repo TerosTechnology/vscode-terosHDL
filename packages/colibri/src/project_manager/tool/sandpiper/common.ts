@@ -24,6 +24,11 @@ export function getDefaultTaskList(): t_taskRep[] {
             "label": "Open Diagram Tab",
             "executionType": e_taskExecutionType.SIMPLECOMMAND,
         },
+        {
+            "name": e_taskType.SANDPIPER_NAV_TLV_TAB,
+            "label": "Open NAV TLV Tab",
+            "executionType": e_taskExecutionType.SIMPLECOMMAND,
+        },
     ];
     return taskList;
 }
