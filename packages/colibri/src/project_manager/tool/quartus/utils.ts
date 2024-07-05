@@ -772,7 +772,7 @@ export async function runTLVerilogToVerilogConversion(config: e_config, projectP
     }
 }
 
-export async function generateSandpiperDiagram(projectPath: string, emitterProject: ProjectEmitter): Promise<string> {
+export async function generateSandpiperDiagram( projectPath: string, emitterProject: ProjectEmitter): Promise<string> {
     try {
         const inputFilePath = path.join(projectPath, 'input.tlv');
         const tlvCode = fs.readFileSync(inputFilePath, 'utf8');
@@ -823,6 +823,55 @@ export async function generateSandpiperDiagram(projectPath: string, emitterProje
     }
 }
 
+export async function generateNavTlvHtml(projectPath: string, emitterProject: ProjectEmitter): Promise<string> {
+    try {
+        const inputFilePath = path.join(projectPath, 'input.tlv');
+        const tlvCode = fs.readFileSync(inputFilePath, 'utf8');
+
+        const args = `-i test.tlv -o gene.sv --dhtml --iArgs`;
+
+        const response = await axios.post(
+            "https://faas.makerchip.com/function/sandpiper-faas",
+            JSON.stringify({
+                args,
+                responseType: "json",
+                sv_url_inc: true,
+                files: {
+                    "test.tlv": tlvCode,
+                },
+            }),
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (response.status !== 200) {
+            throw new Error(`SandPiper SaaS request failed with status ${response.status}`);
+        }
+
+        const data = response.data;
+        if (data["out/test.m5out.html"]) {
+            const outputFilePath = path.join(projectPath, "navtlv.html");
+            fs.writeFileSync(outputFilePath, data["out/test.m5out.html"]);
+
+            emitterProject.emitEventLog(`Generated Nav TLV HTML saved to ${outputFilePath}`, e_event.STDOUT_INFO);
+            return outputFilePath;
+        } else {
+            throw new Error("SandPiper SaaS Nav TLV generation failed: No HTML output generated.");
+        }
+    } catch (error) {
+        let errorMessage = "SandPiper SaaS Nav TLV generation failed: ";
+        if (axios.isAxiosError(error)) {
+            errorMessage += error.message;
+        } else {
+            errorMessage += String(error);
+        }
+        emitterProject.emitEventLog(errorMessage, e_event.STDOUT_ERROR);
+        throw new Error(errorMessage);
+    }
+}
 
 export function getTemplateRender(cmdList: string[]) {
     const templateRender = `
