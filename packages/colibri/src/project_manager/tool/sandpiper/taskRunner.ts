@@ -5,7 +5,8 @@ import { p_result } from "../../../process/common";
 import { e_taskType } from "../common";
 import { ProjectEmitter } from "../../projectEmitter";
 import { TaskStateManager } from "../taskState";
-import { generateSandpiperDiagram } from "../quartus/utils";
+import { generateSandpiperDiagram, generateNavTlvHtml } from "../quartus/utils";
+// import { e_config } from "../../../config/config_declaration";
 
 export function runTask(taskType: e_taskType, _taskManager: TaskStateManager, projectDir: string, 
     _projectName: string, _emitter: ProjectEmitter, callback: (result: p_result) => void): ChildProcess {
@@ -26,13 +27,11 @@ export function runTask(taskType: e_taskType, _taskManager: TaskStateManager, pr
             };
             callback(result);
         });
-
-        return childProcess;
     }
-    if (taskType === e_taskType.SANDPIPER_DIAGRAM_TAB) {
+    else if (taskType === e_taskType.SANDPIPER_DIAGRAM_TAB) {
         const childProcess = spawn('node', ['-e', 'console.log("Sandpiper diagram generation initiated")'], { cwd: projectDir });
         
-        generateSandpiperDiagram( projectDir, _emitter)
+        generateSandpiperDiagram(projectDir, _emitter)
             .then((svgFilePath) => {
                 const result: p_result = {
                     command: "Sandpiper diagram generation",
@@ -53,8 +52,34 @@ export function runTask(taskType: e_taskType, _taskManager: TaskStateManager, pr
                 };
                 callback(result);
             });
-
+            return childProcess;
+    }
+    if (taskType === e_taskType.SANDPIPER_NAV_TLV_TAB) {
+        const childProcess = spawn('node', ['-e', 'console.log("Nav TLV generation initiated")'], { cwd: projectDir });
+        
+        generateNavTlvHtml(projectDir, _emitter)
+            .then((htmlFilePath) => {
+                const result: p_result = {
+                    command: "Nav TLV generation",
+                    stdout: `HTML generated at: ${htmlFilePath}`,
+                    stderr: "",
+                    return_value: 0,
+                    successful: true
+                };
+                callback(result);
+            })
+            .catch((error) => {
+                const result: p_result = {
+                    command: "Nav TLV generation",
+                    stdout: "",
+                    stderr: error.message,
+                    return_value: 1,
+                    successful: false
+                };
+                callback(result);
+            });
         return childProcess;
     }
+    
     return {} as ChildProcess;
 }
