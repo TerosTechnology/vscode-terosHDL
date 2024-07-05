@@ -156,6 +156,11 @@
                 "language": "ucf",
                 "scopeName": "source.ucfconstraints",
                 "path": "./syntaxes/ucf.tmLanguage"
+            },
+            {
+                "language": "TL-Verilog",
+                "scopeName": "source.tlverilog",
+                "path": "./syntaxes/tlverilog.tmLanguage"
             }
         ],
         "menus": {
@@ -756,6 +761,13 @@
             "extensions": [".ldc", ".pdc"]
         }
 
+        ,{
+            "id": "TL-Verilog",
+            "aliases": ["TL-Verilog", "tlv", "Transactional-Level Verilog"],
+            "configuration": "./configs/tlverilog.configuration.json",
+            "extensions": [".tlv"]
+        }
+
         ],
         "snippets": [
             {
@@ -781,6 +793,10 @@
             {
                 "language": "ldc",
                 "path": "./snippets/xdc/xdc.json"
+            },
+            {
+                "language": "TL-Verilog",
+                "path": "./snippets/tlverilog/tlverilog.json"
             },
             {
                 "language": "systemverilog",
