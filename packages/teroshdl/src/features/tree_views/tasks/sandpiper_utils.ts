@@ -70,3 +70,34 @@ function showSvgInWebview(svgFilePath: string) {
 
     panel.webview.html = webviewContent;
 }
+
+export async function runNavTlvGeneration(
+    project: t_Multi_project_manager,
+    emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter
+) {
+    try {
+        const selectedProject = project.get_selected_project();
+        vscode.window.showInformationMessage('Starting Nav TLV generation...');
+
+        const htmlFilePath = await teroshdl2.project_manager.quartus.generateNavTlvHtml(
+            selectedProject.projectDiskPath,
+            emitterProject
+        );
+
+        showHtmlInWebview(htmlFilePath);
+
+        vscode.window.showInformationMessage('Nav TLV generation completed.');
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error during Nav TLV generation: ${error}`);
+    }
+}
+
+function showHtmlInWebview(htmlFilePath: string) {
+    const panel = vscode.window.createWebviewPanel('navTlvViewer', 'Nav TLV Viewer', vscode.ViewColumn.Two, {
+        enableScripts: true,
+        retainContextWhenHidden: true
+    });
+
+    const htmlContent = fs.readFileSync(htmlFilePath, 'utf8');
+    panel.webview.html = htmlContent;
+}
