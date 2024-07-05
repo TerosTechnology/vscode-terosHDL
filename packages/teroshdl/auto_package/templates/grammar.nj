@@ -33,5 +33,10 @@
         "language": "ucf",
         "scopeName": "source.ucfconstraints",
         "path": "./syntaxes/ucf.tmLanguage"
+    },
+    {
+        "language": "TL-Verilog",
+        "scopeName": "source.tlverilog",
+        "path": "./syntaxes/tlverilog.tmLanguage"
     }
 ]

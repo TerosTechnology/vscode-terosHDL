@@ -47,3 +47,9 @@
   configuration: "./configs/xdcconstraints.configuration.json"
   snippets: "./snippets/xdc/xdc.json"
   aliases: ["lattice constraints"]
+
+- id: "TL-Verilog"
+  extensions: [".tlv"]
+  configuration: "./configs/tlverilog.configuration.json"
+  snippets: "./snippets/tlverilog/tlverilog.json"
+  aliases: ["TL-Verilog", "tlv", "Transactional-Level Verilog"]
