@@ -5,13 +5,15 @@ import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 import * as fs from 'fs';
 import * as path from 'path';
+import { sandpiperLogger } from './sandpiper_logger';
 
 export async function runSandpiperConversion(
     project: t_Multi_project_manager,
     emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter
 ) {
     try {
-              const selectedProject = project.get_selected_project();
+        sandpiperLogger(emitterProject); 
+        const selectedProject = project.get_selected_project();
         const editor = vscode.window.activeTextEditor;
 
         if (!editor) {
