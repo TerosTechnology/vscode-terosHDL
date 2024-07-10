@@ -4,20 +4,38 @@ import { t_Multi_project_manager } from '../../../type_declaration';
 import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 import * as fs from 'fs';
+import * as path from 'path';
 
 export async function runSandpiperConversion(
     project: t_Multi_project_manager,
     emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter
 ) {
     try {
-        const selectedProject = project.get_selected_project();
+              const selectedProject = project.get_selected_project();
+        const editor = vscode.window.activeTextEditor;
 
+        if (!editor) {
+            vscode.window.showWarningMessage('No active editor found. Please open a file to run the conversion.');
+            return;
+        }
+        
+        const currentFileContent = editor.document.getText();
+        const currentFileName = path.basename(editor.document.fileName);
+
+        if (!currentFileName.toLowerCase().endsWith('.tlv')) {
+            vscode.window.showWarningMessage('Selected file is not a TL-Verilog file. Please select a .tlv file.');
+            return;
+        }
+
+       
         vscode.window.showInformationMessage('Starting Sandpiper TL-Verilog to Verilog conversion...');
 
         await teroshdl2.project_manager.quartus.runTLVerilogToVerilogConversion(
             selectedProject.get_config(),
             selectedProject.projectDiskPath,
-            emitterProject
+            emitterProject,
+            currentFileContent,
+            currentFileName
         );
 
         vscode.window.showInformationMessage('Sandpiper TL-Verilog to Verilog conversion completed.');
