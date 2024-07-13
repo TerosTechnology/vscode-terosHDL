@@ -979,15 +979,19 @@ export async function runTLVerilogToVerilogConversion(
 }
 
 export async function generateSandpiperDiagram(
+  config: e_config,
   projectPath: string,
-  emitterProject: ProjectEmitter
+  emitterProject: ProjectEmitter,
+  currentFileContent: string,
+  currentFileName: string
 ): Promise<string> {
   try {
-    const inputFilePath = path.join(projectPath, "input.tlv");
-    const tlvCode = fs.readFileSync(inputFilePath, "utf8");
+    if (!currentFileName.toLowerCase().endsWith(".tlv")) {
+      throw new Error("Selected file is not a TL-Verilog file. Please select a .tlv file.");
+    }
 
-    // const externSettings = config.sandpiper?.formattingSettings || [];
-    const args = `-i test.tlv --graphTrans --svg --iArgs`;
+    const externSettings = config.sandpiper?.formattingSettings || [];
+    const args = `-i ${currentFileName} --graphTrans --svg ${externSettings.join(" ")} --iArgs`;
 
     const response = await axios.post(
       "https://faas.makerchip.com/function/sandpiper-faas",
@@ -996,7 +1000,7 @@ export async function generateSandpiperDiagram(
         responseType: "json",
         sv_url_inc: true,
         files: {
-          "test.tlv": tlvCode,
+          [currentFileName]: currentFileContent,
         },
       }),
       {
@@ -1007,28 +1011,22 @@ export async function generateSandpiperDiagram(
     );
 
     if (response.status !== 200) {
-      throw new Error(
-        `SandPiper SaaS request failed with status ${response.status}`
-      );
+      throw new Error(`SandPiper SaaS request failed with status ${response.status}`);
     }
 
     const data = response.data;
-    if (data["out/test.m5out_graph.svg"]) {
-      const outputFilePath = path.join(projectPath, "diagram.svg");
-      fs.writeFileSync(outputFilePath, data["out/test.m5out_graph.svg"]);
-
-      emitterProject.emitEventLog(
-        `Generated SVG diagram saved to ${outputFilePath}`,
-        e_event.STDOUT_INFO
-      );
-      return outputFilePath;
+    const svgOutputKey = `out/${currentFileName.replace('.tlv', '.m4out_graph.svg')}`;
+    if (data[svgOutputKey]) {
+      const svgContent = data[svgOutputKey];
+      const svgFilePath = path.join(projectPath, `${path.basename(currentFileName, '.tlv')}_diagram.svg`);
+      fs.writeFileSync(svgFilePath, svgContent);
+      emitterProject.emitEventLog(`Generated SVG diagram saved to ${svgFilePath}`, e_event.STDOUT_INFO);
+      return svgFilePath;
     } else {
-      throw new Error(
-        "SandPiper SaaS diagram generation failed: No SVG output generated."
-      );
+      throw new Error("SandPiper SaaS compilation failed: No SVG output generated.");
     }
   } catch (error) {
-    let errorMessage = "SandPiper SaaS diagram generation failed: ";
+    let errorMessage = "SandPiper SaaS compilation failed: ";
     if (axios.isAxiosError(error)) {
       errorMessage += error.message;
     } else {
@@ -1038,16 +1036,20 @@ export async function generateSandpiperDiagram(
     throw new Error(errorMessage);
   }
 }
-
-export async function generateNavTlvHtml(
-  projectPath: string,
-  emitterProject: ProjectEmitter
+export async function generateNavTlv(
+  config: e_config,
+  _projectPath: string,
+  emitterProject: ProjectEmitter,
+  currentFileContent: string,
+  currentFileName: string
 ): Promise<string> {
   try {
-    const inputFilePath = path.join(projectPath, "input.tlv");
-    const tlvCode = fs.readFileSync(inputFilePath, "utf8");
+    if (!currentFileName.toLowerCase().endsWith(".tlv")) {
+      throw new Error("Selected file is not a TL-Verilog file. Please select a .tlv file.");
+    }
 
-    const args = `-i test.tlv -o gene.sv --dhtml --iArgs`;
+    const externSettings = config.sandpiper?.formattingSettings || [];
+    const args = `-i ${currentFileName} -o gene.sv --dhtml ${externSettings.join(" ")} --iArgs`;
 
     const response = await axios.post(
       "https://faas.makerchip.com/function/sandpiper-faas",
@@ -1056,7 +1058,7 @@ export async function generateNavTlvHtml(
         responseType: "json",
         sv_url_inc: true,
         files: {
-          "test.tlv": tlvCode,
+          [currentFileName]: currentFileContent,
         },
       }),
       {
@@ -1067,28 +1069,20 @@ export async function generateNavTlvHtml(
     );
 
     if (response.status !== 200) {
-      throw new Error(
-        `SandPiper SaaS request failed with status ${response.status}`
-      );
+      throw new Error(`SandPiper SaaS request failed with status ${response.status}`);
     }
 
     const data = response.data;
-    if (data["out/test.m5out.html"]) {
-      const outputFilePath = path.join(projectPath, "navtlv.html");
-      fs.writeFileSync(outputFilePath, data["out/test.m5out.html"]);
-
-      emitterProject.emitEventLog(
-        `Generated Nav TLV HTML saved to ${outputFilePath}`,
-        e_event.STDOUT_INFO
-      );
-      return outputFilePath;
+    const htmlOutputKey = `out/${currentFileName.replace('.tlv', '.m4out.html')}`;
+    if (data[htmlOutputKey]) {
+      const htmlContent = data[htmlOutputKey];
+      emitterProject.emitEventLog(`Generated NavTLV HTML content`, e_event.STDOUT_INFO);
+      return htmlContent;
     } else {
-      throw new Error(
-        "SandPiper SaaS Nav TLV generation failed: No HTML output generated."
-      );
+      throw new Error("SandPiper SaaS compilation failed: No HTML output generated.");
     }
   } catch (error) {
-    let errorMessage = "SandPiper SaaS Nav TLV generation failed: ";
+    let errorMessage = "SandPiper SaaS compilation failed: ";
     if (axios.isAxiosError(error)) {
       errorMessage += error.message;
     } else {
