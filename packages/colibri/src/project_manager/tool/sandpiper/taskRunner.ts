@@ -5,81 +5,51 @@ import { p_result } from "../../../process/common";
 import { e_taskType } from "../common";
 import { ProjectEmitter } from "../../projectEmitter";
 import { TaskStateManager } from "../taskState";
-import { generateSandpiperDiagram, generateNavTlvHtml } from "../quartus/utils";
+// import { generateSandpiperDiagram, generateNavTlvHtml } from "../quartus/utils";
 // import { e_config } from "../../../config/config_declaration";
 
-export function runTask(taskType: e_taskType, _taskManager: TaskStateManager, projectDir: string, 
-    _projectName: string, _emitter: ProjectEmitter, callback: (result: p_result) => void): ChildProcess {
+export function runTask(
+  taskType: e_taskType,
+  _taskManager: TaskStateManager,
+  projectDir: string,
+  _projectName: string,
+  _emitter: ProjectEmitter,
+  callback: (result: p_result) => void
+): ChildProcess {
+  _taskManager.setCurrentTask(taskType);
 
-    if (taskType === e_taskType.SANDPIPER_TLVERILOGTOVERILOG) {
-        const command = "echo";
-        const args = ["Sandpiper TL-Verilog to Verilog conversion initiated"];
+  let command: string;
+  let args: string[];
 
-        const childProcess = spawn(command, args, { cwd: projectDir });
+  switch (taskType) {
+    case e_taskType.SANDPIPER_TLVERILOGTOVERILOG:
+      command = "echo";
+      args = ["Sandpiper TL-Verilog to Verilog conversion initiated"];
+      break;
+    case e_taskType.SANDPIPER_DIAGRAM_TAB:
+      command = "echo";
+      args = ["Sandpiper diagram generation initiated"];
+      break;
+    case e_taskType.SANDPIPER_NAV_TLV_TAB:
+      command = "echo";
+      args = ["Sandpiper NavTLV generation initiated"];
+      break;
+    default:
+      command = "echo";
+      args = ["Unrecognized task type"];
+  }
+  const childProcess = spawn(command, args, { cwd: projectDir });
 
-        childProcess.on('close', (code) => {
-            const result: p_result = {
-                command: `${command} ${args.join(' ')}`,
-                stdout: "Sandpiper conversion process completed.",
-                stderr: code !== 0 ? "Error occurred during Sandpiper conversion." : "",
-                return_value: code ?? 0,
-                successful: code === 0
-            };
-            callback(result);
-        });
-    }
-    else if (taskType === e_taskType.SANDPIPER_DIAGRAM_TAB) {
-        const childProcess = spawn('node', ['-e', 'console.log("Sandpiper diagram generation initiated")'], { cwd: projectDir });
-        
-        generateSandpiperDiagram(projectDir, _emitter)
-            .then((svgFilePath) => {
-                const result: p_result = {
-                    command: "Sandpiper diagram generation",
-                    stdout: `SVG generated at: ${svgFilePath}`,
-                    stderr: "",
-                    return_value: 0,
-                    successful: true
-                };
-                callback(result);
-            })
-            .catch((error) => {
-                const result: p_result = {
-                    command: "Sandpiper diagram generation",
-                    stdout: "",
-                    stderr: error.message,
-                    return_value: 1,
-                    successful: false
-                };
-                callback(result);
-            });
-            return childProcess;
-    }
-    if (taskType === e_taskType.SANDPIPER_NAV_TLV_TAB) {
-        const childProcess = spawn('node', ['-e', 'console.log("Nav TLV generation initiated")'], { cwd: projectDir });
-        
-        generateNavTlvHtml(projectDir, _emitter)
-            .then((htmlFilePath) => {
-                const result: p_result = {
-                    command: "Nav TLV generation",
-                    stdout: `HTML generated at: ${htmlFilePath}`,
-                    stderr: "",
-                    return_value: 0,
-                    successful: true
-                };
-                callback(result);
-            })
-            .catch((error) => {
-                const result: p_result = {
-                    command: "Nav TLV generation",
-                    stdout: "",
-                    stderr: error.message,
-                    return_value: 1,
-                    successful: false
-                };
-                callback(result);
-            });
-        return childProcess;
-    }
-    
-    return {} as ChildProcess;
+  childProcess.on("close", (code) => {
+    const result: p_result = {
+      command: `${command} ${args.join(" ")}`,
+      stdout: code === 0 ? `${taskType} process completed.` : "",
+      stderr: code !== 0 ? `Error occurred during ${taskType}.` : "",
+      return_value: code ?? 0,
+      successful: code === 0,
+    };
+    callback(result);
+  });
+
+  return childProcess;
 }
