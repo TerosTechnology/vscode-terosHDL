@@ -12,7 +12,7 @@ export async function runSandpiperConversion(
     emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter
 ) {
     try {
-        sandpiperLogger(emitterProject); 
+        sandpiperLogger(emitterProject);
         const selectedProject = project.get_selected_project();
         const editor = vscode.window.activeTextEditor;
 
@@ -20,7 +20,7 @@ export async function runSandpiperConversion(
             vscode.window.showWarningMessage('No active editor found. Please open a file to run the conversion.');
             return;
         }
-        
+
         const currentFileContent = editor.document.getText();
         const currentFileName = path.basename(editor.document.fileName);
 
@@ -29,7 +29,6 @@ export async function runSandpiperConversion(
             return;
         }
 
-       
         vscode.window.showInformationMessage('Starting Sandpiper TL-Verilog to Verilog conversion...');
 
         await teroshdl2.project_manager.quartus.runTLVerilogToVerilogConversion(
@@ -57,7 +56,7 @@ export async function runSandpiperDiagramGeneration(
             vscode.window.showWarningMessage('No active editor found. Please open a file to generate the diagram.');
             return;
         }
-        
+
         const currentFileContent = editor.document.getText();
         const currentFileName = path.basename(editor.document.fileName);
 
@@ -105,40 +104,109 @@ function showSvgInWebview(svgFilePath: string) {
         vscode.ViewColumn.Two,
         {
             enableScripts: true,
-            retainContextWhenHidden: true,
+            retainContextWhenHidden: true
         }
     );
 
     const svg = fs.readFileSync(svgFilePath, 'utf8');
     const webviewContent = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Sandpiper Diagram Viewer</title>
-            <style>
-                body { 
-                    display: flex; 
-                    justify-content: center; 
-                    align-items: center; 
-                    height: 100vh; 
-                    margin: 0; 
-                    background-color: #f0f0f0;
-                }
-                svg { 
-                    max-width: 100%; 
-                    max-height: 100%; 
-                    border: 1px solid #ccc; 
-                    background-color: white;
-                }
-            </style>
-        </head>
-        <body>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sandpiper Diagram Viewer</title>
+        <style>
+            body { 
+                margin: 0; 
+                padding: 0;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                background-color: #f0f0f0;
+            }
+            .controls-container {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                z-index: 1000;
+            }
+            .zoom-controls {
+                display: flex;
+                flex-direction: column;
+                background-color: white;
+                border-radius: 4px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            .zoom-button {
+                padding: 5px 10px;
+                font-size: 18px;
+                cursor: pointer;
+                border: none;
+                background-color: transparent;
+            }
+            .zoom-button:hover {
+                background-color: #f0f0f0;
+            }
+            .zoom-reset {
+                border-top: 1px solid #ccc;
+                font-size: 14px;
+            }
+            .svg-container {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+            }
+            svg { 
+                max-width: 100%; 
+                max-height: 100%; 
+                border: 1px solid #ccc; 
+                background-color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="controls-container">
+            <div class="zoom-controls">
+                <button class="zoom-button" onclick="zoomIn()">+</button>
+                <button class="zoom-button" onclick="zoomOut()">-</button>
+                <button class="zoom-button zoom-reset" onclick="resetZoom()">RESET</button>
+            </div>
+        </div>
+        <div class="svg-container" id="svg-container">
             ${svg}
-        </body>
-        </html>
-    `;
+        </div>
+    
+        <script>
+        //@ts-nocheck
+        let currentZoom = 1;
+        const svgContainer = document.getElementById('svg-container');
+        const svg = svgContainer.querySelector('svg');
+    
+        function zoomIn() {
+            currentZoom *= 1.2;
+            updateZoom();
+        }
+    
+        function zoomOut() {
+            currentZoom /= 1.2;
+            updateZoom();
+        }
+    
+        function resetZoom() {
+            currentZoom = 1;
+            updateZoom();
+        }
+    
+        function updateZoom() {
+            svg.style.transform = \`scale(\${currentZoom})\`;
+        }
+        </script>
+    </body>
+    </html>
+    ` as const;
 
     panel.webview.html = webviewContent;
 }
@@ -154,7 +222,7 @@ export async function runSandpiperNavTlvGeneration(
             vscode.window.showWarningMessage('No active editor found. Please open a file to generate NavTLV.');
             return;
         }
-        
+
         const currentFileContent = editor.document.getText();
         const currentFileName = path.basename(editor.document.fileName);
 
@@ -196,15 +264,10 @@ export async function runSandpiperNavTlvGeneration(
 }
 
 function showNavTlvInWebview(navTlvHtml: string) {
-    const panel = vscode.window.createWebviewPanel(
-        'navTlvViewer',
-        'Nav TLV Viewer',
-        vscode.ViewColumn.Two,
-        {
-            enableScripts: true,
-            retainContextWhenHidden: true,
-        }
-    );
+    const panel = vscode.window.createWebviewPanel('navTlvViewer', 'Nav TLV Viewer', vscode.ViewColumn.Two, {
+        enableScripts: true,
+        retainContextWhenHidden: true
+    });
 
     const modifiedHtml = `
         <!DOCTYPE html>
@@ -238,4 +301,3 @@ function showNavTlvInWebview(navTlvHtml: string) {
 
     panel.webview.html = modifiedHtml;
 }
-
