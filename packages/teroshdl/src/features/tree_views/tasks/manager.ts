@@ -17,22 +17,23 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import * as vscode from 'vscode';
-import * as element from './element';
+import * as vscode from "vscode";
+import * as element from "./element";
 import { t_Multi_project_manager } from '../../../type_declaration';
 import * as teroshdl2 from 'teroshdl2';
-import { TaskDecorator } from './element';
-import { ChildProcess } from 'child_process';
+import { TaskDecorator } from "./element";
+import { ChildProcess } from "child_process";
 import * as shelljs from 'shelljs';
-import { LogView } from '../../../views/logs';
+import { LogView } from "../../../views/logs";
 import * as tree_kill from 'tree-kill';
-import { BaseView } from '../baseView';
-import { e_viewType } from '../common';
-import { getFamilyDeviceFromQuartusProject, get_icon } from '../utils';
-import { toolLogger } from '../../../logger';
-import { openRTLAnalyzer } from './quartus_utils';
-import { TimingReportView } from '../../../views/timing/timing_report';
+import { BaseView } from "../baseView";
+import { e_viewType } from "../common";
+import { getFamilyDeviceFromQuartusProject, get_icon } from "../utils";
+import { toolLogger } from "../../../logger";
+import { openRTLAnalyzer } from "./quartus_utils";
+import { TimingReportView } from "../../../views/timing/timing_report";
 import { runSandpiperConversion, runSandpiperDiagramGeneration, runSandpiperNavTlvGeneration } from './sandpiper_utils';
+
 enum e_VIEW_STATE {
     IDLE = 0,
     RUNNING = 1,
@@ -53,13 +54,9 @@ export class Tasks_manager extends BaseView {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(
-        context: vscode.ExtensionContext,
-        manager: t_Multi_project_manager,
-        logView: LogView,
-        emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter,
-        timingReportView: TimingReportView
-    ) {
+    constructor(context: vscode.ExtensionContext, manager: t_Multi_project_manager, logView: LogView,
+        emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter, timingReportView: TimingReportView) {
+
         super(e_viewType.TASKS);
 
         this.set_commands();
@@ -72,47 +69,30 @@ export class Tasks_manager extends BaseView {
         const provider = new TaskDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
 
-        context.subscriptions.push(
-            vscode.window.registerTreeDataProvider(
-                element.ProjectProvider.getViewID(),
-                this.tree as element.BaseTreeDataProvider<element.Task>
-            )
-        );
+        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(),
+            this.tree as element.BaseTreeDataProvider<element.Task>));
     }
 
     /**
      * Sets up the commands for the task manager.
      */
     set_commands() {
-        vscode.commands.registerCommand(
-            'teroshdl.view.tasks.report',
-            async (item) => await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORT)
-        );
-        vscode.commands.registerCommand(
-            'teroshdl.view.tasks.timing_analyzer',
-            async (item) =>
-                await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TIMINGANALYZER)
-        );
-        vscode.commands.registerCommand(
-            'teroshdl.view.tasks.technology_map_viewer',
-            async (item) =>
-                await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TECHNOLOGYMAPVIEWER)
-        );
-        vscode.commands.registerCommand(
-            'teroshdl.view.tasks.snapshotviewer',
-            async (item) =>
-                await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.SNAPSHOPVIEWER)
-        );
-        vscode.commands.registerCommand(
-            'teroshdl.view.tasks.logs',
-            async (item) => await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORTDB)
-        );
+        vscode.commands.registerCommand("teroshdl.view.tasks.report", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORT));
+        vscode.commands.registerCommand("teroshdl.view.tasks.timing_analyzer", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TIMINGANALYZER));
+        vscode.commands.registerCommand("teroshdl.view.tasks.technology_map_viewer", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.TECHNOLOGYMAPVIEWER));
+        vscode.commands.registerCommand("teroshdl.view.tasks.snapshotviewer", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.SNAPSHOPVIEWER));
+        vscode.commands.registerCommand("teroshdl.view.tasks.logs", async (item) =>
+            await this.openReport(item, teroshdl2.project_manager.tool_common.e_reportType.REPORTDB));
 
-        vscode.commands.registerCommand('teroshdl.view.tasks.stop', () => this.stop());
-        vscode.commands.registerCommand('teroshdl.view.tasks.run', (item) => this.run(item));
-        vscode.commands.registerCommand('teroshdl.view.tasks.clean', () => this.clean());
-        vscode.commands.registerCommand('teroshdl.view.tasks.device', () => this.device());
-        vscode.commands.registerCommand('teroshdl.view.tasks.console', () => this.openConsole());
+        vscode.commands.registerCommand("teroshdl.view.tasks.stop", () => this.stop());
+        vscode.commands.registerCommand("teroshdl.view.tasks.run", (item) => this.run(item));
+        vscode.commands.registerCommand("teroshdl.view.tasks.clean", () => this.clean());
+        vscode.commands.registerCommand("teroshdl.view.tasks.device", () => this.device());
+        vscode.commands.registerCommand("teroshdl.view.tasks.console", () => this.openConsole());
     }
 
     /**
@@ -141,10 +121,7 @@ export class Tasks_manager extends BaseView {
             openRTLAnalyzer(this.project_manager, this.emitterProject);
             return;
         }
-        if (
-            taskItem.taskDefinition.name ===
-            teroshdl2.project_manager.tool_common.e_taskType.SANDPIPER_TLVERILOGTOVERILOG
-        ) {
+        if ( taskItem.taskDefinition.name === teroshdl2.project_manager.tool_common.e_taskType.SANDPIPER_TLVERILOGTOVERILOG ) {
             await runSandpiperConversion(this.project_manager, this.emitterProject);
             return;
         }
@@ -159,9 +136,7 @@ export class Tasks_manager extends BaseView {
         if (this.checkRunning()) {
             return;
         }
-
         this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-
         try {
             const selectedProject = this.project_manager.get_selected_project();
 
@@ -170,7 +145,11 @@ export class Tasks_manager extends BaseView {
 
             if (taskStatus === teroshdl2.project_manager.tool_common.e_taskState.FINISHED) {
                 const msg = `${taskItem.taskDefinition.name} has already run successfully. Do you want to run the task again?`;
-                const result = await vscode.window.showInformationMessage(msg, 'Yes', 'No');
+                const result = await vscode.window.showInformationMessage(
+                    msg,
+                    'Yes',
+                    'No'
+                );
                 if (result === 'No') {
                     return;
                 }
@@ -204,7 +183,8 @@ export class Tasks_manager extends BaseView {
                     toolLogger.log(data);
                 });
             }
-        } catch (error) {
+        }
+        catch (error) {
             // Refresh view to set the finish decorators
             this.refresh_tree();
             this.hideStatusBar();
@@ -218,7 +198,7 @@ export class Tasks_manager extends BaseView {
 
             const terminalTypeList = [...teroshdl2.project_manager.tool_common.terminalTypeMap.keys()];
             const pickerValue = await vscode.window.showQuickPick(terminalTypeList, {
-                placeHolder: 'Select the Shell.'
+                placeHolder: "Select the Shell.",
             });
 
             if (pickerValue === undefined) {
@@ -243,7 +223,8 @@ export class Tasks_manager extends BaseView {
             });
             terminal.show();
             terminal.sendText(consoleDefinition.postCommand);
-        } catch (error) {
+        }
+        catch (error) {
             return;
         }
     }
@@ -255,21 +236,20 @@ export class Tasks_manager extends BaseView {
         const device = config.tools.quartus.device;
 
         const msg = `Family: ${family}\nDevice: ${device}\n. Do you want to change it?`;
-        const result = await vscode.window.showInformationMessage(msg, 'Yes', 'No');
+        const result = await vscode.window.showInformationMessage(
+            msg,
+            'Yes',
+            'No'
+        );
         if (result === 'No') {
             return;
         }
 
         const deviceFamily = await getFamilyDeviceFromQuartusProject(this.project_manager, this.emitterProject);
-        if (
-            deviceFamily !== undefined &&
-            deviceFamily.family !== '' &&
-            deviceFamily.device !== '' &&
-            deviceFamily.family !== undefined &&
-            deviceFamily.device !== undefined &&
-            deviceFamily.family !== family &&
-            deviceFamily.device !== device
-        ) {
+        if (deviceFamily !== undefined &&
+            deviceFamily.family !== "" && deviceFamily.device !== ""
+            && deviceFamily.family !== undefined && deviceFamily.device !== undefined &&
+            deviceFamily.family !== family && deviceFamily.device !== device) {
             config.tools.quartus.family = deviceFamily.family;
             config.tools.quartus.device = deviceFamily.device;
             selectedProject.set_config(config);
@@ -281,15 +261,18 @@ export class Tasks_manager extends BaseView {
             return;
         }
 
-        const msg =
-            'Do you want to clean the project? Cleaning revisions removes the project database and other files generated by the Quartus Prime Software, including report and programming files.';
-        const result = await vscode.window.showInformationMessage(msg, 'Yes', 'No');
+        const msg = "Do you want to clean the project? Cleaning revisions removes the project database and other files generated by the Quartus Prime Software, including report and programming files.";
+        const result = await vscode.window.showInformationMessage(
+            msg,
+            'Yes',
+            'No'
+        );
 
         if (result === 'Yes') {
             this.state = e_VIEW_STATE.RUNNING;
 
             this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-            this.setStatusBarText('Clean Project');
+            this.setStatusBarText("Clean Project");
             this.statusBar.show();
             try {
                 const selectedProject = this.project_manager.get_selected_project();
@@ -315,8 +298,9 @@ export class Tasks_manager extends BaseView {
                         toolLogger.log(data);
                     });
                 }
-            } catch (error) {
-            } finally {
+            }
+            catch (error) { }
+            finally {
                 this.hideStatusBar();
                 this.state = e_VIEW_STATE.IDLE;
                 // Refresh view to set the finish decorators
@@ -327,12 +311,12 @@ export class Tasks_manager extends BaseView {
 
     /**
      * Checks if there is a task currently running.
-     *
+     * 
      * @returns {boolean} Returns true if there is a task running, otherwise false.
      */
     checkRunning() {
         if (this.state === e_VIEW_STATE.RUNNING) {
-            vscode.window.showInformationMessage('There is a task running. Please wait until it finishes.');
+            vscode.window.showInformationMessage("There is a task running. Please wait until it finishes.");
             return true;
         }
         return false;
@@ -343,44 +327,39 @@ export class Tasks_manager extends BaseView {
         const task = taskItem.taskDefinition.name;
         const report = await selectedProject.getArtifact(task, reportType);
         if (reportType === teroshdl2.project_manager.tool_common.e_reportType.TECHNOLOGYMAPVIEWER) {
-            vscode.window.showWarningMessage('Technology Map Viewer is not supported yet.');
+            vscode.window.showWarningMessage("Technology Map Viewer is not supported yet.");
             return;
-        } else if (reportType === teroshdl2.project_manager.tool_common.e_reportType.SNAPSHOPVIEWER) {
-            vscode.window.showWarningMessage('Snapshop Viewer is not supported yet.');
+        }
+        else if (reportType === teroshdl2.project_manager.tool_common.e_reportType.SNAPSHOPVIEWER) {
+            vscode.window.showWarningMessage("Snapshop Viewer is not supported yet.");
             return;
         }
 
         if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.COMMAND) {
             shelljs.exec(report.command, { async: true, cwd: report.path });
         }
-        if (
-            report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY &&
-            report.element_type === teroshdl2.project_manager.tool_common.e_element_type.TEXT_FILE
-        ) {
+        if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY
+            && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.TEXT_FILE) {
             if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {
                 toolLogger.show();
                 toolLogger.warn(`The report ${report.path} does not exist.`);
-                vscode.window.showWarningMessage('The report does not exist.');
+                vscode.window.showWarningMessage("The report does not exist.");
                 return;
             }
             vscode.window.showTextDocument(vscode.Uri.file(report.path));
         }
-        if (
-            report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY &&
-            report.element_type === teroshdl2.project_manager.tool_common.e_element_type.HTML
-        ) {
+        if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.SUMMARY
+            && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.HTML) {
             const content = report.content;
             vscode.commands.executeCommand('teroshdl.openwebview', content);
         }
 
-        if (
-            report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.LOG &&
-            report.element_type === teroshdl2.project_manager.tool_common.e_element_type.DATABASE
-        ) {
+        if (report.artifact_type === teroshdl2.project_manager.tool_common.e_artifact_type.LOG
+            && report.element_type === teroshdl2.project_manager.tool_common.e_element_type.DATABASE) {
             if (!teroshdl2.utils.file.check_if_path_exist(report.path)) {
                 toolLogger.show();
                 toolLogger.warn(`The report ${report.path} does not exist.`);
-                vscode.window.showWarningMessage('The report database does not exist.');
+                vscode.window.showWarningMessage("The report database does not exist.");
                 return;
             }
             this.logView.sendLogs(report.path);
@@ -391,7 +370,8 @@ export class Tasks_manager extends BaseView {
         if (this.statusBar !== undefined) {
             if (text === undefined) {
                 this.statusBar.text = `$(sync~spin) Running Quartus task...`;
-            } else {
+            }
+            else {
                 this.statusBar.text = `$(sync~spin) Running Quartus task: ${text}...`;
             }
         }
@@ -414,7 +394,5 @@ export class Tasks_manager extends BaseView {
 }
 
 function showTaskWarningMessage(task: string) {
-    vscode.window.showWarningMessage(
-        `The task ${task} has not finished yet. Please wait until it finishes to open the report.`
-    );
+    vscode.window.showWarningMessage(`The task ${task} has not finished yet. Please wait until it finishes to open the report.`);
 }
