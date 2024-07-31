@@ -156,6 +156,11 @@
                 "language": "ucf",
                 "scopeName": "source.ucfconstraints",
                 "path": "./syntaxes/ucf.tmLanguage"
+            },
+            {
+              "language": "picyml",
+              "scopeName": "source.yaml",
+              "path": "./syntaxes/yaml.tmLanguage.json"
             }
         ],
         "menus": {
@@ -785,6 +790,14 @@
             {
                 "language": "systemverilog",
                 "path": "./snippets/verilog/verilog.json"
+            },
+            {
+              "language": "picyml",
+              "path": "./snippets/yaml/snippet.json"
+            },
+            {
+              "language": "python",
+              "path": "./snippets/python_snippets.json"
             }
         ],
 

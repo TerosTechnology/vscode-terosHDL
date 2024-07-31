@@ -1,0 +1,8 @@
+
+{
+  "abs": {
+    "prefix": "i",
+    "body": "instances:",
+    "description": "Define instances and settings."
+  }
+}
