@@ -4,7 +4,7 @@ import {
   runTLVerilogToVerilogConversion,
   generateNavTlv,
   generateSandpiperDiagram,
-} from "../../src/project_manager/tool/quartus/utils";
+} from "../../src/project_manager/tool/sandpiper/utils";
 import { get_default_config } from "../../src/config/config_declaration";
 import axios from "axios";
 
