@@ -1,12 +1,8 @@
-// packages/colibri/src/project_manager/tool/sandpiper/taskRunner.ts
-
 import { ChildProcess, spawn } from "child_process";
 import { p_result } from "../../../process/common";
 import { e_taskType } from "../common";
 import { ProjectEmitter } from "../../projectEmitter";
 import { TaskStateManager } from "../taskState";
-// import { generateSandpiperDiagram, generateNavTlvHtml } from "../quartus/utils";
-// import { e_config } from "../../../config/config_declaration";
 
 export function runTask(
   taskType: e_taskType,
