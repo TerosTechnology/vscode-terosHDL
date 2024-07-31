@@ -5,6 +5,8 @@ import axios from "axios";;
 import * as path from "path";
 import * as fs from "fs";
 
+const SANDPIPER_API_URL = "https://faas.makerchip.com/function/sandpiper-faas";
+
 export async function runTLVerilogToVerilogConversion(
     config: e_config,
     projectPath: string,
@@ -28,7 +30,7 @@ export async function runTLVerilogToVerilogConversion(
       )} --m4out out/m4out ${externSettings.join(" ")} --iArgs`;
   
       const response = await axios.post(
-        "https://faas.makerchip.com/function/sandpiper-faas",
+        SANDPIPER_API_URL,
         JSON.stringify({
           args,
           responseType: "json",
@@ -112,7 +114,7 @@ export async function runTLVerilogToVerilogConversion(
       const args = `-i ${currentFileName} --graphTrans --svg ${externSettings.join(" ")} --iArgs`;
   
       const response = await axios.post(
-        "https://faas.makerchip.com/function/sandpiper-faas",
+        SANDPIPER_API_URL,
         JSON.stringify({
           args,
           responseType: "json",
@@ -170,7 +172,7 @@ export async function runTLVerilogToVerilogConversion(
       const args = `-i ${currentFileName} -o gene.sv --dhtml ${externSettings.join(" ")} --iArgs`;
   
       const response = await axios.post(
-        "https://faas.makerchip.com/function/sandpiper-faas",
+        SANDPIPER_API_URL,
         JSON.stringify({
           args,
           responseType: "json",
