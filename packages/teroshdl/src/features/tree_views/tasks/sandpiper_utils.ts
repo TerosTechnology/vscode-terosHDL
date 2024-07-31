@@ -31,7 +31,7 @@ export async function runSandpiperConversion(
 
         vscode.window.showInformationMessage('Starting Sandpiper TL-Verilog to Verilog conversion...');
 
-        await teroshdl2.project_manager.quartus.runTLVerilogToVerilogConversion(
+        await teroshdl2.project_manager.sandpiper.runTLVerilogToVerilogConversion(
             selectedProject.get_config(),
             selectedProject.projectDiskPath,
             emitterProject,
@@ -82,7 +82,7 @@ export async function runSandpiperDiagramGeneration(
         });
 
         // Then, call the backend function to generate the diagram
-        const svgFilePath = await teroshdl2.project_manager.quartus.generateSandpiperDiagram(
+        const svgFilePath = await teroshdl2.project_manager.sandpiper.generateSandpiperDiagram(
             selectedProject.get_config(),
             selectedProject.projectDiskPath,
             emitterProject,
@@ -248,7 +248,7 @@ export async function runSandpiperNavTlvGeneration(
         });
 
         // Generate NavTLV
-        const navTlvHtml = await teroshdl2.project_manager.quartus.generateNavTlv(
+        const navTlvHtml = await teroshdl2.project_manager.sandpiper.generateNavTlv(
             selectedProject.get_config(),
             selectedProject.projectDiskPath,
             emitterProject,
