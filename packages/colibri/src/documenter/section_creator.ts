@@ -520,21 +520,26 @@ export class Creator extends Section_creator_interface {
                     if (return_str === '') {
                         return_str = `${translator.get_str('return')} ()`;
                     }
+
+                    //highlight keywords
+                    arguments_str = this.replaceAll(arguments_str, 'input', '<a style="color:green;">input</a>' );
+                    arguments_str = this.replaceAll(arguments_str, 'output', '<a style="color:green;">output</a>' );
+                    arguments_str = this.replaceAll(arguments_str, 'inout', '<a style="color:green;">inout</a>' );
+
                     // eslint-disable-next-line max-len
                     const name = functions[i].info.name;
-                    arguments_str = arguments_str
-                        .replace(/;/g, ';<br><span style="padding-left:20px">')
-                        .replace(/,/g, ',<br><span style="padding-left:20px">');
                     // eslint-disable-next-line max-len
-                    const section = `- ${name} <font id="function_arguments">${arguments_str}</font> <font id="function_return">${return_str}</font>\n`;
+                    const section = `- <p style="font-weight:bold;">${name} ${arguments_str}</p>\n`;
                     md += section;
                     html += converter.makeHtml(section);
 
                     const description = functions[i].info.description.replace('\n', '');
                     if (description !== '') {
-                        const description_element = `**${translator.get_str('Description')}**\n ${description}\n`;
+
                         md += '  - ' + description;
-                        html += '<div id="descriptions">' + converter.makeHtml(description_element) + '</div>';
+                        html += '<div id="descriptions">' + 
+                            translator.get_str('Description') + '</div>';
+                        html += '<div id="descriptions_content">' + description + '</div>';
                     }
                 }
             }
@@ -574,22 +579,27 @@ export class Creator extends Section_creator_interface {
                     if (arguments_str === '') {
                         arguments_str = '()';
                     }
+
+                    //highlight keywords
+                    arguments_str = this.replaceAll(arguments_str, 'input', '<a style="color:green;">input</a>' );
+                    arguments_str = this.replaceAll(arguments_str, 'output', '<a style="color:green;">output</a>' );
+                    arguments_str = this.replaceAll(arguments_str, 'inout', '<a style="color:green;">inout</a>' );
+
                     
                     // eslint-disable-next-line max-len
                     const name = tasks[i].info.name;
-                    arguments_str = arguments_str
-                        .replace(/;/g, ';<br><span style="padding-left:20px">')
-                        .replace(/,/g, ',<br><span style="padding-left:20px">');
                     // eslint-disable-next-line max-len
-                    const section = `- ${name} <font id="task_arguments">${arguments_str}</font>\n`;
+                    const section = `- <p style="font-weight:bold;">${name} ${arguments_str}</p>\n`;
                     md += section;
                     html += converter.makeHtml(section);
 
                     const description = tasks[i].info.description.replace('\n', '');
                     if (description !== '') {
-                        const description_element = `**${translator.get_str('Description')}**\n ${description}\n`;
+
                         md += '  - ' + description;
-                        html += '<div id="descriptions">' + converter.makeHtml(description_element) + '</div>';
+                        html += '<div id="descriptions">' + 
+                            translator.get_str('Description') + '</div>';
+                        html += '<div id="descriptions_content">' + description + '</div>';
                     }
                 }
             }
@@ -904,6 +914,9 @@ export class Creator extends Section_creator_interface {
         return text;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Utils
+    ////////////////////////////////////////////////////////////////////////////
     get_doc_enums(enums: common_hdl.Enum_hdl[], translator: translator_lib.Translator) {
         const table = [];
         table.push([translator.get_str("Name"), translator.get_str("Description")]);
@@ -918,4 +931,8 @@ export class Creator extends Section_creator_interface {
         return text;
     }
 
+
+    replaceAll(str: string, find : string, replace: string){
+        return str.replace(new RegExp(find, 'g'), replace);
+    }
 }
