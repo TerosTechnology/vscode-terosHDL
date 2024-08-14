@@ -20,15 +20,15 @@ export function runTask(
   switch (taskType) {
     case e_taskType.SANDPIPER_TLVERILOGTOVERILOG:
       command = "echo";
-      args = ["Sandpiper TL-Verilog to Verilog conversion initiated"];
+      args = ["TL-Verilog to Verilog conversion initiated"];
       break;
     case e_taskType.SANDPIPER_DIAGRAM_TAB:
       command = "echo";
-      args = ["Sandpiper diagram generation initiated"];
+      args = ["Diagram generation initiated"];
       break;
     case e_taskType.SANDPIPER_NAV_TLV_TAB:
       command = "echo";
-      args = ["Sandpiper NavTLV generation initiated"];
+      args = ["NavTLV generation initiated"];
       break;
     default:
       command = "echo";

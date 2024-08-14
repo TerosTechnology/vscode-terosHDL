@@ -93,8 +93,8 @@ export class Project_manager extends BaseView {
             "Load project from YAML EDAM",
             "Load project from VUnit run.py",
             "Load an example project",
-            "Create an empty SandPiper project",
-            "Load an existing SandPiper project",
+            "Create an empty TL-Verilog project",
+            "Load an existing TL-Verilog project",
         ];
 
         const picker_value = await vscode.window.showQuickPick(PROJECT_ADD_TYPES, {

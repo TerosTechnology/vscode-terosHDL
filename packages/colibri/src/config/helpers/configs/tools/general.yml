@@ -23,7 +23,7 @@ select_tool:
     xsim: "XSIM"
     raptor: "Raptor Design Suite"
     radiant: "Radiant"
-    sandpiper: "Sandpiper"
+    sandpiper: "SandPiper"
 
   value: "ghdl"
 
