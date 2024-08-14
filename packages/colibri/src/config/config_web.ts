@@ -1628,7 +1628,7 @@ export const WEB_CONFIG = `
                       <option value='xsim'>XSIM</option>
                       <option value='raptor'>Raptor Design Suite</option>
                       <option value='radiant'>Radiant</option>
-                      <option value='sandpiper'>Sandpiper</option>
+                      <option value='sandpiper'>SandPiper</option>
               </select>
             </div>
           

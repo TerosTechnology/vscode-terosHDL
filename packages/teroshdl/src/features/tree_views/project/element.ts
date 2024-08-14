@@ -64,7 +64,7 @@ export class Project extends vscode.TreeItem {
             iconName = "quartus";
         }
         else if (projectType === teroshdl2.project_manager.common.e_project_type.SANDPIPER) {
-            this.description = "Sandpiper Project";
+            this.description = "TL-Verilog Project";
         }
         
         if (isOpen) {

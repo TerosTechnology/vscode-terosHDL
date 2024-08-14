@@ -63,7 +63,7 @@ export type t_terminalCommandDefinition = {
 export enum e_project_type {
     GENERIC = "genericProject",
     QUARTUS = "quartusProject",
-    SANDPIPER = "sandpiperProject",
+    SANDPIPER = "TL-VerilogProject",
 }
 
 /** Type of parameter */

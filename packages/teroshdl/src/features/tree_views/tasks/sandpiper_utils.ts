@@ -29,7 +29,7 @@ export async function runSandpiperConversion(
             return;
         }
 
-        vscode.window.showInformationMessage('Starting Sandpiper TL-Verilog to Verilog conversion...');
+        vscode.window.showInformationMessage('Starting TL-Verilog to Verilog conversion...');
 
         await teroshdl2.project_manager.sandpiper.runTLVerilogToVerilogConversion(
             selectedProject.get_config(),
@@ -39,9 +39,9 @@ export async function runSandpiperConversion(
             currentFileName
         );
 
-        vscode.window.showInformationMessage('Sandpiper TL-Verilog to Verilog conversion completed.');
+        vscode.window.showInformationMessage('TL-Verilog to Verilog conversion completed.');
     } catch (error) {
-        vscode.window.showErrorMessage(`Error during Sandpiper conversion: ${error}`);
+        vscode.window.showErrorMessage(`Error during SandPiper conversion: ${error}`);
     }
 }
 export async function runSandpiperDiagramGeneration(
@@ -65,7 +65,7 @@ export async function runSandpiperDiagramGeneration(
             return;
         }
 
-        vscode.window.showInformationMessage('Starting Sandpiper diagram generation...');
+        vscode.window.showInformationMessage('Starting Diagram generation...');
 
         // First, run the task
         await new Promise<void>((resolve, reject) => {
@@ -91,16 +91,16 @@ export async function runSandpiperDiagramGeneration(
         );
 
         showSvgInWebview(svgFilePath);
-        vscode.window.showInformationMessage('Sandpiper diagram generated and displayed.');
+        vscode.window.showInformationMessage('Diagram generated and displayed.');
     } catch (error) {
-        vscode.window.showErrorMessage(`Error during Sandpiper diagram generation: ${error}`);
+        vscode.window.showErrorMessage(`Error during SandPiper diagram generation: ${error}`);
     }
 }
 
 function showSvgInWebview(svgFilePath: string) {
     const panel = vscode.window.createWebviewPanel(
-        'sandpiperDiagram',
-        'Sandpiper Diagram Viewer',
+        'TL-Verilog Diagram',
+        'TL-Verilog Diagram Viewer',
         vscode.ViewColumn.Two,
         {
             enableScripts: true,
@@ -115,7 +115,7 @@ function showSvgInWebview(svgFilePath: string) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sandpiper Diagram Viewer</title>
+        <title>TL-Verilog Diagram Viewer</title>
         <style>
             body { 
                 margin: 0; 
@@ -231,7 +231,7 @@ export async function runSandpiperNavTlvGeneration(
             return;
         }
 
-        vscode.window.showInformationMessage('Starting Sandpiper NavTLV generation...');
+        vscode.window.showInformationMessage('Starting NavTLV generation...');
 
         // Run the task
         await new Promise<void>((resolve, reject) => {
@@ -293,7 +293,7 @@ function showNavTlvInWebview(navTlvHtml: string) {
         <body>
             <div class="nav-tlv-content">${navTlvHtml}</div>
             <script>
-                // You can add any necessary JavaScript here
+                // to be added
             </script>
         </body>
         </html>

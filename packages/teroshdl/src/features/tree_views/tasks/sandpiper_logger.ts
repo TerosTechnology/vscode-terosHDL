@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { ProjectEmitter } from 'teroshdl2/out/project_manager/projectEmitter';
 import { e_event } from 'teroshdl2/out/project_manager/projectEmitter';
 
-const outputChannel = vscode.window.createOutputChannel('Sandpiper Logs');
+const outputChannel = vscode.window.createOutputChannel('TL-Verilog Logs');
 
 export function sandpiperLogger(emitterProject: ProjectEmitter) {
     emitterProject.addProjectListener(async (log: string, type: e_event) => {
