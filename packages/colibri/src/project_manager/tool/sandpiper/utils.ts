@@ -27,7 +27,7 @@ export async function runTLVerilogToVerilogConversion(
       const args = `-i ${currentFileName} -o ${currentFileName.replace(
         ".tlv",
         ".sv"
-      )} --m4out out/m4out ${externSettings.join(" ")} --iArgs`;
+      )} --m5out out/m5out ${externSettings.join(" ")} --iArgs`;
   
       const response = await axios.post(
         SANDPIPER_API_URL,
@@ -135,7 +135,9 @@ export async function runTLVerilogToVerilogConversion(
       }
   
       const data = response.data;
-      const svgOutputKey = `out/${currentFileName.replace('.tlv', '.m4out_graph.svg')}`;
+      const svgOutputKeyM4 = `out/${currentFileName.replace('.tlv', '.m4out_graph.svg')}`;
+      const svgOutputKeyM5 = `out/${currentFileName.replace('.tlv', '.m5out_graph.svg')}`;
+      const svgOutputKey = data[svgOutputKeyM5] ? svgOutputKeyM5 : svgOutputKeyM4;
       if (data[svgOutputKey]) {
         const svgContent = data[svgOutputKey];
         const svgFilePath = path.join(projectPath, `${path.basename(currentFileName, '.tlv')}_diagram.svg`);
@@ -193,7 +195,10 @@ export async function runTLVerilogToVerilogConversion(
       }
   
       const data = response.data;
-      const htmlOutputKey = `out/${currentFileName.replace('.tlv', '.m4out.html')}`;
+      const htmlOutputKeyM4 = `out/${currentFileName.replace('.tlv', '.m4out.html')}`;
+      const htmlOutputKeyM5 = `out/${currentFileName.replace('.tlv', '.m5out.html')}`;
+
+      const htmlOutputKey =  data[htmlOutputKeyM5] ? htmlOutputKeyM5 : htmlOutputKeyM4;
       if (data[htmlOutputKey]) {
         const htmlContent = data[htmlOutputKey];
         emitterProject.emitEventLog(`Generated NavTLV HTML content`, e_event.STDOUT_INFO);
