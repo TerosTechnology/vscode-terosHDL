@@ -67,7 +67,8 @@ describe("Sandpiper", () => {
     const mockResponse = {
       status: 200,
       data: {
-        'out/sample.m4out_graph.svg': '<svg>Diagram content</svg>'
+             'out/sample.m4out_graph.svg': '<svg>M4 Diagram content</svg>',
+      'out/sample.m5out_graph.svg': '<svg>M5 Diagram content</svg>'
       }
     };
     (axios.post as jest.Mock).mockResolvedValue(mockResponse);
@@ -91,7 +92,8 @@ describe("Sandpiper", () => {
     const mockResponse = {
       status: 200,
       data: {
-        'out/sample.m4out.html': '<html>NavTLV content</html>'
+        'out/sample.m4out.html': '<html>m4 NavTLV content</html>',
+        'out/sample.m5out.html': '<html>m5 NavTLV content</html>'
       }
     };
     (axios.post as jest.Mock).mockResolvedValue(mockResponse);
