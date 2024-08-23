@@ -1,7 +1,7 @@
 import { e_config } from "../../../config/config_declaration";
 import { ProjectEmitter } from "../../projectEmitter";
 import { e_event } from "../../projectEmitter";
-import axios from "axios";;
+import axios from "axios";
 import * as path from "path";
 import * as fs from "fs";
 
