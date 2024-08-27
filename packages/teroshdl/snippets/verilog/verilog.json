@@ -105,7 +105,7 @@
 	"define": {
 		"prefix": "def",
 		"body": [
-			"`def $1 = $2"
+			"`define $1 = $2"
 		],
 		"description": "`define var = val"
 	},
