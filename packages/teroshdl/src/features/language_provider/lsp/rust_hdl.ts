@@ -20,7 +20,8 @@ import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
-    RevealOutputChannelOn
+    RevealOutputChannelOn,
+    State
 } from 'vscode-languageclient/node';
 
 
@@ -33,18 +34,38 @@ let languageServer: string;
 
 export class Rusthdl_lsp {
 
-    private client!: LanguageClient;
+    private client: LanguageClient | undefined = undefined;
     private context: ExtensionContext;
     private languageServerDisposable;
     private manager: t_Multi_project_manager;
     public stop_client: boolean = false;
+    private errorCounter = 0;
 
     constructor(context: ExtensionContext, manager: t_Multi_project_manager) {
         this.context = context;
         this.manager = manager;
+
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
+                if (this.client != undefined && this.client.isRunning() && this.client.state === State.Running) {
+                    try {
+                        await this.client.restart();
+                    }
+                    catch (error) {
+                        this.errorCounter++;
+                        this.client.dispose();
+                        this.client = undefined;
+                        console.log(error);
+                        if (this.errorCounter < 5) {
+                            await this.run_rusthdl();
+                        }
+                    }
+                }
+            })
+        );
     }
 
-    async run_rusthdl() {
+    async run_rusthdl() : Promise<boolean> {
         const languageServerDir = this.context.asAbsolutePath(
             path.join('server', 'vhdl_ls')
         );
@@ -79,30 +100,13 @@ export class Rusthdl_lsp {
         let server_path = this.context.asAbsolutePath(languageServer);
         let is_alive = await this.check_rust_hdl(server_path);
         if (is_alive === false) {
-            this.context.subscriptions.push(
-                vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
-                })
-            );
             return false;
         }
 
         // Start the client. This will also launch the server
-        this.languageServerDisposable = this.client.start();
-
-        // Register command to restart language server
+        this.languageServerDisposable = await this.client.start();
         this.context.subscriptions.push(this.languageServerDisposable);
-        this.context.subscriptions.push(
-            vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
-                if (this.stop_client === false) {
-                    await this.client.onReady();
-                    await this.client.stop();
-                    this.languageServerDisposable.dispose();
-                    this.languageServerDisposable = this.client.start();
-                    this.context.subscriptions.push(this.languageServerDisposable);
-                }
-            })
-        );
-
+        
         return true;
     }
 
@@ -128,6 +132,9 @@ export class Rusthdl_lsp {
 
     deactivate(): Thenable<void> | undefined {
         console.log("TerosHDL deactivate!");
+        if (!this.client) {
+            return undefined;
+        }
         let promises = [this.client.stop()];
         return Promise.all(promises).then(() => undefined);
     }

@@ -1,23 +1,20 @@
-import * as vscode from 'vscode';
-import { ProjectEmitter } from 'teroshdl2/out/project_manager/projectEmitter';
-import { e_event } from 'teroshdl2/out/project_manager/projectEmitter';
+import * as teroshdl2 from 'teroshdl2';
+import { toolLogger } from "../../../logger";
 
-const outputChannel = vscode.window.createOutputChannel('TL-Verilog Logs');
-
-export function sandpiperLogger(emitterProject: ProjectEmitter) {
-    emitterProject.addProjectListener(async (log: string, type: e_event) => {
+export function sandpiperLogger(emitterProject: teroshdl2.project_manager.projectEmitter.ProjectEmitter) {
+    emitterProject.addProjectListener(async (log: string, type: teroshdl2.project_manager.projectEmitter.e_event) => {
         switch (type) {
-            case e_event.STDOUT_INFO:
-                outputChannel.appendLine(`INFO: ${log}`);
+            case teroshdl2.project_manager.projectEmitter.e_event.STDOUT_INFO:
+                toolLogger.appendLine(`INFO: ${log}`);
                 break;
-            case e_event.STDOUT_WARNING:
-                outputChannel.appendLine(`WARNING: ${log}`);
+            case teroshdl2.project_manager.projectEmitter.e_event.STDOUT_WARNING:
+                toolLogger.appendLine(`WARNING: ${log}`);
                 break;
-            case e_event.STDOUT_ERROR:
-                outputChannel.appendLine(`ERROR: ${log}`);
+            case teroshdl2.project_manager.projectEmitter.e_event.STDOUT_ERROR:
+                toolLogger.appendLine(`ERROR: ${log}`);
                 break;
             default:
-                outputChannel.appendLine(log);
+                toolLogger.appendLine(log);
         }
     });
 }
