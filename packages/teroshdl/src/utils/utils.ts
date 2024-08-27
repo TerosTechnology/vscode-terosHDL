@@ -23,10 +23,10 @@ import * as vscode from 'vscode';
 import * as teroshdl2 from 'teroshdl2';
 
 export const VERILOG_SELECTOR: vscode.DocumentSelector = [
-    { scheme: 'file', language: teroshdl2.common.general.LANGUAGE.VERILOG },
-    { scheme: 'file', language: teroshdl2.common.general.LANGUAGE.SYSTEMVERILOG }
+    { scheme: 'file', language: "verilog" },
+    { scheme: 'file', language: "systemverilog" }
 ];
-export const VHDL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: teroshdl2.common.general.LANGUAGE.VHDL };
+export const VHDL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: "vhdl" };
 export const TCL_SELECTOR: vscode.DocumentSelector = { scheme: 'file', language: 'tcl' };
 
 export enum t_message_level {

@@ -57,7 +57,7 @@ function hover(document, position, lang: teroshdl2.common.general.LANGUAGE) {
         const content = new vscode.MarkdownString();
         content.supportHtml = true;
         content.isTrusted = true;
-        content.appendMarkdown(`Number conversion of **${leadingText}**:<br>`);
+        content.appendMarkdown(`Number conversion of **${leadingText.replace(/"/g, "")}**:<br>`);
 
         if (result.is_multi === false) {
             content.appendMarkdown(`- <span style="color:#569cd6;">Unsigned</span> &nbsp;<span style="color:#b5cea8;">${result.unsigned_n}</span>`);
