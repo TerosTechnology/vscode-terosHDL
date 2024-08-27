@@ -34,5 +34,12 @@
         "decreaseIndentPattern": "^((?!.*?\\/\\*).*\\*/)?\\s*(elsif|else|end|begin)\\b",
         // `^((?!.*?/\*).*\*/)??` ignore any text in a comment at the start of the line
         // `\s*(elsif|else|end|begin)\b)` decrease indent on a line starting with these keywords
+    },
+
+    "folding": { // enable folding/minimap labels for --#region <Label> ... --#endregion <Label>
+        "markers": {
+            "start": "^\\s*\\-\\-\\s*#?region\\b",
+            "end": "^\\s*\\-\\-\\s*#?endregion\\b"
+        }
     }
 }
