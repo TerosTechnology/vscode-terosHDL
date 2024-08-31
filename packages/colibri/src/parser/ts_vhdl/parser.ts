@@ -515,10 +515,10 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                         while (cursor.gotoNextSibling() === true && break_p === false);
                     }
                     else if (cursor.nodeType === 'comment') {
-                        description += this.get_comment(cursor.nodeText);
+                        description += this.get_comment(cursor.nodeText, false);
                     }
                     else {
-                        description = '';
+                        // description = '';
                     }
                 }
                 while (cursor.gotoNextSibling() === true && break_p === false);
@@ -534,10 +534,10 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
                 while (cursor.gotoNextSibling() === true && break_p === false);
             }
             else if (cursor.nodeType === 'comment') {
-                description += this.get_comment(cursor.nodeText);
+                description += this.get_comment(cursor.nodeText, false);
             }
             else {
-                description = '';
+                // description = '';
             }
         }
         while (cursor.gotoNextSibling() === true && break_p === false);
