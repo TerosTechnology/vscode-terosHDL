@@ -54,11 +54,11 @@ export const hdl_element_instance =
 export const hdl_element_component = "";
 
 export const hdl_element_signal =
-`{% for element in port -%}
-{% if element['type'] == "" -%}
-{{ indent[1] }}reg {{element['info']['name']}};
+`{% for port_inst in port -%}
+{% if port_inst['type'] == "" -%}
+{{ indent[1] }}reg {{port_inst['info']['name']}};
 {% else -%}
-{{ indent[1] }}reg {{element['type']}} {{element['info']['name']}};
+{{ indent[1] }}{% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] | replaceWire }}{% else %}reg {% endif %} {{port_inst['info']['name']}};
 {% endif -%}
 {% endfor -%}`;
 
@@ -73,9 +73,9 @@ module {{ name }}_tb;
 {{ indent[1] }}//Ports
 {% for port_inst in port -%}
 {% if port_inst['direction'] == "input" -%}
-{{ indent[1] }}reg {% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% endif %} {{port_inst['info']['name']}};
+{{ indent[1] }}{% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] | replaceWire }}{% else %}reg {% endif %} {{port_inst['info']['name']}};
 {% else -%}
-{{ indent[1] }}wire {% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% endif %} {{port_inst['info']['name']}};
+{{ indent[1] }}{% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% else %}wire {% endif %} {{port_inst['info']['name']}};
 {% endif -%}
 {% endfor %}
 {{ indent[1] }}{{ instance }}
@@ -96,9 +96,9 @@ module {{ name }}_tb;
 {{ indent[1] }}//Ports
 {% for port_inst in port -%}
 {% if port_inst['direction'] == "input" -%}
-{{ indent[1] }}reg {% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% endif %} {{port_inst['info']['name']}};
+{{ indent[1] }}{% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] | replaceWire }}{% else %}reg {% endif %} {{port_inst['info']['name']}};
 {% else -%}
-{{ indent[1] }}wire {% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% endif %} {{port_inst['info']['name']}};
+{{ indent[1] }}{% if port_inst['type'] != 'wire' and port_inst['type'] != 'reg' %}{{ port_inst['type'] }}{% else %}wire {% endif %} {{port_inst['info']['name']}};
 {% endif -%}
 {% endfor %}
 {{ indent[1] }}{{ instance }}

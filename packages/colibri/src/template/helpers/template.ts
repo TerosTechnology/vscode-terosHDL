@@ -118,6 +118,15 @@ export function get_template(language: LANGUAGE, template_name: string, template
 
     }
 
-    const result = nunjucks.renderString(template_str, options);
+    const env = new nunjucks.Environment();
+    env.addFilter('replaceWire', function(str) {
+        const strTrim = str.trim();
+
+        const regex = /^wire\s+/;
+        const new_str = strTrim.replace(regex, "reg ");
+        return new_str;
+    });
+
+    const result = env.renderString(template_str, options);
     return result;
 }
