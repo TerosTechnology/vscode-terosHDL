@@ -109,7 +109,7 @@ function check_html(hdl_type: string, hdl_lang: LANGUAGE) {
         const expected_result_fix = normalize_breakline_windows(expected_content);    
         expect(expected_result_fix).toBe(output_content);
     }
-    expect(expected_content).toBe(output_content);
+    expect(output_content).toBe(expected_content);
 
 }
 
@@ -128,7 +128,7 @@ function check_md(hdl_type: string, hdl_lang: LANGUAGE) {
     expected_content = expected_content.replace(/wavedrom_[a-zA-Z0-9]+.svg/g, "wavedrom_XYZ.svg");
     output_content = output_content.replace(/wavedrom_[a-zA-Z0-9]+.svg/g, "wavedrom_XYZ.svg");
     //const expected_result_fix = normalize_breakline_windows(expected_content);
-    expect(expected_content).toBe(output_content);
+    expect(output_content).toBe(expected_content);
 }
 
 function get_input(hdl_type: string, hdl_lang: LANGUAGE) {

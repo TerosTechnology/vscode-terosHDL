@@ -20,7 +20,7 @@
 import * as paht_lib from "path";
 
 import { e_source_type, t_file } from '../../src/project_manager/common';
-import { Project_manager } from '../../src/project_manager/project_manager';
+import { Project_manager, DEFAULT_LIBRARY } from '../../src/project_manager/project_manager';
 import { LANGUAGE, VERILOG_LANG_VERSION, VHDL_LANG_VERSION } from "../../src/common/general";
 import { get_default_config } from '../../src/config/config_declaration';
 import { GlobalConfigManager } from "../../src/config/config_manager";
@@ -354,7 +354,7 @@ describe('project_manager', () => {
         }
 
         it("should successfully handled a project without sources", () => {
-            const expected = toml_header + "work.files=[]";
+            const expected = toml_header + `${DEFAULT_LIBRARY}.files=[]`;
             expect(remove_spaces(project_manager.get_toml())).toBe(expected);
         });
 
@@ -368,7 +368,7 @@ describe('project_manager', () => {
                 file_type: LANGUAGE.VERILOG,
                 file_version: VERILOG_LANG_VERSION.v2000,
             });
-            const expected = toml_header + "work.files=[]";
+            const expected = toml_header + `${DEFAULT_LIBRARY}.files=[]`;
             expect(remove_spaces(project_manager.get_toml())).toBe(expected);
         });
 
@@ -384,7 +384,7 @@ describe('project_manager', () => {
             });
 
             expect(remove_spaces(project_manager.get_toml())).toEqual(remove_spaces(`${toml_header}
-            work.files = [
+            ${DEFAULT_LIBRARY}.files = [
               'file',
             ]
             `));
@@ -451,7 +451,7 @@ describe('project_manager', () => {
             lib1.files = [
               'file',
             ]
-            work.files = [
+            ${DEFAULT_LIBRARY}.files = [
                 'file',
             ]
             `));

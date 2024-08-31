@@ -107,7 +107,7 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
 
     //////////////////////////////////////////////////////////////////////////////
     get_body_elements_and_declarations(hdl_element: Hdl_element, arch_body: any, lines: any,
-        general_comments: any, enable_package: boolean): void {
+        general_comments: any, _enable_package: boolean): void {
 
         let last_element_position = -1;
         //Elements array
@@ -149,14 +149,17 @@ export class Verilog_parser extends Ts_base_parser implements Parser_base {
 
                                 signals_array = signals_array.concat(new_signals);
 
-                                if (new_signals.length === 0 && enable_package === true
-                                    || enable_package === undefined) {
-                                    let new_types: common_hdl.Type_hdl[] =
-                                        elements_hdl.get_types_pkg(cursor.currentNode(), lines);
+                                if (new_signals.length === 0) {
+                                    try {
+                                        let new_types: common_hdl.Type_hdl[] =
+                                            elements_hdl.get_types_pkg(cursor.currentNode(), lines);
 
-                                    new_types = utils.set_description_to_array(new_types,
-                                        comments, general_comments, this.comment_symbol);
-                                    types_array = types_array.concat(new_types);
+                                        new_types = utils.set_description_to_array(new_types,
+                                            comments, general_comments, this.comment_symbol);
+                                        types_array = types_array.concat(new_types);
+                                    } catch (error) {
+                                        console.log(error);
+                                    }
                                 }
                                 comments = '';
                             } else if (cursor.nodeType === 'function_identifier' ||

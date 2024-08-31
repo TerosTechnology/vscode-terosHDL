@@ -138,6 +138,9 @@ export class Creator extends Section_creator_interface {
         if (output_type === common_documenter.doc_output_type.HTML) {
             wavedrom_description_norm = utils.normalize_description(wavedrom_description_norm);
         }
+        else {
+            wavedrom_description_norm = utils.normalize_description_markdown(wavedrom_description_norm);
+        }
         return wavedrom_description_norm;
     }
 
