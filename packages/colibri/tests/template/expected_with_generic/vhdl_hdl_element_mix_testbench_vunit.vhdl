@@ -29,9 +29,9 @@ module test_entity_name_tb;
   localparam  kg = 0;
 
   //Ports
-  reg  g;
-  wire  h;
-  wire  i;
+  reg g;
+  wire h;
+  wire i;
 
   test_entity_name # (
     .b(b),

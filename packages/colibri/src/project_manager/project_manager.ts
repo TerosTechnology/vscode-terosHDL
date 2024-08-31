@@ -61,6 +61,8 @@ import { ProjectEmitter, e_event } from "./projectEmitter";
 import { LANGUAGE } from "../common/general";
 import { basename } from "path";
 
+export const DEFAULT_LIBRARY = "teroshdlDefault";
+
 export class Project_manager extends ConfigManager {
     /**  Name of the project */
     private name: string;
@@ -582,13 +584,13 @@ export class Project_manager extends ConfigManager {
                 files_in_library += `  '${file_in_library}',\n`;
             }
             if (library.name === undefined || library.name === '') {
-                library.name = 'default';
+                library.name = DEFAULT_LIBRARY;
             }
             toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
         }
 
         if (libraries.length === 0) {
-            toml += "teroshdlDefault.files = []\n\n";
+            toml += `${DEFAULT_LIBRARY}.files = []\n\n`;
         }
 
         return toml;

@@ -5,10 +5,10 @@ module test_entity_name_tb;
 
   //Ports
   reg [3:0] a;
-  reg  b;
+  reg b;
   wire [3:0] c;
-  wire  d;
-  wire  e;
+  wire d;
+  wire e;
 
   test_entity_name  test_entity_name_inst (
     .a(a),

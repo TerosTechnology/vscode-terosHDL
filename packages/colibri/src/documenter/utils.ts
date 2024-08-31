@@ -32,6 +32,23 @@ export function normalize_description(description: string): string {
     return desc_inst;
 }
 
+export function normalize_description_markdown(description: string): string {
+    if(!description){
+        return "";
+    }
+    const sections = description.split(/(```[\s\S]*?```)/);
+  
+    for (let i = 0; i < sections.length; i++) {
+      if (!sections[i].startsWith('```')) {
+        sections[i] = sections[i].replace(/\n\n/g, 'teroshdl_new_line_tag');
+        sections[i] = sections[i].replace(/\n/g, ' ');
+        sections[i] = sections[i].replace(/teroshdl_new_line_tag/g, '\n\n');
+      }
+    }
+  
+    return sections.join('\n');
+}
+
 export function get_table_with_title(items: any, title: string, header: string[], keys: string[],
     translator: translator_lib.Translator,
     output_type: common_documenter.doc_output_type) {

@@ -4,8 +4,7 @@
 
 ## Description
 
-Package comments
-
+Package comments 
 ## Signals
 
 | Name | Type                         | Description          |

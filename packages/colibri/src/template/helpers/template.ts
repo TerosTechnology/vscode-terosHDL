@@ -26,8 +26,6 @@ import * as nunjucks from 'nunjucks';
 export function get_template(language: LANGUAGE, template_name: string, template_options: any,
     header: string, clock_style: string) {
 
-    nunjucks.configure({ autoescape: false });
-
     // Special charactrs
     template_options["special_char_0"] = ">";
     template_options["special_char_1"] = " ";
@@ -118,13 +116,36 @@ export function get_template(language: LANGUAGE, template_name: string, template
 
     }
 
-    const env = new nunjucks.Environment();
+    const env = new nunjucks.Environment(null, {
+        autoescape: false
+    });
+
     env.addFilter('replaceWire', function(str) {
         const strTrim = str.trim();
 
         const regex = /^wire\s+/;
         const new_str = strTrim.replace(regex, "reg ");
         return new_str;
+    });
+
+    env.addFilter('addReg', function(str) {
+        const strTrim = str.trim();
+
+        const regex = /^reg\s+/;
+        if (!strTrim.match(regex)) {
+            return "reg " + strTrim;
+        }
+        return strTrim;
+    });
+
+    env.addFilter('addWire', function(str) {
+        const strTrim = str.trim();
+
+        const regex = /^wire\s+/;
+        if (!strTrim.match(regex)) {
+            return "wire " + strTrim;
+        }
+        return strTrim;
     });
 
     const result = env.renderString(template_str, options);

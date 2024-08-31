@@ -327,7 +327,6 @@ export const WEB_CONFIG = `
                             <li><a id="btn-tools-yosys" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Yosys</a></li>
                             <li><a id="btn-tools-openfpga" href="#" class="link-dark d-inline-flex text-decoration-none rounded">OpenFPGA</a></li>
                             <li><a id="btn-tools-activehdl" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Active-HDL</a></li>
-                            <li><a id="btn-tools-nvc" href="#" class="link-dark d-inline-flex text-decoration-none rounded">NVC</a></li>
                             <li><a id="btn-tools-questa" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Questa Advanced Simulator</a></li>
                             <li><a id="btn-tools-raptor" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Raptor Design Suite</a></li>
                         </ul>
@@ -3581,34 +3580,6 @@ export const WEB_CONFIG = `
         <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
       </div>
   </div>
-    <div class="card h-100" id="tools-nvc">
-      <div class="card-header">
-        <h1 class="card-title">Tools: NVC</h1>
-        <h6 class="card-subtitle mb-2 text-muted">NVC is a VHDL compiler and simulator. NVC supports almost all of VHDL-2002 and it has been successfully used to simulate several real-world designs.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-nvc-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-nvc-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-nvc-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
     <div class="card h-100" id="tools-questa">
       <div class="card-header">
         <h1 class="card-title">Tools: Questa Advanced Simulator</h1>
@@ -4365,13 +4336,6 @@ export const WEB_CONFIG = `
     document.getElementById("tools-activehdl").classList.remove('d-none');
     document.getElementById("tools-activehdl").classList.add('d-none');
   }
-  if ("tools" == tp0 && "nvc" == tp1){
-    document.getElementById("tools-nvc").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-nvc").classList.remove('d-none');
-    document.getElementById("tools-nvc").classList.add('d-none');
-  }
   if ("tools" == tp0 && "questa" == tp1){
     document.getElementById("tools-questa").classList.remove('d-none');
   }
@@ -4580,10 +4544,6 @@ export const WEB_CONFIG = `
 
   document.getElementById("btn-tools-activehdl").addEventListener("click", function() {
     enable_tab("tools","activehdl")
-  });
-
-  document.getElementById("btn-tools-nvc").addEventListener("click", function() {
-    enable_tab("tools","nvc")
   });
 
   document.getElementById("btn-tools-questa").addEventListener("click", function() {
@@ -5226,9 +5186,6 @@ export const WEB_CONFIG = `
     config["tools"]["activehdl"] = {}
     element_value = document.getElementById("tools-activehdl-installation_path").value;
     config["tools"]["activehdl"]["installation_path"] = element_value
-    config["tools"]["nvc"] = {}
-    element_value = document.getElementById("tools-nvc-installation_path").value;
-    config["tools"]["nvc"]["installation_path"] = element_value
     config["tools"]["questa"] = {}
     element_value = document.getElementById("tools-questa-installation_path").value;
     config["tools"]["questa"]["installation_path"] = element_value
@@ -5495,7 +5452,6 @@ export const WEB_CONFIG = `
     document.getElementById("tools-openfpga-arch").value = config["tools"]["openfpga"]["arch"];
     element_value = document.getElementById("tools-openfpga-task_options").value = String(config["tools"]["openfpga"]["task_options"]);
     document.getElementById("tools-activehdl-installation_path").value = config["tools"]["activehdl"]["installation_path"];
-    document.getElementById("tools-nvc-installation_path").value = config["tools"]["nvc"]["installation_path"];
     document.getElementById("tools-questa-installation_path").value = config["tools"]["questa"]["installation_path"];
     document.getElementById("tools-raptor-installation_path").value = config["tools"]["raptor"]["installation_path"];
     document.getElementById("tools-raptor-target_device").value = config["tools"]["raptor"]["target_device"];
@@ -6524,11 +6480,6 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-activehdl-installation_path").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["nvc"]["installation_path"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-nvc-installation_path").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["questa"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;

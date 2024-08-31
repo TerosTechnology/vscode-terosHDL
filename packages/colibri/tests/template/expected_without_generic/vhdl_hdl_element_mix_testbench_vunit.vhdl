@@ -19,9 +19,9 @@ module test_entity_name_tb;
   // Parameters
 
   //Ports
-  reg  g;
-  wire  h;
-  wire  i;
+  reg g;
+  wire h;
+  wire i;
 
   test_entity_name  test_entity_name_inst (
     .g(g),
