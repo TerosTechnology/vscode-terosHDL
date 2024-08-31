@@ -582,13 +582,13 @@ export class Project_manager extends ConfigManager {
                 files_in_library += `  '${file_in_library}',\n`;
             }
             if (library.name === undefined || library.name === '') {
-                library.name = 'work';
+                library.name = 'default';
             }
             toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
         }
 
         if (libraries.length === 0) {
-            toml += "work.files = []\n\n";
+            toml += "teroshdlDefault.files = []\n\n";
         }
 
         return toml;
@@ -600,7 +600,7 @@ export class Project_manager extends ConfigManager {
     }
 
     public save_toml(output_path: string) {
-        const toml_text = this.get_toml(output_path);
+        const toml_text = this.get_toml();
         file_utils.save_file_sync(output_path, toml_text);
     }
 
