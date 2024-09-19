@@ -222,11 +222,11 @@ export async function runYosysStandalone(config: e_config, topTevel: string, sou
 
 function getYosysReadFileCommandVhdl(filePath: string, logicalName: string): string {
     const libraryCommand = logicalName !== "" ? `--work=${logicalName}` : "--work=work";
-    return `${libraryCommand} ${filePath}`;
+    return `${libraryCommand} "${filePath}"`;
 }
 
 function getYosysReadFileCommandVerilog(filePath: string): string {
-    return `read_verilog -sv ${filePath}`;
+    return `read_verilog -sv "${filePath}"`;
 }
 
 function getToplevelCommand(topTevel: string): string {

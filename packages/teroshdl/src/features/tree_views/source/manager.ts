@@ -85,7 +85,7 @@ export class Source_manager extends BaseView {
     }
 
     async search() {
-        vscode.commands.executeCommand(element.ProjectProvider.getViewID() + ".focus")
+        await vscode.commands.executeCommand(element.ProjectProvider.getViewID() + ".focus")
         await vscode.commands.executeCommand('list.find');
     }
 
