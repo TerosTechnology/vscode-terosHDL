@@ -7,7 +7,7 @@
   "configurations": [
     {
       "name": "Python: current file",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
@@ -18,9 +18,9 @@
       "type": "node",
       "request": "launch",
       "name": "Jest Current File",
-      "program": "${workspaceFolder}/packages/colibri/node_modules/jest/bin/jest",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
       "args": ["${fileBasenameNoExtension}"],
-      "cwd": "${workspaceFolder}/packages/colibri",
+      "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "sourceMaps": true,
@@ -29,21 +29,17 @@
       },
       "runtimeArgs": ["--experimental-vm-modules", "--inspect-brk=0"],
       "windows": {
-        "program": "${workspaceFolder}/packages/colibri/node_modules/jest/bin/jest"
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
       },
     },
     {
       "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}/packages/teroshdl"
+        "--extensionDevelopmentPath=${workspaceFolder}"
       ],
-      "name": "Run Extension",
+      "name": "Run TerosHDL",
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/packages/teroshdl/out/**/*.js",
-        "${workspaceFolder}/packages/colibri/out/*.js",
-        "${workspaceFolder}/packages/colibri/out/**/*.js",
-        "${workspaceFolder}/packages/colibri/out/**/**/*.js",
-        "${workspaceFolder}/packages/colibri/out/**/**/*/*.js"
+        "${workspaceFolder}/out/**/*.js",
       ],
       "preLaunchTask": "teros watch",
       "request": "launch",
