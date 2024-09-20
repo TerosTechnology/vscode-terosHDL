@@ -4,19 +4,19 @@
 [![vscode-TerosHDL documentation](https://img.shields.io/website.svg?label=vscode-TerosHDL%20Documentation&longCache=true&style=flat-square&url=http%3A%2F%2FTerosTechnology.github.io%2FterosHDLdoc%2Findex.html)](https://TerosTechnology.github.io/terosHDLdoc)
 
 
-![TerosHDL](./packages/teroshdl/resources/images/low_res_banner.png)
+![TerosHDL](https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/resources/images/low_res_banner.png?raw=true)
 
 **Check the full documentation:** [https://terostechnology.github.io](https://terostechnology.github.io/)
 
 
-The goal of TerosHDL is to provide an open source IDE for HDL developers with functionalities commonly used by software developers. The IDE consist in a bunch of tools and on top of them is the VSCode plugin. Some tools are developed by Teros Technology organization and others come from open source projects. All the tools are organized in different backends and exposed to the GUI with the plugin.
+The goal of TerosHDL is to provide an open source toolbox for HDL devlopers with functionalities commonly used by software developers. The toolbox consist in a bunch of tools and on top of them is the VSCode plugin. Some tools are developed by Teros Technology organization and others come from open source proyects. All the tools are organized in different backends and exposed to the GUI with the plugin.
 
-The IDE tries to be as much self-contained as possible and simplify the installation process. Features:
+The toolbox tries to be as much self-contained as possible and simplify the installation process. Features:
 
 - Simulators and tools support: [Raptor](https://rapidsilicon.com/raptor/), Vivado, ModelSim, GHDL, Verilator, Icarus, VCS, Yosys, VUnit, cocotb, Diamond, Icestorm, ISE, Quartus, Radiant, Spyglass, Symbiflow, Trellis, Xcelium... and more!
 - Go to definition.
 - Hover.
-- Hierarchy viewer.
+- Hiterachy viewer.
 - Dependencies viewer.
 - Syntax highlighting.
 - Template generator.
@@ -29,7 +29,7 @@ The IDE tries to be as much self-contained as possible and simplify the installa
 - State machine designer.
 - Code snippets and grammar.
 
-![TerosHDL](./packages/teroshdl/resources/images/gui.gif)
+![TerosHDL](https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/resources/images/gui.gif?raw=true)
 
 ## Managed by
 
@@ -44,4 +44,3 @@ Content and Technology under grant agreement No 957073.
 
 
 <img border=0 src="https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/resources/images/nlnet-fundation-150x150.png?raw=true" width="150" height="150"><img border=0 src="https://github.com/TerosTechnology/vscode-terosHDL/blob/dev/packages/teroshdl/resources/images/logo.png?raw=true" width="400" height="120">
-

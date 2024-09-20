@@ -6,8 +6,8 @@ on:
       - dev
 
 jobs:
-  colibri-lint:
-    name: Colibri Linter
+  lint:
+    name: Linter
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
@@ -15,25 +15,11 @@ jobs:
 
       - name: Lint
         run: |
-          cd packages/colibri
           npm install
           npm run lint
 
-  teros-lint:
-    name: TerosHDL Linter
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Lint
-        run: |
-          cd packages/teroshdl
-          npm install
-          npm run lint
-        
-  colibri-tests:
-    name: Colibri Tests
+  tests:
+    name: Tests
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
@@ -41,7 +27,6 @@ jobs:
 
       - name: Run Tests
         run: |
-          cd packages/colibri
           npm install
           npm test
 
@@ -50,12 +35,12 @@ jobs:
         with:
           name: test-report
           path: |
-            packages/colibri/test-report/test-report.html
+            test-report/test-report.html
       
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: packages/colibri/coverage/cobertura-coverage.xml
+          filename: coverage/cobertura-coverage.xml
           fail_below_min: true
           thresholds: '45 60'
           indicators: true

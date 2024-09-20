@@ -23,7 +23,7 @@ jobs:
       - name: Set version stable
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/dev'
         run: |
-          PACKAGE_VERSION=$(cat packages/teroshdl/package.json \
+          PACKAGE_VERSION=$(cat package.json \
             | grep version \
             | head -1 \
             | awk -F: '{ print $2 }' \
@@ -43,23 +43,15 @@ jobs:
           now=`date +"%Y-%m-%d__%H:%M"`
           echo "version=$now" >> $GITHUB_ENV
 
-      - name: Prepare colibri
-        run: |
-          cd packages/colibri
-          yarn install
-          yarn build
-
       - name: Prepare teroshdl
         run: |
-          cd packages/teroshdl
-          yarn install
+          npm install
 
       - name: Build
         id: build
         run: |
           npm install -g @vscode/vsce
-          cd packages/teroshdl
-          yarn package
+          npm run-script package
 
           file=`ls *.vsix`
           echo ${{ env.version }}
@@ -74,8 +66,7 @@ jobs:
         id: build-pre-release
         run: |
           npm install -g @vscode/vsce
-          cd packages/teroshdl
-          yarn package-prerelease
+          npm run-script package-prerelease
               
           file=`ls *pre-release.vsix`
           echo ${{ env.version }}

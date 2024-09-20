@@ -1,0 +1,30 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./src",
+		"paths": {
+			"colibri/*": ["colibri/*"]
+		},
+		"noImplicitAny": false,
+		"module": "commonjs",
+		"target": "ES2019",
+		"outDir": "out",
+		"lib": [
+			"ES2019"
+		],
+		"sourceMap": true,
+		"rootDir": "./src",
+		"strict": false ,
+		"allowJs": true,
+	},
+	"skipLibCheck": true,
+	"include": [
+		"src/**/*" // Esto incluye todos los archivos TypeScript dentro de la carpeta src
+	  ],
+	"exclude": [
+		"node_modules",
+		".vscode-test",
+		"resources/webviews/reporters/**/*",
+		"resources/webviews/fileConfiguration/**/*",
+		"resources/**/*" // Excluye todos los archivos bajo el directorio resources
+	]
+}
