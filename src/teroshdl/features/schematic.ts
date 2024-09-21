@@ -30,6 +30,7 @@ import { get_default_version_for_filepath, get_language_from_filepath } from 'co
 import { e_source_type, t_file } from 'colibri/project_manager/common';
 import { get_toplevel_from_path } from 'colibri/utils/hdl_utils';
 import { e_schematic_result, getSchematic } from 'colibri/yosys/yosys';
+import { e_schematic_general_backend } from 'colibri/config/config_declaration';
 
 const activation_command = 'teroshdl.netlist.viewer';
 const id = "netlist";
@@ -295,6 +296,10 @@ export class Schematic_manager extends Base_webview {
                     resolve(netlist);
                 }
             };
+            if (config.schematic.general.backend === e_schematic_general_backend.standalone) {
+                vscode.window.showInformationMessage("Standalone backend is not supported in this version.");
+                return;
+            }
 
             // Run Yosys
             const exec_i = await getSchematic(config, topLevel, sources, handleStream);
