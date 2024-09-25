@@ -24,7 +24,7 @@ import { Multi_project_manager } from 'colibri/project_manager/multi_project_man
 import { check_if_path_exist, find_files_by_extensions_dir_and_subdir, get_default_version_for_filepath, get_language_from_filepath } from "colibri/utils/file_utils";
 import { Project_manager } from "colibri/project_manager/project_manager";
 import { e_source_type, t_file } from "colibri/project_manager/common";
-import { LANGUAGE } from "colibri/common/general";
+import { getExtensionsForLanguage, LANGUAGE } from "colibri/common/general";
 import { ProjectEmitter } from "colibri/project_manager/projectEmitter";
 import { getFamilyAndParts } from "colibri/project_manager/tool/quartus/utils";
 import { GlobalConfigManager } from "colibri/config/config_manager";
@@ -128,13 +128,14 @@ export async function add_sources_from_directory_and_subdirectories(prj: Project
 
 
         let hdl_extension_list: string[] = [];
-        hdl_extension_list = hdl_extension_list.concat(LANGUAGE.SYSTEMVERILOG);
-        hdl_extension_list = hdl_extension_list.concat(LANGUAGE.VERILOG);
-        hdl_extension_list = hdl_extension_list.concat(LANGUAGE.VHDL);
+        hdl_extension_list = hdl_extension_list.concat(getExtensionsForLanguage(LANGUAGE.SYSTEMVERILOG));
+        hdl_extension_list = hdl_extension_list.concat(getExtensionsForLanguage(LANGUAGE.VERILOG));
+        hdl_extension_list = hdl_extension_list.concat(getExtensionsForLanguage(LANGUAGE.VHDL));
+        const formatted_extensions = hdl_extension_list.map(ext => "." + ext);
 
         let file_list: string[] = [];
         if (allow_subdirectories) {
-            file_list = find_files_by_extensions_dir_and_subdir(directory_inst, hdl_extension_list);
+            file_list = find_files_by_extensions_dir_and_subdir(directory_inst, formatted_extensions);
         }
         else {
             file_list = find_files_by_extensions_dir_and_subdir(directory_inst, []);
