@@ -117,7 +117,7 @@ export class Source_manager extends BaseView {
                 // const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py", "Load from Vivado .xpr"];
                 const element_types = [
                     "Browser",
-                    "Load from CSV",
+                    "Load from list of files",
                     "Load from VUnit run.py",
                     "Add all HDL files from a directory and subdirectories",
                     "Add all files from a directory",

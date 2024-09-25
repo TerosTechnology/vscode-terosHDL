@@ -162,3 +162,9 @@ export const LANGUAGE_EXTENSION_LIST: { [key: string]: LANGUAGE } = {
     // QSYS
     "qsys": LANGUAGE.QSYS,
 };
+
+export function getExtensionsForLanguage(language: LANGUAGE): string[] {
+    return Object.entries(LANGUAGE_EXTENSION_LIST)
+        .filter(([_, lang]) => lang === language)
+        .map(([ext, _]) => ext);
+}
