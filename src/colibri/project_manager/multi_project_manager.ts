@@ -257,7 +257,7 @@ export class Multi_project_manager {
     }
 
     private validate_project_name(name: string): void {
-        if (!(name && /^[a-zA-Z0-9_-]{1,128}$/.test(name))) {
+        if (!(name && /^[ a-zA-Z0-9_-]{1,128}$/.test(name)) || !name.trim()) {
             throw new ProjectOperationError("Provided name is invalid or has more than 128 characters");
         }
     }
