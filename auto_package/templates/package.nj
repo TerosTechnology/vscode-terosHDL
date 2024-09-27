@@ -60,7 +60,7 @@
                 },
                 {
                     "id": "teroshdl-view-actions",
-                    "name": "Actions"
+                    "name": "Configuration"
                 }
             ],
             "teroshdl-messages-view": [

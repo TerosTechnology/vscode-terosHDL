@@ -82,7 +82,7 @@ export function runYosysRaw(config: e_config, topTevel: string, sources: t_file[
 
     let cmd =
         // eslint-disable-next-line max-len
-        `${preArguments} ${yosysPath} -p '${cmdFiles}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat'`;
+        `${preArguments} ${yosysPath} -p "${cmdFiles}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
     cmd = removeEmptyCommands(cmd);
     
     const opt_exec = { cwd: get_directory(topTevel) };
@@ -114,6 +114,16 @@ export function runYosysGhdl(config: e_config, topTevel: string, sources: t_file
     callback: (result: e_schematic_result) => void): any {
 
     const yosysPath = getRawYosysPath(config);
+    let isVhdl = false;
+    sources.forEach(source => {
+        if (source.file_type === LANGUAGE.VHDL) {
+            isVhdl = true;
+        }
+    });
+
+    if (!isVhdl) {
+        return runYosysRaw(config, topTevel, sources, callback);
+    }
 
     // Command for files
     let cmdFiles = "";
@@ -139,7 +149,7 @@ export function runYosysGhdl(config: e_config, topTevel: string, sources: t_file
 
     let cmd =
         // eslint-disable-next-line max-len
-        `${preArguments} ${yosysPath} -m ghdl -p 'ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} --work=work -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat'`;
+        `${preArguments} ${yosysPath} -m ghdl -p "ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} --work=work -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
     cmd = removeEmptyCommands(cmd);
 
     const opt_exec = { cwd: process_utils.get_home_directory() };
@@ -230,7 +240,7 @@ export async function runYosysStandalone(config: e_config, topTevel: string, sou
 
 function getYosysReadFileCommandVhdl(filePath: string, logicalName: string): string {
     const libraryCommand = logicalName !== "" ? `--work=${logicalName}` : "--work=work";
-    return `${libraryCommand} ${filePath}`;
+    return `${libraryCommand} "${filePath}"`;
 }
 
 function getYosysReadFileCommandVerilog(filePath: string): string {

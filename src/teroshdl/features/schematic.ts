@@ -26,7 +26,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as nunjucks from 'nunjucks';
 import { globalLogger } from '../logger';
-import { get_default_version_for_filepath, get_language_from_filepath } from 'colibri/utils/file_utils';
+import { check_if_path_exist, get_default_version_for_filepath, get_language_from_filepath } from 'colibri/utils/file_utils';
 import { e_source_type, t_file } from 'colibri/project_manager/common';
 import { get_toplevel_from_path } from 'colibri/utils/hdl_utils';
 import { e_schematic_result, getSchematic } from 'colibri/yosys/yosys';
@@ -144,19 +144,23 @@ export class Schematic_manager extends Base_webview {
     async update(vscode_document: utils.t_vscode_document) {
         this.last_document = vscode_document;
 
-        const schematic: any = await this.generateFromfile(vscode_document.filename);
-
-        if (schematic === undefined || schematic === '') {
-            return;
+        try {
+            const schematic: any = await this.generateFromfile(vscode_document.filename);
+    
+            if (schematic === undefined || schematic === '') {
+                return;
+            }
+    
+            let result = '';
+            if (schematic.empty === false) {
+                result = schematic.result;
+            }
+    
+            await this.panel?.webview.postMessage({ command: "update", result: result });
         }
-
-        let result = '';
-        if (schematic.empty === false) {
-            result = schematic.result;
+        catch (error) {
+            vscode.window.showInformationMessage(error.message);
         }
-
-        await this.panel?.webview.postMessage({ command: "update", result: result });
-
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -243,6 +247,10 @@ export class Schematic_manager extends Base_webview {
     }
 
     async generateFromfile(file_path: string) {
+        if (!check_if_path_exist(file_path)) {
+            throw new Error("Put the cursor on a file to generate the schematic.");
+        }
+
         const language = get_language_from_filepath(file_path);
         const fileVersion = get_default_version_for_filepath(file_path);
         const file: t_file = {
