@@ -24,14 +24,59 @@ import * as common from "./common";
 import * as cfg from "../config/config_declaration";
 import * as logger from "../logger/logger";
 import {Pyodide} from "../process/pyodide";
+import * as python from "../process/python";
+import * as fs from 'fs';
+import { create_temp_file, } from "../process/utils";
+import { remove_file } from "../utils/file_utils";
 
 export class S3sv extends Base_formatter {
     constructor() {
         super();
     }
 
-    public async format_from_code(code: string, opt: cfg.e_formatter_s3sv): Promise<common.f_result> {
-        return await this.format_from_code_with_pyodide(code, opt);
+    public async format_from_code(code: string, opt: cfg.e_formatter_s3sv, python_path: string): Promise<common.f_result> {
+        const tempFile = create_temp_file(code);
+        const result =  await this.format_from_file_with_python(tempFile, opt, python_path);
+        remove_file(tempFile);
+        return result;
+    }
+
+    public async format_from_file_with_python(file: string, opt: cfg.e_formatter_s3sv, python_path: string) {
+        const python_script = path_lib.join(__dirname, 'bin', 's3sv', 'verilog_beautifier.py');
+        //Argument construction from members parameters
+        let args = " ";
+
+        args += `-s ${opt.indentation_size} `;
+        if (opt.use_tabs) {
+            args += "--use-tabs ";
+        }
+        if (!opt.one_bind_per_line) {
+            args += "--no-oneBindPerLine ";
+        }
+
+        if (opt.one_declaration_per_line) {
+            args += "--oneDeclPerLine ";
+        }
+        args += `-i ${file}`;
+
+        const command = `${python_path} ${python_script} ${args}`;
+        const msg = `Formatting with command: ${command} `;
+        logger.Logger.log(msg);
+
+        const result_p = await python.exec_python_script(python_path, python_script, args);
+
+        const result_f: common.f_result = {
+            code_formatted: "",
+            command: result_p.command,
+            successful: result_p.successful,
+            message: ""
+        };
+
+        if (result_p.successful === true) {
+            const code_formatted = fs.readFileSync(file, 'utf8');
+            result_f.code_formatted = code_formatted;
+        }
+        return result_f;
     }
 
     public async format_from_code_with_pyodide(code: string, opt: cfg.e_formatter_s3sv): Promise<common.f_result> {
@@ -64,12 +109,12 @@ export class S3sv extends Base_formatter {
         return formatter_result;
     }
 
-    public async format(file: string, opt: cfg.e_formatter_s3sv) {
+    public async format(file: string, opt: cfg.e_formatter_s3sv, python_path: string) {
         const msg = `Formatting with command s3sv `;
         logger.Logger.log(msg);
 
         const code = read_file_sync(file);
-        const result_f = await this.format_from_code(code, opt);
+        const result_f = await this.format_from_code(code, opt, python_path);
 
         return result_f;
     }

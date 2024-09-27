@@ -55,15 +55,15 @@ export class Formatter {
      * @param  {string} code Code to format
      * @param  {any} opt Formatter options
      */
-    async format_from_code(formatter_name: common.t_formatter_name, code: string, opt: any)
+    async format_from_code(formatter_name: common.t_formatter_name, code: string, opt: any, python_path: string)
         : Promise<common.f_result> {
         const formatter = this.get_formatter(formatter_name);
-        return formatter.format_from_code(code, opt);
+        return formatter.format_from_code(code, opt, python_path);
     }
 
-    async format_from_file(formatter_name: common.t_formatter_name, file_path: string, opt: any)
+    async format_from_file(formatter_name: common.t_formatter_name, file_path: string, opt: any, python_path: string)
         : Promise<common.f_result> {
         const formatter = this.get_formatter(formatter_name);
-        return formatter.format(file_path, opt);
+        return formatter.format(file_path, opt, python_path);
     }
 }

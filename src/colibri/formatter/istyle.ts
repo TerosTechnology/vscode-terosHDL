@@ -37,9 +37,9 @@ export class Istyle extends Base_formatter {
         super();
     }
 
-    public async format_from_code(code: string, opt: cfg.e_formatter_istyle): Promise<common.f_result> {
+    public async format_from_code(code: string, opt: cfg.e_formatter_istyle, python_path: string): Promise<common.f_result> {
         const temp_file = await utils.create_temp_file(code);
-        const formatted_code = await this.format(temp_file, opt);
+        const formatted_code = await this.format(temp_file, opt, python_path);
         file_utils.remove_file(temp_file);
         return formatted_code;
     }
@@ -57,7 +57,7 @@ export class Istyle extends Base_formatter {
         }
     }
 
-    public async format(file: string, opt: cfg.e_formatter_istyle) {
+    public async format(file: string, opt: cfg.e_formatter_istyle, _python_path: string) {
         const binary_name = this.get_binary();
         const path_bin = path_lib.join(__dirname, 'bin', 'svistyle', binary_name);
         const path_bin_norm = file_utils.normalize_path(path_bin);

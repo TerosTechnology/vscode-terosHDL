@@ -50,7 +50,7 @@ describe('s3sv', () => {
         };
 
         const formatter = new S3sv();
-        const result = await formatter.format_from_code(code, config);
+        const result = await formatter.format_from_code(code, config, "");
 
         const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'sample.v');
         save_file_sync(output_path, result.code_formatted);
