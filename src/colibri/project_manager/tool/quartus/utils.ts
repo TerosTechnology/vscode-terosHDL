@@ -75,7 +75,7 @@ function getBinFolder(): string {
  * Get Quartus binary directory.
  * @returns Quartus binary directory.
 **/
-export function getQuartusPath(config: e_config): string {
+export function getQuartusPath(config: e_config, emitterProject?: ProjectEmitter): string {
     // Try with config installation path
     let quartusInstallationPath = config.tools.quartus.installation_path;
     if (quartusInstallationPath !== "") {
@@ -84,10 +84,15 @@ export function getQuartusPath(config: e_config): string {
         }
 
         const quartusBinPath = path_lib.join(quartusInstallationPath, "quartus");
-        if (file_utils.check_if_path_exist(quartusBinPath)) {
+        if (file_utils.check_if_path_exist(quartusBinPath) || file_utils.check_if_path_exist(quartusBinPath + ".exe")) {
             return normalizePath(quartusInstallationPath);
         }
+        
+        if (emitterProject !== undefined) {
+            emitterProject.emitEventLog(`Checking if quartus bin available at ${quartusBinPath}`, e_event.STDOUT_INFO);
+        }
     }
+
 
     // Try with environment variable QUARTUS_ROOTDIR
     const QUARTUS_ROOTDIR = process.env.QUARTUS_ROOTDIR;
@@ -133,7 +138,7 @@ async function executeQuartusTcl(is_sta: boolean, config: e_config, tcl_file: st
     if (is_sta) {
         binaryName = "quartus_sta";
     }
-    const quartus_bin = path_lib.join(getQuartusPath(config), binaryName);
+    const quartus_bin = path_lib.join(getQuartusPath(config, emitterProject), binaryName);
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");
@@ -516,7 +521,7 @@ export function cleanProject(projectName: string, config: e_config, projectPath:
     const tclFile = process_utils.create_temp_file(templateRender);
     const args = `"${projectPath}"`;
 
-    const quartus_bin = path_lib.join(getQuartusPath(config), "quartus_sh");
+    const quartus_bin = path_lib.join(getQuartusPath(config, emitter), "quartus_sh");
 
     // Create temp file for out.csv
     const csv_file = process_utils.create_temp_file("");

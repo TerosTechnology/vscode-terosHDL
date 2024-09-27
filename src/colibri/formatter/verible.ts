@@ -33,9 +33,9 @@ export class Verible extends Base_formatter {
         super();
     }
 
-    async format_from_code(code: string, opt: common.e_formatter_verible_full): Promise<common.f_result> {
+    async format_from_code(code: string, opt: common.e_formatter_verible_full, python_path: string): Promise<common.f_result> {
         const temp_file = await utils.create_temp_file(code);
-        const formatted_code = await this.format(temp_file, opt);
+        const formatted_code = await this.format(temp_file, opt, python_path);
         file_utils.remove_file(temp_file);
         return formatted_code;
     }
@@ -58,7 +58,7 @@ export class Verible extends Base_formatter {
         return '';
     }
 
-    public async format(file: string, opt: common.e_formatter_verible_full) {
+    public async format(file: string, opt: common.e_formatter_verible_full, _python_path: string) {
         const path_bin = await this.get_path(opt.path);
         const command = `${path_bin} --inplace ${opt.format_args} "${file}"`;
 

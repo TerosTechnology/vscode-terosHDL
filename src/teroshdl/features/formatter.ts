@@ -93,7 +93,8 @@ class Formatter {
         const formatter_name = this.get_formatter_name();
         const formater_config = this.get_formatter_config();
         const formatter = new FormatterManager.Formatter();
-        const result = await formatter.format_from_code(formatter_name, code, formater_config);
+        const pypath = utils.getConfig(this.manager).general.general.pypath;
+        const result = await formatter.format_from_code(formatter_name, code, formater_config, pypath);
         if (result.successful === false){
             globalLogger.info("Error format code.");
             globalLogger.debug(result.command);

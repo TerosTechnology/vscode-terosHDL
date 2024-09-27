@@ -58,7 +58,7 @@ describe('standalone_vhdl', () => {
         };
 
         const formatter = new Standalone_vhdl();
-        const result = await formatter.format_from_code(code, config);
+        const result = await formatter.format_from_code(code, config, "");
 
         const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_0.vhd');
         save_file_sync(output_path, result.code_formatted);
@@ -89,7 +89,7 @@ describe('standalone_vhdl', () => {
         };
 
         const formatter = new Standalone_vhdl();
-        const result = await formatter.format_from_code(code, config);
+        const result = await formatter.format_from_code(code, config, "");
 
         const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_0b.vhd');
         save_file_sync(output_path, result.code_formatted);
@@ -120,7 +120,7 @@ describe('standalone_vhdl', () => {
         };
 
         const formatter = new Standalone_vhdl();
-        const result = await formatter.format_from_code(code, config);
+        const result = await formatter.format_from_code(code, config, "");
 
         const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_0c.vhd');
         save_file_sync(output_path, result.code_formatted);
@@ -151,7 +151,7 @@ describe('standalone_vhdl', () => {
         };
 
         const formatter = new Standalone_vhdl();
-        const result = await formatter.format_from_code(code, config);
+        const result = await formatter.format_from_code(code, config, "");
 
         const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_1.vhd');
         save_file_sync(output_path, result.code_formatted);
@@ -182,7 +182,7 @@ describe('standalone_vhdl', () => {
         };
 
         const formatter = new Standalone_vhdl();
-        const result = await formatter.format_from_code(code, config);
+        const result = await formatter.format_from_code(code, config, "");
 
         const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_2.vhdl');
         save_file_sync(output_path, result.code_formatted);
@@ -213,7 +213,7 @@ describe('standalone_vhdl', () => {
         };
 
         const formatter = new Standalone_vhdl();
-        const result = await formatter.format_from_code(code, config);
+        const result = await formatter.format_from_code(code, config, "");
 
         const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_3.vhdl');
         save_file_sync(output_path, result.code_formatted);
@@ -244,7 +244,7 @@ describe('standalone_vhdl', () => {
         };
 
         const formatter = new Standalone_vhdl();
-        const result = await formatter.format_from_code(code, config);
+        const result = await formatter.format_from_code(code, config, "");
 
         const output_path = path_lib.join(C_OUTPUT_BASE_PATH, 'case_4.vhdl');
         save_file_sync(output_path, result.code_formatted);

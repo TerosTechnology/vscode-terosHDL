@@ -34,6 +34,10 @@ export type e_schematic_result = {
     empty: boolean
 };
 
+function removeEmptyCommands(cmd: string): string {
+    return cmd.replace(/; ;/g, ";");
+}
+
 export async function getSchematic(config: e_config, topTevel: string, sources: t_file[],
     callback_stream: (stream_c: e_schematic_result) => void) : Promise<any>{
 
@@ -68,7 +72,7 @@ export function runYosysRaw(config: e_config, topTevel: string, sources: t_file[
     const topLevelCmd = getToplevelCommand(topTevel);
 
     // Command for custom arguments
-    const customArguments = config.schematic.general.args;
+    const customArguments = config.schematic.general.args.trim();
 
     // Command for pre arguments
     const preArguments = config.schematic.general.extra;
@@ -76,10 +80,11 @@ export function runYosysRaw(config: e_config, topTevel: string, sources: t_file[
     const outputPathFilename = config.schematic.general.backend === e_schematic_general_backend.yowasp ?
         process_utils.createTempFileInHome("") : process_utils.create_temp_file("");
 
-    const cmd =
+    let cmd =
         // eslint-disable-next-line max-len
         `${preArguments} ${yosysPath} -p '${cmdFiles}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat'`;
-
+    cmd = removeEmptyCommands(cmd);
+    
     const opt_exec = { cwd: get_directory(topTevel) };
 
     const p = new Process();
@@ -122,19 +127,20 @@ export function runYosysGhdl(config: e_config, topTevel: string, sources: t_file
     const topLevelCmd = getToplevelCommand(topTevel);
 
     // Command for custom arguments
-    const customArguments = config.schematic.general.args;
+    const customArguments = config.schematic.general.args.trim();
 
     // Command for pre arguments
     const preArguments = config.schematic.general.extra;
 
     // GHDL arguments
-    const ghdlArguments = config.schematic.general.args_ghdl;
+    const ghdlArguments = config.schematic.general.args_ghdl.trim();
 
     const outputPathFilename = process_utils.createTempFileInHome("");
 
-    const cmd =
+    let cmd =
         // eslint-disable-next-line max-len
         `${preArguments} ${yosysPath} -m ghdl -p 'ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} --work=work -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat'`;
+    cmd = removeEmptyCommands(cmd);
 
     const opt_exec = { cwd: process_utils.get_home_directory() };
 
@@ -183,11 +189,13 @@ export async function runYosysStandalone(config: e_config, topTevel: string, sou
         const topLevelCmd = getToplevelCommand(topTevel);
 
         // Command for custom arguments
-        const customArguments = config.schematic.general.args;
+        const customArguments = config.schematic.general.args.trim();
 
         const outputFilename = "schematic.json";
 
-        const cmd = `${cmdFiles}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputFilename}; stat`;
+        let cmd = `${cmdFiles}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputFilename}; stat`;
+        cmd = removeEmptyCommands(cmd);
+
         const cmdList = ['-p'].concat([cmd]);
 
         const result = await runYosys(cmdList, fileDeclaration, { decodeASCII: true });
