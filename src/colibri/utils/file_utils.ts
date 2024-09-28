@@ -138,6 +138,10 @@ export function check_if_file(file_path: string): boolean {
     }
 }
 
+export function check_if_directory(file_path: string): boolean {
+    return !check_if_file(file_path);
+}
+
 /**
  * Check if a file path is absolute
  * @param  path Path

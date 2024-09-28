@@ -9,10 +9,17 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "no-console": "warn",
         "@typescript-eslint/semi": "warn",
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
-        "semi": "off"
+        "semi": "warn",
+        "max-len": [
+            "warn",
+            {
+                "code": 120
+            }
+        ]
     }
 }
