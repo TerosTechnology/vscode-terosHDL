@@ -23,6 +23,7 @@ import * as common from "./common";
 export class Ghdl extends Base_linter {
     binary = "ghdl";
     extra_cmd = "-s -fno-color-diagnostics";
+    argumentToCheck = ["--version"];
 
     constructor() {
         super();

@@ -35,10 +35,10 @@ class Linter {
     protected diagnostic_collection = vscode.languages.createDiagnosticCollection();
     private uri_collections: vscode.Uri[] = [];
 
-    private mode: LINTER_MODE;
+    public mode: LINTER_MODE;
     private manager: Multi_project_manager;
-    private lang: LANGUAGE;
-    private linter = new linterManager.Linter();
+    public lang: LANGUAGE;
+    public linter = new linterManager.Linter();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -52,7 +52,7 @@ class Linter {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Configuration
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private get_linter_name() {
+    public get_linter_name() {
         const config = utils.getConfig(this.manager);
         if (this.lang === LANGUAGE.VHDL && this.mode === LINTER_MODE.ERRORS) {
             return config.linter.general.linter_vhdl;
@@ -70,7 +70,7 @@ class Linter {
         }
     }
 
-    private get_options(lang: LANGUAGE): l_options {
+    public get_options(lang: LANGUAGE): l_options {
         let path = "";
         let argument = "";
         const linter_name = this.get_linter_name();
@@ -278,6 +278,10 @@ class Linter {
 export class Linter_manager {
     protected manager: Multi_project_manager;
     private linter_list: Linter[] = [];
+    public vhdlErrorLinter: Linter;
+    public verilogErrorLinter: Linter;
+    public vhdlStyleLinter: Linter;
+    public verilogStyleLinter: Linter;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -293,15 +297,15 @@ export class Linter_manager {
         vscode.workspace.onDidSaveTextDocument((e) => this.lint(e));
         vscode.workspace.onDidCloseTextDocument((e) => this.remove_file_diagnostics(e));
 
-        const linter_vhdl = new Linter(LINTER_MODE.ERRORS, LANGUAGE.VHDL, manager);
-        const linter_verilog = new Linter(LINTER_MODE.ERRORS, LANGUAGE.VERILOG, manager);
-        const linter_style_vhdl = new Linter(LINTER_MODE.STYLE, LANGUAGE.VHDL, manager);
-        const linter_style_verilog = new Linter(LINTER_MODE.STYLE, LANGUAGE.VERILOG, manager);
+        this.vhdlErrorLinter = new Linter(LINTER_MODE.ERRORS, LANGUAGE.VHDL, manager);
+        this.verilogErrorLinter = new Linter(LINTER_MODE.ERRORS, LANGUAGE.VERILOG, manager);
+        this.vhdlStyleLinter = new Linter(LINTER_MODE.STYLE, LANGUAGE.VHDL, manager);
+        this.verilogStyleLinter = new Linter(LINTER_MODE.STYLE, LANGUAGE.VERILOG, manager);
 
-        this.linter_list.push(linter_vhdl);
-        this.linter_list.push(linter_verilog);
-        this.linter_list.push(linter_style_vhdl);
-        this.linter_list.push(linter_style_verilog);
+        this.linter_list.push(this.vhdlErrorLinter);
+        this.linter_list.push(this.verilogErrorLinter);
+        this.linter_list.push(this.vhdlStyleLinter);
+        this.linter_list.push(this.verilogStyleLinter);
 
         this.lint_active_document();
 

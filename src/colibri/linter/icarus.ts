@@ -23,7 +23,7 @@ import * as common from "./common";
 export class Icarus extends Base_linter {
     binary = "iverilog";
     extra_cmd = "-Wall";
-
+    argumentToCheck = ["-v"];
 
     constructor() {
         super();

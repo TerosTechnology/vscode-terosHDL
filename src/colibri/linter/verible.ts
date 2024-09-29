@@ -23,7 +23,8 @@ import * as common from "./common";
 export class Verible extends Base_linter {
     binary = "verible-verilog-lint";
     extra_cmd = "";
-    
+    argumentToCheck = ["--version"];
+
     constructor() {
         super();
     }

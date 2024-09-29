@@ -27,6 +27,7 @@ import { remove_directory } from "../utils/file_utils";
 export class Modelsim extends Base_linter {
     binary = "";
     extra_cmd = "";
+    argumentToCheck = ["-version"];
 
     constructor() {
         super();

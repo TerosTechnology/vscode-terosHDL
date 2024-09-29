@@ -25,10 +25,20 @@ import { check_if_path_exist, normalize_path, get_directory } from "../utils/fil
 import * as path_lib from "path";
 import * as logger from "../logger/logger";
 import { t_file } from "../project_manager/common";
+import { BinaryCheck, checkBinary } from "../toolChecker/utils";
 
 export abstract class Base_linter {
     abstract binary: string;
     abstract extra_cmd: string;
+    abstract argumentToCheck: string[];
+
+    static className(): string {
+        return this.name;
+    }
+
+    public async checkLinterConfiguration(installationPath: string): Promise<BinaryCheck> {
+        return await checkBinary(this.constructor.name, installationPath, this.binary, this.argumentToCheck);
+    }
 
     parse_output(_result: string, _file: string): common.l_error[] {
         const errors: common.l_error[] = [];
@@ -46,16 +56,16 @@ export abstract class Base_linter {
         return errors;
     }
 
-    get_command(file: string, options: common.l_options) {
+    getToolPath(installationPath: string): string {
         let complete_path = '';
-        if (options.path === '') {
+        if (installationPath === '') {
             complete_path = this.binary;
         }
         else {
             // Unix path
-            const unix_path = path_lib.join(options.path, this.binary);
+            const unix_path = path_lib.join(installationPath, this.binary);
             // Windows path
-            const windows_path = path_lib.join(options.path, this.binary + ".exe");
+            const windows_path = path_lib.join(installationPath, this.binary + ".exe");
 
             if (check_if_path_exist(windows_path)) {
                 complete_path = windows_path;
@@ -65,6 +75,11 @@ export abstract class Base_linter {
             }
         }
         const norm_bin = normalize_path(complete_path);
+        return norm_bin;
+    }
+    
+    get_command(file: string, options: common.l_options) {
+        const norm_bin = this.getToolPath(options.path);
         const command = `${norm_bin} ${this.extra_cmd} ${options.argument} "${file}"`;
         return command;
     }

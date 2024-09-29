@@ -186,6 +186,7 @@ export class Dependency_manager {
             });
         } catch (e) {
             console.log(e);
+            return "";
         }
     }
 }

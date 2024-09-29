@@ -29,6 +29,7 @@ import * as path_lib from "path";
 export class Vivado extends Base_linter {
     binary = "";
     extra_cmd = "-nolog";
+    argumentToCheck = ["-version"];
 
     constructor() {
         super();
