@@ -26,6 +26,8 @@ import { Base_webview } from './base_webview';
 import { globalLogger } from '../logger';
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import { t_documenter_options } from 'colibri/config/auxiliar_config';
+import { check_if_hdl_file } from 'colibri/utils/hdl_utils';
+import {get_language_from_filepath, read_file_sync} from 'colibri/utils/file_utils';
 import { Documenter } from 'colibri/documenter/documenter';
 
 export class State_machine_manager extends Base_webview {
@@ -79,12 +81,14 @@ export class State_machine_manager extends Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Webview creator
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async create_webview() {
-        // Get active editor file language. Return if no active editor
-        const document = utils.get_vscode_active_document();
-        if (document === undefined) {
-            return;
-        }
+    async create_webview(documentPath: string) {
+
+        const document: utils.t_vscode_document = {
+            filename: documentPath,
+            is_hdl: check_if_hdl_file(documentPath),
+            lang: get_language_from_filepath(documentPath),
+            code: read_file_sync(documentPath)
+        };
 
         this.panel = vscode.window.createWebviewPanel(
             'state_machine_viewer',

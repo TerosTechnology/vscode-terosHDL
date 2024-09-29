@@ -60,7 +60,7 @@ export class TreeDependencyManager extends BaseView{
     }
 
     open_schematic_viewer(){
-        this.schematic_manager.create_webview(true);
+        this.schematic_manager.create_webview("");
     }
 
     open_dependencies_viewer(){
