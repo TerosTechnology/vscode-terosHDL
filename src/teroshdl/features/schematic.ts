@@ -26,9 +26,9 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as nunjucks from 'nunjucks';
 import { globalLogger } from '../logger';
-import { check_if_path_exist, get_default_version_for_filepath, get_language_from_filepath } from 'colibri/utils/file_utils';
+import { check_if_path_exist, get_default_version_for_filepath, get_language_from_filepath, read_file_sync } from 'colibri/utils/file_utils';
 import { e_source_type, t_file } from 'colibri/project_manager/common';
-import { get_toplevel_from_path } from 'colibri/utils/hdl_utils';
+import { check_if_hdl_file, get_toplevel_from_path } from 'colibri/utils/hdl_utils';
 import { e_schematic_result, getSchematic } from 'colibri/yosys/yosys';
 import { e_schematic_general_backend } from 'colibri/config/config_declaration';
 
@@ -94,7 +94,7 @@ export class Schematic_manager extends Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Webview creator
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async create_webview(mode_project = false) {
+    async create_webview(documentPath: string) {
         // Create panel
         this.panel = vscode.window.createWebviewPanel(
             'netlist_viewer',
@@ -129,11 +129,13 @@ export class Schematic_manager extends Base_webview {
 
         this.panel.webview.html = this.get_webview_content(this.panel.webview);
 
-        if (mode_project === false) {
-            const document = utils.get_vscode_active_document();
-            if (document === undefined) {
-                return;
-            }
+        if (documentPath != "") {
+            const document: utils.t_vscode_document = {
+                filename: documentPath,
+                is_hdl: check_if_hdl_file(documentPath),
+                lang: get_language_from_filepath(documentPath),
+                code: read_file_sync(documentPath)
+            };
             await this.update(document);
         }
         else {

@@ -9,7 +9,7 @@ backend:
   value: "yowasp"
 
 extra:
-  description: "Extra options passed before to run yowasp-yosys. Eg: conda activate base & "
+  description: "Extra options passed before to run yowasp-yosys or yosys. Eg: 'conda activate base & ' or 'C:/OSS-CAD-SUITE/oss-cad-suite/start.bat & '" 
   type: string
   value: ""
 

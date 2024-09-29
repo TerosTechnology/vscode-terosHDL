@@ -28,6 +28,8 @@ import { globalLogger } from '../logger';
 import { Documenter } from 'colibri/documenter/documenter';
 import { doc_output_type } from 'colibri/documenter/common';
 import { t_documenter_options } from 'colibri/config/auxiliar_config';
+import { check_if_hdl_file } from 'colibri/utils/hdl_utils';
+import { get_language_from_filepath, read_file_sync } from 'colibri/utils/file_utils';
 
 export class Documenter_manager extends Base_webview {
 
@@ -69,13 +71,14 @@ export class Documenter_manager extends Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Webview creator
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    async create_webview() {
-        // Get active editor file language. Return if no active editor
-        const document = utils.get_vscode_active_document();
-        if (document === undefined) {
-            return;
-        }
-
+    async create_webview(documentPath: string) {
+        const document: utils.t_vscode_document = {
+            filename: documentPath,
+            is_hdl: check_if_hdl_file(documentPath),
+            lang: get_language_from_filepath(documentPath),
+            code: read_file_sync(documentPath)
+        };
+        
         if (this.panel === undefined) {
             this.panel = vscode.window.createWebviewPanel(
                 'catCoding',

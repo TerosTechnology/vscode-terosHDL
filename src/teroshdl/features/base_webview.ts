@@ -46,8 +46,8 @@ export abstract class Base_webview {
             context.subscriptions.push(
                 vscode.commands.registerCommand(
                     activation_command,
-                    async () => {
-                        await this.create_webview();
+                    async (documentUri: vscode.Uri) => {
+                        await this.create_webview(documentUri.fsPath);
                     }
                 ),
                 vscode.workspace.onDidOpenTextDocument((e) => this.update_open_document(e)),
@@ -59,7 +59,7 @@ export abstract class Base_webview {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Abstract
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    abstract create_webview(): void;
+    abstract create_webview(documentPath: string): void;
     abstract update(vscode_document : utils.t_vscode_document): void;
     abstract get_webview_content(webview: vscode.Webview): string;
 
