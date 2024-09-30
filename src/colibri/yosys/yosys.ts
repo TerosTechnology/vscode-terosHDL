@@ -79,13 +79,15 @@ export function runYosysRaw(config: e_config, topTevel: string, sources: t_file[
 
     const outputPathFilename = config.schematic.general.backend === e_schematic_general_backend.yowasp ?
         process_utils.createTempFileInHome("") : process_utils.create_temp_file("");
+    
+    const outputPathName = file_utils.get_filename(outputPathFilename, true);
 
     let cmd =
         // eslint-disable-next-line max-len
-        `${preArguments} ${yosysPath} -p "${cmdFiles}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
+        `${preArguments} ${yosysPath} -p "${cmdFiles}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathName}; stat"`;
     cmd = removeEmptyCommands(cmd);
     
-    const opt_exec = { cwd: get_directory(topTevel) };
+    const opt_exec = { cwd: get_directory(outputPathFilename) };
 
     const p = new Process();
     const exec_i = p.exec(cmd, opt_exec, (result: p_result) => {
