@@ -22,26 +22,26 @@ import * as path_lib from 'path';
 
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 
-import { LanguageProviderManager } from "./features/language_provider/language_provider";
-import { Template_manager } from "./features/templates";
-import { Documenter_manager } from "./features/documenter";
-import { State_machine_manager } from "./features/state_machine";
-import { Schematic_manager } from "./features/schematic";
-import { Linter_manager } from "./features/linter";
-import { Formatter_manager } from "./features/formatter";
-import { Completions_manager } from "./features/completions/completions";
-import { Number_hover_manager } from "./features/number_hover";
-import { Stutter_mode_manager } from "./features/stutter_mode";
-import { Config_manager } from "./features/config";
-import { Tree_view_manager } from "./features/tree_views/manager";
-import { Comander } from "./features/comander/run";
+import { LanguageProviderManager } from './features/language_provider/language_provider';
+import { Template_manager } from './features/templates';
+import { Documenter_manager } from './features/documenter';
+import { State_machine_manager } from './features/state_machine';
+import { Schematic_manager } from './features/schematic';
+import { Linter_manager } from './features/linter';
+import { Formatter_manager } from './features/formatter';
+import { Completions_manager } from './features/completions/completions';
+import { Number_hover_manager } from './features/number_hover';
+import { Stutter_mode_manager } from './features/stutter_mode';
+import { Config_manager } from './features/config';
+import { Tree_view_manager } from './features/tree_views/manager';
+import { Comander } from './features/comander/run';
 import { Dependency_manager } from './features/dependency';
 import { ConfigurationFileWebview } from './features/views/configurationFile';
-import { debugLogger } from "./logger";
+import { debugLogger } from './logger';
 import { LogView, getLogView } from './features/views/logs';
 import { TimingReportView, getTimingReportView } from './features/views/timing/timing_report';
 import { getPathDetailsView } from './features/views/timing/path_details';
-import {ProjectEmitter} from "colibri/project_manager/projectEmitter"
+import { ProjectEmitter } from 'colibri/project_manager/projectEmitter';
 import { get_home_directory } from 'colibri/process/utils';
 import { GlobalConfigManager } from 'colibri/config/config_manager';
 import { configCheckerManager } from './features/configChecker/manager';
@@ -61,9 +61,7 @@ export class Teroshdl {
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
 
-        this.manager = new Multi_project_manager(
-            this.emitterProject,
-            file_prj_path);
+        this.manager = new Multi_project_manager(this.emitterProject, file_prj_path);
 
         this.logView = getLogView(context);
         this.timingView = getTimingReportView(context, this.manager, getPathDetailsView(context, this.manager));
@@ -76,46 +74,46 @@ export class Teroshdl {
         await this.init_multi_project_manager();
 
         this.init_language_provider();
-        debugLogger.info("activated language provider");
+        debugLogger.info('activated language provider');
 
         this.init_template_manager();
-        debugLogger.info("activated template manager");
+        debugLogger.info('activated template manager');
 
         this.init_documenter();
-        debugLogger.info("activated documenter");
+        debugLogger.info('activated documenter');
 
         this.init_state_machine();
-        debugLogger.info("activated state machine");
+        debugLogger.info('activated state machine');
 
-        const schematic = this.init_schematic();
-        debugLogger.info("activated schematic");
+        const schematicManager = this.init_schematic();
+        debugLogger.info('activated schematic');
 
         const linterManager = this.init_linter();
-        debugLogger.info("activated linter");
+        debugLogger.info('activated linter');
 
-        this.init_formatter();
-        debugLogger.info("activated formatter");
+        const formatterManager = this.init_formatter();
+        debugLogger.info('activated formatter');
 
         this.init_completions();
-        debugLogger.info("activated completions");
+        debugLogger.info('activated completions');
 
         this.init_number_hover();
-        debugLogger.debug("activated hover");
+        debugLogger.debug('activated hover');
 
         this.init_shutter_mode();
-        debugLogger.info("activated shutter mode");
+        debugLogger.info('activated shutter mode');
 
-        const configCheckerManager = this.init_configChecker(linterManager);
+        const configCheckerManager = this.init_configChecker(linterManager, formatterManager, schematicManager);
 
         this.init_config(configCheckerManager);
-        debugLogger.info("activated config viewer");
+        debugLogger.info('activated config viewer');
 
         const dependency = this.init_dependency();
-        this.init_tree_views(schematic, dependency);
-        debugLogger.info("activated views");
+        this.init_tree_views(schematicManager, dependency);
+        debugLogger.info('activated views');
 
         this.init_comander();
-        debugLogger.info("activated comander");
+        debugLogger.info('activated comander');
     }
 
     private async init_multi_project_manager() {
@@ -123,12 +121,16 @@ export class Teroshdl {
             GlobalConfigManager.getInstance().load();
             await this.manager.load(this.emitterProject);
         } catch (error) {
-            debugLogger.warn("There have been errors loading project list from disk.");
+            debugLogger.warn('There have been errors loading project list from disk.');
         }
     }
 
-    private init_configChecker(linterManager: Linter_manager) : configCheckerManager{
-        return new configCheckerManager(this.manager, linterManager);
+    private init_configChecker(
+        linterManager: Linter_manager,
+        formatterManager: Formatter_manager,
+        schematicManager: Schematic_manager
+    ): configCheckerManager {
+        return new configCheckerManager(this.manager, linterManager, formatterManager, schematicManager);
     }
 
     private init_language_provider() {
@@ -161,7 +163,7 @@ export class Teroshdl {
     }
 
     private init_formatter() {
-        new Formatter_manager(this.context, this.manager);
+        return new Formatter_manager(this.context, this.manager);
     }
 
     private init_completions() {
@@ -182,8 +184,15 @@ export class Teroshdl {
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
         new ConfigurationFileWebview(this.context, this.manager);
-        new Tree_view_manager(this.context, this.manager, this.emitterProject, schematic_manager,
-            dependency_manager, this.logView, this.timingView);
+        new Tree_view_manager(
+            this.context,
+            this.manager,
+            this.emitterProject,
+            schematic_manager,
+            dependency_manager,
+            this.logView,
+            this.timingView
+        );
     }
 
     private init_comander() {

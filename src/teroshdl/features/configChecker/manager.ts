@@ -29,32 +29,56 @@ import {
     e_linter_general_linter_verilog,
     e_linter_general_linter_vhdl,
     e_linter_general_lstyle_verilog,
-    e_linter_general_lstyle_vhdl
+    e_linter_general_lstyle_vhdl,
+    e_formatter_general_formatter_vhdl,
+    e_formatter_general_formatter_verilog,
 } from 'colibri/config/config_declaration';
 import { Linter_manager } from '../linter';
 import { LANGUAGE } from 'colibri/common/general';
+import { Formatter_manager} from '../formatter';
+import { Schematic_manager } from '../schematic';
+import { checkBinary } from 'colibri/toolChecker/utils';
+
 export class configCheckerManager {
     private multiProjectManager: Multi_project_manager;
     private linterManager: Linter_manager;
+    private formatterManager: Formatter_manager;
+    private schematicManager: Schematic_manager;
 
-    constructor(manager: Multi_project_manager, linterManager: Linter_manager) {
+    constructor(
+        manager: Multi_project_manager,
+        linterManager: Linter_manager,
+        formatterManager: Formatter_manager,
+        schematicManager: Schematic_manager
+    ) {
         this.multiProjectManager = manager;
         this.linterManager = linterManager;
-        vscode.commands.registerCommand(
-            'teroshdl.check_dependencies',
-            async () => await check_dependencies(manager, linterManager)
-        );
+        this.formatterManager = formatterManager;
+        this.schematicManager = schematicManager;
+
+        vscode.commands.registerCommand('teroshdl.check_dependencies', async () => await this.check_dependencies());
     }
 
     public async check_dependencies() {
-        await check_dependencies(this.multiProjectManager, this.linterManager);
+        await check_dependencies(
+            this.multiProjectManager,
+            this.linterManager,
+            this.formatterManager,
+            this.schematicManager
+        );
     }
 }
 
-async function check_dependencies(multiProjectManager: Multi_project_manager, linterManager: Linter_manager) {
+async function check_dependencies(
+    multiProjectManager: Multi_project_manager,
+    linterManager: Linter_manager,
+    formatterManager: Formatter_manager,
+    schematicManager: Schematic_manager
+) {
     const configCurrent = getConfig(multiProjectManager);
 
     await checkLinter(linterManager);
+    await checkFormatter(formatterManager);
 
     return;
 
@@ -172,17 +196,61 @@ async function checkLinter(linterManager: Linter_manager) {
                 }
             }
             if (result.successfulConfig) {
-                msg += "🎉 The linter installation path is correctly configured.\n";
-            }
-            else if (result.successfulFind) {
-                const msgSystemPath = result.binaryPath === '' ? ' [System Path]' : "";
+                msg += '🎉 The linter installation path is correctly configured.\n';
+            } else if (result.successfulFind) {
+                const msgSystemPath = result.binaryPath === '' ? ' [System Path]' : '';
                 msg += `🔧 The linter installation path is not correctly configured. Make sure that you use the binary folder, not the binary path. TerosHDL found it in: "${result.binaryPath}"${msgSystemPath}\n`;
-            }
-            else {
+            } else {
                 msg += `👎 The linter installation path is not correctly configured. The linter binary was not found in the system path or in the configured path. Check the documentation.\n`;
             }
         }
 
+        msg += '\n\n';
+    }
+
+    globalLogger.info(msg, true);
+}
+
+async function checkFormatter(formatterManager: Formatter_manager) {
+    let msg = '';
+
+    msg += `\n${MSGSEPARATOR}\nChecking Formatter configuration\n${MSGSEPARATOR}\n`;
+
+    const formatterVhdl = formatterManager.formatterVhdl;
+    const formatterVerilog = formatterManager.formatterVerilog;
+
+    const formatterList = [formatterVhdl, formatterVerilog];
+    for (const formatter of formatterList) {
+        const language = formatter.lang;
+        const formatterName = formatter.get_formatter_name();
+        const formatterOptions = formatter.get_formatter_config();
+
+        const includedFormatters = [
+            e_formatter_general_formatter_vhdl.standalone,
+            e_formatter_general_formatter_verilog.istyle,
+        ];
+        const languageMsg = language === LANGUAGE.VHDL ? 'VHDL' : 'Verilog/SV';
+
+        if (includedFormatters.includes(formatterName)) {
+            msg += `⊙ Formatter ${formatterName} for ${languageMsg} is built into TerosHDL. Skipping configuration check.\n\n`;
+            continue;
+        }
+        else if (formatterName === e_formatter_general_formatter_verilog.verible) {
+            const result = await checkBinary('Verible', formatterOptions.path , "verible", ["--version"]);
+            for (const [_, line] of result.messageList.entries()) {
+                if (line !== '') {
+                    msg += `     ${line}\n`;
+                }
+            }
+            if (result.successfulConfig) {
+                msg += '🎉 The formatter installation path is correctly configured.\n';
+            } else if (result.successfulFind) {
+                const msgSystemPath = result.binaryPath === '' ? ' [System Path]' : '';
+                msg += `🔧 The formatter installation path is not correctly configured. Make sure that you use the binary folder, not the binary path. TerosHDL found it in: "${result.binaryPath}"${msgSystemPath}\n`;
+            } else {
+                msg += `👎 The formatter installation path is not correctly configured. The linter binary was not found in the system path or in the configured path. Check the documentation.\n`;
+            }
+        }
         msg += '\n\n';
     }
 

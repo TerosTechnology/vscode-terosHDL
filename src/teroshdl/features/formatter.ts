@@ -31,7 +31,7 @@ let formatter_verilog: Formatter | undefined = undefined;
 class Formatter {
 
     private manager: Multi_project_manager;
-    private lang: LANGUAGE;
+    public lang: LANGUAGE;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -44,7 +44,7 @@ class Formatter {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Configuration
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private get_formatter_name() {
+    public get_formatter_name() {
         const config = utils.getConfig(this.manager);
         if (this.lang === LANGUAGE.VHDL) {
             return config.formatter.general.formatter_vhdl;
@@ -54,7 +54,7 @@ class Formatter {
         }
     }
 
-    private get_formatter_config() {
+    public get_formatter_config() {
         const configCurrent = utils.getConfig(this.manager);
         if (this.lang === LANGUAGE.VHDL) {
             const formatter_name = configCurrent.formatter.general.formatter_vhdl;
@@ -108,6 +108,8 @@ class Formatter {
 
 export class Formatter_manager {
     private manager: Multi_project_manager;
+    public formatterVhdl: Formatter | undefined;
+    public formatterVerilog: Formatter | undefined;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -117,6 +119,9 @@ export class Formatter_manager {
 
         formatter_vhdl = new Formatter(LANGUAGE.VHDL, manager);
         formatter_verilog = new Formatter(LANGUAGE.VERILOG, manager);
+
+        this.formatterVerilog = formatter_verilog;
+        this.formatterVhdl = formatter_vhdl;
 
         const disposable = vscode.languages.registerDocumentFormattingEditProvider(
             [{ scheme: "file", language: "vhdl" }, { scheme: "file", language: "verilog" },
