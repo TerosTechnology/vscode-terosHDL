@@ -219,11 +219,11 @@ export type e_templates_general = {
     
 export type e_tools_general = {
     select_tool : e_tools_general_select_tool,
-    gtkwave_installation_path : string,
-    gtkwave_extra_arguments : string,
+    manual_compilation_order : string,
     execution_mode : e_tools_general_execution_mode,
     waveform_viewer : e_tools_general_waveform_viewer,
-    manual_compilation_order : string,
+    gtkwave_installation_path : string,
+    gtkwave_extra_arguments : string,
 };
     
 export type e_tools_quartus = {
@@ -919,11 +919,11 @@ export function get_default_config(): e_config {
         tools: {
             general: {
                 select_tool : e_tools_general_select_tool.ghdl,
-                gtkwave_installation_path : "",
-                gtkwave_extra_arguments : "",
+                manual_compilation_order : "",
                 execution_mode : e_tools_general_execution_mode.cmd,
                 waveform_viewer : e_tools_general_waveform_viewer.tool,
-                manual_compilation_order : "",
+                gtkwave_installation_path : "",
+                gtkwave_extra_arguments : "",
             },
             quartus: {
                 installation_path : "",
@@ -1799,40 +1799,40 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['tools']['general']['select_tool'] = e_tools_general_select_tool.sandpiper;
     }
             
-    // tools -> general -> gtkwave_installation_path
-    const current_value_73 = json_config['tools']['general']['gtkwave_installation_path'];
+    // tools -> general -> manual_compilation_order
+    const current_value_73 = json_config['tools']['general']['manual_compilation_order'];
     if (typeof current_value_73 === 'string'){
-        default_config['tools']['general']['gtkwave_installation_path'] = current_value_73;
-    }
-            
-    // tools -> general -> gtkwave_extra_arguments
-    const current_value_74 = json_config['tools']['general']['gtkwave_extra_arguments'];
-    if (typeof current_value_74 === 'string'){
-        default_config['tools']['general']['gtkwave_extra_arguments'] = current_value_74;
+        default_config['tools']['general']['manual_compilation_order'] = current_value_73;
     }
             
     // tools -> general -> execution_mode
-    const current_value_75 = json_config['tools']['general']['execution_mode'];
-    if ( current_value_75 === "gui"){
+    const current_value_74 = json_config['tools']['general']['execution_mode'];
+    if ( current_value_74 === "gui"){
         default_config['tools']['general']['execution_mode'] = e_tools_general_execution_mode.gui;
     }
-    if ( current_value_75 === "cmd"){
+    if ( current_value_74 === "cmd"){
         default_config['tools']['general']['execution_mode'] = e_tools_general_execution_mode.cmd;
     }
             
     // tools -> general -> waveform_viewer
-    const current_value_76 = json_config['tools']['general']['waveform_viewer'];
-    if ( current_value_76 === "tool"){
+    const current_value_75 = json_config['tools']['general']['waveform_viewer'];
+    if ( current_value_75 === "tool"){
         default_config['tools']['general']['waveform_viewer'] = e_tools_general_waveform_viewer.tool;
     }
-    if ( current_value_76 === "gtkwave"){
+    if ( current_value_75 === "gtkwave"){
         default_config['tools']['general']['waveform_viewer'] = e_tools_general_waveform_viewer.gtkwave;
     }
             
-    // tools -> general -> manual_compilation_order
-    const current_value_77 = json_config['tools']['general']['manual_compilation_order'];
+    // tools -> general -> gtkwave_installation_path
+    const current_value_76 = json_config['tools']['general']['gtkwave_installation_path'];
+    if (typeof current_value_76 === 'string'){
+        default_config['tools']['general']['gtkwave_installation_path'] = current_value_76;
+    }
+            
+    // tools -> general -> gtkwave_extra_arguments
+    const current_value_77 = json_config['tools']['general']['gtkwave_extra_arguments'];
     if (typeof current_value_77 === 'string'){
-        default_config['tools']['general']['manual_compilation_order'] = current_value_77;
+        default_config['tools']['general']['gtkwave_extra_arguments'] = current_value_77;
     }
             
     // tools -> quartus -> installation_path

@@ -27,13 +27,8 @@ select_tool:
 
   value: "ghdl"
 
-gtkwave_installation_path:
-  description: "GTKWave installation directory."
-  type: string
-  value: ""
-
-gtkwave_extra_arguments:
-  description: "Extra arguments passed to GTKwave. E.g: --script=script.tcl"
+manual_compilation_order:
+  description: "Path to the file with the manual compilation order."
   type: string
   value: ""
 
@@ -54,7 +49,12 @@ waveform_viewer:
     gtkwave: "GTKWave"
   value: "tool"
 
-manual_compilation_order:
-  description: "Path to the file with the manual compilation order."
+gtkwave_installation_path:
+  description: "GTKWave installation directory."
+  type: string
+  value: ""
+
+gtkwave_extra_arguments:
+  description: "Extra arguments passed to GTKwave. E.g: --script=script.tcl"
   type: string
   value: ""

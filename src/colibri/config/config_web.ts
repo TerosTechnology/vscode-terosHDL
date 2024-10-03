@@ -204,45 +204,53 @@ export const WEB_CONFIG = `
             <ul class="list-unstyled ps-0">
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#General" aria-expanded="false">
+                         
+                        data-bs-target="#General" aria-expanded="false"
+                        id="btn-general-general"
+                    >
                         General
                     </button>
                     <div class="collapse" id="General">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-general-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Documentation" aria-expanded="false">
+                         
+                        data-bs-target="#Documentation" aria-expanded="false"
+                        id="btn-documentation-general"
+                    >
                         Documentation
                     </button>
                     <div class="collapse" id="Documentation">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-documentation-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Editor" aria-expanded="false">
+                         
+                        data-bs-target="#Editor" aria-expanded="false"
+                        id="btn-editor-general"
+                    >
                         Editor
                     </button>
                     <div class="collapse" id="Editor">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-editor-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Formatter" aria-expanded="false">
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#Formatter" aria-expanded="false"
+                        id="btn-formatter-general"
+                    >
                         Formatter
                     </button>
                     <div class="collapse" id="Formatter">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-formatter-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
                             <li><a id="btn-formatter-istyle" href="#" class="link-dark d-inline-flex text-decoration-none rounded">iStyle</a></li>
                             <li><a id="btn-formatter-s3sv" href="#" class="link-dark d-inline-flex text-decoration-none rounded">s3sv</a></li>
                             <li><a id="btn-formatter-verible" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verible</a></li>
@@ -253,12 +261,14 @@ export const WEB_CONFIG = `
                 </li>
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Linter-settings" aria-expanded="false">
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#Linter-settings" aria-expanded="false"
+                        id="btn-linter-general"
+                    >
                         Linter settings
                     </button>
                     <div class="collapse" id="Linter-settings">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-linter-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
                             <li><a id="btn-linter-ghdl" href="#" class="link-dark d-inline-flex text-decoration-none rounded">GHDL linter</a></li>
                             <li><a id="btn-linter-icarus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Icarus linter</a></li>
                             <li><a id="btn-linter-modelsim" href="#" class="link-dark d-inline-flex text-decoration-none rounded">ModelSim linter</a></li>
@@ -271,34 +281,40 @@ export const WEB_CONFIG = `
                 </li>
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Schematic-viewer" aria-expanded="false">
+                         
+                        data-bs-target="#Schematic-viewer" aria-expanded="false"
+                        id="btn-schematic-general"
+                    >
                         Schematic viewer
                     </button>
                     <div class="collapse" id="Schematic-viewer">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-schematic-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Templates" aria-expanded="false">
+                         
+                        data-bs-target="#Templates" aria-expanded="false"
+                        id="btn-templates-general"
+                    >
                         Templates
                     </button>
                     <div class="collapse" id="Templates">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-templates-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
                         </ul>
                     </div>
                 </li>
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#Tools" aria-expanded="false">
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#Tools" aria-expanded="false"
+                        id="btn-tools-general"
+                    >
                         Tools
                     </button>
                     <div class="collapse" id="Tools">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-tools-general" href="#" class="link-dark d-inline-flex text-decoration-none rounded">General</a></li>
                             <li><a id="btn-tools-quartus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Intel@ Quartus@ Prime</a></li>
                             <li><a id="btn-tools-osvvm" href="#" class="link-dark d-inline-flex text-decoration-none rounded">OSVVM</a></li>
                             <li><a id="btn-tools-ascenlint" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Ascenlint</a></li>
@@ -1635,22 +1651,11 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <label for="tools-general-gtkwave_installation_path" class="form-label">
-                GTKWave installation directory.
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-gtkwave_installation_path"></span>
+              <label for="tools-general-manual_compilation_order" class="form-label">
+                Path to the file with the manual compilation order.
+                <span class="markConfig badge bg-secondary" id="mark_tools-general-manual_compilation_order"></span>
               </label>
-                <input class="form-control" id="tools-general-gtkwave_installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-general-gtkwave_extra_arguments" class="form-label">
-                Extra arguments passed to GTKwave. E.g: --script=script.tcl
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-gtkwave_extra_arguments"></span>
-              </label>
-                <input class="form-control" id="tools-general-gtkwave_extra_arguments" rows="3"  value=""></input>
+                <input class="form-control" id="tools-general-manual_compilation_order" rows="3"  value=""></input>
             </div>
           
           
@@ -1685,11 +1690,22 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <label for="tools-general-manual_compilation_order" class="form-label">
-                Path to the file with the manual compilation order.
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-manual_compilation_order"></span>
+              <label for="tools-general-gtkwave_installation_path" class="form-label">
+                GTKWave installation directory.
+                <span class="markConfig badge bg-secondary" id="mark_tools-general-gtkwave_installation_path"></span>
               </label>
-                <input class="form-control" id="tools-general-manual_compilation_order" rows="3"  value=""></input>
+                <input class="form-control" id="tools-general-gtkwave_installation_path" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-general-gtkwave_extra_arguments" class="form-label">
+                Extra arguments passed to GTKwave. E.g: --script=script.tcl
+                <span class="markConfig badge bg-secondary" id="mark_tools-general-gtkwave_extra_arguments"></span>
+              </label>
+                <input class="form-control" id="tools-general-gtkwave_extra_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -4801,16 +4817,16 @@ export const WEB_CONFIG = `
     config["tools"]["general"] = {}
     element_value = document.getElementById("tools-general-select_tool").value;
     config["tools"]["general"]["select_tool"] = element_value
-    element_value = document.getElementById("tools-general-gtkwave_installation_path").value;
-    config["tools"]["general"]["gtkwave_installation_path"] = element_value
-    element_value = document.getElementById("tools-general-gtkwave_extra_arguments").value;
-    config["tools"]["general"]["gtkwave_extra_arguments"] = element_value
+    element_value = document.getElementById("tools-general-manual_compilation_order").value;
+    config["tools"]["general"]["manual_compilation_order"] = element_value
     element_value = document.getElementById("tools-general-execution_mode").value;
     config["tools"]["general"]["execution_mode"] = element_value
     element_value = document.getElementById("tools-general-waveform_viewer").value;
     config["tools"]["general"]["waveform_viewer"] = element_value
-    element_value = document.getElementById("tools-general-manual_compilation_order").value;
-    config["tools"]["general"]["manual_compilation_order"] = element_value
+    element_value = document.getElementById("tools-general-gtkwave_installation_path").value;
+    config["tools"]["general"]["gtkwave_installation_path"] = element_value
+    element_value = document.getElementById("tools-general-gtkwave_extra_arguments").value;
+    config["tools"]["general"]["gtkwave_extra_arguments"] = element_value
     config["tools"]["quartus"] = {}
     element_value = document.getElementById("tools-quartus-installation_path").value;
     config["tools"]["quartus"]["installation_path"] = element_value
@@ -5326,11 +5342,11 @@ export const WEB_CONFIG = `
     document.getElementById("templates-general-clock_generation_style").value = config["templates"]["general"]["clock_generation_style"];
     document.getElementById("templates-general-instance_style").value = config["templates"]["general"]["instance_style"];
     document.getElementById("tools-general-select_tool").value = config["tools"]["general"]["select_tool"];
-    document.getElementById("tools-general-gtkwave_installation_path").value = config["tools"]["general"]["gtkwave_installation_path"];
-    document.getElementById("tools-general-gtkwave_extra_arguments").value = config["tools"]["general"]["gtkwave_extra_arguments"];
+    document.getElementById("tools-general-manual_compilation_order").value = config["tools"]["general"]["manual_compilation_order"];
     document.getElementById("tools-general-execution_mode").value = config["tools"]["general"]["execution_mode"];
     document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
-    document.getElementById("tools-general-manual_compilation_order").value = config["tools"]["general"]["manual_compilation_order"];
+    document.getElementById("tools-general-gtkwave_installation_path").value = config["tools"]["general"]["gtkwave_installation_path"];
+    document.getElementById("tools-general-gtkwave_extra_arguments").value = config["tools"]["general"]["gtkwave_extra_arguments"];
     document.getElementById("tools-quartus-installation_path").value = config["tools"]["quartus"]["installation_path"];
     document.getElementById("tools-quartus-family").value = config["tools"]["quartus"]["family"];
     document.getElementById("tools-quartus-device").value = config["tools"]["quartus"]["device"];
@@ -5851,15 +5867,10 @@ export const WEB_CONFIG = `
     }
     document.getElementById("mark_tools-general-select_tool").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["gtkwave_installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"]["general"]["manual_compilation_order"] != undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-general-gtkwave_installation_path").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["gtkwave_extra_arguments"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_tools-general-gtkwave_extra_arguments").innerHTML = mark;
+    document.getElementById("mark_tools-general-manual_compilation_order").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["general"]["execution_mode"] != undefined) {
       mark = MODIFIEDMSG;
@@ -5871,10 +5882,15 @@ export const WEB_CONFIG = `
     }
     document.getElementById("mark_tools-general-waveform_viewer").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["manual_compilation_order"] != undefined) {
+    if (projectName !== undefined && config["tools"]["general"]["gtkwave_installation_path"] != undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-general-manual_compilation_order").innerHTML = mark;
+    document.getElementById("mark_tools-general-gtkwave_installation_path").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["general"]["gtkwave_extra_arguments"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-general-gtkwave_extra_arguments").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["quartus"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;
@@ -6625,6 +6641,8 @@ export const WEB_CONFIG = `
   function open_submenu_icon(x) {
     x.classList.toggle("change");
   }
+
+  
 </script>
 </body>
 </html>

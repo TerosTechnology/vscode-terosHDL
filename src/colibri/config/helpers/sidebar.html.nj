@@ -8,14 +8,18 @@
 {%- for tp0 in type_declaration %}
                 <li class="mb-1">
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#{{type_declaration[tp0]["title"] | replace(" ","-")}}" aria-expanded="false">
+                        {% if type_declaration[tp0]["pages"]|length > 1 %}data-bs-toggle="collapse"{% endif %} 
+                        data-bs-target="#{{type_declaration[tp0]["title"] | replace(" ","-")}}" aria-expanded="false"
+                        id="btn-{{tp0}}-general"
+                    >
                         {{type_declaration[tp0]["title"]}}
                     </button>
                     <div class="collapse" id="{{type_declaration[tp0]["title"] | replace(" ","-")}}">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-
                     {%- for tp1 in type_declaration[tp0]["pages"] %}
+                        {%- if tp1 != "general" %}
                             <li><a id="btn-{{tp0}}-{{tp1}}" href="#" class="link-dark d-inline-flex text-decoration-none rounded">{{type_declaration[tp0]["pages"][tp1]["title"]}}</a></li>
+                        {%- endif %}
                     {%- endfor %}
                         </ul>
                     </div>
