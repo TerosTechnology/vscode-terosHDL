@@ -181,3 +181,21 @@
   function open_submenu_icon(x) {
     x.classList.toggle("change");
   }
+
+  {# const selectorTool = document.getElementById('tools-general-select_tool');
+  selectorTool.addEventListener('change', (event) => {
+    const selectedValue = event.target.value;
+
+
+    const allTools = document.querySelectorAll('[id^="btn-tools-"]');
+
+
+    allTools.forEach(element => {
+        if (element.id === "btn-tools-general" || element.id === `btn-tools-${selectedValue}`) {
+            element.parentNode.style.display = '';
+        } else {
+            element.parentNode.style.display = 'none';
+        }
+    });
+
+  }); #}
