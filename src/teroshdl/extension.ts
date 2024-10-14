@@ -19,23 +19,23 @@
 import 'module-alias/register';
 
 import * as vscode from 'vscode';
-import * as release_notes_webview from "./features/utils/webview/release_notes";
-import { ExtensionManager } from "./features/utils/webview/utils";
+import * as release_notes_webview from './features/utils/webview/release_notes';
+import { ExtensionManager } from './features/utils/webview/utils';
 import { Teroshdl } from './teroshdl';
 import { globalLogger, toolLogger, debugLogger } from './logger';
-import {Logger} from "colibri/logger/logger";
+import { Logger } from 'colibri/logger/logger';
+
+let teroshdl: Teroshdl | undefined = undefined;
 
 export async function activate(context: vscode.ExtensionContext) {
-    console.log("hola")
-
     debugLogger.info('Congratulations, your extension "TerosHDL" is now active!');
 
     const extension_manager = new ExtensionManager();
-    
+
     globalLogger.clear();
     toolLogger.clear();
     debugLogger.clear();
-    
+
     Logger.setLogger(debugLogger);
 
     try {
@@ -46,11 +46,18 @@ export async function activate(context: vscode.ExtensionContext) {
         if (installationType.firstInstall || installationType.update) {
             await releaseNotesView.show();
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
     }
 
-    const teroshdl = new Teroshdl(context);
+    teroshdl = new Teroshdl(context);
     await teroshdl.init_teroshdl();
+}
+
+export async function deactivate() {
+    if (teroshdl === undefined) {
+        return;
+    }
+    await teroshdl.deactivate();
+    debugLogger.info('TerosHDL deactivated');
 }
