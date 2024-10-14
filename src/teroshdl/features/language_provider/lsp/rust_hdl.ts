@@ -24,16 +24,12 @@ import {
 } from 'vscode-languageclient/node';
 import { e_linter_general_linter_vhdl } from 'colibri/config/config_declaration';
 
-
 const isWindows = process.platform === 'win32';
-const languageServerName = isWindows
-    ? 'vhdl_ls-x86_64-pc-windows-msvc'
-    : 'vhdl_ls-x86_64-unknown-linux-musl';
+const languageServerName = isWindows ? 'vhdl_ls-x86_64-pc-windows-msvc' : 'vhdl_ls-x86_64-unknown-linux-musl';
 const languageServerBinaryName = 'vhdl_ls';
 let languageServer: string;
 
 export class Rusthdl_lsp {
-
     private client: LanguageClient | undefined = undefined;
     private context: ExtensionContext;
     private languageServerDisposable;
@@ -50,8 +46,7 @@ export class Rusthdl_lsp {
                 if (this.client != undefined && this.client.isRunning() && this.client.state === State.Running) {
                     try {
                         await this.client.restart();
-                    }
-                    catch (error) {
+                    } catch (error) {
                         this.errorCounter++;
                         this.client.dispose();
                         this.client = undefined;
@@ -65,10 +60,8 @@ export class Rusthdl_lsp {
         );
     }
 
-    async run_rusthdl() : Promise<boolean> {
-        const languageServerDir = this.context.asAbsolutePath(
-            path.join('server', 'vhdl_ls')
-        );
+    async run_rusthdl(): Promise<boolean> {
+        const languageServerDir = this.context.asAbsolutePath(path.join('server', 'vhdl_ls'));
         const current_language_server_version = this.embeddedVersion(languageServerDir);
 
         languageServer = path.join(
@@ -86,16 +79,11 @@ export class Rusthdl_lsp {
         // Options to control the language client
         let clientOptions: LanguageClientOptions = {
             documentSelector: [{ scheme: 'file', language: 'vhdl' }],
-            revealOutputChannelOn: RevealOutputChannelOn.Never,
+            revealOutputChannelOn: RevealOutputChannelOn.Never
         };
 
         // Create the language client
-        this.client = new LanguageClient(
-            'vhdlls',
-            'VHDL LS',
-            serverOptions,
-            clientOptions
-        );
+        this.client = new LanguageClient('vhdlls', 'VHDL LS', serverOptions, clientOptions);
 
         let server_path = this.context.asAbsolutePath(languageServer);
         let is_alive = await this.check_rust_hdl(server_path);
@@ -106,7 +94,7 @@ export class Rusthdl_lsp {
         // Start the client. This will also launch the server
         this.languageServerDisposable = await this.client.start();
         this.context.subscriptions.push(this.languageServerDisposable);
-        
+
         return true;
     }
 
@@ -122,34 +110,29 @@ export class Rusthdl_lsp {
                 }
                 if (stderr === '') {
                     resolve(true);
-                }
-                else {
+                } else {
                     resolve(false);
                 }
             });
         });
     }
 
-    deactivate(): Thenable<void> | undefined {
-        console.log("TerosHDL deactivate!");
+    async deactivate() {
         if (!this.client) {
             return undefined;
         }
-        let promises = [this.client.stop()];
-        return Promise.all(promises).then(() => undefined);
+        const result = await this.client.stop();
     }
 
     embeddedVersion(languageServerDir: string): string {
         try {
-            return fs
-                .readdirSync(languageServerDir)
-                .reduce((version: string, dir: string) => {
-                    if (semver.gt(dir, version)) {
-                        return dir;
-                    } else {
-                        return version;
-                    }
-                }, '0.0.0');
+            return fs.readdirSync(languageServerDir).reduce((version: string, dir: string) => {
+                if (semver.gt(dir, version)) {
+                    return dir;
+                } else {
+                    return version;
+                }
+            }, '0.0.0');
         } catch {
             return '0.0.0';
         }
@@ -162,7 +145,7 @@ export class Rusthdl_lsp {
         if (linter_name !== e_linter_general_linter_vhdl.none) {
             args = ['--no-lint'];
         }
-        args.push("--silent");
+        args.push('--silent');
 
         let serverCommand = context.asAbsolutePath(languageServer);
         let serverOptions: ServerOptions = {
@@ -173,7 +156,7 @@ export class Rusthdl_lsp {
             debug: {
                 command: serverCommand,
                 args: args
-            },
+            }
         };
         return serverOptions;
     }
