@@ -1,3 +1,5 @@
+docLink: "https://terostechnology.github.io/terosHDLdoc/docs/category/editor"
+
 stutter_comment_shortcuts:
   description: 'Stutter mode: an enter keypress at the end of a line that contains a non-empty comment will continue the comment on the next line. This can be cancelled by pressing enter again. You must also set <code>"editor.formatOnType": true"</code>'
   type: boolean

@@ -1,3 +1,5 @@
+docLink: "https://terostechnology.github.io/terosHDLdoc/docs/guides/formatter"
+
 formatter_verilog:
   description: "Verilog/SV formatter:"
   type: select

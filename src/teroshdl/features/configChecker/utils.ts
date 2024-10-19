@@ -28,8 +28,8 @@ const MSGSEPARATOR = '*************************************************';
 const RESULTSTR = 'TEROSHDLRESULT';
 
 
-export function buildTitle(title: string): string {
-    return `${MSGSEPARATOR}\n${title} ${RESULTSTR}\n${MSGSEPARATOR}\n`;
+export function buildTitle(title: string, help: string): string {
+    return `${MSGSEPARATOR}\n${title} (${help}) ${RESULTSTR}\n${MSGSEPARATOR}\n`;
 }
 
 export function appendMsg(result: BinaryCheck, msg: string, displayGroup: string, extraIndent: string = '') {

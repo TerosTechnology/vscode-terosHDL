@@ -1,3 +1,5 @@
+docLink: "https://terostechnology.github.io/terosHDLdoc/docs/guides/linter"
+
 linter_vhdl:
   description: "VHDL linter: disable VHDL-LS needs restart VSCode."
   type: select

@@ -1,3 +1,5 @@
+docLink: "https://terostechnology.github.io/terosHDLdoc/docs/category/auto-documentation"
+
 language:
   description: "Documentation language:"
   type: select

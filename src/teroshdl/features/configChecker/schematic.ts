@@ -20,6 +20,8 @@ import { e_config, e_schematic_general_backend } from 'colibri/config/config_dec
 import { appendMsg, buildTitle, INTROICON, replaceByResult } from './utils';
 import { checkBinary } from 'colibri/toolChecker/utils';
 
+export const HELP = 'https://terostechnology.github.io/terosHDLdoc/docs/guides/schematic_viewer/installation';
+
 export async function checkSchematic(currentConfig: e_config) {
     let isOk = true;
     const backend = currentConfig.schematic.general.backend;
@@ -30,7 +32,7 @@ export async function checkSchematic(currentConfig: e_config) {
 
     let msg = '';
 
-    msg += buildTitle('Checking Schematic configuration');
+    msg += buildTitle('Checking Schematic configuration', HELP);
 
     let extraMsg = '';
     if (backend === e_schematic_general_backend.yowasp || backend === e_schematic_general_backend.yosys) {

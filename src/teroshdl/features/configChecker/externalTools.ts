@@ -24,6 +24,8 @@ import {
 import { appendMsg, buildTitle, INTROICON, replaceByResult } from './utils';
 import { checkBinary } from 'colibri/toolChecker/utils';
 
+const HELP = 'https://terostechnology.github.io/terosHDLdoc/docs/external_tools/';
+
 export async function checkExternalToolManager(currentConfig: e_config) {
     const selectedTool = currentConfig.tools.general.select_tool;
     const executionMode = currentConfig.tools.general.execution_mode;
@@ -33,7 +35,7 @@ export async function checkExternalToolManager(currentConfig: e_config) {
 
     let msg = '';
 
-    msg += buildTitle('Checking External Tool Configuration');
+    msg += buildTitle('Checking External Tool Configuration', HELP);
 
     // Check external tool
     msg += `${INTROICON} Selected external tool: ${selectedTool.toLocaleUpperCase()}. Installation path: "${installationPath}"\n`;
