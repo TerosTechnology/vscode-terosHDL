@@ -68,11 +68,11 @@ async function verifySetup(
     const currentConfig = getConfig(multiProjectManager);
 
     let msg = '';
-    msg += await checkExternalToolManager(currentConfig);
+    msg += await checkGeneralConfig(currentConfig);
     msg += await checkLinter(linterManager);
+    msg += await checkExternalToolManager(currentConfig);
     msg += await checkFormatter(formatterManager);
     msg += await checkSchematic(currentConfig);
-    msg += await checkGeneralConfig(currentConfig);
 
     globalLogger.info(msg, true);
 

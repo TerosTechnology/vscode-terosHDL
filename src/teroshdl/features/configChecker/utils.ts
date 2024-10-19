@@ -44,7 +44,7 @@ export function appendMsg(result: BinaryCheck, msg: string, displayGroup: string
         const msgSystemPath = result.binaryPath === '' ? 'System Path' : `"${result.binaryPath}"`;
         msg +=
             extraIndent +
-            `${CONFIGICON} TerosHDL ${displayGroup}; however, the installation path is not correctly configured. Ensure the path points to the binary folder, not the specific binary. Found in: ${msgSystemPath}\n`;
+            `${CONFIGICON} ${displayGroup} was found; however, the installation path is not correctly configured. Ensure the path points to the binary folder, not the specific binary. Found in: ${msgSystemPath}\n`;
     } else {
         msg +=
             extraIndent +

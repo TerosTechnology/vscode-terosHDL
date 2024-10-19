@@ -54,7 +54,7 @@ export async function checkGeneralConfig(currentConfig: e_config): Promise<strin
     // Python packages
     const packageList = [
         {
-            name: 'vunit_hdl',
+            name: 'vunit',
             isOptional: false,
             extraMessage: ''
         },
@@ -67,6 +67,11 @@ export async function checkGeneralConfig(currentConfig: e_config): Promise<strin
             name: 'cocotb',
             isOptional: true,
             extraMessage: ''
+        },
+        {
+            name: 'vsg',
+            isOptional: true,
+            extraMessage: ''
         }
     ];
 
@@ -76,7 +81,7 @@ export async function checkGeneralConfig(currentConfig: e_config): Promise<strin
             const packageResult = await check_python_package(pythonResult.python_path, packageInst.name);
             const optionalMsg = packageInst.isOptional ? ' (optional)' : '';
             if (packageResult) {
-                msg += `  ${OKICON} ${packageInst.name}${optionalMsg} found."\n`;
+                msg += `  ${OKICON} ${packageInst.name}${optionalMsg} found.\n`;
             } else {
                 msg += `  ${BADICON} ${packageInst.name}${optionalMsg} not found.\n`;
             }
