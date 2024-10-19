@@ -36,6 +36,7 @@ export type python_result = {
     stdout: string;
     stderr: string;
     successful: boolean;
+    checkMessageList: string[];
 }
 /**
  * Get the Python3 path
@@ -43,14 +44,28 @@ export type python_result = {
  * @returns Result
 **/
 export async function get_python_path(opt: python_options): Promise<python_result> {
+    const configPythonPath = opt.path;
     let binary: string[] = [];
     const os_system = get_os();
-    if (os_system === common.OS.WINDOWS) {
-        binary = [opt.path,
-        join(opt.path, 'python.exe'), join(opt.path, 'python3.exe'), 'python3', 'python', 'python.exe', 'python3.exe'];
+    if (os_system === common.OS.WINDOWS && configPythonPath !== "") {
+        binary = [
+            opt.path, join(opt.path, 'python.exe'), join(opt.path, 'python3.exe'), 'python', 'python3', 'python.exe', 'python3.exe'
+        ];
+    }
+    else if (os_system === common.OS.WINDOWS) {
+        binary = [
+            'python', 'python3', 'python.exe', 'python3.exe'
+        ];
+    }
+    else if (configPythonPath !== "") {
+        binary = [
+            opt.path, join(opt.path, 'python'), join(opt.path, 'python3'), 'python', 'python3'
+        ];
     }
     else {
-        binary = [opt.path, join(opt.path, 'python'), join(opt.path, 'python3'), 'python3', 'python'];
+        binary = [
+            'python', 'python3'
+        ];
     }
 
     // Try with normalized path
@@ -75,21 +90,29 @@ export async function get_python_path(opt: python_options): Promise<python_resul
  * @returns Python3 path result
 **/
 export async function find_python3_in_list(binary: string[]): Promise<python_result> {
+    const messageList = [];
     const p_result: python_result = {
         python_path: "python",
         python_complete_path: "python",
         stdout: "",
         stderr: "",
-        successful: false
+        successful: false,
+        checkMessageList: messageList,
     };
     for (const bin of binary) {
         const opt: python_options = { path: bin };
         const result = await check_python3_path(opt);
+        const errorMessage = `❌ Python was not found in the path "${opt.path}". Tried to find it using the command: "${result.command}"`;
+        const okMessage = `✅ Python was found in the path "${opt.path}". Tried to find it using the command: "${result.command}"`;
         if (result.successful === true) {
+            messageList.push(okMessage);
             p_result.python_complete_path = await get_complete_python_path(bin);
             p_result.python_path = bin;
             p_result.successful = true;
             break;
+        }
+        else {
+            messageList.push(errorMessage);
         }
     }
     return p_result;

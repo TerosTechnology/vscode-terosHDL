@@ -161,7 +161,7 @@ export class Schematic_manager extends Base_webview {
             await this.panel?.webview.postMessage({ command: "update", result: result });
         }
         catch (error) {
-            vscode.window.showInformationMessage(error.message);
+            vscode.window.showInformationMessage((error as Error).message);
         }
     }
 

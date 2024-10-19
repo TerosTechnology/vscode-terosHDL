@@ -25,12 +25,18 @@ import { Process } from "../process/process";
 import * as common from "./common";
 import * as logger from "../logger/logger";
 import * as cfg from "../config/config_declaration";
+import { BinaryCheck, checkBinary } from "../toolChecker/utils";
 
 export class Vsg extends Base_formatter {
     private binary = 'vsg';
+    public argumentToCheck = ['--version'];
 
     constructor() {
         super();
+    }
+
+    public async checkLinterConfiguration(installationPath: string): Promise<BinaryCheck> {
+        return await checkBinary(this.constructor.name, installationPath, this.binary, this.argumentToCheck);
     }
 
     async format_from_code(code: string, opt: cfg.e_formatter_svg, python_path: string): Promise<common.f_result> {

@@ -23,7 +23,6 @@ import * as path_lib from "path";
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
-import { globalLogger } from "../../../logger";
 import { t_message_level, showMessage, getConfig } from "../../utils/utils";
 import * as yaml from "js-yaml";
 import { BaseView } from "../baseView";
@@ -35,8 +34,6 @@ import { getFamilyAndParts } from "colibri/project_manager/tool/quartus/utils";
 import { GlobalConfigManager } from "colibri/config/config_manager";
 import { QuartusProjectManager } from "colibri/project_manager/tool/quartus/quartusProjectManager";
 import * as ProjectManager from "colibri/project_manager/project_manager";
-import { Process } from "colibri/process/process";
-import { check_python_package, get_python_path, python_options } from "colibri/process/python";
 
 export class Project_manager extends BaseView {
     private tree: element.ProjectProvider;
@@ -80,7 +77,6 @@ export class Project_manager extends BaseView {
 
     set_commands() {
         vscode.commands.registerCommand("teroshdl.documentation", () => this.open_doc());
-        vscode.commands.registerCommand("teroshdl.check_dependencies", () => this.check_dependencies());
 
         vscode.commands.registerCommand("teroshdl.view.project.add", (item) => this.add_project(item));
         vscode.commands.registerCommand("teroshdl.view.project.select", (item) => this.select_project(item));
@@ -327,80 +323,4 @@ export class Project_manager extends BaseView {
         const doc_msg = `Check the documentation to install it: ${msg_url}`;
         return doc_msg;
     }
-
-    async check_dependencies() {
-        const configCurrent = getConfig(this.project_manager);
-        const options: python_options = {
-            path: GlobalConfigManager.getInstance().get_config().general.general.pypath
-        };
-
-        const intro_info = "-------> ";
-        const intro_warning = "----> ";
-        const intro_error = "------> ";
-
-        globalLogger.info('Checking dependencies...', true);
-
-        // Check python
-        const python_result = await get_python_path(options);
-        if (python_result.successful === false) {
-            const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#2-python3";
-            const doc_msg = this.get_doc_msg(doc_msg_link);
-
-            globalLogger.error(`${intro_error}Python not found. If you are using system path try setting the complete Python path. ${doc_msg}`);
-        }
-        else {
-            globalLogger.info(`${intro_info} Python found: ${python_result.python_path}`);
-            globalLogger.info(`${intro_info} Python found in path: ${python_result.python_complete_path}`);
-
-            const package_list = ["vunit", "cocotb", "edalize"];
-            const package_list_optional = ["cocotb"];
-
-            for (const package_name of package_list) {
-                let optional_msg = "";
-
-                const package_result = await check_python_package(python_result.python_path,
-                    package_name);
-                if (!package_result) {
-                    const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#3-python3-package-dependencies";
-                    const doc_msg = this.get_doc_msg(doc_msg_link);
-
-                    if (package_list_optional.includes(package_name)) {
-                        globalLogger.warn(`${intro_warning} ${package_name} (optional installation) not found. ${doc_msg}`);
-                    }
-                    else {
-                        globalLogger.error(`${intro_error} ${package_name} ${optional_msg} not found. ${doc_msg}`);
-
-                    }
-                }
-                else {
-                    globalLogger.info(`${intro_info} ${package_name} found ${optional_msg}`);
-                }
-            }
-        }
-
-        // Check make
-        const make_binary_dir = configCurrent.general.general.makepath;
-        let make_binary_path = ("make");
-        if (make_binary_dir !== "") {
-            make_binary_path = path_lib.join(make_binary_dir, make_binary_path);
-        }
-
-        const proc = new Process();
-        const make_result = await proc.exec_wait(`${make_binary_path} --version`);
-        if (!make_result.successful) {
-            const doc_msg_link = "https://terostechnology.github.io/terosHDLdoc/docs/getting_started/installation#4-make";
-            const doc_msg = this.get_doc_msg(doc_msg_link);
-            globalLogger.error(`${intro_error}Make not found in path: ${make_binary_path}. Check that the path is correct. ${doc_msg}`);
-            globalLogger.error(make_result.stderr);
-            globalLogger.error(make_result.stdout);
-        }
-        else {
-            globalLogger.info(`${intro_info} Make found in path: ${make_binary_path}.`);
-        }
-    }
 }
-
-function fromExistingQuartusProject(arg0: any, prj_path: string, emitterProject: ProjectEmitter) {
-    throw new Error("Function not implemented.");
-}
-

@@ -11,6 +11,9 @@
 - name: configuration.global
   title: "TerosHDL: Open Global Settings Menu"
 
+- name: configuration.verifySetup
+  title: "TerosHDL: Verify Setup" 
+
 ################################################################################
 # VSCode tree
 ################################################################################
