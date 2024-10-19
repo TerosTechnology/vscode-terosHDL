@@ -216,6 +216,9 @@ export class Config_manager {
     private getWebviewContent(webview: vscode.Webview): string {
         const template_str = this.web_content;
 
+        const helpIcon = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources', 'icon',
+            'light', 'help.svg'));
+
         const css_0 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
             'project_manager', 'bootstrap.min.css'));
         const css_1 = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'resources',
@@ -225,8 +228,9 @@ export class Config_manager {
 
         const html = nunjucks.renderString(template_str, {
             "css_0": css_0, "css_1": css_1, "js_0": js_0,
-            "cspSource": webview.cspSource
-        });
+            "cspSource": webview.cspSource,
+        }).replace(/HELP_ICON/g, helpIcon.toString());
+
         return html;
     }
 
