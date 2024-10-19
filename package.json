@@ -3,7 +3,7 @@
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
     "description": "Powerful toolbox for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
-    "version": "6.0.12",
+    "version": "6.0.13",
     "engines": {
         "vscode": "^1.74.0"
     },
@@ -120,7 +120,7 @@
             },
             {
                 "view": "teroshdl-view-actions",
-                "contents": "[Open Global Settings Menu](command:teroshdl.configuration.global)\n[Export Settings](command:teroshdl.view.project.export_configuration)\n[Load Settings](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)\n[Verify Setup](command:teroshdl.verifySetup)"
+                "contents": "[Verify Setup](command:teroshdl.verifySetup)\n[Open Global Settings Menu](command:teroshdl.configuration.global)\n[Export Settings](command:teroshdl.view.project.export_configuration)\n[Load Settings](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)"
             }
       ],
 

@@ -85,7 +85,7 @@
             },
             {
                 "view": "teroshdl-view-actions",
-                "contents": "[Open Global Settings Menu](command:teroshdl.configuration.global)\n[Export Settings](command:teroshdl.view.project.export_configuration)\n[Load Settings](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)\n[Verify Setup](command:teroshdl.verifySetup)"
+                "contents": "[Verify Setup](command:teroshdl.verifySetup)\n[Open Global Settings Menu](command:teroshdl.configuration.global)\n[Export Settings](command:teroshdl.view.project.export_configuration)\n[Load Settings](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)"
             }
       ],
 {% filter indent(width=8) %}
