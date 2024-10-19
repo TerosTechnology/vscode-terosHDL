@@ -4,7 +4,11 @@
       {%- for tp1 in type_declaration[tp0]["pages"] %}
     <div class="card h-100" id="{{tp0}}-{{tp1}}">
       <div class="card-header">
-        <h1 class="card-title">{{type_declaration[tp0]["title"]}}: {{type_declaration[tp0]["pages"][tp1]["title"]}}</h1>
+        {%- if type_declaration[tp0]["pages"][tp1]["title"] == "General" %}
+        <h1 class="card-title">{{type_declaration[tp0]["title"]}}{%- if type_declaration[tp0]["pages"][tp1]["docLink"] %}<a href="{{type_declaration[tp0]["pages"][tp1]["docLink"]}}" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a>{%- endif %}</h1>
+        {%- else %}
+        <h1 class="card-title">{{type_declaration[tp0]["title"]}}: {{type_declaration[tp0]["pages"][tp1]["title"]}}{%- if type_declaration[tp0]["pages"][tp1]["docLink"] %}<a href="{{type_declaration[tp0]["pages"][tp1]["docLink"]}}" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a>{%- endif %}</h1>
+        {%- endif %}
         <h6 class="card-subtitle mb-2 text-muted">{{type_declaration[tp0]["pages"][tp1]["description"]}}</h6>
       </div>
       <div class="card-body overflow-auto">

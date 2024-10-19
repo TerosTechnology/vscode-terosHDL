@@ -92,3 +92,14 @@
         .card {
             height: 100%;
         }
+
+        .help-icon {
+            width: 35px;
+            height: 35px;
+            transition: filter 0.3s;
+            filter: brightness(0) saturate(100%) invert(86%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(93%) contrast(88%);
+        }
+
+        .help-icon:hover {
+            filter: invert(23%) sepia(89%) saturate(3750%) hue-rotate(201deg) brightness(89%) contrast(91%);
+        }

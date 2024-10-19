@@ -124,6 +124,17 @@ export const WEB_CONFIG = `
             height: 100%;
         }
 
+        .help-icon {
+            width: 35px;
+            height: 35px;
+            transition: filter 0.3s;
+            filter: brightness(0) saturate(100%) invert(86%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(93%) contrast(88%);
+        }
+
+        .help-icon:hover {
+            filter: invert(23%) sepia(89%) saturate(3750%) hue-rotate(201deg) brightness(89%) contrast(91%);
+        }
+
 </style>
 </head>
 <body>
@@ -354,11 +365,12 @@ export const WEB_CONFIG = `
 <div class="col-sm-12 main h-100">
     <div class="card h-100" id="general-general">
       <div class="card-header">
-        <h1 class="card-title">General: General</h1>
+        <h1 class="card-title">General<a href="https://terostechnology.github.io/terosHDLdoc/" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a></h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <div class="card-body overflow-auto">
       
+          
           
           
             <div class="mb-3">
@@ -432,7 +444,7 @@ export const WEB_CONFIG = `
   </div>
     <div class="card h-100" id="documentation-general">
       <div class="card-header">
-        <h1 class="card-title">Documentation: General</h1>
+        <h1 class="card-title">Documentation</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <div class="card-body overflow-auto">
@@ -670,7 +682,7 @@ export const WEB_CONFIG = `
   </div>
     <div class="card h-100" id="editor-general">
       <div class="card-header">
-        <h1 class="card-title">Editor: General</h1>
+        <h1 class="card-title">Editor</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <div class="card-body overflow-auto">
@@ -748,7 +760,7 @@ export const WEB_CONFIG = `
   </div>
     <div class="card h-100" id="formatter-general">
       <div class="card-header">
-        <h1 class="card-title">Formatter: General</h1>
+        <h1 class="card-title">Formatter</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <div class="card-body overflow-auto">
@@ -1179,7 +1191,7 @@ export const WEB_CONFIG = `
   </div>
     <div class="card h-100" id="linter-general">
       <div class="card-header">
-        <h1 class="card-title">Linter settings: General</h1>
+        <h1 class="card-title">Linter settings</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <div class="card-body overflow-auto">
@@ -1476,7 +1488,7 @@ export const WEB_CONFIG = `
   </div>
     <div class="card h-100" id="schematic-general">
       <div class="card-header">
-        <h1 class="card-title">Schematic viewer: General</h1>
+        <h1 class="card-title">Schematic viewer</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <div class="card-body overflow-auto">
@@ -1542,7 +1554,7 @@ export const WEB_CONFIG = `
   </div>
     <div class="card h-100" id="templates-general">
       <div class="card-header">
-        <h1 class="card-title">Templates: General</h1>
+        <h1 class="card-title">Templates</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <div class="card-body overflow-auto">
@@ -1609,7 +1621,7 @@ export const WEB_CONFIG = `
   </div>
     <div class="card h-100" id="tools-general">
       <div class="card-header">
-        <h1 class="card-title">Tools: General</h1>
+        <h1 class="card-title">Tools</h1>
         <h6 class="card-subtitle mb-2 text-muted"></h6>
       </div>
       <div class="card-body overflow-auto">
@@ -4645,6 +4657,8 @@ export const WEB_CONFIG = `
     let element_value;
     config["general"] = {}
     config["general"]["general"] = {}
+    element_value = document.getElementById("general-general-docLink").value;
+    config["general"]["general"]["docLink"] = element_value
     element_value = document.getElementById("general-general-pypath").value;
     config["general"]["general"]["pypath"] = element_value
     element_value = document.getElementById("general-general-makepath").value;
@@ -5269,6 +5283,7 @@ export const WEB_CONFIG = `
   }
 
   function set_config(config){
+    document.getElementById("general-general-docLink").value = config["general"]["general"]["docLink"];
     document.getElementById("general-general-pypath").value = config["general"]["general"]["pypath"];
     document.getElementById("general-general-makepath").value = config["general"]["general"]["makepath"];
     document.getElementById("general-general-go_to_definition_vhdl").checked = config["general"]["general"]["go_to_definition_vhdl"];
@@ -5501,6 +5516,11 @@ export const WEB_CONFIG = `
   function set_mark(config, projectName){
     const MODIFIEDMSG = "Modified in project";
     let mark = "";
+    mark = "";
+    if (projectName !== undefined && config["general"]["general"]["docLink"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_general-general-docLink").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["general"]["general"]["pypath"] != undefined) {
       mark = MODIFIEDMSG;
