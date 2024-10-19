@@ -33,6 +33,8 @@ export class Istyle extends Base_formatter {
     private binary_windows = 'istyle-win32.exe';
     private binary_mac = 'istyle-darwin';
 
+    public argumentToCheck = [''];
+
     constructor() {
         super();
     }

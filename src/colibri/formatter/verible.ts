@@ -25,12 +25,18 @@ import * as utils from "../process/utils";
 import { Process } from "../process/process";
 import * as common from "./common";
 import * as logger from "../logger/logger";
+import { BinaryCheck, checkBinary } from "../toolChecker/utils";
 
 export class Verible extends Base_formatter {
     private binary = 'verible-verilog-format';
+    public argumentToCheck = ['--version'];
 
     constructor() {
         super();
+    }
+
+    public async checkLinterConfiguration(installationPath: string): Promise<BinaryCheck> {
+        return await checkBinary(this.constructor.name, installationPath, this.binary, this.argumentToCheck);
     }
 
     async format_from_code(code: string, opt: common.e_formatter_verible_full, python_path: string): Promise<common.f_result> {
@@ -49,7 +55,7 @@ export class Verible extends Base_formatter {
         for (const path_inst of path_checker) {
             const path_norm = file_utils.normalize_path(path_inst);
 
-            const cmd = `${path_norm} --version`;
+            const cmd = `${path_norm} ${this.argumentToCheck[0]}`;
             const exec_result = await P.exec_wait(cmd);
             if (exec_result.successful === true) {
                 return path_norm;

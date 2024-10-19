@@ -24,6 +24,8 @@ import { beautify, BeautifierSettings, signAlignSettings, NewLineSettings } from
 import * as file_utils from "../utils/file_utils";
 
 export class Standalone_vhdl extends Base_formatter {
+    public argumentToCheck = ['--version'];
+
     constructor() {
         super();
     }

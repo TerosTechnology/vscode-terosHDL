@@ -19,8 +19,11 @@
 
 import * as common from "./common";
 import * as cfg from "../config/config_declaration";
+import { BinaryCheck } from "colibri/toolChecker/utils";
 
 export abstract class Base_formatter {
+    abstract argumentToCheck: string[];
+
     abstract format_from_code(code: string, opt: cfg.e_formatter_istyle |
         cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_formatter_svg | 
         common.e_formatter_verible_full, python_path: string
@@ -30,5 +33,15 @@ export abstract class Base_formatter {
         cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_formatter_svg | 
         common.e_formatter_verible_full, python_path: string
     ): Promise<common.f_result>;
+
+    public async checkLinterConfiguration(_installationPath: string): Promise<BinaryCheck> {
+        return {
+            displayName: this.constructor.name,
+            binaryPath: '',
+            messageList: ["The formatter is built into TerosHDL. Skipping configuration check."],
+            successfulFind: true,
+            successfulConfig: true
+        };
+    }
 }
 

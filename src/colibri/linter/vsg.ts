@@ -27,6 +27,7 @@ import { Process } from "../process/process";
 export class Vsg extends Base_linter {
     binary = "vsg";
     extra_cmd = "";
+    argumentToCheck = ["--version"];
 
     constructor() {
         super();

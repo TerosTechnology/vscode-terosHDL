@@ -27,6 +27,7 @@ export class Verilator extends Base_linter {
     extra_cmd = "--lint-only -Wall -bbox-sys --bbox-unsup -DGLBL";
 
     sv_options = "-sv";
+    argumentToCheck = ["--version"];
 
     constructor() {
         super();

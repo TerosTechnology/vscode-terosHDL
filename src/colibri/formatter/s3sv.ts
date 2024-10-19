@@ -30,6 +30,8 @@ import { create_temp_file, } from "../process/utils";
 import { remove_file } from "../utils/file_utils";
 
 export class S3sv extends Base_formatter {
+    public argumentToCheck = [''];
+
     constructor() {
         super();
     }

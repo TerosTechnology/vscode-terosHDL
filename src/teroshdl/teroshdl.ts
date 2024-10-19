@@ -44,6 +44,7 @@ import { getPathDetailsView } from './features/views/timing/path_details';
 import { ProjectEmitter } from 'colibri/project_manager/projectEmitter';
 import { get_home_directory } from 'colibri/process/utils';
 import { GlobalConfigManager } from 'colibri/config/config_manager';
+import { configCheckerManager } from './features/configChecker/manager';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -85,13 +86,13 @@ export class Teroshdl {
         this.init_state_machine();
         debugLogger.info('activated state machine');
 
-        const schematic = this.init_schematic();
+        const schematicManager = this.init_schematic();
         debugLogger.info('activated schematic');
 
-        this.init_linter();
+        const linterManager = this.init_linter();
         debugLogger.info('activated linter');
 
-        this.init_formatter();
+        const formatterManager = this.init_formatter();
         debugLogger.info('activated formatter');
 
         this.init_completions();
@@ -103,11 +104,13 @@ export class Teroshdl {
         this.init_shutter_mode();
         debugLogger.info('activated shutter mode');
 
-        this.init_config();
+        const configCheckerManager = this.init_configChecker(linterManager, formatterManager, schematicManager);
+
+        this.init_config(configCheckerManager);
         debugLogger.info('activated config viewer');
 
         const dependency = this.init_dependency();
-        this.init_tree_views(schematic, dependency);
+        this.init_tree_views(schematicManager, dependency);
         debugLogger.info('activated views');
 
         this.init_comander();
@@ -121,6 +124,14 @@ export class Teroshdl {
         } catch (error) {
             debugLogger.warn('There have been errors loading project list from disk.');
         }
+    }
+
+    private init_configChecker(
+        linterManager: Linter_manager,
+        formatterManager: Formatter_manager,
+        schematicManager: Schematic_manager
+    ): configCheckerManager {
+        return new configCheckerManager(this.manager, linterManager, formatterManager, schematicManager);
     }
 
     private init_language_provider() {
@@ -149,11 +160,11 @@ export class Teroshdl {
     }
 
     private init_linter() {
-        new Linter_manager(this.context, this.manager);
+        return new Linter_manager(this.context, this.manager);
     }
 
     private init_formatter() {
-        new Formatter_manager(this.context, this.manager);
+        return new Formatter_manager(this.context, this.manager);
     }
 
     private init_completions() {
@@ -168,8 +179,8 @@ export class Teroshdl {
         new Stutter_mode_manager(this.context, this.manager);
     }
 
-    private init_config() {
-        new Config_manager(this.context, this.manager, this.emitterProject);
+    private init_config(configCheckerManager: configCheckerManager) {
+        new Config_manager(this.context, this.manager, this.emitterProject, configCheckerManager);
     }
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {

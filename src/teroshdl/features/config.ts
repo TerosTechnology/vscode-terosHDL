@@ -27,6 +27,7 @@ import { e_config } from 'colibri/config/config_declaration';
 import { WEB_CONFIG } from 'colibri/config/config_web';
 import { GlobalConfigManager } from 'colibri/config/config_manager';
 import { read_file_sync, save_file_sync } from 'colibri/utils/file_utils';
+import { configCheckerManager } from './configChecker/manager';
 
 /**
  * Retrieves a project by its name from the multi-project manager.
@@ -56,18 +57,20 @@ export class Config_manager {
     private currentConfigIsGlobal: boolean = true;
     private currentProjectName: string | undefined = undefined;
     private emitterProject: ProjectEmitter;
+    private configCheckerManager: configCheckerManager;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     constructor(context: vscode.ExtensionContext, multiProjectManager: Multi_project_manager,
-        emitterProject: ProjectEmitter) {
+        emitterProject: ProjectEmitter, configCheckerManager: configCheckerManager) {
 
         this.context = context;
         this.multiProjectManager = multiProjectManager;
         this.web_content = WEB_CONFIG;
         this.currentConfig = GlobalConfigManager.getInstance().get_config();
         this.emitterProject = emitterProject;
+        this.configCheckerManager = configCheckerManager;
 
         const activation_command = 'teroshdl.configuration';
         vscode.commands.registerCommand(activation_command + ".global", async () => await this.createWebviewGlobal());
@@ -175,13 +178,13 @@ export class Config_manager {
                         case 'set_config':
                             await this.setConfig(message.config);
                             this.sendChangeConfigCommand();
-                            this.showSavedMessage();
+                            await this.showSavedMessage();
                             this.emitSaveSettings();
                             return;
                         case 'set_config_and_close':
                             await this.setConfigAndClose(message.config);
                             this.sendChangeConfigCommand();
-                            this.showSavedMessage();
+                            await this.showSavedMessage();
                             this.emitSaveSettings();
                             return;
                         case 'close':
@@ -353,8 +356,9 @@ export class Config_manager {
     /**
      * Shows a message alerting that the configuration has been saved.
      */
-    private showSavedMessage() {
+    private async showSavedMessage() {
         vscode.window.showInformationMessage(`Settings saved ${this.getMessageAlert()}`);
+        await this.configCheckerManager.verifySetup();
     }
 
     private emitSaveSettings() {

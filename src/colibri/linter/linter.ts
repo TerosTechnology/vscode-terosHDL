@@ -27,6 +27,7 @@ import { Vsg } from "./vsg";
 import * as common from "./common";
 import * as cfg from "../config/config_declaration";
 import { t_file } from "../project_manager/common";
+import { BinaryCheck } from "colibri/toolChecker/utils";
 
 /** Linter */
 export class Linter {
@@ -69,6 +70,11 @@ export class Linter {
         const linter = this.get_linter(linter_name);
         const errors = linter.parse_output(output, file);
         return errors;
+    }
+
+    async checkLinterConfiguration(linterName: common.t_linter_name, installationPath: string): Promise<BinaryCheck> {
+        const linter = this.get_linter(linterName);
+        return await linter.checkLinterConfiguration(installationPath);
     }
 
     /**

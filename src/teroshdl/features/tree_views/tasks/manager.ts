@@ -104,6 +104,9 @@ export class Tasks_manager extends BaseView {
         if (this.latesRunTask && !this.latesRunTask.killed) {
             try {
                 const pid = this.latesRunTask.pid;
+                if (pid === undefined) {
+                    return;
+                }
                 tree_kill(pid, 'SIGTERM', (err) => {
                     if (err) {
                         console.error(err);
