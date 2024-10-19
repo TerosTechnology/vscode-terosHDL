@@ -1,3 +1,5 @@
+docLink: "https://terostechnology.github.io/terosHDLdoc/docs/guides/templates"
+
 header_file_path:
   description: "File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template"
   type: string

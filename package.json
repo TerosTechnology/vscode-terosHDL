@@ -116,7 +116,15 @@
         "viewsWelcome": [
             {
                 "view": "teroshdl-project",
-                "contents": "No TerosHDL project are open.\n[Add Project](command:teroshdl.view.project.add)\nTo learn more about how to use TerosHDL [read the documentation](https://terostechnology.github.io/terosHDLdoc/)."
+                "contents": "No TerosHDL project are open.\n[Add Project](command:teroshdl.view.project.add)\nTo learn more about how to [setup a TerosHDL project](https://terostechnology.github.io/terosHDLdoc/docs/project_configuration/)."
+            },
+            {
+                "view": "teroshdl-view-source",
+                "contents": "Learn more about how to [add files and libraries to a project](https://terostechnology.github.io/terosHDLdoc/docs/project_configuration/sources)."
+            },
+            {
+                "view": "teroshdl-view-dependency",
+                "contents": "Learn more about how to [setup TerosHDL to compute Hierarchy](https://terostechnology.github.io/terosHDLdoc/docs/project_configuration/hierarchy)."
             },
             {
                 "view": "teroshdl-view-actions",
@@ -888,10 +896,8 @@
         "module-alias": "^2.2.3"
     },
     "devDependencies": {
-        "@types/glob": "^7.1.1",
         "@types/node": "^17.0.31",
         "@types/vscode": "^1.45.0",
-        "glob": "^7.1.6",
         "js-yaml": "^3.13.1",
         "shx": "^0.3.3",
         "esbuild": "^0.16.17",

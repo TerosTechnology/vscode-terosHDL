@@ -1,3 +1,5 @@
+docLink: "https://terostechnology.github.io/terosHDLdoc/docs/guides/schematic_viewer/installation"
+
 backend:
   description: "Select the backend:"
   type: select

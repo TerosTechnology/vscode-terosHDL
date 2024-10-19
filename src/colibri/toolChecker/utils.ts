@@ -16,10 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { OS } from 'colibri/process/common';
-import { Process } from 'colibri/process/process';
-import { get_os } from 'colibri/process/utils';
-import { check_if_directory, check_if_path_exist, get_directory } from 'colibri/utils/file_utils';
+import { OS } from '../process/common';
+import { Process } from '../process/process';
+import { get_os } from '../process/utils';
 import { join } from 'path';
 import * as path from 'path';
 

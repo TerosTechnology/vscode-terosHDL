@@ -26,11 +26,13 @@ import {
 import { Linter_manager } from '../linter';
 import { buildTitle, appendMsg, replaceByResult, INTROICON } from './utils';
 
+const HELP = 'https://terostechnology.github.io/terosHDLdoc/docs/guides/linter';
+
 export async function checkLinter(linterManager: Linter_manager) {
     let isOk = true;
 
     let msg = '';
-    msg += buildTitle('Checking Linter configuration');
+    msg += buildTitle('Checking Linter configuration', HELP);
 
     const vhdlErrorLinter = linterManager.vhdlErrorLinter;
     const verilogErrorLinter = linterManager.verilogErrorLinter;

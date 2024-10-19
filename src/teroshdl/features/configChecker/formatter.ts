@@ -20,11 +20,13 @@ import { LANGUAGE } from 'colibri/common/general';
 import { Formatter_manager } from '../formatter';
 import { appendMsg, buildTitle, INTROICON, replaceByResult } from './utils';
 
+const HELP = 'https://terostechnology.github.io/terosHDLdoc/docs/guides/formatter';
+
 export async function checkFormatter(formatterManager: Formatter_manager) {
     let msg = '';
     let isOk = true;
 
-    msg += buildTitle('Checking Formatter configuration');
+    msg += buildTitle('Checking Formatter configuration', HELP);
 
     const formatterVhdl = formatterManager.formatterVhdl;
     const formatterVerilog = formatterManager.formatterVerilog;

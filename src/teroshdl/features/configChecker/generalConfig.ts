@@ -21,13 +21,15 @@ import { appendMsg, BADICON, buildTitle, INTROICON, OKICON, replaceByResult } fr
 import { get_python_path, check_python_package } from 'colibri/process/python';
 import { checkBinary } from 'colibri/toolChecker/utils';
 
+const HELP = 'https://terostechnology.github.io/terosHDLdoc/docs/category/installation-checklist';
+
 export async function checkGeneralConfig(currentConfig: e_config): Promise<string> {
     const installationPath = currentConfig.general.general.makepath;
 
     let isOk = true;
 
     let msg = '';
-    msg += buildTitle('Checking general configuration');
+    msg += buildTitle('Checking general configuration', HELP);
 
     // Check make
     msg += `${INTROICON} Checking make. This tool is used to run some external tools. Current configured installation path: "${installationPath}"\n`;
