@@ -93,6 +93,15 @@ export abstract class WebviewController<TBootstrap> extends Disposable {
     // Replace placeholders in html content for assets and adding configurations as `window.bootstrap`
     fullHtml += this.replaceInPanel(html);
 
+    let version = "";
+    try {
+      version = `v${require(path.join(this.context.extensionPath, 'package.json')).version}`;
+    } catch (e) {
+      console.error(e);
+    }
+
+    fullHtml = fullHtml.replace(/TEROSHDL_VERSION/g, version);
+
     this.panel.webview.html = fullHtml;
   }
 
