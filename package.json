@@ -834,7 +834,7 @@
         "clean": "shx rm -rf out", 
         "vscode:prepublish": "npm run generate-examples & npm run compile", 
         "compile": "npm run-script copy-files & npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./", 
-        "lint": "eslint src --ext ts", 
+        "lint": "eslint src", 
         "watch": "npm run-script copy-files & tsc --watch --p ./tsconfig.json & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"", 
         "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
         "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib", 
