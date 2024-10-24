@@ -14,6 +14,7 @@ jobs:
   # Build TerosHDL
   ##############################################################################
   build:
+    if: ${{ vars.SKIP_DOCKER_JOB != 'true' }}
     name: Build .vsix
     runs-on: ubuntu-22.04
     steps:
