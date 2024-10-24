@@ -21,7 +21,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set version stable
+      - name: Set version stableeeee
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/dev'
         run: |
           PACKAGE_VERSION=$(cat package.json \
