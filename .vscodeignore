@@ -9,3 +9,7 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 user.teros-hdl.config.json
+.github
+auto_package
+tests
+tests_impr
