@@ -20,7 +20,7 @@
 import * as vscode from "vscode";
 import * as element from "./element";
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
-import { TaskDecorator } from "./element";
+import { Task, TaskDecorator } from "./element";
 import { ChildProcess, spawn } from "child_process";
 import { LogView } from "../../views/logs";
 import * as tree_kill from 'tree-kill';
@@ -95,6 +95,71 @@ export class Tasks_manager extends BaseView {
         vscode.commands.registerCommand("teroshdl.view.tasks.clean", () => this.clean());
         vscode.commands.registerCommand("teroshdl.view.tasks.device", () => this.device());
         vscode.commands.registerCommand("teroshdl.view.tasks.console", () => this.openConsole());
+
+
+        // Quartus Commands
+        vscode.commands.registerCommand("teroshdl.project.quartus.rtlAnalyzer",
+            () => this.runQuartusTask(e_taskType.QUARTUS_RTL_ANALYZER));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.compileDesigh",
+            () => this.runQuartusTask(e_taskType.QUARTUS_COMPILEDESIGN));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.analysisAndSynthesis",
+            () => this.runQuartusTask(e_taskType.QUARTUS_ANALYSISSYNTHESIS));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.analysisAndElaboration",
+            () => this.runQuartusTask(e_taskType.QUARTUS_ANALYSISELABORATION));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.synthesis",
+            () => this.runQuartusTask(e_taskType.QUARTUS_SYNTHESIS));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.earlyTimingAnalysis",
+            () => this.runQuartusTask(e_taskType.QUARTUS_EARLYTIMINGANALYSIS));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.fitter",
+            () => this.runQuartusTask(e_taskType.QUARTUS_FITTER));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.fitterImplement",
+            () => this.runQuartusTask(e_taskType.QUARTUS_FITTERIMPLEMENT));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.plan",
+            () => this.runQuartusTask(e_taskType.QUARTUS_PLAN));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.place",
+            () => this.runQuartusTask(e_taskType.QUARTUS_PLACE));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.route",
+            () => this.runQuartusTask(e_taskType.QUARTUS_ROUTE));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.fitterFinalize",
+            () => this.runQuartusTask(e_taskType.QUARTUS_FITTERFINALIZE));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.timingAnalysisSignoff",
+            () => this.runQuartusTask(e_taskType.QUARTUS_TIMING));
+        
+        vscode.commands.registerCommand("teroshdl.project.quartus.assembler",
+            () => this.runQuartusTask(e_taskType.QUARTUS_ASSEMBLER));
+    }
+
+    private runQuartusTask(task: e_taskType) {
+        const allTaskItems = <element.Task[]>this.tree.data;
+        function searchTask(taskItesm: element.Task[]) {
+            for (const taskItem of taskItesm) {
+                if (taskItem.taskDefinition.name === task) {
+                    return taskItem;
+                }
+                if (taskItem.children) {
+                    const result = searchTask(taskItem.children);
+                    if (result) {
+                        return result;
+                    }
+                }
+            }
+        }
+        const taskItem = searchTask(allTaskItems);
+        if (taskItem) {
+            this.run(taskItem);
+        }
     }
 
     /**

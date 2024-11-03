@@ -3,7 +3,7 @@
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
     "description": "Powerful toolbox for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
-    "version": "6.0.13",
+    "version": "6.0.14",
     "engines": {
         "vscode": "^1.74.0"
     },
@@ -644,6 +644,62 @@
                     "dark": "resources/icon/dark/eye.svg"
                 },
                 "title": "Open Snapshop Viewer"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.rtlAnalyzer",
+                "title": "TerosHDL [Quartus]: Open RTL Analyzer"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.compileDesigh",
+                "title": "TerosHDL [Quartus]: Run Compile Design"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.analysisAndSynthesis",
+                "title": "TerosHDL [Quartus]: run Analysis and Synthesis"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.analysisAndElaboration",
+                "title": "TerosHDL [Quartus]: run Analysis and Elaboration"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.synthesis",
+                "title": "TerosHDL [Quartus]: run Synthesis"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.earlyTimingAnalysis",
+                "title": "TerosHDL [Quartus]: run Early Timing Analysis"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.fitter",
+                "title": "TerosHDL [Quartus]: run Fitter"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.fitterImplement",
+                "title": "TerosHDL [Quartus]: run Fitter Implement"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.plan",
+                "title": "TerosHDL [Quartus]: run Plan"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.place",
+                "title": "TerosHDL [Quartus]: run Place"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.route",
+                "title": "TerosHDL [Quartus]: run Route"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.fitterFinalize",
+                "title": "TerosHDL [Quartus]: run Fitter Finalize"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.timingAnalysisSignoff",
+                "title": "TerosHDL [Quartus]: run Timing Analysis Signoff"
+            }, 
+            {
+                "command": "teroshdl.project.quartus.assembler",
+                "title": "TerosHDL [Quartus]: run Assembler"
             }, 
             {
                 "command": "teroshdl.view.watcher.add",
