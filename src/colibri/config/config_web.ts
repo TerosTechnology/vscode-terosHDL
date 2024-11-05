@@ -4663,8 +4663,6 @@ export const WEB_CONFIG = `
     let element_value;
     config["general"] = {}
     config["general"]["general"] = {}
-    element_value = document.getElementById("general-general-docLink").value;
-    config["general"]["general"]["docLink"] = element_value
     element_value = document.getElementById("general-general-pypath").value;
     config["general"]["general"]["pypath"] = element_value
     element_value = document.getElementById("general-general-makepath").value;
@@ -4677,8 +4675,6 @@ export const WEB_CONFIG = `
     config["general"]["general"]["developer_mode"] = element_value
     config["documentation"] = {}
     config["documentation"]["general"] = {}
-    element_value = document.getElementById("documentation-general-docLink").value;
-    config["documentation"]["general"]["docLink"] = element_value
     element_value = document.getElementById("documentation-general-language").value;
     config["documentation"]["general"]["language"] = element_value
     element_value = document.getElementById("documentation-general-symbol_vhdl").value;
@@ -4713,8 +4709,6 @@ export const WEB_CONFIG = `
     config["documentation"]["general"]["magic_config_path"] = element_value
     config["editor"] = {}
     config["editor"]["general"] = {}
-    element_value = document.getElementById("editor-general-docLink").value;
-    config["editor"]["general"]["docLink"] = element_value
     element_value = document.getElementById("editor-general-stutter_comment_shortcuts").checked;
     config["editor"]["general"]["stutter_comment_shortcuts"] = element_value
     element_value = parseInt(document.getElementById("editor-general-stutter_block_width").value, 10);
@@ -4727,8 +4721,6 @@ export const WEB_CONFIG = `
     config["editor"]["general"]["stutter_bracket_shortcuts"] = element_value
     config["formatter"] = {}
     config["formatter"]["general"] = {}
-    element_value = document.getElementById("formatter-general-docLink").value;
-    config["formatter"]["general"]["docLink"] = element_value
     element_value = document.getElementById("formatter-general-formatter_verilog").value;
     config["formatter"]["general"]["formatter_verilog"] = element_value
     element_value = document.getElementById("formatter-general-formatter_vhdl").value;
@@ -4786,8 +4778,6 @@ export const WEB_CONFIG = `
     config["formatter"]["svg"]["aditional_arguments"] = element_value
     config["linter"] = {}
     config["linter"]["general"] = {}
-    element_value = document.getElementById("linter-general-docLink").value;
-    config["linter"]["general"]["docLink"] = element_value
     element_value = document.getElementById("linter-general-linter_vhdl").value;
     config["linter"]["general"]["linter_vhdl"] = element_value
     element_value = document.getElementById("linter-general-linter_verilog").value;
@@ -4823,8 +4813,6 @@ export const WEB_CONFIG = `
     config["linter"]["vsg"]["arguments"] = element_value
     config["schematic"] = {}
     config["schematic"]["general"] = {}
-    element_value = document.getElementById("schematic-general-docLink").value;
-    config["schematic"]["general"]["docLink"] = element_value
     element_value = document.getElementById("schematic-general-backend").value;
     config["schematic"]["general"]["backend"] = element_value
     element_value = document.getElementById("schematic-general-extra").value;
@@ -4835,8 +4823,6 @@ export const WEB_CONFIG = `
     config["schematic"]["general"]["args_ghdl"] = element_value
     config["templates"] = {}
     config["templates"]["general"] = {}
-    element_value = document.getElementById("templates-general-docLink").value;
-    config["templates"]["general"]["docLink"] = element_value
     element_value = document.getElementById("templates-general-header_file_path").value;
     config["templates"]["general"]["header_file_path"] = element_value
     element_value = document.getElementById("templates-general-indent").value;
@@ -5301,13 +5287,11 @@ export const WEB_CONFIG = `
   }
 
   function set_config(config){
-    document.getElementById("general-general-docLink").value = config["general"]["general"]["docLink"];
     document.getElementById("general-general-pypath").value = config["general"]["general"]["pypath"];
     document.getElementById("general-general-makepath").value = config["general"]["general"]["makepath"];
     document.getElementById("general-general-go_to_definition_vhdl").checked = config["general"]["general"]["go_to_definition_vhdl"];
     document.getElementById("general-general-go_to_definition_verilog").checked = config["general"]["general"]["go_to_definition_verilog"];
     document.getElementById("general-general-developer_mode").checked = config["general"]["general"]["developer_mode"];
-    document.getElementById("documentation-general-docLink").value = config["documentation"]["general"]["docLink"];
     document.getElementById("documentation-general-language").value = config["documentation"]["general"]["language"];
     document.getElementById("documentation-general-symbol_vhdl").value = config["documentation"]["general"]["symbol_vhdl"];
     document.getElementById("documentation-general-symbol_verilog").value = config["documentation"]["general"]["symbol_verilog"];
@@ -5324,13 +5308,11 @@ export const WEB_CONFIG = `
     document.getElementById("documentation-general-functions").value = config["documentation"]["general"]["functions"];
     document.getElementById("documentation-general-tasks").value = config["documentation"]["general"]["tasks"];
     document.getElementById("documentation-general-magic_config_path").value = config["documentation"]["general"]["magic_config_path"];
-    document.getElementById("editor-general-docLink").value = config["editor"]["general"]["docLink"];
     document.getElementById("editor-general-stutter_comment_shortcuts").checked = config["editor"]["general"]["stutter_comment_shortcuts"];
     document.getElementById("editor-general-stutter_block_width").value = config["editor"]["general"]["stutter_block_width"];
     document.getElementById("editor-general-stutter_max_width").value = config["editor"]["general"]["stutter_max_width"];
     document.getElementById("editor-general-stutter_delimiters").checked = config["editor"]["general"]["stutter_delimiters"];
     document.getElementById("editor-general-stutter_bracket_shortcuts").checked = config["editor"]["general"]["stutter_bracket_shortcuts"];
-    document.getElementById("formatter-general-docLink").value = config["formatter"]["general"]["docLink"];
     document.getElementById("formatter-general-formatter_verilog").value = config["formatter"]["general"]["formatter_verilog"];
     document.getElementById("formatter-general-formatter_vhdl").value = config["formatter"]["general"]["formatter_vhdl"];
     document.getElementById("formatter-istyle-style").value = config["formatter"]["istyle"]["style"];
@@ -5356,7 +5338,6 @@ export const WEB_CONFIG = `
     document.getElementById("formatter-svg-configuration").value = config["formatter"]["svg"]["configuration"];
     document.getElementById("formatter-svg-core_number").value = config["formatter"]["svg"]["core_number"];
     document.getElementById("formatter-svg-aditional_arguments").value = config["formatter"]["svg"]["aditional_arguments"];
-    document.getElementById("linter-general-docLink").value = config["linter"]["general"]["docLink"];
     document.getElementById("linter-general-linter_vhdl").value = config["linter"]["general"]["linter_vhdl"];
     document.getElementById("linter-general-linter_verilog").value = config["linter"]["general"]["linter_verilog"];
     document.getElementById("linter-general-lstyle_verilog").value = config["linter"]["general"]["lstyle_verilog"];
@@ -5370,12 +5351,10 @@ export const WEB_CONFIG = `
     document.getElementById("linter-vivado-vhdl_arguments").value = config["linter"]["vivado"]["vhdl_arguments"];
     document.getElementById("linter-vivado-verilog_arguments").value = config["linter"]["vivado"]["verilog_arguments"];
     document.getElementById("linter-vsg-arguments").value = config["linter"]["vsg"]["arguments"];
-    document.getElementById("schematic-general-docLink").value = config["schematic"]["general"]["docLink"];
     document.getElementById("schematic-general-backend").value = config["schematic"]["general"]["backend"];
     document.getElementById("schematic-general-extra").value = config["schematic"]["general"]["extra"];
     document.getElementById("schematic-general-args").value = config["schematic"]["general"]["args"];
     document.getElementById("schematic-general-args_ghdl").value = config["schematic"]["general"]["args_ghdl"];
-    document.getElementById("templates-general-docLink").value = config["templates"]["general"]["docLink"];
     document.getElementById("templates-general-header_file_path").value = config["templates"]["general"]["header_file_path"];
     document.getElementById("templates-general-indent").value = config["templates"]["general"]["indent"];
     document.getElementById("templates-general-clock_generation_style").value = config["templates"]["general"]["clock_generation_style"];
@@ -5541,11 +5520,6 @@ export const WEB_CONFIG = `
     const MODIFIEDMSG = "Modified in project";
     let mark = "";
     mark = "";
-    if (projectName !== undefined && config["general"]["general"]["docLink"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_general-general-docLink").innerHTML = mark;
-    mark = "";
     if (projectName !== undefined && config["general"]["general"]["pypath"] != undefined) {
       mark = MODIFIEDMSG;
     }
@@ -5570,11 +5544,6 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-developer_mode").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["docLink"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_documentation-general-docLink").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["documentation"]["general"]["language"] != undefined) {
       mark = MODIFIEDMSG;
@@ -5656,11 +5625,6 @@ export const WEB_CONFIG = `
     }
     document.getElementById("mark_documentation-general-magic_config_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["editor"]["general"]["docLink"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_editor-general-docLink").innerHTML = mark;
-    mark = "";
     if (projectName !== undefined && config["editor"]["general"]["stutter_comment_shortcuts"] != undefined) {
       mark = MODIFIEDMSG;
     }
@@ -5685,11 +5649,6 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_bracket_shortcuts").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["formatter"]["general"]["docLink"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_formatter-general-docLink").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["formatter"]["general"]["formatter_verilog"] != undefined) {
       mark = MODIFIEDMSG;
@@ -5816,11 +5775,6 @@ export const WEB_CONFIG = `
     }
     document.getElementById("mark_formatter-svg-aditional_arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["general"]["docLink"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_linter-general-docLink").innerHTML = mark;
-    mark = "";
     if (projectName !== undefined && config["linter"]["general"]["linter_vhdl"] != undefined) {
       mark = MODIFIEDMSG;
     }
@@ -5886,11 +5840,6 @@ export const WEB_CONFIG = `
     }
     document.getElementById("mark_linter-vsg-arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["schematic"]["general"]["docLink"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_schematic-general-docLink").innerHTML = mark;
-    mark = "";
     if (projectName !== undefined && config["schematic"]["general"]["backend"] != undefined) {
       mark = MODIFIEDMSG;
     }
@@ -5910,11 +5859,6 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-args_ghdl").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["templates"]["general"]["docLink"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_templates-general-docLink").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["templates"]["general"]["header_file_path"] != undefined) {
       mark = MODIFIEDMSG;

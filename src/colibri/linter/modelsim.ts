@@ -25,7 +25,7 @@ import { get_random_folder_in_home_directory } from "../process/utils";
 import { remove_directory } from "../utils/file_utils";
 
 export class Modelsim extends Base_linter {
-    binary = "";
+    binary = "vlog";
     extra_cmd = "";
     argumentToCheck = ["-version"];
 
