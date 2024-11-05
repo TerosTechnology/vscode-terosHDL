@@ -241,18 +241,20 @@ export class Tasks_manager extends BaseView {
             // Refresh view to set the running decorators
             this.refresh_tree();
 
-            toolLogger.show(true);
-            if (exec_i.stdout) {
-                exec_i.stdout.on('data', (data: string) => {
-                    toolLogger.log(data);
-                });
-            }
+                toolLogger.show(true);
+                if (exec_i.stdout) {
+                    exec_i.stdout.on('data', (data: string) => {
+                        const cleanOutput = data.replace(/File: /g, "file://");
+                        toolLogger.log(cleanOutput);
+                    });
+                }
 
-            if (exec_i.stderr) {
-                exec_i.stderr.on('data', (data: string) => {
-                    toolLogger.log(data);
-                });
-            }
+                if (exec_i.stderr) {
+                    exec_i.stderr.on('data', (data: string) => {
+                        const cleanOutput = data.replace(/File: /g, "file://");
+                        toolLogger.log(cleanOutput);
+                    });
+                }
         }
         catch (error) {
             // Refresh view to set the finish decorators
@@ -287,8 +289,8 @@ export class Tasks_manager extends BaseView {
                 shellArgs: consoleDefinition.options,
                 isTransient: true,
                 iconPath: {
-                    light: vscode.Uri.file(get_icon(consoleDefinition.iconName).light),
-                    dark: vscode.Uri.file(get_icon(consoleDefinition.iconName).dark)
+                    light: get_icon(consoleDefinition.iconName).light,
+                    dark: get_icon(consoleDefinition.iconName).dark,
                 }
             });
             terminal.show();

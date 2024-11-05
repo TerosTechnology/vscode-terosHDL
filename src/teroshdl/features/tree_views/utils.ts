@@ -31,7 +31,7 @@ import { GlobalConfigManager } from "colibri/config/config_manager";
 
 const BASE_PATH_ICON = path_lib.join(__dirname, "..", "..", "..", "..", "resources", "icon");
 
-export function get_icon(name: string) {
+export function get_icon(name: string) : {dark: vscode.Uri, light: vscode.Uri} {
     let extension = "svg";
     const pathToCheck = path_lib.join(BASE_PATH_ICON, "dark", `${name}.svg`);
     if (!check_if_path_exist(pathToCheck)) {
@@ -39,8 +39,8 @@ export function get_icon(name: string) {
     }
 
     const icon_path = {
-        dark: path_lib.join(BASE_PATH_ICON, "dark", `${name}.${extension}`),
-        light: path_lib.join(BASE_PATH_ICON, "light", `${name}.${extension}`)
+        dark: vscode.Uri.file(path_lib.join(BASE_PATH_ICON, "dark", `${name}.${extension}`)),
+        light: vscode.Uri.file(path_lib.join(BASE_PATH_ICON, "light", `${name}.${extension}`)),
     };
     return icon_path;
 }
