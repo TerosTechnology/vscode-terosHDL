@@ -37,9 +37,18 @@ export async function checkExternalToolManager(currentConfig: e_config) {
 
     msg += buildTitle('Checking External Tool Configuration', HELP);
 
+    // Build a custom map for specified extern tools' version check argument
+    const customVersionArgs: Record<string, string> = {
+        vivado: '-version',
+        iverilog: '-V'
+        // Add more tools and their custom arguments here
+        // "tool-name-example": "--example-arg"
+    };
+
     // Check external tool
     msg += `${INTROICON} Selected external tool: ${selectedTool.toLocaleUpperCase()}. Installation path: "${installationPath}"\n`;
-    let result = await checkBinary(selectedTool, installationPath, selectedTool.toLocaleLowerCase(), ['--version']);
+    const versionArgument = customVersionArgs[selectedTool] || '--version'; // Default to '--version' if no custom argument is specified
+    let result = await checkBinary(selectedTool, installationPath, selectedTool.toLocaleLowerCase(), [versionArgument]);
     msg = appendMsg(result, msg, selectedTool.toLocaleUpperCase());
     msg += '\n';
     if (!result.successfulConfig) {
