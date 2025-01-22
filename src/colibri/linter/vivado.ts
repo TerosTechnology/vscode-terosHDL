@@ -27,7 +27,7 @@ import * as common from "./common";
 import * as path_lib from "path";
 
 export class Vivado extends Base_linter {
-    binary = "";
+    binary = "vivado";
     extra_cmd = "-nolog";
     argumentToCheck = ["-version"];
 
@@ -41,7 +41,7 @@ export class Vivado extends Base_linter {
         let extra_cmd = "--sv";
         if (file_lang === LANGUAGE.VHDL) {
             binary = "xvhdl";
-            extra_cmd = ""; 
+            extra_cmd = "";
         }
         else if (file_lang === LANGUAGE.SYSTEMVERILOG) {
             binary = "xvlog";
