@@ -27,7 +27,7 @@ export async function checkGeneralConfig(currentConfig: e_config): Promise<strin
     const installationPath = currentConfig.general.general.makepath;
 
     let isOk = true;
-
+    let pythonFound = false;
     let msg = '';
     msg += buildTitle('Checking general configuration', HELP);
 
@@ -47,10 +47,11 @@ export async function checkGeneralConfig(currentConfig: e_config): Promise<strin
     }
     if (pythonResult.successful) {
         msg += `${OKICON} Python installation path is correctly configured. Using "${pythonResult.python_complete_path}"\n`;
-        isOk = false;
+        pythonFound = true;
     } else {
         msg += `${BADICON} Python installation path is not correctly configured. Python binary was not found in the system path or in the configured path. Check the documentation.\n`;
     }
+    isOk = pythonFound;
     msg += '\n\n';
 
     // Python packages
