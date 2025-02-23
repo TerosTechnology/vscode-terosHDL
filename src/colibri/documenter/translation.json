@@ -73,7 +73,7 @@
     },
     "virtual bus": {
         "english": "virtual bus",
-        "russian": "bиртуальн шины"
+        "russian": "виртуальная шина"
     },
     "Virtual Buses": {
         "english": "Virtual Buses",
@@ -105,11 +105,11 @@
     },
     "Records": {
         "english": "Records",
-        "russian": "TBD"
+        "russian": "Records"
     },
     "Enums": {
         "english": "Enums",
-        "russian": "TBD"
+        "russian": "Перечисления"
     },
     "Name": {
         "english": "Name",
@@ -130,6 +130,10 @@
     "Processes": {
         "english": "Processes",
         "russian": "Процессы"
+    },
+    "Project": {
+        "english": "Project",
+        "russian": "Проект"
     },
     "Instantiations": {
         "english": "Instantiations",
