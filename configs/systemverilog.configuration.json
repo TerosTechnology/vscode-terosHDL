@@ -32,14 +32,18 @@
 		["specify", "endspecify"],
 		["sequence", "endsequence"],
 		["table", "endtable"],
-		["task", "endtask"]
+		["task", "endtask"],
+		["`ifdef", "`endif"],
+		["`ifndef", "`endif"]
 	],
 
 	"autoClosingPairs": [
 		{"open":"(", "close":")"},
 		{"open":"[", "close":"]"},
 		{"open":"{", "close":"}"},
-		{"open":"\"", "close":"\"", "notIn":["string"]}
+		{"open":"\"", "close":"\"", "notIn":["string"]},
+		{"open":"`ifdef", "close":"`endif"},
+		{"open":"`ifndef", "close":"`endif"}
 	],
     "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
 		"indentationRules": {
