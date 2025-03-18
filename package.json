@@ -261,28 +261,28 @@
                 }
                         
                 ,{
-                    "when": "view == teroshdl-view-tasks",
+                    "when": "view == teroshdl-view-tasks && view == teroshdl-view-tasks",
 
                     "command": "teroshdl.view.tasks.stop",
                     "group": "navigation"
                 }
                         
                 ,{
-                    "when": "view == teroshdl-view-tasks",
+                    "when": "view == teroshdl-view-tasks && view == teroshdl-view-tasks",
 
                     "command": "teroshdl.view.tasks.clean",
                     "group": "navigation"
                 }
                         
                 ,{
-                    "when": "view == teroshdl-view-watcher",
+                    "when": "view == teroshdl-view-watcher && view == teroshdl-view-watcher",
 
                     "command": "teroshdl.view.watcher.add",
                     "group": "navigation"
                 }
                         
                 ,{
-                    "when": "view == teroshdl-view-output",
+                    "when": "view == teroshdl-view-output && view == teroshdl-view-output",
 
                     "command": "teroshdl.view.outputs.clean",
                     "group": "navigation"
@@ -292,91 +292,91 @@
             "view/item/context": [
             
                     {
-                        "when": "viewItem == project",
+                        "when": "viewItem == project && view == teroshdl-project",
                         "command": "teroshdl.configuration.project",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == project",
+                        "when": "viewItem == project && view == teroshdl-project",
                         "command": "teroshdl.view.project.delete",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == project",
+                        "when": "viewItem == project && view == teroshdl-project",
                         "command": "teroshdl.view.project.rename",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == library",
+                        "when": "viewItem == library && view == teroshdl-view-source",
                         "command": "teroshdl.view.source.add_source_to_library",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == library",
+                        "when": "viewItem == library && view == teroshdl-view-source",
                         "command": "teroshdl.view.source.delete_library",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == source",
+                        "when": "viewItem == source && view == teroshdl-view-source",
                         "command": "teroshdl.view.source.properties",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == source",
+                        "when": "viewItem == source && view == teroshdl-view-source",
                         "command": "teroshdl.view.source.delete_source",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == source",
+                        "when": "viewItem == source && view == teroshdl-view-source",
                         "command": "teroshdl.view.source.select_toplevel",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == run",
+                        "when": "viewItem == run && view == teroshdl-view-runs",
                         "command": "teroshdl.view.runs.run",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem =~ /logs/",
+                        "when": "viewItem =~ /logs/ && view == teroshdl-view-tasks",
                         "command": "teroshdl.view.tasks.logs",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem =~ /report/",
+                        "when": "viewItem =~ /report/ && view == teroshdl-view-tasks",
                         "command": "teroshdl.view.tasks.report",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem =~ /timinganalyzer/",
+                        "when": "viewItem =~ /timinganalyzer/ && view == teroshdl-view-tasks",
                         "command": "teroshdl.view.tasks.timing_analyzer",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem =~ /technologymapviewer/",
+                        "when": "viewItem =~ /technologymapviewer/ && view == teroshdl-view-tasks",
                         "command": "teroshdl.view.tasks.technology_map_viewer",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem =~ /snapshotviewer/",
+                        "when": "viewItem =~ /snapshotviewer/ && view == teroshdl-view-tasks",
                         "command": "teroshdl.view.tasks.snapshotviewer",
                         "group": "inline"
                     }
                             
                     ,{
-                        "when": "viewItem == watcher",
+                        "when": "viewItem == watcher && view == teroshdl-view-watcher",
                         "command": "teroshdl.view.watcher.delete",
                         "group": "inline"
                     }

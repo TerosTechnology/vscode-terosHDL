@@ -39,21 +39,21 @@
   title: "Open Project Settings"
   icon: gear
   where: ["view/item/context"]
-  when: "viewItem == project"
+  when: "viewItem == project && view == teroshdl-project"
   group: "inline"
 
 - name: view.project.delete
   title: "Delete project"
   icon: chrome-close
   where: ["view/item/context"]
-  when: "viewItem == project"
+  when: "viewItem == project && view == teroshdl-project"
   group: "inline"
 
 - name: view.project.rename
   title: "Rename project"
   icon: edit
   where: ["view/item/context"]
-  when: "viewItem == project"
+  when: "viewItem == project && view == teroshdl-project"
   group: "inline"
 
 ## Source
@@ -79,35 +79,35 @@
   title: "Add to library"
   icon: add
   where: ["view/item/context"]
-  when: "viewItem == library"
+  when: "viewItem == library && view == teroshdl-view-source"
   group: "inline"
 
 - name: view.source.delete_library
   title: "Delete library"
   icon: dash
   where: ["view/item/context"]
-  when: "viewItem == library"
+  when: "viewItem == library && view == teroshdl-view-source"
   group: "inline"
 
 - name: view.source.properties
   title: "File Properties"
   icon: gear
   where: ["view/item/context"]
-  when: "viewItem == source"
+  when: "viewItem == source && view == teroshdl-view-source"
   group: "inline"
 
 - name: view.source.delete_source
   title: "Delete source"
   icon: dash
   where: ["view/item/context"]
-  when: "viewItem == source"
+  when: "viewItem == source && view == teroshdl-view-source"
   group: "inline"
 
 - name: view.source.select_toplevel
   title: "Select source as toplevel"
   icon: check
   where: ["view/item/context"]
-  when: "viewItem == source"
+  when: "viewItem == source && view == teroshdl-view-source"
   group: "inline"
 
 ## Dependency
@@ -152,7 +152,7 @@
   title: "Run"
   icon: run
   where: ["view/item/context"]
-  when: "viewItem == run"
+  when: "viewItem == run && view == teroshdl-view-runs"
   group: "inline"
 
 ## Tasks
@@ -160,47 +160,47 @@
   title: "Stop"
   icon: stop
   where: ["view/title"]
-  when: "view == teroshdl-view-tasks"
+  when: "view == teroshdl-view-tasks && view == teroshdl-view-tasks"
 
 - name: view.tasks.clean
   title: "Clean project"
   icon: trash
   where: ["view/title"]
-  when: "view == teroshdl-view-tasks"
+  when: "view == teroshdl-view-tasks && view == teroshdl-view-tasks"
 
 - name: view.tasks.logs
   title: "Open Log"
   icon: database
   where: ["view/item/context"]
-  when: "viewItem =~ /logs/"
+  when: "viewItem =~ /logs/ && view == teroshdl-view-tasks"
   group: "inline"
 
 - name: view.tasks.report
   title: "Open Report"
   icon: output
   where: ["view/item/context"]
-  when: "viewItem =~ /report/"
+  when: "viewItem =~ /report/ && view == teroshdl-view-tasks"
   group: "inline"
 
 - name: view.tasks.timing_analyzer
   title: "Open Timing Analyzer"
   icon: watch
   where: ["view/item/context"]
-  when: "viewItem =~ /timinganalyzer/"
+  when: "viewItem =~ /timinganalyzer/ && view == teroshdl-view-tasks"
   group: "inline"
 
 - name: view.tasks.technology_map_viewer
   title: "Open Technology Map Viewer"
   icon: search
   where: ["view/item/context"]
-  when: "viewItem =~ /technologymapviewer/"
+  when: "viewItem =~ /technologymapviewer/ && view == teroshdl-view-tasks"
   group: "inline"
 
 - name: view.tasks.snapshotviewer
   title: "Open Snapshop Viewer"
   icon: eye
   where: ["view/item/context"]
-  when: "viewItem =~ /snapshotviewer/"
+  when: "viewItem =~ /snapshotviewer/ && view == teroshdl-view-tasks"
   group: "inline"
 
 - name: project.quartus.rtlAnalyzer
@@ -250,13 +250,13 @@
   title: "Add"
   icon: add
   where: ["view/title"]
-  when: "view == teroshdl-view-watcher"
+  when: "view == teroshdl-view-watcher && view == teroshdl-view-watcher"
 
 - name: view.watcher.delete
   title: "Delete watcher"
   icon: dash
   where: ["view/item/context"]
-  when: "viewItem == watcher"
+  when: "viewItem == watcher && view == teroshdl-view-watcher"
   group: "inline"
 
 ## Outputs
@@ -264,7 +264,7 @@
   title: "Clean project"
   icon: trash
   where: ["view/title"]
-  when: "view == teroshdl-view-output"
+  when: "view == teroshdl-view-output && view == teroshdl-view-output"
 
 ################################################################################
 # Editor
