@@ -106,18 +106,11 @@ export class Template_manager {
      * @param  {string} options Template options
      * @param  {LANGUAGE} target_lang Target language 
      */
-    async generate(code: string, template_type: string, options: t_template_options, target_lang?: LANGUAGE) {
-        let target_language = LANGUAGE.VHDL;
+    async generate(code: string, template_type: string, options: t_template_options, target_lang: LANGUAGE) {
         let norm_language = this.language;
         if (this.language === LANGUAGE.SYSTEMVERILOG) {
             norm_language = LANGUAGE.VERILOG;
         }
-
-        if(typeof target_lang === 'undefined'){
-            target_language = norm_language;
-        }else{
-            target_language = target_lang;
-        }   
 
         let template = '';
         const code_tree = await this.parse(code);
@@ -125,7 +118,7 @@ export class Template_manager {
             return template;
         }
         // Get header
-        const header = this.get_header(options.header_file_path, target_language);
+        const header = this.get_header(options.header_file_path, target_lang);
         // Indent
         const indent = this.get_indent(options.indent_char);
         // Template parent

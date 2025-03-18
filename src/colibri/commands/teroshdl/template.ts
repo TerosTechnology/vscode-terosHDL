@@ -26,6 +26,7 @@ import * as template_manager from '../../template/manager';
 import * as template_common from '../../template/common';
 import * as cfg from '../../config/config_declaration';
 import * as cfg_aux from '../../config/auxiliar_config';
+import { LANGUAGE } from 'colibri/common/general';
 
 function get_modes(): string[] {
     const vhdl_key_list = Object.values(template_common.TEMPLATE_NAME_VHDL);
@@ -200,7 +201,7 @@ export default class MyCLI extends Command {
             template_type_norm = "";
         }
 
-        const template_content = await cl_template.generate(code_content, template_type_norm, template_options);
+        const template_content = await cl_template.generate(code_content, template_type_norm, template_options, LANGUAGE.VHDL);
         file_utils.save_file_sync(output_path_absolute, template_content);
     }
 }
