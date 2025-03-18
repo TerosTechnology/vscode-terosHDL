@@ -121,7 +121,7 @@ export class Rusthdl_lsp {
         if (!this.client) {
             return undefined;
         }
-        const result = await this.client.stop();
+        await this.client.stop(1000);
     }
 
     embeddedVersion(languageServerDir: string): string {
