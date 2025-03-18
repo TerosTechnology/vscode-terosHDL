@@ -328,6 +328,7 @@ export const WEB_CONFIG = `
                     <div class="collapse" id="Tools">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><a id="btn-tools-quartus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Intel@ Quartus@ Prime</a></li>
+                            <li><a id="btn-tools-vsg" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VSG</a></li>
                             <li><a id="btn-tools-osvvm" href="#" class="link-dark d-inline-flex text-decoration-none rounded">OSVVM</a></li>
                             <li><a id="btn-tools-ascenlint" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Ascenlint</a></li>
                             <li><a id="btn-tools-cocotb" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Cocotb</a></li>
@@ -1880,6 +1881,34 @@ export const WEB_CONFIG = `
                 <span class="markConfig badge bg-secondary" id="mark_tools-quartus-wave_file_questa"></span>
               </label>
                 <input class="form-control" id="tools-quartus-wave_file_questa" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+      </div>
+      
+      <div class="card-footer">
+        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
+        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
+        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
+      </div>
+  </div>
+    <div class="card h-100" id="tools-vsg">
+      <div class="card-header">
+        <h1 class="card-title">Tools: VSG</h1>
+        <h6 class="card-subtitle mb-2 text-muted">VHDL Style Guide. Configure the linter and formatter in Linter and Formatter sections.</h6>
+      </div>
+      <div class="card-body overflow-auto">
+      
+          
+          
+            <div class="mb-3">
+              <label for="tools-vsg-installation_path" class="form-label">
+                Installation path. E.g. /home/myuser/.venvs/default/bin/
+                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-installation_path"></span>
+              </label>
+                <input class="form-control" id="tools-vsg-installation_path" rows="3"  value=""></input>
             </div>
           
           
@@ -4245,6 +4274,13 @@ export const WEB_CONFIG = `
     document.getElementById("tools-quartus").classList.remove('d-none');
     document.getElementById("tools-quartus").classList.add('d-none');
   }
+  if ("tools" == tp0 && "vsg" == tp1){
+    document.getElementById("tools-vsg").classList.remove('d-none');
+  }
+  else{
+    document.getElementById("tools-vsg").classList.remove('d-none');
+    document.getElementById("tools-vsg").classList.add('d-none');
+  }
   if ("tools" == tp0 && "osvvm" == tp1){
     document.getElementById("tools-osvvm").classList.remove('d-none');
   }
@@ -4538,6 +4574,10 @@ export const WEB_CONFIG = `
 
   document.getElementById("btn-tools-quartus").addEventListener("click", function() {
     enable_tab("tools","quartus")
+  });
+
+  document.getElementById("btn-tools-vsg").addEventListener("click", function() {
+    enable_tab("tools","vsg")
   });
 
   document.getElementById("btn-tools-osvvm").addEventListener("click", function() {
@@ -4933,6 +4973,9 @@ export const WEB_CONFIG = `
     config["tools"]["quartus"]["allow_register_retiming"] = element_value
     element_value = document.getElementById("tools-quartus-wave_file_questa").value;
     config["tools"]["quartus"]["wave_file_questa"] = element_value
+    config["tools"]["vsg"] = {}
+    element_value = document.getElementById("tools-vsg-installation_path").value;
+    config["tools"]["vsg"]["installation_path"] = element_value
     config["tools"]["osvvm"] = {}
     element_value = document.getElementById("tools-osvvm-installation_path").value;
     config["tools"]["osvvm"]["installation_path"] = element_value
@@ -5449,6 +5492,7 @@ export const WEB_CONFIG = `
     document.getElementById("tools-quartus-optimization_mode").value = config["tools"]["quartus"]["optimization_mode"];
     document.getElementById("tools-quartus-allow_register_retiming").checked = config["tools"]["quartus"]["allow_register_retiming"];
     document.getElementById("tools-quartus-wave_file_questa").value = config["tools"]["quartus"]["wave_file_questa"];
+    document.getElementById("tools-vsg-installation_path").value = config["tools"]["vsg"]["installation_path"];
     document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];
     document.getElementById("tools-osvvm-tclsh_binary").value = config["tools"]["osvvm"]["tclsh_binary"];
     document.getElementById("tools-osvvm-simulator_name").value = config["tools"]["osvvm"]["simulator_name"];
@@ -6032,6 +6076,11 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-wave_file_questa").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["vsg"]["installation_path"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-vsg-installation_path").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["osvvm"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;

@@ -19,6 +19,7 @@
 import {
     e_config,
     e_tools_general_execution_mode,
+    e_tools_general_select_tool,
     e_tools_general_waveform_viewer
 } from 'colibri/config/config_declaration';
 import { appendMsg, buildTitle, INTROICON, replaceByResult } from './utils';
@@ -47,8 +48,13 @@ export async function checkExternalToolManager(currentConfig: e_config) {
 
     // Check external tool
     msg += `${INTROICON} Selected external tool: ${selectedTool.toLocaleUpperCase()}. Installation path: "${installationPath}"\n`;
-    const versionArgument = customVersionArgs[selectedTool] || '--version'; // Default to '--version' if no custom argument is specified
-    let result = await checkBinary(selectedTool, installationPath, selectedTool.toLocaleLowerCase(), [versionArgument]);
+    // Default to '--version' if no custom argument is specified
+    const versionArgument = customVersionArgs[selectedTool] || '--version';
+
+    const binaryName =
+        selectedTool === e_tools_general_select_tool.rivierapro ? ['rivierapro', 'riviera'] : selectedTool;
+
+    let result = await checkBinary(selectedTool, installationPath, binaryName, [versionArgument]);
     msg = appendMsg(result, msg, selectedTool.toLocaleUpperCase());
     msg += '\n';
     if (!result.successfulConfig) {

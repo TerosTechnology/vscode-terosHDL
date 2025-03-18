@@ -40,64 +40,76 @@ export interface BinaryCheck {
 export async function checkBinary(
     displayName: string,
     binaryFolder: string,
-    binaryName: string,
+    binaryName: string | string[],
     argumentList: string[]
 ): Promise<BinaryCheck> {
     let completeMsgList: string[] = [];
     let binaryFolderPath = binaryFolder;
+    const binaryNames = Array.isArray(binaryName) ? binaryName : [binaryName];
 
     //check in system path
     if (binaryFolder === '') {
-        const result = await checkBinaryInSystemPath(displayName, binaryName, argumentList);
-        completeMsgList = [...completeMsgList, ...result.messageList];
+        for (const currentBinary of binaryNames) {
+            const result = await checkBinaryInSystemPath(displayName, currentBinary, argumentList);
+            completeMsgList = [...completeMsgList, ...result.messageList];
+            if (result.successful) {
+                return {
+                    displayName: displayName,
+                    binaryPath: result.binaryPath,
+                    messageList: completeMsgList,
+                    successfulFind: result.successful,
+                    successfulConfig: result.successful,
+                };
+            }
+        }
         return {
             displayName: displayName,
-            binaryPath: result.binaryPath,
+            binaryPath: "",
             messageList: completeMsgList,
-            successfulFind: result.successful,
-            successfulConfig: result.successful,
+            successfulFind: false,
+            successfulConfig: false,
         };
     } else {
-        ////////////////////////////////////////////////////////////////////////
-        // adding binary
-        ////////////////////////////////////////////////////////////////////////
-        // check adding the binary name to the end of the path
-        let checkWithExe = get_os() === OS.WINDOWS;
+        const checkWithExe = get_os() === OS.WINDOWS;
+        
+        for (const currentBinary of binaryNames) {
+            ////////////////////////////////////////////////////////////////////////
+            // adding binary
+            ////////////////////////////////////////////////////////////////////////
+            // check adding the binary name to the end of the path
+            binaryFolderPath = `${binaryFolder}${path.sep}${currentBinary}`;
+            let result = await checkBinaryInCompletePath(displayName, binaryFolderPath, argumentList, checkWithExe);
 
-        binaryFolderPath = `${binaryFolder}${path.sep}${binaryName}`;
-        let result = await checkBinaryInCompletePath(displayName, binaryFolderPath, argumentList, checkWithExe);
+            completeMsgList = [...completeMsgList, ...result.messageList];
+            if (result.successful) {
+                return {
+                    displayName: displayName,
+                    binaryPath: "",
+                    messageList: result.messageList,
+                    successfulFind: result.successful,
+                    successfulConfig: result.successful,
+                };
+            }
+            
+            // check adding the binary name to the end of the path with opposite exe setting
+            result = await checkBinaryInCompletePath(displayName, binaryFolderPath, argumentList, !checkWithExe);
 
-        completeMsgList = [...completeMsgList, ...result.messageList];
-        if (result.successful) {
-            return {
-                displayName: displayName,
-                binaryPath: "",
-                messageList: result.messageList,
-                successfulFind: result.successful,
-                successfulConfig: result.successful,
-            };
+            completeMsgList = [...completeMsgList, ...result.messageList];
+            if (result.successful) {
+                return {
+                    displayName: displayName,
+                    binaryPath: binaryFolder,
+                    messageList: result.messageList,
+                    successfulFind: result.successful,
+                    successfulConfig: false,
+                };
+            }
         }
-        // check adding the binary name to the end of the path
-        binaryFolderPath = `${binaryFolder}${path.sep}${binaryName}`;
-        result = await checkBinaryInCompletePath(displayName, binaryFolderPath, argumentList, !checkWithExe);
-
-        completeMsgList = [...completeMsgList, ...result.messageList];
-        if (result.successful) {
-            return {
-                displayName: displayName,
-                binaryPath: binaryFolder,
-                messageList: result.messageList,
-                successfulFind: result.successful,
-                successfulConfig: false,
-            };
-        }
 
         ////////////////////////////////////////////////////////////////////////
-        // adding binary
+        // checking directly with the path
         ////////////////////////////////////////////////////////////////////////
-        // check directly with the path
-        checkWithExe = get_os() === OS.WINDOWS;
-        result = await checkBinaryInCompletePath(displayName, binaryFolder, argumentList, checkWithExe);
+        let result = await checkBinaryInCompletePath(displayName, binaryFolder, argumentList, checkWithExe);
         completeMsgList = [...completeMsgList, ...result.messageList];
         if (result.successful) {
             return {
@@ -123,16 +135,18 @@ export async function checkBinary(
         }
 
         // try in system path
-        result = await checkBinaryInSystemPath(displayName, binaryName, argumentList);
-        completeMsgList = [...completeMsgList, ...result.messageList];
-        if (result.successful) {
-            return {
-                displayName: displayName,
-                binaryPath: "",
-                messageList: completeMsgList,
-                successfulFind: result.successful,
-                successfulConfig: false,
-            };
+        for (const currentBinary of binaryNames) {
+            result = await checkBinaryInSystemPath(displayName, currentBinary, argumentList);
+            completeMsgList = [...completeMsgList, ...result.messageList];
+            if (result.successful) {
+                return {
+                    displayName: displayName,
+                    binaryPath: "",
+                    messageList: completeMsgList,
+                    successfulFind: result.successful,
+                    successfulConfig: false,
+                };
+            }
         }
 
         return {

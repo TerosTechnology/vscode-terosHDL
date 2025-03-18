@@ -101,6 +101,10 @@ class Formatter {
             const config = utils.getConfig(this.manager);
             return config.tools.verible.installation_path;
         }
+        else if (formatterName === e_formatter_general_formatter_vhdl.vsg) {
+            const config = utils.getConfig(this.manager);
+            return config.tools.vsg.installation_path;
+        }
         return '';
     }
 

@@ -1,0 +1,4 @@
+installation_path:
+  description: "Installation path. E.g. /home/myuser/.venvs/default/bin/"
+  type: string
+  value: ""

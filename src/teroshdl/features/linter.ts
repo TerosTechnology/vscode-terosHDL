@@ -108,7 +108,8 @@ class Linter {
             path = config.tools.vivado.installation_path;
             argument = config.linter.vivado.verilog_arguments;
         }
-        else if (linter_name === e_linter_general_lstyle_vhdl.vsg){
+        else if (linter_name === e_linter_general_lstyle_vhdl.vsg) {
+            path = config.tools.vsg.installation_path;
             argument = config.linter.vsg.arguments;
         }
         else if (linter_name === e_linter_general_lstyle_verilog.verible){

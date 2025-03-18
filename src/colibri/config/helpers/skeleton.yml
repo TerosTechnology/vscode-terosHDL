@@ -125,6 +125,11 @@ tools:
       description: "The intuitive high-performance design environment. From design entry and synthesis to optimization, verification, and simulation, Intel® Quartus® Prime Design Software unlocks increased capabilities on devices with multi-million logic elements, providing designers with the ideal platform to meet next-generation design opportunities."
       page: ./configs/tools/quartus.yml
 
+    vsg:
+      title: VSG
+      description: "VHDL Style Guide. Configure the linter and formatter in Linter and Formatter sections."
+      page: ./configs/tools/vsg.yml
+
     osvvm:
       title: OSVVM
       description: "OSVVM is an advanced verification methodology that defines a VHDL verification framework, verification utility library, verification component library, and a scripting flow that simplifies your FPGA or ASIC verification project from start to finish. Using these libraries you can create a simple, readable, and powerful testbench that is suitable for either a simple FPGA block or a complex ASIC."
