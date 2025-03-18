@@ -17,18 +17,18 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import * as vscode from "vscode";
-import * as element from "./element";
-import * as utils from "../utils";
+import * as vscode from 'vscode';
+import * as element from './element';
+import * as utils from '../utils';
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import * as path_lib from 'path';
-import { open_file } from "../../utils/utils";
-import { BaseView } from "../baseView";
-import { e_viewType } from "../common";
-import { SourcetDecorator } from "./element";
-import { e_project_type, e_source_type } from "colibri/project_manager/common";
-import { getQsysPath } from "colibri/project_manager/tool/quartus/utils";
-import { spawn } from "child_process";
+import { open_file } from '../../utils/utils';
+import { BaseView } from '../baseView';
+import { e_viewType } from '../common';
+import { SourcetDecorator } from './element';
+import { e_project_type, e_source_type } from 'colibri/project_manager/common';
+import { getQsysPath } from 'colibri/project_manager/tool/quartus/utils';
+import { spawn } from 'child_process';
 
 export class Source_manager extends BaseView {
     private tree: element.ProjectProvider;
@@ -48,18 +48,25 @@ export class Source_manager extends BaseView {
         const provider = new SourcetDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
 
-        context.subscriptions.push(vscode.window.registerTreeDataProvider(element.ProjectProvider.getViewID(), this.tree as unknown as element.BaseTreeDataProvider<element.Source_tree_element>));
+        context.subscriptions.push(
+            vscode.window.registerTreeDataProvider(
+                element.ProjectProvider.getViewID(),
+                this.tree as unknown as element.BaseTreeDataProvider<element.Source_tree_element>
+            )
+        );
     }
 
     set_commands() {
-        vscode.commands.registerCommand("teroshdl.view.source.search", () => this.search());
-        vscode.commands.registerCommand("teroshdl.view.source.save_project", () => this.save_project());
-        vscode.commands.registerCommand("teroshdl.view.source.select_toplevel", (item) => this.select_top(item));
-        vscode.commands.registerCommand("teroshdl.view.source.add", async () => await this.add());
-        vscode.commands.registerCommand("teroshdl.view.source.add_source_to_library", (item) => this.add_source_to_library(item));
-        vscode.commands.registerCommand("teroshdl.view.source.delete_library", (item) => this.delete_library(item));
-        vscode.commands.registerCommand("teroshdl.view.source.delete_source", (item) => this.delete_source(item));
-        vscode.commands.registerCommand("teroshdl.view.source.open", (item) => this.openSource(item));
+        vscode.commands.registerCommand('teroshdl.view.source.search', () => this.search());
+        vscode.commands.registerCommand('teroshdl.view.source.save_project', () => this.save_project());
+        vscode.commands.registerCommand('teroshdl.view.source.select_toplevel', (item) => this.select_top(item));
+        vscode.commands.registerCommand('teroshdl.view.source.add', async () => await this.add());
+        vscode.commands.registerCommand('teroshdl.view.source.add_source_to_library', (item) =>
+            this.add_source_to_library(item)
+        );
+        vscode.commands.registerCommand('teroshdl.view.source.delete_library', (item) => this.delete_library(item));
+        vscode.commands.registerCommand('teroshdl.view.source.delete_source', (item) => this.delete_source(item));
+        vscode.commands.registerCommand('teroshdl.view.source.open', (item) => this.openSource(item));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,73 +77,77 @@ export class Source_manager extends BaseView {
 
         const prj = this.project_manager.get_selected_project();
         const prjType = prj.getProjectType();
-        if (prjType === e_project_type.QUARTUS &&
-            (fileExtension === ".ip" || fileExtension === ".qsys")) {
-
+        if (prjType === e_project_type.QUARTUS && (fileExtension === '.ip' || fileExtension === '.qsys')) {
             const config = prj.get_config();
-            const pathBin = path_lib.join(getQsysPath(config), "qsys-edit");
+            const pathBin = path_lib.join(getQsysPath(config), 'qsys-edit');
 
-            const qPath = prj.projectDiskPath.replace(".qsf", ".qpf");
+            const qPath = prj.projectDiskPath.replace('.qsf', '.qpf');
             const cmd = `${pathBin} ${name} --quartus-project=${qPath}`;
             // shelljs.exec(cmd, { async: true });
             spawn(cmd, {
                 shell: true,
                 stdio: 'inherit'
             });
-        }
-        else {
+        } else {
             open_file(vscode.Uri.file(name));
         }
     }
 
     async search() {
-        await vscode.commands.executeCommand(element.ProjectProvider.getViewID() + ".focus")
+        await vscode.commands.executeCommand(element.ProjectProvider.getViewID() + '.focus');
         await vscode.commands.executeCommand('list.find');
     }
 
     async save_project() {
         try {
             const prj = this.project_manager.get_selected_project();
-            const output_path = await utils.get_save_dialog("Save project", "Save", []);
-            if (output_path !== "") {
+            const output_path = await utils.get_save_dialog('Save project', 'Save', []);
+            if (output_path !== '') {
                 prj.save_edam_yaml(output_path);
             }
-        } catch (error) {
-
-        }
+        } catch (error) {}
     }
 
     async add() {
         try {
             const prj = this.project_manager.get_selected_project();
-            const element_types = ["Source", "Library"];
-            const picker_value = await utils.get_picker_value(element_types, "Add source/library:");
+            const element_types = ['Source', 'Library'];
+            const picker_value = await utils.get_picker_value(element_types, 'Add source/library:');
 
             // Add source
             if (picker_value === element_types[0]) {
                 // const element_types = ["Browser", "Load from CSV", "Load from VUnit run.py", "Load from Vivado .xpr"];
                 const element_types = [
-                    "Browser",
-                    "Load from list of files",
-                    "Load from VUnit run.py",
-                    "Add all HDL files from a directory and subdirectories",
-                    "Add all files from a directory",
+                    'Browser',
+                    'Load from list of files',
+                    'Load from VUnit run.py',
+                    'Add all HDL files from a directory and subdirectories',
+                    'Add all files from a directory'
                 ];
-                const picker_value = await utils.get_picker_value(element_types, "Add from:");
+                const picker_value = await utils.get_picker_value(element_types, 'Add from:');
                 // Add from browser
                 if (picker_value === element_types[0]) {
-                    await utils.add_sources_from_open_dialog(prj, "");
+                    await utils.add_sources_from_open_dialog(prj, '');
                 }
                 // Add from CSV
                 else if (picker_value === element_types[1]) {
-                    const csv_path = await utils.get_from_open_dialog("Add from CSV", false, true, false,
-                        "Select CSV file", { 'CSV file (*.csv, *.CSV)': ['csv', 'CSV'] });
+                    const csv_path = await utils.get_from_open_dialog(
+                        'Add from CSV',
+                        false,
+                        true,
+                        false,
+                        'Select CSV file',
+                        { 'CSV file (*.csv, *.CSV)': ['csv', 'CSV'] }
+                    );
                     if (csv_path.length !== 0) {
                         prj.add_file_from_csv(csv_path[0], true);
                     }
                 }
                 // Add from VUnit
                 else if (picker_value === element_types[2]) {
+                    vscode.window.showInformationMessage(
+                        'If you use Watcher Feature you can add sources from VUnit run.py and VUnit will be updated automatically: https://terostechnology.github.io/terosHDLdoc/docs/project_configuration/watcher'
+                    );
                     await utils.add_sources_from_vunit(prj, true);
                 }
                 // Add from directory and subirectories
@@ -150,41 +161,33 @@ export class Source_manager extends BaseView {
             }
             // Add library
             else {
-                const logical_name = await utils.get_from_input_box("Add new library", "Library name");
+                const logical_name = await utils.get_from_input_box('Add new library', 'Library name');
                 if (logical_name !== undefined) {
                     prj.add_logical(logical_name);
                 }
             }
-        } catch (error) {
-
-        }
+        } catch (error) {}
     }
 
     async add_source_to_library(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
             await utils.add_sources_from_open_dialog(prj, item.get_logical_name());
-        } catch (error) {
-
-        }
+        } catch (error) {}
     }
 
     async delete_library(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
             await prj.delete_file_by_logical_name(item.get_logical_name());
-        } catch (error) {
-
-        }
+        } catch (error) {}
     }
 
     async delete_source(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
             await prj.delete_file(item.get_name(), item.get_logical_name());
-        } catch (error) {
-
-        }
+        } catch (error) {}
     }
 
     async select_top(item: element.Source_tree_element) {
@@ -200,29 +203,25 @@ export class Source_manager extends BaseView {
                 'Set as top level testbench (only for simulation)'
             ];
             let picker_value = await vscode.window.showQuickPick(project_examples_types, {
-                placeHolder: "Choose the type of top level",
+                placeHolder: 'Choose the type of top level'
             });
             if (picker_value !== undefined) {
                 if (picker_value === project_examples_types[0]) {
                     const result = await prj.add_toplevel_path(item.get_name());
                     this.showTopLevelMessage(result.successful, true);
-                }
-                else if (picker_value === project_examples_types[1]) {
+                } else if (picker_value === project_examples_types[1]) {
                     const result = await prj.setTestbench(item.get_name());
                     this.showTopLevelMessage(result.successful, false);
                 }
             }
-        } catch (error) {
-
-        }
+        } catch (error) {}
     }
 
     private showTopLevelMessage(successful: boolean, onlyFailed: boolean) {
         if (successful === false && !onlyFailed === true) {
-            vscode.window.showErrorMessage("The testbench can not be set as top level testbench.");
-        }
-        else {
-            vscode.window.showInformationMessage("The testbench was set as top level testbench.");
+            vscode.window.showErrorMessage('The testbench can not be set as top level testbench.');
+        } else {
+            vscode.window.showInformationMessage('The testbench was set as top level testbench.');
         }
     }
 
@@ -234,29 +233,29 @@ export class Source_manager extends BaseView {
         try {
             const prj = this.project_manager.get_selected_project();
             if (prj.getProjectType() === e_project_type.QUARTUS) {
-                const OPTIONLIST = [
-                    "Set as testbench file (only for simulation)",
-                    "Set as synthesis file",
-                ];
+                const OPTIONLIST = ['Set as testbench file (only for simulation)', 'Set as synthesis file'];
                 const picker_value = await vscode.window.showQuickPick(OPTIONLIST, {
-                    placeHolder: "Set file type",
+                    placeHolder: 'Set file type'
                 });
                 if (picker_value === undefined) {
                     return;
                 }
                 if (picker_value === OPTIONLIST[0]) {
-                    await prj.modifyFileSourceType(element.get_name(), element.get_logical_name(),
-                        e_source_type.SIMULATION);
+                    await prj.modifyFileSourceType(
+                        element.get_name(),
+                        element.get_logical_name(),
+                        e_source_type.SIMULATION
+                    );
+                } else if (picker_value === OPTIONLIST[1]) {
+                    await prj.modifyFileSourceType(
+                        element.get_name(),
+                        element.get_logical_name(),
+                        e_source_type.SYNTHESIS
+                    );
                 }
-                else if (picker_value === OPTIONLIST[1]) {
-                    await prj.modifyFileSourceType(element.get_name(), element.get_logical_name(),
-                        e_source_type.SYNTHESIS);
-                }
+            } else {
+                vscode.window.showInformationMessage('File properties are not available for Generic projects');
             }
-            else {
-                vscode.window.showInformationMessage("File properties are not available for Generic projects");
-            }
-        } catch (error) { }
+        } catch (error) {}
     }
 }
-

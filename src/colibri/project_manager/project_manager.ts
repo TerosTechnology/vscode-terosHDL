@@ -102,7 +102,12 @@ export class Project_manager extends ConfigManager {
                         selfm.add_file_from_csv(watcher.path, false);
                     }
                     else if (watcher.watcher_type === e_watcher_type.VUNIT) {
-                        await selfm.add_file_from_vunit(watcher.path, false);
+                        const result = await selfm.add_file_from_vunit(watcher.path, false);
+                        if (result.successful === false) {
+                            if (selfm.emitterProject !== undefined) {
+                                selfm.emitterProject.emitEventLog(result.msg, e_event.STDOUT_ERROR);
+                            }
+                        }
                     }
                     else if (watcher.watcher_type === e_watcher_type.VIVADO) {
                         await selfm.add_file_from_vivado(watcher.path, false);

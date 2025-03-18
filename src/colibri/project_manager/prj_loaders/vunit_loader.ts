@@ -69,7 +69,7 @@ export async function get_files_from_vunit(config: e_config, vunit_path: string,
     const result_error: t_loader_file_list_result = {
         file_list: [],
         successful: false,
-        msg: "Error processing run.py"
+        msg: `Error processing run.py:\n${result.stderr}\n${result.stdout}`
     };
     return result_error;
 }
