@@ -21,7 +21,7 @@ import { create_temp_file } from "../process/utils";
 import { Process } from "../process/process";
 import { p_options } from "../process/common";
 import * as common from "./common";
-import { check_if_path_exist, normalize_path, get_directory } from "../utils/file_utils";
+import { check_if_path_exist, normalize_path, get_directory, remove_file } from "../utils/file_utils";
 import * as path_lib from "path";
 import * as logger from "../logger/logger";
 import { t_file } from "../project_manager/common";
@@ -53,6 +53,7 @@ export abstract class Base_linter {
     async lint_from_code(code: string, options: common.l_options) {
         const temp_file = await create_temp_file(code);
         const errors = await this.lint(temp_file, options);
+        remove_file(temp_file);
         return errors;
     }
 

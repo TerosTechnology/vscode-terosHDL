@@ -41,6 +41,8 @@ export async function get_files_from_vunit(config: e_config, vunit_path: string,
     if (result.successful === true) {
         try {
             const json_str = file_utils.read_file_sync(json_path);
+            file_utils.remove_file(json_path);
+            
             const file_list = JSON.parse(json_str).files;
             const file_defined_list: t_file[] = [];
             file_list.forEach((file: any) => {
@@ -66,6 +68,7 @@ export async function get_files_from_vunit(config: e_config, vunit_path: string,
         // eslint-disable-next-line no-empty
         catch (e) { }
     }
+    file_utils.remove_file(json_path);
     const result_error: t_loader_file_list_result = {
         file_list: [],
         successful: false,
