@@ -1,7 +1,7 @@
 docLink: "https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation"
 
 pypath:
-  description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong>"
+  description: "Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong> <a href=https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation#2-python3>https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation#2-python3</a>"
   type: string
   value: ""
 
