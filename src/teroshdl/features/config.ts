@@ -254,7 +254,7 @@ export class Config_manager {
         }).then(fileInfos => {
             if (fileInfos?.path !== undefined) {
                 const path_norm = utils.normalize_path(fileInfos?.path);
-                const config_string = this.currentConfig.toString();
+                const config_string = JSON.stringify(this.currentConfig, null, 4);
                 save_file_sync(path_norm, config_string);
                 vscode.window.showInformationMessage(`Settings exported ${this.getMessageAlert()}`);
             }
