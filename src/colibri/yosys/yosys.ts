@@ -46,7 +46,7 @@ export async function getSchematic(config: e_config, topTevel: string, sources: 
         return runYosysRaw(config, topTevel, sources, callback_stream);
     }
     else if (backend === e_schematic_general_backend.yosys_ghdl) {
-        return runYosysGhdl(config, topTevel, sources, callback_stream);
+        return await runYosysGhdl(config, topTevel, sources, callback_stream);
     }
     else if (backend === e_schematic_general_backend.standalone) {
         return runYosysStandalone(config, topTevel, sources, callback_stream);
@@ -112,8 +112,8 @@ export function runYosysRaw(config: e_config, topTevel: string, sources: t_file[
     return exec_i;
 }
 
-export function runYosysGhdl(config: e_config, topTevel: string, sources: t_file[],
-    callback: (result: e_schematic_result) => void): any {
+export async function runYosysGhdl(config: e_config, topTevel: string, sources: t_file[],
+    callback: (result: e_schematic_result) => void): Promise<any> {
 
     const yosysPath = getRawYosysPath(config);
     let isVhdl = false;
@@ -151,7 +151,7 @@ export function runYosysGhdl(config: e_config, topTevel: string, sources: t_file
 
     let cmd =
         // eslint-disable-next-line max-len
-        `${preArguments} ${yosysPath} -m ghdl -p "ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} --work=work -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
+        `${preArguments} ${yosysPath} ${await getGHDLCommnand(preArguments, yosysPath)} -p "ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} --work=work -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
     cmd = removeEmptyCommands(cmd);
 
     const opt_exec = { cwd: process_utils.get_home_directory() };
@@ -177,6 +177,23 @@ export function runYosysGhdl(config: e_config, topTevel: string, sources: t_file
         callback(schematicResult);
     });
     return exec_i;
+}
+
+async function getGHDLCommnand(preArgument: string, yosysPath: string) : Promise<string> {
+    try {
+        const p = new Process();
+        const commnad = `${preArgument} ${yosysPath} -m ghdl -p "help"`;
+        const result = await p.exec_wait(commnad, { cwd: process_utils.get_home_directory() });
+        if (result.successful) {
+            return "-m ghdl";
+        }
+        else {
+            return "";
+        }
+    }
+    catch (error) {
+        return "";
+    }
 }
 
 export async function runYosysStandalone(config: e_config, topTevel: string, sources: t_file[],
