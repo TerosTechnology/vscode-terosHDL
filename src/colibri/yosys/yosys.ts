@@ -173,6 +173,7 @@ export function runYosysGhdl(config: e_config, topTevel: string, sources: t_file
             schematicResult.schematic = read_file_sync(outputPathFilename);
         }
 
+        remove_file(outputPathFilename);
         callback(schematicResult);
     });
     return exec_i;
