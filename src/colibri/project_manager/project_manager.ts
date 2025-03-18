@@ -606,8 +606,18 @@ export class Project_manager extends ConfigManager {
         file_utils.save_file_sync(output_path, edam_yaml);
     }
 
-    public save_toml(output_path: string, hdlVersion: string) {
-        const toml_text = `standard = "${hdlVersion}"\n` + this.get_toml();
+    public save_toml(output_path: string, hdlVersion: string, ignoreVunit: boolean, vunitPath: string) {
+        let initString = `standard = "${hdlVersion}"\n`;
+
+        let endString = "\n\n";
+        if (ignoreVunit) {
+            endString += "vunit_lib.is_third_party = true\n";
+        }
+        if (vunitPath !== "") {
+            endString += `vunit_lib.files = ['${vunitPath}']\n`;
+        }
+
+        const toml_text = initString + this.get_toml() + endString;
         file_utils.save_file_sync(output_path, toml_text);
     }
 

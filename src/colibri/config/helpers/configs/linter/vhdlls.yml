@@ -6,3 +6,13 @@ standard:
     v2008: "2008"
     v2019: "2019"
   value: "v2008"
+
+ignoreVunit:
+  description: "It will ignore the VUnit library in vunit_lib."
+  type: boolean
+  value: false
+
+vunitPath:
+  description: "Path to the VUnit files. Example: '/home/myuser/.venvs/default/lib/python3.12/site-packages/vunit/vhdl/**/*.vhd'"
+  type: string
+  value: ""

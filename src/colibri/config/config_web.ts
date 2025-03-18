@@ -1297,6 +1297,30 @@ export const WEB_CONFIG = `
           
           
           
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="linter-vhdlls-ignoreVunit">
+                <label class="form-check-label" for="linter-vhdlls-ignoreVunit">
+                  It will ignore the VUnit library in vunit_lib.
+                  <span class="markConfig badge bg-secondary" id="mark_linter-vhdlls-ignoreVunit"></span>
+                </label>
+              </div>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="linter-vhdlls-vunitPath" class="form-label">
+                Path to the VUnit files. Example: '/home/myuser/.venvs/default/lib/python3.12/site-packages/vunit/vhdl/**/*.vhd'
+                <span class="markConfig badge bg-secondary" id="mark_linter-vhdlls-vunitPath"></span>
+              </label>
+                <input class="form-control" id="linter-vhdlls-vunitPath" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
       </div>
       
       <div class="card-footer">
@@ -4833,6 +4857,10 @@ export const WEB_CONFIG = `
     config["linter"]["vhdlls"] = {}
     element_value = document.getElementById("linter-vhdlls-standard").value;
     config["linter"]["vhdlls"]["standard"] = element_value
+    element_value = document.getElementById("linter-vhdlls-ignoreVunit").checked;
+    config["linter"]["vhdlls"]["ignoreVunit"] = element_value
+    element_value = document.getElementById("linter-vhdlls-vunitPath").value;
+    config["linter"]["vhdlls"]["vunitPath"] = element_value
     config["linter"]["ghdl"] = {}
     element_value = document.getElementById("linter-ghdl-arguments").value;
     config["linter"]["ghdl"]["arguments"] = element_value
@@ -5390,6 +5418,8 @@ export const WEB_CONFIG = `
     document.getElementById("linter-general-lstyle_verilog").value = config["linter"]["general"]["lstyle_verilog"];
     document.getElementById("linter-general-lstyle_vhdl").value = config["linter"]["general"]["lstyle_vhdl"];
     document.getElementById("linter-vhdlls-standard").value = config["linter"]["vhdlls"]["standard"];
+    document.getElementById("linter-vhdlls-ignoreVunit").checked = config["linter"]["vhdlls"]["ignoreVunit"];
+    document.getElementById("linter-vhdlls-vunitPath").value = config["linter"]["vhdlls"]["vunitPath"];
     document.getElementById("linter-ghdl-arguments").value = config["linter"]["ghdl"]["arguments"];
     document.getElementById("linter-icarus-arguments").value = config["linter"]["icarus"]["arguments"];
     document.getElementById("linter-modelsim-vhdl_arguments").value = config["linter"]["modelsim"]["vhdl_arguments"];
@@ -5847,6 +5877,16 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vhdlls-standard").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["linter"]["vhdlls"]["ignoreVunit"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_linter-vhdlls-ignoreVunit").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["linter"]["vhdlls"]["vunitPath"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_linter-vhdlls-vunitPath").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["linter"]["ghdl"]["arguments"] != undefined) {
       mark = MODIFIEDMSG;
