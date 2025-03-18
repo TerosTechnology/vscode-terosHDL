@@ -601,8 +601,8 @@ export class Project_manager extends ConfigManager {
         file_utils.save_file_sync(output_path, edam_yaml);
     }
 
-    public save_toml(output_path: string) {
-        const toml_text = this.get_toml();
+    public save_toml(output_path: string, hdlVersion: string) {
+        const toml_text = `standard = "${hdlVersion}"\n` + this.get_toml();
         file_utils.save_file_sync(output_path, toml_text);
     }
 

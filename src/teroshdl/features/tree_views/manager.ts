@@ -37,6 +37,7 @@ import { Dependency_manager } from "../dependency";
 import { LogView } from "../views/logs";
 import { TimingReportView } from "../views/timing/timing_report";
 import { e_event, ProjectEmitter } from "colibri/project_manager/projectEmitter";
+import * as utils from '../utils/utils';
 
 let run_output: Run_output_manager = new Run_output_manager();
 let multi_manager: Multi_project_manager;
@@ -108,7 +109,6 @@ export class Tree_view_manager {
             e_event.EXEC_RUN,
             e_event.FINISH_RUN,
             e_event.UPDATE_TASK,
-            e_event.SAVE_SETTINGS,
             e_event.STDOUT_INFO,
             e_event.STDOUT_WARNING,
             e_event.STDOUT_ERROR,
@@ -117,6 +117,7 @@ export class Tree_view_manager {
 
         const allowedRefreshEventList = [
             e_event.SELECT_PROJECT,
+            e_event.SAVE_SETTINGS,
         ];
 
         if (refuseRefreshEventList.includes(eventType)) {
@@ -126,7 +127,9 @@ export class Tree_view_manager {
         try {
             const selectedProject = multi_manager.get_selected_project().get_name();
             if (selectedProject === projectName || allowedRefreshEventList.includes(eventType)) {
-                multi_manager.get_selected_project().save_toml(path_lib.join(os.homedir(), ".vhdl_ls.toml"));
+                const hdlVersion = utils.getConfig(multi_manager).linter.vhdlls.standard.replace("v", "");
+
+                multi_manager.get_selected_project().save_toml(path_lib.join(os.homedir(), ".vhdl_ls.toml"), hdlVersion);
                 vscode.commands.executeCommand("teroshdl.vhdlls.restart");
             }
         } catch (error) {

@@ -1,0 +1,8 @@
+standard:
+  description: "Define the VHDL revision to use for parsing and analysis with the standard key. The expected value is the year associated the VHDL standard. Defining the standard feature is a relatively new feature (since april 2024). Anything but the 2008 standard will not change much at the moment."
+  type: select
+  options:
+    v1993: "1993"
+    v2008: "2008"
+    v2019: "2019"
+  value: "v2008"

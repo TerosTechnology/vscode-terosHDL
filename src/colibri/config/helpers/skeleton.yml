@@ -63,6 +63,10 @@ linter:
   description:
   general: ./configs/linter/general.yml
   secondary:
+    vhdlls:
+      title: VHDL-LS linter
+      description: "Fast VHDL language server and analysis library written in Rust."
+      page: ./configs/linter/vhdlls.yml
     ghdl:
       title: GHDL linter
       description: ""

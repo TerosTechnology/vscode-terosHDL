@@ -280,6 +280,7 @@ export const WEB_CONFIG = `
                     </button>
                     <div class="collapse" id="Linter-settings">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><a id="btn-linter-vhdlls" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VHDL-LS linter</a></li>
                             <li><a id="btn-linter-ghdl" href="#" class="link-dark d-inline-flex text-decoration-none rounded">GHDL linter</a></li>
                             <li><a id="btn-linter-icarus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Icarus linter</a></li>
                             <li><a id="btn-linter-modelsim" href="#" class="link-dark d-inline-flex text-decoration-none rounded">ModelSim linter</a></li>
@@ -1258,6 +1259,38 @@ export const WEB_CONFIG = `
               <select class="form-select" aria-label="VHDL style checker:" id="linter-general-lstyle_vhdl">
                       <option value='vsg'>VSG</option>
                       <option value='disabled'>Disabled</option>
+              </select>
+            </div>
+          
+          
+          
+          
+      </div>
+      
+      <div class="card-footer">
+        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
+        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
+        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
+      </div>
+  </div>
+    <div class="card h-100" id="linter-vhdlls">
+      <div class="card-header">
+        <h1 class="card-title">Linter settings: VHDL-LS linter</h1>
+        <h6 class="card-subtitle mb-2 text-muted">Fast VHDL language server and analysis library written in Rust.</h6>
+      </div>
+      <div class="card-body overflow-auto">
+      
+          
+          
+            <div class="mb-3">
+              <label for="linter-vhdlls-standard" class="form-label">
+                Define the VHDL revision to use for parsing and analysis with the standard key. The expected value is the year associated the VHDL standard. Defining the standard feature is a relatively new feature (since april 2024). Anything but the 2008 standard will not change much at the moment.
+                <span class="markConfig badge bg-secondary" id="mark_linter-vhdlls-standard"></span>
+              </label>
+              <select class="form-select" aria-label="Define the VHDL revision to use for parsing and analysis with the standard key. The expected value is the year associated the VHDL standard. Defining the standard feature is a relatively new feature (since april 2024). Anything but the 2008 standard will not change much at the moment." id="linter-vhdlls-standard">
+                      <option value='v1993'>1993</option>
+                      <option value='v2008'>2008</option>
+                      <option value='v2019'>2019</option>
               </select>
             </div>
           
@@ -4104,6 +4137,13 @@ export const WEB_CONFIG = `
     document.getElementById("linter-general").classList.remove('d-none');
     document.getElementById("linter-general").classList.add('d-none');
   }
+  if ("linter" == tp0 && "vhdlls" == tp1){
+    document.getElementById("linter-vhdlls").classList.remove('d-none');
+  }
+  else{
+    document.getElementById("linter-vhdlls").classList.remove('d-none');
+    document.getElementById("linter-vhdlls").classList.add('d-none');
+  }
   if ("linter" == tp0 && "ghdl" == tp1){
     document.getElementById("linter-ghdl").classList.remove('d-none');
   }
@@ -4426,6 +4466,10 @@ export const WEB_CONFIG = `
 
   document.getElementById("btn-linter-general").addEventListener("click", function() {
     enable_tab("linter","general")
+  });
+
+  document.getElementById("btn-linter-vhdlls").addEventListener("click", function() {
+    enable_tab("linter","vhdlls")
   });
 
   document.getElementById("btn-linter-ghdl").addEventListener("click", function() {
@@ -4786,6 +4830,9 @@ export const WEB_CONFIG = `
     config["linter"]["general"]["lstyle_verilog"] = element_value
     element_value = document.getElementById("linter-general-lstyle_vhdl").value;
     config["linter"]["general"]["lstyle_vhdl"] = element_value
+    config["linter"]["vhdlls"] = {}
+    element_value = document.getElementById("linter-vhdlls-standard").value;
+    config["linter"]["vhdlls"]["standard"] = element_value
     config["linter"]["ghdl"] = {}
     element_value = document.getElementById("linter-ghdl-arguments").value;
     config["linter"]["ghdl"]["arguments"] = element_value
@@ -5342,6 +5389,7 @@ export const WEB_CONFIG = `
     document.getElementById("linter-general-linter_verilog").value = config["linter"]["general"]["linter_verilog"];
     document.getElementById("linter-general-lstyle_verilog").value = config["linter"]["general"]["lstyle_verilog"];
     document.getElementById("linter-general-lstyle_vhdl").value = config["linter"]["general"]["lstyle_vhdl"];
+    document.getElementById("linter-vhdlls-standard").value = config["linter"]["vhdlls"]["standard"];
     document.getElementById("linter-ghdl-arguments").value = config["linter"]["ghdl"]["arguments"];
     document.getElementById("linter-icarus-arguments").value = config["linter"]["icarus"]["arguments"];
     document.getElementById("linter-modelsim-vhdl_arguments").value = config["linter"]["modelsim"]["vhdl_arguments"];
@@ -5794,6 +5842,11 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-lstyle_vhdl").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["linter"]["vhdlls"]["standard"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_linter-vhdlls-standard").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["linter"]["ghdl"]["arguments"] != undefined) {
       mark = MODIFIEDMSG;
