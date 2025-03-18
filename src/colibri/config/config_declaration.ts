@@ -871,7 +871,7 @@ export function get_default_config(): e_config {
         },
         linter: {
             general: {
-                linter_vhdl : e_linter_general_linter_vhdl.ghdl,
+                linter_vhdl : e_linter_general_linter_vhdl.none,
                 linter_verilog : e_linter_general_linter_verilog.modelsim,
                 lstyle_verilog : e_linter_general_lstyle_verilog.disabled,
                 lstyle_vhdl : e_linter_general_lstyle_vhdl.disabled,

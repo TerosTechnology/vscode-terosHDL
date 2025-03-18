@@ -9,7 +9,7 @@ linter_vhdl:
     modelsim: "Modelsim"
     vivado: "Vivado (xvhdl)"
     none: "VHDL-LS"
-  value: "ghdl"
+  value: "none"
 
 linter_verilog:
   description: "Verilog/SV linter:"
