@@ -41,7 +41,7 @@ export function normalize_description_markdown(description: string): string {
     for (let i = 0; i < sections.length; i++) {
       if (!sections[i].startsWith('```')) {
         sections[i] = sections[i].replace(/\n\n/g, 'teroshdl_new_line_tag');
-        sections[i] = sections[i].replace(/\n/g, ' ');
+        // sections[i] = sections[i].replace(/\n/g, ' ');
         sections[i] = sections[i].replace(/teroshdl_new_line_tag/g, '\n\n');
       }
     }

@@ -109,7 +109,6 @@ export class Creator extends Section_creator_interface {
     ////////////////////////////////////////////////////////////////////////////
     get_description_section(hdl_element: common_hdl.Hdl_element, configuration: t_documenter_options,
         svg_path_dir: string, output_type: common_documenter.doc_output_type) {
-
         if (hdl_element.description.trim() === '') {
             return '';
         }
