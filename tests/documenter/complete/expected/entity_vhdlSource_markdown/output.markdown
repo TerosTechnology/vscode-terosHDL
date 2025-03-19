@@ -9,9 +9,12 @@
 ![Diagram](test_entity_name.svg "Diagram")
 ## Description
 
-This is an entity description 5 multiline.
+This is an entity description 5
+multiline.
 
- Example of multiline code snipet: 
+
+Example of multiline code snipet:
+
 ``` C
 int* versions = 0x0080000000 ;
 int* major = 0x0090000000 ;
@@ -21,7 +24,8 @@ print_version();
 ```
 
 
-Example of multiline code snipet: 
+Example of multiline code snipet:
+
 ``` VHDL
 function sum(a : integer := 0; b : integer := 0)
 return integer is
@@ -35,11 +39,12 @@ end function;
 
 Example of description beakline
 
-Example of Wavedrom image:
+Example of Wavedrom
+image:
 
 
 
-![alt text](wavedrom_Ev410.svg "title")
+![alt text](wavedrom_1FFZ0.svg "title")
 
  
 
@@ -47,7 +52,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_8f4E1.svg "title")
+![alt text](wavedrom_Gs4Z1.svg "title")
 
  
 

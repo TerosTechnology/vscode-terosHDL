@@ -9,7 +9,8 @@ Description of **HDL element**
 
 
 
- ![alt text](wavedrom_wUKG0.svg "title")
+
+![alt text](wavedrom_hxJv0.svg "title")
 
  
 

@@ -196,11 +196,11 @@ describe('Template utils', function () {
     it('parse error', async function () {
         const bad_code = "";
         const template_manager = new Template_manager(LANGUAGE.VHDL);
-        const result = await template_manager.generate(bad_code, "entity", get_default_config());
+        const result = await template_manager.generate(bad_code, "entity", get_default_config(), LANGUAGE.VHDL);
         equal(result, "");
 
         const template_manager_sverilog = new Template_manager(LANGUAGE.SYSTEMVERILOG);
-        const result_sverilog = await template_manager_sverilog.generate(bad_code, "entity", get_default_config());
+        const result_sverilog = await template_manager_sverilog.generate(bad_code, "entity", get_default_config(), LANGUAGE.SYSTEMVERILOG);
         equal(result_sverilog, "");
     });
 
@@ -209,7 +209,7 @@ describe('Template utils', function () {
         config.header_file_path = paht_lib.join(__dirname, "header_bad.txt");
 
         const template_manager = new Template_manager(LANGUAGE.VHDL);
-        const result = await template_manager.generate(vhdl_code[0], "hdl_element_instance", config);
+        const result = await template_manager.generate(vhdl_code[0], "hdl_element_instance", config, LANGUAGE.VHDL);
 
         const input_path = paht_lib.join(__dirname, "expected_with_generic", 
             "vhdl_hdl_element_instance_no_header.vhdl");

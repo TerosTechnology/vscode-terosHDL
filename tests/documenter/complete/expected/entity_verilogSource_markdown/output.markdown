@@ -9,15 +9,17 @@
 ![Diagram](test_entity_name.svg "Diagram")
 ## Description
 
-This is an entity description. also in multi-lines
+This is an entity description.
+also in multi-lines
 
 Example of description beakline
 
-Example of Wavedrom image:
+Example of Wavedrom
+image:
 
 
 
-![alt text](wavedrom_JbNz0.svg "title")
+![alt text](wavedrom_fpUS0.svg "title")
 
  
 
@@ -25,11 +27,12 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_kCsD1.svg "title")
+![alt text](wavedrom_jn9w1.svg "title")
 
  
 
-Example of multiline code snipet: 
+Example of multiline code snipet:
+
 ``` C
 int* versions = 0x0080000000 ;
 int* major = 0x0090000000 ;
@@ -37,7 +40,9 @@ int* minor = 0x00A0000000 ;
 int* patch = 0x00B0000000 ;
 print_version();
 ```
- Example of multiline code snipet: 
+
+Example of multiline code snipet:
+
 ``` VHDL
 function sum(a : integer := 0; b : integer := 0)
 return integer is
@@ -47,7 +52,8 @@ result <= a + b;
 return result;
 end function;
 ```
- 
+
+
 ## Generics
 
 | Generic name | Type | Value | Description             |
