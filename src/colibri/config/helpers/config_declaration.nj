@@ -103,7 +103,11 @@ export function get_config_from_json(json_config: any): e_config {
         {%- for tp2 in type_declaration[tp0][tp1] %}
     // {{ tp0 }} -> {{ tp1 }} -> {{ tp2 }}
             {%- if type_declaration[tp0][tp1][tp2]["type"] != "divider" %}
-    const current_value_{{ns.counter}} = json_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'];
+    let current_value_{{ns.counter}} = undefined;
+    try {
+        current_value_{{ns.counter}} = json_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'];
+    }
+    catch(e){}
             {%- endif %}
 
             {%- if "options" in type_declaration[tp0][tp1][tp2] %}
