@@ -99,6 +99,8 @@ export abstract class Base_linter {
             cwd: file_dir,
         };
         const result = await P.exec_wait(command, opt);
+        logger.Logger.log(`${file} || ${result.stdout}`);
+        logger.Logger.log(`${file} || ${result.stderr}`);
 
         await this.delete_previus_lint(file_dir);
         return result;
