@@ -386,6 +386,9 @@ export class Project_manager extends ConfigManager {
     ): Promise<t_action_result> {
 
         const result = await get_files_from_vunit(this.get_config(), vunit_path, is_manual);
+        if (result.successful === false) {
+            this.emitterProject.emitEventLog(result.msg, e_event.STDOUT_ERROR);
+        }
 
         this.add_file_from_array(result.file_list);
         const action_result: t_action_result = {
