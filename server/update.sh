@@ -1,4 +1,4 @@
-VERSION=0.83.1
+VERSION=0.84.0
 FILES=("vhdl_ls-x86_64-pc-windows-msvc" "vhdl_ls-x86_64-unknown-linux-musl")
 OUTPUT_FOLDER=vhdl_ls/$VERSION
 
