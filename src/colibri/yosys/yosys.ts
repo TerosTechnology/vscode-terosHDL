@@ -184,7 +184,12 @@ async function getGHDLCommnand(preArgument: string, yosysPath: string) : Promise
         const p = new Process();
         const commnad = `${preArgument} ${yosysPath} -m ghdl -p "help"`;
         const result = await p.exec_wait(commnad, { cwd: process_utils.get_home_directory() });
-        if (result.successful) {
+        const endOfScriptStdout = result.stdout.toLowerCase().includes("end of script");
+        const runningStdout = result.stdout.toLowerCase().includes("running command");
+
+        console.log(result.stdout);
+
+        if (result.successful && (endOfScriptStdout || runningStdout)) {
             return "-m ghdl";
         }
         else {
