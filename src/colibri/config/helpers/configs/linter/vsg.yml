@@ -1,4 +1,1 @@
-arguments:
-  description: "JSON or YAML configuration file."
-  type: string
-  value: ""
+title: "Configure VSG in the tool section: Tools -> VSG"

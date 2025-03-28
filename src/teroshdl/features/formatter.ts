@@ -62,7 +62,7 @@ class Formatter {
                 return configCurrent.formatter.standalone;
             }
             else if (formatter_name === e_formatter_general_formatter_vhdl.vsg) {
-                return configCurrent.formatter.svg;
+                return configCurrent.tools.vsg;
             }
             else {
                 return configCurrent.formatter.standalone;

@@ -70,11 +70,6 @@ export async function checkGeneralConfig(currentConfig: e_config): Promise<strin
             name: 'cocotb',
             isOptional: true,
             extraMessage: ''
-        },
-        {
-            name: 'vsg',
-            isOptional: true,
-            extraMessage: ''
         }
     ];
 

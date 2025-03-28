@@ -25,12 +25,12 @@ export abstract class Base_formatter {
     abstract argumentToCheck: string[];
 
     abstract format_from_code(code: string, opt: cfg.e_formatter_istyle |
-        cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_formatter_svg | 
+        cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_tools_vsg | 
         common.e_formatter_verible_full, python_path: string
     ): Promise<common.f_result>;
 
     abstract format(file: string, opt: cfg.e_formatter_istyle |
-        cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_formatter_svg | 
+        cfg.e_formatter_standalone | cfg.e_formatter_s3sv | cfg.e_tools_vsg | 
         common.e_formatter_verible_full, python_path: string
     ): Promise<common.f_result>;
 

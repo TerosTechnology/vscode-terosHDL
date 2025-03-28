@@ -50,9 +50,9 @@ formatter:
       description: VHDL standalone formatter
       page: ./configs/formatter/standalone.yml
 
-    svg:
+    vsg:
       title: VHDL VSG
-      description: "VHDL Style Guide. Analyzes VHDL files for style guide violations."
+      description: "Configure VSG in the tool section: tools -> VSG"
       page: ./configs/formatter/vsg.yml
 
 ############################################
@@ -93,7 +93,7 @@ linter:
       page: ./configs/linter/vivado.yml
     vsg:
       title: VSG linter
-      description: ""
+      description: "Configure VSG in the tool section: tools -> VSG"
       page: ./configs/linter/vsg.yml
 
 ############################################
@@ -127,7 +127,7 @@ tools:
 
     vsg:
       title: VSG
-      description: "VHDL Style Guide. Configure the linter and formatter in Linter and Formatter sections."
+      description: "VHDL Style Guide."
       page: ./configs/tools/vsg.yml
 
     osvvm:

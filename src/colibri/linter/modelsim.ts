@@ -27,7 +27,7 @@ import { remove_directory } from "../utils/file_utils";
 export class Modelsim extends Base_linter {
     binary = "vlog";
     extra_cmd = "";
-    argumentToCheck = ["-version"];
+    argumentToCheck = ["-help"];
 
     constructor() {
         super();

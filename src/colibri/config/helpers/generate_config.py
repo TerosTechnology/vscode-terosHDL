@@ -9,6 +9,8 @@ AUXILIAR_FIELDS = ["description", "title", "docLink", "divider"]
 
 def get_type_declaration(field):
     new_field = {}
+    if field is None:
+        return new_field
     for key in field:
         if key not in AUXILIAR_FIELDS:
             type_declaration = {
@@ -30,6 +32,8 @@ def remove_auxiliar_fields(field):
 
 def remove_auxiliar_fields_deep(field):
     new_field = {}
+    if field is None:
+        return new_field
     for key in field:
         if key not in AUXILIAR_FIELDS:
             new_field[key] = field[key]["value"]

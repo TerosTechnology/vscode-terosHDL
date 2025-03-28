@@ -266,7 +266,7 @@ export const WEB_CONFIG = `
                             <li><a id="btn-formatter-s3sv" href="#" class="link-dark d-inline-flex text-decoration-none rounded">s3sv</a></li>
                             <li><a id="btn-formatter-verible" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verible</a></li>
                             <li><a id="btn-formatter-standalone" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VHDL standalone</a></li>
-                            <li><a id="btn-formatter-svg" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VHDL VSG</a></li>
+                            <li><a id="btn-formatter-vsg" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VHDL VSG</a></li>
                         </ul>
                     </div>
                 </li>
@@ -1144,46 +1144,13 @@ export const WEB_CONFIG = `
         <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
       </div>
   </div>
-    <div class="card h-100" id="formatter-svg">
+    <div class="card h-100" id="formatter-vsg">
       <div class="card-header">
         <h1 class="card-title">Formatter: VHDL VSG</h1>
-        <h6 class="card-subtitle mb-2 text-muted">VHDL Style Guide. Analyzes VHDL files for style guide violations.</h6>
+        <h6 class="card-subtitle mb-2 text-muted">Configure VSG in the tool section: tools -> VSG</h6>
       </div>
       <div class="card-body overflow-auto">
       
-          
-          
-            <div class="mb-3">
-              <label for="formatter-svg-configuration" class="form-label">
-                JSON or YAML configuration file.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-svg-configuration"></span>
-              </label>
-                <input class="form-control" id="formatter-svg-configuration" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-svg-core_number" class="form-label">
-                Number of parallel jobs to use, default is the number of cpu cores.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-svg-core_number"></span>
-              </label>
-              <input type='number' class="form-control" id="formatter-svg-core_number" rows="3"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-svg-aditional_arguments" class="form-label">
-                Additional arguments to pass to the VSG command.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-svg-aditional_arguments"></span>
-              </label>
-                <input class="form-control" id="formatter-svg-aditional_arguments" rows="3"  value=""></input>
-            </div>
-          
-          
           
           
       </div>
@@ -1523,21 +1490,10 @@ export const WEB_CONFIG = `
     <div class="card h-100" id="linter-vsg">
       <div class="card-header">
         <h1 class="card-title">Linter settings: VSG linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
+        <h6 class="card-subtitle mb-2 text-muted">Configure VSG in the tool section: tools -> VSG</h6>
       </div>
       <div class="card-body overflow-auto">
       
-          
-          
-            <div class="mb-3">
-              <label for="linter-vsg-arguments" class="form-label">
-                JSON or YAML configuration file.
-                <span class="markConfig badge bg-secondary" id="mark_linter-vsg-arguments"></span>
-              </label>
-                <input class="form-control" id="linter-vsg-arguments" rows="3"  value=""></input>
-            </div>
-          
-          
           
           
       </div>
@@ -1897,7 +1853,7 @@ export const WEB_CONFIG = `
     <div class="card h-100" id="tools-vsg">
       <div class="card-header">
         <h1 class="card-title">Tools: VSG</h1>
-        <h6 class="card-subtitle mb-2 text-muted">VHDL Style Guide. Configure the linter and formatter in Linter and Formatter sections.</h6>
+        <h6 class="card-subtitle mb-2 text-muted">VHDL Style Guide.</h6>
       </div>
       <div class="card-body overflow-auto">
       
@@ -1909,6 +1865,39 @@ export const WEB_CONFIG = `
                 <span class="markConfig badge bg-secondary" id="mark_tools-vsg-installation_path"></span>
               </label>
                 <input class="form-control" id="tools-vsg-installation_path" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-vsg-configuration" class="form-label">
+                Path JSON or YAML configuration file.
+                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-configuration"></span>
+              </label>
+                <input class="form-control" id="tools-vsg-configuration" rows="3"  value=""></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-vsg-core_number" class="form-label">
+                Number of parallel jobs to use, default is the number of cpu cores.
+                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-core_number"></span>
+              </label>
+              <input type='number' class="form-control" id="tools-vsg-core_number" rows="3"></input>
+            </div>
+          
+          
+          
+          
+            <div class="mb-3">
+              <label for="tools-vsg-aditional_arguments" class="form-label">
+                Additional arguments to pass to the VSG command.
+                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-aditional_arguments"></span>
+              </label>
+                <input class="form-control" id="tools-vsg-aditional_arguments" rows="3"  value=""></input>
             </div>
           
           
@@ -4176,12 +4165,12 @@ export const WEB_CONFIG = `
     document.getElementById("formatter-standalone").classList.remove('d-none');
     document.getElementById("formatter-standalone").classList.add('d-none');
   }
-  if ("formatter" == tp0 && "svg" == tp1){
-    document.getElementById("formatter-svg").classList.remove('d-none');
+  if ("formatter" == tp0 && "vsg" == tp1){
+    document.getElementById("formatter-vsg").classList.remove('d-none');
   }
   else{
-    document.getElementById("formatter-svg").classList.remove('d-none');
-    document.getElementById("formatter-svg").classList.add('d-none');
+    document.getElementById("formatter-vsg").classList.remove('d-none');
+    document.getElementById("formatter-vsg").classList.add('d-none');
   }
   if ("linter" == tp0 && "general" == tp1){
     document.getElementById("linter-general").classList.remove('d-none');
@@ -4520,8 +4509,8 @@ export const WEB_CONFIG = `
     enable_tab("formatter","standalone")
   });
 
-  document.getElementById("btn-formatter-svg").addEventListener("click", function() {
-    enable_tab("formatter","svg")
+  document.getElementById("btn-formatter-vsg").addEventListener("click", function() {
+    enable_tab("formatter","vsg")
   });
 
   document.getElementById("btn-linter-general").addEventListener("click", function() {
@@ -4877,13 +4866,7 @@ export const WEB_CONFIG = `
     config["formatter"]["standalone"]["new_line_after_port"] = element_value
     element_value = document.getElementById("formatter-standalone-new_line_after_generic").value;
     config["formatter"]["standalone"]["new_line_after_generic"] = element_value
-    config["formatter"]["svg"] = {}
-    element_value = document.getElementById("formatter-svg-configuration").value;
-    config["formatter"]["svg"]["configuration"] = element_value
-    element_value = parseInt(document.getElementById("formatter-svg-core_number").value, 10);
-    config["formatter"]["svg"]["core_number"] = element_value
-    element_value = document.getElementById("formatter-svg-aditional_arguments").value;
-    config["formatter"]["svg"]["aditional_arguments"] = element_value
+    config["formatter"]["vsg"] = {}
     config["linter"] = {}
     config["linter"]["general"] = {}
     element_value = document.getElementById("linter-general-linter_vhdl").value;
@@ -4924,8 +4907,6 @@ export const WEB_CONFIG = `
     element_value = document.getElementById("linter-vivado-verilog_arguments").value;
     config["linter"]["vivado"]["verilog_arguments"] = element_value
     config["linter"]["vsg"] = {}
-    element_value = document.getElementById("linter-vsg-arguments").value;
-    config["linter"]["vsg"]["arguments"] = element_value
     config["schematic"] = {}
     config["schematic"]["general"] = {}
     element_value = document.getElementById("schematic-general-backend").value;
@@ -4976,6 +4957,12 @@ export const WEB_CONFIG = `
     config["tools"]["vsg"] = {}
     element_value = document.getElementById("tools-vsg-installation_path").value;
     config["tools"]["vsg"]["installation_path"] = element_value
+    element_value = document.getElementById("tools-vsg-configuration").value;
+    config["tools"]["vsg"]["configuration"] = element_value
+    element_value = parseInt(document.getElementById("tools-vsg-core_number").value, 10);
+    config["tools"]["vsg"]["core_number"] = element_value
+    element_value = document.getElementById("tools-vsg-aditional_arguments").value;
+    config["tools"]["vsg"]["aditional_arguments"] = element_value
     config["tools"]["osvvm"] = {}
     element_value = document.getElementById("tools-osvvm-installation_path").value;
     config["tools"]["osvvm"]["installation_path"] = element_value
@@ -5453,9 +5440,6 @@ export const WEB_CONFIG = `
     document.getElementById("formatter-standalone-new_line_after_else").value = config["formatter"]["standalone"]["new_line_after_else"];
     document.getElementById("formatter-standalone-new_line_after_port").value = config["formatter"]["standalone"]["new_line_after_port"];
     document.getElementById("formatter-standalone-new_line_after_generic").value = config["formatter"]["standalone"]["new_line_after_generic"];
-    document.getElementById("formatter-svg-configuration").value = config["formatter"]["svg"]["configuration"];
-    document.getElementById("formatter-svg-core_number").value = config["formatter"]["svg"]["core_number"];
-    document.getElementById("formatter-svg-aditional_arguments").value = config["formatter"]["svg"]["aditional_arguments"];
     document.getElementById("linter-general-linter_vhdl").value = config["linter"]["general"]["linter_vhdl"];
     document.getElementById("linter-general-linter_verilog").value = config["linter"]["general"]["linter_verilog"];
     document.getElementById("linter-general-lstyle_verilog").value = config["linter"]["general"]["lstyle_verilog"];
@@ -5471,7 +5455,6 @@ export const WEB_CONFIG = `
     document.getElementById("linter-verilator-arguments").value = config["linter"]["verilator"]["arguments"];
     document.getElementById("linter-vivado-vhdl_arguments").value = config["linter"]["vivado"]["vhdl_arguments"];
     document.getElementById("linter-vivado-verilog_arguments").value = config["linter"]["vivado"]["verilog_arguments"];
-    document.getElementById("linter-vsg-arguments").value = config["linter"]["vsg"]["arguments"];
     document.getElementById("schematic-general-backend").value = config["schematic"]["general"]["backend"];
     document.getElementById("schematic-general-extra").value = config["schematic"]["general"]["extra"];
     document.getElementById("schematic-general-args").value = config["schematic"]["general"]["args"];
@@ -5493,6 +5476,9 @@ export const WEB_CONFIG = `
     document.getElementById("tools-quartus-allow_register_retiming").checked = config["tools"]["quartus"]["allow_register_retiming"];
     document.getElementById("tools-quartus-wave_file_questa").value = config["tools"]["quartus"]["wave_file_questa"];
     document.getElementById("tools-vsg-installation_path").value = config["tools"]["vsg"]["installation_path"];
+    document.getElementById("tools-vsg-configuration").value = config["tools"]["vsg"]["configuration"];
+    document.getElementById("tools-vsg-core_number").value = config["tools"]["vsg"]["core_number"];
+    document.getElementById("tools-vsg-aditional_arguments").value = config["tools"]["vsg"]["aditional_arguments"];
     document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];
     document.getElementById("tools-osvvm-tclsh_binary").value = config["tools"]["osvvm"]["tclsh_binary"];
     document.getElementById("tools-osvvm-simulator_name").value = config["tools"]["osvvm"]["simulator_name"];
@@ -5882,21 +5868,6 @@ export const WEB_CONFIG = `
     }
     document.getElementById("mark_formatter-standalone-new_line_after_generic").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["svg"]["configuration"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_formatter-svg-configuration").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["formatter"]["svg"]["core_number"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_formatter-svg-core_number").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["formatter"]["svg"]["aditional_arguments"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_formatter-svg-aditional_arguments").innerHTML = mark;
-    mark = "";
     if (projectName !== undefined && config["linter"]["general"]["linter_vhdl"] != undefined) {
       mark = MODIFIEDMSG;
     }
@@ -5971,11 +5942,6 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vivado-verilog_arguments").innerHTML = mark;
-    mark = "";
-    if (projectName !== undefined && config["linter"]["vsg"]["arguments"] != undefined) {
-      mark = MODIFIEDMSG;
-    }
-    document.getElementById("mark_linter-vsg-arguments").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["schematic"]["general"]["backend"] != undefined) {
       mark = MODIFIEDMSG;
@@ -6081,6 +6047,21 @@ export const WEB_CONFIG = `
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vsg-installation_path").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["vsg"]["configuration"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-vsg-configuration").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["vsg"]["core_number"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-vsg-core_number").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"]["vsg"]["aditional_arguments"] != undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-vsg-aditional_arguments").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["osvvm"]["installation_path"] != undefined) {
       mark = MODIFIEDMSG;

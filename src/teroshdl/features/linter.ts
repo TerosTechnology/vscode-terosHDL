@@ -110,7 +110,7 @@ class Linter {
         }
         else if (linter_name === e_linter_general_lstyle_vhdl.vsg) {
             path = config.tools.vsg.installation_path;
-            argument = config.linter.vsg.arguments;
+            argument = config.tools.vsg.configuration;
         }
         else if (linter_name === e_linter_general_lstyle_verilog.verible){
             path = config.tools.verible.installation_path;
