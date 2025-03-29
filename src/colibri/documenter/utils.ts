@@ -26,7 +26,9 @@ export function normalize_description(description: string): string {
     if(!description){
         return "";
     }
-    let desc_inst = description.replace(/\n\s*\n/g, '<br> ');
+
+    let desc_inst = description.replace(/\s{2,}\n/g, '<br> ');
+    desc_inst = desc_inst.replace(/\n\s*\n/g, '<br> ');
     desc_inst = desc_inst.replace(/\n/g, ' ');
     desc_inst = desc_inst.replace(/<br \/>/g, ' ');
     return desc_inst;
