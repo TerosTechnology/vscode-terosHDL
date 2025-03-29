@@ -20,7 +20,7 @@
 export class Ts_base_parser {
     comment_symbol = "";
 
-    protected get_comment(comment: string, multiline_delete = true) {
+    protected get_comment(comment: string, multiline_delete = false) {
         let break_line = '\n';
         if (multiline_delete === true) {
             break_line = '';
