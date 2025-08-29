@@ -19,6 +19,7 @@
 
 import { extensions, workspace, window, Uri } from 'vscode';
 import { posix } from 'path';
+import { TextEncoder } from 'util';
 
 // export const CONFIG_FILE_NAME = 'teros-hdl.config.json';
 export const USER_CONFIG_FILE_NAME = 'user.teros-hdl.config.json';
@@ -87,7 +88,7 @@ export class ExtensionManager implements IExtensionManager {
       const userConfigUpdate = { ...this.configJSON, changelog: { lastversion: packageJSON.version } };
       await workspace.fs.writeFile(
         this.userConfigFileUri,
-        Buffer.from(JSON.stringify(userConfigUpdate), 'utf-8')
+        new TextEncoder().encode(JSON.stringify(userConfigUpdate))
       );
     } catch (error) {
       this.configJSON = { accentsProperties: {}, accents: {} };

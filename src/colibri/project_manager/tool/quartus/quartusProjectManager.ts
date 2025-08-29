@@ -69,7 +69,7 @@ export class QuartusProjectManager extends Project_manager {
     constructor(name: string, projectPath: string, currentRevision: string,
         emitterProject: ProjectEmitter) {
         super(name, projectPath, emitterProject, undefined);
-        super.taskStateManager = new TaskStateManager(getDefaultTaskList());
+        this.taskStateManager = new TaskStateManager(getDefaultTaskList());
         this.projectDiskPath = projectPath;
         this.currentRevision = currentRevision;
 

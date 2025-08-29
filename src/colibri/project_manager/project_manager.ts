@@ -742,6 +742,9 @@ export class Project_manager extends ConfigManager {
     }
 
     public updateTaskManager() {
+        if (this.getProjectType() !== e_project_type.GENERIC) {
+            return;
+        }
         const newTaskManager = new TaskStateManager(getTaskList(this.get_config().tools.general.select_tool));
         this.taskStateManager = newTaskManager;
         this.emitterProject.emitEvent(this.name, e_event.UPDATE_TASK);
