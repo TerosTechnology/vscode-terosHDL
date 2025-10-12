@@ -125,6 +125,20 @@ architecture e_arch of test_entity_name is
         byte_data3 : std_logic_vector (7 downto 0); --! comment byte_data3
     end record sample_record2;
     
+    --! Sample record type 3
+    type sample_record3 is record
+        --! Comment valid
+        valid : std_logic;
+        --! comment byte_data1
+        --! additional comment 1
+        byte_data1 : std_logic_vector (7 downto 0); 
+        --! comment byte_data2
+        --! additional comment 2
+        byte_data2 : std_logic_vector (7 downto 0); 
+        --! comment byte_data3
+        byte_data3 : std_logic_vector (7 downto 0); 
+    end record sample_record3;
+
     --! My type
     type my_custom_type0 is range 0 to 1000; --! my type comment 0
     type my_custom_type1 is range -5 to 5; --! my type comment 1

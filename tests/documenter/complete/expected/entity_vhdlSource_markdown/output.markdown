@@ -44,7 +44,7 @@ image:
 
 
 
-![alt text](wavedrom_jOMx0.svg "title")
+![alt text](wavedrom_yTaI0.svg "title")
 
  
 
@@ -52,7 +52,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_3N781.svg "title")
+![alt text](wavedrom_xpwo1.svg "title")
 
  
 
@@ -145,6 +145,17 @@ Example of bitfield:
 | byte_data1 | std_logic_vector (7 downto 0) | comment byte_data1 |
 | byte_data2 | std_logic_vector (7 downto 0) | comment byte_data2 |
 | byte_data3 | std_logic_vector (7 downto 0) | comment byte_data3 |
+
+
+### *sample_record3*
+ Sample record type 3
+
+| Name       | Type                          | Description                             |
+| ---------- | ----------------------------- | --------------------------------------- |
+| valid      | std_logic                     | Comment valid                           |
+| byte_data1 | std_logic_vector (7 downto 0) | comment byte_data1 additional comment 1 |
+| byte_data2 | std_logic_vector (7 downto 0) | comment byte_data2 additional comment 2 |
+| byte_data3 | std_logic_vector (7 downto 0) | comment byte_data3                      |
 
 
 ## Enums
