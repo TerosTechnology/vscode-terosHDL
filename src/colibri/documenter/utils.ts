@@ -22,11 +22,94 @@ import * as translator_lib from "./translator";
 import * as md from "./markdown_table";
 const showdown = require('showdown');
 
+/**
+ * Detect and convert unordered list patterns in comments to markdown format
+ * @param description The description text to process
+ * @returns The description with unordered lists converted to markdown format
+ */
+export function convert_unordered_lists_to_markdown(description: string): string {
+    if (!description) {
+        return "";
+    }
+
+    const lines = description.split('\n');
+    const result: string[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+        const line = lines[i];
+        const trimmedLine = line.trim();
+        
+        // Check if current line starts a list (- or * followed by space)
+        const listMatch = trimmedLine.match(/^[*-]\s+(.+)$/);
+        if (listMatch) {
+            // Found start of a list, collect all list items
+            const listItems: string[] = [];
+            let j = i; // Store start position for backtracking
+            
+            while (i < lines.length) {
+                const currentLine = lines[i];
+                const currentTrimmed = currentLine.trim();
+                const currentListMatch = currentTrimmed.match(/^[*-]\s+(.+)$/);
+                
+                if (currentListMatch) {
+                    // This is a list item
+                    listItems.push(currentListMatch[1]);
+                    i++;
+                } else if (currentTrimmed === '') {
+                    // Empty line ends the list
+                    break;
+                } else if (listItems.length > 0 && /^\s+/.test(currentLine) && currentTrimmed !== '') {
+                    // Continuation of previous list item (indented line with content)
+                    listItems[listItems.length - 1] += ' ' + currentTrimmed;
+                    i++;
+                } else {
+                    // Non-list line, end the list
+                    break;
+                }
+            }
+            
+            // Only convert to list if we have at least 2 items
+            if (listItems.length >= 2) {
+                // Add empty line before list if needed
+                if (result.length > 0 && result[result.length - 1].trim() !== '') {
+                    result.push('');
+                }
+                
+                // Add list items in markdown format
+                for (const item of listItems) {
+                    result.push(`* ${item}`);
+                }
+                
+                // Add empty line after list if there's more content
+                if (i < lines.length) {
+                    result.push('');
+                }
+            } else {
+                // Not enough items for a list, treat as regular lines by rewinding
+                i = j;
+                result.push(lines[i]);
+                i++;
+            }
+        } else {
+            // Regular line, add as-is
+            result.push(lines[i]);
+            i++;
+        }
+    }
+    
+    return result.join('\n');
+}
+
 export function normalize_description(description: string): string {
     if(!description){
         return "";
     }
-    let desc_inst = description.replace(/\n\s*\n/g, '<br> ');
+    
+    // Convert unordered lists to markdown format first
+    let desc_inst = convert_unordered_lists_to_markdown(description);
+    
+    desc_inst = desc_inst.replace(/\n\s*\n/g, '<br> ');
     desc_inst = desc_inst.replace(/\n/g, ' ');
     desc_inst = desc_inst.replace(/<br \/>/g, ' ');
     return desc_inst;
@@ -36,7 +119,11 @@ export function normalize_description_markdown(description: string): string {
     if(!description){
         return "";
     }
-    const sections = description.split(/(```[\s\S]*?```)/);
+    
+    // Convert unordered lists to markdown format first
+    let processed_description = convert_unordered_lists_to_markdown(description);
+    
+    const sections = processed_description.split(/(```[\s\S]*?```)/);
   
     for (let i = 0; i < sections.length; i++) {
       if (!sections[i].startsWith('```')) {

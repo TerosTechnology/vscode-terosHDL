@@ -12,6 +12,13 @@
 This is an entity description 5
 multiline.
 
+Example of unordered list:
+
+* Normal operation mode
+* Low power mode
+* Debug mode
+* Test mode
+
 
 Example of multiline code snipet:
 
@@ -44,7 +51,7 @@ image:
 
 
 
-![alt text](wavedrom_1FFZ0.svg "title")
+![alt text](wavedrom_0G8l0.svg "title")
 
  
 
@@ -52,7 +59,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_Gs4Z1.svg "title")
+![alt text](wavedrom_LQPE1.svg "title")
 
  
 
