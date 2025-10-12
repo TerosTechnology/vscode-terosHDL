@@ -220,7 +220,7 @@ export function get_virtual_bus(port_list: common_hdl.Port_hdl[]) {
                     info: {
                         position: port_i.info.position,
                         name: port_i.info.name,
-                        description: port_description.replace(virtual_port.to_delete, '')
+                        description: port_i.inline_comment.trim()
                     },
                     inline_comment: "",
                     over_comment: "",
