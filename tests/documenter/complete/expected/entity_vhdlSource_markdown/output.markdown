@@ -44,7 +44,7 @@ image:
 
 
 
-![alt text](wavedrom_1FFZ0.svg "title")
+![alt text](wavedrom_jOMx0.svg "title")
 
  
 
@@ -52,7 +52,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_Gs4Z1.svg "title")
+![alt text](wavedrom_3N781.svg "title")
 
  
 
@@ -180,6 +180,14 @@ Example of bitfield:
 | FSM_A | FSM_A comment... |
 | FSM_B | FSM_B comment... |
 | FSM_C | FSM_C comment... |
+
+
+### *t_fsm3*
+| Name | Description                                                                   |
+| ---- | ----------------------------------------------------------------------------- |
+| S0   | First State Additional comment.                                               |
+| S1   | Second State. Additional comment 1. Additional comment 2.                     |
+| S2   | Third State Additional comment 3. Additional comment 4. Additional comment 5. |
 
 
 ## Functions

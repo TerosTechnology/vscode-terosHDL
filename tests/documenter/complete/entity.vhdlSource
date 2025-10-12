@@ -142,6 +142,19 @@ architecture e_arch of test_entity_name is
         FSM_C --! FSM_C comment...
     );
 
+    type t_fsm3 is (
+    --! First State
+    --! Additional comment.
+    S0,
+    --! Second State.
+    --! Additional comment 1.
+    --! Additional comment 2.
+    S1,
+    --! Third State
+    --! Additional comment 3.
+    --! Additional comment 4.
+    --! Additional comment 5.
+    S2);
 
 begin
 

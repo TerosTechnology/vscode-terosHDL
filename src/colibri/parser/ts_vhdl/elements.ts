@@ -374,7 +374,7 @@ export function get_generics_or_ports(p: any, comment_symbol: string): common_hd
                             elements_array[i].info.description = txt_comment.trimStart();
                             elements_array[i].inline_comment = txt_comment.trimStart();
                         }
-                        else {4
+                        else {
                             elements_array[i].info.description = txt_comment.slice(1).trimStart();
                             elements_array[i].inline_comment = txt_comment.slice(1).trimStart();
                         }
@@ -517,27 +517,20 @@ export function get_record_elements(p: any, comment_symbol: string): common_hdl.
 export function get_enum_elements(p: any, comment_symbol: string): common_hdl.Enum_hdl[] {
     const break_p = false;
     const elements_array: common_hdl.Enum_hdl[] = [];
-    const identifiers = [];
-    const inline_comment = [];
-    let has_comment = true;
+    const identifiers: {name: string, line: number}[] = [];
+    const comments: {text: string, line: number}[] = [];
     let line = undefined;
     const cursor = p.walk();
 
+    // First pass: collect all identifiers and comments with their positions
     cursor.gotoFirstChild();
     do {
         if (cursor.nodeType === 'identifier') {
-            //if last identifier doesnt have comment, push empty string to avoid comment shifting.
-            if(!has_comment){
-                inline_comment.push("");
-            }
-            has_comment = false;
             const full_element = cursor.nodeText;
-            //const splitted_element = full_element.split(':');
-            //splitted_element[0] = splitted_element[0].replace(' ','');
-            //splitted_element[1] = splitted_element[1].replace(';','');
-            //splitted_element[1] = splitted_element[1].replace(' ','');
-            identifiers.push(full_element);
-            //type.push(splitted_element[1]);
+            identifiers.push({
+                name: full_element,
+                line: cursor.startPosition.row
+            });
             line = cursor.startPosition.row;
         }
         else if (cursor.nodeType === 'comment') {
@@ -548,13 +541,40 @@ export function get_enum_elements(p: any, comment_symbol: string): common_hdl.En
                     txt_comment = txt_comment.slice(0, -1);
                 }
                 txt_comment = txt_comment.replace('!', '');
-                inline_comment.push(txt_comment.trimStart());
+                comments.push({
+                    text: txt_comment.trimStart(),
+                    line: cursor.startPosition.row
+                });
             }
-            has_comment = true;
         }
     } while (cursor.gotoNextSibling() === true && break_p === false);
 
-    for (let i = 0; i < identifiers.length; ++i) {
+    // Second pass: associate comments with identifiers
+    for (let i = 0; i < identifiers.length; i++) {
+        const identifier = identifiers[i];
+        let description = '';
+
+        // Look for inline comment (same line as identifier)
+        const inlineComment = comments.find(c => c.line === identifier.line);
+        if (inlineComment) {
+            description = inlineComment.text;
+        } else {
+            // Look for over comments (comments that appear before this identifier)
+            const nextIdentifierLine = i < identifiers.length - 1 ? identifiers[i + 1].line : Number.MAX_SAFE_INTEGER;
+            const prevIdentifierLine = i > 0 ? identifiers[i - 1].line : -1;
+            
+            // Collect comments that are between previous identifier and current identifier
+            const overComments = comments.filter(c => 
+                c.line > prevIdentifierLine && 
+                c.line < identifier.line && 
+                c.line < nextIdentifierLine
+            );
+            
+            if (overComments.length > 0) {
+                description = overComments.map(c => c.text).join('\n');
+            }
+        }
+
         const element: common_hdl.Enum_hdl = {
             hdl_element_type: common_hdl.TYPE_HDL_ELEMENT.ENUM,
             info: {
@@ -562,11 +582,11 @@ export function get_enum_elements(p: any, comment_symbol: string): common_hdl.En
                     line: line,
                     column: 0
                 },
-                name: identifiers[i],
-                description: inline_comment[i]
+                name: identifier.name,
+                description: description
             },
             type: "",
-            inline_comment: inline_comment[i]
+            inline_comment: description
         };
         elements_array.push(element);
     }
