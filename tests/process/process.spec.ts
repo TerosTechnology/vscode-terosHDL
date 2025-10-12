@@ -54,7 +54,10 @@ describe("Process", () => {
         expect(result.command).toBe(cmd);
         expect(result.return_value).toBe(-1);
         if (process.platform !== 'win32') {
-            expect(result.stderr).toBe("/bin/sh: 1: asdf: not found");
+            // Handle different shell error message formats
+            // dash: "/bin/sh: 1: asdf: not found"
+            // bash: "/bin/sh: line 1: asdf: command not found"
+            expect(result.stderr).toMatch(/\/bin\/sh: (line )?1: asdf: (command )?not found/);
         }
         expect(result.stdout).toBe("");
         expect(result.successful).not.toBeTruthy();
@@ -141,7 +144,10 @@ describe("Process", () => {
             expect(result.command).toBe(cmd);
             expect(result.return_value).toBe(-1);
             if (process.platform !== 'win32') {
-                expect(result.stderr).toBe("/bin/sh: 1: asdf: not found");
+                // Handle different shell error message formats
+                // dash: "/bin/sh: 1: asdf: not found"
+                // bash: "/bin/sh: line 1: asdf: command not found"
+                expect(result.stderr).toMatch(/\/bin\/sh: (line )?1: asdf: (command )?not found/);
             }
             expect(result.stdout).toBe("");
             expect(result.successful).not.toBeTruthy();
