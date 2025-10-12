@@ -78,11 +78,11 @@ entity test_entity_name is
         --! @virtualbus v_bus_1  @keepports  Description of virtual bus 1
         j : in std_logic := '1';
         l : out std_logic;
-        m : in std_logic;
+        m : in std_logic; --! @end
         --! @virtualbus v_bus_2  Description of virtual bus 2
         n : in std_logic; --! Description 3
-        o : out std_logic; --! @end
-        p : in std_logic;
+        o : out std_logic;
+        p : in std_logic; --! @end
         q : out std_logic; --! Inline comment
         r : in std_logic;
         --! Over comment

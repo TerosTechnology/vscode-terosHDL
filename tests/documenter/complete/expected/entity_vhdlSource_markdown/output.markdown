@@ -69,17 +69,17 @@ Example of bitfield:
 
 ## Ports
 
-| Port name | Direction | Type                          | Description                              |
-| --------- | --------- | ----------------------------- | ---------------------------------------- |
-| ee        | in        | std_logic                     | Over comment in ```port```               |
-| h         | in        | std_logic_vector(31 downto 0) |                                          |
-| i         | in        | std_logic_vector(31 downto 0) |                                          |
-| p         | in        | std_logic                     |                                          |
-| q         | out       | std_logic                     | Inline comment                           |
-| r         | in        | std_logic                     |                                          |
-| s         | out       | std_logic                     | Preference inline                        |
-| v_bus_0   | out       | Virtual bus                   | @keepports  Description of virtual bus 0 |
-| v_bus_1   | in        | Virtual bus                   | @keepports  Description of virtual bus 1 |
+| Port name | Direction | Type                          | Description                  |
+| --------- | --------- | ----------------------------- | ---------------------------- |
+| ee        | in        | std_logic                     | Over comment in ```port```   |
+| h         | in        | std_logic_vector(31 downto 0) |                              |
+| i         | in        | std_logic_vector(31 downto 0) |                              |
+| q         | out       | std_logic                     | Inline comment               |
+| r         | in        | std_logic                     |                              |
+| s         | out       | std_logic                     | Preference inline            |
+| v_bus_0   | out       | Virtual bus                   | Description of virtual bus 0 |
+| v_bus_1   | in        | Virtual bus                   | Description of virtual bus 1 |
+| v_bus_2   | in        | Virtual bus                   | Description of virtual bus 2 |
 
 ### Virtual Buses
 
@@ -92,13 +92,18 @@ Example of bitfield:
 | g         | inout     | std_logic |             |
 #### v_bus_1
 
+| Port name | Direction | Type      | Description |
+| --------- | --------- | --------- | ----------- |
+| j         | in        | std_logic |             |
+| l         | out       | std_logic |             |
+| m         | in        | std_logic |             |
+#### v_bus_2
+
 | Port name | Direction | Type      | Description   |
 | --------- | --------- | --------- | ------------- |
-| j         | in        | std_logic |               |
-| l         | out       | std_logic |               |
-| m         | in        | std_logic |               |
 | n         | in        | std_logic | Description 3 |
 | o         | out       | std_logic |               |
+| p         | in        | std_logic |               |
 
 ## Signals
 
