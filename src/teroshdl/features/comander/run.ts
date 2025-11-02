@@ -65,7 +65,12 @@ export class Comander {
         if (config.tools.general.waveform_viewer == e_tools_general_waveform_viewer.vaporView) {
             const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
             if (extension && extension.isActive) {
-                await vscode.commands.executeCommand('vaporview.openFile', args);
+                let vaporview_args = {
+                    uri: args,
+                    loadAll: false,
+                    maxSignals: 64
+                };
+                await vscode.commands.executeCommand('vaporview.openFile', vaporview_args);
                 return;
             }
             vscode.window.showInformationMessage(`VaporView not available or not active. Defaulting to GTKWave.`);
