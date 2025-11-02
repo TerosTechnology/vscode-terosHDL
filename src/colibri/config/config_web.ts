@@ -1980,7 +1980,7 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Select the waveform viewer. For GTKWave you need to install it.
+                            Select the waveform viewer. For GTKWave/Surfer you need to install it.
                             <span class="markConfig" id="mark_tools-general-waveform_viewer"></span>
                         </div>
                         <div class="select-container">
@@ -1988,7 +1988,19 @@ body.vscode-high-contrast {
                                       <option value='tool'>Tool GUI</option>
                                       <option value='vaporView'>VaporView</option>
                                       <option value='gtkwave'>GTKWave</option>
+                                      <option value='surfer'>Surfer</option>
                             </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-general-vaporview_import_signals">
+                            <label class="setting-checkbox-label" for="tools-general-vaporview_import_signals">
+                                Import signals automatically in VaporView.
+                                <span class="markConfig" id="mark_tools-general-vaporview_import_signals"></span>
+                            </label>
                         </div>
                     </div>
                   
@@ -2011,13 +2023,31 @@ body.vscode-high-contrast {
                     </div>
                   
                   
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Surfer installation directory.
+                            <span class="markConfig" id="mark_tools-general-surfer_installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-general-surfer_installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Extra arguments passed to Surfer. E.g: --script=script.tcl
+                            <span class="markConfig" id="mark_tools-general-surfer_extra_arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-general-surfer_extra_arguments" value="">
+                    </div>
+                  
+                  
                   
             </div>
             <div class="settings-section" id="tools-quartus">
                 <div class="settings-group-title-label">
                     Tools: Intel@ Quartus@ Prime
                 </div>
-                <div class="settings-group-description">The intuitive high-performance design environment. From design entry and synthesis to optimization, verification, and simulation, Intel® Quartus® Prime Design Software unlocks increased capabilities on devices with multi-million logic elements, providing designers with the ideal platform to meet next-generation design opportunities.</div>
+                <div class="settings-group-description">The intuitive high-performance design environment. From design entry and synthesis to optimization, verification, and simulation, IntelÂ® QuartusÂ® Prime Design Software unlocks increased capabilities on devices with multi-million logic elements, providing designers with the ideal platform to meet next-generation design opportunities.</div>
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -2259,7 +2289,7 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Any argument to be passed to the “first” invocation of a simulator that runs via a TCL script. One motivating usage is to pass -noautoldlibpath to Questa to prevent it from loading the out-of-date libraries it ships with. Used by Aldec Riviera-PRO and Mentor Graphics Questa simulator.
+                            Any argument to be passed to the "first" invocation of a simulator that runs via a TCL script. One motivating usage is to pass -noautoldlibpath to Questa to prevent it from loading the out-of-date libraries it ships with. Used by Aldec Riviera-PRO and Mentor Graphics Questa simulator.
                             <span class="markConfig" id="mark_tools-cocotb-run_args"></span>
                         </div>
                             <input class="setting-input-box" id="tools-cocotb-run_args" value="">
@@ -3439,7 +3469,7 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            A list of the .sby file’s tasks to run. Passed on the sby command line..
+                            A list of the .sby fileâ€™s tasks to run. Passed on the sby command line..
                             <span class="markConfig" id="mark_tools-symbiyosys-tasknames"></span>
                         </div>
                         <div class="setting-item-description">Comma separated values</div>
@@ -3483,7 +3513,7 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Target architecture. Currently only “xilinx” is supported.
+                            Target architecture. Currently only "xilinx" is supported.
                             <span class="markConfig" id="mark_tools-symbiflow-vendor"></span>
                         </div>
                             <input class="setting-input-box" id="tools-symbiflow-vendor" value="">
@@ -3492,7 +3522,7 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Place and Route tool. Currently only “vpr” is supported.
+                            Place and Route tool. Currently only "vpr" is supported.
                             <span class="markConfig" id="mark_tools-symbiflow-pnr"></span>
                         </div>
                         <div class="select-container">
@@ -4825,7 +4855,7 @@ body.vscode-high-contrast {
                 <div class="settings-group-title-label">
                     Tools: Active-HDL
                 </div>
-                <div class="settings-group-description">Active-HDL™ is a Windows based, integrated FPGA Design Creation and Simulation solution for team-based environments.</div>
+                <div class="settings-group-description">Active-HDLâ„¢ is a Windows based, integrated FPGA Design Creation and Simulation solution for team-based environments.</div>
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -5979,10 +6009,16 @@ body.vscode-high-contrast {
     config["tools"]["general"]["execution_mode"] = element_value
     element_value = document.getElementById("tools-general-waveform_viewer").value;
     config["tools"]["general"]["waveform_viewer"] = element_value
+    element_value = document.getElementById("tools-general-vaporview_import_signals").checked;
+    config["tools"]["general"]["vaporview_import_signals"] = element_value
     element_value = document.getElementById("tools-general-gtkwave_installation_path").value;
     config["tools"]["general"]["gtkwave_installation_path"] = element_value
     element_value = document.getElementById("tools-general-gtkwave_extra_arguments").value;
     config["tools"]["general"]["gtkwave_extra_arguments"] = element_value
+    element_value = document.getElementById("tools-general-surfer_installation_path").value;
+    config["tools"]["general"]["surfer_installation_path"] = element_value
+    element_value = document.getElementById("tools-general-surfer_extra_arguments").value;
+    config["tools"]["general"]["surfer_extra_arguments"] = element_value
     config["tools"]["quartus"] = {}
     element_value = document.getElementById("tools-quartus-installation_path").value;
     config["tools"]["quartus"]["installation_path"] = element_value
@@ -6988,11 +7024,20 @@ body.vscode-high-contrast {
     if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["waveform_viewer"] !== undefined) {
         document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
     }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["vaporview_import_signals"] !== undefined) {
+        document.getElementById("tools-general-vaporview_import_signals").checked = config["tools"]["general"]["vaporview_import_signals"];
+    }
     if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_installation_path"] !== undefined) {
         document.getElementById("tools-general-gtkwave_installation_path").value = config["tools"]["general"]["gtkwave_installation_path"];
     }
     if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_extra_arguments"] !== undefined) {
         document.getElementById("tools-general-gtkwave_extra_arguments").value = config["tools"]["general"]["gtkwave_extra_arguments"];
+    }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["surfer_installation_path"] !== undefined) {
+        document.getElementById("tools-general-surfer_installation_path").value = config["tools"]["general"]["surfer_installation_path"];
+    }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["surfer_extra_arguments"] !== undefined) {
+        document.getElementById("tools-general-surfer_extra_arguments").value = config["tools"]["general"]["surfer_extra_arguments"];
     }
     if (config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["installation_path"] !== undefined) {
         document.getElementById("tools-quartus-installation_path").value = config["tools"]["quartus"]["installation_path"];
@@ -8167,6 +8212,11 @@ body.vscode-high-contrast {
     }
     document.getElementById("mark_tools-general-waveform_viewer").innerHTML = mark;
     mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["vaporview_import_signals"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-general-vaporview_import_signals").innerHTML = mark;
+    mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
@@ -8176,6 +8226,16 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-gtkwave_extra_arguments").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["surfer_installation_path"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-general-surfer_installation_path").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["surfer_extra_arguments"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-general-surfer_extra_arguments").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
