@@ -227,7 +227,7 @@ export type e_tools_general = {
     manual_compilation_order : string,
     execution_mode : e_tools_general_execution_mode,
     waveform_viewer : e_tools_general_waveform_viewer,
-    vaporview_import_signals : boolean,
+    vaporview_load_all_signals : boolean,
     gtkwave_installation_path : string,
     gtkwave_extra_arguments : string,
     surfer_installation_path : string,
@@ -1117,7 +1117,7 @@ export function get_default_config(): e_config {
                 manual_compilation_order : "",
                 execution_mode : e_tools_general_execution_mode.cmd,
                 waveform_viewer : e_tools_general_waveform_viewer.tool,
-                vaporview_import_signals : true,
+                vaporview_load_all_signals : true,
                 gtkwave_installation_path : "",
                 gtkwave_extra_arguments : "",
                 surfer_installation_path : "",
@@ -2449,14 +2449,14 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['tools']['general']['waveform_viewer'] = e_tools_general_waveform_viewer.surfer;
     }
             
-    // tools -> general -> vaporview_import_signals
+    // tools -> general -> vaporview_load_all_signals
     let current_value_75 = undefined;
     try {
-        current_value_75 = json_config['tools']['general']['vaporview_import_signals'];
+        current_value_75 = json_config['tools']['general']['vaporview_load_all_signals'];
     }
     catch(e){}
     if (current_value_75 === true || current_value_75 === false){
-        default_config['tools']['general']['vaporview_import_signals'] = current_value_75;
+        default_config['tools']['general']['vaporview_load_all_signals'] = current_value_75;
     }
             
     // tools -> general -> gtkwave_installation_path

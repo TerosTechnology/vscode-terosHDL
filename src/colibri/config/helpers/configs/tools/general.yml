@@ -51,7 +51,7 @@ waveform_viewer:
     surfer: "Surfer"
   value: "tool"
 
-vaporview_import_signals:
+vaporview_load_all_signals:
   description: "Import signals automatically in VaporView."
   type: boolean
   value: true

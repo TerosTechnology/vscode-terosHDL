@@ -1996,10 +1996,10 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-checkbox">
-                            <input type="checkbox" id="tools-general-vaporview_import_signals">
-                            <label class="setting-checkbox-label" for="tools-general-vaporview_import_signals">
+                            <input type="checkbox" id="tools-general-vaporview_load_all_signals">
+                            <label class="setting-checkbox-label" for="tools-general-vaporview_load_all_signals">
                                 Import signals automatically in VaporView.
-                                <span class="markConfig" id="mark_tools-general-vaporview_import_signals"></span>
+                                <span class="markConfig" id="mark_tools-general-vaporview_load_all_signals"></span>
                             </label>
                         </div>
                     </div>
@@ -6009,8 +6009,8 @@ body.vscode-high-contrast {
     config["tools"]["general"]["execution_mode"] = element_value
     element_value = document.getElementById("tools-general-waveform_viewer").value;
     config["tools"]["general"]["waveform_viewer"] = element_value
-    element_value = document.getElementById("tools-general-vaporview_import_signals").checked;
-    config["tools"]["general"]["vaporview_import_signals"] = element_value
+    element_value = document.getElementById("tools-general-vaporview_load_all_signals").checked;
+    config["tools"]["general"]["vaporview_load_all_signals"] = element_value
     element_value = document.getElementById("tools-general-gtkwave_installation_path").value;
     config["tools"]["general"]["gtkwave_installation_path"] = element_value
     element_value = document.getElementById("tools-general-gtkwave_extra_arguments").value;
@@ -7024,8 +7024,8 @@ body.vscode-high-contrast {
     if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["waveform_viewer"] !== undefined) {
         document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
     }
-    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["vaporview_import_signals"] !== undefined) {
-        document.getElementById("tools-general-vaporview_import_signals").checked = config["tools"]["general"]["vaporview_import_signals"];
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["vaporview_load_all_signals"] !== undefined) {
+        document.getElementById("tools-general-vaporview_load_all_signals").checked = config["tools"]["general"]["vaporview_load_all_signals"];
     }
     if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_installation_path"] !== undefined) {
         document.getElementById("tools-general-gtkwave_installation_path").value = config["tools"]["general"]["gtkwave_installation_path"];
@@ -8212,10 +8212,10 @@ body.vscode-high-contrast {
     }
     document.getElementById("mark_tools-general-waveform_viewer").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["vaporview_import_signals"] !== undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["vaporview_load_all_signals"] !== undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-general-vaporview_import_signals").innerHTML = mark;
+    document.getElementById("mark_tools-general-vaporview_load_all_signals").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
