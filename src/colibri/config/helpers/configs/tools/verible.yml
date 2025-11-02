@@ -15,6 +15,6 @@ installation_path:
 #   type: array
 #   value: []
 # rules:
-#   description: "What rules to use. Prefix a rule name with “-” to disable it."
+#   description: "What rules to use. Prefix a rule name with \"-\" to disable it."
 #   type: array
 #   value: []

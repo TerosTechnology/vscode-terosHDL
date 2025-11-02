@@ -11,11 +11,11 @@ part:
   type: string
   value: ""
 vendor:
-  description: "Target architecture. Currently only “xilinx” is supported."
+  description: "Target architecture. Currently only \"xilinx\" is supported."
   type: string
   value: ""
 pnr:
-  description: "Place and Route tool. Currently only “vpr” is supported."
+  description: "Place and Route tool. Currently only \"vpr\" is supported."
   type: select
   options:
     vpr: "VPR"
