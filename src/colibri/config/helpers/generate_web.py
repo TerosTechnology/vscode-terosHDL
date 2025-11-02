@@ -66,5 +66,5 @@ with open(template_path) as file:
     )
 
 output_path = os.path.join(os.path.dirname(__file__), "..", "config_web.ts")
-with open(output_path, mode="w") as file:
+with open(output_path, mode="w", encoding="utf-8") as file:
     file.write(template)
