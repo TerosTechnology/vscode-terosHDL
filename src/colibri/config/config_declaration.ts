@@ -228,7 +228,9 @@ export type e_tools_general = {
     execution_mode : e_tools_general_execution_mode,
     waveform_viewer : e_tools_general_waveform_viewer,
     gtkwave_installation_path : string,
+    surfer_installation_path : string,
     gtkwave_extra_arguments : string,
+    surfer_extra_arguments : string,
 };
     
 export type e_tools_quartus = {
@@ -762,6 +764,7 @@ export enum e_tools_general_waveform_viewer {
     tool = "tool",
     vaporView = "vaporView",
     gtkwave = "gtkwave",
+    surfer = "surfer",
 }
 export enum e_tools_quartus_optimization_mode {
     BALANCED = "BALANCED",
@@ -1115,6 +1118,8 @@ export function get_default_config(): e_config {
                 waveform_viewer : e_tools_general_waveform_viewer.tool,
                 gtkwave_installation_path : "",
                 gtkwave_extra_arguments : "",
+                surfer_installation_path : "",
+                surfer_extra_arguments : "",
             },
             quartus: {
                 installation_path : "",

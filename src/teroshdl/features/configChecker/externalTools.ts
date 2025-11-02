@@ -16,6 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
+import * as vscode from 'vscode';
+import { BinaryCheck } from 'colibri/toolChecker/utils';
 import {
     e_config,
     e_tools_general_execution_mode,
@@ -51,7 +53,7 @@ export async function checkExternalToolManager(currentConfig: e_config) {
     // Default to '--version' if no custom argument is specified
     const versionArgument = customVersionArgs[selectedTool] || '--version';
 
-    let binaryName : string | string[] =
+    let binaryName: string | string[] =
         selectedTool === e_tools_general_select_tool.rivierapro ? ['rivierapro', 'riviera'] : selectedTool;
     binaryName = binaryName === e_tools_general_select_tool.icarus ? 'iverilog' : binaryName;
 
@@ -79,9 +81,15 @@ export async function checkExternalToolManager(currentConfig: e_config) {
             'GTKWave waveform viewer will be opened after the simulation. Make sure that the GTKWave is correctly configured.';
     } else if (waveformViewer === e_tools_general_waveform_viewer.tool) {
         extraMsg = 'Built-in tool waveform viewer will be opened after the simulation if it is available.';
+    } else if (waveformViewer === e_tools_general_waveform_viewer.vaporView) {
+        extraMsg =
+            'VaporView waveform viewer will be opened after the simulation. Make sure the extension is available.';
+    } else if (waveformViewer === e_tools_general_waveform_viewer.surfer) {
+        extraMsg =
+            'Surfer waveform viewer will be opened after the simulation. Make sure Surfer is correctly configured.';
     }
     msg += `${INTROICON} Waveform viewer: ${waveformViewer.toLocaleUpperCase()}. ${extraMsg}\n`;
-    // Check GTKwave
+    // Check GTKwave or Surfer
     if (waveformViewer === e_tools_general_waveform_viewer.gtkwave) {
         const gtkwavePath = currentConfig.tools.general.gtkwave_installation_path;
         result = await checkBinary('GTKWave', gtkwavePath, 'gtkwave', ['--version']);
@@ -89,6 +97,40 @@ export async function checkExternalToolManager(currentConfig: e_config) {
         if (!result.successfulConfig) {
             isOk = false;
         }
+    } else if (waveformViewer === e_tools_general_waveform_viewer.surfer) {
+        const surferPath = currentConfig.tools.general.surfer_installation_path;
+        result = await checkBinary('Surfer', surferPath, 'surfer', ['--version']);
+        msg = appendMsg(result, msg, 'Wavefrom Viewer');
+        if (!result.successfulConfig) {
+            isOk = false;
+        }
+    } else if (waveformViewer == e_tools_general_waveform_viewer.vaporView) {
+        const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
+        let configOk: boolean = false;
+        // Mock a BinaryCheck result for the extension.
+        let messageList = [`🔎 Searching for the VaporView extension in vscode`];
+        if (extension) {
+            messageList.push(`✅ VaporView extension found in vscode`);
+            if (extension.isActive) {
+                configOk = true;
+                messageList.push(`✅ VaporView extension enabled in vscode`);
+            }
+            else {
+                messageList.push(`❌ VaporView extension not enabled in vscode`);
+            }
+        } else {
+            messageList.push(`❌ VaporView extension not installed in vscode`);
+        }
+        const result: BinaryCheck = {
+            displayName: "Surfer",
+            binaryPath: "N/A",
+            messageList: messageList,
+            successfulFind: extension !== undefined,
+            successfulConfig: configOk,
+        };
+        // Add results
+        msg = appendMsg(result, msg, 'Wavefrom Viewer');
+        isOk = configOk;
     }
 
     msg += '\n';

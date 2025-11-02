@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as vscode from 'vscode';
-import {spawn} from 'child_process';
+import { spawn } from 'child_process';
 import { Base_webview } from './web';
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import * as path_lib from 'path';
@@ -62,34 +62,34 @@ export class Comander {
         const file_path = args.fsPath;
         globalLogger.info(`Opening the waveform: ${file_path}`);
 
-        const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
-        if (config.tools.general.waveform_viewer !== e_tools_general_waveform_viewer.gtkwave) {
+        if (config.tools.general.waveform_viewer == e_tools_general_waveform_viewer.vaporView) {
+            const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
             if (extension && extension.isActive) {
                 await vscode.commands.executeCommand('vaporview.openFile', args);
                 return;
             }
-            else if (config.tools.general.waveform_viewer !== e_tools_general_waveform_viewer.vaporView) {
-                vscode.window.showInformationMessage(`Waveform viewer not available or not active.`);
-            }
+            vscode.window.showInformationMessage(`VaporView not available or not active. Defaulting to GTKWave.`);
         }
 
-        let gtkwave_binary = "gtkwave";
+        const use_surfer = config.tools.general.waveform_viewer == e_tools_general_waveform_viewer.surfer;
+
+        let waveviewer_binary = use_surfer ? "surfer" : "gtkwave";
         const os_i = get_os();
         if (os_i === OS.WINDOWS) {
-            gtkwave_binary = "gtkwave.exe";
+            waveviewer_binary = use_surfer ? "surfer.exe" : "gtkwave.exe";
         }
 
-        let gtkwave_path = "";
-        let base_path = config.tools.general.gtkwave_installation_path;
+        let waveviewer_path = "";
+        let base_path = use_surfer ? config.tools.general.surfer_installation_path : config.tools.general.gtkwave_installation_path;
         if (base_path !== "") {
-            gtkwave_path = path_lib.join(base_path, gtkwave_binary);
+            waveviewer_path = path_lib.join(base_path, waveviewer_binary);
         }
         else {
-            gtkwave_path = gtkwave_binary;
+            waveviewer_path = waveviewer_binary;
         }
-        const extra_arguments = config.tools.general.gtkwave_extra_arguments;
+        const extra_arguments = use_surfer ? config.tools.general.surfer_extra_arguments : config.tools.general.gtkwave_extra_arguments;
 
-        let command = `${gtkwave_path} ${file_path} ${extra_arguments}`;
+        let command = `${waveviewer_path} ${file_path} ${extra_arguments}`;
         // shelljs.exec(command, { async: true });
         spawn(command, {
             shell: true,

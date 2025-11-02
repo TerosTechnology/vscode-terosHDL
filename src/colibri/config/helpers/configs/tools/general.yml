@@ -42,12 +42,13 @@ execution_mode:
   value: "cmd"
 
 waveform_viewer:
-  description: "Select the waveform viewer. For GTKWave you need to install it."
+  description: "Select the waveform viewer. For GTKWave/Surfer you need to install it."
   type: select
   options:
     tool: "Tool GUI"
     vaporView: "VaporView"
     gtkwave: "GTKWave"
+    surfer: "Surfer"
   value: "tool"
 
 gtkwave_installation_path:
@@ -57,5 +58,15 @@ gtkwave_installation_path:
 
 gtkwave_extra_arguments:
   description: "Extra arguments passed to GTKwave. E.g: --script=script.tcl"
+  type: string
+  value: ""
+
+surfer_installation_path:
+  description: "Surfer installation directory."
+  type: string
+  value: ""
+
+surfer_extra_arguments:
+  description: "Extra arguments passed to Surfer. E.g: --script=script.tcl"
   type: string
   value: ""
