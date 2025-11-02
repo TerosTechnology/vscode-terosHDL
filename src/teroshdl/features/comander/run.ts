@@ -67,7 +67,7 @@ export class Comander {
             if (extension && extension.isActive) {
                 let vaporview_args = {
                     uri: args,
-                    loadAll: false,
+                    loadAll: config.tools.general.vaporview_import_signals,
                     maxSignals: 64
                 };
                 await vscode.commands.executeCommand('vaporview.openFile', vaporview_args);

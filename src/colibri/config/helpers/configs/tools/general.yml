@@ -51,6 +51,11 @@ waveform_viewer:
     surfer: "Surfer"
   value: "tool"
 
+vaporview_import_signals:
+  description: "Import signals automatically in VaporView."
+  type: boolean
+  value: true
+
 gtkwave_installation_path:
   description: "GTKWave installation directory."
   type: string
