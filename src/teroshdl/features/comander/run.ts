@@ -97,7 +97,7 @@ export class Comander {
         let command = `${waveviewer_path} ${file_path} ${extra_arguments}`;
         // shelljs.exec(command, { async: true });
         spawn(command, {
-            shell: true,
+            shell: false,
             stdio: 'inherit'
         });
     }
