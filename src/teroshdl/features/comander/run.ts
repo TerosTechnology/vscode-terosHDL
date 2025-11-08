@@ -63,8 +63,10 @@ export class Comander {
         globalLogger.info(`Opening the waveform: ${file_path}`);
 
         if (config.tools.general.waveform_viewer == e_tools_general_waveform_viewer.vaporView) {
-            const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
-            if (extension && extension.isActive) {
+            const extension = vscode.extensions.getExtension('lramseyer.vaporview');
+            if (extension) {
+                if (!extension.isActive)
+                    await extension.activate();
                 let vaporview_args = {
                     uri: args,
                     loadAll: config.tools.general.vaporview_load_all_signals,

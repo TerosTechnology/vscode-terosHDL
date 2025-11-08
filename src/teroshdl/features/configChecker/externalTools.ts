@@ -105,19 +105,13 @@ export async function checkExternalToolManager(currentConfig: e_config) {
             isOk = false;
         }
     } else if (waveformViewer == e_tools_general_waveform_viewer.vaporView) {
-        const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
+        const extension = vscode.extensions.getExtension('lramseyer.vaporview');
         let configOk: boolean = false;
         // Mock a BinaryCheck result for the extension.
         let messageList = [`🔎 Searching for the VaporView extension in vscode`];
         if (extension) {
             messageList.push(`✅ VaporView extension found in vscode`);
-            if (extension.isActive) {
-                configOk = true;
-                messageList.push(`✅ VaporView extension enabled in vscode`);
-            }
-            else {
-                messageList.push(`❌ VaporView extension not enabled in vscode`);
-            }
+            configOk = true;
         } else {
             messageList.push(`❌ VaporView extension not installed in vscode`);
         }
