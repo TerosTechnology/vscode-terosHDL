@@ -38,6 +38,13 @@
     },
 
     "contributes": {
+        "iconThemes": [
+            {
+                "id": "teroshdl-icons",
+                "label": "TerosHDL File Icons",
+                "path": "./resources/icon/teroshdl-icon-theme.json"
+            }
+        ],
         "viewsContainers": {
             "activitybar": [
                 {
@@ -429,6 +436,14 @@
             {
                 "command": "teroshdl.open",
                 "title": "Open file with TerosHDL"
+            }, 
+            {
+                "command": "teroshdl.icons.enable",
+                "title": "TerosHDL: Enable File Icons"
+            }, 
+            {
+                "command": "teroshdl.icons.disable",
+                "title": "TerosHDL: Disable File Icons"
             }, 
             {
                 "command": "teroshdl.configuration.global",
@@ -892,7 +907,18 @@
                 "mac": "command+delete",
                 "when": "editorTextFocus"
             }
-        ]
+        ],
+
+        "configuration": {
+            "title": "TerosHDL",
+            "properties": {
+                "teroshdl.fileIcons.enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "markdownDescription": "Enable TerosHDL file icons. To apply changes:\n1. Open Command Palette (Ctrl+Shift+P)\n2. Type 'File Icon Theme'\n3. Select 'TerosHDL File Icons' to enable or 'None' to disable"
+                }
+            }
+        }
     },
 
     "scripts": {
