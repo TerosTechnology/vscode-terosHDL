@@ -438,14 +438,6 @@
                 "title": "Open file with TerosHDL"
             }, 
             {
-                "command": "teroshdl.icons.enable",
-                "title": "TerosHDL: Enable File Icons"
-            }, 
-            {
-                "command": "teroshdl.icons.disable",
-                "title": "TerosHDL: Disable File Icons"
-            }, 
-            {
                 "command": "teroshdl.configuration.global",
                 "title": "TerosHDL: Open Global Settings Menu"
             }, 

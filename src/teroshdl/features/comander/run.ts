@@ -43,8 +43,6 @@ export class Comander {
         vscode.commands.registerCommand("teroshdl.open", (ags) => this.open_file(ags));
         vscode.commands.registerCommand("teroshdl.waveform", (ags) => this.open_waveform(ags));
         vscode.commands.registerCommand("teroshdl.openwebview", (ags) => this.open_webview(ags, this.report_webview));
-        vscode.commands.registerCommand("teroshdl.icons.enable", () => this.enableFileIcons());
-        vscode.commands.registerCommand("teroshdl.icons.disable", () => this.disableFileIcons());
     }
 
     private open_file(args: vscode.Uri) {
@@ -101,35 +99,5 @@ export class Comander {
 
     private open_webview(args: string, webview: Base_webview) {
         webview.create_webview(args);
-    }
-
-    private async enableFileIcons() {
-        const config = vscode.workspace.getConfiguration();
-        await config.update('workbench.iconTheme', 'teroshdl-icons', vscode.ConfigurationTarget.Global);
-        await config.update('teroshdl.fileIcons.enabled', true, vscode.ConfigurationTarget.Global);
-        
-        const action = await vscode.window.showInformationMessage(
-            'TerosHDL file icons enabled. Reload window to apply changes?',
-            'Reload',
-            'Later'
-        );
-        if (action === 'Reload') {
-            vscode.commands.executeCommand('workbench.action.reloadWindow');
-        }
-    }
-
-    private async disableFileIcons() {
-        const config = vscode.workspace.getConfiguration();
-        await config.update('workbench.iconTheme', null, vscode.ConfigurationTarget.Global);
-        await config.update('teroshdl.fileIcons.enabled', false, vscode.ConfigurationTarget.Global);
-        
-        const action = await vscode.window.showInformationMessage(
-            'TerosHDL file icons disabled. Reload window to apply changes?',
-            'Reload',
-            'Later'
-        );
-        if (action === 'Reload') {
-            vscode.commands.executeCommand('workbench.action.reloadWindow');
-        }
     }
 }
