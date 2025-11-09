@@ -914,7 +914,7 @@
             "properties": {
                 "teroshdl.fileIcons.enabled": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "markdownDescription": "Enable TerosHDL file icons. To apply changes:\n1. Open Command Palette (Ctrl+Shift+P)\n2. Type 'File Icon Theme'\n3. Select 'TerosHDL File Icons' to enable or 'None' to disable"
                 }
             }
