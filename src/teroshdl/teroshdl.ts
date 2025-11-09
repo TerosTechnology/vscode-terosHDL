@@ -124,6 +124,28 @@ export class Teroshdl {
 
         this.init_comander();
         debugLogger.info('activated comander');
+
+        // Register cleanup settings commands: open settings and toggle the enabled flag
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('teroshdl.cleanup.openSettings', async () => {
+                // Open Settings UI filtered on teroshdl.cleanup
+                await vscode.commands.executeCommand('workbench.action.openSettings', 'teroshdl.cleanup');
+            })
+        );
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('teroshdl.cleanup.toggleKillServerProcesses', async () => {
+                const cfg = vscode.workspace.getConfiguration('teroshdl.cleanup');
+                const key = 'killServerProcesses.enabled';
+                const current = cfg.get<boolean>(key, false);
+                try {
+                    await cfg.update(key, !current, vscode.ConfigurationTarget.Global);
+                    const message = `TerosHDL cleanup: Kill Server Processes is now ${!current ? 'enabled' : 'disabled'}.`;
+                    vscode.window.showInformationMessage(message);
+                } catch (e) {
+                    vscode.window.showErrorMessage('Unable to update TerosHDL cleanup setting: ' + String(e));
+                }
+            })
+        );
     }
 
     private async init_multi_project_manager() {

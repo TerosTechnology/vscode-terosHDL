@@ -196,6 +196,12 @@ export class Config_manager {
                         case 'load':
                             this.loadConfigFromFile();
                             return;
+                        case 'openCleanupSettings':
+                            // Open the cleanup settings UI (calls the command registered elsewhere)
+                            try {
+                                await vscode.commands.executeCommand('teroshdl.cleanup.openSettings');
+                            } catch (e) { /* ignore */ }
+                            return;
                     }
                 },
                 undefined,
@@ -281,6 +287,13 @@ export class Config_manager {
      * @returns A promise that resolves when the update is complete.
      */
     private async updateWebConfig(tabToOpen: string): Promise<void> {
+        const cleanupCfg = vscode.workspace.getConfiguration('teroshdl.cleanup');
+        const cleanupEnabled = cleanupCfg.get<boolean>('killServerProcesses.enabled', false);
+        const remoteName = (vscode.env.remoteName ?? '').toString();
+        const cleanupEffective = cleanupEnabled
+            ? (remoteName.startsWith('ssh-remote') ? 'enabled (SSH only)' : 'enabled (not active: not SSH)')
+            : 'disabled';
+
         await this.panel?.webview.postMessage({
             command: "set_config",
             config: this.currentConfig,
@@ -288,6 +301,9 @@ export class Config_manager {
             title: this.getTitle(),
             projectName: this.currentProjectName,
             tool: tabToOpen,
+            cleanupEnabled: cleanupEnabled,
+            remoteName: remoteName,
+            cleanupEffective: cleanupEffective
         });
     }
 

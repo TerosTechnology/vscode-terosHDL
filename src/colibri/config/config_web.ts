@@ -957,7 +957,11 @@ body.vscode-high-contrast {
                         </div>
                     </div>
                   
-                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            <span id="cleanupIndicator" onclick="open_cleanup_settings()" style="font-weight:600;margin-left:8px;cursor:pointer;" title="Click to open cleanup settings">unknown</span>
+                        </div>
+                    </div>
                   
             </div>
             <div class="settings-section" id="documentation-general">
@@ -5782,6 +5786,12 @@ body.vscode-high-contrast {
     });
   }
 
+    function open_cleanup_settings(){
+        vscode.postMessage({
+            command: 'openCleanupSettings'
+        });
+    }
+
   window.addEventListener('message', event => {
       const message = event.data;
       switch (message.command) {
@@ -5793,6 +5803,13 @@ body.vscode-high-contrast {
               if (tool != undefined && tool != ""){
                 enable_tab("tools", tool);
               }
+                  try {
+                      const el = document.getElementById('cleanupIndicator');
+                      if (el) {
+                          const effective = message.cleanupEffective || (message.cleanupEnabled ? ( (message.remoteName||'').startsWith('ssh-remote') ? 'enabled (SSH only)' : 'enabled (not active: not SSH)') : 'disabled');
+                          el.textContent = 'Auto cleanup language server processes: ' + effective;
+                      }
+                  } catch (e) { /* ignore */ }
               break;
       }
   });
