@@ -41,7 +41,8 @@ export async function checkExternalToolManager(currentConfig: e_config) {
     // Build a custom map for specified extern tools' version check argument
     const customVersionArgs: Record<string, string> = {
         vivado: '-version',
-        icarus: '-V'
+        icarus: '-V',
+        vcs: '-full64 -id',
         // Add more tools and their custom arguments here
         // "tool-name-example": "--example-arg"
     };

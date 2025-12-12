@@ -45,7 +45,7 @@ waveform_viewer:
   description: "Select the waveform viewer. For GTKWave you need to install it."
   type: select
   options:
-    tool: "Tool GUI"
+    tool: "Simulator's built-in waveform viewer"
     vaporView: "VaporView"
     gtkwave: "GTKWave"
   value: "tool"
