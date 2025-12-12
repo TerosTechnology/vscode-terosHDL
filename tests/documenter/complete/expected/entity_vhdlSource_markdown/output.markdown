@@ -181,6 +181,17 @@ Example of bitfield:
 | byte_data3 | std_logic_vector (7 downto 0) | comment byte_data3 |
 
 
+### *sample_record3*
+ Sample record type 3
+
+| Name       | Type                          | Description                             |
+| ---------- | ----------------------------- | --------------------------------------- |
+| valid      | std_logic                     | Comment valid                           |
+| byte_data1 | std_logic_vector (7 downto 0) | comment byte_data1 additional comment 1 |
+| byte_data2 | std_logic_vector (7 downto 0) | comment byte_data2 additional comment 2 |
+| byte_data3 | std_logic_vector (7 downto 0) | comment byte_data3                      |
+
+
 ## Enums
 
 
@@ -214,6 +225,14 @@ Example of bitfield:
 | FSM_A | FSM_A comment... |
 | FSM_B | FSM_B comment... |
 | FSM_C | FSM_C comment... |
+
+
+### *t_fsm3*
+| Name | Description                                                                   |
+| ---- | ----------------------------------------------------------------------------- |
+| S0   | First State Additional comment.                                               |
+| S1   | Second State. Additional comment 1. Additional comment 2.                     |
+| S2   | Third State Additional comment 3. Additional comment 4. Additional comment 5. |
 
 
 ## Functions

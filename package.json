@@ -38,6 +38,13 @@
     },
 
     "contributes": {
+        "iconThemes": [
+            {
+                "id": "teroshdl-icons",
+                "label": "TerosHDL File Icons",
+                "path": "./resources/icon/teroshdl-icon-theme.json"
+            }
+        ],
         "viewsContainers": {
             "activitybar": [
                 {
@@ -435,7 +442,7 @@
                 "title": "TerosHDL: Open Global Settings Menu"
             }, 
             {
-                "command": "teroshdl.configuration.verifySetup",
+                "command": "teroshdl.verifySetup",
                 "title": "TerosHDL: Verify Setup"
             }, 
             {
@@ -892,7 +899,18 @@
                 "mac": "command+delete",
                 "when": "editorTextFocus"
             }
-        ]
+        ],
+
+        "configuration": {
+            "title": "TerosHDL",
+            "properties": {
+                "teroshdl.fileIcons.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "markdownDescription": "Enable TerosHDL file icons. To apply changes:\n1. Open Command Palette (Ctrl+Shift+P)\n2. Type 'File Icon Theme'\n3. Select 'TerosHDL File Icons' to enable or 'None' to disable"
+                }
+            }
+        }
     },
 
     "scripts": {
@@ -922,11 +940,11 @@
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
         "open": "8.3.0",
         "proper-lockfile": "4.1.1",
-        "semver": "7.3.5",
+        "semver": "^7.6.3",
         "shelljs": "^0.8.3",
         "tmp": "0.2.1",
         "vscode-languageclient": "^9.0.1",
-        "xml2js": "0.4.23",
+        "xml2js": "^0.6.2",
         "nunjucks": "^3.2.0",
         "@types/nunjucks": "^3.1.4",
         "tree-kill": "1.2.2",
@@ -944,7 +962,7 @@
         "fast-xml-parser": "4.3.2",
         "jest-html-reporter": "^3.7.0",
         "js-yaml": "^4.1.0",
-        "json5": "2.1.3",
+        "json5": "^2.2.3",
         "lodash": "^4.17.21",
         "onml": "2.1.0",
         "pyodide": "0.24.1",

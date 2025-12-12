@@ -110,9 +110,7 @@
                 <key>name</key>
                 <string>keyword.xdc.access</string>
                 <key>match</key>
-                <string>\b(set_logic_unconnected|all_cpus|all_dsps|all_ffs|all_hsios|all_latches|all_rams|
-                get_generated_clocks|get_iobanks|get_package_pins|get_path_groups|get_sites|filter|set_property|
-                get_hierarchy_separator)\b</string>
+                <string>\b(set_logic_unconnected|all_cpus|all_dsps|all_ffs|all_hsios|all_latches|all_rams|all_registers|get_generated_clocks|get_iobanks|get_package_pins|get_path_groups|get_sites|filter|set_property|get_hierarchy_separator|get_bels|get_pips|get_nodes|get_wires|get_timing_paths|all_inputs|all_outputs|current_design|get_property|create_waiver)\b</string>
             </dict>
 
             <dict>
@@ -127,7 +125,7 @@
                 <key>name</key>
                 <string>keyword.xdc.power</string>
                 <key>match</key>
-                <string>\b(set_default_switching_activity|set_power_opt|set_switching_activity)\b</string>
+                <string>\b(set_default_switching_activity|set_power_opt|set_switching_activity|set_bus_skew|set_system_jitter|set_max_fanout)\b</string>
             </dict>
 
             <dict>
@@ -141,53 +139,21 @@
                 <key>name</key>
                 <string>keyword.xdc.constant</string>
                 <key>match</key>
-                <string>\b(NO|YES|FALSE|TRUE|DISABLE|ENABLE|NONE|BACKBONE|SLOW|FAST|DONTCARE|
-                NORMAL|HIGH|IBUF|IFD|BOTH|HALT|CONTINUE|CORRECT_AND_CONTINUE|
-                CORRECT_AND_HALT|PRE_COMPUTED|FIRST_READBACK|
-                DIFF_HSTL_I|DIFF_HSTL_II|DIFF_HSTL_II_18|DIFF_HSTL_II_DCI|
-                DIFF_HSTL_II_DCI_18|DIFF_HSTL_II_T_DCI|DIFF_HSTL_II_T_DCI_18|
-                DIFF_HSTL_II__T_DCI|DIFF_HSTL_I_18|DIFF_HSTL_I_DCI|
-                DIFF_HSTL_I_DCI_18|DIFF_HSUL_12_DCI|DIFF_SSTL12_DCI|
-                DIFF_SSTL12_T_DCI|DIFF_SSTL135|DIFF_SSTL135_DCI|DIFF_SSTL135_R|
-                DIFF_SSTL135_T_DCI|DIFF_SSTL15|DIFF_SSTL15_DCI|DIFF_SSTL15_R|
-                DIFF_SSTL15_T_DCI|DIFF_SSTL18_I|DIFF_SSTL18_II|DIFF_SSTL18_II_DCI|
-                DIFF_SSTL18_II_T_DCI|DIFF_SSTL18_I_DCI|HSLVDCI_15|HSLVDCI_18|HSTL_I|
-                HSTL_II|HSTL_II_18|HSTL_II_DCI|HSTL_II_DCI_18|HSTL_II_T_DCI|
-                HSTL_II_T_DCI_18|HSTL_I_18|HSTL_I_DCI|HSTL_I_DCI_18|HSUL_12_DCI|
-                LVCMOS12|LVCMOS18|LVCMOS25|LVCMOS33|LVDCI_15|LVDCI_18|LVDCI_DV2_15|LVDS|
-                LVDCI_DV2_18|SSTL12_DCI|SSTL12_T_DCI|SSTL135|SSTL135_DCI|SSTL135_R|
-                SSTL135_T_DCI|SSTL15|SSTL15_DCI|SSTL15_R|SSTL15_T_DCI|SSTL18_I|
-                SSTL18_II|SSTL18_II_DCI|SSTL18_II_T_DCI|SSTL18_I_DCI|
-                TUNED_SPLIT|UNTUNED_SPLIT_25|UNTUNED_SPLIT_40|UNTUNED_SPLIT_50|
-                UNTUNED_SPLIT_60|UNTINED_SPLIT_75|TUNED|UNTUNED_25|UNTUNED_50|
-                UNTUNED_75)\b</string>
+                <string>\b(NO|YES|FALSE|TRUE|DISABLE|ENABLE|NONE|BACKBONE|SLOW|FAST|DONTCARE|NORMAL|HIGH|IBUF|IFD|BOTH|HALT|CONTINUE|CORRECT_AND_CONTINUE|CORRECT_AND_HALT|PRE_COMPUTED|FIRST_READBACK|DIFF_HSTL_I|DIFF_HSTL_II|DIFF_HSTL_II_18|DIFF_HSTL_II_DCI|DIFF_HSTL_II_DCI_18|DIFF_HSTL_II_T_DCI|DIFF_HSTL_II_T_DCI_18|DIFF_HSTL_II__T_DCI|DIFF_HSTL_I_18|DIFF_HSTL_I_DCI|DIFF_HSTL_I_DCI_18|DIFF_HSUL_12_DCI|DIFF_SSTL12_DCI|DIFF_SSTL12_T_DCI|DIFF_SSTL135|DIFF_SSTL135_DCI|DIFF_SSTL135_R|DIFF_SSTL135_T_DCI|DIFF_SSTL15|DIFF_SSTL15_DCI|DIFF_SSTL15_R|DIFF_SSTL15_T_DCI|DIFF_SSTL18_I|DIFF_SSTL18_II|DIFF_SSTL18_II_DCI|DIFF_SSTL18_II_T_DCI|DIFF_SSTL18_I_DCI|HSLVDCI_15|HSLVDCI_18|HSTL_I|HSTL_II|HSTL_II_18|HSTL_II_DCI|HSTL_II_DCI_18|HSTL_II_T_DCI|HSTL_II_T_DCI_18|HSTL_I_18|HSTL_I_DCI|HSTL_I_DCI_18|HSUL_12_DCI|HSUL_12|LVCMOS12|LVCMOS18|LVCMOS25|LVCMOS33|LVDCI_15|LVDCI_18|LVDCI_DV2_15|LVDS|LVDS_25|LVDCI_DV2_18|SSTL12_DCI|SSTL12_T_DCI|SSTL135|SSTL135_DCI|SSTL135_R|SSTL135_T_DCI|SSTL15|SSTL15_DCI|SSTL15_R|SSTL15_T_DCI|SSTL18_I|SSTL18_II|SSTL18_II_DCI|SSTL18_II_T_DCI|SSTL18_I_DCI|DIFF_SSTL15|POD12|TMDS_33|DIFF_HSTL_I_18|TUNED_SPLIT|UNTUNED_SPLIT_25|UNTUNED_SPLIT_40|UNTUNED_SPLIT_50|UNTUNED_SPLIT_60|UNTINED_SPLIT_75|TUNED|UNTUNED_25|UNTUNED_50|UNTUNED_75|RDRV_40_40|RDRV_48_48|RDRV_60_60|TERM_100|BUFG|BUFR|BUFH|BUFIO|LOCAL|REGIONAL|ANY_CMT_COLUMN|SOFT|TIMING|SPEED|AREA|POWER|SPIx4|VCCO|Cclk|NoWait|Pulldown|block|distributed|auto|yes|no|register|srl)\b</string>
             </dict>
 
             <dict>
                 <key>name</key>
                 <string>keyword.xdc.parameters</string>
                 <key>match</key>
-                <string>\b(ASYNC_REG|BEL|BLACK_BOX|BUFFER_TYPE|CFGBVS|CLOCK_BUFFER_TYPE|
-                CLOCK_DEDICATED_ROUTE|CLOCK_REGION|CLOCK_ROOT|CONFIG_MODE|
-                CONFIG_VOLTAGE|CONTAIN_ROUTING|DCI_CASCADE|DELAY_BYPASS|
-                DIFF_TERM|DIFF_TERM_ADV|DIRECT_ENABLE|DIRECT_RESET|DONT_TOUCH|DRIVE|
-                EDIF_EXTRA_SEARCH_PATHS|EQUALIZATION|EXCLUDE_PLACEMENT|FSM_ENCODING|
-                FSM_SAFE_STATE|GATED_CLOCK|H_SET|HIODELAY_GROUP|HLUTNM|HU_SET|
-                IBUF_LOW_PWR|IN_TERM|INTERNAL_VREF|IO_BUFFER_TYPE|IOB|IOBDELAY|
-                IODELAY_GROUP|IOSTANDARD|IP_REPO_PATHS|KEEP|KEEP_COMPATIBLE|
-                KEEP_HIERARCHY|KEEPER|LOC|LOCK_PINS|LUTNM|LVDS_PRE_EMPHASIS|
-                MARK_DEBUG|MAX_FANOUT|ODT|OFFSET_CNTRL|PACKAGE_PIN|PATH_MODE|PBLOCK|
-                POST_CRC|POST_CRC_ACTION|POST_CRC_FREQ|POST_CRC_INIT_FLAG|
-                POST_CRC_SOURCE|PRE_EMPHASIS|PROHIBIT|PULLDOWN|PULLUP|REF_NAME|
-                REF_PIN_NAME|RLOC|RLC_ORIGIN|RLOCS|ROUTE_STATUS|RPM|RPM_GRID|SLEW|
-                U_SET|USE_DSP48|USED_IN|VCCAUX_IO)\b</string>
+                <string>(?&lt;=\s)(ASYNC_REG|BEL|BLACK_BOX|BUFFER_TYPE|CFGBVS|CLOCK_BUFFER_TYPE|CLOCK_DEDICATED_ROUTE|CLOCK_REGION|CLOCK_ROOT|CONFIG_MODE|CONFIG_VOLTAGE|CONTAIN_ROUTING|DCI_CASCADE|DELAY_BYPASS|DIFF_TERM|DIFF_TERM_ADV|DIRECT_ENABLE|DIRECT_RESET|DONT_TOUCH|DRIVE|EDIF_EXTRA_SEARCH_PATHS|EQUALIZATION|EXCLUDE_PLACEMENT|FSM_ENCODING|FSM_SAFE_STATE|GATED_CLOCK|H_SET|HIODELAY_GROUP|HLUTNM|HU_SET|IBUF_LOW_PWR|IBUF_DELAY_VALUE|IFD_DELAY_VALUE|IDELAY_VALUE|IN_TERM|INTERNAL_VREF|IO_BUFFER_TYPE|IOB|IOBDELAY|IODELAY_GROUP|IOSTANDARD|IP_REPO_PATHS|KEEP|KEEP_COMPATIBLE|KEEP_HIERARCHY|KEEPER|LOC|LOCK_PINS|LUTNM|LVDS_PRE_EMPHASIS|MARK_DEBUG|MAX_FANOUT|ODT|OFFSET_CNTRL|OPT_DESIGN|OPTIMIZE|OUTPUT_IMPEDANCE|PACKAGE_PIN|PATH_MODE|PBLOCK|POST_CRC|POST_CRC_ACTION|POST_CRC_FREQ|POST_CRC_INIT_FLAG|POST_CRC_SOURCE|PRE_EMPHASIS|PRIORITY|PROHIBIT|PULLDOWN|PULLTYPE|PULLUP|RAM_STYLE|REF_NAME|REF_PIN_NAME|RETIMING|RLOC|RLC_ORIGIN|RLOCS|ROM_STYLE|ROUTE_CONSTRAINT|ROUTE_STATUS|RPM|RPM_GRID|SLEW|SRL_STYLE|U_SET|USE_DSP48|USED_IN|VCCAUX_IO|ALLOW_COMBINATORIAL_LOOPS|HD\.CLK_SRC|HD\.PARTPIN_RANGE|BITSTREAM\.CONFIG\.CONFIGRATE|BITSTREAM\.CONFIG\.SPI_BUSWIDTH|BITSTREAM\.CONFIG\.SPI_FALL_EDGE|BITSTREAM\.CONFIG\.UNUSEDPIN|BITSTREAM\.CONFIG\.OVERTEMPPOWERDOWN|BITSTREAM\.GENERAL\.COMPRESS|BITSTREAM\.CONFIG\.EXTMASTERCCLK_EN|BITSTREAM\.STARTUP\.STARTUPCLK|BITSTREAM\.STARTUP\.GTS_CYCLE|BITSTREAM\.STARTUP\.GWE_CYCLE|BITSTREAM\.STARTUP\.LCK_CYCLE|BITSTREAM\.STARTUP\.DONE_CYCLE)\b</string>
             </dict>
 
             <dict>
                 <key>name</key>
                 <string>storage.type.sdc</string>
                 <key>match</key>
-                <string>(-add_delay|-end|-clock_fall|-clock|-to|-from|-max|-min|-name|-no_duplicates|-source|-period|-level_sensitive|-edge_triggered|-hierarchical|-sdc|-hsc|-quiet|-regexp|-nocase|-exact|-filter|-of_objects|-waveform|-add|-edges|-divide_by|-multiply_by|-duty_cycle|-invert|-edge_shift|-master_clock|-setup|-hold|-rise|-fall|-high|-low|-late|-early|-rise_from|-fall_from|-rise_to|-fall_to|-add_delay|-clock_fall|-network_latency_included|-source_latency_included|-through|-pin|-from_pin|-input_transition_rise|-input_transition_fall|-library|-lib_cell|-substract_pin_load|-wire_load|-pin_load|-max_library|-min_library|-group|-asynchronous|-nowarn|-create_base_clocks)</string>
+                <string>(-network_latency_included|-source_latency_included|-input_transition_rise|-input_transition_fall|-physically_exclusive|-logically_exclusive|-stop_propagation|-slack_lesser_than|-substract_pin_load|-create_base_clocks|-level_sensitive|-edge_triggered|-no_duplicates|-master_clock|-endpoints_only|-datapath_only|-max_library|-min_library|-include_cells|-exclude_cells|-unique_pins|-max_paths|-clock_fall|-edge_shift|-add_delay|-hierarchical|-asynchronous|-of_objects|-from_pin|-wire_load|-pin_load|-waveform|-positive|-negative|-recovery|-removal|-objects|-library|-lib_cell|-nworst|-filter|-regexp|-nocase|-source|-period|-divide_by|-multiply_by|-duty_cycle|-through|-rise_from|-fall_from|-rise_to|-fall_to|-nowarn|-description|-levels|-clock|-start|-setup|-quiet|-exact|-early|-group|-invert|-flat|-name|-pin|-sdc|-hsc|-add|-edges|-high|-hold|-rise|-fall|-late|-low|-id|-to|-from|-max|-min|-end)</string>
             </dict>
             <dict>
                 <key>begin</key>
@@ -268,7 +234,7 @@
                     </dict>
                 </dict>
                 <key>match</key>
-                <string>(?&lt;=^|[\[{;])\s*(after|append|array|auto_execok|auto_import|auto_load|auto_mkindex|auto_mkindex_old|auto_qualify|auto_reset|bgerror|binary|cd|clock|close|concat|dde|encoding|eof|error|eval|exec|expr|fblocked|fconfigure|fcopy|file|fileevent|filename|flush|format|gets|glob|global|history|http|incr|info|interp|join|lappend|library|lindex|linsert|list|llength|load|lrange|lreplace|lsearch|lset|lsort|memory|msgcat|namespace|open|package|parray|pid|pkg::create|pkg_mkIndex|proc|puts|pwd|re_syntax|read|registry|rename|resource|scan|seek|set|socket|SafeBase|source|split|string|subst|Tcl|tcl_endOfWord|tcl_findLibrary|tcl_startOfNextWord|tcl_startOfPreviousWord|tcl_wordBreakAfter|tcl_wordBreakBefore|tcltest|tclvars|tell|time|trace|unknown|unset|update|uplevel|upvar|variable|vwait|set_operating_conditions|set_wire_load_min_block_size|set_wire_load_mode|set_wire_load_model|set_wire_load_selection_group|set_drive|set_driving_cell|set_fanout_load|set_input_transition|set_load|set_port_fanout_number|set_max_capacitance|set_max_fanout|set_max_transition|set_min_capacitance|create_clock|create_generated_clock|set_clock_gating_checkset_clock_latencyset_clock_transitionset_clock_uncertaintyset_data_check|set_disable_timing|set_input_delay|set_max_time_borrow|set_output_delay|set_propagated_clock|set_resistance|set_false_path|set_max_delay|set_min_delay|set_multicycle_path|set_max_area|set_max_dynamic_power|set_max_leakage_power|set_min_porosity|set_case_analysis|set_logic_dc|set_logic_one|set_logic_zero|current_design|get_clocks|get_registers|get_ports|all_clocks|get_cells|get_pins|get_nets|get_libs|get_lib_cells|get_collection_size|get_lib_pins|derive_pll_clocks|derive_clock_uncertainty|set_clock_groups)\b</string>
+                <string>(?&lt;=^|[\[{;])\s*(after|append|array|auto_execok|auto_import|auto_load|auto_mkindex|auto_mkindex_old|auto_qualify|auto_reset|bgerror|binary|cd|clock|close|concat|dde|encoding|eof|error|eval|exec|expr|fblocked|fconfigure|fcopy|file|fileevent|filename|flush|format|gets|glob|global|history|http|incr|info|interp|join|lappend|library|lindex|linsert|list|llength|load|lrange|lreplace|lsearch|lset|lsort|memory|msgcat|namespace|open|package|parray|pid|pkg::create|pkg_mkIndex|proc|puts|pwd|re_syntax|read|registry|rename|resource|scan|seek|set|socket|SafeBase|source|split|string|subst|Tcl|tcl_endOfWord|tcl_findLibrary|tcl_startOfNextWord|tcl_startOfPreviousWord|tcl_wordBreakAfter|tcl_wordBreakBefore|tcltest|tclvars|tell|time|trace|unknown|unset|update|uplevel|upvar|variable|vwait|set_operating_conditions|set_wire_load_min_block_size|set_wire_load_mode|set_wire_load_model|set_wire_load_selection_group|set_drive|set_driving_cell|set_fanout_load|set_input_transition|set_load|set_port_fanout_number|set_max_capacitance|set_max_fanout|set_max_transition|set_min_capacitance|create_clock|create_generated_clock|set_clock_gating_check|set_clock_latency|set_clock_transition|set_clock_uncertainty|set_data_check|set_disable_timing|set_input_delay|set_max_time_borrow|set_output_delay|set_propagated_clock|set_resistance|set_false_path|set_max_delay|set_min_delay|set_multicycle_path|set_max_area|set_max_dynamic_power|set_max_leakage_power|set_min_porosity|set_case_analysis|set_logic_dc|set_logic_one|set_logic_zero|current_design|get_clocks|get_registers|get_ports|all_clocks|get_cells|get_pins|get_nets|get_libs|get_lib_cells|get_collection_size|get_lib_pins|derive_pll_clocks|derive_clock_uncertainty|set_clock_groups)\b</string>
             </dict>
             <dict>
                 <key>match</key>

@@ -62,39 +62,65 @@ export class Comander {
         const file_path = args.fsPath;
         globalLogger.info(`Opening the waveform: ${file_path}`);
 
+        // Decide which viewer to open explicitly based on configuration.
         const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
-        if (config.tools.general.waveform_viewer !== e_tools_general_waveform_viewer.gtkwave) {
+
+        // 1) VaporView (extension)
+        if (config.tools.general.waveform_viewer === e_tools_general_waveform_viewer.vaporView) {
             if (extension && extension.isActive) {
                 await vscode.commands.executeCommand('vaporview.openFile', args);
                 return;
             }
-            else if (config.tools.general.waveform_viewer !== e_tools_general_waveform_viewer.vaporView) {
-                vscode.window.showInformationMessage(`Waveform viewer not available or not active.`);
+            else {
+                vscode.window.showInformationMessage(`VaporView extension not available or not active.`);
+                return;
             }
         }
 
-        let gtkwave_binary = "gtkwave";
-        const os_i = get_os();
-        if (os_i === OS.WINDOWS) {
-            gtkwave_binary = "gtkwave.exe";
+        // 2) Tool GUI (simulator built-in or tool-provided viewer)
+        if (config.tools.general.waveform_viewer === e_tools_general_waveform_viewer.tool) {
+            const selectedTool = config.tools.general.select_tool;
+            // Typical implementations:
+            // - For simulators that open their own GUI (ModelSim/Questa, Vivado, etc.)
+            //   ensure the simulator was launched with GUI flags during the run.
+            // - For simulators that generate VCD/FSDB/LXT files, open the file with
+            //   the appropriate viewer (or a dedicated extension).
+            // Here we show an informational message and log the intent.
+            globalLogger.info(`Tool GUI requested for simulator: ${selectedTool}. No handler implemented.`);
+            vscode.window.showInformationMessage(`Tool GUI selected for '${selectedTool}'. No handler implemented.`);
+            return;
         }
 
-        let gtkwave_path = "";
-        let base_path = config.tools.general.gtkwave_installation_path;
-        if (base_path !== "") {
-            gtkwave_path = path_lib.join(base_path, gtkwave_binary);
+        // 3) GTKWave (external binary)
+        if (config.tools.general.waveform_viewer === e_tools_general_waveform_viewer.gtkwave) {
+            let gtkwave_binary = "gtkwave";
+            const os_i = get_os();
+            if (os_i === OS.WINDOWS) {
+                gtkwave_binary = "gtkwave.exe";
+            }
+
+            let gtkwave_path = "";
+            let base_path = config.tools.general.gtkwave_installation_path;
+            if (base_path !== "") {
+                gtkwave_path = path_lib.join(base_path, gtkwave_binary);
+            }
+            else {
+                gtkwave_path = gtkwave_binary;
+            }
+            const extra_arguments = config.tools.general.gtkwave_extra_arguments;
+
+            let command = `${gtkwave_path} ${file_path} ${extra_arguments}`;
+            // shelljs.exec(command, { async: true });
+            spawn(command, {
+                shell: true,
+                stdio: 'inherit'
+            });
         }
         else {
-            gtkwave_path = gtkwave_binary;
+            // If the user selected 'tool' (simulator) or nothing matched, do not
+            // attempt to run GTKWave implicitly.
+            vscode.window.showInformationMessage(`No external waveform viewer selected or available.`);
         }
-        const extra_arguments = config.tools.general.gtkwave_extra_arguments;
-
-        let command = `${gtkwave_path} ${file_path} ${extra_arguments}`;
-        // shelljs.exec(command, { async: true });
-        spawn(command, {
-            shell: true,
-            stdio: 'inherit'
-        });
     }
 
     private open_webview(args: string, webview: Base_webview) {
