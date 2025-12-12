@@ -34,13 +34,13 @@ jobs:
       - name: Set version dev
         if: github.ref == 'refs/heads/dev'
         run: |
-          now=`date +"%Y-%m-%d__%H:%M"`
+          now=`date +"%Y-%m-%d__%H_%M"`
           echo "version=$now" >> $GITHUB_ENV
 
       - name: Set version pull request
         if: github.event == 'pull_request'
         run: |
-          now=`date +"%Y-%m-%d__%H:%M"`
+          now=`date +"%Y-%m-%d__%H_%M"`
           echo "version=$now" >> $GITHUB_ENV
 
       - name: Prepare teroshdl
