@@ -60,6 +60,13 @@ describe('Test local process', function () {
         if (os === 'darwin' || os === 'win32') {
             expected_result.stderr = '';
             result.stderr = '';
+        } else {
+            // Handle different shell error message formats on Linux
+            // dash: "/bin/sh: 1: asdf: not found"
+            // bash: "/bin/sh: line 1: asdf: command not found"
+            expect(result.stderr).toMatch(/\/bin\/sh: (line )?1: asdf: (command )?not found/);
+            // Clear stderr for deepEqual comparison
+            expected_result.stderr = result.stderr;
         }
         deepEqual(result, expected_result);
     });

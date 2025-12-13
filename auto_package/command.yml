@@ -11,7 +11,7 @@
 - name: configuration.global
   title: "TerosHDL: Open Global Settings Menu"
 
-- name: configuration.verifySetup
+- name: verifySetup
   title: "TerosHDL: Verify Setup" 
 
 ################################################################################

@@ -117,6 +117,32 @@ class Formatter {
         if (result.successful === false){
             globalLogger.info("Error format code.");
             globalLogger.debug(result.command);
+            
+            // Add detailed error information
+            if (result.message) {
+                globalLogger.error(`Formatter error details: ${result.message}`);
+                
+                // Extract line and column information from VSG error messages
+                const lineMatch = result.message.match(/@ Line (\d+), Column (\d+)/);
+                if (lineMatch) {
+                    const line = lineMatch[1];
+                    const column = lineMatch[2];
+                    globalLogger.error(`Error location: Line ${line}, Column ${column}`);
+                }
+                
+                // Extract expected vs found information
+                const expectingMatch = result.message.match(/Expecting : (.+)/);
+                const foundMatch = result.message.match(/Found     : (.+)/);
+                if (expectingMatch && foundMatch) {
+                    globalLogger.error(`Expected: '${expectingMatch[1].trim()}', Found: '${foundMatch[1].trim()}'`);
+                }
+                
+                // Extract file processing error
+                const fileErrorMatch = result.message.match(/Error while processing (.+?):/);
+                if (fileErrorMatch) {
+                    globalLogger.error(`Failed to process file: ${fileErrorMatch[1]}`);
+                }
+            }
         }
         else{
             globalLogger.info("The code has been formatted successfully.");
