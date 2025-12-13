@@ -38,13 +38,6 @@
     },
 
     "contributes": {
-        "iconThemes": [
-            {
-                "id": "teroshdl-icons",
-                "label": "TerosHDL File Icons",
-                "path": "./resources/icon/teroshdl-icon-theme.json"
-            }
-        ],
         "viewsContainers": {
             "activitybar": [
                 {
