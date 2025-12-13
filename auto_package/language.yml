@@ -3,18 +3,27 @@
   configuration: "./configs/vhdl.configuration.json"
   snippets: "./snippets/vhdl/vhdl.json"
   aliases: ["VHDL", "vhdl"]
+  icon:
+    light: "./resources/icon/light/vhdl.svg"
+    dark: "./resources/icon/dark/vhdl.svg"
 
 - id: "verilog"
   extensions: [".v", ".vh", ".vl"]
   configuration: "./configs/verilog.configuration.json"
   snippets: "./snippets/verilog/verilog.json"
   aliases: ["Verilog", "verilog"]
+  icon:
+    light: "./resources/icon/light/verilog.svg"
+    dark: "./resources/icon/dark/verilog.svg"
 
 - id: "systemverilog"
   extensions: [".sv", ".svh", ".SV"]
   configuration: "./configs/systemverilog.configuration.json"
   snippets: "./snippets/systemverilog/systemverilog.json"
   aliases: ["System Verilog", "systemverilog"]
+  icon:
+    light: "./resources/icon/light/systemverilog.svg"
+    dark: "./resources/icon/dark/systemverilog.svg"
 
 - id: "vcd"
   extensions: [".vcd"]
@@ -33,26 +42,41 @@
   configuration: "./configs/tcl.configuration.json"
   snippets: "./snippets/tcl/tcl.json"
   aliases: ["TCL", "tcl"]
+  icon:
+    light: "./resources/icon/light/tcl.svg"
+    dark: "./resources/icon/dark/tcl.svg"
 
 - id: "ucf"
   extensions: [".ucf"]
   configuration: "./configs/ucfconstraints.configuration.json"
   aliases: ["vivado ucf", "ucf constraints"]
+  icon:
+    light: "./resources/icon/light/ucf.svg"
+    dark: "./resources/icon/dark/ucf.svg"
 
 - id: "xdc"
   extensions: [".xdc", ".sdc"]
   configuration: "./configs/xdcconstraints.configuration.json"
   snippets: "./snippets/xdc/xdc.json"
   aliases: ["vivado xdc", "xdc constraints"]
+  icon:
+    light: "./resources/icon/light/xdc.svg"
+    dark: "./resources/icon/dark/xdc.svg"
 
 - id: "ldc"
   extensions: [".ldc", ".pdc"]
   configuration: "./configs/xdcconstraints.configuration.json"
   snippets: "./snippets/xdc/xdc.json"
   aliases: ["lattice constraints"]
+  icon:
+    light: "./resources/icon/light/xdc.svg"
+    dark: "./resources/icon/dark/xdc.svg"
 
 - id: "TL-Verilog"
   extensions: [".tlv"]
   configuration: "./configs/tlverilog.configuration.json"
   snippets: "./snippets/tlverilog/tlverilog.json"
   aliases: ["TL-Verilog", "tlv", "Transactional-Level Verilog"]
+  icon:
+    light: "./resources/icon/light/verilog.svg"
+    dark: "./resources/icon/dark/verilog.svg"

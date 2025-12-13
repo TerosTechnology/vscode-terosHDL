@@ -772,102 +772,115 @@
             }
         ],
         "languages": [
-            {
-                "id": "vhdl",
-                "aliases": ["VHDL", "vhdl"],
-                "configuration": "./configs/vhdl.configuration.json",
-                "extensions": [".vhd", ".vho", ".vhdl", ".vhd"],
-                "icon": {
-                    "light": "./resources/icon/light/vhdl.svg",
-                    "dark": "./resources/icon/dark/vhdl.svg"
-                }
-            },
-            {
-                "id": "verilog",
-                "aliases": ["Verilog", "verilog"],
-                "configuration": "./configs/verilog.configuration.json",
-                "extensions": [".v", ".vh", ".vl"],
-                "icon": {
-                    "light": "./resources/icon/light/verilog.svg",
-                    "dark": "./resources/icon/dark/verilog.svg"
-                }
-            },
-            {
-                "id": "systemverilog",
-                "aliases": ["System Verilog", "systemverilog"],
-                "configuration": "./configs/systemverilog.configuration.json",
-                "extensions": [".sv", ".svh", ".SV"],
-                "icon": {
-                    "light": "./resources/icon/light/systemverilog.svg",
-                    "dark": "./resources/icon/dark/systemverilog.svg"
-                }
-            },
-            {
-                "id": "vcd",
-                "extensions": [".vcd"]
-            },
-            {
-                "id": "logTerosHDL",
-                "extensions": [".logTerosHDL"]
-            },
-            {
-                "id": "gtkw_waveconfig",
-                "extensions": [".gtkw"]
-            },
-            {
-                "id": "gtkw_wavebin",
-                "extensions": [".fst", ".ghw"]
-            },
-            {
-                "id": "tcl",
-                "aliases": ["TCL", "tcl"],
-                "configuration": "./configs/tcl.configuration.json",
-                "extensions": [".tcl", ".pro"],
-                "icon": {
-                    "light": "./resources/icon/light/tcl.svg",
-                    "dark": "./resources/icon/dark/tcl.svg"
-                }
-            },
-            {
-                "id": "ucf",
-                "aliases": ["vivado ucf", "ucf constraints"],
-                "configuration": "./configs/ucfconstraints.configuration.json",
-                "extensions": [".ucf"],
-                "icon": {
-                    "light": "./resources/icon/light/ucf.svg",
-                    "dark": "./resources/icon/dark/ucf.svg"
-                }
-            },
-            {
-                "id": "xdc",
-                "aliases": ["vivado xdc", "xdc constraints"],
-                "configuration": "./configs/xdcconstraints.configuration.json",
-                "extensions": [".xdc", ".sdc"],
-                "icon": {
-                    "light": "./resources/icon/light/xdc.svg",
-                    "dark": "./resources/icon/dark/xdc.svg"
-                }
-            },
-            {
-                "id": "ldc",
-                "aliases": ["lattice constraints"],
-                "configuration": "./configs/xdcconstraints.configuration.json",
-                "extensions": [".ldc", ".pdc"],
-                "icon": {
-                    "light": "./resources/icon/light/xdc.svg",
-                    "dark": "./resources/icon/dark/xdc.svg"
-                }
-            },
-            {
-                "id": "TL-Verilog",
-                "aliases": ["TL-Verilog", "tlv", "Transactional-Level Verilog"],
-                "configuration": "./configs/tlverilog.configuration.json",
-                "extensions": [".tlv"],
-                "icon": {
-                    "light": "./resources/icon/light/verilog.svg",
-                    "dark": "./resources/icon/dark/verilog.svg"
-                }
+
+        {
+            "id": "vhdl",
+            "aliases": ["VHDL", "vhdl"],
+            "configuration": "./configs/vhdl.configuration.json",
+            "extensions": [".vhd", ".vho", ".vhdl", ".vhd"],
+            "icon": {
+                "light": "./resources/icon/light/vhdl.svg",
+                "dark": "./resources/icon/dark/vhdl.svg"
             }
+        }
+
+        ,{
+            "id": "verilog",
+            "aliases": ["Verilog", "verilog"],
+            "configuration": "./configs/verilog.configuration.json",
+            "extensions": [".v", ".vh", ".vl"],
+            "icon": {
+                "light": "./resources/icon/light/verilog.svg",
+                "dark": "./resources/icon/dark/verilog.svg"
+            }
+        }
+
+        ,{
+            "id": "systemverilog",
+            "aliases": ["System Verilog", "systemverilog"],
+            "configuration": "./configs/systemverilog.configuration.json",
+            "extensions": [".sv", ".svh", ".SV"],
+            "icon": {
+                "light": "./resources/icon/light/systemverilog.svg",
+                "dark": "./resources/icon/dark/systemverilog.svg"
+            }
+        }
+
+        ,{
+            "id": "vcd",
+            "extensions": [".vcd"]
+        }
+
+        ,{
+            "id": "logTerosHDL",
+            "extensions": [".logTerosHDL"]
+        }
+
+        ,{
+            "id": "gtkw_waveconfig",
+            "extensions": [".gtkw"]
+        }
+
+        ,{
+            "id": "gtkw_wavebin",
+            "extensions": [".fst", ".ghw"]
+        }
+
+        ,{
+            "id": "tcl",
+            "aliases": ["TCL", "tcl"],
+            "configuration": "./configs/tcl.configuration.json",
+            "extensions": [".tcl", ".pro"],
+            "icon": {
+                "light": "./resources/icon/light/tcl.svg",
+                "dark": "./resources/icon/dark/tcl.svg"
+            }
+        }
+
+        ,{
+            "id": "ucf",
+            "aliases": ["vivado ucf", "ucf constraints"],
+            "configuration": "./configs/ucfconstraints.configuration.json",
+            "extensions": [".ucf"],
+            "icon": {
+                "light": "./resources/icon/light/ucf.svg",
+                "dark": "./resources/icon/dark/ucf.svg"
+            }
+        }
+
+        ,{
+            "id": "xdc",
+            "aliases": ["vivado xdc", "xdc constraints"],
+            "configuration": "./configs/xdcconstraints.configuration.json",
+            "extensions": [".xdc", ".sdc"],
+            "icon": {
+                "light": "./resources/icon/light/xdc.svg",
+                "dark": "./resources/icon/dark/xdc.svg"
+            }
+        }
+
+        ,{
+            "id": "ldc",
+            "aliases": ["lattice constraints"],
+            "configuration": "./configs/xdcconstraints.configuration.json",
+            "extensions": [".ldc", ".pdc"],
+            "icon": {
+                "light": "./resources/icon/light/xdc.svg",
+                "dark": "./resources/icon/dark/xdc.svg"
+            }
+        }
+
+        ,{
+            "id": "TL-Verilog",
+            "aliases": ["TL-Verilog", "tlv", "Transactional-Level Verilog"],
+            "configuration": "./configs/tlverilog.configuration.json",
+            "extensions": [".tlv"],
+            "icon": {
+                "light": "./resources/icon/light/verilog.svg",
+                "dark": "./resources/icon/dark/verilog.svg"
+            }
+        }
+
         ],
         "snippets": [
             {
@@ -911,18 +924,7 @@
                 "mac": "command+delete",
                 "when": "editorTextFocus"
             }
-        ],
-
-        "configuration": {
-            "title": "TerosHDL",
-            "properties": {
-                "teroshdl.fileIcons.enabled": {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Enable TerosHDL file icons. To apply changes:\n1. Open Command Palette (Ctrl+Shift+P)\n2. Type 'File Icon Theme'\n3. Select 'TerosHDL File Icons' to enable or 'None' to disable"
-                }
-            }
-        }
+        ]
     },
 
     "scripts": {
@@ -952,11 +954,11 @@
         "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
         "open": "8.3.0",
         "proper-lockfile": "4.1.1",
-        "semver": "^7.6.3",
+        "semver": "7.3.5",
         "shelljs": "^0.8.3",
         "tmp": "0.2.1",
         "vscode-languageclient": "^9.0.1",
-        "xml2js": "^0.6.2",
+        "xml2js": "0.4.23",
         "nunjucks": "^3.2.0",
         "@types/nunjucks": "^3.1.4",
         "tree-kill": "1.2.2",
@@ -974,7 +976,7 @@
         "fast-xml-parser": "4.3.2",
         "jest-html-reporter": "^3.7.0",
         "js-yaml": "^4.1.0",
-        "json5": "^2.2.3",
+        "json5": "2.1.3",
         "lodash": "^4.17.21",
         "onml": "2.1.0",
         "pyodide": "0.24.1",

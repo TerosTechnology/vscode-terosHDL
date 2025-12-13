@@ -13,7 +13,12 @@
     {%- if "configuration" in language %}
     "configuration": "{{language["configuration"]}}",
     {%- endif %}
-    "extensions": {{language["extensions"] | replace("'", '"')}}
+    "extensions": {{language["extensions"] | replace("'", '"')}}{%- if "icon" in language %},
+    "icon": {
+        "light": "{{language["icon"]["light"]}}",
+        "dark": "{{language["icon"]["dark"]}}"
+    }
+    {%- endif %}
 }
 {% set ns.counter = ns.counter + 1 %}
 {%- endfor %}
