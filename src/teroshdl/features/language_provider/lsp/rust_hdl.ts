@@ -10,6 +10,7 @@ import semver = require('semver');
 import vscode = require('vscode');
 import { ExtensionContext } from 'vscode';
 import util = require('util');
+import { debugLogger } from '../../../logger';
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import * as utils from '../../utils/utils';
 
@@ -33,6 +34,7 @@ export class Rusthdl_lsp {
     private client: LanguageClient | undefined = undefined;
     private context: ExtensionContext;
     private languageServerDisposable;
+    private serverCommandPath: string | undefined;
     private manager: Multi_project_manager;
     public stop_client: boolean = false;
     private errorCounter = 0;
@@ -43,14 +45,14 @@ export class Rusthdl_lsp {
 
         this.context.subscriptions.push(
             vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
-                if (this.client != undefined && this.client.isRunning() && this.client.state === State.Running) {
+                if (this.client !== undefined && this.client.isRunning() && this.client.state === State.Running) {
                     try {
                         await this.client.restart();
                     } catch (error) {
                         this.errorCounter++;
                         this.client.dispose();
                         this.client = undefined;
-                        console.log(error);
+                        debugLogger.error(String(error));
                         if (this.errorCounter < 5) {
                             await this.run_rusthdl();
                         }
@@ -58,6 +60,25 @@ export class Rusthdl_lsp {
                 }
             })
         );
+
+        // Ensure we attempt to kill any leftover servers when the extension host exits
+        process.on('exit', async () => {
+            try {
+                await this.killServerProcesses();
+            } catch (e) { /* ignore */ }
+        });
+        process.on('SIGINT', async () => {
+            try {
+                await this.killServerProcesses();
+            } catch (e) { /* ignore */ }
+            process.exit();
+        });
+        process.on('SIGHUP', async () => {
+            try {
+                await this.killServerProcesses();
+            } catch (e) { /* ignore */ }
+            process.exit();
+        });
     }
 
     async run_rusthdl(): Promise<boolean> {
@@ -100,13 +121,12 @@ export class Rusthdl_lsp {
 
     async check_rust_hdl(rust_hdl_bin_path: string) {
         let command = rust_hdl_bin_path + ' --version';
-        // eslint-disable-next-line no-console
-        console.log(`[colibri][info] Linting with command: ${command}`);
+        debugLogger.info(`[colibri][info] Linting with command: ${command}`);
         const exec = require('child_process').exec;
         return new Promise((resolve) => {
             exec(command, (err, stdout, stderr) => {
                 if (stderr !== '') {
-                    console.log(`[rusthdl][error] ${stderr}`);
+                    debugLogger.error(`[rusthdl][error] ${stderr}`);
                 }
                 if (stderr === '') {
                     resolve(true);
@@ -118,10 +138,49 @@ export class Rusthdl_lsp {
     }
 
     async deactivate() {
+        const logFile = require('os').homedir() + '/vhdl_ls_deactivate.log';
+        const log = (msg: string) => {
+            try {
+                require('fs').appendFileSync(logFile, `${new Date().toISOString()} - ${msg}\n`);
+            } catch (e) { /* ignore */ }
+        };
+        
+        log('=== DEACTIVATE CALLED ===');
         if (!this.client) {
+            log('No client to deactivate');
             return undefined;
         }
-        await this.client.stop(1000);
+        try {
+            log(`Client state before stop: ${this.client.state}`);
+            log('Calling client.stop(5000)...');
+            // Increase timeout to 5 seconds to ensure proper shutdown in SSH scenarios
+            await this.client.stop(5000);
+            log('Client stopped successfully');
+            
+            // Explicitly dispose of the language server disposable
+            if (this.languageServerDisposable) {
+                log('Disposing languageServerDisposable...');
+                this.languageServerDisposable.dispose();
+                log('Disposable cleaned up');
+            }
+            debugLogger.info('[vhdl_ls] Language server stopped successfully');
+        } catch (error) {
+            log(`ERROR during stop: ${error}`);
+            debugLogger.error(`[vhdl_ls] Error stopping language server: ${String(error)}`);
+            // Force dispose even if stop fails
+            if (this.languageServerDisposable) {
+                this.languageServerDisposable.dispose();
+                log('Disposable force-disposed after error');
+            }
+        } finally {
+            this.client = undefined;
+            this.languageServerDisposable = undefined;
+            log('=== DEACTIVATE COMPLETE ===');
+            // Try to kill any lingering server processes that match our server binary
+            try {
+                await this.killServerProcesses();
+            } catch (e) { /* ignore */ }
+        }
     }
 
     embeddedVersion(languageServerDir: string): string {
@@ -148,6 +207,8 @@ export class Rusthdl_lsp {
         args.push('--silent');
 
         let serverCommand = context.asAbsolutePath(languageServer);
+        // remember server path for cleanup
+        this.serverCommandPath = serverCommand;
         let serverOptions: ServerOptions = {
             run: {
                 command: serverCommand,
@@ -155,7 +216,10 @@ export class Rusthdl_lsp {
                 options: {
                     env: {
                         VHDL_LS_CONFIG: this.fileListPath
-                    }
+                    },
+                    // Ensure process is killed when parent terminates (important for SSH scenarios)
+                    detached: true,
+                    shell: false
                 }
             },
             debug: {
@@ -164,10 +228,90 @@ export class Rusthdl_lsp {
                 options: {
                     env: {
                         VHDL_LS_CONFIG: this.fileListPath
-                    }
+                    },
+                    // Ensure process is killed when parent terminates (important for SSH scenarios)
+                    detached: true,
+                    shell: false
                 }
             }
         };
+        
+        // We rely on explicit cleanup (killServerProcesses) called on deactivate/exit
+
         return serverOptions;
+    }
+
+    private async killServerProcesses(): Promise<void> {
+        if (!this.serverCommandPath) {
+            return;
+        }
+        const serverPath = this.serverCommandPath;
+
+        try {
+            const cfg = vscode.workspace.getConfiguration('teroshdl.cleanup');
+            const enabled = cfg.get<boolean>('killServerProcesses.enabled', false);
+            if (!enabled) {
+                return;
+            }
+
+            // Safety: only perform process kill when running over an SSH remote session
+            const remoteName = (vscode.env.remoteName ?? '').toString();
+            const isSSH = remoteName.startsWith('ssh-remote');
+            if (!isSSH) {
+                debugLogger.info('[vhdl_ls] Not an SSH remote session — skipping killServerProcesses');
+                return;
+            }
+
+            const grace = cfg.get<number>('killServerProcesses.gracePeriodMs', 500);
+
+            // Platform guard: pgrep is Unix-specific
+            if (process.platform === 'win32') {
+                return;
+            }
+
+            const execFile = require('child_process').execFile;
+            // Use pgrep -f to find matching processes, then kill them gracefully, then force kill
+            return new Promise((resolve) => {
+                execFile('pgrep', ['-f', serverPath], (err: any, stdout: string) => {
+                    if (err || !stdout) {
+                        return resolve();
+                    }
+                    const pids = stdout
+                        .split(/\s+/)
+                        .map((s: string) => s.trim())
+                        .filter(Boolean)
+                        .filter((x: string) => /^\d+$/.test(x));
+                    if (pids.length === 0) {
+                        return resolve();
+                    }
+
+                    // First try SIGTERM
+                    pids.forEach((pid: string) => {
+                        const n = parseInt(pid, 10);
+                        if (Number.isNaN(n)) {
+                            return;
+                        }
+                        try {
+                            process.kill(n, 'SIGTERM');
+                        } catch (e) { /* ignore */ }
+                    });
+                    // After configurable delay, force kill remaining
+                    setTimeout(() => {
+                        pids.forEach((pid: string) => {
+                            const n = parseInt(pid, 10);
+                            if (Number.isNaN(n)) {
+                                return;
+                            }
+                            try {
+                                process.kill(n, 'SIGKILL');
+                            } catch (e) { /* ignore */ }
+                        });
+                        resolve();
+                    }, Math.max(0, grace));
+                });
+            });
+        } catch (e) {
+            return;
+        }
     }
 }

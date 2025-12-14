@@ -294,6 +294,12 @@
   icon: book
   where: ["editor/title"]
 
+- name: teroshdl.cleanup.openSettings
+  title: "TerosHDL: Open Cleanup Settings"
+
+- name: teroshdl.cleanup.toggleKillServerProcesses
+  title: "TerosHDL: Toggle Kill Server Processes"
+
 # - name: quartus.add_ip
 #   title: Add Quartus IP core
 #   group: "TerosHDL"

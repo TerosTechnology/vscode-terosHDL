@@ -769,6 +769,14 @@
                     "dark": "resources/icon/dark/book.svg"
                 },
                 "title": "Module documentation preview"
+            }, 
+            {
+                "command": "teroshdl.teroshdl.cleanup.openSettings",
+                "title": "TerosHDL: Open Cleanup Settings"
+            }, 
+            {
+                "command": "teroshdl.teroshdl.cleanup.toggleKillServerProcesses",
+                "title": "TerosHDL: Toggle Kill Server Processes"
             }
         ],
         "languages": [
@@ -924,7 +932,24 @@
                 "mac": "command+delete",
                 "when": "editorTextFocus"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "TerosHDL",
+            "properties": {
+                "teroshdl.cleanup.killServerProcesses.enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable automatic cleanup of language server processes on extension exit/deactivate (disabled by default)."
+                },
+                "teroshdl.cleanup.killServerProcesses.gracePeriodMs": {
+                    "type": "number",
+                    "default": 500,
+                    "minimum": 0,
+                    "description": "Grace period in milliseconds between SIGTERM and SIGKILL when killing language server processes."
+                }
+            }
+        }
     },
 
     "scripts": {
