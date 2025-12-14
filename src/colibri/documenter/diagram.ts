@@ -164,8 +164,21 @@ function get_ports(hdl_element: common_hdl.Hdl_element) {
     const port_list = hdl_element.get_port_array();
     const port_list_vbus = doxygen.get_virtual_bus(port_list);
     let complete_list: any[] = [];
+    
+    // Add normal ports (not part of virtual buses)
     complete_list = complete_list.concat(port_list_vbus.port_list);
-    complete_list = complete_list.concat(port_list_vbus.v_port_list);
+    
+    // Process virtual buses
+    for (const virtual_bus of port_list_vbus.v_port_list) {
+        if (virtual_bus.keepports) {
+            // If @keepports is enabled, expand virtual bus to show individual ports
+            complete_list = complete_list.concat(virtual_bus.port_list);
+        } else {
+            // If @keepports is not enabled, show virtual bus as single entity
+            complete_list.push(virtual_bus);
+        }
+    }
+    
     return complete_list;
 }
 

@@ -114,6 +114,7 @@ export type Virtual_bus_hdl = {
     info: Common_info;
     direction: string;
     notable: boolean;
+    keepports: boolean;
     port_list: Port_hdl[];
     type: string;
 };

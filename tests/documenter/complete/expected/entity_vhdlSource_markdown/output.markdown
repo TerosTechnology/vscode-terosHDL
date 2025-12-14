@@ -44,7 +44,7 @@ image:
 
 
 
-![alt text](wavedrom_yTaI0.svg "title")
+![alt text](wavedrom_6Vtl0.svg "title")
 
  
 
@@ -52,7 +52,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_xpwo1.svg "title")
+![alt text](wavedrom_wHVW1.svg "title")
 
  
 
@@ -69,17 +69,20 @@ Example of bitfield:
 
 ## Ports
 
-| Port name | Direction | Type                          | Description                              |
-| --------- | --------- | ----------------------------- | ---------------------------------------- |
-| ee        | in        | std_logic                     | Over comment in ```port```               |
-| h         | in        | std_logic_vector(31 downto 0) |                                          |
-| i         | in        | std_logic_vector(31 downto 0) |                                          |
-| p         | in        | std_logic                     |                                          |
-| q         | out       | std_logic                     | Inline comment                           |
-| r         | in        | std_logic                     |                                          |
-| s         | out       | std_logic                     | Preference inline                        |
-| v_bus_0   | out       | Virtual bus                   | @keepports  Description of virtual bus 0 |
-| v_bus_1   | in        | Virtual bus                   | @keepports  Description of virtual bus 1 |
+| Port name            | Direction | Type                          | Description                                 |
+| -------------------- | --------- | ----------------------------- | ------------------------------------------- |
+| ee                   | in        | std_logic                     | Over comment in ```port```                  |
+| h                    | in        | std_logic_vector(31 downto 0) |                                             |
+| i                    | in        | std_logic_vector(31 downto 0) |                                             |
+| q                    | out       | std_logic                     | Inline comment                              |
+| r                    | in        | std_logic                     |                                             |
+| s                    | out       | std_logic                     | Preference inline                           |
+| v_bus_0              | out       | Virtual bus                   | Description of virtual bus 0                |
+| v_bus_1              | in        | Virtual bus                   | Description of virtual bus 1                |
+| v_bus_2              | in        | Virtual bus                   | Description of virtual bus 2                |
+| video_in_axi_stream  | in        | Virtual bus                   | a slave axi stream interface for video in   |
+| video_out_axi_stream | out       | Virtual bus                   | a master axi stream interface for video out |
+| SPI                  | out       | Virtual bus                   | description of SPI                          |
 
 ### Virtual Buses
 
@@ -92,13 +95,44 @@ Example of bitfield:
 | g         | inout     | std_logic |             |
 #### v_bus_1
 
+| Port name | Direction | Type      | Description |
+| --------- | --------- | --------- | ----------- |
+| j         | in        | std_logic |             |
+| l         | out       | std_logic |             |
+| m         | in        | std_logic |             |
+#### v_bus_2
+
 | Port name | Direction | Type      | Description   |
 | --------- | --------- | --------- | ------------- |
-| j         | in        | std_logic |               |
-| l         | out       | std_logic |               |
-| m         | in        | std_logic |               |
 | n         | in        | std_logic | Description 3 |
 | o         | out       | std_logic |               |
+| p         | in        | std_logic |               |
+#### video_in_axi_stream
+
+| Port name       | Direction | Type                          | Description                 |
+| --------------- | --------- | ----------------------------- | --------------------------- |
+| video_in_tdata  | in        | std_logic_vector(23 downto 0) | axis data bus               |
+| video_in_tlast  | in        | std_logic                     | axis last                   |
+| video_in_tuser  | in        | std_logic_vector(0 downto 0)  | axis user                   |
+| video_in_tvalid | in        | std_logic                     | axis valid handshake signal |
+| video_in_tready | out       | std_logic                     | axis ready handshake signal |
+#### video_out_axi_stream
+
+| Port name        | Direction | Type                          | Description                 |
+| ---------------- | --------- | ----------------------------- | --------------------------- |
+| video_out_tdata  | out       | std_logic_vector(23 downto 0) | axis data bus video_out     |
+| video_out_tlast  | out       | std_logic                     | axis last                   |
+| video_out_tuser  | out       | std_logic_vector(0 downto 0)  | axis user                   |
+| video_out_tvalid | out       | std_logic                     | axis valid handshake signal |
+| video_out_tready | in        | std_logic                     | axis ready handshake signal |
+#### SPI
+
+| Port name | Direction | Type      | Description         |
+| --------- | --------- | --------- | ------------------- |
+| cs        | out       | std_logic | Chip select         |
+| clk_out   | out       | std_logic | SPI clock           |
+| miso      | out       | std_logic | Master in slave out |
+| mosi      | out       | std_logic | Master out slave in |
 
 ## Signals
 

@@ -67,6 +67,7 @@ export function parse_virtualbus_init(description: string) {
         name: '',
         direction: 'in',
         notable: false,
+        keepports: false,
         description: '',
         to_delete: ''
     };
@@ -83,6 +84,7 @@ export function parse_virtualbus_init(description: string) {
             result.notable = true;
             corpus = notable_element.text;
         }
+
         //Port name
         const virtual_port_element = parse_element('virtualbus', corpus);
         if (virtual_port_element.element_list.length === 0) {
@@ -96,14 +98,21 @@ export function parse_virtualbus_init(description: string) {
 
         // Direction
         const direction_port_element = parse_element('dir', corpus);
-        if (direction_port_element.element_list.length === 0) {
-            result.description = corpus.trim();
-            return result;
+        if (direction_port_element.element_list.length !== 0) {
+            corpus = direction_port_element.element_list[0].description.trim();
+            element_0 = get_first_element(corpus);
+            result.direction = element_0.name;
+            corpus = element_0.text.trim();
         }
-        corpus = direction_port_element.element_list[0].description.trim();
-        element_0 = get_first_element(corpus);
-        result.direction = element_0.name;
-        result.description = element_0.text.trim();
+
+        // Keep ports
+        const keepports_element = is_keepports(corpus);
+        if (keepports_element.is_in === true) {
+            result.keepports = true;
+            corpus = keepports_element.text;
+        }
+
+        result.description = corpus.trim();
         if (result.is_in === true) {
             return result;
         }
@@ -121,6 +130,20 @@ function is_notable(text: string) {
     if (element_parser !== null) {
         result.is_in = true;
         result.text = text.replace(regex, '');
+    }
+    return result;
+}
+
+function is_keepports(text: string) {
+    const regex = /@keepports/gms;
+    const element_parser = text.match(regex);
+    const result = {
+        text: text,
+        is_in: false
+    };
+    if (element_parser !== null) {
+        result.is_in = true;
+        result.text = text.replace(regex, '').trim();
     }
     return result;
 }
@@ -188,6 +211,7 @@ export function get_virtual_bus(port_list: common_hdl.Port_hdl[]) {
                     },
                     direction: virtual_port.direction,
                     notable: virtual_port.notable,
+                    keepports: virtual_port.keepports,
                     port_list: [],
                     type: "virtual_bus"
                 };
@@ -196,7 +220,7 @@ export function get_virtual_bus(port_list: common_hdl.Port_hdl[]) {
                     info: {
                         position: port_i.info.position,
                         name: port_i.info.name,
-                        description: port_description.replace(virtual_port.to_delete, '')
+                        description: port_i.inline_comment.trim()
                     },
                     inline_comment: "",
                     over_comment: "",
@@ -279,6 +303,7 @@ export function get_virtual_bus(port_list: common_hdl.Port_hdl[]) {
                     },
                     direction: virtual_port.direction,
                     notable: virtual_port.notable,
+                    keepports: virtual_port.keepports,
                     port_list: [],
                     type: "virtual_bus"
                 };

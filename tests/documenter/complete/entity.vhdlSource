@@ -78,15 +78,34 @@ entity test_entity_name is
         --! @virtualbus v_bus_1  @keepports  Description of virtual bus 1
         j : in std_logic := '1';
         l : out std_logic;
-        m : in std_logic;
+        m : in std_logic; --! @end
         --! @virtualbus v_bus_2  Description of virtual bus 2
         n : in std_logic; --! Description 3
-        o : out std_logic; --! @end
-        p : in std_logic;
+        o : out std_logic;
+        p : in std_logic; --! @end
         q : out std_logic; --! Inline comment
         r : in std_logic;
         --! Over comment
-        s : out std_logic --! Preference inline
+        s : out std_logic; --! Preference inline
+        --! @virtualbus video_in_axi_stream @dir in a slave axi stream interface for video in
+        video_in_tdata  : in  std_logic_vector(23 downto 0);      --! axis data bus
+        video_in_tlast  : in  std_logic;                          --! axis last
+        video_in_tuser  : in  std_logic_vector(0 downto 0);       --! axis user
+        video_in_tvalid : in  std_logic;                          --! axis valid handshake signal
+        video_in_tready : out std_logic;                          --! axis ready handshake signal
+        --! @end
+        --! @virtualbus video_out_axi_stream @dir out @keepports a master axi stream interface for video out
+        video_out_tdata  : out std_logic_vector(23 downto 0);     --! axis data bus video_out
+        video_out_tlast  : out std_logic;                         --! axis last
+        video_out_tuser  : out std_logic_vector(0 downto 0);      --! axis user
+        video_out_tvalid : out std_logic;                         --! axis valid handshake signal
+        video_out_tready : in  std_logic;                         --! axis ready handshake signal
+        --! @end
+        --! @virtualbus SPI @dir out description of SPI
+        cs : OUT std_logic; --! Chip select
+        clk_out: OUT std_logic; --! SPI clock
+        miso: OUT std_logic; --! Master in slave out
+        mosi: OUT std_logic  --! Master out slave in @end
     );
 end test_entity_name;
 
