@@ -38,13 +38,6 @@
     },
 
     "contributes": {
-        "iconThemes": [
-            {
-                "id": "teroshdl-icons",
-                "label": "TerosHDL File Icons",
-                "path": "./resources/icon/teroshdl-icon-theme.json"
-            }
-        ],
         "viewsContainers": {
             "activitybar": [
                 {
@@ -784,21 +777,33 @@
             "id": "vhdl",
             "aliases": ["VHDL", "vhdl"],
             "configuration": "./configs/vhdl.configuration.json",
-            "extensions": [".vhd", ".vho", ".vhdl", ".vhd"]
+            "extensions": [".vhd", ".vho", ".vhdl", ".vhd"],
+            "icon": {
+                "light": "./resources/icon/light/vhdl.svg",
+                "dark": "./resources/icon/dark/vhdl.svg"
+            }
         }
 
         ,{
             "id": "verilog",
             "aliases": ["Verilog", "verilog"],
             "configuration": "./configs/verilog.configuration.json",
-            "extensions": [".v", ".vh", ".vl"]
+            "extensions": [".v", ".vh", ".vl"],
+            "icon": {
+                "light": "./resources/icon/light/verilog.svg",
+                "dark": "./resources/icon/dark/verilog.svg"
+            }
         }
 
         ,{
             "id": "systemverilog",
             "aliases": ["System Verilog", "systemverilog"],
             "configuration": "./configs/systemverilog.configuration.json",
-            "extensions": [".sv", ".svh", ".SV"]
+            "extensions": [".sv", ".svh", ".SV"],
+            "icon": {
+                "light": "./resources/icon/light/systemverilog.svg",
+                "dark": "./resources/icon/dark/systemverilog.svg"
+            }
         }
 
         ,{
@@ -825,35 +830,55 @@
             "id": "tcl",
             "aliases": ["TCL", "tcl"],
             "configuration": "./configs/tcl.configuration.json",
-            "extensions": [".tcl", ".pro"]
+            "extensions": [".tcl", ".pro"],
+            "icon": {
+                "light": "./resources/icon/light/tcl.svg",
+                "dark": "./resources/icon/dark/tcl.svg"
+            }
         }
 
         ,{
             "id": "ucf",
             "aliases": ["vivado ucf", "ucf constraints"],
             "configuration": "./configs/ucfconstraints.configuration.json",
-            "extensions": [".ucf"]
+            "extensions": [".ucf"],
+            "icon": {
+                "light": "./resources/icon/light/ucf.svg",
+                "dark": "./resources/icon/dark/ucf.svg"
+            }
         }
 
         ,{
             "id": "xdc",
             "aliases": ["vivado xdc", "xdc constraints"],
             "configuration": "./configs/xdcconstraints.configuration.json",
-            "extensions": [".xdc", ".sdc"]
+            "extensions": [".xdc", ".sdc"],
+            "icon": {
+                "light": "./resources/icon/light/xdc.svg",
+                "dark": "./resources/icon/dark/xdc.svg"
+            }
         }
 
         ,{
             "id": "ldc",
             "aliases": ["lattice constraints"],
             "configuration": "./configs/xdcconstraints.configuration.json",
-            "extensions": [".ldc", ".pdc"]
+            "extensions": [".ldc", ".pdc"],
+            "icon": {
+                "light": "./resources/icon/light/xdc.svg",
+                "dark": "./resources/icon/dark/xdc.svg"
+            }
         }
 
         ,{
             "id": "TL-Verilog",
             "aliases": ["TL-Verilog", "tlv", "Transactional-Level Verilog"],
             "configuration": "./configs/tlverilog.configuration.json",
-            "extensions": [".tlv"]
+            "extensions": [".tlv"],
+            "icon": {
+                "light": "./resources/icon/light/verilog.svg",
+                "dark": "./resources/icon/dark/verilog.svg"
+            }
         }
 
         ],
@@ -899,18 +924,7 @@
                 "mac": "command+delete",
                 "when": "editorTextFocus"
             }
-        ],
-
-        "configuration": {
-            "title": "TerosHDL",
-            "properties": {
-                "teroshdl.fileIcons.enabled": {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Enable TerosHDL file icons. To apply changes:\n1. Open Command Palette (Ctrl+Shift+P)\n2. Type 'File Icon Theme'\n3. Select 'TerosHDL File Icons' to enable or 'None' to disable"
-                }
-            }
-        }
+        ]
     },
 
     "scripts": {
