@@ -109,7 +109,24 @@
                 "mac": "command+delete",
                 "when": "editorTextFocus"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "TerosHDL",
+            "properties": {
+                "teroshdl.cleanup.killServerProcesses.enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable automatic cleanup of language server processes on extension exit/deactivate (disabled by default)."
+                },
+                "teroshdl.cleanup.killServerProcesses.gracePeriodMs": {
+                    "type": "number",
+                    "default": 500,
+                    "minimum": 0,
+                    "description": "Grace period in milliseconds between SIGTERM and SIGKILL when killing language server processes."
+                }
+            }
+        }
     },
 {% filter indent(width=4) %}
 {% include 'script.nj' %},
