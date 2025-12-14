@@ -769,13 +769,13 @@
                     "dark": "resources/icon/dark/book.svg"
                 },
                 "title": "Module documentation preview"
-            }
-            ,{
-                "command": "teroshdl.cleanup.openSettings",
+            }, 
+            {
+                "command": "teroshdl.teroshdl.cleanup.openSettings",
                 "title": "TerosHDL: Open Cleanup Settings"
-            }
-            ,{
-                "command": "teroshdl.cleanup.toggleKillServerProcesses",
+            }, 
+            {
+                "command": "teroshdl.teroshdl.cleanup.toggleKillServerProcesses",
                 "title": "TerosHDL: Toggle Kill Server Processes"
             }
         ],
