@@ -419,7 +419,7 @@
 	},
 	"Others": {
 		"prefix": ["others"],
-		"body": [ "(others => ${1:<value>})${2| ,;|}$0" ],
+		"body": [ "(others=>${1:<value>})${2| ,;|}$0" ],
 		"description": "others declaration"
 	},
 	"Package": {
