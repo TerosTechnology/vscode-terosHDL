@@ -34,6 +34,7 @@ function getLanguageServerName(): string {
 const languageServerName = getLanguageServerName();
 const languageServerBinaryName = 'vhdl_ls';
 let languageServer: string;
+let languageServerLibraries: string | undefined;
 
 export class Rusthdl_lsp {
     private client: LanguageClient | undefined = undefined;
@@ -79,6 +80,11 @@ export class Rusthdl_lsp {
             languageServerBinaryName + (isWindows ? '.exe' : '')
         );
         languageServer = bundledPath;
+
+        const bundledLibrariesPath = this.context.asAbsolutePath(
+            path.join('server', 'vhdl_ls', current_language_server_version, languageServerName, 'vhdl_libraries', 'vhdl_ls.toml')
+        );
+        languageServerLibraries = fs.existsSync(bundledLibrariesPath) ? bundledLibrariesPath : undefined;
 
         let server_path = this.context.asAbsolutePath(bundledPath);
         let is_alive = await this.check_rust_hdl(server_path);
@@ -169,6 +175,9 @@ export class Rusthdl_lsp {
             args = ['--no-lint'];
         }
         args.push('--silent');
+        if (languageServerLibraries) {
+            args.push('--libraries', languageServerLibraries);
+        }
 
         let serverCommand = context.asAbsolutePath(languageServer);
         let serverOptions: ServerOptions = {
