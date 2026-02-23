@@ -63,12 +63,35 @@ export class Verilbe_lsp {
         const languageServerDir = this.context.asAbsolutePath(path.join('server', 'verible'));
         const current_language_server_version = this.embeddedVersion(languageServerDir);
 
-        languageServer = path.join(
+        const bundledPath = path.join(
             'server',
             'verible',
             current_language_server_version,
             languageServerBinaryName + (isWindows ? '.exe' : '')
         );
+        languageServer = bundledPath;
+
+        let server_path = this.context.asAbsolutePath(bundledPath);
+        let is_alive = await this.check_run(server_path);
+        if (is_alive === false) {
+            // Bundled binary failed (e.g. wrong platform); try system-installed verible
+            const systemPaths = [
+                '/opt/homebrew/bin/verible-verilog-ls',
+                '/usr/local/bin/verible-verilog-ls',
+                'verible-verilog-ls',
+            ];
+            for (const sysPath of systemPaths) {
+                is_alive = await this.check_run(sysPath);
+                if (is_alive) {
+                    languageServer = sysPath;
+                    break;
+                }
+            }
+        }
+        if (is_alive === false) {
+            return false;
+        }
+
         // Get language server configuration and command to start server
         let serverOptions: ServerOptions;
         serverOptions = this.getServerOptionsEmbedded(this.context);
@@ -77,21 +100,10 @@ export class Verilbe_lsp {
         let clientOptions: LanguageClientOptions = {
             documentSelector: [{ scheme: 'file', language: 'verilog' }, { scheme: 'file', language: 'systemverilog' }],
             revealOutputChannelOn: RevealOutputChannelOn.Never,
-            // middleware: {
-            //     provideDiagnostics: () => {
-            //         return undefined;
-            //     }
-            // }
         };
 
         // Create the language client
         this.client = new LanguageClient('verible-verilog-ls', 'Verible', serverOptions, clientOptions);
-
-        let server_path = this.context.asAbsolutePath(languageServer);
-        let is_alive = await this.check_run(server_path);
-        if (is_alive === false) {
-            return false;
-        }
 
         // Start the client. This will also launch the server
         this.languageServerDisposable = await this.client.start();
