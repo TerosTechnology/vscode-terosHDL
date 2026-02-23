@@ -81,10 +81,10 @@ export class Rusthdl_lsp {
         );
         languageServer = bundledPath;
 
-        const bundledLibrariesPath = this.context.asAbsolutePath(
-            path.join('server', 'vhdl_ls', current_language_server_version, languageServerName, 'vhdl_libraries', 'vhdl_ls.toml')
+        const bundledLibrariesDir = this.context.asAbsolutePath(
+            path.join('server', 'vhdl_ls', current_language_server_version, languageServerName, 'vhdl_libraries')
         );
-        languageServerLibraries = fs.existsSync(bundledLibrariesPath) ? bundledLibrariesPath : undefined;
+        languageServerLibraries = fs.existsSync(path.join(bundledLibrariesDir, 'vhdl_ls.toml')) ? bundledLibrariesDir : undefined;
 
         let server_path = this.context.asAbsolutePath(bundledPath);
         let is_alive = await this.check_rust_hdl(server_path);

@@ -613,7 +613,7 @@ export class Project_manager extends ConfigManager {
             for (const file_in_library of library.files) {
                 files_in_library += `  '${file_in_library}',\n`;
             }
-            if (library.name === undefined || library.name === '') {
+            if (library.name === undefined || library.name === '' || library.name === 'work') {
                 library.name = DEFAULT_LIBRARY;
             }
             toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
