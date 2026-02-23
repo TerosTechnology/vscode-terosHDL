@@ -69,10 +69,10 @@ export class Verilbe_lsp {
             current_language_server_version,
             languageServerBinaryName + (isWindows ? '.exe' : '')
         );
-        languageServer = bundledPath;
+        // Store the resolved absolute path so getServerOptionsEmbedded can use it directly
+        languageServer = this.context.asAbsolutePath(bundledPath);
 
-        let server_path = this.context.asAbsolutePath(bundledPath);
-        let is_alive = await this.check_run(server_path);
+        let is_alive = await this.check_run(languageServer);
         if (is_alive === false) {
             // Bundled binary failed (e.g. wrong platform); try system-installed verible
             const systemPaths = [
@@ -148,17 +148,16 @@ export class Verilbe_lsp {
         }
     }
 
-    getServerOptionsEmbedded(context: ExtensionContext) {
+    getServerOptionsEmbedded(_context: ExtensionContext) {
         const args = ["--file_list_path", this.fileListPath, '--ruleset=none'];
 
-        let serverCommand = context.asAbsolutePath(languageServer);
         let serverOptions: ServerOptions = {
             run: {
-                command: serverCommand,
+                command: languageServer,
                 args: args
             },
             debug: {
-                command: serverCommand,
+                command: languageServer,
                 args: args
             }
         };

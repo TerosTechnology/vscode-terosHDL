@@ -79,15 +79,15 @@ export class Rusthdl_lsp {
             'bin',
             languageServerBinaryName + (isWindows ? '.exe' : '')
         );
-        languageServer = bundledPath;
+        // Store the resolved absolute path so getServerOptionsEmbedded can use it directly
+        languageServer = this.context.asAbsolutePath(bundledPath);
 
         const bundledLibrariesDir = this.context.asAbsolutePath(
             path.join('server', 'vhdl_ls', current_language_server_version, languageServerName, 'vhdl_libraries')
         );
         languageServerLibraries = fs.existsSync(path.join(bundledLibrariesDir, 'vhdl_ls.toml')) ? bundledLibrariesDir : undefined;
 
-        let server_path = this.context.asAbsolutePath(bundledPath);
-        let is_alive = await this.check_rust_hdl(server_path);
+        let is_alive = await this.check_rust_hdl(languageServer);
         if (is_alive === false) {
             // Bundled binary failed (e.g. wrong platform); try system-installed vhdl_ls
             const systemPaths = [
@@ -167,7 +167,7 @@ export class Rusthdl_lsp {
         }
     }
 
-    getServerOptionsEmbedded(context: ExtensionContext) {
+    getServerOptionsEmbedded(_context: ExtensionContext) {
         const config = utils.getConfig(this.manager);
         const linter_name = config.linter.general.linter_vhdl;
         let args: string[] = [];
@@ -179,10 +179,9 @@ export class Rusthdl_lsp {
             args.push('--libraries', languageServerLibraries);
         }
 
-        let serverCommand = context.asAbsolutePath(languageServer);
         let serverOptions: ServerOptions = {
             run: {
-                command: serverCommand,
+                command: languageServer,
                 args: args,
                 options: {
                     env: {
@@ -191,7 +190,7 @@ export class Rusthdl_lsp {
                 }
             },
             debug: {
-                command: serverCommand,
+                command: languageServer,
                 args: args,
                 options: {
                     env: {
