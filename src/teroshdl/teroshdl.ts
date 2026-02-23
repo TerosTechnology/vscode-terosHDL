@@ -64,7 +64,7 @@ export class Teroshdl {
     constructor(
         context: vscode.ExtensionContext
     ) {
-        this.rustHDLFilePath = process_utils.create_temp_file('');
+        this.rustHDLFilePath = process_utils.create_temp_file('[libraries]\n');
         this.veribleLSFilePath = process_utils.create_temp_file('');
         
         const homedir = get_home_directory();
