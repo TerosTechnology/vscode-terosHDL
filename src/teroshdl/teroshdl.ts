@@ -34,7 +34,7 @@ import { Completions_manager } from './features/completions/completions';
 import { Number_hover_manager } from './features/number_hover';
 import { Stutter_mode_manager } from './features/stutter_mode';
 import { Config_manager } from './features/config';
-import { Tree_view_manager, forceRefresh } from './features/tree_views/manager';
+import { Tree_view_manager } from './features/tree_views/manager';
 import { Comander } from './features/comander/run';
 import { Dependency_manager } from './features/dependency';
 import { ConfigurationFileWebview } from './features/views/configurationFile';
@@ -196,7 +196,7 @@ export class Teroshdl {
 
     private async init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
         new ConfigurationFileWebview(this.context, this.manager);
-        const manager = new Tree_view_manager(
+        new Tree_view_manager(
             this.context,
             this.manager,
             this.emitterProject,
@@ -207,7 +207,8 @@ export class Teroshdl {
             this.rustHDLFilePath,
             this.veribleLSFilePath
         );
-        await forceRefresh(this.rustHDLFilePath, this.veribleLSFilePath);
+        // Tree_view_manager constructor emits GLOBAL_REFRESH which already calls forceRefresh
+        // No need to call it again here
     }
 
     private init_comander() {

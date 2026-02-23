@@ -185,6 +185,7 @@ export class Rusthdl_lsp {
                 args: args,
                 options: {
                     env: {
+                        ...process.env,
                         VHDL_LS_CONFIG: this.fileListPath
                     }
                 }
@@ -194,6 +195,7 @@ export class Rusthdl_lsp {
                 args: args,
                 options: {
                     env: {
+                        ...process.env,
                         VHDL_LS_CONFIG: this.fileListPath
                     }
                 }
