@@ -129,6 +129,42 @@ edam["tool_options"] = tool_options
 
 backend = get_edatool(tool_name)(edam=edam, work_root=working_directory)
 
+
+def quote_paths_with_spaces_in_makefile(makefile_path, edam):
+    """
+    The edalize ghdl backend generates Makefile recipe lines with bare file
+    paths joined by spaces (e.g. ``ghdl -i file1.vhd file/with spaces/file2.vhd``).
+    When a source path itself contains spaces the shell splits it into multiple
+    arguments and GHDL fails to open the file.
+
+    After edalize writes the Makefile we re-read it and wrap every file path
+    that contains a space in double quotes.  We derive the exact list of paths
+    from the EDAM so we only touch known file names and do not accidentally
+    mangle Makefile syntax.
+    """
+    try:
+        files_with_spaces = [
+            f["name"] for f in edam.get("files", []) if " " in f.get("name", "")
+        ]
+        if not files_with_spaces:
+            return
+
+        with open(makefile_path, "r") as fh:
+            content = fh.read()
+
+        # Replace longest paths first to avoid partial matches when one path is
+        # a prefix of another.
+        for filepath in sorted(files_with_spaces, key=len, reverse=True):
+            quoted = '"{}"'.format(filepath)
+            if quoted not in content:
+                content = content.replace(filepath, quoted)
+
+        with open(makefile_path, "w") as fh:
+            fh.write(content)
+    except Exception:
+        pass  # Never let a patching failure prevent the build from running
+
+
 ################################################################################
 # Configure GUI support
 ################################################################################
@@ -136,6 +172,7 @@ build_gui_tools = ["vivado", "trellis", "apicula", "icestorm", "nextpnr"]
 simulator_gui_tools = ["modelsim", "xsim", "isim", "spyglass", "xcelium", "trellis"]
 try:
     backend.configure()
+    quote_paths_with_spaces_in_makefile(makefile_path, edam)
     if execution_mode == "gui" and (tool_name in build_gui_tools):
         p = subprocess.Popen(["make", "build-gui"], cwd=working_directory)
         p.wait()
