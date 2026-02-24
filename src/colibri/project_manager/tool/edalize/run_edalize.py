@@ -130,17 +130,26 @@ edam["tool_options"] = tool_options
 backend = get_edatool(tool_name)(edam=edam, work_root=working_directory)
 
 
-def quote_paths_with_spaces_in_makefile(makefile_path, edam):
+def fix_paths_with_spaces_in_makefile(makefile_path, edam):
     """
-    The edalize ghdl backend generates Makefile recipe lines with bare file
-    paths joined by spaces (e.g. ``ghdl -i file1.vhd file/with spaces/file2.vhd``).
-    When a source path itself contains spaces the shell splits it into multiple
-    arguments and GHDL fails to open the file.
+    The edalize ghdl backend joins source file paths with spaces and writes
+    them verbatim into the generated Makefile.  Paths that themselves contain
+    spaces break both the shell commands (recipe lines) and Make's own
+    dependency/variable parsing (non-recipe lines), but in different ways:
 
-    After edalize writes the Makefile we re-read it and wrap every file path
-    that contains a space in double quotes.  We derive the exact list of paths
-    from the EDAM so we only touch known file names and do not accidentally
-    mangle Makefile syntax.
+    * Recipe lines (tab-indented) are executed by the shell, so surrounding
+      the path with double-quotes is the correct fix:
+          ghdl -i ... "/path/with spaces/file.vhd"
+
+    * Make variable definitions and dependency rules use Make's own word-
+      splitting, which does NOT respect shell quoting.  The correct fix is
+      to escape each space with a backslash:
+          VHDL_SOURCES = /path/with\ spaces/file.vhd
+          $(TOPLEVEL): /path/with\ spaces/file.vhd work-obj08.cf
+
+    We process the Makefile line-by-line so we can apply the right fix for
+    each context.  Longest paths are checked first to avoid partial matches
+    when one path is a prefix of another.
     """
     try:
         files_with_spaces = [
@@ -150,17 +159,28 @@ def quote_paths_with_spaces_in_makefile(makefile_path, edam):
             return
 
         with open(makefile_path, "r") as fh:
-            content = fh.read()
+            lines = fh.readlines()
 
-        # Replace longest paths first to avoid partial matches when one path is
-        # a prefix of another.
-        for filepath in sorted(files_with_spaces, key=len, reverse=True):
-            quoted = '"{}"'.format(filepath)
-            if quoted not in content:
-                content = content.replace(filepath, quoted)
+        fixed_lines = []
+        for line in lines:
+            is_recipe = line.startswith("\t")
+            for filepath in sorted(files_with_spaces, key=len, reverse=True):
+                if filepath not in line:
+                    continue
+                if is_recipe:
+                    # Shell context: wrap in double quotes
+                    shell_quoted = '"{}"'.format(filepath)
+                    if shell_quoted not in line:
+                        line = line.replace(filepath, shell_quoted)
+                else:
+                    # Make context: escape each space with a backslash
+                    make_escaped = filepath.replace(" ", "\\ ")
+                    if make_escaped not in line:
+                        line = line.replace(filepath, make_escaped)
+            fixed_lines.append(line)
 
         with open(makefile_path, "w") as fh:
-            fh.write(content)
+            fh.writelines(fixed_lines)
     except Exception:
         pass  # Never let a patching failure prevent the build from running
 
@@ -172,7 +192,7 @@ build_gui_tools = ["vivado", "trellis", "apicula", "icestorm", "nextpnr"]
 simulator_gui_tools = ["modelsim", "xsim", "isim", "spyglass", "xcelium", "trellis"]
 try:
     backend.configure()
-    quote_paths_with_spaces_in_makefile(makefile_path, edam)
+    fix_paths_with_spaces_in_makefile(makefile_path, edam)
     if execution_mode == "gui" and (tool_name in build_gui_tools):
         p = subprocess.Popen(["make", "build-gui"], cwd=working_directory)
         p.wait()
