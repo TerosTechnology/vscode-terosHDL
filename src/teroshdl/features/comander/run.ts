@@ -60,7 +60,7 @@ export class Comander {
 
         const config = utils.getConfig(this.manager);
         const file_path = args.fsPath;
-        globalLogger.info(`Opening the waveform: ${file_path}`);
+        globalLogger.info(`Opening the waveform: "${file_path}"`);
 
         // Decide which viewer to open explicitly based on configuration.
         const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
@@ -109,7 +109,7 @@ export class Comander {
             }
             const extra_arguments = config.tools.general.gtkwave_extra_arguments;
 
-            let command = `${gtkwave_path} ${file_path} ${extra_arguments}`;
+            let command = `${gtkwave_path} "${file_path}" ${extra_arguments}`;
             // shelljs.exec(command, { async: true });
             spawn(command, {
                 shell: true,
