@@ -99,6 +99,46 @@ export function getTaskList(toolName: e_tools_general_select_tool): t_taskRep[] 
                 ]
             }
         ];
+    } else if (toolName === e_tools_general_select_tool.osvvm) {
+        return [
+            {
+                name: e_taskType.OPENFOLDER,
+                label: 'Open Project Folder',
+                executionType: e_taskExecutionType.OPENFOLDER
+            },
+            {
+                name: e_taskType.OPEN_WAVEFORM,
+                label: 'Open Waveform',
+                executionType: e_taskExecutionType.SIMPLECOMMAND,
+                icon: e_iconType.WAVEFORM
+            },
+            {
+                name: e_taskType.NVC_RUN_ALL,
+                label: 'NVC Run All',
+                executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                status: e_taskState.IDLE,
+                children: [
+                    {
+                        name: e_taskType.NVC_ANALYZE,
+                        label: 'NVC Analyze',
+                        executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                        status: e_taskState.IDLE
+                    },
+                    {
+                        name: e_taskType.NVC_ELABORATE,
+                        label: 'NVC Elaborate',
+                        executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                        status: e_taskState.IDLE
+                    },
+                    {
+                        name: e_taskType.NVC_SIMULATE,
+                        label: 'NVC Simulate',
+                        executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                        status: e_taskState.IDLE
+                    }
+                ]
+            }
+        ];
     }
     return [];
 }

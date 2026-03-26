@@ -81,7 +81,7 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
             }
 
             return file.file_type.toString();
-        }
+        };
 
         const edam_file: t_edam_file = {
             name: file.name,
@@ -92,7 +92,7 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
         };
 
         return edam_file;
-    })
+    });
 
     const edam_json = {
         name: prj.name,

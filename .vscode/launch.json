@@ -39,8 +39,14 @@
       "name": "Run TerosHDL",
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/out/**/*.js",
+        "${workspaceFolder}/out/**/*.js"
       ],
+      "sourceMapPathOverrides": {
+        "../../../../../src/*": "${workspaceFolder}/src/*",
+        "src/*": "${workspaceFolder}/src/*",
+        "out/*": "${workspaceFolder}/out/*",
+        "webpack:///./out/*": "${workspaceFolder}/out/*"
+      },
       "preLaunchTask": "teros watch",
       "request": "launch",
       "type": "extensionHost"

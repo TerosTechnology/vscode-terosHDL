@@ -17,6 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
+import { string } from "@oclif/core/lib/parser";
+
 export type e_config = {
     "general" : {
         "general" : e_general_general,
@@ -86,6 +88,7 @@ export type e_config = {
         "activehdl" : e_tools_activehdl,
         "questa" : e_tools_questa,
         "raptor" : e_tools_raptor,
+        "nvc" : e_tools_nvc,
     }
     [key: string]: {
         [key: string]: any;
@@ -322,7 +325,59 @@ export type e_tools_ghdl = {
     disp_tree : e_tools_ghdl_disp_tree,
     no_run : boolean,
 };
-    
+
+export type e_tools_nvc = {
+    installation_path : string,
+    vhdl_standard : e_tools_nvc_vhdl_standard,
+    ieee_library : e_tools_nvc_ieee_library,
+    relaxed_parsing : boolean,
+    unicode_support : boolean,
+    psl_enabled : boolean,
+    work_library : string,
+    library_paths : any[],
+    check_syntax_options : any[],
+    analyze_options : any[],
+    elaborate_options : any[],
+    run_options : any[],
+    synthesis_options : any[],
+    extra_flags : any[],
+    relaxed_rules : boolean,
+    bind_checks : boolean,
+    vital_checks : boolean,
+    simulation_time : string,
+    resolution_limit : string,
+    stack_size : string,
+    stop_delta_cycles : number,
+    waveform_enabled : boolean,
+    waveform_format : e_tools_nvc_waveform_format,
+    waveform_options : any[],
+    wave_start_time : string,
+    vcd_4states : boolean,
+    vcd_nodate : boolean,
+    read_wave_opt : string,
+    write_wave_opt : string,
+    debug_level : e_tools_nvc_debug_level,
+    verbose : boolean,
+    warnings_as_errors : boolean,
+    suppress_warnings : any[],
+    assert_level : e_tools_nvc_assert_level,
+    display_time : boolean,
+    unbuffered_output : boolean,
+    max_stack_alloc : number,
+    backtrace_severity : e_tools_nvc_backtrace_severity,
+    ieee_asserts : e_tools_nvc_ieee_asserts,
+    asserts_policy : e_tools_nvc_asserts_policy,
+    sdf_file : string,
+    vpi_modules : any[],
+    vhpi_modules : any[],
+    vpi_trace_file : string,
+    vhpi_trace_file : string,
+    psl_report_file : string,
+    psl_report_uncovered : boolean,
+    disp_tree : e_tools_nvc_disp_tree,
+    no_run : boolean,
+};
+
 export type e_tools_icarus = {
     installation_path : string,
     timescale : string,
@@ -849,6 +904,58 @@ export enum e_tools_ghdl_asserts_policy {
     disable_at_0 = "disable-at-0",
 }
 export enum e_tools_ghdl_disp_tree {
+    none = "none",
+    inst = "inst",
+    proc = "proc",
+    port = "port",
+}
+export enum e_tools_nvc_vhdl_standard {
+    auto = "auto",
+    vhdl87 = "vhdl87",
+    vhdl93 = "vhdl93",
+    vhdl02 = "vhdl02",
+    vhdl08 = "vhdl08",
+    vhdl19 = "vhdl19",
+}
+export enum e_tools_nvc_ieee_library {
+    standard = "standard",
+    synopsys = "synopsys",
+}
+export enum e_tools_nvc_waveform_format {
+    vcd = "vcd",
+    ghw = "ghw",
+    fst = "fst",
+}
+export enum e_tools_nvc_debug_level {
+    none = "none",
+    minimal = "minimal",
+    full = "full",
+}
+export enum e_tools_nvc_assert_level {
+    note = "note",
+    warning = "warning",
+    error = "error",
+    failure = "failure",
+    none = "none",
+}
+export enum e_tools_nvc_backtrace_severity {
+    note = "note",
+    warning = "warning",
+    error = "error",
+    failure = "failure",
+    none = "none",
+}
+export enum e_tools_nvc_ieee_asserts {
+    enable = "enable",
+    disable = "disable",
+    disable_at_0 = "disable-at-0",
+}
+export enum e_tools_nvc_asserts_policy {
+    enable = "enable",
+    disable = "disable",
+    disable_at_0 = "disable-at-0",
+}
+export enum e_tools_nvc_disp_tree {
     none = "none",
     inst = "inst",
     proc = "proc",
@@ -1443,6 +1550,57 @@ export function get_default_config(): e_config {
                 waveform_pnr : "sim_pnr.fst",
                 simulator_pnr : e_tools_raptor_simulator_pnr.ghdl,
                 simulation_options_pnr : "--stop-time=1000ns",
+            },
+            nvc: {
+                installation_path: "",
+                vhdl_standard : e_tools_nvc_vhdl_standard.vhdl08,
+                ieee_library : e_tools_nvc_ieee_library.standard,
+                relaxed_parsing : false,
+                unicode_support : false,
+                psl_enabled : false,
+                work_library : "work",
+                library_paths : [],
+                check_syntax_options : [],
+                analyze_options : [],
+                elaborate_options : [],
+                run_options : [],
+                synthesis_options : [],
+                extra_flags : [],
+                relaxed_rules : false,
+                bind_checks : true,
+                vital_checks : false,
+                simulation_time : "",
+                resolution_limit : "",
+                stack_size : "",
+                stop_delta_cycles : 0,
+                waveform_enabled : true,
+                waveform_format : e_tools_nvc_waveform_format.vcd,
+                waveform_options : [],
+                wave_start_time : "",
+                vcd_4states : false,
+                vcd_nodate : false,
+                read_wave_opt : "",
+                write_wave_opt : "",
+                debug_level : e_tools_nvc_debug_level.none,
+                verbose : false,
+                warnings_as_errors : false,
+                suppress_warnings : [],
+                assert_level : e_tools_nvc_assert_level.error,
+                display_time : false,
+                unbuffered_output : false,
+                max_stack_alloc : 0,
+                backtrace_severity : e_tools_nvc_backtrace_severity.error,
+                ieee_asserts : e_tools_nvc_ieee_asserts.enable,
+                asserts_policy : e_tools_nvc_asserts_policy.enable,
+                sdf_file : "",
+                vpi_modules : [],
+                vhpi_modules : [],
+                vpi_trace_file : "",
+                vhpi_trace_file : "",
+                psl_report_file : "",
+                psl_report_uncovered : false,
+                disp_tree : e_tools_nvc_disp_tree.none,
+                no_run : false,
             },
         },
     };

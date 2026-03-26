@@ -34,9 +34,8 @@
     },
     "main": "./out/teroshdl/extension.js",
     "_moduleAliases": {
-      "colibri": "./out/colibri"
+        "colibri": "./out/colibri"
     },
-
     "contributes": {
         "viewsContainers": {
             "activitybar": [
@@ -130,8 +129,7 @@
                 "view": "teroshdl-view-actions",
                 "contents": "[Verify Setup](command:teroshdl.verifySetup)\n[Open Global Settings Menu](command:teroshdl.configuration.global)\n[Export Settings](command:teroshdl.view.project.export_configuration)\n[Load Settings](command:teroshdl.view.project.load_configuration)\n[Documentation](command:teroshdl.documentation)"
             }
-      ],
-
+        ],
         "grammars": [
             {
                 "language": "logTerosHDL",
@@ -180,268 +178,212 @@
             }
         ],
         "menus": {
-            "editor/context": [
-
-            ],
+            "editor/context": [],
             "explorer/context": [
-
                 {
                     "when": "resourceLangId == gtkw_wavebin || resourceLangId == gtkw_waveconfig || resourceLangId == vcd",
-
                     "command": "teroshdl.waveform",
                     "group": "navigation"
                 }
-                        
             ],
             "view/title": [
-
                 {
                     "when": "view == teroshdl-project",
-
                     "command": "teroshdl.view.project.add",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-source",
-
                     "command": "teroshdl.view.source.save_project",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-source",
-
                     "command": "teroshdl.view.source.search",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-source",
-
                     "command": "teroshdl.view.source.add",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-dependency",
-
                     "command": "teroshdl.view.dependency.refresh",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-dependency",
-
                     "command": "teroshdl.view.dependency.schematic",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-dependency",
-
                     "command": "teroshdl.view.dependency.viewer",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-runs",
-
                     "command": "teroshdl.view.runs.run_all",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-runs",
-
                     "command": "teroshdl.view.runs.stop",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-runs",
-
                     "command": "teroshdl.view.runs.refresh",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-tasks && view == teroshdl-view-tasks",
-
                     "command": "teroshdl.view.tasks.stop",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-tasks && view == teroshdl-view-tasks",
-
                     "command": "teroshdl.view.tasks.clean",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-watcher && view == teroshdl-view-watcher",
-
                     "command": "teroshdl.view.watcher.add",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "view == teroshdl-view-output && view == teroshdl-view-output",
-
                     "command": "teroshdl.view.outputs.clean",
                     "group": "navigation"
                 }
-                        
             ],
             "view/item/context": [
-            
-                    {
-                        "when": "viewItem == project && view == teroshdl-project",
-                        "command": "teroshdl.configuration.project",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == project && view == teroshdl-project",
-                        "command": "teroshdl.view.project.delete",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == project && view == teroshdl-project",
-                        "command": "teroshdl.view.project.rename",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == library && view == teroshdl-view-source",
-                        "command": "teroshdl.view.source.add_source_to_library",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == library && view == teroshdl-view-source",
-                        "command": "teroshdl.view.source.delete_library",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == source && view == teroshdl-view-source",
-                        "command": "teroshdl.view.source.properties",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == source && view == teroshdl-view-source",
-                        "command": "teroshdl.view.source.delete_source",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == source && view == teroshdl-view-source",
-                        "command": "teroshdl.view.source.select_toplevel",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == run && view == teroshdl-view-runs",
-                        "command": "teroshdl.view.runs.run",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem =~ /logs/ && view == teroshdl-view-tasks",
-                        "command": "teroshdl.view.tasks.logs",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem =~ /report/ && view == teroshdl-view-tasks",
-                        "command": "teroshdl.view.tasks.report",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem =~ /timinganalyzer/ && view == teroshdl-view-tasks",
-                        "command": "teroshdl.view.tasks.timing_analyzer",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem =~ /technologymapviewer/ && view == teroshdl-view-tasks",
-                        "command": "teroshdl.view.tasks.technology_map_viewer",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem =~ /snapshotviewer/ && view == teroshdl-view-tasks",
-                        "command": "teroshdl.view.tasks.snapshotviewer",
-                        "group": "inline"
-                    }
-                            
-                    ,{
-                        "when": "viewItem == watcher && view == teroshdl-view-watcher",
-                        "command": "teroshdl.view.watcher.delete",
-                        "group": "inline"
-                    }
-                            
+                {
+                    "when": "viewItem == project && view == teroshdl-project",
+                    "command": "teroshdl.configuration.project",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == project && view == teroshdl-project",
+                    "command": "teroshdl.view.project.delete",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == project && view == teroshdl-project",
+                    "command": "teroshdl.view.project.rename",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == library && view == teroshdl-view-source",
+                    "command": "teroshdl.view.source.add_source_to_library",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == library && view == teroshdl-view-source",
+                    "command": "teroshdl.view.source.delete_library",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == source && view == teroshdl-view-source",
+                    "command": "teroshdl.view.source.properties",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == source && view == teroshdl-view-source",
+                    "command": "teroshdl.view.source.delete_source",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == source && view == teroshdl-view-source",
+                    "command": "teroshdl.view.source.select_toplevel",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == run && view == teroshdl-view-runs",
+                    "command": "teroshdl.view.runs.run",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem =~ /logs/ && view == teroshdl-view-tasks",
+                    "command": "teroshdl.view.tasks.logs",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem =~ /report/ && view == teroshdl-view-tasks",
+                    "command": "teroshdl.view.tasks.report",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem =~ /timinganalyzer/ && view == teroshdl-view-tasks",
+                    "command": "teroshdl.view.tasks.timing_analyzer",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem =~ /technologymapviewer/ && view == teroshdl-view-tasks",
+                    "command": "teroshdl.view.tasks.technology_map_viewer",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem =~ /snapshotviewer/ && view == teroshdl-view-tasks",
+                    "command": "teroshdl.view.tasks.snapshotviewer",
+                    "group": "inline"
+                },
+                {
+                    "when": "viewItem == watcher && view == teroshdl-view-watcher",
+                    "command": "teroshdl.view.watcher.delete",
+                    "group": "inline"
+                }
             ],
             "editor/title": [
-
                 {
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.generate_template",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.state_machine.viewer",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.netlist.viewer",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.format",
                     "group": "navigation"
-                }
-                        
-                ,{
+                },
+                {
                     "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
                     "command": "teroshdl.documentation.module",
                     "group": "navigation"
                 }
-                        
             ]
         },
         "commands": [
             {
                 "command": "teroshdl.go_to_parent",
                 "title": "Go to parent file"
-            }, 
+            },
             {
                 "command": "teroshdl.open",
                 "title": "Open file with TerosHDL"
-            }, 
+            },
             {
                 "command": "teroshdl.configuration.global",
                 "title": "TerosHDL: Open Global Settings Menu"
-            }, 
+            },
             {
                 "command": "teroshdl.verifySetup",
                 "title": "TerosHDL: Verify Setup"
-            }, 
+            },
             {
                 "command": "teroshdl.waveform",
                 "title": "Open waveform viewer"
-            }, 
+            },
             {
                 "command": "teroshdl.view.project.add",
                 "icon": {
@@ -449,7 +391,7 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add project"
-            }, 
+            },
             {
                 "command": "teroshdl.configuration.project",
                 "icon": {
@@ -457,7 +399,7 @@
                     "dark": "resources/icon/dark/gear.svg"
                 },
                 "title": "Open Project Settings"
-            }, 
+            },
             {
                 "command": "teroshdl.view.project.delete",
                 "icon": {
@@ -465,7 +407,7 @@
                     "dark": "resources/icon/dark/chrome-close.svg"
                 },
                 "title": "Delete project"
-            }, 
+            },
             {
                 "command": "teroshdl.view.project.rename",
                 "icon": {
@@ -473,7 +415,7 @@
                     "dark": "resources/icon/dark/edit.svg"
                 },
                 "title": "Rename project"
-            }, 
+            },
             {
                 "command": "teroshdl.view.source.save_project",
                 "icon": {
@@ -481,7 +423,7 @@
                     "dark": "resources/icon/dark/save.svg"
                 },
                 "title": "Save Project"
-            }, 
+            },
             {
                 "command": "teroshdl.view.source.search",
                 "icon": {
@@ -489,7 +431,7 @@
                     "dark": "resources/icon/dark/search.svg"
                 },
                 "title": "Search"
-            }, 
+            },
             {
                 "command": "teroshdl.view.source.add",
                 "icon": {
@@ -497,7 +439,7 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add"
-            }, 
+            },
             {
                 "command": "teroshdl.view.source.add_source_to_library",
                 "icon": {
@@ -505,7 +447,7 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add to library"
-            }, 
+            },
             {
                 "command": "teroshdl.view.source.delete_library",
                 "icon": {
@@ -513,7 +455,7 @@
                     "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete library"
-            }, 
+            },
             {
                 "command": "teroshdl.view.source.properties",
                 "icon": {
@@ -521,7 +463,7 @@
                     "dark": "resources/icon/dark/gear.svg"
                 },
                 "title": "File Properties"
-            }, 
+            },
             {
                 "command": "teroshdl.view.source.delete_source",
                 "icon": {
@@ -529,7 +471,7 @@
                     "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete source"
-            }, 
+            },
             {
                 "command": "teroshdl.view.source.select_toplevel",
                 "icon": {
@@ -537,7 +479,7 @@
                     "dark": "resources/icon/dark/check.svg"
                 },
                 "title": "Select source as toplevel"
-            }, 
+            },
             {
                 "command": "teroshdl.view.dependency.refresh",
                 "icon": {
@@ -545,7 +487,7 @@
                     "dark": "resources/icon/dark/refresh.svg"
                 },
                 "title": "Refresh"
-            }, 
+            },
             {
                 "command": "teroshdl.view.dependency.schematic",
                 "icon": {
@@ -553,7 +495,7 @@
                     "dark": "resources/icon/dark/list-tree.svg"
                 },
                 "title": "Schematic viewer"
-            }, 
+            },
             {
                 "command": "teroshdl.view.dependency.viewer",
                 "icon": {
@@ -561,7 +503,7 @@
                     "dark": "resources/icon/dark/dep.svg"
                 },
                 "title": "Dependencies viewer"
-            }, 
+            },
             {
                 "command": "teroshdl.view.runs.run_all",
                 "icon": {
@@ -569,7 +511,7 @@
                     "dark": "resources/icon/dark/run-all.svg"
                 },
                 "title": "Run all"
-            }, 
+            },
             {
                 "command": "teroshdl.view.runs.stop",
                 "icon": {
@@ -577,7 +519,7 @@
                     "dark": "resources/icon/dark/stop.svg"
                 },
                 "title": "Stop"
-            }, 
+            },
             {
                 "command": "teroshdl.view.runs.refresh",
                 "icon": {
@@ -585,7 +527,7 @@
                     "dark": "resources/icon/dark/refresh.svg"
                 },
                 "title": "Refresh"
-            }, 
+            },
             {
                 "command": "teroshdl.view.runs.run",
                 "icon": {
@@ -593,7 +535,7 @@
                     "dark": "resources/icon/dark/run.svg"
                 },
                 "title": "TerosHDL: Run Tool"
-            }, 
+            },
             {
                 "command": "teroshdl.view.tasks.stop",
                 "icon": {
@@ -601,7 +543,7 @@
                     "dark": "resources/icon/dark/stop.svg"
                 },
                 "title": "Stop"
-            }, 
+            },
             {
                 "command": "teroshdl.view.tasks.clean",
                 "icon": {
@@ -609,7 +551,7 @@
                     "dark": "resources/icon/dark/trash.svg"
                 },
                 "title": "Clean project"
-            }, 
+            },
             {
                 "command": "teroshdl.view.tasks.logs",
                 "icon": {
@@ -617,7 +559,7 @@
                     "dark": "resources/icon/dark/database.svg"
                 },
                 "title": "Open Log"
-            }, 
+            },
             {
                 "command": "teroshdl.view.tasks.report",
                 "icon": {
@@ -625,7 +567,7 @@
                     "dark": "resources/icon/dark/output.svg"
                 },
                 "title": "Open Report"
-            }, 
+            },
             {
                 "command": "teroshdl.view.tasks.timing_analyzer",
                 "icon": {
@@ -633,7 +575,7 @@
                     "dark": "resources/icon/dark/watch.svg"
                 },
                 "title": "Open Timing Analyzer"
-            }, 
+            },
             {
                 "command": "teroshdl.view.tasks.technology_map_viewer",
                 "icon": {
@@ -641,7 +583,7 @@
                     "dark": "resources/icon/dark/search.svg"
                 },
                 "title": "Open Technology Map Viewer"
-            }, 
+            },
             {
                 "command": "teroshdl.view.tasks.snapshotviewer",
                 "icon": {
@@ -649,63 +591,63 @@
                     "dark": "resources/icon/dark/eye.svg"
                 },
                 "title": "Open Snapshop Viewer"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.rtlAnalyzer",
                 "title": "TerosHDL [Quartus]: Open RTL Analyzer"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.compileDesigh",
                 "title": "TerosHDL [Quartus]: Run Compile Design"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.analysisAndSynthesis",
                 "title": "TerosHDL [Quartus]: run Analysis and Synthesis"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.analysisAndElaboration",
                 "title": "TerosHDL [Quartus]: run Analysis and Elaboration"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.synthesis",
                 "title": "TerosHDL [Quartus]: run Synthesis"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.earlyTimingAnalysis",
                 "title": "TerosHDL [Quartus]: run Early Timing Analysis"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.fitter",
                 "title": "TerosHDL [Quartus]: run Fitter"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.fitterImplement",
                 "title": "TerosHDL [Quartus]: run Fitter Implement"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.plan",
                 "title": "TerosHDL [Quartus]: run Plan"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.place",
                 "title": "TerosHDL [Quartus]: run Place"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.route",
                 "title": "TerosHDL [Quartus]: run Route"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.fitterFinalize",
                 "title": "TerosHDL [Quartus]: run Fitter Finalize"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.timingAnalysisSignoff",
                 "title": "TerosHDL [Quartus]: run Timing Analysis Signoff"
-            }, 
+            },
             {
                 "command": "teroshdl.project.quartus.assembler",
                 "title": "TerosHDL [Quartus]: run Assembler"
-            }, 
+            },
             {
                 "command": "teroshdl.view.watcher.add",
                 "icon": {
@@ -713,7 +655,7 @@
                     "dark": "resources/icon/dark/add.svg"
                 },
                 "title": "Add"
-            }, 
+            },
             {
                 "command": "teroshdl.view.watcher.delete",
                 "icon": {
@@ -721,7 +663,7 @@
                     "dark": "resources/icon/dark/dash.svg"
                 },
                 "title": "Delete watcher"
-            }, 
+            },
             {
                 "command": "teroshdl.view.outputs.clean",
                 "icon": {
@@ -729,7 +671,7 @@
                     "dark": "resources/icon/dark/trash.svg"
                 },
                 "title": "Clean project"
-            }, 
+            },
             {
                 "command": "teroshdl.generate_template",
                 "icon": {
@@ -737,7 +679,7 @@
                     "dark": "resources/icon/dark/file-code.svg"
                 },
                 "title": "TerosHDL: Generate template"
-            }, 
+            },
             {
                 "command": "teroshdl.state_machine.viewer",
                 "icon": {
@@ -745,7 +687,7 @@
                     "dark": "resources/icon/dark/state-machine.svg"
                 },
                 "title": "State machine viewer"
-            }, 
+            },
             {
                 "command": "teroshdl.netlist.viewer",
                 "icon": {
@@ -753,7 +695,7 @@
                     "dark": "resources/icon/dark/list-tree.svg"
                 },
                 "title": "Schematic viewer"
-            }, 
+            },
             {
                 "command": "teroshdl.format",
                 "icon": {
@@ -761,7 +703,7 @@
                     "dark": "resources/icon/dark/check.svg"
                 },
                 "title": "Format"
-            }, 
+            },
             {
                 "command": "teroshdl.documentation.module",
                 "icon": {
@@ -772,115 +714,161 @@
             }
         ],
         "languages": [
-
-        {
-            "id": "vhdl",
-            "aliases": ["VHDL", "vhdl"],
-            "configuration": "./configs/vhdl.configuration.json",
-            "extensions": [".vhd", ".vho", ".vhdl", ".vhd"],
-            "icon": {
-                "light": "./resources/icon/light/vhdl.svg",
-                "dark": "./resources/icon/dark/vhdl.svg"
+            {
+                "id": "vhdl",
+                "aliases": [
+                    "VHDL",
+                    "vhdl"
+                ],
+                "configuration": "./configs/vhdl.configuration.json",
+                "extensions": [
+                    ".vhd",
+                    ".vho",
+                    ".vhdl",
+                    ".vhd"
+                ],
+                "icon": {
+                    "light": "./resources/icon/light/vhdl.svg",
+                    "dark": "./resources/icon/dark/vhdl.svg"
+                }
+            },
+            {
+                "id": "verilog",
+                "aliases": [
+                    "Verilog",
+                    "verilog"
+                ],
+                "configuration": "./configs/verilog.configuration.json",
+                "extensions": [
+                    ".v",
+                    ".vh",
+                    ".vl"
+                ],
+                "icon": {
+                    "light": "./resources/icon/light/verilog.svg",
+                    "dark": "./resources/icon/dark/verilog.svg"
+                }
+            },
+            {
+                "id": "systemverilog",
+                "aliases": [
+                    "System Verilog",
+                    "systemverilog"
+                ],
+                "configuration": "./configs/systemverilog.configuration.json",
+                "extensions": [
+                    ".sv",
+                    ".svh",
+                    ".SV"
+                ],
+                "icon": {
+                    "light": "./resources/icon/light/systemverilog.svg",
+                    "dark": "./resources/icon/dark/systemverilog.svg"
+                }
+            },
+            {
+                "id": "vcd",
+                "extensions": [
+                    ".vcd"
+                ]
+            },
+            {
+                "id": "logTerosHDL",
+                "extensions": [
+                    ".logTerosHDL"
+                ]
+            },
+            {
+                "id": "gtkw_waveconfig",
+                "extensions": [
+                    ".gtkw"
+                ]
+            },
+            {
+                "id": "gtkw_wavebin",
+                "extensions": [
+                    ".fst",
+                    ".ghw"
+                ]
+            },
+            {
+                "id": "tcl",
+                "aliases": [
+                    "TCL",
+                    "tcl"
+                ],
+                "configuration": "./configs/tcl.configuration.json",
+                "extensions": [
+                    ".tcl",
+                    ".pro"
+                ],
+                "icon": {
+                    "light": "./resources/icon/light/tcl.svg",
+                    "dark": "./resources/icon/dark/tcl.svg"
+                }
+            },
+            {
+                "id": "ucf",
+                "aliases": [
+                    "vivado ucf",
+                    "ucf constraints"
+                ],
+                "configuration": "./configs/ucfconstraints.configuration.json",
+                "extensions": [
+                    ".ucf"
+                ],
+                "icon": {
+                    "light": "./resources/icon/light/ucf.svg",
+                    "dark": "./resources/icon/dark/ucf.svg"
+                }
+            },
+            {
+                "id": "xdc",
+                "aliases": [
+                    "vivado xdc",
+                    "xdc constraints"
+                ],
+                "configuration": "./configs/xdcconstraints.configuration.json",
+                "extensions": [
+                    ".xdc",
+                    ".sdc"
+                ],
+                "icon": {
+                    "light": "./resources/icon/light/xdc.svg",
+                    "dark": "./resources/icon/dark/xdc.svg"
+                }
+            },
+            {
+                "id": "ldc",
+                "aliases": [
+                    "lattice constraints"
+                ],
+                "configuration": "./configs/xdcconstraints.configuration.json",
+                "extensions": [
+                    ".ldc",
+                    ".pdc"
+                ],
+                "icon": {
+                    "light": "./resources/icon/light/xdc.svg",
+                    "dark": "./resources/icon/dark/xdc.svg"
+                }
+            },
+            {
+                "id": "TL-Verilog",
+                "aliases": [
+                    "TL-Verilog",
+                    "tlv",
+                    "Transactional-Level Verilog"
+                ],
+                "configuration": "./configs/tlverilog.configuration.json",
+                "extensions": [
+                    ".tlv"
+                ],
+                "icon": {
+                    "light": "./resources/icon/light/verilog.svg",
+                    "dark": "./resources/icon/dark/verilog.svg"
+                }
             }
-        }
-
-        ,{
-            "id": "verilog",
-            "aliases": ["Verilog", "verilog"],
-            "configuration": "./configs/verilog.configuration.json",
-            "extensions": [".v", ".vh", ".vl"],
-            "icon": {
-                "light": "./resources/icon/light/verilog.svg",
-                "dark": "./resources/icon/dark/verilog.svg"
-            }
-        }
-
-        ,{
-            "id": "systemverilog",
-            "aliases": ["System Verilog", "systemverilog"],
-            "configuration": "./configs/systemverilog.configuration.json",
-            "extensions": [".sv", ".svh", ".SV"],
-            "icon": {
-                "light": "./resources/icon/light/systemverilog.svg",
-                "dark": "./resources/icon/dark/systemverilog.svg"
-            }
-        }
-
-        ,{
-            "id": "vcd",
-            "extensions": [".vcd"]
-        }
-
-        ,{
-            "id": "logTerosHDL",
-            "extensions": [".logTerosHDL"]
-        }
-
-        ,{
-            "id": "gtkw_waveconfig",
-            "extensions": [".gtkw"]
-        }
-
-        ,{
-            "id": "gtkw_wavebin",
-            "extensions": [".fst", ".ghw"]
-        }
-
-        ,{
-            "id": "tcl",
-            "aliases": ["TCL", "tcl"],
-            "configuration": "./configs/tcl.configuration.json",
-            "extensions": [".tcl", ".pro"],
-            "icon": {
-                "light": "./resources/icon/light/tcl.svg",
-                "dark": "./resources/icon/dark/tcl.svg"
-            }
-        }
-
-        ,{
-            "id": "ucf",
-            "aliases": ["vivado ucf", "ucf constraints"],
-            "configuration": "./configs/ucfconstraints.configuration.json",
-            "extensions": [".ucf"],
-            "icon": {
-                "light": "./resources/icon/light/ucf.svg",
-                "dark": "./resources/icon/dark/ucf.svg"
-            }
-        }
-
-        ,{
-            "id": "xdc",
-            "aliases": ["vivado xdc", "xdc constraints"],
-            "configuration": "./configs/xdcconstraints.configuration.json",
-            "extensions": [".xdc", ".sdc"],
-            "icon": {
-                "light": "./resources/icon/light/xdc.svg",
-                "dark": "./resources/icon/dark/xdc.svg"
-            }
-        }
-
-        ,{
-            "id": "ldc",
-            "aliases": ["lattice constraints"],
-            "configuration": "./configs/xdcconstraints.configuration.json",
-            "extensions": [".ldc", ".pdc"],
-            "icon": {
-                "light": "./resources/icon/light/xdc.svg",
-                "dark": "./resources/icon/dark/xdc.svg"
-            }
-        }
-
-        ,{
-            "id": "TL-Verilog",
-            "aliases": ["TL-Verilog", "tlv", "Transactional-Level Verilog"],
-            "configuration": "./configs/tlverilog.configuration.json",
-            "extensions": [".tlv"],
-            "icon": {
-                "light": "./resources/icon/light/verilog.svg",
-                "dark": "./resources/icon/dark/verilog.svg"
-            }
-        }
-
         ],
         "snippets": [
             {
@@ -916,7 +904,6 @@
                 "path": "./snippets/verilog/verilog.json"
             }
         ],
-
         "keybindings": [
             {
                 "command": "teroshdl.go_to_parent",
@@ -926,99 +913,98 @@
             }
         ]
     },
-
     "scripts": {
-        "build-package": "cd auto_package && ./gen.sh", 
-        "clean": "shx rm -rf out", 
-        "vscode:prepublish": "npm run generate-examples & npm run compile", 
-        "compile": "npm run-script copy-files & npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./", 
-        "lint": "eslint src", 
-        "watch": "npm run-script copy-files & tsc --watch --p ./tsconfig.json & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"", 
-        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
-        "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib", 
-        "package": "npm run pre-package & vsce package --allow-star-activation", 
-        "package-prerelease": "npm run pre-package & vsce package --pre-release -o ./pre-release.vsix --allow-star-activation", 
-        "auto-package": "cd auto_package & ./gen.sh", 
-        "build-webviews": "NODE_ENV=production node resources/webviews/reporters/esbuild.js", 
-        "build-webviews-configuration": "NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js", 
-        "compile-esbuild": "NODE_ENV=production node ./esbuild.js", 
-        "copy-files": "python3 copy_files.py ", 
+        "build-package": "cd auto_package && ./gen.sh",
+        "clean": "shx rm -rf out",
+        "vscode:prepublish": "npm run generate-examples & npm run compile",
+        "compile": "npm run-script copy-files && npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./",
+        "lint": "eslint src",
+        "watch": "npm run-script copy-files & tsc --watch --p ./tsconfig.json & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"",
+        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh",
+        "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib",
+        "package": "npm run pre-package & vsce package --allow-star-activation",
+        "package-prerelease": "npm run pre-package & vsce package --pre-release -o ./pre-release.vsix --allow-star-activation",
+        "auto-package": "cd auto_package & ./gen.sh",
+        "build-webviews": "cross-env NODE_ENV=production node resources/webviews/reporters/esbuild.js",
+        "build-webviews-configuration": "cross-env NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js",
+        "compile-esbuild": "cross-env NODE_ENV=production node ./esbuild.js",
+        "copy-files": "python3 copy_files.py ",
         "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json"
     },
     "dependencies": {
-        "@octokit/rest": "16.36.0",
-        "@types/node-fetch": "2.5.7",
-        "@types/semver": "6.2.0",
-        "abort-controller": "3.0.0",
-        "fs-extra": "8.1.0",
-        "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
-        "open": "8.3.0",
-        "proper-lockfile": "4.1.1",
-        "semver": "^7.6.3",
-        "shelljs": "^0.8.3",
-        "tmp": "0.2.1",
-        "vscode-languageclient": "^9.0.1",
-        "xml2js": "^0.6.2",
-        "nunjucks": "^3.2.0",
-        "@types/nunjucks": "^3.1.4",
-        "tree-kill": "1.2.2",
-        "@vscode/webview-ui-toolkit": "^1.4.0",
-        "esbuild-plugin-alias": "^0.2.1",
         "@oclif/core": "^1",
         "@oclif/plugin-help": "^5",
         "@oclif/plugin-plugins": "^2.0.1",
+        "@octokit/rest": "16.36.0",
+        "@types/node-fetch": "2.5.7",
+        "@types/nunjucks": "^3.1.4",
+        "@types/semver": "6.2.0",
+        "@vscode/webview-ui-toolkit": "^1.4.0",
         "@yowasp/yosys": "0.41.721",
+        "abort-controller": "3.0.0",
         "axios": "^1.7.2",
         "chokidar": "3.5.3",
         "cli-color": "^2.0.3",
         "clone": "^2.1.2",
         "console-table-printer": "^2.11.0",
+        "esbuild-plugin-alias": "^0.2.1",
+        "fast-json-stable-stringify": "^2.1.0",
         "fast-xml-parser": "4.3.2",
+        "fs-extra": "8.1.0",
         "jest-html-reporter": "^3.7.0",
         "js-yaml": "^4.1.0",
         "json5": "^2.2.3",
         "lodash": "^4.17.21",
+        "module-alias": "^2.2.3",
+        "netlistsvg": "https://github.com/TerosTechnology/netlistsvg.git#hierarchy",
+        "nunjucks": "^3.2.0",
         "onml": "2.1.0",
+        "open": "8.3.0",
+        "proper-lockfile": "4.1.1",
         "pyodide": "0.24.1",
+        "semver": "^7.6.3",
+        "shelljs": "^0.8.3",
         "showdown": "1.9.1",
         "showdown-highlight": "2.1.8",
         "sql.js": "^1.9.0",
         "state-machine-cat": "10.1.11",
-        "fast-json-stable-stringify": "^2.1.0",
         "svg.js": "2.7.1",
         "svgdom": "^0.0.21",
         "temp": "0.9.4",
         "tiny-glob": "^0.2.9",
+        "tmp": "0.2.1",
+        "tree-kill": "1.2.2",
+        "vscode-languageclient": "^9.0.1",
         "wavedrom": "3.3.0",
         "web-tree-sitter": "^0.20.7",
-        "module-alias": "^2.2.3"
+        "xml2js": "^0.6.2"
     },
     "devDependencies": {
-        "@types/node": "^17.0.31",
-        "@types/vscode": "^1.45.0",
-        "js-yaml": "^3.13.1",
-        "shx": "^0.3.3",
-        "esbuild": "^0.16.17",
-        "nodemon": "^3.0.2",
-        "assert": "^2.0.0", 
-        "jest": "^29.7.0",
-        "jest-html-reporters": "^3.1.4",
-        "ts-jest": "^29.1.2",
-        "typedoc": "^0.23.9",
-        "typedoc-theme-hierarchy": "^3.0.0",
         "@types/assert": "^1.5.6",
-        "chai": "^4",
         "@types/chai": "^4",
         "@types/cli-color": "^2.0.2",
         "@types/jest": "^29.4.3",
         "@types/js-yaml": "^4.0.5",
+        "@types/node": "^17.0.31",
         "@types/temp": "^0.9.4",
-        "typescript": "^4.8.2",
+        "@types/vscode": "^1.45.0",
         "@typescript-eslint/eslint-plugin": "^8.7.0",
         "@typescript-eslint/parser": "^8.7.0",
+        "assert": "^2.0.0",
+        "chai": "^4",
+        "cross-env": "^10.1.0",
+        "esbuild": "^0.16.17",
         "eslint": "^9.11.1",
         "eslint-config-prettier": "^9.0.0",
-        "eslint-plugin-prettier": "^4.0.0"
+        "eslint-plugin-prettier": "^4.0.0",
+        "jest": "^29.7.0",
+        "jest-html-reporters": "^3.1.4",
+        "js-yaml": "^3.13.1",
+        "nodemon": "^3.0.2",
+        "shx": "^0.3.3",
+        "ts-jest": "^29.1.2",
+        "typedoc": "^0.23.9",
+        "typedoc-theme-hierarchy": "^3.0.0",
+        "typescript": "^4.8.2"
     }
-
 }

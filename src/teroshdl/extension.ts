@@ -47,7 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
             await releaseNotesView.show();
         }
     } catch (e) {
-        console.log(e);
+        debugLogger.error(e);
     }
 
     teroshdl = new Teroshdl(context);

@@ -66,6 +66,14 @@ export enum e_taskType {
     SETTINGS = "Settings",
     CHANGEDEVICE = "Device",
     TCLCONSOLE = "Tcl Console",
+    // NVC
+    NVC_ANALYZE = "NVC Analyze",
+    NVC_ELABORATE = "NVC Elaborate",
+    NVC_SIMULATE = "NVC Simulate",
+    NVC_RUN_ALL = "NVC Run All",
+    NVC_SYNTHESIZE = "NVC Synthesize",
+    NVC_CHECK_SYNTAX = "NVC Check Syntax",
+    NVC_MAKEFILE = "NVC Generate Makefile",
 }
 
 export enum e_iconType {

@@ -426,6 +426,13 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.YOSYS_SYNTHESIS]: "",
             [e_taskType.YOSYS_SHOW]: "",
             [e_taskType.YOSYS_RESOURCE_UTILIZATION]: "",
+            [e_taskType.NVC_ANALYZE]: "",
+            [e_taskType.NVC_ELABORATE]: "",
+            [e_taskType.NVC_SIMULATE]: "",
+            [e_taskType.NVC_RUN_ALL]: "",
+            [e_taskType.NVC_SYNTHESIZE]: "",
+            [e_taskType.NVC_CHECK_SYNTAX]: "",
+            [e_taskType.NVC_MAKEFILE]: "",
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {

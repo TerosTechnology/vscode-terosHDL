@@ -135,7 +135,14 @@ const taskDependencies: Record<e_taskType, e_taskType[]> = {
     [e_taskType.YOSYS_ELABORATE]: [],
     [e_taskType.YOSYS_SYNTHESIS]: [],
     [e_taskType.YOSYS_SHOW]: [],
-    [e_taskType.YOSYS_RESOURCE_UTILIZATION]: []
+    [e_taskType.YOSYS_RESOURCE_UTILIZATION]: [],
+    [e_taskType.NVC_ANALYZE]: [],
+    [e_taskType.NVC_ELABORATE]: [],
+    [e_taskType.NVC_SIMULATE]: [],
+    [e_taskType.NVC_RUN_ALL]: [],
+    [e_taskType.NVC_SYNTHESIZE]: [],
+    [e_taskType.NVC_CHECK_SYNTAX]: [],
+    [e_taskType.NVC_MAKEFILE]: []
 };
 
 function executeCommandList(projectName: string, commands: string[], cwd: string, emitter: ProjectEmitter,
@@ -235,7 +242,14 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
         [e_taskType.YOSYS_ELABORATE]: "",
         [e_taskType.YOSYS_SYNTHESIS]: "",
         [e_taskType.YOSYS_SHOW]: "",
-        [e_taskType.YOSYS_RESOURCE_UTILIZATION]: ""
+        [e_taskType.YOSYS_RESOURCE_UTILIZATION]: "",
+        [e_taskType.NVC_ANALYZE]: "",
+        [e_taskType.NVC_ELABORATE]: "",
+        [e_taskType.NVC_SIMULATE]: "",
+        [e_taskType.NVC_RUN_ALL]: "",
+        [e_taskType.NVC_SYNTHESIZE]: "",
+        [e_taskType.NVC_CHECK_SYNTAX]: "",
+        [e_taskType.NVC_MAKEFILE]: ""
     };
 
     const cmdList: string[] = [];

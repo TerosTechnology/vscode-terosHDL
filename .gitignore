@@ -27,3 +27,5 @@ resources/project_manager/help
 *.cf
 *.o
 Project**
+./venv
+./work

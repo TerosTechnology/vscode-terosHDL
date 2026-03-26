@@ -24,6 +24,8 @@ import {
 } from 'colibri/config/config_declaration';
 import { appendMsg, buildTitle, INTROICON, replaceByResult } from './utils';
 import { checkBinary } from 'colibri/toolChecker/utils';
+import * as fs from 'fs';
+import * as path_lib from 'path';
 
 const HELP = 'https://terostechnology.github.io/terosHDLdoc/docs/external_tools/';
 
@@ -49,18 +51,48 @@ export async function checkExternalToolManager(currentConfig: e_config) {
 
     // Check external tool
     msg += `${INTROICON} Selected external tool: ${selectedTool.toLocaleUpperCase()}. Installation path: "${installationPath}"\n`;
-    // Default to '--version' if no custom argument is specified
-    const versionArgument = customVersionArgs[selectedTool] || '--version';
+    let result: any;
 
-    let binaryName : string | string[] =
-        selectedTool === e_tools_general_select_tool.rivierapro ? ['rivierapro', 'riviera'] : selectedTool;
-    binaryName = binaryName === e_tools_general_select_tool.icarus ? 'iverilog' : binaryName;
+    if (selectedTool === e_tools_general_select_tool.osvvm) {
+        const osvv_pro_path = path_lib.join(installationPath, 'OsvvmLibraries.pro');
+        const scripts_path = path_lib.join(installationPath, 'Scripts');
+        const start_nvc_tcl = path_lib.join(scripts_path, 'StartNVC.tcl');
+        const tclsh = currentConfig.tools.osvvm.tclsh_binary || 'tclsh';
 
-    let result = await checkBinary(selectedTool, installationPath, binaryName, [versionArgument]);
-    msg = appendMsg(result, msg, selectedTool.toLocaleUpperCase());
-    msg += '\n';
-    if (!result.successfulConfig) {
-        isOk = false;
+        if (!fs.existsSync(osvv_pro_path)) {
+            msg += `${INTROICON} ❌ OSVVM installation path invalid: cannot find OsvvmLibraries.pro at "${osvv_pro_path}"\n`;
+            msg += `${INTROICON} Please set the path to the OSVVM root containing OsvvmLibraries.pro and Scripts/.\n`; 
+            isOk = false;
+        } else if (!fs.existsSync(scripts_path)) {
+            msg += `${INTROICON} ❌ OSVVM installation path invalid: cannot find Scripts folder at "${scripts_path}"\n`;
+            msg += `${INTROICON} Please set the path to the OSVVM root containing OsvvmLibraries.pro and Scripts/.\n`;
+            isOk = false;
+        } else if (!fs.existsSync(start_nvc_tcl)) {
+            msg += `${INTROICON} ❌ OSVVM installation path invalid: cannot find StartNVC.tcl at "${start_nvc_tcl}"\n`;
+            msg += `${INTROICON} Please set simulator_name to nvc and ensure the OSVVM Scripts folder is present.\n`;
+            isOk = false;
+        } else {
+            msg += `${INTROICON} ✅ OSVVM installation path looks valid. Found OsvvmLibraries.pro and Scripts/StartNVC.tcl\n`;
+            const tcl_result = await checkBinary('tclsh', '', tclsh, ['--version']);
+            msg = appendMsg(tcl_result, msg, 'Tclsh');
+            if (!tcl_result.successfulConfig) {
+                isOk = false;
+            }
+        }
+    } else {
+        // Default to '--version' if no custom argument is specified
+        const versionArgument = customVersionArgs[selectedTool] || '--version';
+
+        let binaryName : string | string[] =
+            selectedTool === e_tools_general_select_tool.rivierapro ? ['rivierapro', 'riviera'] : selectedTool;
+        binaryName = binaryName === e_tools_general_select_tool.icarus ? 'iverilog' : binaryName;
+
+        let result = await checkBinary(selectedTool, installationPath, binaryName, [versionArgument]);
+        msg = appendMsg(result, msg, selectedTool.toLocaleUpperCase());
+        msg += '\n';
+        if (!result.successfulConfig) {
+            isOk = false;
+        }
     }
 
     // Check execution mode

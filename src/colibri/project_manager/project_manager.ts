@@ -64,6 +64,7 @@ import { get } from "lodash";
 import { getTaskList } from "./tool/utils";
 import { runTaskGHDL } from "./tool/ghdl/taskRunners";
 import { runTaskYosys } from "./tool/yosys/taskRunners";
+import { runTasknvc } from "./tool/nvc/taskRunners";
 import { LoggerBase } from "colibri/logger/logger";
 
 export const DEFAULT_LIBRARY = "teroshdlDefault";
@@ -729,6 +730,17 @@ export class Project_manager extends ConfigManager {
                 this.emitUpdateStatus();
                 callback(result);
             });
+        } else if (toolName === e_tools_general_select_tool.osvvm) {
+            const startTime = Date.now();
+            const resultProcess = runTasknvc(taskType, this.get_project_definition(), (result: p_result) => {
+                const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;
+                const endTime = Date.now();
+                const elapsedTime = endTime - startTime; // ms
+                this.taskStateManager.updateTask(taskType, taskStatus, undefined, result.successful, elapsedTime);
+                this.emitUpdateStatus();
+                callback(result);
+            });
+            return resultProcess;
         }
         return {} as ChildProcess;
     }
