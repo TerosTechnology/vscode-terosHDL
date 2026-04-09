@@ -116,6 +116,10 @@ class Linter {
             path = config.tools.verible.installation_path;
             argument = config.linter.verible.arguments;
         }
+        else if (linter_name === e_linter_general_linter_vhdl.nvc){
+            path = config.tools.nvc.installation_path;
+            argument = config.linter.nvc.arguments;
+        }
 
         const options: l_options = {
             path: path,

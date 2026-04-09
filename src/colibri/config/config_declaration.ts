@@ -41,6 +41,7 @@ export type e_config = {
         "general" : e_linter_general,
         "vhdlls" : e_linter_vhdlls,
         "ghdl" : e_linter_ghdl,
+        "nvc" : e_linter_nvc,
         "icarus" : e_linter_icarus,
         "modelsim" : e_linter_modelsim,
         "verible" : e_linter_verible,
@@ -183,6 +184,10 @@ export type e_linter_vhdlls = {
 };
     
 export type e_linter_ghdl = {
+    arguments : string,
+};
+
+export type e_linter_nvc = {
     arguments : string,
 };
     
@@ -749,6 +754,7 @@ export enum e_linter_general_linter_vhdl {
     modelsim = "modelsim",
     vivado = "vivado",
     none = "none",
+    nvc = "nvc",
 }
 export enum e_linter_general_linter_verilog {
     disabled = "disabled",
@@ -808,7 +814,9 @@ export enum e_tools_general_select_tool {
     radiant = "radiant",
     sandpiper = "sandpiper",
     yosys = "yosys",
+    nvc = "nvc",
 }
+
 export enum e_tools_general_execution_mode {
     gui = "gui",
     cmd = "cmd",
@@ -1176,6 +1184,9 @@ export function get_default_config(): e_config {
                 vunitPath : "",
             },
             ghdl: {
+                arguments : "",
+            },
+            nvc: {
                 arguments : "",
             },
             icarus: {
@@ -2222,6 +2233,9 @@ export function get_config_from_json(json_config: any): e_config {
     if ( current_value_48 === "none"){
         default_config['linter']['general']['linter_vhdl'] = e_linter_general_linter_vhdl.none;
     }
+    if ( current_value_48 === "nvc"){
+        default_config['linter']['general']['linter_vhdl'] = e_linter_general_linter_vhdl.nvc;
+    }
             
     // linter -> general -> linter_verilog
     let current_value_49 = undefined;
@@ -2315,6 +2329,16 @@ export function get_config_from_json(json_config: any): e_config {
     catch(e){}
     if (typeof current_value_55 === 'string'){
         default_config['linter']['ghdl']['arguments'] = current_value_55;
+    }
+
+    // linter -> nvc -> arguments
+    let current_value_55_nvc = undefined;
+    try {
+        current_value_55_nvc = json_config['linter']['nvc']['arguments'];
+    }
+    catch(e){}
+    if (typeof current_value_55_nvc === 'string'){
+        default_config['linter']['nvc']['arguments'] = current_value_55_nvc;
     }
             
     // linter -> icarus -> arguments

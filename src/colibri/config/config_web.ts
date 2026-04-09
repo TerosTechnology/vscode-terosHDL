@@ -760,6 +760,9 @@ body.vscode-high-contrast {
                             <div class="settings-toc-child" id="btn-linter-ghdl">
                                 GHDL linter
                             </div>
+                            <div class="settings-toc-child" id="btn-linter-nvc">
+                                NVC linter
+                            </div>
                             <div class="settings-toc-child" id="btn-linter-icarus">
                                 Icarus linter
                             </div>
@@ -1579,6 +1582,7 @@ body.vscode-high-contrast {
                             <select class="setting-select-box" id="linter-general-linter_vhdl">
                                       <option value='disabled'>Disabled</option>
                                       <option value='ghdl'>GHDL</option>
+                                      <option value='nvc'>NVC</option>
                                       <option value='modelsim'>Modelsim</option>
                                       <option value='vivado'>Vivado (xvhdl)</option>
                                       <option value='none'>VHDL-LS</option>
@@ -1689,6 +1693,23 @@ body.vscode-high-contrast {
                             <span class="markConfig" id="mark_linter-ghdl-arguments"></span>
                         </div>
                             <input class="setting-input-box" id="linter-ghdl-arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-nvc">
+                <div class="settings-group-title-label">
+                    Linter settings: NVC linter
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Arguments.
+                            <span class="markConfig" id="mark_linter-nvc-arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-nvc-arguments" value="">
                     </div>
                   
                   
@@ -5229,6 +5250,7 @@ body.vscode-high-contrast {
     document.getElementById("linter-general").classList.remove('active');
     document.getElementById("linter-vhdlls").classList.remove('active');
     document.getElementById("linter-ghdl").classList.remove('active');
+    document.getElementById("linter-nvc").classList.remove('active');
     document.getElementById("linter-icarus").classList.remove('active');
     document.getElementById("linter-modelsim").classList.remove('active');
     document.getElementById("linter-verible").classList.remove('active');
@@ -5305,6 +5327,9 @@ body.vscode-high-contrast {
     }
     if (document.getElementById("btn-linter-ghdl")) {
         document.getElementById("btn-linter-ghdl").classList.remove('selected');
+    }
+    if (document.getElementById("btn-linter-nvc")) {
+        document.getElementById("btn-linter-nvc").classList.remove('selected');
     }
     if (document.getElementById("btn-linter-icarus")) {
         document.getElementById("btn-linter-icarus").classList.remove('selected');
@@ -5503,6 +5528,12 @@ body.vscode-high-contrast {
       enable_tab("linter", "ghdl");
     });
   }
+    if (document.getElementById("btn-linter-nvc")) {
+        document.getElementById("btn-linter-nvc").addEventListener("click", function(e) {
+            e.preventDefault();
+            enable_tab("linter", "nvc");
+        });
+    }
   if (document.getElementById("btn-linter-icarus")) {
     document.getElementById("btn-linter-icarus").addEventListener("click", function(e) {
       e.preventDefault();
@@ -5929,6 +5960,9 @@ body.vscode-high-contrast {
     config["linter"]["ghdl"] = {}
     element_value = document.getElementById("linter-ghdl-arguments").value;
     config["linter"]["ghdl"]["arguments"] = element_value
+    config["linter"]["nvc"] = {}
+    element_value = document.getElementById("linter-nvc-arguments").value;
+    config["linter"]["nvc"]["arguments"] = element_value
     config["linter"]["icarus"] = {}
     element_value = document.getElementById("linter-icarus-arguments").value;
     config["linter"]["icarus"]["arguments"] = element_value
@@ -6930,6 +6964,9 @@ body.vscode-high-contrast {
     }
     if (config["linter"] && config["linter"]["ghdl"] && config["linter"]["ghdl"]["arguments"] !== undefined) {
         document.getElementById("linter-ghdl-arguments").value = config["linter"]["ghdl"]["arguments"];
+    }
+    if (config["linter"] && config["linter"]["nvc"] && config["linter"]["nvc"]["arguments"] !== undefined) {
+        document.getElementById("linter-nvc-arguments").value = config["linter"]["nvc"]["arguments"];
     }
     if (config["linter"] && config["linter"]["icarus"] && config["linter"]["icarus"]["arguments"] !== undefined) {
         document.getElementById("linter-icarus-arguments").value = config["linter"]["icarus"]["arguments"];
@@ -8072,6 +8109,11 @@ body.vscode-high-contrast {
     }
     document.getElementById("mark_linter-ghdl-arguments").innerHTML = mark;
     mark = "";
+        if (projectName !== undefined && config["linter"] && config["linter"]["nvc"] && config["linter"]["nvc"]["arguments"] !== undefined) {
+            mark = MODIFIEDMSG;
+        }
+        document.getElementById("mark_linter-nvc-arguments").innerHTML = mark;
+        mark = "";
     if (projectName !== undefined && config["linter"] && config["linter"]["icarus"] && config["linter"]["icarus"]["arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }

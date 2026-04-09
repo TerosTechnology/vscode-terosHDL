@@ -28,6 +28,7 @@ import * as common from "./common";
 import * as cfg from "../config/config_declaration";
 import { t_file } from "../project_manager/common";
 import { BinaryCheck } from "colibri/toolChecker/utils";
+import { Nvc } from "./nvc";
 
 /** Linter */
 export class Linter {
@@ -60,6 +61,9 @@ export class Linter {
         }
         else if (linter_name === cfg.e_linter_general_lstyle_vhdl.vsg) {
             return new Vsg();
+        }
+        else if (linter_name === cfg.e_linter_general_linter_vhdl.nvc) {
+            return new Nvc();
         }
         else {
             return new Ghdl();
