@@ -97,9 +97,10 @@ export class Linter {
      * @param  {string} code Code to lint
      * @param  {common.l_options} options Linter options
      */
-    async lint_from_code(linter_name: common.t_linter_name, code: string, options: common.l_options) {
+    async lint_from_code(linter_name: common.t_linter_name, code: string, options: common.l_options,
+        source_file_path = "") {
         const linter = this.get_linter(linter_name);
-        const errors = await linter.lint_from_code(code, options);
+        const errors = await linter.lint_from_code(code, options, source_file_path);
         return errors;
     }
 

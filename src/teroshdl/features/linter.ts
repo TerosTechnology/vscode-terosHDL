@@ -23,8 +23,14 @@ import * as utils from './utils/utils';
 import { LANGUAGE } from '../../colibri/common/general';
 import * as linterManager from '../../colibri/linter/linter';
 import { l_options, LINTER_ERROR_SEVERITY } from '../../colibri/linter/common';
-import { e_linter_general_linter_verilog, e_linter_general_linter_vhdl, e_linter_general_lstyle_verilog, e_linter_general_lstyle_vhdl } from '../../colibri/config/config_declaration';
+import {
+    e_linter_general_linter_verilog,
+    e_linter_general_linter_vhdl,
+    e_linter_general_lstyle_verilog,
+    e_linter_general_lstyle_vhdl
+} from '../../colibri/config/config_declaration';
 import { get_language_from_extension } from '../../colibri/utils/file_utils';
+import { buildnvcArgs } from '../../colibri/project_manager/tool/nvc/commandBuilder';
 
 enum LINTER_MODE {
     STYLE = "style",
@@ -34,6 +40,8 @@ enum LINTER_MODE {
 class Linter {
     protected diagnostic_collection = vscode.languages.createDiagnosticCollection();
     private uri_collections: vscode.Uri[] = [];
+    private linter_availability_cache = new Map<string, boolean>();
+    private notified_unavailable_linter = new Set<string>();
 
     public mode: LINTER_MODE;
     private manager: Multi_project_manager;
@@ -47,6 +55,64 @@ class Linter {
         this.manager = manager;
         this.mode = mode;
         this.lang = lang;
+    }
+
+    private build_nvc_lint_arguments(config: ReturnType<typeof utils.getConfig>): string {
+        const { baseArgs } = buildnvcArgs(config.tools.nvc, 'analyze');
+        const syntaxBaseArgs = baseArgs.filter((arg) => !arg.startsWith('--work='));
+        const customArguments = config.linter.nvc.arguments.trim();
+        return [...syntaxBaseArgs, ...config.tools.nvc.check_syntax_options, customArguments]
+            .filter((arg) => arg !== '')
+            .join(' ');
+    }
+
+    private get_linter_cache_key(language: LANGUAGE): string {
+        const linter_name = this.get_linter_name();
+        const options = this.get_options(language);
+        return `${linter_name}|${options.path}`;
+    }
+
+    private show_linter_unavailable_message(linter_name: string, installation_path: string) {
+        if (linter_name === e_linter_general_linter_vhdl.nvc) {
+            const configuredPath = installation_path === '' ? 'PATH del sistema' : installation_path;
+            const message = 'TerosHDL no puede encontrar NVC. '
+                + 'Configura tools.nvc.installation_path '
+                + `o asegúrate de que nvc esté disponible en el ${configuredPath}.`;
+            vscode.window.showWarningMessage(
+                message
+            );
+            return;
+        }
+
+        vscode.window.showWarningMessage(
+            `TerosHDL no puede encontrar el linter ${linter_name}. Revisa su installation_path o el PATH del sistema.`
+        );
+    }
+
+    private async ensure_linter_available(language: LANGUAGE): Promise<boolean> {
+        const linter_name = this.get_linter_name();
+        const options = this.get_options(language);
+        const cacheKey = this.get_linter_cache_key(language);
+
+        const cachedAvailability = this.linter_availability_cache.get(cacheKey);
+        if (cachedAvailability !== undefined) {
+            return cachedAvailability;
+        }
+
+        const result = await this.linter.checkLinterConfiguration(linter_name, options.path);
+        this.linter_availability_cache.set(cacheKey, result.successfulConfig);
+
+        if (result.successfulConfig === false && this.notified_unavailable_linter.has(cacheKey) === false) {
+            this.notified_unavailable_linter.add(cacheKey);
+            this.show_linter_unavailable_message(linter_name, options.path);
+        }
+
+        return result.successfulConfig;
+    }
+
+    public clear_linter_availability_cache() {
+        this.linter_availability_cache.clear();
+        this.notified_unavailable_linter.clear();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +184,7 @@ class Linter {
         }
         else if (linter_name === e_linter_general_linter_vhdl.nvc){
             path = config.tools.nvc.installation_path;
-            argument = config.linter.nvc.arguments;
+            argument = this.build_nvc_lint_arguments(config);
         }
 
         const options: l_options = {
@@ -137,7 +203,7 @@ class Linter {
                 this.lint_from_uri(this.uri_collections[i]);
             }
         }
-        catch (e) { console.log(e); }
+        catch (e) { /* empty */ }
     }
 
     public check_lang(document_lang:LANGUAGE) :boolean{
@@ -151,7 +217,7 @@ class Linter {
         return false;
     }
 
-    public async lint(doc: vscode.TextDocument) {
+    public async lint(doc: vscode.TextDocument, use_document_text = false) {
         const linter_name = this.get_linter_name();
 
         if (linter_name === 'none' || linter_name === 'disabled') {
@@ -165,14 +231,19 @@ class Linter {
         if (this.check_lang(lang) === false) {
             return;
         }
+        if (await this.ensure_linter_available(lang) === false) {
+            this.diagnostic_collection.set(doc.uri, []);
+            return;
+        }
         let current_path = doc.uri.fsPath;
         
         //Save the uri linted
         this.add_uri_to_collections(doc.uri);
 
-        console.log(`[terosHDL] Linting ${current_path}`);
-
-        let errors = await this.linter.lint_from_file(linter_name, current_path, this.get_options(lang),);
+        const options = this.get_options(lang);
+        const errors = use_document_text || doc.isDirty
+            ? await this.linter.lint_from_code(linter_name, doc.getText(), options, current_path)
+            : await this.linter.lint_from_file(linter_name, current_path, options);
 
         let diagnostics: vscode.Diagnostic[] = [];
         for (var i = 0; i < errors.length; ++i) {
@@ -201,6 +272,10 @@ class Linter {
         const linter_name = this.get_linter_name();
 
         const lang = get_language_from_extension(current_path);
+        if (await this.ensure_linter_available(lang) === false) {
+            this.diagnostic_collection.set(uri, []);
+            return;
+        }
 
         let errors = await this.linter.lint_from_file(linter_name, current_path, this.get_options(lang));
         let diagnostics: vscode.Diagnostic[] = [];
@@ -283,6 +358,7 @@ class Linter {
 export class Linter_manager {
     protected manager: Multi_project_manager;
     private linter_list: Linter[] = [];
+    private lint_timeout_by_uri = new Map<string, NodeJS.Timeout>();
     public vhdlErrorLinter: Linter;
     public verilogErrorLinter: Linter;
     public vhdlStyleLinter: Linter;
@@ -296,9 +372,13 @@ export class Linter_manager {
         this.manager = manager;
 
         vscode.commands.registerCommand(`teroshdl.linter.refresh`, () => this.refresh_lint());
-        vscode.commands.registerCommand(`teroshdl.config.change_config`, () => this.refresh_lint());
+        vscode.commands.registerCommand(`teroshdl.config.change_config`, () => {
+            this.clear_linter_availability_cache();
+            this.refresh_lint();
+        });
 
         vscode.workspace.onDidOpenTextDocument((e) => this.lint(e));
+        vscode.workspace.onDidChangeTextDocument((e) => this.schedule_lint(e));
         vscode.workspace.onDidSaveTextDocument((e) => this.lint(e));
         vscode.workspace.onDidCloseTextDocument((e) => this.remove_file_diagnostics(e));
 
@@ -337,10 +417,37 @@ export class Linter_manager {
         }); 
     }
 
+    private schedule_lint(event: vscode.TextDocumentChangeEvent) {
+        if (event.contentChanges.length === 0) {
+            return;
+        }
+
+        const uri = event.document.uri.toString();
+        const currentTimeout = this.lint_timeout_by_uri.get(uri);
+        if (currentTimeout !== undefined) {
+            clearTimeout(currentTimeout);
+        }
+
+        const timeout = setTimeout(() => {
+            this.lint_timeout_by_uri.delete(uri);
+            this.linter_list.forEach(linter => {
+                linter.lint(event.document, true);
+            });
+        }, 250);
+
+        this.lint_timeout_by_uri.set(uri, timeout);
+    }
+
     async refresh_lint() {
         this.linter_list.forEach(linter => {
             linter.refresh_lint();
         }); 
+    }
+
+    private clear_linter_availability_cache() {
+        this.linter_list.forEach(linter => {
+            linter.clear_linter_availability_cache();
+        });
     }
 
     lint_active_document() {

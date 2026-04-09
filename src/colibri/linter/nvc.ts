@@ -1,11 +1,19 @@
-// Copy GHDL linter for implementation NVC like linter
+// NVC linter integration for TerosHDL.
+// Minimum configuration for users:
+// - Install NVC externally (NVC --version should work in terminal)
+// - Select NVC as the VHDL linter with linter.general.linter_vhdl = "nvc"
+// - If nvc is already available in the system PATH, tools.nvc.installation_path can stay empty
+// - If nvc is not in PATH, tools.nvc.installation_path must point to the folder that contains
+// - Additional lint-only arguments can be set in linter.nvc.arguments
+// - Base NVC options such as VHDL standard, work library and syntax-check flags are taken from tools.nvc
+
 
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
 
 export class Nvc extends Base_linter {
     binary = "nvc";
-    extra_cmd = "-s -fno-color-diagnostics";
+    extra_cmd = "";
     argumentToCheck = ["--version"];
 
     constructor() {
@@ -21,6 +29,12 @@ export class Nvc extends Base_linter {
         return this.parse_output(result.stderr, file);
     }
 
+    get_command(file: string, options: common.l_options) {
+        const norm_bin = this.getToolPath(options.path);
+        const args = [options.argument.trim(), '-a', `"${file}"`].filter((arg) => arg !== '');
+        return `${norm_bin} ${args.join(' ')}`;
+    }
+
     parse_output(output: string, file: string): common.l_error[] {
         try {
             const errors: common.l_error[] = [];
@@ -33,7 +47,16 @@ export class Nvc extends Base_linter {
             //     |
             //  11 |   signal test : std_logica;
             //     |                ^^^^^^^^^^ did you mean STD_LOGIC?
-            const nvcRegex = /^\*\*\s+(?<severity>Error|Warning):\s+(?<error_message>.*?)\r?\n\s*>\s*(?<filename>.*?):(?<line_number>\d+)\r?\n(?:\s*\|\r?\n)?(?:\s*\d+\s*\|(?<source_line>.*?)\r?\n)?(?:\s*\|(?<caret_line>.*?)\r?\n)?/gm;
+            const nvcRegex = new RegExp(
+                [
+                    '^\\*\\*\\s+(?<severity>Error|Warning):\\s+(?<error_message>.*?)\\r?\\n',
+                    '\\s*>\\s*(?<filename>.*?):(?<line_number>\\d+)\\r?\\n',
+                    '(?:\\s*\\|\\r?\\n)?',
+                    '(?:\\s*\\d+\\s*\\|(?<source_line>.*?)\\r?\\n)?',
+                    '(?:\\s*\\|(?<caret_line>.*?)(?:\\r?\\n|$))?'
+                ].join(''),
+                'gm'
+            );
             let match;
             while ((match = nvcRegex.exec(errors_str)) !== null) {
                 if (match.index === nvcRegex.lastIndex) {
@@ -60,7 +83,13 @@ export class Nvc extends Base_linter {
             }
 
             // Fallback for one-line formats with explicit line and column.
-            const fallbackRegex = /^(?<filename>.*):(?=\d)(?<line_number>\d+):(?<column_number>\d+):((?<is_warning>warning:)\s*|\s*)(?<error_message>.*)/gm;
+            const fallbackRegex = new RegExp(
+                [
+                    '^(?<filename>.*):(?=\\d)(?<line_number>\\d+):(?<column_number>\\d+):',
+                    '\\s*(?:(?<is_warning>warning:)\\s*)?(?<error_message>.*)'
+                ].join(''),
+                'gm'
+            );
             let fallbackMatch;
             while ((fallbackMatch = fallbackRegex.exec(errors_str)) !== null) {
                 if (fallbackMatch.index === fallbackRegex.lastIndex) {

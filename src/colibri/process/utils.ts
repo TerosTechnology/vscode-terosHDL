@@ -112,6 +112,17 @@ export function create_temp_file(content: string): string {
     return temp_file.path;
 }
 
+export function create_temp_file_with_extension(content: string, extension: string): string {
+    const normalizedExtension = extension.startsWith('.') ? extension : `.${extension}`;
+    const temp_file = temp.openSync({ suffix: normalizedExtension });
+    if (temp_file === undefined) {
+        throw "Unable to create temporary file";
+    }
+    fs.writeSync(temp_file.fd, content);
+    fs.closeSync(temp_file.fd);
+    return temp_file.path;
+}
+
 export function getTempFolder(): string {
     return os_lib.tmpdir();
 }

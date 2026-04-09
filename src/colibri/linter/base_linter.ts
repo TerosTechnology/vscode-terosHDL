@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { create_temp_file } from "../process/utils";
+import { create_temp_file, create_temp_file_with_extension } from "../process/utils";
 import { Process } from "../process/process";
 import { p_options } from "../process/common";
 import * as common from "./common";
@@ -50,8 +50,10 @@ export abstract class Base_linter {
         return errors;
     }
 
-    async lint_from_code(code: string, options: common.l_options) {
-        const temp_file = await create_temp_file(code);
+    async lint_from_code(code: string, options: common.l_options, source_file_path = "") {
+        const temp_file = source_file_path !== ""
+            ? await create_temp_file_with_extension(code, path_lib.extname(source_file_path))
+            : await create_temp_file(code);
         const errors = await this.lint(temp_file, options);
         remove_file(temp_file);
         return errors;
