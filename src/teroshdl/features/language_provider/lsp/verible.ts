@@ -106,11 +106,12 @@ export class Verilbe_lsp {
         console.log(`[colibri][info] Linting with command: ${command}`);
         const exec = require('child_process').exec;
         return new Promise((resolve) => {
-            exec(command, (err, stdout: string, stderr) => {
+            exec(command, (err, stdout: string, stderr: string) => {
                 if (stderr !== '') {
-                    console.log(`[verible][error] ${stderr}`);
+                    console.log(`[verible][info] ${stderr}`);
                 }
-                if (err !== null || !stdout.toLowerCase().includes('version')) {
+                const combined = (stdout + stderr).toLowerCase();
+                if (err !== null || !combined.includes('version')) {
                     resolve(false);
                 } else {
                     resolve(true);
