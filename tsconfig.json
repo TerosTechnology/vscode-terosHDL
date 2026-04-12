@@ -11,6 +11,7 @@
         "lib": ["ES2019"],
         "types": ["node"],
         "moduleResolution": "node",
+        "ignoreDeprecations": "6.0",
         "sourceMap": true,
         "rootDir": "./src",
         "strict": false,

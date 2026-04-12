@@ -21,14 +21,10 @@ import * as path_lib from 'path';
 import { e_source_type, t_file } from "../../src/colibri/project_manager/common";
 import { LANGUAGE, VERILOG_LANG_VERSION, VHDL_LANG_VERSION } from '../../src/colibri/common/general';
 import { e_schematic_general_backend, get_default_config } from "../../src/colibri/config/config_declaration";
-import { fileURLToPath } from 'url';
 
 function getFileList(language: LANGUAGE) : t_file[]{
     const langFolder = language === LANGUAGE.VHDL ? 'vhdl' : 'verilog';
     const extension = language === LANGUAGE.VHDL ? '.vhd' : '.v';
-
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path_lib.dirname(__filename);
 
     const basePath = path_lib.join(__dirname, 'helpers', langFolder);
     const filePath0 = path_lib.join(basePath, 'mylib', `counter_logic${extension}`);
