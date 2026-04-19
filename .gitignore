@@ -26,6 +26,5 @@ resources/project_manager/help
 *quartus.rec
 *.cf
 *.o
-Project**
 ./venv
 ./work
