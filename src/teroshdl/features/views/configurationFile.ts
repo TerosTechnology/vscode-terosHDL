@@ -53,7 +53,7 @@ export class ConfigurationFileWebview {
         this.webviewPanel = vscode.window.createWebviewPanel(
             'catCoding',
             'Source Configuration',
-            vscode.ViewColumn.Two,
+            vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true

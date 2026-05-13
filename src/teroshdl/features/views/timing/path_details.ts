@@ -56,7 +56,7 @@ export class PathDetailsView {
             this.panel = vscode.window.createWebviewPanel(
                 'catCoding',
                 '',
-                vscode.ViewColumn.Two,
+                vscode.ViewColumn.Beside,
                 {
                     enableScripts: true,
                     retainContextWhenHidden: true
