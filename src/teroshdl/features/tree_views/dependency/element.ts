@@ -122,6 +122,17 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         const dependency_view = this.get_dep_view(current_dep);
 
         if (element) {
+            dependency_view.forEach(item => {
+                if (typeof item.label === "string") {
+                    if (item.label.endsWith(".vhd")) {
+                        item.label = item.label.slice(0, -4)
+                            + " : (" + toItalic(item.label) + ")"; // ejemplo: reescribir
+                    } else if (item.label.endsWith(".v")) {
+                        item.label = item.label.slice(0, -2)
+                            + " : (" + toItalic(item.label) + ")"; // ejemplo: reescribir
+                    }
+                }
+            });
             return dependency_view;
         }
         else {
@@ -235,3 +246,19 @@ export class TreeItem extends vscode.TreeItem {
     }
 }
 
+function toItalic(text: string): string {
+    const map: Record<string, string> = {
+        a: "𝘢", b: "𝘣", c: "𝘤", d: "𝘥",
+        e: "𝘦", f: "𝘧", g: "𝘨", h: "𝘩",
+        i: "𝘪", j: "𝘫", k: "𝘬", l: "𝘭",
+        m: "𝘮", n: "𝘯", o: "𝘰", p: "𝘱",
+        q: "𝘲", r: "𝘳", s: "𝘴", t: "𝘵",
+        u: "𝘶", v: "𝘷", w: "𝘸", x: "𝘹",
+        y: "𝘺", z: "𝘻"
+    };
+
+    return text
+        .split("")
+        .map(c => map[c.toLowerCase()] ?? c)
+        .join("");
+}
