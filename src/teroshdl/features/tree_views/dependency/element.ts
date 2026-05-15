@@ -111,6 +111,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             const element = this.hdl_tree[i];
             if (element.filename === toplevel_path) {
                 current_dep = element;
+                break;
             }
         }
         // const current_dep = await this.get_deps(toplevel_path);
@@ -118,25 +119,34 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             return [];
         }
 
+
+
+
+
         // Dependencie view
         const dependency_view = this.get_dep_view(current_dep);
 
         if (element) {
+            
             dependency_view.forEach(item => {
-                if (typeof item.label === "string") {
-                    if (item.label.endsWith(".vhd")) {
-                        item.label = item.label.slice(0, -4)
-                            + " : (" + toItalic(item.label) + ")"; // ejemplo: reescribir
-                    } else if (item.label.endsWith(".v")) {
-                        item.label = item.label.slice(0, -2)
-                            + " : (" + toItalic(item.label) + ")"; // ejemplo: reescribir
-                    }
+
+                const filename = item.label?.toString() || '';
+
+                if (filename.endsWith(".vhd")) {
+                    item.iconPath = get_icon("vhdl");
+                    item.label = filename.slice(0, -4);
                 }
+                else if (filename.endsWith(".v")) {
+                    item.label = filename.slice(0, -2);
+                    item.iconPath = get_icon("verilog");
+                }
+
+                item.description = filename;
             });
             return dependency_view;
         }
         else {
-            return [new Dependency((<any>current_dep).filename, (<any>current_dep).entity, dependency_view)];
+            return [new Dependency((current_dep).filename, (current_dep).entity, dependency_view)];
         }
     }
 
@@ -176,7 +186,6 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     }
 
     private async get_deps(top_path: string) {
-        let current_dep = undefined;
         const hdl_tree = await this.get_hdl_tree();
 
         if (hdl_tree === undefined) {
@@ -186,10 +195,9 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         for (let i = 0; i < this.hdl_tree.length; i++) {
             const element = this.hdl_tree[i];
             if (element.filename === top_path) {
-                current_dep = element;
+                return element;
             }
         }
-        return current_dep;
     }
 
     get_dep_view(deps) {
@@ -244,21 +252,4 @@ export class TreeItem extends vscode.TreeItem {
                 vscode.TreeItemCollapsibleState.Expanded);
         this.children = children;
     }
-}
-
-function toItalic(text: string): string {
-    const map: Record<string, string> = {
-        a: "𝘢", b: "𝘣", c: "𝘤", d: "𝘥",
-        e: "𝘦", f: "𝘧", g: "𝘨", h: "𝘩",
-        i: "𝘪", j: "𝘫", k: "𝘬", l: "𝘭",
-        m: "𝘮", n: "𝘯", o: "𝘰", p: "𝘱",
-        q: "𝘲", r: "𝘳", s: "𝘴", t: "𝘵",
-        u: "𝘶", v: "𝘷", w: "𝘸", x: "𝘹",
-        y: "𝘺", z: "𝘻"
-    };
-
-    return text
-        .split("")
-        .map(c => map[c.toLowerCase()] ?? c)
-        .join("");
 }
