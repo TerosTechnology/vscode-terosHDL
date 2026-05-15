@@ -402,7 +402,7 @@
                 }
                         
                 ,{
-                    "when": "resourceLangId == verilog || resourceLangId == systemverilog || resourceLangId == vhdl",
+                    "when": "resourceLangId == verilog || resourceLangId == systemverilog",
                     "command": "teroshdl.netlist.viewer",
                     "group": "navigation"
                 }

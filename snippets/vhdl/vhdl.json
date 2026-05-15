@@ -86,6 +86,19 @@
 		],
 		"description": "case statement"
 	},
+	"FSM definition": {
+		"prefix": "fsmdef",
+		"body": [
+			"--! ${1:Comment}",
+			"type ${2:fsm_type_name} is (",
+			"\t$3",
+			");",
+			"--! ${4:State definition}",
+			"signal ${5:state_definition} : $2;",
+			"$0"
+		],
+		"description": "definition of the FSM"
+	},
 	"FSM example generate": {
 		"prefix": "fsm",
 		"body": [
@@ -156,7 +169,8 @@
 	"Constant": {
 		"prefix": "constant",
 		"body": [
-			"constant ${1:<name>} : ${2:<type>} := ${3:<default_value>};",
+			"--! ${1:Comment}",
+			"constant ${2:<name>} : ${3:<type>} := ${4:<default_value>};",
 			"$0"
 		],
 		"description": "constant declaration"
@@ -164,10 +178,29 @@
 	"Signal": {
 		"prefix": "signal",
 		"body": [
-			"signal ${1:<name>} : ${2:<type>} := ${3:<default_value>};",
+			"--! ${1:Comment}",
+			"signal ${2:<name>} : ${3:<type>};",
 			"$0"
 		],
 		"description": "signal declaration"
+	},
+	"Counter integer": {
+		"prefix": "counterinteger",
+		"body": [
+			"--! ${1:Comment}",
+			"signal ${2:<name>} : integer range 0 to ${3:<type>};",
+			"$0"
+		],
+		"description": "counter declaration"
+	},
+	"Signal previous value": {
+		"prefix": "signalvalue",
+		"body": [
+			"--! ${1:Comment}",
+			"signal ${2:<name>} : ${3:<type>} := ${4:<default_value>};",
+			"$0"
+		],
+		"description": "signal declaration with previous value"
 	},
 	"Configuration": {
 		"prefix": "configuration",
@@ -364,6 +397,7 @@
 		"prefix": "library",
 		"body": [
 			"library ${1:ieee};",
+			"",
 			"$0"
 		],
 		"description": "library declaration"
@@ -375,9 +409,21 @@
 			"use ieee.std_logic_1164.all;",
 			"use ieee.numeric_std.all;",
 			"use ieee.math_real.all;",
+			"",
 			"$0"
 		],
 		"description": "common IEEE libraries declaration"
+	},
+	"Library Numeric": {
+		"prefix": "librarynumeric",
+		"body": [
+			"library ieee;",
+			"use ieee.std_logic_1164.all;",
+			"use ieee.numeric_std.all;",
+			"",
+			"$0"
+		],
+		"description": "numeric IEEE libraries declaration"
 	},
 	"Library IEEE 2008": {
 		"prefix": "libraryieee",
@@ -385,6 +431,7 @@
 			"library ieee;",
 			"context ieee.ieee_std_context;",
 			"use ieee.math_real.all;",
+			"",
 			"$0"
 		],
 		"description": "common IEEE libraries declaration with 2008 standard context (vhdl 2008)"
@@ -394,6 +441,7 @@
 		"body": [
 			"library std;",
 			"use std.textio.all;",
+			"",
 			"$0"
 		],
 		"description": "TextIO library declaration"
@@ -419,7 +467,7 @@
 	},
 	"Others": {
 		"prefix": ["others"],
-		"body": [ "(others => ${1:<value>})${2| ,;|}$0" ],
+		"body": [ "(others=>${1:<value>})${2| ,;|}$0" ],
 		"description": "others declaration"
 	},
 	"Package": {
@@ -479,54 +527,78 @@
 	"Process Asynchronous": {
 		"prefix": ["aproc", "processasync"],
 		"body": [
-			"process (${1:clk}, ${2:reset})",
+			"\r--! ${1:Comment}",
+			"${2:PROCESS_NAME} : process (${3:clk}, ${4:reset})",
 			"begin",
-			"\tif $2 = ${3|'1','0'|} then",
+			"\tif $4 = ${5|'1','0'|} then",
 			"\t\t$0",
-			"\telsif ${4|rising_edge,falling_edge|}($1) then",
+			"\telsif ${6|rising_edge,falling_edge|}($3) then",
 			"\t\t",
 			"\tend if;",
-			"end process;"
+			"end process $2;"
 		],
 		"description": "asynchronous process block"
 	},
 	"Process Synchronous": {
 		"prefix": ["sproc", "processsync"],
 		"body": [
-			"process (${1:clk})",
+			"\r--! ${1:Comment}",
+			"${2:PROCESS_NAME} : process (${3:clk})",
 			"begin",
-			"\tif ${2|rising_edge,falling_edge|}($1) then",
-			"\t\tif ${3:reset} = ${4|'1','0'|} then",
+			"\tif ${4|rising_edge,falling_edge|}($3) then",
+			"\t\tif ${5:reset} = ${6|'1','0'|} then",
 			"\t\t\t$0",
 			"\t\telse",
 			"\t\t\t",
 			"\t\tend if;",
 			"\tend if;",
-			"end process;"
+			"end process $2;"
 		],
 		"description": "clocked process block"
 	},
 	"Process Clocked": {
 		"prefix": ["cproc", "processclk"],
 		"body": [
-			"process (${1:clk})",
+			"\r--! ${1:Comment}",
+			"${2:PROCESS_NAME} : process (${3:clk})",
 			"begin",
-			"\tif ${2|rising_edge,falling_edge|}($1) then",
+			"\tif ${4|rising_edge,falling_edge|}($3) then",
 			"\t\t$0",
 			"\tend if;",
-			"end process;"
+			"end process $2;"
 		],
 		"description": "clocked process block"
 	},
 	"Process Combinatorial": {
 		"prefix": "process",
 		"body": [
-			"process (${1:all})",
+			"\r--! ${1:Comment}",
+			"${2:PROCESS_NAME} : process (${3:all})",
 			"begin",
+			"\t$0",
+			"end process $2;"
+		],
+		"description": "combinatorial process block"
+	},
+	"Process All": {
+		"prefix": "processall",
+		"body": [
+			"\r--! ${1:Comment}",
+			"${2:PROCESS_NAME} : process (all)",
+			"begin",
+			"\t$0",
+			"end process $2;"
+		],
+		"description": "process all block"
+	},
+	"Process Testbench": {
+		"prefix": "processbegin",
+		"body": [
+			"process begin",
 			"\t$0",
 			"end process;"
 		],
-		"description": "combinatorial process block"
+		"description": "process all block"
 	},
 	"Record": {
 		"prefix": "typerecord",
@@ -538,8 +610,8 @@
 		"description": "record declaration"
 	},
 	"Signed": {
-		"prefix": "sign",
-		"body": [ "signed($1 ${2|downto,to|} $3)${4| := (others => '0');,;|}$0" ],
+		"prefix": "signed",
+		"body": [ "signed($1 ${2|downto,to|} $3)${4| := (others=>'0');,;|}$0" ],
 		"description": "signed declaration"
 	},
 	"Standard Logic": {
@@ -578,7 +650,7 @@
 			"subtype ${1:<name>} is ${2:<base_type>} range ${3:0} ${4|to,downto|} ${5:<value>};",
 			"$0"
 		],
-		"description": "std_ulogic_vector declaration"
+		"description": "subtype declaration"
 	},
 	"Unsigned": {
 		"prefix": "uns",
@@ -612,7 +684,7 @@
 	"When Else": {
 		"prefix": "whenelse",
 		"body": [
-			"${1:<signal>} <= ${2:<value>} when ${3:<conditional>} else ${4:<value>};",
+			"${1:WHEN_ELSE_NAME} : ${2:<signal>} <= ${3:<value>} when ${4:<conditional>} else ${5:<value>};",
 			"$0"
 		],
 		"description": "concurrent when else declaration"
