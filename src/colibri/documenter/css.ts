@@ -1102,7 +1102,11 @@ export const html_style_preview = `
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
-    <title>TerosHDL</title>
+    <title>`;
+
+
+
+export const html_style_preview_second_part = `</title>
   <style>
     body {
       box-sizing: border-box;
@@ -2197,7 +2201,11 @@ export const html_style_save = `
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
-    <title>TerosHDL</title>
+    <title>`;
+    
+    
+    
+export const html_style_save_second_part = `</title>
   <style>
     body {
       box-sizing: border-box;
