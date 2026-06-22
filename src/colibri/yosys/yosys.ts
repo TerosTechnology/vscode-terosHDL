@@ -187,8 +187,6 @@ async function getGHDLCommnand(preArgument: string, yosysPath: string) : Promise
         const endOfScriptStdout = result.stdout.toLowerCase().includes("end of script");
         const runningStdout = result.stdout.toLowerCase().includes("running command");
 
-        //console.log(result.stdout);
-
         if (result.successful && (endOfScriptStdout || runningStdout)) {
             return "-m ghdl";
         }
@@ -252,7 +250,6 @@ export async function runYosysStandalone(config: e_config, topTevel: string, sou
 
         callback(schematicResult);
     } catch (error) {
-        //console.log(error);
         const schematicResult = {
             schematic: "",
             error_msg: "Error running Yosys",

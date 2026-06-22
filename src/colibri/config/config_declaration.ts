@@ -17,8 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with colibri2.  If not, see <https://www.gnu.org/licenses/>.
 
-import { string } from "@oclif/core/lib/parser";
-
 export type e_config = {
     "general" : {
         "general" : e_general_general,

@@ -45,6 +45,7 @@ export async function checkExternalToolManager(currentConfig: e_config) {
         vivado: '-version',
         icarus: '-V',
         vcs: '-full64 -id',
+        nvc: '--version',
         // Add more tools and their custom arguments here
         // "tool-name-example": "--example-arg"
     };
@@ -56,7 +57,6 @@ export async function checkExternalToolManager(currentConfig: e_config) {
     if (selectedTool === e_tools_general_select_tool.osvvm) {
         const osvv_pro_path = path_lib.join(installationPath, 'OsvvmLibraries.pro');
         const scripts_path = path_lib.join(installationPath, 'Scripts');
-        const start_nvc_tcl = path_lib.join(scripts_path, 'StartNVC.tcl');
         const tclsh = currentConfig.tools.osvvm.tclsh_binary || 'tclsh';
 
         if (!fs.existsSync(osvv_pro_path)) {
@@ -67,17 +67,20 @@ export async function checkExternalToolManager(currentConfig: e_config) {
             msg += `${INTROICON} ❌ OSVVM installation path invalid: cannot find Scripts folder at "${scripts_path}"\n`;
             msg += `${INTROICON} Please set the path to the OSVVM root containing OsvvmLibraries.pro and Scripts/.\n`;
             isOk = false;
-        } else if (!fs.existsSync(start_nvc_tcl)) {
-            msg += `${INTROICON} ❌ OSVVM installation path invalid: cannot find StartNVC.tcl at "${start_nvc_tcl}"\n`;
-            msg += `${INTROICON} Please set simulator_name to nvc and ensure the OSVVM Scripts folder is present.\n`;
-            isOk = false;
         } else {
-            msg += `${INTROICON} ✅ OSVVM installation path looks valid. Found OsvvmLibraries.pro and Scripts/StartNVC.tcl\n`;
+            msg += `${INTROICON} ✅ OSVVM installation path looks valid. Found OsvvmLibraries.pro and Scripts/\n`;
             const tcl_result = await checkBinary('tclsh', '', tclsh, ['--version']);
             msg = appendMsg(tcl_result, msg, 'Tclsh');
             if (!tcl_result.successfulConfig) {
                 isOk = false;
             }
+        }
+    } else if (selectedTool === e_tools_general_select_tool.nvc) {
+        let result = await checkBinary('nvc', installationPath, 'nvc', ['--version']);
+        msg = appendMsg(result, msg, 'NVC');
+        msg += '\n';
+        if (!result.successfulConfig) {
+            isOk = false;
         }
     } else {
         // Default to '--version' if no custom argument is specified

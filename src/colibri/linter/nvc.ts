@@ -1,13 +1,3 @@
-// NVC linter integration for TerosHDL.
-// Minimum configuration for users:
-// - Install NVC externally (NVC --version should work in terminal)
-// - Select NVC as the VHDL linter with linter.general.linter_vhdl = "nvc"
-// - If nvc is already available in the system PATH, tools.nvc.installation_path can stay empty
-// - If nvc is not in PATH, tools.nvc.installation_path must point to the folder that contains
-// - Additional lint-only arguments can be set in linter.nvc.arguments
-// - Base NVC options such as VHDL standard, work library and syntax-check flags are taken from tools.nvc
-
-
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
 

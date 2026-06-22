@@ -730,7 +730,7 @@ export class Project_manager extends ConfigManager {
                 this.emitUpdateStatus();
                 callback(result);
             });
-        } else if (toolName === e_tools_general_select_tool.osvvm) {
+        } else if (toolName === e_tools_general_select_tool.nvc) {
             const startTime = Date.now();
             const resultProcess = runTasknvc(taskType, this.get_project_definition(), (result: p_result) => {
                 const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;

@@ -7,8 +7,8 @@ import { e_tools_nvc } from 'colibri/config/config_declaration';
 export type nvcCommandType = 'analyze' | 'elaborate' | 'run' | 'synth';
 
 export interface nvcCommandArgs {
-    baseArgs: string[]; //antes de la entidad
-    runArgs: string[]; //despues de la entidad para simulacion
+    baseArgs: string[];
+    runArgs: string[];
 }
 
 /**
@@ -40,7 +40,7 @@ export function buildnvcArgs(
         'vhdl08': '2008',
         'vhdl19': '2019'
     };
-    //Modificacion para usar el mapeo y agregar un valor por defecto si no se reconoce el estándar configurado
+    // Mapping and adding a default value if the configured standard is not recognized
     baseArgs.push(`--std=${config.vhdl_standard && standardMap[config.vhdl_standard]
         ? standardMap[config.vhdl_standard]
         : '2008'}`); // Default
@@ -121,18 +121,15 @@ export function buildnvcArgs(
     // Command-specific options
     switch (commandType) {
         case 'analyze':
-            // Solo opciones válidas para -a
             baseArgs.push(...config.analyze_options);
             break;
 
         case 'elaborate':
             baseArgs.push(...config.elaborate_options);
-            // Flags de warnings aquí, no en analyze
             baseArgs.push(...warningFlags);
             break;
 
         case 'run':
-            // Añadir flags de ejecución/simulación
             addSimulationArgs(config, runArgs);
             runArgs.push(...config.run_options);
             runArgs.push(...warningFlags);
@@ -143,7 +140,6 @@ export function buildnvcArgs(
             break;
     }    
 
-    // Extra flags generales
     if (config.extra_flags?.length) {baseArgs.push(...config.extra_flags);}
 
     // Additional custom arguments

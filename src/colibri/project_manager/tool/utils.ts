@@ -99,7 +99,7 @@ export function getTaskList(toolName: e_tools_general_select_tool): t_taskRep[] 
                 ]
             }
         ];
-    } else if (toolName === e_tools_general_select_tool.osvvm) {
+    } else if (toolName === e_tools_general_select_tool.nvc) {
         return [
             {
                 name: e_taskType.OPENFOLDER,
