@@ -25,6 +25,7 @@ select_tool:
     radiant: "Radiant"
     sandpiper: "SandPiper"
     yosys: "Yosys"
+    nvc: "NVC"
 
   value: "ghdl"
 

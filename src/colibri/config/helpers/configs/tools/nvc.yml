@@ -1,0 +1,344 @@
+# Basic Configuration
+section_basic:
+  description: "Basic NVC Configuration"
+  type: divider
+
+installation_path:
+  description: "Installation path:"
+  type: string
+  value: ""
+
+# VHDL Language Settings
+section_language:
+  description: "VHDL Language Settings"
+  type: divider
+
+vhdl_standard:
+  description: "Force specific VHDL standard version (overrides file-detected standard):"
+  type: select
+  options:
+    "auto": "Auto-detect from file"
+    "vhdl87": "Force VHDL-87"
+    "vhdl93": "Force VHDL-93" 
+    "vhdl02": "Force VHDL-2002"
+    "vhdl08": "Force VHDL-2008"
+    "vhdl19": "Force VHDL-2019"
+  value: "auto"
+ieee_library:
+  description: "IEEE library to use:"
+  type: select
+  options:
+    standard: "Standard IEEE"
+    synopsys: "Synopsys IEEE"
+  value: "standard"
+relaxed_parsing:
+  description: "Enable relaxed VHDL parsing rules:"
+  type: boolean
+  value: false
+unicode_support:
+  description: "Enable Unicode identifiers support:"
+  type: boolean
+  value: false
+psl_enabled:
+  description: "Enable PSL (Property Specification Language) support:"
+  type: boolean
+  value: false
+
+# Library Management
+section_libraries:
+  description: "Library Management"
+  type: divider
+
+work_library:
+  description: "Default work library name:"
+  type: string
+  value: "work"
+library_paths:
+  description: "Additional library search paths:"
+  type: array
+  value: []
+
+# Stage-Specific Options
+section_stage_options:
+  description: "Stage-Specific Options"
+  type: divider
+check_syntax_options:
+  description: "Check syntax options. Extra options used for NVC syntax check (nvc -s)."
+  type: array
+  value: []
+analyze_options:
+  description: "Analyze options. Extra options used for the NVC analyze stage (nvc -a)."
+  type: array
+  value: []
+elaborate_options:
+  description: "Elaborate options. Extra options used for the NVC elaborate stage (nvc -e)."
+  type: array
+  value: []
+run_options:
+  description: "Run options. Extra options used when running NVC simulations (nvc -r)."
+  type: array
+  value: []
+synthesis_options:
+  description: "Synthesis options for NVC synthesis (nvc --synth):"
+  type: array
+  value: []
+
+# Custom Configuration
+section_custom:
+  description: "Custom Configuration"
+  type: divider
+
+extra_flags:
+  description: "Additional custom flags for all NVC commands:"
+  type: array
+  value: []
+
+# Elaboration and Binding
+section_elaboration:
+  description: "Elaboration and Binding"
+  type: divider
+
+relaxed_rules:
+  description: "Enable relaxed elaboration rules (--mb-comments):"
+  type: boolean
+  value: false
+bind_checks:
+  description: "Enable binding checks during elaboration:"
+  type: boolean
+  value: true
+vital_checks:
+  description: "Enable VITAL compliance checks:"
+  type: boolean
+  value: false
+
+# Simulation Settings
+section_simulation:
+  description: "Simulation Settings"
+  type: divider
+
+simulation_time:
+  description: "Simulation time limit (e.g., 1us, 100ns, 1ms). Leave empty for no limit."
+  type: string
+  value: ""
+resolution_limit:
+  description: "Time resolution limit (e.g., 1ps, 1ns, 1us):"
+  type: string
+  value: ""
+stack_size:
+  description: "Stack size for simulation (e.g., 1MB, 16MB, 64MB). Leave empty for default."
+  type: string
+  value: ""
+stop_delta_cycles:
+  description: "Stop simulation after N delta cycles (--stop-delta):"
+  type: number
+  value: 0
+
+# Waveform Output
+section_waveform:
+  description: "Waveform Output"
+  type: divider
+
+waveform_enabled:
+  description: "Enable waveform generation during simulation:"
+  type: boolean
+  value: true
+waveform_format:
+  description: "Waveform output format:"
+  type: select
+  options:
+    vcd: "VCD"
+    ghw: "GHW"
+    fst: "FST"
+  value: "vcd"
+waveform_options:
+  description: "Additional waveform generation options (e.g., --vcd-4states, --wave-start-time=0ns):"
+  type: array
+  value: []
+
+# Waveform Generation Advanced Options
+section_waveform_advanced:
+  description: "Waveform Advanced Options"
+  type: divider
+
+wave_start_time:
+  description: "Start time for waveform recording (e.g., 0ns, 10us):"
+  type: string
+  value: ""
+vcd_4states:
+  description: "Use 4-state VCD format (--vcd-4states):"
+  type: boolean
+  value: false
+vcd_nodate:
+  description: "Do not write date in VCD file (--vcd-nodate):"
+  type: boolean
+  value: false
+read_wave_opt:
+  description: "Wave option file for signal filtering (--read-wave-opt):"
+  type: string
+  value: ""
+write_wave_opt:
+  description: "Create wave option file with all signals (--write-wave-opt):"
+  type: string
+  value: ""
+
+# Debug and Analysis
+section_debug:
+  description: "Debug and Analysis"
+  type: divider
+
+debug_level:
+  description: "Debug information level:"
+  type: select
+  options:
+    "none": "No debug info"
+    "minimal": "Minimal debug info"
+    "full": "Full debug info"
+  value: "minimal"
+verbose:
+  description: "Enable verbose output for all NVC commands:"
+  type: boolean
+  value: true
+
+# Error and Warning Handling
+section_warnings:
+  description: "Error and Warning Handling"
+  type: divider
+
+warnings_as_errors:
+  description: "Treat warnings as errors:"
+  type: boolean
+  value: false
+suppress_warnings:
+  description: "Warning types to suppress (e.g., binding, elaboration, runtime):"
+  type: array
+  value: []
+
+# Assertions and Verification
+section_assertions:
+  description: "Assertions and Verification"
+  type: divider
+assert_level:
+  description: "Assertion severity level:"
+  type: select
+  options:
+    note: "Note level"
+    warning: "Warning level"
+    error: "Error level"
+    failure: "Failure level"
+    none: "Disable assertions"
+  value: "error"
+
+# Time and Display Options  
+section_display:
+  description: "Time and Display Options"
+  type: divider
+
+display_time:
+  description: "Display time and delta cycle number (--disp-time):"
+  type: boolean
+  value: false
+unbuffered_output:
+  description: "Disable buffering on stdout (--unbuffered):"
+  type: boolean
+  value: false
+max_stack_alloc:
+  description: "Maximum stack allocation size in KB (--max-stack-alloc, 0 to disable):"
+  type: number
+  value: 0
+
+# Backtrace and Debugging
+section_backtrace:
+  description: "Backtrace and Debugging"
+  type: divider
+
+backtrace_severity:
+  description: "Minimum severity level for backtrace on assert/report:"
+  type: select
+  options:
+    note: "Note level"
+    warning: "Warning level" 
+    error: "Error level"
+    failure: "Failure level"
+    none: "Disable backtrace"
+  value: "error"
+
+# IEEE Standards Compliance
+section_ieee:
+  description: "IEEE Standards Compliance"
+  type: divider
+
+ieee_asserts:
+  description: "Control IEEE assertion handling:"
+  type: select
+  options:
+    enable: "Enable IEEE assertions"
+    disable: "Disable IEEE assertions"
+    disable-at-0: "Disable at time 0"
+  value: "enable"
+asserts_policy:
+  description: "Policy for handling assertions:"
+  type: select
+  options:
+    enable: "Enable assertions"
+    disable: "Disable assertions"  
+    disable-at-0: "Disable at time 0"
+  value: "enable"
+
+# File I/O and External Interfaces
+section_external:
+  description: "File I/O and External Interfaces"
+  type: divider
+
+sdf_file:
+  description: "SDF file for timing annotation (--sdf):"
+  type: string
+  value: ""
+vpi_modules:
+  description: "VPI modules to load (--vpi):"
+  type: array
+  value: []
+vhpi_modules:
+  description: "VHPI modules to load (--vhpi):"
+  type: array 
+  value: []
+vpi_trace_file:
+  description: "VPI trace output file (--vpi-trace):"
+  type: string
+  value: ""
+vhpi_trace_file:
+  description: "VHPI trace output file (--vhpi-trace):"
+  type: string
+  value: ""
+
+# Signal Dumping and Tracing  
+section_tracing:
+  description: "PSL and Hierarchy Display"
+  type: divider
+
+psl_report_file:
+  description: "PSL report output file (--psl-report):"
+  type: string
+  value: ""
+psl_report_uncovered:
+  description: "Report uncovered PSL cover points (--psl-report-uncovered):"
+  type: boolean
+  value: false
+disp_tree:
+  description: "Display design hierarchy (--disp-tree):"
+  type: select
+  options:
+    none: "No hierarchy display"
+    inst: "Display instances"
+    proc: "Display processes"
+    port: "Display ports and signals"
+  value: "none"
+
+# Execution Control
+section_execution:
+  description: "Execution Control"
+  type: divider
+
+no_run:
+  description: "Elaborate but do not run simulation:"
+  type: boolean
+  value: false

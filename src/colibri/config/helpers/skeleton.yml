@@ -71,6 +71,10 @@ linter:
       title: GHDL linter
       description: ""
       page: ./configs/linter/ghdl.yml
+    nvc:
+      title: NVC linter
+      description: ""
+      page: ./configs/linter/nvc.yml
     icarus:
       title: Icarus linter
       description: ""
@@ -154,6 +158,11 @@ tools:
       title: GHDL
       description: "GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL."
       page: ./configs/tools/ghdl.yml
+
+    nvc:
+      title: NVC
+      description: "NVC is an open source VHDL compiler and simulator."
+      page: ./configs/tools/nvc.yml
 
     icarus:
       title: Icarus

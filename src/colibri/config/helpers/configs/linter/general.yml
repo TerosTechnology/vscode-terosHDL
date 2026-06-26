@@ -6,6 +6,7 @@ linter_vhdl:
   options:
     disabled: "Disabled"
     ghdl: "GHDL"
+    nvc: "NVC"
     modelsim: "Modelsim"
     vivado: "Vivado (xvhdl)"
     none: "VHDL-LS"
