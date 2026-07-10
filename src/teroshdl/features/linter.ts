@@ -75,9 +75,9 @@ class Linter {
     private show_linter_unavailable_message(linter_name: string, installation_path: string) {
         if (linter_name === e_linter_general_linter_vhdl.nvc) {
             const configuredPath = installation_path === '' ? 'PATH del sistema' : installation_path;
-            const message = 'TerosHDL no puede encontrar NVC. '
-                + 'Configura tools.nvc.installation_path '
-                + `o asegúrate de que nvc esté disponible en el ${configuredPath}.`;
+            const message = 'TerosHDL cannot find NVC. '
+                + 'Configure tools.nvc.installation_path in the TerosHDL settings, '
+                + `or make sure nvc is available in the system PATH ${configuredPath}.`;
             vscode.window.showWarningMessage(
                 message
             );
@@ -85,7 +85,7 @@ class Linter {
         }
 
         vscode.window.showWarningMessage(
-            `TerosHDL no puede encontrar el linter ${linter_name}. Revisa su installation_path o el PATH del sistema.`
+            `TerosHDL can't find the linter ${linter_name}. Check its installation_path or the system PATH.`
         );
     }
 

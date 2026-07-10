@@ -57,7 +57,7 @@ export function executenvcCommand(
     // Properly quote arguments that contain spaces
     const quotedArgs = quoteArgs(args);
     const nvcExecutable = getBinary(config);
-    const command = `${nvcExecutable} ${quotedArgs.join(' ')}`; //Construccion del comando completo a ejecutar
+    const command = `${nvcExecutable} ${quotedArgs.join(' ')}`;
     const process = new Process();
     const options = {
         cwd: cwd
@@ -103,5 +103,3 @@ export function buildChainedCommand(
 
     return commands.join(' && ');
 }
-
-export const executeGhdlCommand = executenvcCommand;

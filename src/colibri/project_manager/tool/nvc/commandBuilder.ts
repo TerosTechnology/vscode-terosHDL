@@ -40,10 +40,14 @@ export function buildnvcArgs(
         'vhdl08': '2008',
         'vhdl19': '2019'
     };
-    // Mapping and adding a default value if the configured standard is not recognized
-    baseArgs.push(`--std=${config.vhdl_standard && standardMap[config.vhdl_standard]
-        ? standardMap[config.vhdl_standard]
-        : '2008'}`); // Default
+        const standard = config.vhdl_standard
+            ? standardMap[config.vhdl_standard]
+            : undefined;
+
+        // Omit --std when no standard is configured so NVC can use its own default.
+        if (standard) {
+            baseArgs.push(`--std=${standard}`);
+        }
 
     // Library / work directory
     if (config.work_library && config.work_library.trim() !== '') {
@@ -158,7 +162,7 @@ function addSimulationArgs(config: e_tools_nvc, runArgs: string[]): void {
     // Add waveform output configuration
     // NVC uses --wave=FILE, format is inferred from the file extension (.vcd, .fst, .ghw)
     if (config.waveform_enabled && config.waveform_format) {
-        const waveformFile = `wave.${config.waveform_format}`;
+        const waveformFile = `wave_teroshdl_nvc.${config.waveform_format}`;
         runArgs.push(`--wave=${waveformFile}`);
     }
     

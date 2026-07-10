@@ -65,14 +65,3 @@ export function groupFilesByLibrary(
 
     return libraryGroups;
 }
-
-/**
- * Get the relative file path for a file from project root
- * @param projectDefinition Project definition
- * @param fileName Full path to the file
- * @returns Relative path from project root
- */
-export function getRelativeFilePath(projectDefinition: t_project_definition, fileName: string): string {
-    const relativePath = path.relative(projectDefinition.project_disk_path, fileName);
-    return relativePath.startsWith('..') ? fileName : relativePath;
-}

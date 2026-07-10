@@ -2,8 +2,8 @@ import { p_result } from 'colibri/process/common';
 import { ChildProcess } from 'child_process';
 import { t_project_definition } from 'colibri/project_manager/project_definition';
 import { buildnvcArgs } from './commandBuilder';
-import { executenvcCommand, executeCommand, buildChainedCommand, getBinary, quoteArgs } from './executor';
-import { getTopLevel, getVhdlFiles, groupFilesByLibrary, getRelativeFilePath } from './utils';
+import { executenvcCommand, executeCommand, buildChainedCommand } from './executor';
+import { getTopLevel, getVhdlFiles, groupFilesByLibrary } from './utils';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -111,12 +111,12 @@ export function runnvcSimulate(
         return {} as ChildProcess;
     }
 
-    // Clean up existing waveform files before simulation
-    cleanupWaveformFiles(projectDefinition.project_disk_path);
-
     // Build arguments from configuration
     const { baseArgs, runArgs } = buildnvcArgs(config, 'run');
     const args = [...baseArgs, '-r', topLevel, ...runArgs];
+
+    // Clean up previous waveform output only for the exact target file.
+    cleanupWaveformFile(projectDefinition.project_disk_path, runArgs);
 
     return executenvcCommand(config, args, projectDefinition.project_disk_path, callback);
 }
@@ -271,49 +271,45 @@ export function runnvcAll(
     const { baseArgs: runBaseArgs, runArgs: simRunArgs } = buildnvcArgs(config, 'run');
     const simulateArgs = [...runBaseArgs, '-r', topLevel, ...simRunArgs];
 
-    // Clean up existing waveform files before simulation
-    cleanupWaveformFiles(projectDefinition.project_disk_path);
-
-    // Build complete command chain using buildChainedCommand for analyze commands
-    const nvcExecutable = getBinary(config);
-    
-    const analyzeCommand = buildChainedCommand(config, analyzeCommandSpecs);
-    const elaborateCmd = `${nvcExecutable} ${quoteArgs(elaborateArgs).join(' ')}`;
-    const simulateCmd = `${nvcExecutable} ${quoteArgs(simulateArgs).join(' ')}`;
+    // Clean up previous waveform output only for the exact target file.
+    cleanupWaveformFile(projectDefinition.project_disk_path, simulateArgs);
 
     // Build complete command chain: analyze all libraries + elaborate + simulate
-    const command = `${analyzeCommand} && ${elaborateCmd} && ${simulateCmd}`;
+    const commandSpecs: Array<{ command: string; args: string[] }> = [
+        ...analyzeCommandSpecs,
+        { command: '', args: elaborateArgs },
+        { command: '', args: simulateArgs }
+    ];
+    const command = buildChainedCommand(config, commandSpecs);
 
     return executeCommand(command, projectDefinition.project_disk_path, callback);
 }
 
 /**
- * Remove existing waveform files with basename "wave" before simulation
- * @param workingDirectory Directory where to look for waveform files
+ * Remove previous waveform output for the exact --wave target used by NVC.
+ * @param workingDirectory Directory where relative waveform files are resolved
+ * @param runArgs Simulation run arguments that may include --wave=FILE
  */
-function cleanupWaveformFiles(workingDirectory: string): void {
+function cleanupWaveformFile(workingDirectory: string, runArgs: string[]): void {
     try {
-        if (!fs.existsSync(workingDirectory)) {
+        const waveArg = runArgs.find((arg) => arg.startsWith('--wave='));
+        if (!waveArg) {
             return;
         }
 
-        const files = fs.readdirSync(workingDirectory);
-        const waveBasename = "wave";
-        
-        for (const file of files) {
-            // Check if file starts with "wave" basename (wave.ghw, wave.vcd, etc.)
-            const fileBasename = path.basename(file, path.extname(file));
-            if (fileBasename === waveBasename) {
-                const filePath = path.join(workingDirectory, file);
-                try {
-                    fs.unlinkSync(filePath);
-                    // File removed successfully
-                } catch (error) {
-                    // Failed to remove file, continue with others
-                }
-            }
+        const waveformTarget = waveArg.substring('--wave='.length).trim();
+        if (waveformTarget === '') {
+            return;
         }
-    } catch (error) {
-        // Failed to cleanup waveform files, continue execution
+
+        const waveformPath = path.isAbsolute(waveformTarget)
+            ? waveformTarget
+            : path.join(workingDirectory, waveformTarget);
+
+        if (fs.existsSync(waveformPath) && fs.statSync(waveformPath).isFile()) {
+            fs.unlinkSync(waveformPath);
+        }
+    } catch {
+        // Failed to cleanup waveform file, continue execution
     }
 }
