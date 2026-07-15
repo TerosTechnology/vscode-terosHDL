@@ -28,4 +28,4 @@ resources/project_manager/help
 *.o
 venv/
 work/
-pycache
+__pycache__/
