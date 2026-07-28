@@ -928,22 +928,23 @@
     },
 
     "scripts": {
-        "build-package": "cd auto_package && ./gen.sh", 
-        "clean": "shx rm -rf out", 
-        "vscode:prepublish": "npm run generate-examples & npm run compile", 
-        "compile": "npm run-script copy-files & npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./", 
-        "lint": "eslint src", 
-        "watch": "npm run-script copy-files & tsc --watch --p ./tsconfig.json & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"", 
-        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh", 
-        "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib", 
-        "package": "npm run pre-package & vsce package --allow-star-activation", 
-        "package-prerelease": "npm run pre-package & vsce package --pre-release -o ./pre-release.vsix --allow-star-activation", 
-        "auto-package": "cd auto_package & ./gen.sh", 
-        "build-webviews": "NODE_ENV=production node resources/webviews/reporters/esbuild.js", 
-        "build-webviews-configuration": "NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js", 
-        "compile-esbuild": "NODE_ENV=production node ./esbuild.js", 
-        "copy-files": "python3 copy_files.py ", 
-        "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json"
+        "build-package": "cd auto_package && ./gen.sh",
+        "clean": "shx rm -rf out",
+        "vscode:prepublish": "npm run generate-examples & npm run compile",
+        "compile": "npm run-script copy-files && npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./",
+        "lint": "eslint src",
+        "watch": "npm run-script copy-files & tsc --watch --p ./tsconfig.json & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"",
+        "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh",
+        "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib",
+        "package": "npm run pre-package & vsce package --allow-star-activation",
+        "package-prerelease": "npm run pre-package & vsce package --pre-release -o ./pre-release.vsix --allow-star-activation",
+        "auto-package": "cd auto_package & ./gen.sh",
+        "build-webviews": "cross-env NODE_ENV=production node resources/webviews/reporters/esbuild.js",
+        "build-webviews-configuration": "cross-env NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js",
+        "compile-esbuild": "cross-env NODE_ENV=production node ./esbuild.js",
+        "copy-files": "python3 copy_files.py ",
+        "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json",
+        "test:ui": "npm run compile && extest setup-and-run './tests/ui/test-*.ts' --code_version max --extensions_dir .vscode-test/extensions"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",
@@ -1012,13 +1013,17 @@
         "@types/cli-color": "^2.0.2",
         "@types/jest": "^29.4.3",
         "@types/js-yaml": "^4.0.5",
+        "@types/mocha": "^10.0.10",
         "@types/temp": "^0.9.4",
         "typescript": "^4.8.2",
         "@typescript-eslint/eslint-plugin": "^8.7.0",
         "@typescript-eslint/parser": "^8.7.0",
         "eslint": "^9.11.1",
         "eslint-config-prettier": "^9.0.0",
-        "eslint-plugin-prettier": "^4.0.0"
+        "eslint-plugin-prettier": "^4.0.0",
+        "mocha": "^11.7.6",
+        "ts-node": "^10.9.2",
+        "vscode-extension-tester": "^8.23.0"
     }
 
 }

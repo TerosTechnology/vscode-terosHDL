@@ -1,0 +1,1083 @@
+
+> teroshdl@8.0.5 test:ui
+> npm run compile && extest setup-and-run './tests/ui/test-*.ts' --code_version max --extensions_dir .vscode-test/extensions
+
+
+> teroshdl@8.0.5 compile
+> npm run-script copy-files && npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./
+
+
+> teroshdl@8.0.5 build-webviews-configuration
+> cross-env NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js
+
+
+> teroshdl@8.0.5 copy-files
+> python3 copy_files.py
+
+Files copied successfully!
+▲ [WARNING] Duplicate key "@types/node" in object literal [duplicate-object-key]
+
+    package.json:1017:8:
+      1017 │         "@types/node": "^17.0.31",
+           ╵         ~~~~~~~~~~~~~
+
+  The original key "@types/node" is here:
+
+    package.json:998:8:
+      998 │         "@types/node": "^17.0.31",
+          ╵         ~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "jest" in object literal [duplicate-object-key]
+
+    package.json:1025:8:
+      1025 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+  The original key "jest" is here:
+
+    package.json:1005:8:
+      1005 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+▲ [WARNING] Duplicate key "jest-html-reporters" in object literal [duplicate-object-key]
+
+    package.json:1026:8:
+      1026 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "jest-html-reporters" is here:
+
+    package.json:1006:8:
+      1006 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "js-yaml" in object literal [duplicate-object-key]
+
+    package.json:1027:8:
+      1027 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+  The original key "js-yaml" is here:
+
+    package.json:1000:8:
+      1000 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "nodemon" in object literal [duplicate-object-key]
+
+    package.json:1029:8:
+      1029 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+  The original key "nodemon" is here:
+
+    package.json:1003:8:
+      1003 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "shx" in object literal [duplicate-object-key]
+
+    package.json:1030:8:
+      1030 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+  The original key "shx" is here:
+
+    package.json:1001:8:
+      1001 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+▲ [WARNING] Duplicate key "ts-jest" in object literal [duplicate-object-key]
+
+    package.json:1031:8:
+      1031 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+  The original key "ts-jest" is here:
+
+    package.json:1007:8:
+      1007 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc" in object literal [duplicate-object-key]
+
+    package.json:1033:8:
+      1033 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+  The original key "typedoc" is here:
+
+    package.json:1008:8:
+      1008 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc-theme-hierarchy" in object literal [duplicate-object-key]
+
+    package.json:1034:8:
+      1034 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "typedoc-theme-hierarchy" is here:
+
+    package.json:1009:8:
+      1009 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typescript" in object literal [duplicate-object-key]
+
+    package.json:1035:8:
+      1035 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+  The original key "typescript" is here:
+
+    package.json:1019:8:
+      1019 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+build complete
+
+> teroshdl@8.0.5 build-webviews
+> cross-env NODE_ENV=production node resources/webviews/reporters/esbuild.js
+
+▲ [WARNING] Duplicate key "@types/node" in object literal [duplicate-object-key]
+
+    package.json:1017:8:
+      1017 │         "@types/node": "^17.0.31",
+           ╵         ~~~~~~~~~~~~~
+
+  The original key "@types/node" is here:
+
+    package.json:998:8:
+      998 │         "@types/node": "^17.0.31",
+          ╵         ~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "jest" in object literal [duplicate-object-key]
+
+    package.json:1025:8:
+      1025 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+  The original key "jest" is here:
+
+    package.json:1005:8:
+      1005 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+▲ [WARNING] Duplicate key "jest-html-reporters" in object literal [duplicate-object-key]
+
+    package.json:1026:8:
+      1026 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "jest-html-reporters" is here:
+
+    package.json:1006:8:
+      1006 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "js-yaml" in object literal [duplicate-object-key]
+
+    package.json:1027:8:
+      1027 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+  The original key "js-yaml" is here:
+
+    package.json:1000:8:
+      1000 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "nodemon" in object literal [duplicate-object-key]
+
+    package.json:1029:8:
+      1029 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+  The original key "nodemon" is here:
+
+    package.json:1003:8:
+      1003 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "shx" in object literal [duplicate-object-key]
+
+    package.json:1030:8:
+      1030 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+  The original key "shx" is here:
+
+    package.json:1001:8:
+      1001 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+▲ [WARNING] Duplicate key "ts-jest" in object literal [duplicate-object-key]
+
+    package.json:1031:8:
+      1031 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+  The original key "ts-jest" is here:
+
+    package.json:1007:8:
+      1007 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc" in object literal [duplicate-object-key]
+
+    package.json:1033:8:
+      1033 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+  The original key "typedoc" is here:
+
+    package.json:1008:8:
+      1008 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc-theme-hierarchy" in object literal [duplicate-object-key]
+
+    package.json:1034:8:
+      1034 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "typedoc-theme-hierarchy" is here:
+
+    package.json:1009:8:
+      1009 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typescript" in object literal [duplicate-object-key]
+
+    package.json:1035:8:
+      1035 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+  The original key "typescript" is here:
+
+    package.json:1019:8:
+      1019 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "@types/node" in object literal [duplicate-object-key]
+
+    package.json:1017:8:
+      1017 │         "@types/node": "^17.0.31",
+           ╵         ~~~~~~~~~~~~~
+
+  The original key "@types/node" is here:
+
+    package.json:998:8:
+      998 │         "@types/node": "^17.0.31",
+          ╵         ~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "jest" in object literal [duplicate-object-key]
+
+    package.json:1025:8:
+      1025 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+  The original key "jest" is here:
+
+    package.json:1005:8:
+      1005 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+▲ [WARNING] Duplicate key "jest-html-reporters" in object literal [duplicate-object-key]
+
+    package.json:1026:8:
+      1026 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "jest-html-reporters" is here:
+
+    package.json:1006:8:
+      1006 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "js-yaml" in object literal [duplicate-object-key]
+
+    package.json:1027:8:
+      1027 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+  The original key "js-yaml" is here:
+
+    package.json:1000:8:
+      1000 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "nodemon" in object literal [duplicate-object-key]
+
+    package.json:1029:8:
+      1029 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+  The original key "nodemon" is here:
+
+    package.json:1003:8:
+      1003 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "shx" in object literal [duplicate-object-key]
+
+    package.json:1030:8:
+      1030 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+  The original key "shx" is here:
+
+    package.json:1001:8:
+      1001 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+▲ [WARNING] Duplicate key "ts-jest" in object literal [duplicate-object-key]
+
+    package.json:1031:8:
+      1031 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+  The original key "ts-jest" is here:
+
+    package.json:1007:8:
+      1007 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc" in object literal [duplicate-object-key]
+
+    package.json:1033:8:
+      1033 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+  The original key "typedoc" is here:
+
+    package.json:1008:8:
+      1008 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc-theme-hierarchy" in object literal [duplicate-object-key]
+
+    package.json:1034:8:
+      1034 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "typedoc-theme-hierarchy" is here:
+
+    package.json:1009:8:
+      1009 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typescript" in object literal [duplicate-object-key]
+
+    package.json:1035:8:
+      1035 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+  The original key "typescript" is here:
+
+    package.json:1019:8:
+      1019 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "@types/node" in object literal [duplicate-object-key]
+
+    package.json:1017:8:
+      1017 │         "@types/node": "^17.0.31",
+           ╵         ~~~~~~~~~~~~~
+
+  The original key "@types/node" is here:
+
+    package.json:998:8:
+      998 │         "@types/node": "^17.0.31",
+          ╵         ~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "jest" in object literal [duplicate-object-key]
+
+    package.json:1025:8:
+      1025 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+  The original key "jest" is here:
+
+    package.json:1005:8:
+      1005 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+▲ [WARNING] Duplicate key "jest-html-reporters" in object literal [duplicate-object-key]
+
+    package.json:1026:8:
+      1026 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "jest-html-reporters" is here:
+
+    package.json:1006:8:
+      1006 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "js-yaml" in object literal [duplicate-object-key]
+
+    package.json:1027:8:
+      1027 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+  The original key "js-yaml" is here:
+
+    package.json:1000:8:
+      1000 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "nodemon" in object literal [duplicate-object-key]
+
+    package.json:1029:8:
+      1029 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+  The original key "nodemon" is here:
+
+    package.json:1003:8:
+      1003 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "shx" in object literal [duplicate-object-key]
+
+    package.json:1030:8:
+      1030 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+  The original key "shx" is here:
+
+    package.json:1001:8:
+      1001 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+▲ [WARNING] Duplicate key "ts-jest" in object literal [duplicate-object-key]
+
+    package.json:1031:8:
+      1031 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+  The original key "ts-jest" is here:
+
+    package.json:1007:8:
+      1007 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc" in object literal [duplicate-object-key]
+
+    package.json:1033:8:
+      1033 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+  The original key "typedoc" is here:
+
+    package.json:1008:8:
+      1008 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc-theme-hierarchy" in object literal [duplicate-object-key]
+
+    package.json:1034:8:
+      1034 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "typedoc-theme-hierarchy" is here:
+
+    package.json:1009:8:
+      1009 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typescript" in object literal [duplicate-object-key]
+
+    package.json:1035:8:
+      1035 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+  The original key "typescript" is here:
+
+    package.json:1019:8:
+      1019 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+build complete
+[33m
+
+WARNING: You are using the outdated VS Code version '1.111.0'. The latest stable version is '1.129.1'.
+
+[0m
+Downloading VS Code: 1.111.0 / stable
+VS Code exists in local cache, skipping download
+ChromeDriver 142.0.7444.175 exists in local cache, skipping download
+Executing prepublish script 'npm run vscode:prepublish'...
+
+> teroshdl@8.0.5 vscode:prepublish
+> npm run generate-examples & npm run compile
+
+
+> teroshdl@8.0.5 compile
+> npm run-script copy-files && npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./
+
+
+> teroshdl@8.0.5 generate-examples
+> cd ./resources/project_manager; ./copy_examples.sh
+
+.
+Clonando en './teroshdl-examples'...
+
+> teroshdl@8.0.5 copy-files
+> python3 copy_files.py
+
+
+> teroshdl@8.0.5 build-webviews-configuration
+> cross-env NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js
+
+Files copied successfully!
+▲ [WARNING] Duplicate key "@types/node" in object literal [duplicate-object-key]
+
+    package.json:1017:8:
+      1017 │         "@types/node": "^17.0.31",
+           ╵         ~~~~~~~~~~~~~
+
+  The original key "@types/node" is here:
+
+    package.json:998:8:
+      998 │         "@types/node": "^17.0.31",
+          ╵         ~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "jest" in object literal [duplicate-object-key]
+
+    package.json:1025:8:
+      1025 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+  The original key "jest" is here:
+
+    package.json:1005:8:
+      1005 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+▲ [WARNING] Duplicate key "jest-html-reporters" in object literal [duplicate-object-key]
+
+    package.json:1026:8:
+      1026 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "jest-html-reporters" is here:
+
+    package.json:1006:8:
+      1006 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "js-yaml" in object literal [duplicate-object-key]
+
+    package.json:1027:8:
+      1027 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+  The original key "js-yaml" is here:
+
+    package.json:1000:8:
+      1000 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "nodemon" in object literal [duplicate-object-key]
+
+    package.json:1029:8:
+      1029 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+  The original key "nodemon" is here:
+
+    package.json:1003:8:
+      1003 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "shx" in object literal [duplicate-object-key]
+
+    package.json:1030:8:
+      1030 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+  The original key "shx" is here:
+
+    package.json:1001:8:
+      1001 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+▲ [WARNING] Duplicate key "ts-jest" in object literal [duplicate-object-key]
+
+    package.json:1031:8:
+      1031 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+  The original key "ts-jest" is here:
+
+    package.json:1007:8:
+      1007 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc" in object literal [duplicate-object-key]
+
+    package.json:1033:8:
+      1033 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+  The original key "typedoc" is here:
+
+    package.json:1008:8:
+      1008 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc-theme-hierarchy" in object literal [duplicate-object-key]
+
+    package.json:1034:8:
+      1034 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "typedoc-theme-hierarchy" is here:
+
+    package.json:1009:8:
+      1009 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typescript" in object literal [duplicate-object-key]
+
+    package.json:1035:8:
+      1035 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+  The original key "typescript" is here:
+
+    package.json:1019:8:
+      1019 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+build complete
+
+> teroshdl@8.0.5 build-webviews
+> cross-env NODE_ENV=production node resources/webviews/reporters/esbuild.js
+
+▲ [WARNING] Duplicate key "@types/node" in object literal [duplicate-object-key]
+
+    package.json:1017:8:
+      1017 │         "@types/node": "^17.0.31",
+           ╵         ~~~~~~~~~~~~~
+
+  The original key "@types/node" is here:
+
+    package.json:998:8:
+      998 │         "@types/node": "^17.0.31",
+          ╵         ~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "jest" in object literal [duplicate-object-key]
+
+    package.json:1025:8:
+      1025 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+  The original key "jest" is here:
+
+    package.json:1005:8:
+      1005 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+▲ [WARNING] Duplicate key "jest-html-reporters" in object literal [duplicate-object-key]
+
+    package.json:1026:8:
+      1026 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "jest-html-reporters" is here:
+
+    package.json:1006:8:
+      1006 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "js-yaml" in object literal [duplicate-object-key]
+
+    package.json:1027:8:
+      1027 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+  The original key "js-yaml" is here:
+
+    package.json:1000:8:
+      1000 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "nodemon" in object literal [duplicate-object-key]
+
+    package.json:1029:8:
+      1029 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+  The original key "nodemon" is here:
+
+    package.json:1003:8:
+      1003 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "shx" in object literal [duplicate-object-key]
+
+    package.json:1030:8:
+      1030 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+  The original key "shx" is here:
+
+    package.json:1001:8:
+      1001 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+▲ [WARNING] Duplicate key "ts-jest" in object literal [duplicate-object-key]
+
+    package.json:1031:8:
+      1031 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+  The original key "ts-jest" is here:
+
+    package.json:1007:8:
+      1007 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc" in object literal [duplicate-object-key]
+
+    package.json:1033:8:
+      1033 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+  The original key "typedoc" is here:
+
+    package.json:1008:8:
+      1008 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc-theme-hierarchy" in object literal [duplicate-object-key]
+
+    package.json:1034:8:
+      1034 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "typedoc-theme-hierarchy" is here:
+
+    package.json:1009:8:
+      1009 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typescript" in object literal [duplicate-object-key]
+
+    package.json:1035:8:
+      1035 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+  The original key "typescript" is here:
+
+    package.json:1019:8:
+      1019 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "@types/node" in object literal [duplicate-object-key]
+
+    package.json:1017:8:
+      1017 │         "@types/node": "^17.0.31",
+           ╵         ~~~~~~~~~~~~~
+
+  The original key "@types/node" is here:
+
+    package.json:998:8:
+      998 │         "@types/node": "^17.0.31",
+          ╵         ~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "jest" in object literal [duplicate-object-key]
+
+    package.json:1025:8:
+      1025 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+  The original key "jest" is here:
+
+    package.json:1005:8:
+      1005 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+▲ [WARNING] Duplicate key "jest-html-reporters" in object literal [duplicate-object-key]
+
+    package.json:1026:8:
+      1026 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "jest-html-reporters" is here:
+
+    package.json:1006:8:
+      1006 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "js-yaml" in object literal [duplicate-object-key]
+
+    package.json:1027:8:
+      1027 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+  The original key "js-yaml" is here:
+
+    package.json:1000:8:
+      1000 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "nodemon" in object literal [duplicate-object-key]
+
+    package.json:1029:8:
+      1029 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+  The original key "nodemon" is here:
+
+    package.json:1003:8:
+      1003 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "shx" in object literal [duplicate-object-key]
+
+    package.json:1030:8:
+      1030 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+  The original key "shx" is here:
+
+    package.json:1001:8:
+      1001 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+▲ [WARNING] Duplicate key "ts-jest" in object literal [duplicate-object-key]
+
+    package.json:1031:8:
+      1031 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+  The original key "ts-jest" is here:
+
+    package.json:1007:8:
+      1007 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc" in object literal [duplicate-object-key]
+
+    package.json:1033:8:
+      1033 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+  The original key "typedoc" is here:
+
+    package.json:1008:8:
+      1008 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc-theme-hierarchy" in object literal [duplicate-object-key]
+
+    package.json:1034:8:
+      1034 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "typedoc-theme-hierarchy" is here:
+
+    package.json:1009:8:
+      1009 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typescript" in object literal [duplicate-object-key]
+
+    package.json:1035:8:
+      1035 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+  The original key "typescript" is here:
+
+    package.json:1019:8:
+      1019 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "@types/node" in object literal [duplicate-object-key]
+
+    package.json:1017:8:
+      1017 │         "@types/node": "^17.0.31",
+           ╵         ~~~~~~~~~~~~~
+
+  The original key "@types/node" is here:
+
+    package.json:998:8:
+      998 │         "@types/node": "^17.0.31",
+          ╵         ~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "jest" in object literal [duplicate-object-key]
+
+    package.json:1025:8:
+      1025 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+  The original key "jest" is here:
+
+    package.json:1005:8:
+      1005 │         "jest": "^29.7.0",
+           ╵         ~~~~~~
+
+▲ [WARNING] Duplicate key "jest-html-reporters" in object literal [duplicate-object-key]
+
+    package.json:1026:8:
+      1026 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "jest-html-reporters" is here:
+
+    package.json:1006:8:
+      1006 │         "jest-html-reporters": "^3.1.4",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "js-yaml" in object literal [duplicate-object-key]
+
+    package.json:1027:8:
+      1027 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+  The original key "js-yaml" is here:
+
+    package.json:1000:8:
+      1000 │         "js-yaml": "^3.13.1",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "nodemon" in object literal [duplicate-object-key]
+
+    package.json:1029:8:
+      1029 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+  The original key "nodemon" is here:
+
+    package.json:1003:8:
+      1003 │         "nodemon": "^3.0.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "shx" in object literal [duplicate-object-key]
+
+    package.json:1030:8:
+      1030 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+  The original key "shx" is here:
+
+    package.json:1001:8:
+      1001 │         "shx": "^0.3.3",
+           ╵         ~~~~~
+
+▲ [WARNING] Duplicate key "ts-jest" in object literal [duplicate-object-key]
+
+    package.json:1031:8:
+      1031 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+  The original key "ts-jest" is here:
+
+    package.json:1007:8:
+      1007 │         "ts-jest": "^29.1.2",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc" in object literal [duplicate-object-key]
+
+    package.json:1033:8:
+      1033 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+  The original key "typedoc" is here:
+
+    package.json:1008:8:
+      1008 │         "typedoc": "^0.23.9",
+           ╵         ~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typedoc-theme-hierarchy" in object literal [duplicate-object-key]
+
+    package.json:1034:8:
+      1034 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "typedoc-theme-hierarchy" is here:
+
+    package.json:1009:8:
+      1009 │         "typedoc-theme-hierarchy": "^3.0.0",
+           ╵         ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+▲ [WARNING] Duplicate key "typescript" in object literal [duplicate-object-key]
+
+    package.json:1035:8:
+      1035 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+  The original key "typescript" is here:
+
+    package.json:1019:8:
+      1019 │         "typescript": "^4.8.2",
+           ╵         ~~~~~~~~~~~~
+
+build complete
+ WARNING  This extension consists of 14176 files, out of which 9008 are JavaScript files. For performance reasons, you should bundle your extension: https://aka.ms/vscode-bundle-extension. You should also exclude unnecessary files by adding them to your .vscodeignore: https://aka.ms/vscode-vscodeignore.
+
+ INFO  Files included in the VSIX:
+teroshdl-8.0.5.vsix
+├─ [Content_Types].xml 
+├─ extension.vsixmanifest 
+└─ extension/
+   ├─ .mocharc.js [0.09 KB]
+   ├─ LICENSE.txt [34.33 KB]
+   ├─ clean.sh [0.08 KB]
+   ├─ copy_files.py [1.13 KB]
+   ├─ esbuild.js [1.98 KB]
+   ├─ eslint.config.js [0.7 KB]
+   ├─ extest.log [28.73 KB]
+   ├─ jest.config.json [1.02 KB]
+   ├─ package.json [37.32 KB]
+   ├─ readme.md 
+   ├─ test_ghdl_expanded.js [10.58 KB]
+   ├─ bin/ (4 files) [0.61 KB]
+   ├─ configs/ (8 files) [10.63 KB]
+   ├─ coverage/ (2 files) [60.42 KB]
+   ├─ docs/ (13 files) [187.22 KB]
+   ├─ examples/ (4 files) [0.65 KB]
+   ├─ node_modules/ (12740 files) [201.61 MB]
+   ├─ out/ (349 files) [26.77 MB]
+   ├─ resources/ (923 files) [22.95 MB]
+   ├─ server/ (88 files) [49.1 MB]
+   ├─ snippets/ (15 files) [69.1 KB]
+   ├─ syntaxes/ (13 files) [509.01 KB]
+   ├─ test-report/ (3 files) [1.53 MB]
+   └─ work/ (1 file) [0.01 KB]
+
+=> Run vsce ls --tree to see all included files.
+
+ DONE  Packaged: /home/marina/terosHDL/vscode-terosHDL/teroshdl-8.0.5.vsix (14176 files, 92.02 MB)
+Installing extensions...
+Extension 'teroshdl-8.0.5.vsix' was successfully installed.
+Loading mocha configuration from /home/marina/terosHDL/vscode-terosHDL/.mocharc.js
+
+
+Writing code settings to /tmp/test-resources/settings/User/settings.json
+Launching browser...
+Browser ready in 2578 ms
+Launching tests...
+  TerosHDL Activation
+    ✔ Extension activates without errors (214ms)
+    ✔ TerosHDL extension is installed and workbench loads (1063ms)
+
+  TerosHDL Commands
+    ✔ TerosHDL commands appear in Command Palette (4264ms)
+
+  TerosHDL Project Creation
+    ✔ Add Project command creates project in tree (8875ms)
+
+  TerosHDL Sidebar
+    ✔ TerosHDL view control is visible in Activity Bar (522ms)
+    ✔ Opening TerosHDL sidebar shows project views (1006ms)
+
+Shutting down the browser
+
+  6 passing (19s)
+

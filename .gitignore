@@ -27,3 +27,11 @@ resources/project_manager/help
 *.cf
 *.o
 Project**
+venv/
+work/
+.extester/
+tests-resources/
+
+# Python cache artifacts
+__pycache__/
+*.py[cod]

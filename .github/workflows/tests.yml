@@ -44,3 +44,21 @@ jobs:
           fail_below_min: true
           thresholds: '45 60'
           indicators: true
+
+  ui-tests:
+    name: UI Tests
+    runs-on: ubuntu-22.04
+    needs: tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Run UI Tests (ExTester)
+        run: |
+          npm install
+          xvfb-run -a npm run test:ui

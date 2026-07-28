@@ -44,6 +44,24 @@
       "preLaunchTask": "teros watch",
       "request": "launch",
       "type": "extensionHost"
+    },
+    {
+    "type": "node",
+    "request": "launch",
+    "name": "Debug ExTester",
+    "program": "${workspaceFolder}/node_modules/.bin/extest",
+    "args": [
+        "setup-and-run",
+        "./tests/ui/test-*.ts",
+        "--code_version",
+        "max"
+    ],
+    "sourceMaps": true,
+    "outFiles": ["${workspaceFolder}/out/**/*.js"],
+    "console": "integratedTerminal",
+    "env": {
+        "EXTENSION_DEV_PATH": "${workspaceFolder}"
+      }
     }
   ]
 }
