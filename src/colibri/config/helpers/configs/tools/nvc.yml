@@ -14,16 +14,15 @@ section_language:
   type: divider
 
 vhdl_standard:
-  description: "Force specific VHDL standard version (overrides file-detected standard):"
+  description: "Force specific VHDL standard version:"
   type: select
   options:
-    "auto": "Auto-detect from file"
     "vhdl87": "Force VHDL-87"
     "vhdl93": "Force VHDL-93" 
     "vhdl02": "Force VHDL-2002"
     "vhdl08": "Force VHDL-2008"
     "vhdl19": "Force VHDL-2019"
-  value: "auto"
+  value: "vhdl08"
 ieee_library:
   description: "IEEE library to use:"
   type: select
@@ -99,7 +98,7 @@ section_elaboration:
   type: divider
 
 relaxed_rules:
-  description: "Enable relaxed elaboration rules (--mb-comments):"
+  description: "Enable relaxed analysis rules (--relaxed):"
   type: boolean
   value: false
 bind_checks:
@@ -193,11 +192,11 @@ debug_level:
     "none": "No debug info"
     "minimal": "Minimal debug info"
     "full": "Full debug info"
-  value: "minimal"
+  value: "none"
 verbose:
   description: "Enable verbose output for all NVC commands:"
   type: boolean
-  value: true
+  value: false
 
 # Error and Warning Handling
 section_warnings:

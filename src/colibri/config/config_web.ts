@@ -2985,12 +2985,11 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Force specific VHDL standard version (overrides file-detected standard):
+                            Force specific VHDL standard version:
                             <span class="markConfig" id="mark_tools-nvc-vhdl_standard"></span>
                         </div>
                         <div class="select-container">
                             <select class="setting-select-box" id="tools-nvc-vhdl_standard">
-                                      <option value='auto'>Auto-detect from file</option>
                                       <option value='vhdl87'>Force VHDL-87</option>
                                       <option value='vhdl93'>Force VHDL-93</option>
                                       <option value='vhdl02'>Force VHDL-2002</option>
@@ -3144,7 +3143,7 @@ body.vscode-high-contrast {
                         <div class="setting-checkbox">
                             <input type="checkbox" id="tools-nvc-relaxed_rules">
                             <label class="setting-checkbox-label" for="tools-nvc-relaxed_rules">
-                                Enable relaxed elaboration rules (--mb-comments):
+                                Enable relaxed analysis rules (--relaxed):
                                 <span class="markConfig" id="mark_tools-nvc-relaxed_rules"></span>
                             </label>
                         </div>

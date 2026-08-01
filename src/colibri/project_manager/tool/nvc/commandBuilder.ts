@@ -83,13 +83,8 @@ export function buildnvcArgs(
         }
     }
 
-    // Add relaxed rules if enabled
-    if (config.relaxed_rules) {
-        baseArgs.push('--mb-comments');
-    }
-
-    // Add relaxed parsing if enabled
-    if (config.relaxed_parsing) {
+    // NVC supports relaxed analysis through --relaxed.
+    if (config.relaxed_rules || config.relaxed_parsing) {
         baseArgs.push('--relaxed');
     }
 
