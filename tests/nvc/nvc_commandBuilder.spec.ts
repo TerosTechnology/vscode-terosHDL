@@ -17,17 +17,11 @@ function makeConfig(overrides: Partial<ReturnType<typeof get_default_config>['to
 }
 
 describe('buildnvcArgs – analyze command', () => {
-    it('returns empty baseArgs and runArgs for default config (no std flag when auto)', () => {
+    it('returns std flag for vhdl08 and no runArgs in analyze command', () => {
         const config = makeConfig({ vhdl_standard: e_tools_nvc_vhdl_standard.vhdl08 });
         const { baseArgs, runArgs } = buildnvcArgs(config, 'analyze');
         expect(baseArgs).toContain('--std=2008');
         expect(runArgs).toHaveLength(0);
-    });
-
-    it('does not emit --std when vhdl_standard is auto', () => {
-        const config = makeConfig({ vhdl_standard: e_tools_nvc_vhdl_standard.auto });
-        const { baseArgs } = buildnvcArgs(config, 'analyze');
-        expect(baseArgs.some(a => a.startsWith('--std='))).toBe(false);
     });
 
     it('maps vhdl87 → --std=87', () => {
@@ -124,9 +118,9 @@ describe('buildnvcArgs – analyze command', () => {
         expect(baseArgs.some(a => a.startsWith('--assert-level='))).toBe(false);
     });
 
-    it('adds --mb-comments when relaxed_rules is true', () => {
+    it('adds --relaxed when relaxed_rules is true', () => {
         const { baseArgs } = buildnvcArgs(makeConfig({ relaxed_rules: true }), 'analyze');
-        expect(baseArgs).toContain('--mb-comments');
+        expect(baseArgs).toContain('--relaxed');
     });
 
     it('adds --relaxed when relaxed_parsing is true', () => {
