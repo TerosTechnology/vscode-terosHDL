@@ -3,6 +3,8 @@ import { ChildProcess } from 'child_process';
 import { e_tools_nvc } from 'colibri/config/config_declaration';
 import { Process } from 'colibri/process/process';
 import * as path from 'path';
+import * as fs from 'fs';
+import * as child_process from 'child_process';
 import * as file_utils from 'colibri/utils/file_utils';
 
 /**
@@ -24,6 +26,52 @@ export function getBinary(config: e_tools_nvc): string {
     }
     // Fall back to system path
     return 'nvc';
+}
+
+/**
+ * Resolve the absolute path of the nvc binary, following symlinks.
+ * Returns null if nvc is not found or resolution fails.
+ */
+function resolveNvcBinaryPath(config: e_tools_nvc): string | null {
+    try {
+        const binary = getBinary(config);
+        if (binary !== 'nvc') {
+            return fs.realpathSync(binary);
+        }
+        // Resolve 'nvc' from PATH
+        const result = child_process.spawnSync('which', ['nvc'], { encoding: 'utf8' });
+        if (result.status === 0 && result.stdout.trim()) {
+            return fs.realpathSync(result.stdout.trim());
+        }
+    } catch {
+        // ignore
+    }
+    return null;
+}
+
+/**
+ * Returns the -L arguments needed to locate NVC's own standard libraries
+ * (std, ieee, nvc) when the installation prefix is non-standard.
+ *
+ * NVC looks for libraries in <prefix>/lib/nvc relative to its binary
+ * (<prefix>/bin/nvc).  When that directory exists and is not already in
+ * NVC's built-in search path the caller must supply -L explicitly.
+ */
+export function getNvcLibraryArgs(config: e_tools_nvc): string[] {
+    const resolvedBinary = resolveNvcBinaryPath(config);
+    if (!resolvedBinary) {
+        return [];
+    }
+
+    // <prefix>/bin/nvc  →  <prefix>/lib/nvc
+    const binDir = path.dirname(resolvedBinary);
+    const prefix = path.dirname(binDir);
+    const libDir = path.join(prefix, 'lib', 'nvc');
+
+    if (fs.existsSync(libDir)) {
+        return ['-L', libDir];
+    }
+    return [];
 }
 
 /**
@@ -49,13 +97,13 @@ export function quoteArgs(args: string[]): string[] {
  * @returns ChildProcess instance
  */
 export function executenvcCommand(
-    config: e_tools_nvc, 
-    args: string[], 
-    cwd: string, 
+    config: e_tools_nvc,
+    args: string[],
+    cwd: string,
     callback: (result: p_result) => void
 ): ChildProcess {
-    // Properly quote arguments that contain spaces
-    const quotedArgs = quoteArgs(args);
+    const libArgs = getNvcLibraryArgs(config);
+    const quotedArgs = quoteArgs([...libArgs, ...args]);
     const nvcExecutable = getBinary(config);
     const command = `${nvcExecutable} ${quotedArgs.join(' ')}`;
     const process = new Process();
@@ -94,10 +142,11 @@ export function buildChainedCommand(
     commandSpecs: Array<{ command: string; args: string[] }>
 ): string {
     const nvcExecutable = getBinary(config);
-    
+    const libArgs = getNvcLibraryArgs(config);
+
     const commands = commandSpecs.map((spec) => {
         const commandParts = spec.command.trim() === '' ? spec.args : [spec.command, ...spec.args];
-        const quotedArgs = quoteArgs(commandParts);
+        const quotedArgs = quoteArgs([...libArgs, ...commandParts]);
         return `${nvcExecutable} ${quotedArgs.join(' ')}`;
     });
 

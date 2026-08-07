@@ -63,5 +63,14 @@ export function groupFilesByLibrary(
         libraryGroups.get(library)!.push(filePath);
     });
 
+    // Ensure the work library is analyzed last so that files in named libraries
+    // (e.g. mylib) are compiled before any unit that references them.
+    const workLibName = config.work_library || 'work';
+    if (libraryGroups.has(workLibName) && libraryGroups.size > 1) {
+        const workFiles = libraryGroups.get(workLibName)!;
+        libraryGroups.delete(workLibName);
+        libraryGroups.set(workLibName, workFiles);
+    }
+
     return libraryGroups;
 }

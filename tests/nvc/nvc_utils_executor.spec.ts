@@ -17,6 +17,18 @@ jest.mock('../../src/colibri/utils/file_utils', () => ({
     create_directory: jest.fn(),
 }));
 
+// Prevent getNvcLibraryArgs from touching the real filesystem or spawning processes in tests.
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    realpathSync: jest.fn().mockImplementation((p: string) => p),
+    existsSync: jest.fn().mockReturnValue(false),
+}));
+
+jest.mock('child_process', () => ({
+    ...jest.requireActual('child_process'),
+    spawnSync: jest.fn().mockReturnValue({ status: 1, stdout: '' }),
+}));
+
 jest.mock('../../src/colibri/utils/hdl_utils', () => ({
     get_toplevel_from_path: jest.fn(),
 }));

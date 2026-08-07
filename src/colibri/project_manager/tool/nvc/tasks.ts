@@ -57,7 +57,7 @@ export function runnvcAnalyze(
         const { baseArgs } = buildnvcArgs(config, 'analyze');
         // Global flags (--std, --work) must come before the command (-a) per NVC spec.
         const analyzeBaseArgs = baseArgs.filter((arg) => !arg.startsWith('--work='));
-        const args = [...analyzeBaseArgs, `--work=${library}`, '-a', ...filePaths];
+        const args = ['-L', projectDefinition.project_disk_path, ...analyzeBaseArgs, `--work=${library}`, '-a', ...filePaths];
         commandSpecs.push({ command: '', args });
     };
 
@@ -87,7 +87,7 @@ export function runnvcElaborate(
 
     // Build arguments from configuration
     const { baseArgs } = buildnvcArgs(config, 'elaborate');
-    const args = [...baseArgs, '-e', topLevel];
+    const args = ['-L', projectDefinition.project_disk_path, ...baseArgs, '-e', topLevel];
 
     return executenvcCommand(config, args, projectDefinition.project_disk_path, callback);
 }
@@ -113,7 +113,7 @@ export function runnvcSimulate(
 
     // Build arguments from configuration
     const { baseArgs, runArgs } = buildnvcArgs(config, 'run');
-    const args = [...baseArgs, '-r', topLevel, ...runArgs];
+    const args = ['-L', projectDefinition.project_disk_path, ...baseArgs, '-r', topLevel, ...runArgs];
 
     // Clean up previous waveform output only for the exact target file.
     cleanupWaveformFile(projectDefinition.project_disk_path, runArgs);
@@ -142,7 +142,7 @@ export function runnvcSynthesize(
 
     // Build arguments from configuration
     const { baseArgs } = buildnvcArgs(config, 'synth');
-    const args = ['--synth', ...baseArgs, topLevel];
+    const args = ['-L', projectDefinition.project_disk_path, '--synth', ...baseArgs, topLevel];
 
     return executenvcCommand(config, args, projectDefinition.project_disk_path, callback);
 }
@@ -181,6 +181,7 @@ export function runnvcCheckSyntax(
     for (const [library, files] of libraryGroups) {
         // Global flags (--std, --work) go before -a per NVC spec.
         const fullArgs = [
+            '-L', projectDefinition.project_disk_path,
             ...syntaxBaseArgs,
             `--work=${library}`,
             '-a',
@@ -218,7 +219,7 @@ export function runnvcMakefile(
 
     // Build arguments from configuration
     const { baseArgs } = buildnvcArgs(config, 'elaborate');
-    const args = ['--gen-makefile', ...baseArgs, topLevel];
+    const args = ['-L', projectDefinition.project_disk_path, '--gen-makefile', ...baseArgs, topLevel];
 
     return executenvcCommand(config, args, projectDefinition.project_disk_path, callback);
 }
@@ -259,17 +260,17 @@ export function runnvcAll(
         const { baseArgs } = buildnvcArgs(config, 'analyze');
         // Global flags (--std, --work) must come before the command (-a) per NVC spec.
         const analyzeBaseArgs = baseArgs.filter((arg) => !arg.startsWith('--work='));
-        const args = [...analyzeBaseArgs, `--work=${library}`, '-a', ...filePaths];
+        const args = ['-L', projectDefinition.project_disk_path, ...analyzeBaseArgs, `--work=${library}`, '-a', ...filePaths];
         analyzeCommandSpecs.push({ command: '', args });
     }
 
     // Build elaborate command
     const { baseArgs: elaborateBaseArgs } = buildnvcArgs(config, 'elaborate');
-    const elaborateArgs = [...elaborateBaseArgs, '-e', topLevel];
-    
+    const elaborateArgs = ['-L', projectDefinition.project_disk_path, ...elaborateBaseArgs, '-e', topLevel];
+
     // Build simulate command
     const { baseArgs: runBaseArgs, runArgs: simRunArgs } = buildnvcArgs(config, 'run');
-    const simulateArgs = [...runBaseArgs, '-r', topLevel, ...simRunArgs];
+    const simulateArgs = ['-L', projectDefinition.project_disk_path, ...runBaseArgs, '-r', topLevel, ...simRunArgs];
 
     // Clean up previous waveform output only for the exact target file.
     cleanupWaveformFile(projectDefinition.project_disk_path, simulateArgs);

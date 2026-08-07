@@ -7,7 +7,7 @@
             "label": "teros watch",
             "type": "npm",
             "options": {
-                "cwd": "./"
+                "cwd": "${workspaceFolder}"
             },
             "script": "watch",
             "problemMatcher": "$tsc-watch",
