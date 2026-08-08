@@ -14,12 +14,20 @@ also in multi-lines
 
 Example of description beakline
 
+Example of unordered list:
+
+* Normal operation mode
+* Low power mode
+* Debug mode
+* Test mode
+
+
 Example of Wavedrom
 image:
 
 
 
-![alt text](wavedrom_fpUS0.svg "title")
+![alt text](wavedrom_fgD90.svg "title")
 
  
 
@@ -27,7 +35,7 @@ Example of bitfield:
 
 
 
-![alt text](wavedrom_jn9w1.svg "title")
+![alt text](wavedrom_D2eS1.svg "title")
 
  
 
