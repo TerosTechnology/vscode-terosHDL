@@ -99,7 +99,7 @@ export class Schematic_manager extends Base_webview {
         this.panel = vscode.window.createWebviewPanel(
             'netlist_viewer',
             'Schematic viewer',
-            vscode.ViewColumn.Two,
+            vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true
