@@ -82,10 +82,12 @@ export class Vsg extends Base_linter {
         const code_file_normalized = file_path.replace(' ', '\\ ');
         const json_file_file_normalized = junit_file.replace(' ', '\\ ');
 
-        let command = `vsg -f ${code_file_normalized} --all_phases --js ${json_file_file_normalized}`;
+        const binary_path = options.path ? `${options.path}/${this.binary}` : this.binary;
+
+        let command = `${binary_path} -f ${code_file_normalized} --all_phases --js ${json_file_file_normalized}`;
         if (options.argument !== ""){
             // eslint-disable-next-line max-len
-            command = `vsg -f ${code_file_normalized} --all_phases -c ${options.argument} --js ${json_file_file_normalized}`;
+            command = `${binary_path} -f ${code_file_normalized} --all_phases -c ${options.argument} --js ${json_file_file_normalized}`;
         }
 
         const msg = `Linting with command: ${command} `;
