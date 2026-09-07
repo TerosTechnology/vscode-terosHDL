@@ -26,12 +26,4 @@ describe("TerosHDL Global Settings", () => {
       titles.some((title) => title.includes("TerosHDL Global Settings"))
     );
   });
-
-  afterEach(async () => {
-    try {
-      await new EditorView().closeAllEditors();
-    } catch {
-      // There aren't any open editors.
-    }
-  });
 });

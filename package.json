@@ -944,7 +944,7 @@
         "compile-esbuild": "cross-env NODE_ENV=production node ./esbuild.js",
         "copy-files": "python3 copy_files.py ",
         "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json",
-        "test:ui": "npm run compile && extest setup-and-run './tests/ui/test-*.ts' --code_version max --extensions_dir .vscode-test/extensions"
+        "test:ui": "npm run compile && cross-env TEROSHDL_UI_TEST_EXAMPLE_DESTINATION=1 extest setup-and-run './tests/ui/test-*.ts' --code_version max --extensions_dir .vscode-test/extensions"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",

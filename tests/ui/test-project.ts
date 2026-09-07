@@ -1,47 +1,27 @@
 // Verify that the TerosHDL extension can create a new project and that it appears in the TerosHDL Projects tree view
 
 import { expect } from "chai";
-import { Workbench, InputBox } from "vscode-extension-tester";
-import { getReadyWorkbench, getTerosHdlControl, registerGlobalCleanup, runCommand, waitForQuickPicks } from "./helpers";
+import { InputBox } from "vscode-extension-tester";
+import { deleteProjectFromTree, getReadyWorkbench, registerGlobalCleanup, runCommand, waitForProjectItem, waitForQuickPicks } from "./helpers";
 
 describe("TerosHDL Project Creation", () => {
-  let workbench: Workbench;
   const testProjectName = "teroshdl-extester-test";
 
-  async function waitForProjectItem(section: any, timeout = 10000): Promise<void> {
-    await section.getDriver().wait(async () => {
-      try {
-        await section.findItem(testProjectName);
-        return true;
-      } catch {
-        return false;
-      }
-    }, timeout, `Project ${testProjectName} did not appear in time`);
-  }
-
   before(async () => {
-    workbench = await getReadyWorkbench();
+    await getReadyWorkbench();
+    await deleteProjectFromTree(testProjectName).catch(() => {
+      // Project may not exist yet
+    });
   });
 
   registerGlobalCleanup();
 
-  // Cleans up any existing test project after the test to ensure a clean state
   after(async function () {
-    this.timeout(30000); // 30 seconds timeout for cleanup
+    this.timeout(30000);
     try {
-      await runCommand("teroshdl.view.project.delete");
-      // 800 ms timeout for InputBox to appear
-      const input = await InputBox.create(800);
-      const picks = await input.getQuickPicks();
-      for (const pick of picks) {
-        if ((await pick.getLabel()).includes(testProjectName)) {
-          await pick.select();
-          return;
-        }
-      }
-      await input.cancel();
-    } catch {
-      // If the project doesn't exist, there's nothing to clean up
+      await deleteProjectFromTree(testProjectName);
+    } catch (err) {
+      console.warn(`[cleanup] Could not delete test project: ${err}`);
     }
   });
 
@@ -61,16 +41,7 @@ describe("TerosHDL Project Creation", () => {
     await nameInput.setText(testProjectName);
     await nameInput.confirm();
 
-    // Save project in the InputBox that appears after naming the project
-    const teroshdlControl = await getTerosHdlControl();
-    const sidebar = await teroshdlControl.openView();
-    const content = await sidebar.getContent();
-    const section = await content.getSection("Projects");
-    expect(section).to.not.be.undefined;
-
-    await section.expand();
-    await waitForProjectItem(section);
-    const projectItem = await section.findItem(testProjectName);
+    const projectItem = await waitForProjectItem(testProjectName);
     expect(projectItem).to.not.be.undefined;
   });
 });
