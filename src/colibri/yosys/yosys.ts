@@ -151,7 +151,7 @@ export async function runYosysGhdl(config: e_config, topTevel: string, sources: 
 
     let cmd =
         // eslint-disable-next-line max-len
-        `${preArguments} ${yosysPath} ${await getGHDLCommnand(preArguments, yosysPath)} -p "ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} --work=work -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
+        `${preArguments} ${yosysPath} ${await getGHDLCommnand(preArguments, yosysPath)} -p "ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
     cmd = removeEmptyCommands(cmd);
 
     const opt_exec = { cwd: process_utils.get_home_directory() };
