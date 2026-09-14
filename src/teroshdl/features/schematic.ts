@@ -249,25 +249,43 @@ export class Schematic_manager extends Base_webview {
     }
 
     async generateFromfile(file_path: string) {
-        if (!check_if_path_exist(file_path)) {
-            throw new Error("Put the cursor on a file to generate the schematic.");
+	/**
+         * First try to get the selected file path from the project, fall back to non-project 
+         * mode only if the selected project errors out
+         */
+        try {
+            const selectedProject = this.manager.get_selected_project();
+
+            const topLevelPath = selectedProject.get_project_definition().toplevel_path_manager.get();
+            const fileList = selectedProject.get_project_definition().file_manager.get();
+
+            let topLevel = "";
+            if (topLevelPath.length === 1) {
+                topLevel = get_toplevel_from_path(file_path);
+            }
+
+            return await this.run_yosys_script(topLevel, fileList);
+        } catch (error) {
+            if (!check_if_path_exist(file_path)) {
+                throw new Error("Put the cursor on a file to generate the schematic.");
+            }
+    
+            const language = get_language_from_filepath(file_path);
+            const fileVersion = get_default_version_for_filepath(file_path);
+            const file: t_file = {
+                name: file_path,
+                is_include_file: false,
+                include_path: '',
+                logical_name: '',
+                is_manual: false,
+                file_type: language,
+                file_version: fileVersion,
+                source_type: e_source_type.SYNTHESIS
+    
+            };
+            const topLevel = get_toplevel_from_path(file_path);
+            return await this.run_yosys_script(topLevel, [file]);
         }
-
-        const language = get_language_from_filepath(file_path);
-        const fileVersion = get_default_version_for_filepath(file_path);
-        const file: t_file = {
-            name: file_path,
-            is_include_file: false,
-            include_path: '',
-            logical_name: '',
-            is_manual: false,
-            file_type: language,
-            file_version: fileVersion,
-            source_type: e_source_type.SYNTHESIS
-
-        };
-        const topLevel = get_toplevel_from_path(file_path);
-        return await this.run_yosys_script(topLevel, [file]);
     }
 
     async run_yosys_script(topLevel: string, sources: t_file[]) {
