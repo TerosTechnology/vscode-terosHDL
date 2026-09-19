@@ -182,8 +182,6 @@ export class LanguageProviderManager {
             this.context.subscriptions.push(
                 vscode.languages.registerDefinitionProvider(verilogSelector, this.provider_list.def)
             );
-
-            this.context.subscriptions.push(vscode.commands.registerCommand('teroshdl.verible.restart', async () => {}));
         }
     }
 
