@@ -25,6 +25,7 @@ import { LANGUAGE } from "../common/general";
 import { Base_linter } from "./base_linter";
 import * as common from "./common";
 import * as path_lib from "path";
+import { BinaryCheck, checkBinary } from "colibri/toolChecker/utils";
 
 export class Vivado extends Base_linter {
     binary = "vivado";
@@ -33,6 +34,13 @@ export class Vivado extends Base_linter {
 
     constructor() {
         super();
+    }
+
+    public async checkLinterConfiguration(installationPath: string): Promise<BinaryCheck> {
+        // Vivado installations can expose either wrapper binaries (vivado) or
+        // direct lint binaries (xvhdl/xvlog), depending on the configured folder.
+        const binaryCandidates = ["xvhdl", "xvlog", "vivado"];
+        return await checkBinary(this.constructor.name, installationPath, binaryCandidates, this.argumentToCheck);
     }
 
     public set_binary(file: string) {
