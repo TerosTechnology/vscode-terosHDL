@@ -93,7 +93,7 @@ export class State_machine_manager extends Base_webview {
         this.panel = vscode.window.createWebviewPanel(
             'state_machine_viewer',
             'State machine viewer',
-            vscode.ViewColumn.Two,
+            vscode.ViewColumn.Beside,
             {
                 enableScripts: true
             }
