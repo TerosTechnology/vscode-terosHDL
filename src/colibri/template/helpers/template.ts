@@ -21,6 +21,7 @@ import { LANGUAGE } from "../../common/general";
 import * as template_definition_general from "./template_definition";
 import * as template_definition_verilog from "./template_definition_verilog";
 import * as template_definition_vhdl from "./template_definition_vhdl";
+import { format_verilog_instance, prefix_lines, t_verilog_instance_item } from "./verilog_instance";
 import * as nunjucks from 'nunjucks';
 
 export function get_template(language: LANGUAGE, template_name: string, template_options: any,
@@ -33,6 +34,23 @@ export function get_template(language: LANGUAGE, template_name: string, template
 
     //Global
     template_options["header"] = nunjucks.renderString(template_definition_general.header, { "header": header });
+
+    // Verilog/SV instance. It is generated here (instead of inside the nunjucks
+    // template) because the table alignment of the "." / "(" / ")" columns
+    // depends on the longest parameter/port name.
+    const to_instance_items = (list: any[]): t_verilog_instance_item[] => {
+        return (list || []).map(element => ({
+            name: element['info']['name'],
+            value: element['info']['name']
+        }));
+    };
+    const instance_text = format_verilog_instance(template_options["name"],
+        to_instance_items(template_options["generic"]),
+        to_instance_items(template_options["port"]));
+    template_options["instance_text"] = instance_text;
+    // The instance is embedded inside a testbench one indent level deeper.
+    template_options["instance_indented"] =
+        prefix_lines(instance_text, template_options["indent"][1]);
 
     let base_temp = undefined;
     let reverse_base_temp = undefined;
