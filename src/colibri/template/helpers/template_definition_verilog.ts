@@ -29,27 +29,15 @@ export const clock =
 {% endif -%}`;
 
 export const hdl_element_instance = 
-`{{ name -}}
+`{%- if generic|length > 0 %}{{ name }}{{ special_char_1 }}# (
 {% for generic_inst in generic -%}
-{% if loop.first -%}
-{{special_char_1}}# (
-{% endif -%}
-{% if loop.last -%}
-{{ indent[2] }}.{{generic_inst['info']['name']}}({{generic_inst['info']['name']}})
-{{ indent[1] }})
-{% else -%}
-{{ indent[2] }}.{{generic_inst['info']['name']}}({{generic_inst['info']['name']}}),
-{% endif -%}
-{% endfor -%}
-{{indent[1]}}{{ name }}_inst (
+{{ generic_inst['info']['name'] | alignline(generic_name_max, loop.last) }}
+{% endfor %})
+{% else %}{{ name }}
+{% endif %}{{ name }}_inst (
 {% for port_inst in port -%}
-{% if loop.last -%}
-{{ indent[2] }}.{{port_inst['info']['name']}}({{port_inst['info']['name']}})
-{% else -%}
-{{ indent[2] }}.{{port_inst['info']['name']}}({{port_inst['info']['name']}}),
-{% endif -%}
-{% endfor -%}
-{{ indent[1] }});`;
+{{ port_inst['info']['name'] | alignline(port_name_max, loop.last) }}
+{% endfor %});`;
 
 export const hdl_element_component = "";
 

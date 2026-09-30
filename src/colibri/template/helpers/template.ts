@@ -148,6 +148,22 @@ export function get_template(language: LANGUAGE, template_name: string, template
         return strTrim;
     });
 
+    // Renders a single aligned connection line for the instance template:
+    //     .NAME ... ( NAME ... )
+    // All lines of a group share the same "." / "(" / ")" columns (as required
+    // by the module instantiation style). `max` is the max name length of the
+    // group, `is_last` controls the trailing comma.
+    env.addFilter('alignline', function(name, max, is_last) {
+        const n = String(name);
+        const pad = (x: any) => {
+            const len = String(x).length;
+            let spaces = (max || 0) - len + 1;
+            return ' '.repeat(spaces < 1 ? 1 : spaces);
+        };
+        let line = '    .' + n + pad(n) + '( ' + n + pad(n) + ')';
+        return is_last ? line : line + ',';
+    });
+
     const result = env.renderString(template_str, options);
     return result;
 }

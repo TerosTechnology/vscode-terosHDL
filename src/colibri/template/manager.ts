@@ -151,10 +151,18 @@ export class Template_manager {
         }
         const port = this.adapt_port(code_tree.get_port_array(), template_type, false);
         
+        // Maximum name length among generics and ports. Used by the instance
+        // template to align the "." / "(" / ")" columns.
+        const generic_name_max = generic.length > 0 ?
+            Math.max(...generic.map((element: any) => element.info.name.length)) : 0;
+        const port_name_max = port.length > 0 ?
+            Math.max(...port.map((element: any) => element.info.name.length)) : 0;
         
         const template_options = {
             indent: indent, name: name,
             generic: generic, port: port,
+            generic_name_max: generic_name_max,
+            port_name_max: port_name_max,
             instance_style: options.instance_style,
         };
         template = get_template(norm_language, template_type, template_options, header, options.clock_generation_style);
