@@ -4,6 +4,7 @@
         "paths": {
             "colibri/*": ["colibri/*"]
         },
+        "ignoreDeprecations": "6.0",
         "noImplicitAny": false,
         "module": "commonjs",
         "target": "ES2019",
