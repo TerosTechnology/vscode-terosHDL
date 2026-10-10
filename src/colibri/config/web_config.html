@@ -877,6 +877,9 @@ body.vscode-high-contrast {
                             <div class="settings-toc-child" id="btn-tools-raptor">
                                 Raptor Design Suite
                             </div>
+                            <div class="settings-toc-child" id="btn-tools-nextpnr">
+                                nextpnr
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1954,6 +1957,7 @@ body.vscode-high-contrast {
                                       <option value='sandpiper'>SandPiper</option>
                                       <option value='yosys'>Yosys</option>
                                       <option value='nvc'>NVC</option>
+                                      <option value='nextpnr'>nextpnr</option>
                             </select>
                         </div>
                     </div>
@@ -5826,6 +5830,116 @@ body.vscode-high-contrast {
                   
                   
             </div>
+            <div class="settings-section" id="tools-nextpnr">
+                <div class="settings-group-title-label">
+                    Tools: nextpnr
+                </div>
+                <div class="settings-group-description">Open-source FPGA place-and-route tool.</div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Basic nextpnr Configuration</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation directory containing the nextpnr executable(s):
+                            <span class="markConfig" id="mark_tools-nextpnr-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Target FPGA architecture:
+                            <span class="markConfig" id="mark_tools-nextpnr-target_family"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-nextpnr-target_family">
+                                      <option value='ice40'>iCE40</option>
+                                      <option value='ecp5'>ECP5</option>
+                                      <option value='generic'>Generic</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Device Constraints</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            PCF pin constraints file (iCE40 only; leave empty if unused):
+                            <span class="markConfig" id="mark_tools-nextpnr-pcf_file"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-pcf_file" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            LPF pin constraints file (ECP5 only; leave empty if unused):
+                            <span class="markConfig" id="mark_tools-nextpnr-lpf_file"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-lpf_file" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Target frequency in MHz (0 means no explicit frequency constraint):
+                            <span class="markConfig" id="mark_tools-nextpnr-freq"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-nextpnr-freq">
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Placement and Routing</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Random seed for reproducible placement and routing:
+                            <span class="markConfig" id="mark_tools-nextpnr-seed"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-nextpnr-seed">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Optional placer selection supported by the selected nextpnr build:
+                            <span class="markConfig" id="mark_tools-nextpnr-placer"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-placer" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Optional router selection supported by the selected nextpnr build:
+                            <span class="markConfig" id="mark_tools-nextpnr-router"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-router" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional nextpnr command-line options (comma-separated):
+                            <span class="markConfig" id="mark_tools-nextpnr-extra_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-nextpnr-extra_options">
+                    </div>
+                  
+                  
+            </div>
 
 <div class="settings-buttons">
     <button type="button" class="setting-button danger" onclick="close_panel(event)">
@@ -5905,6 +6019,7 @@ body.vscode-high-contrast {
     document.getElementById("tools-activehdl").classList.remove('active');
     document.getElementById("tools-questa").classList.remove('active');
     document.getElementById("tools-raptor").classList.remove('active');
+    document.getElementById("tools-nextpnr").classList.remove('active');
     
     // Show the selected section
     document.getElementById(tp0 + "-" + tp1).classList.add('active');
@@ -6063,6 +6178,9 @@ body.vscode-high-contrast {
     }
     if (document.getElementById("btn-tools-raptor")) {
         document.getElementById("btn-tools-raptor").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-nextpnr")) {
+        document.getElementById("btn-tools-nextpnr").classList.remove('selected');
     }
     
     // Add selection to current item
@@ -6394,6 +6512,12 @@ body.vscode-high-contrast {
     document.getElementById("btn-tools-raptor").addEventListener("click", function(e) {
       e.preventDefault();
       enable_tab("tools", "raptor");
+    });
+  }
+  if (document.getElementById("btn-tools-nextpnr")) {
+    document.getElementById("btn-tools-nextpnr").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "nextpnr");
     });
   }
   
@@ -7565,6 +7689,31 @@ body.vscode-high-contrast {
     config["tools"]["raptor"]["simulator_pnr"] = element_value
     element_value = document.getElementById("tools-raptor-simulation_options_pnr").value;
     config["tools"]["raptor"]["simulation_options_pnr"] = element_value
+    config["tools"]["nextpnr"] = {}
+    config["tools"]["nextpnr"]["section_basic"] = element_value
+    element_value = document.getElementById("tools-nextpnr-installation_path").value;
+    config["tools"]["nextpnr"]["installation_path"] = element_value
+    element_value = document.getElementById("tools-nextpnr-target_family").value;
+    config["tools"]["nextpnr"]["target_family"] = element_value
+    config["tools"]["nextpnr"]["section_constraints"] = element_value
+    element_value = document.getElementById("tools-nextpnr-pcf_file").value;
+    config["tools"]["nextpnr"]["pcf_file"] = element_value
+    element_value = document.getElementById("tools-nextpnr-lpf_file").value;
+    config["tools"]["nextpnr"]["lpf_file"] = element_value
+    element_value = parseInt(document.getElementById("tools-nextpnr-freq").value, 10);
+    config["tools"]["nextpnr"]["freq"] = element_value
+    config["tools"]["nextpnr"]["section_placement_routing"] = element_value
+    element_value = parseInt(document.getElementById("tools-nextpnr-seed").value, 10);
+    config["tools"]["nextpnr"]["seed"] = element_value
+    element_value = document.getElementById("tools-nextpnr-placer").value;
+    config["tools"]["nextpnr"]["placer"] = element_value
+    element_value = document.getElementById("tools-nextpnr-router").value;
+    config["tools"]["nextpnr"]["router"] = element_value
+    element_value = document.getElementById("tools-nextpnr-extra_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["nextpnr"]["extra_options"] = element_value
     return config;
   }
 
@@ -8741,6 +8890,33 @@ body.vscode-high-contrast {
     }
     if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulation_options_pnr"] !== undefined) {
         document.getElementById("tools-raptor-simulation_options_pnr").value = config["tools"]["raptor"]["simulation_options_pnr"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["installation_path"] !== undefined) {
+        document.getElementById("tools-nextpnr-installation_path").value = config["tools"]["nextpnr"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["target_family"] !== undefined) {
+        document.getElementById("tools-nextpnr-target_family").value = config["tools"]["nextpnr"]["target_family"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["pcf_file"] !== undefined) {
+        document.getElementById("tools-nextpnr-pcf_file").value = config["tools"]["nextpnr"]["pcf_file"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["lpf_file"] !== undefined) {
+        document.getElementById("tools-nextpnr-lpf_file").value = config["tools"]["nextpnr"]["lpf_file"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["freq"] !== undefined) {
+        document.getElementById("tools-nextpnr-freq").value = config["tools"]["nextpnr"]["freq"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["seed"] !== undefined) {
+        document.getElementById("tools-nextpnr-seed").value = config["tools"]["nextpnr"]["seed"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["placer"] !== undefined) {
+        document.getElementById("tools-nextpnr-placer").value = config["tools"]["nextpnr"]["placer"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["router"] !== undefined) {
+        document.getElementById("tools-nextpnr-router").value = config["tools"]["nextpnr"]["router"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["extra_options"] !== undefined) {
+        element_value = document.getElementById("tools-nextpnr-extra_options").value = String(config["tools"]["nextpnr"]["extra_options"]);
     }
   }
 
@@ -10702,6 +10878,51 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulation_options_pnr").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["installation_path"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-installation_path").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["target_family"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-target_family").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["pcf_file"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-pcf_file").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["lpf_file"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-lpf_file").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["freq"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-freq").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["seed"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-seed").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["placer"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-placer").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["router"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-router").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["extra_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-extra_options").innerHTML = mark;
   }
 
   function open_submenu_icon(x) {
