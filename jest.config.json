@@ -26,7 +26,7 @@
     "reporters": [
         "default",
         [
-            "jest-html-reporters",
+            "jest-html-reporter",
             {
                 "publicPath": "./test-report",
                 "filename": "test-report.html",
