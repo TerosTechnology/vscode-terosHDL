@@ -27,7 +27,7 @@ import { t_message_level, showMessage, getConfig, getVSCodeWorkspaceStorage } fr
 import * as yaml from "js-yaml";
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
-import { createProjectSandpiper } from "./utils";
+import { createProjectSandpiper, getUiTestExampleDestinationFolder } from "./utils";
 import { e_event, ProjectEmitter } from "colibri/project_manager/projectEmitter";
 import { copy_directory_recursive, read_file_sync } from "colibri/utils/file_utils";
 import { getFamilyAndParts } from "colibri/project_manager/tool/quartus/utils";
@@ -230,18 +230,25 @@ export class Project_manager extends BaseView {
                 const exampleFolder = path_lib.join(this.context.extensionUri.fsPath, "resources",
                     "project_manager", "examples", picker_value.toLowerCase());
                 
-                // Ask the user to select a destination folder
-                const destinationFolders = await utils.get_from_open_dialog(
-                    "Select destination folder for the example", 
-                    true, // can select folders
-                    false, // can't select files
-                    false, // can't select multiple
-                    "Select destination folder", 
-                    {}
-                );
-                
-                if (destinationFolders.length === 1) {
-                    const destinationFolder = destinationFolders[0];
+                let destinationFolder: string | undefined;
+                if (process.env.TEROSHDL_UI_TEST_EXAMPLE_DESTINATION === "1") {
+                    destinationFolder = getUiTestExampleDestinationFolder(this.context, picker_value);
+                }
+                else {
+                    const destinationFolders = await utils.get_from_open_dialog(
+                        "Select destination folder for the example",
+                        true,
+                        false,
+                        false,
+                        "Select destination folder",
+                        {}
+                    );
+                    if (destinationFolders.length === 1) {
+                        destinationFolder = destinationFolders[0];
+                    }
+                }
+
+                if (destinationFolder !== undefined) {
                     
                     // Copy all files and folders from the example to the destination folder
                     await vscode.window.withProgress({

@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "mocha", "chai"],
+    "rootDir": "./",
+    "ignoreDeprecations": "6.0"
+  },
+  "include": ["./**/*.ts"]
+}
+

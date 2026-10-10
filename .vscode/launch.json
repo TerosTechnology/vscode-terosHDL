@@ -30,17 +30,13 @@
       "runtimeArgs": ["--experimental-vm-modules", "--inspect-brk=0"],
       "windows": {
         "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-      },
+      }
     },
     {
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}"
-      ],
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "name": "Run TerosHDL",
       "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/out/**/*.js"
-      ],
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "sourceMapPathOverrides": {
         "../../../../../src/*": "${workspaceFolder}/src/*",
         "src/*": "${workspaceFolder}/src/*",
@@ -50,6 +46,24 @@
       "preLaunchTask": "teros watch",
       "request": "launch",
       "type": "extensionHost"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug ExTester",
+      "program": "${workspaceFolder}/node_modules/.bin/extest",
+      "args": [
+        "setup-and-run",
+        "./tests/ui/test-*.ts",
+        "--code_version",
+        "max"
+      ],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "console": "integratedTerminal",
+      "env": {
+        "EXTENSION_DEV_PATH": "${workspaceFolder}"
+      }
     }
   ]
 }

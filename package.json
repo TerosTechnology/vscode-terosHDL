@@ -917,9 +917,9 @@
         "build-package": "cd auto_package && ./gen.sh",
         "clean": "shx rm -rf out",
         "vscode:prepublish": "npm run generate-examples & npm run compile",
-        "compile": "npm run-script copy-files && npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./",
+        "compile": "npm run-script copy-files && npm run-script build-webviews && npm run-script build-webviews-configuration && tsc -p ./",
         "lint": "eslint src",
-        "watch": "npm run-script copy-files & tsc --watch --p ./tsconfig.json & nodemon --ignore 'resources/webviews/reporters/**/wb/**' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"",
+        "watch": "npm run-script copy-files && tsc --watch --p ./tsconfig.json && nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"",
         "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh",
         "pre-package": "mkdir ./node_modules/teroshdl2/node_modules/onml/lib; cp ./node_modules/teroshdl2/node_modules/onml/*.js ./node_modules/teroshdl2/node_modules/onml/lib",
         "package": "npm run pre-package & vsce package --allow-star-activation",
@@ -929,7 +929,8 @@
         "build-webviews-configuration": "cross-env NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js",
         "compile-esbuild": "cross-env NODE_ENV=production node ./esbuild.js",
         "copy-files": "python3 copy_files.py ",
-        "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json"
+        "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json",
+        "test:ui": "npm run compile && cross-env TEROSHDL_UI_TEST_EXAMPLE_DESTINATION=1 extest setup-and-run './tests/ui/test-*.ts' --code_version max --extensions_dir .vscode-test/extensions"
     },
     "dependencies": {
         "@oclif/core": "^1",
@@ -985,6 +986,7 @@
         "@types/cli-color": "^2.0.2",
         "@types/jest": "^29.4.3",
         "@types/js-yaml": "^4.0.5",
+        "@types/mocha": "^10.0.10",
         "@types/node": "^17.0.31",
         "@types/temp": "^0.9.4",
         "@types/vscode": "^1.45.0",
@@ -997,14 +999,15 @@
         "eslint": "^9.11.1",
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-prettier": "^4.0.0",
+        "mocha": "^11.7.6",
+        "ts-node": "^10.9.2",
+        "vscode-extension-tester": "^8.23.0",   
         "jest": "^29.7.0",
-        "jest-html-reporters": "^3.1.4",
-        "js-yaml": "^3.13.1",
+        "ts-jest": "^29.1.2",
+        "typescript": "^4.8.2",
         "nodemon": "^3.0.2",
         "shx": "^0.3.3",
-        "ts-jest": "^29.1.2",
         "typedoc": "^0.23.9",
-        "typedoc-theme-hierarchy": "^3.0.0",
-        "typescript": "^4.8.2"
+        "typedoc-theme-hierarchy": "^3.0.0"
     }
 }

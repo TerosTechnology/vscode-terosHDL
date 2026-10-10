@@ -19,6 +19,10 @@ import { ProjectEmitter } from "colibri/project_manager/projectEmitter";
 import * as utils from "../utils";
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import {SandpiperProjectManager} from "colibri/project_manager/tool/sandpiper/sandpiperProjectManager";
+import * as fs from "fs";
+import * as path_lib from "path";
+import * as vscode from "vscode";
+import { getVSCodeWorkspaceStorage } from "../../utils/utils";
 
 export async function createProjectSandpiper(
     multiProjectManager: Multi_project_manager,
@@ -44,4 +48,17 @@ export async function createProjectSandpiper(
     
     // Add project to multi project manager
     multiProjectManager.add_project(project);
+}
+
+// Test-only hook: ExTester runs with a deterministic destination folder
+// so UI tests can bypass interactive folder selection.
+export function getUiTestExampleDestinationFolder(context: vscode.ExtensionContext, exampleName: string): string {
+    const workspaceStorage = getVSCodeWorkspaceStorage(context);
+    const destinationFolder = path_lib.join(workspaceStorage, "ui-tests", exampleName.toLowerCase());
+    if (!destinationFolder.includes("ui-tests")) {
+        throw new Error(`Refusing to delete unexpected path: ${destinationFolder}`);
+    }
+    fs.rmSync(destinationFolder, { recursive: true, force: true });
+    fs.mkdirSync(destinationFolder, { recursive: true });
+    return destinationFolder;
 }
