@@ -1,0 +1,63 @@
+# Basic Configuration
+section_basic:
+  description: "Basic nextpnr Configuration"
+  type: divider
+
+installation_path:
+  description: "Installation directory containing the nextpnr executable(s):"
+  type: string
+  value: ""
+
+target_family:
+  description: "Target FPGA architecture:"
+  type: select
+  options:
+    ice40: "iCE40"
+    ecp5: "ECP5"
+    generic: "Generic"
+  value: ice40
+
+# Device Constraints
+section_constraints:
+  description: "Device Constraints"
+  type: divider
+
+pcf_file:
+  description: "PCF pin constraints file (iCE40 only; leave empty if unused):"
+  type: string
+  value: ""
+
+lpf_file:
+  description: "LPF pin constraints file (ECP5 only; leave empty if unused):"
+  type: string
+  value: ""
+
+freq:
+  description: "Target frequency in MHz (0 means no explicit frequency constraint):"
+  type: number
+  value: 0
+
+# Placement and Routing
+section_placement_routing:
+  description: "Placement and Routing"
+  type: divider
+
+seed:
+  description: "Random seed for reproducible placement and routing:"
+  type: number
+  value: 1
+
+placer:
+  description: "Optional placer selection supported by the selected nextpnr build:"
+  type: string
+  value: ""
+
+router:
+  description: "Optional router selection supported by the selected nextpnr build:"
+  type: string
+  value: ""
+
+extra_options:
+  description: "Additional nextpnr command-line options (comma-separated):"
+  type: array
+  value: []

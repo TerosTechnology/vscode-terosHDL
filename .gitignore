@@ -34,4 +34,5 @@ __pycache__/
 # ExTester / UI test artifacts
 extest.log
 .extester/
-test-resources/
+test-resources
+
