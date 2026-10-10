@@ -8,7 +8,7 @@
   command: "npm run generate-examples & npm run compile"
 
 - name: "compile"
-  command: "npm run-script copy-files & npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./"
+  command: "npm run-script copy-files && npm run-script build-webviews && npm run-script build-webviews-configuration && tsc -p ./"
 
 - name: "lint"
   command: "eslint src"

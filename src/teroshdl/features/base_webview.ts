@@ -46,8 +46,13 @@ export abstract class Base_webview {
             context.subscriptions.push(
                 vscode.commands.registerCommand(
                     activation_command,
-                    async (documentUri: vscode.Uri) => {
-                        await this.create_webview(documentUri.fsPath);
+                    async (documentUri?: vscode.Uri) => {
+                        const targetUri = documentUri ?? vscode.window.activeTextEditor?.document.uri;
+                        if (!targetUri) {
+                            vscode.window.showWarningMessage('No active HDL file found to open this viewer.');
+                            return;
+                        }
+                        await this.create_webview(targetUri.fsPath);
                     }
                 ),
                 vscode.workspace.onDidOpenTextDocument((e) => this.update_open_document(e)),
