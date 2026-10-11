@@ -3,35 +3,36 @@ import { ChildProcess } from 'child_process';
 import * as file_utils from '../../../utils/file_utils';
 import { Process } from '../../../process/process';
 import { p_result } from '../../../process/common';
+import { OS } from '../../../process/common';
+import { get_os } from '../../../process/utils';
+import { e_tools_nextpnr, e_tools_nextpnr_target_family } from '../../../config/config_declaration';
 
-export type e_nextpnr_target_family = 'ice40' | 'ecp5' | 'generic';
-
-export type t_nextpnr_executor_config = {
-    installation_path?: string;
-    target_family?: e_nextpnr_target_family;
-};
+export type e_nextpnr_target_family = e_tools_nextpnr_target_family;
+export type t_nextpnr_executor_config = Partial<Pick<e_tools_nextpnr, 'installation_path' | 'target_family'>>;
 
 export function quoteArgs(args: string[]): string[] {
-    return args.map((arg) => {
-        if (arg.includes(' ')) {
-            return `"${arg}"`;
-        }
-        return arg;
-    });
+    return args.map(quoteArgument);
 }
 
 export function getBinary(config: t_nextpnr_executor_config): string {
-    const suffix = config.target_family === 'ice40' ? 'ice40' :
-                   config.target_family === 'ecp5' ? 'ecp5' : 'generic';
-    const binaryName = `nextpnr-${suffix}`;
+    const family = config.target_family;
+    const binaryByFamily: Record<e_tools_nextpnr_target_family, string> = {
+        [e_tools_nextpnr_target_family.ice40]: 'nextpnr-ice40',
+        [e_tools_nextpnr_target_family.ecp5]: 'nextpnr-ecp5',
+        [e_tools_nextpnr_target_family.generic]: 'nextpnr-generic',
+    };
+    const binaryName = binaryByFamily[family];
+    if (!binaryName) {
+        throw new Error(`Unsupported nextpnr target family: ${family}`);
+    }
+
     if (config.installation_path?.trim()) {
-        const fullPath = path.join(config.installation_path, binaryName);
-        if (file_utils.check_if_path_exist(fullPath)) {
-            return fullPath;
-        }
-        const exePath = fullPath + '.exe';
-        if (file_utils.check_if_path_exist(exePath)) {
-            return exePath;
+        const binaryNames = get_os() === OS.WINDOWS ? [`${binaryName}.exe`, binaryName] : [binaryName];
+        for (const name of binaryNames) {
+            const fullPath = path.join(config.installation_path, name);
+            if (file_utils.check_if_path_exist(fullPath)) {
+                return fullPath;
+            }
         }
     }
     return binaryName;
@@ -43,9 +44,36 @@ export function executeCommand(
     cwd: string,
     callback: (result: p_result) => void
 ): ChildProcess {
-    const process = new Process();
     const binary = getBinary(config);
-    const command = [binary, ...quoteArgs(args)].join(' ');
+    const command = quoteArgs([binary, ...args]).join(' ');
+    const process = new Process();
     return process.exec(command, { cwd }, callback);
+}
+
+function quoteArgument(argument: string): string {
+    if (get_os() === OS.WINDOWS) {
+        return quoteWindowsArgument(argument);
+    }
+
+    // POSIX single-quote escaping preserves spaces and prevents shell expansion.
+    return `'${argument.replace(/'/g, `'\\''`)}'`;
+}
+
+function quoteWindowsArgument(argument: string): string {
+    // Escape according to Windows command-line quoting rules, including trailing backslashes.
+    let quoted = '"';
+    let backslashes = 0;
+    for (const character of argument) {
+        if (character === '\\') {
+            backslashes += 1;
+        } else if (character === '"') {
+            quoted += `${'\\'.repeat(backslashes * 2 + 1)}"`;
+            backslashes = 0;
+        } else {
+            quoted += `${'\\'.repeat(backslashes)}${character}`;
+            backslashes = 0;
+        }
+    }
+    return `${quoted}${'\\'.repeat(backslashes * 2)}"`;
 }
 
