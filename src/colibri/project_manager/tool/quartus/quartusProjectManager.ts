@@ -432,7 +432,9 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.NVC_RUN_ALL]: "",
             [e_taskType.NVC_SYNTHESIZE]: "",
             [e_taskType.NVC_CHECK_SYNTAX]: "",
-            [e_taskType.NVC_MAKEFILE]: "",
+                [e_taskType.NVC_MAKEFILE]: "",
+            [e_taskType.NEXTPNR_PNR]: "",
+            [e_taskType.NEXTPNR_GUI]: "",
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {
