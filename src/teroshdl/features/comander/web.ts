@@ -37,7 +37,7 @@ export class Base_webview {
             this.panel = vscode.window.createWebviewPanel(
                 'catCoding',
                 'Report',
-                vscode.ViewColumn.Two,
+                vscode.ViewColumn.Beside,
                 {
                     enableScripts: true,
                     retainContextWhenHidden: true

@@ -83,7 +83,7 @@ export class Documenter_manager extends Base_webview {
             this.panel = vscode.window.createWebviewPanel(
                 'catCoding',
                 'Module documentation',
-                vscode.ViewColumn.Two,
+                vscode.ViewColumn.Beside,
                 {
                     enableScripts: true,
                     retainContextWhenHidden: true

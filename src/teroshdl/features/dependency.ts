@@ -93,7 +93,7 @@ export class Dependency_manager {
         this.panel = vscode.window.createWebviewPanel(
             'dependency_viewer',
             'Dependency Viewer',
-            vscode.ViewColumn.Two,
+            vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true
