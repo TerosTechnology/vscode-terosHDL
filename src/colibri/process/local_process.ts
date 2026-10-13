@@ -60,7 +60,8 @@ export class Local_process {
                     let error_code = 0;
                     let successful = true;
                     if (error !== undefined && error !== null) {
-                        error_code = -1;
+                        // Use the actual process exit code; fall back to -1 only for signals
+                        error_code = error.code !== undefined ? error.code : -1;
                         successful = false;
                     }
 
@@ -87,7 +88,7 @@ export class Local_process {
             let error_code = 0;
             let successful = true;
             if (error !== undefined && error !== null) {
-                error_code = -1;
+                error_code = error.code !== undefined ? error.code : -1;
                 successful = false;
             }
 

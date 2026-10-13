@@ -25,9 +25,16 @@ import {
 import { e_linter_general_linter_vhdl } from 'colibri/config/config_declaration';
 
 const isWindows = process.platform === 'win32';
-const languageServerName = isWindows ? 'vhdl_ls-x86_64-pc-windows-msvc' : 'vhdl_ls-x86_64-unknown-linux-musl';
+const isMac = process.platform === 'darwin';
+function getLanguageServerName(): string {
+    if (isWindows) { return 'vhdl_ls-x86_64-pc-windows-msvc'; }
+    if (isMac) { return process.arch === 'arm64' ? 'vhdl_ls-aarch64-apple-darwin' : 'vhdl_ls-x86_64-apple-darwin'; }
+    return 'vhdl_ls-x86_64-unknown-linux-musl';
+}
+const languageServerName = getLanguageServerName();
 const languageServerBinaryName = 'vhdl_ls';
 let languageServer: string;
+let languageServerLibraries: string | undefined;
 
 export class Rusthdl_lsp {
     private client: LanguageClient | undefined = undefined;
@@ -64,7 +71,7 @@ export class Rusthdl_lsp {
         const languageServerDir = this.context.asAbsolutePath(path.join('server', 'vhdl_ls'));
         const current_language_server_version = this.embeddedVersion(languageServerDir);
 
-        languageServer = path.join(
+        const bundledPath = path.join(
             'server',
             'vhdl_ls',
             current_language_server_version,
@@ -72,6 +79,34 @@ export class Rusthdl_lsp {
             'bin',
             languageServerBinaryName + (isWindows ? '.exe' : '')
         );
+        // Store the resolved absolute path so getServerOptionsEmbedded can use it directly
+        languageServer = this.context.asAbsolutePath(bundledPath);
+
+        const bundledLibrariesDir = this.context.asAbsolutePath(
+            path.join('server', 'vhdl_ls', current_language_server_version, languageServerName, 'vhdl_libraries')
+        );
+        languageServerLibraries = fs.existsSync(path.join(bundledLibrariesDir, 'vhdl_ls.toml')) ? bundledLibrariesDir : undefined;
+
+        let is_alive = await this.check_rust_hdl(languageServer);
+        if (is_alive === false) {
+            // Bundled binary failed (e.g. wrong platform); try system-installed vhdl_ls
+            const systemPaths = [
+                '/opt/homebrew/bin/vhdl_ls',
+                '/usr/local/bin/vhdl_ls',
+                'vhdl_ls',
+            ];
+            for (const sysPath of systemPaths) {
+                is_alive = await this.check_rust_hdl(sysPath);
+                if (is_alive) {
+                    languageServer = sysPath;
+                    break;
+                }
+            }
+        }
+        if (is_alive === false) {
+            return false;
+        }
+
         // Get language server configuration and command to start server
         let serverOptions: ServerOptions;
         serverOptions = this.getServerOptionsEmbedded(this.context);
@@ -84,12 +119,6 @@ export class Rusthdl_lsp {
 
         // Create the language client
         this.client = new LanguageClient('vhdlls', 'VHDL LS', serverOptions, clientOptions);
-
-        let server_path = this.context.asAbsolutePath(languageServer);
-        let is_alive = await this.check_rust_hdl(server_path);
-        if (is_alive === false) {
-            return false;
-        }
 
         // Start the client. This will also launch the server
         this.languageServerDisposable = await this.client.start();
@@ -138,7 +167,7 @@ export class Rusthdl_lsp {
         }
     }
 
-    getServerOptionsEmbedded(context: ExtensionContext) {
+    getServerOptionsEmbedded(_context: ExtensionContext) {
         const config = utils.getConfig(this.manager);
         const linter_name = config.linter.general.linter_vhdl;
         let args: string[] = [];
@@ -146,23 +175,27 @@ export class Rusthdl_lsp {
             args = ['--no-lint'];
         }
         args.push('--silent');
+        if (languageServerLibraries) {
+            args.push('--libraries', languageServerLibraries);
+        }
 
-        let serverCommand = context.asAbsolutePath(languageServer);
         let serverOptions: ServerOptions = {
             run: {
-                command: serverCommand,
+                command: languageServer,
                 args: args,
                 options: {
                     env: {
+                        ...process.env,
                         VHDL_LS_CONFIG: this.fileListPath
                     }
                 }
             },
             debug: {
-                command: serverCommand,
+                command: languageServer,
                 args: args,
                 options: {
                     env: {
+                        ...process.env,
                         VHDL_LS_CONFIG: this.fileListPath
                     }
                 }

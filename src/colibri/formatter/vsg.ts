@@ -101,9 +101,9 @@ export class Vsg extends Base_formatter {
             return result;
         }
 
-        // Consider the formatting successful if the command executed without error
-        // even if no violations were found
-        const formatting_successful = exec_result.successful && exec_result.return_value === 0;
+        // VSG exit codes: 0 = no violations found, 1 = violations found (and fixed with --fix)
+        // Both are successful outcomes; only other codes (e.g. 2) indicate a real error
+        const formatting_successful = exec_result.return_value === 0 || exec_result.return_value === 1;
 
         const result: common.f_result = {
             code_formatted: code_formatted,
