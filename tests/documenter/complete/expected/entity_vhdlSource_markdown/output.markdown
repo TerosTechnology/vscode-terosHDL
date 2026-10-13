@@ -12,6 +12,13 @@
 This is an entity description 5
 multiline.
 
+Example of unordered list:
+
+* Normal operation mode
+* Low power mode
+* Debug mode
+* Test mode
+
 
 Example of multiline code snipet:
 
