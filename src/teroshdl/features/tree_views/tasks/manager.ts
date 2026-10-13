@@ -249,13 +249,13 @@ export class Tasks_manager extends BaseView {
                 this.refresh_tree();
 
                 toolLogger.show(true);
-                if (exec_i.stdout) {
+                if (exec_i?.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
                         const cleanOutput = data.replace(/File: /g, "file://");
                         toolLogger.log(cleanOutput);
                     });
                 }
-                if (exec_i.stderr) {
+                if (exec_i?.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
                         toolLogger.log(data);
                     });
@@ -303,13 +303,13 @@ export class Tasks_manager extends BaseView {
                 this.refresh_tree();
 
                 toolLogger.show(true);
-                if (exec_i.stdout) {
+                if (exec_i?.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
                         const cleanOutput = data.replace(/File: /g, "file://");
                         toolLogger.log(cleanOutput);
                     });
                 }
-                if (exec_i.stderr) {
+                if (exec_i?.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
                         toolLogger.log(data);
                     });
@@ -364,14 +364,14 @@ export class Tasks_manager extends BaseView {
                 this.refresh_tree();
 
                 toolLogger.show(true);
-                if (exec_i.stdout) {
+                if (exec_i?.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
                         const cleanOutput = data.replace(/File: /g, "file://");
                         toolLogger.log(cleanOutput);
                     });
                 }
 
-                if (exec_i.stderr) {
+                if (exec_i?.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
                         const cleanOutput = data.replace(/File: /g, "file://");
                         toolLogger.log(cleanOutput);
@@ -490,13 +490,13 @@ export class Tasks_manager extends BaseView {
                 this.refresh_tree();
 
                 toolLogger.show(true);
-                if (exec_i.stdout) {
+                if (exec_i?.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
                         toolLogger.log(data);
                     });
                 }
 
-                if (exec_i.stderr) {
+                if (exec_i?.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
                         toolLogger.log(data);
                     });

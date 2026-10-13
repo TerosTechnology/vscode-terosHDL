@@ -25,6 +25,15 @@ import { LANGUAGE, VERILOG_LANG_VERSION, VHDL_LANG_VERSION } from "../../src/col
 import { get_default_config } from '../../src/colibri/config/config_declaration';
 import { GlobalConfigManager } from "../../src/colibri/config/config_manager";
 import { ProjectEmitter } from "../../src/colibri/project_manager/projectEmitter";
+import { e_tools_general_select_tool } from '../../src/colibri/config/config_declaration';
+import { e_taskState, e_taskType } from '../../src/colibri/project_manager/tool/common';
+import { runTaskNextpnr } from '../../src/colibri/project_manager/tool/nextpnr/taskRunners';
+import { LoggerBase } from '../../src/colibri/logger/logger';
+import { ChildProcess } from 'child_process';
+
+jest.mock('../../src/colibri/project_manager/tool/nextpnr/taskRunners', () => ({
+    runTaskNextpnr: jest.fn()
+}));
 
 const DEFAULT_NAME = "def_name";
 
@@ -32,8 +41,41 @@ describe('project_manager', () => {
     let project_manager: Project_manager;
 
     beforeEach(() => {
+        jest.clearAllMocks();
         const emitter = new ProjectEmitter();
         project_manager = new Project_manager(DEFAULT_NAME, "", emitter, undefined);
+    });
+
+    test.each([
+        [e_taskType.NEXTPNR_PNR, true, e_taskState.FINISHED],
+        [e_taskType.NEXTPNR_GUI, false, e_taskState.FAILED]
+    ])('dispatches nextpnr task %s and records its result', (taskType, successful, expectedState) => {
+        GlobalConfigManager.newInstance("");
+        const config = get_default_config();
+        config.tools.general.select_tool = e_tools_general_select_tool.nextpnr;
+        project_manager.set_config(config);
+        project_manager.updateTaskManager();
+
+        const result = {
+            command: 'nextpnr',
+            stdout: successful ? 'done' : '',
+            stderr: successful ? '' : 'failed',
+            return_value: successful ? 0 : 1,
+            successful
+        };
+        const process = {} as ChildProcess;
+        (runTaskNextpnr as jest.Mock).mockImplementation((_task, _definition, callback) => {
+            callback(result);
+            return process;
+        });
+        const callback = jest.fn();
+
+        const returnedProcess = project_manager.runTask(taskType, {} as LoggerBase, callback);
+
+        expect(runTaskNextpnr).toHaveBeenCalledWith(taskType, expect.any(Object), expect.any(Function));
+        expect(returnedProcess).toBe(process);
+        expect(callback).toHaveBeenCalledWith(result);
+        expect(project_manager.getTaskState(taskType)).toBe(expectedState);
     });
 
     test('rename', () => {
