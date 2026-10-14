@@ -1,3 +1,4 @@
+.github/workflows
 node_modules
 lib
 out

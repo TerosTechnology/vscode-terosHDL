@@ -1,7 +1,3 @@
-// A launch configuration that compiles the extension and then opens it inside a new window
-// Use IntelliSense to learn about possible attributes.
-// Hover to view descriptions of existing attributes.
-// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
   "version": "0.2.0",
   "configurations": [
@@ -11,7 +7,6 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "sudo": false,
       "cwd": "${fileDirname}"
     },
     {
@@ -23,7 +18,7 @@
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "sourceMaps": true,
+      "sourceMaps": "true",
       "env": {
         "NODE_ENV": "test"
       },
@@ -37,7 +32,7 @@
         "--extensionDevelopmentPath=${workspaceFolder}"
       ],
       "name": "Run TerosHDL",
-      "sourceMaps": true,
+      "sourceMaps": "true",
       "outFiles": [
         "${workspaceFolder}/out/**/*.js",
       ],

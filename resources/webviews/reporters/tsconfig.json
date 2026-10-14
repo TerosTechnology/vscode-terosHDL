@@ -9,5 +9,5 @@
         "rootDir": "./",
         "strict": true,
     },
-    "exclude": ["node_modules", ".vscode-test"]
+    "exclude": ["node_modules", ".vscode-test", "node_modules/", "logs/", "dist/", "out/", "resources/webviews/reporters/**/*"]
 }

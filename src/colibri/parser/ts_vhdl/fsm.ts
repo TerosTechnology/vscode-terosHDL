@@ -20,6 +20,7 @@
 import { Parser_fsm_base } from "../fsm_base_parser";
 import * as Parser from "web-tree-sitter";
 import { getVhdlWasm } from "../utils";
+import * as logger from "../../logger/logger";
 
 export class Paser_fsm_vhdl extends Parser_fsm_base {
     private parser: any;
@@ -58,6 +59,13 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         let tree;
         try {
             tree = this.parser.parse(code);
+            function printTree(node: Parser.SyntaxNode, indent: string = ''): void {
+                logger.Logger.log(`${indent}${node.type}[${node.text}](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
+              for (const child of node.children) {
+                printTree(child, indent + '  ');
+              }
+            }
+            printTree(tree.rootNode);
             process = this.get_process(tree);
         } catch (e) {
             return { 'svg': [], 'stm': [] };
@@ -179,7 +187,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
 
         const variables = this.search_multiple_in_tree(p, 'simple_variable_assignment');
         for (let i = 0; i < variables.length; ++i) {
-            let rigth = this.get_item_from_childs(variables[i], 'waveforms');
+            let rigth = this.get_item_from_childs(variables[i], 'expression');
             if (rigth === undefined) {
                 rigth = this.get_item_from_childs_last(variables[i], 'simple_name');
             }
@@ -302,6 +310,8 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                             cursor.currentNode(), state_variable_name, undefined);
                         if_transitions = if_transitions.concat(tmp_transitions);
                         last = 0;
+                    } else if (cursor.nodeType === 'comment') {
+                        logger.Logger.log ("comment "+cursor.nodeText);
                     }
                 }
                 while (cursor.gotoNextSibling() !== false);
@@ -517,6 +527,8 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                         last = 0;
                         if_transitions = this.get_case_transitions(cursor.currentNode(),
                             state_variable_name, condition);
+                    } else if (cursor.nodeType === 'comment') {
+                        logger.Logger.log ("comment "+cursor.nodeText);
                     }
                 }
                 while (cursor.gotoNextSibling() !== false);
