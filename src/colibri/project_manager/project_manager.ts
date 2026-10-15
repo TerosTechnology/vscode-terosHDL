@@ -69,6 +69,14 @@ import { LoggerBase } from "colibri/logger/logger";
 
 export const DEFAULT_LIBRARY = "teroshdlDefault";
 
+/** vhdl_ls rejects `work` as a library name, so unnamed and `work` files share the default library. */
+function toml_library_name(logical_name: string | undefined): string {
+    if (logical_name === undefined || logical_name === '' || logical_name.toLowerCase() === 'work') {
+        return DEFAULT_LIBRARY;
+    }
+    return logical_name;
+}
+
 export class Project_manager extends ConfigManager {
     /**  Name of the project */
     private name: string;
@@ -592,8 +600,9 @@ export class Project_manager extends ConfigManager {
             // Check if file in library
             let file_in_library = false;
 
+            const library_name = toml_library_name(source.logical_name);
             for (const library of libraries) {
-                if (library.name === source.logical_name) {
+                if (library.name === library_name) {
                     file_in_library = true;
                     library.files.push(source.name);
                     break;
@@ -601,7 +610,7 @@ export class Project_manager extends ConfigManager {
             }
             if (!file_in_library) {
                 libraries.push(<t_lib>{
-                    name: source.logical_name,
+                    name: library_name,
                     files: [source.name]
                 });
             }
@@ -613,9 +622,6 @@ export class Project_manager extends ConfigManager {
             let files_in_library = "";
             for (const file_in_library of library.files) {
                 files_in_library += `  '${file_in_library}',\n`;
-            }
-            if (library.name === undefined || library.name === '') {
-                library.name = DEFAULT_LIBRARY;
             }
             toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
         }
