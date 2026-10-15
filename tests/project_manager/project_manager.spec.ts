@@ -390,6 +390,28 @@ describe('project_manager', () => {
             `));
         });
 
+        it("should map the work library and empty names to the default library", async () => {
+            for (const [name, logical_name] of [["file_work", "work"], ["file_empty", ""], ["file_upper", "WORK"]]) {
+                await project_manager.add_file(<t_file>{
+                    name: name,
+                    is_include_file: false,
+                    include_path: "",
+                    logical_name: logical_name,
+                    is_manual: true,
+                    file_type: LANGUAGE.VHDL,
+                    file_version: VHDL_LANG_VERSION.v2000,
+                });
+            }
+
+            expect(remove_spaces(project_manager.get_toml())).toEqual(remove_spaces(`${toml_header}
+            ${DEFAULT_LIBRARY}.files = [
+              'file_work',
+              'file_empty',
+              'file_upper',
+            ]
+            `));
+        });
+
         it("should handled a project with multiple files in same library", async () => {
             await project_manager.add_file(<t_file>{
                 name: "file1",
