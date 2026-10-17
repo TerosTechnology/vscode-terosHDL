@@ -46,10 +46,10 @@ describe('project_manager', () => {
         project_manager = new Project_manager(DEFAULT_NAME, "", emitter, undefined);
     });
 
-    test.each([
-        [e_taskType.NEXTPNR_PNR, true, e_taskState.FINISHED],
-        [e_taskType.NEXTPNR_GUI, false, e_taskState.FAILED]
-    ])('dispatches nextpnr task %s and records its result', (taskType, successful, expectedState) => {
+    test('dispatches nextpnr P&R and records its result', () => {
+        const taskType = e_taskType.NEXTPNR_PNR;
+        const successful = true;
+        const expectedState = e_taskState.FINISHED;
         GlobalConfigManager.newInstance("");
         const config = get_default_config();
         config.tools.general.select_tool = e_tools_general_select_tool.nextpnr;
@@ -64,15 +64,16 @@ describe('project_manager', () => {
             successful
         };
         const process = {} as ChildProcess;
-        (runTaskNextpnr as jest.Mock).mockImplementation((_task, _definition, callback) => {
+        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
+        (runTaskNextpnr as jest.Mock).mockImplementation((_task, _definition, callback, _logger) => {
             callback(result);
             return process;
         });
         const callback = jest.fn();
 
-        const returnedProcess = project_manager.runTask(taskType, {} as LoggerBase, callback);
+        const returnedProcess = project_manager.runTask(taskType, logger, callback);
 
-        expect(runTaskNextpnr).toHaveBeenCalledWith(taskType, expect.any(Object), expect.any(Function));
+        expect(runTaskNextpnr).toHaveBeenCalledWith(taskType, expect.any(Object), expect.any(Function), logger);
         expect(returnedProcess).toBe(process);
         expect(callback).toHaveBeenCalledWith(result);
         expect(project_manager.getTaskState(taskType)).toBe(expectedState);

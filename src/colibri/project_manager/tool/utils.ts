@@ -151,12 +151,6 @@ export function getTaskList(toolName: e_tools_general_select_tool): t_taskRep[] 
                 label: 'Place and Route',
                 executionType: e_taskExecutionType.COMPLEXCOMMAND,
                 status: e_taskState.IDLE
-            },
-            {
-                name: e_taskType.NEXTPNR_GUI,
-                label: 'GUI',
-                executionType: e_taskExecutionType.COMPLEXCOMMAND,
-                status: e_taskState.IDLE
             }
         ];
     }

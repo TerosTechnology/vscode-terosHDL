@@ -6,6 +6,7 @@ import { p_result } from '../../../process/common';
 import { OS } from '../../../process/common';
 import { get_os } from '../../../process/utils';
 import { e_tools_nextpnr, e_tools_nextpnr_target_family } from '../../../config/config_declaration';
+import { LoggerBase } from '../../../logger/logger';
 
 export type e_nextpnr_target_family = e_tools_nextpnr_target_family;
 export type t_nextpnr_executor_config = Partial<Pick<e_tools_nextpnr, 'installation_path' | 'target_family'>>;
@@ -42,10 +43,12 @@ export function executeCommand(
     config: t_nextpnr_executor_config,
     args: string[],
     cwd: string,
-    callback: (result: p_result) => void
+    callback: (result: p_result) => void,
+    toolLogger?: LoggerBase
 ): ChildProcess {
     const binary = getBinary(config);
     const command = quoteArgs([binary, ...args]).join(' ');
+    toolLogger?.appendLine(`[nextpnr] Executing command: ${command}`);
     const process = new Process();
     return process.exec(command, { cwd }, callback);
 }

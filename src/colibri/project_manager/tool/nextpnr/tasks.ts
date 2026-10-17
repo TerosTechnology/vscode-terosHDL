@@ -9,8 +9,7 @@ import {
 import { buildNextpnrArgs } from './commandBuilder';
 import { executeCommand } from './executor';
 import { getConstraintsFile, validateJsonFile } from './utils';
-
-type e_nextpnr_run_mode = 'pnr' | 'gui';
+import { LoggerBase } from '../../../logger/logger';
 
 function createErrorResult(command: string, errorMessage: string): p_result {
 	return {
@@ -25,8 +24,10 @@ function createErrorResult(command: string, errorMessage: string): p_result {
 function reportError(
 	command: string,
 	errorMessage: string,
-	callback: (result: p_result) => void
+	callback: (result: p_result) => void,
+	toolLogger?: LoggerBase
 ): ChildProcess {
+	toolLogger?.appendLine(`[nextpnr] Error: ${errorMessage}`);
 	setTimeout(() => callback(createErrorResult(command, errorMessage)), 0);
 	return {} as ChildProcess;
 }
@@ -78,9 +79,9 @@ function resolveJsonInput(projectDefinition: t_project_definition): string {
 function runNextpnr(
 	projectDefinition: t_project_definition,
 	callback: (result: p_result) => void,
-	mode: e_nextpnr_run_mode
+	toolLogger?: LoggerBase
 ): ChildProcess {
-	const taskName = mode === 'pnr' ? 'nextpnr P&R' : 'nextpnr GUI';
+	const taskName = 'nextpnr P&R';
 	const config = projectDefinition.config.tools.nextpnr;
 
 	try {
@@ -104,12 +105,12 @@ function runNextpnr(
 				lpf_file: config.target_family === e_tools_nextpnr_target_family.ecp5 ? constraintsFile : ''
 			}
 			: config;
-		const args = buildNextpnrArgs(commandConfig, jsonFile, outputFile, mode);
+		const args = buildNextpnrArgs(commandConfig, jsonFile, outputFile);
 
-		return executeCommand(config, args, projectDefinition.project_disk_path, callback);
+		return executeCommand(config, args, projectDefinition.project_disk_path, callback, toolLogger);
 	} catch (error) {
 		const message = error instanceof Error ? error.message : String(error);
-		return reportError(taskName, message, callback);
+		return reportError(taskName, message, callback, toolLogger);
 	}
 }
 
@@ -123,20 +124,8 @@ function resolveProjectPath(projectPath: string, filePath: string): string {
 /** Run nextpnr place-and-route from the JSON output configured in Yosys. */
 export function runNextpnrPnR(
 	projectDefinition: t_project_definition,
-	callback: (result: p_result) => void
+	callback: (result: p_result) => void,
+	toolLogger?: LoggerBase
 ): ChildProcess {
-	return runNextpnr(projectDefinition, callback, 'pnr');
-}
-
-/**
- * Start nextpnr's GUI mode when supported by the configured nextpnr build.
- * The current command builder rejects GUI mode because the verified CLI
- * binaries do not accept a --gui option; this reports that limitation instead
- * of launching a fabricated command.
- */
-export function runNextpnrGui(
-	projectDefinition: t_project_definition,
-	callback: (result: p_result) => void
-): ChildProcess {
-	return runNextpnr(projectDefinition, callback, 'gui');
+	return runNextpnr(projectDefinition, callback, toolLogger);
 }
