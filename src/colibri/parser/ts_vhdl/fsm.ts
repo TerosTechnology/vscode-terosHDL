@@ -60,10 +60,10 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         try {
             tree = this.parser.parse(code);
             function printTree(node: Parser.SyntaxNode, indent: string = ''): void {
-                logger.Logger.log(`${indent}${node.type}[${node.text}](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
-              for (const child of node.children) {
-                printTree(child, indent + '  ');
-              }
+                logger.Logger.log(`${indent}***${node.type}[${node.text}](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
+                for (const child of node.children) {
+                    printTree(child, indent + '  ');
+                }
             }
             printTree(tree.rootNode);
             process = this.get_process(tree);
@@ -131,6 +131,48 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         } else {
             return undefined;
         }
+    }
+
+    implicity_ns (p: any) : any {
+        const regex_field = /\s*-- XXX (?<state_mode>[a-zA-Z_]+) = (?<state_name>[a-zA-Z0-9]+)/;
+        let m;
+        let ns;
+        const transitions1 = [];
+        let start_position = [];
+        let end_position = [];
+        let s_position : any;
+        let e_position : any;
+        let transition = {
+            'condition': '',
+            'destination': '',
+            'start_position': {},
+            'end_position': {}
+        };
+        while ((m = regex_field.exec(p.nodeText)) !== null) {
+            if (m.index === regex_field.lastIndex) {
+                regex_field.lastIndex++;
+            }
+            if (m.groups?.state_mode === "next_state") {
+                ns = m.groups?.state_name;
+                break;
+            }
+            break;
+        }
+        if (ns !== undefined) {
+            logger.Logger.log ("implicity_ns "+ns+"\n");
+            s_position = p.startPosition;
+            e_position = p.endPosition;
+            start_position = [s_position.row, e_position.column - 1];
+            end_position = [e_position.row, e_position.column];
+            transition = {
+                'condition': 'implicity',
+                'destination': ns,
+                'start_position': start_position,
+                'end_position': end_position
+            };
+            transitions1.push(transition);
+        }
+        return transitions1;
     }
 
     get_process_info(proc: any) {
@@ -237,6 +279,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             }
         }
         while (cursor.gotoNextSibling() !== false);
+        logger.Logger.log ("state_names "+state_names+"\n");
         return state_names;
     }
 
@@ -281,7 +324,20 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
 
         cursor.gotoFirstChild();
         do {
-            if (cursor.nodeType === 'sequence_of_statements') {
+            if (cursor.nodeType === 'comment') {
+                cursor.gotoFirstChild();
+                do {
+                     const ns = ''; // normal
+                    //const ns = this.implicity_ns (cursor); // implicity
+                    //if_transitions = if_transitions.concat(ns);
+                    //last = 1;
+                    if (ns.length !== 0 && ns !== undefined) {
+                        assign_transitions = ns;
+                        last_transitions = assign_transitions;
+                        last = 0;
+                    }
+                } while (cursor.gotoNextSibling() !== false);
+            } else if (cursor.nodeType === 'sequence_of_statements') {
                 cursor.gotoFirstChild();
                 do {
                     if (cursor.nodeType === 'if_statement') {
@@ -310,8 +366,6 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                             cursor.currentNode(), state_variable_name, undefined);
                         if_transitions = if_transitions.concat(tmp_transitions);
                         last = 0;
-                    } else if (cursor.nodeType === 'comment') {
-                        logger.Logger.log ("comment "+cursor.nodeText);
                     }
                 }
                 while (cursor.gotoNextSibling() !== false);
@@ -527,8 +581,6 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                         last = 0;
                         if_transitions = this.get_case_transitions(cursor.currentNode(),
                             state_variable_name, condition);
-                    } else if (cursor.nodeType === 'comment') {
-                        logger.Logger.log ("comment "+cursor.nodeText);
                     }
                 }
                 while (cursor.gotoNextSibling() !== false);
