@@ -4,6 +4,7 @@ import * as file_utils from '../../../../src/colibri/utils/file_utils';
 import { OS } from '../../../../src/colibri/process/common';
 import * as process_utils from '../../../../src/colibri/process/utils';
 import { Process } from '../../../../src/colibri/process/process';
+import { LoggerBase } from '../../../../src/colibri/logger/logger';
 import { get_default_config, e_tools_nextpnr_target_family } from '../../../../src/colibri/config/config_declaration';
 import { executeCommand, getBinary, quoteArgs } from '../../../../src/colibri/project_manager/tool/nextpnr/executor';
 
@@ -99,6 +100,23 @@ describe('nextpnr Executor', () => {
                 "'nextpnr-ice40' '--json' '/project directory/input design.json'",
                 { cwd },
                 callback
+            );
+        });
+
+        it('logs the fully resolved command before launching the process', () => {
+            const childProcess = { pid: 12345 } as ChildProcess;
+            const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
+            jest.spyOn(process_utils, 'get_os').mockReturnValue(OS.LINUX);
+            jest.spyOn(Process.prototype, 'exec').mockReturnValue(childProcess);
+
+            executeCommand({
+                ...baseConfig(),
+                installation_path: '',
+                target_family: e_tools_nextpnr_target_family.ecp5
+            }, ['--json', 'design.json', '--textcfg', 'design.config'], '/project', jest.fn(), logger);
+
+            expect(logger.appendLine).toHaveBeenCalledWith(
+                "[nextpnr] Executing command: 'nextpnr-ecp5' '--json' 'design.json' '--textcfg' 'design.config'"
             );
         });
 

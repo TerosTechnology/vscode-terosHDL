@@ -752,7 +752,7 @@ export class Project_manager extends ConfigManager {
                 this.taskStateManager.updateTask(taskType, taskStatus, undefined, result.successful, elapsedTime);
                 this.emitUpdateStatus();
                 callback(result);
-            });
+            }, logger);
         }
         return undefined;
     }

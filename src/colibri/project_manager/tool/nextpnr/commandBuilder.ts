@@ -1,18 +1,10 @@
 import { e_tools_nextpnr, e_tools_nextpnr_target_family } from 'colibri/config/config_declaration';
 
-/** Command mode requested from the caller. */
-export type NextpnrCommandType = 'pnr' | 'gui';
-
 export function buildNextpnrArgs(
     config: e_tools_nextpnr,
     jsonFile: string,
-    outputFile: string,
-    mode: NextpnrCommandType
+    outputFile: string
 ): string[] {
-    if (mode === 'gui') {
-        throw new Error('GUI mode is unavailable: the installed nextpnr CLI does not accept --gui.');
-    }
-
     if (!Object.values(e_tools_nextpnr_target_family).includes(config.target_family)) {
         throw new Error(`Unsupported nextpnr target family: ${config.target_family}`);
     }

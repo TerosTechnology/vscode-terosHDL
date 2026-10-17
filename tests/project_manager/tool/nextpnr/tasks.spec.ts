@@ -7,12 +7,13 @@ import {
     e_tools_yosys_synthesis_target,
     get_default_config
 } from '../../../../src/colibri/config/config_declaration';
+import { LoggerBase } from '../../../../src/colibri/logger/logger';
 import { p_result } from '../../../../src/colibri/process/common';
 import { t_project_definition } from '../../../../src/colibri/project_manager/project_definition';
 import * as commandBuilder from '../../../../src/colibri/project_manager/tool/nextpnr/commandBuilder';
 import * as executor from '../../../../src/colibri/project_manager/tool/nextpnr/executor';
 import * as nextpnrUtils from '../../../../src/colibri/project_manager/tool/nextpnr/utils';
-import { runNextpnrGui, runNextpnrPnR } from '../../../../src/colibri/project_manager/tool/nextpnr/tasks';
+import { runNextpnrPnR } from '../../../../src/colibri/project_manager/tool/nextpnr/tasks';
 
 describe('nextpnr tasks', () => {
     let tempDirectory: string;
@@ -36,12 +37,7 @@ describe('nextpnr tasks', () => {
         callback = jest.fn();
         childProcess = { pid: 4242 } as ChildProcess;
 
-        jest.spyOn(commandBuilder, 'buildNextpnrArgs').mockImplementation((_config, _json, _output, mode) => {
-            if (mode === 'gui') {
-                throw new Error('GUI mode is unavailable: the installed nextpnr CLI does not accept --gui.');
-            }
-            return ['--json', 'input.json', '--asc', 'out.asc'];
-        });
+        jest.spyOn(commandBuilder, 'buildNextpnrArgs').mockReturnValue(['--json', 'input.json', '--asc', 'out.asc']);
         jest.spyOn(executor, 'executeCommand').mockReturnValue(childProcess);
     });
 
@@ -51,7 +47,8 @@ describe('nextpnr tasks', () => {
     });
 
     it('resolves configured Yosys JSON relative to project, builds P&R args and executes', () => {
-        const result = runNextpnrPnR(project, callback);
+        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
+        const result = runNextpnrPnR(project, callback, logger);
         const jsonPath = path.join(tempDirectory, 'synthesis/netlist.json');
         const outputPath = path.join(tempDirectory, 'nextpnr_output.asc');
 
@@ -59,27 +56,29 @@ describe('nextpnr tasks', () => {
         expect(commandBuilder.buildNextpnrArgs).toHaveBeenCalledWith(
             project.config.tools.nextpnr,
             jsonPath,
-            outputPath,
-            'pnr'
+            outputPath
         );
         expect(executor.executeCommand).toHaveBeenCalledWith(
             project.config.tools.nextpnr,
             ['--json', 'input.json', '--asc', 'out.asc'],
             tempDirectory,
-            callback
+            callback,
+            logger
         );
         expect(result).toBe(childProcess);
     });
 
     it('reports a missing Yosys JSON output with an instruction to run synthesis', (done) => {
         project.config.tools.yosys.ice40_output_json = 'missing.json';
+        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
 
         const result = runNextpnrPnR(project, (processResult: p_result) => {
             expect(processResult.successful).toBe(false);
             expect(processResult.stderr).toContain('run Yosys synthesis before nextpnr');
+            expect(logger.appendLine).toHaveBeenCalledWith(`[nextpnr] Error: ${processResult.stderr}`);
             expect(executor.executeCommand).not.toHaveBeenCalled();
             done();
-        });
+        }, logger);
 
         expect(result).toEqual({});
     });
@@ -102,15 +101,6 @@ describe('nextpnr tasks', () => {
         runNextpnrPnR(project, (processResult: p_result) => {
             expect(processResult.successful).toBe(false);
             expect(processResult.stderr).toContain('does not match');
-            expect(executor.executeCommand).not.toHaveBeenCalled();
-            done();
-        });
-    });
-
-    it('reports unsupported GUI mode and never starts a process', (done) => {
-        runNextpnrGui(project, (processResult: p_result) => {
-            expect(processResult.successful).toBe(false);
-            expect(processResult.stderr).toContain('GUI mode is unavailable');
             expect(executor.executeCommand).not.toHaveBeenCalled();
             done();
         });
