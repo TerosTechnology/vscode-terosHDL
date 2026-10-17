@@ -139,6 +139,20 @@ export function getTaskList(toolName: e_tools_general_select_tool): t_taskRep[] 
                 ]
             }
         ];
+    } else if (toolName === e_tools_general_select_tool.nextpnr) {
+        return [
+            {
+                name: e_taskType.OPENFOLDER,
+                label: 'Open Project Folder',
+                executionType: e_taskExecutionType.OPENFOLDER
+            },
+            {
+                name: e_taskType.NEXTPNR_PNR,
+                label: 'Place and Route',
+                executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                status: e_taskState.IDLE
+            }
+        ];
     }
     return [];
 }

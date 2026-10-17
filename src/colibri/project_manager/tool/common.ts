@@ -56,6 +56,8 @@ export enum e_taskType {
     YOSYS_SYNTHESIS = "Yosys Synthesis",
     YOSYS_SHOW = "Show Schematic",
     YOSYS_RESOURCE_UTILIZATION = "Resource Utilization",
+    // nextpnr tasks
+    NEXTPNR_PNR = "nextpnr Place and Route",
     // SandPiper tasks
     SANDPIPER_TLVERILOGTOVERILOG = "TL-Verilog to Verilog",
     SANDPIPER_DIAGRAM_TAB = "Open Diagram Tab",

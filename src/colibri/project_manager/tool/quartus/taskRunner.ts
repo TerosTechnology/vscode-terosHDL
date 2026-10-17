@@ -142,7 +142,8 @@ const taskDependencies: Record<e_taskType, e_taskType[]> = {
     [e_taskType.NVC_RUN_ALL]: [],
     [e_taskType.NVC_SYNTHESIZE]: [],
     [e_taskType.NVC_CHECK_SYNTAX]: [],
-    [e_taskType.NVC_MAKEFILE]: []
+    [e_taskType.NVC_MAKEFILE]: [],
+    [e_taskType.NEXTPNR_PNR]: []
 };
 
 function executeCommandList(projectName: string, commands: string[], cwd: string, emitter: ProjectEmitter,
@@ -249,7 +250,8 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
         [e_taskType.NVC_RUN_ALL]: "",
         [e_taskType.NVC_SYNTHESIZE]: "",
         [e_taskType.NVC_CHECK_SYNTAX]: "",
-        [e_taskType.NVC_MAKEFILE]: ""
+        [e_taskType.NVC_MAKEFILE]: "",
+        [e_taskType.NEXTPNR_PNR]: ""
     };
 
     const cmdList: string[] = [];
