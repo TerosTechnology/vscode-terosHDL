@@ -18,13 +18,15 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Parser_fsm_base } from "../fsm_base_parser";
-import * as Parser from "web-tree-sitter";
+import Parser, { Language } from "web-tree-sitter";
 import { getVhdlWasm } from "../utils";
 import * as logger from "../../logger/logger";
+import { ParserArg, ParserInput, ParserOutput } from "@oclif/core/lib/interfaces";
 
 export class Paser_fsm_vhdl extends Parser_fsm_base {
     private parser: any;
     private loaded_wasm = false;
+    private lang : any;
 
     constructor(comment_symbol: any, parser: any) {
         super();
@@ -40,8 +42,8 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             try {
                 await Parser.init();
                 this.parser = new Parser();
-                const lang = await Parser.Language.load(getVhdlWasm());
-                this.parser.setLanguage(lang);
+                this.lang = await Parser.Language.load(getVhdlWasm());
+                this.parser.setLanguage(this.lang);
                 this.loaded_wasm = true;
                 // eslint-disable-next-line no-empty
             } catch (e) { }
@@ -286,9 +288,11 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
     get_states(p: any, state_variable_name: any) {
         const case_state = [];
         const cursor = p.walk();
+        const c = p.walk();
         cursor.gotoFirstChild();
         do {
             if (cursor.nodeType === 'case_statement_alternative') {
+                const tc = cursor;
                 const init: any = [];
                 const state = {
                     'name': '',
@@ -309,6 +313,30 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             }
         }
         while (cursor.gotoNextSibling() !== false);
+        c.gotoFirstChild ();
+        let c1 : Parser.SyntaxNode;
+        let c2 : Parser.SyntaxNode;
+        do {
+            if (c.nodeType === 'case_statement_alternative') {
+                //c.gotoFirstChild();
+                c1 = c.currentNode ();
+                logger.Logger.log ("asd1 "+c1+"\n");
+                c2 = c1.nextNamedSibling;
+                try {
+                    let qs = `(case_statement_alternative (choices (simple_expression (simple_name))) (comment) @function.name1 (comment) @function.name2 (comment) @function.name3)`;
+                    const lang = this.parser.getLanguage ();
+                    let query1 = lang.query (qs);
+                    const captures = query1.captures(c1);
+                    for (const { name, node } of captures) {
+                        logger.Logger.log ("query "+name+","+node.text+"\n")
+                    }
+                    query1.delete ();
+                } catch (error) {
+                    logger.Logger.log ("Failed to compile or execute query:"+error);
+                    throw error;
+                }
+            }
+        } while (c.gotoNextSibling() !== false);
         return case_state;
     }
 
@@ -326,17 +354,18 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         do {
             if (cursor.nodeType === 'comment') {
                 cursor.gotoFirstChild();
-                do {
-                     const ns = ''; // normal
+                //do {
+                    const ns = ''; // normal
                     //const ns = this.implicity_ns (cursor); // implicity
                     //if_transitions = if_transitions.concat(ns);
                     //last = 1;
                     if (ns.length !== 0 && ns !== undefined) {
-                        assign_transitions = ns;
-                        last_transitions = assign_transitions;
-                        last = 0;
+                        //assign_transitions = ns;
+                        //last_transitions = assign_transitions;
+                        //last = 0;
+                        return ns;
                     }
-                } while (cursor.gotoNextSibling() !== false);
+                //} while (cursor.gotoNextSibling() !== false);
             } else if (cursor.nodeType === 'sequence_of_statements') {
                 cursor.gotoFirstChild();
                 do {
