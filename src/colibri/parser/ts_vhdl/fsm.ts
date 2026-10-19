@@ -22,6 +22,7 @@ import Parser, { Language } from "web-tree-sitter";
 import { getVhdlWasm } from "../utils";
 import * as logger from "../../logger/logger";
 import { ParserArg, ParserInput, ParserOutput } from "@oclif/core/lib/interfaces";
+import { replace } from "lodash";
 
 export class Paser_fsm_vhdl extends Parser_fsm_base {
     private parser: Parser;
@@ -67,7 +68,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         try {
             this.tree = this.parser.parse(code);
             function printTree(node: Parser.SyntaxNode, indent: string = ''): void {
-                //logger.Logger.log(`${indent}***${node.type}[${node.text}](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
+                logger.Logger.log(`${indent}**${node.type}[${node.text.substring (0, 10)} ...](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
                 for (const child of node.children) {
                     printTree(child, indent + '  ');
                 }
@@ -182,12 +183,88 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         return transitions1;
     }
 
+    // XXX based on https://github.com/tree-sitter/tree-sitter/discussions/2553
+    replace_implicity_ns (tree : Parser.Tree, state_name : string, out: (k1 : boolean, k2 : Parser.Tree) => void) : void {
+        let cursor = tree.walk ();
+        cursor.gotoFirstChild ();
+        let c1 : Parser.SyntaxNode;
+        let c2 : Parser.SyntaxNode;
+        let return_tree : Parser.Tree;
+        return_tree = tree;
+        let first : boolean = false;
+        let sourceCode : string;
+        do {
+            if (cursor.nodeType === 'case_statement_alternative') {
+                c1 = cursor.currentNode ();
+                //logger.Logger.log ("cursor : "+c1+"\n");
+                c2 = c1.nextNamedSibling;
+                try {
+                    let qs = `(case_statement_alternative (choices (simple_expression (simple_name))) (comment) @function.name1 (comment) @function.name2 (comment) @function.name3)`;
+                    const language = this.parser.getLanguage ();
+                    let query = language.query (qs);
+                    const captures = query.captures (c1);
+                    for (const { name, node } of captures) {
+                        let node_next = node.nextSibling;
+                        //logger.Logger.log ("query : "+name+","+node.text+"\n");
+                        let transition = this.implicity_ns (node);
+                        if (transition[0].destination !== undefined && transition[0].destination !== '') {
+                            const state_variable_name = state_name.replace('(', '').replace(')', '');
+                            //logger.Logger.log ("transition ns : "+transition[0].destination+"\n");
+                            const new_source_var = `${state_variable_name} := ${transition[0].destination};`;
+                            const new_source_sig = `${state_variable_name} := ${transition[0].destination};`;
+                            const {
+                                startPosition: originalStart,
+                                endPosition: originalEnd,
+                                startIndex: originalStartIndex,
+                                endIndex: originalEndIndex 
+                            } = node;
+                            let newEndColumn = originalStart.row + new_source_var.length; // XXX also _sig;
+                            let slice_start : string;
+                            let slice_end : string;
+                            if (first === false) {
+                                slice_start = this.tree.rootNode.text.slice (0, originalStartIndex);
+                                slice_end = this.tree.rootNode.text.slice (originalEndIndex);
+                                first = true;
+                            } else {
+                                slice_start = this.parser.parse (sourceCode.toString ()).rootNode.text.slice (0, originalStartIndex);
+                                slice_end = this.parser.parse (sourceCode.toString ()).rootNode.text.slice (originalEndIndex);
+                            }
+                            sourceCode = slice_start + new_source_var.padEnd (node.text.length, ' ') + slice_end;
+                            //logger.Logger.log ("New code with replaced comments to parse : "+sourceCode+"\n");
+                            query.delete ();
+                            return_tree = this.parser.parse (sourceCode);
+                        }
+                    }
+                } catch (error) {
+                    logger.Logger.log ("Failed to compile or execute query : "+error);
+                    throw error;
+                }
+            }
+        } while (cursor.gotoNextSibling() !== false);
+        out (first, return_tree);
+    }
+
     get_process_info(proc: any) {
         const stms = [];
 
-        const p = proc.code;
-        const name = this.get_process_label(p);
-        const case_statements = this.get_case_process(p);
+        const p1 = proc.code;
+        const case_state_name = this.get_case_process(p1);
+        const state_variable_name = this.get_state_variable_name(case_state_name[0]);
+        let first : boolean;
+        let return_tree : Parser.Tree;
+        this.replace_implicity_ns (case_state_name[0], state_variable_name, (k1, k2) => {
+            first = k1;
+            return_tree = k2;
+        });
+        let name : string;
+        let case_statements : any[];
+        if (first === false) {
+            name = this.get_process_label(p1);
+            case_statements = this.get_case_process(p1);
+        } else {
+            name = this.get_process_label(return_tree.rootNode);
+            case_statements = this.get_case_process(return_tree.rootNode);
+        }
         for (let i = 0; i < case_statements.length; ++i) {
             const description = proc.comments;
             const init: any = [];
@@ -293,7 +370,6 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
     get_states(p: any, state_variable_name: any) {
         const case_state = [];
         const cursor = p.walk();
-        const c = p.walk();
         cursor.gotoFirstChild();
         do {
             if (cursor.nodeType === 'case_statement_alternative') {
@@ -318,81 +394,6 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             }
         }
         while (cursor.gotoNextSibling() !== false);
-        c.gotoFirstChild ();
-        let c1 : Parser.SyntaxNode;
-        let c2 : Parser.SyntaxNode;
-        do {
-            if (c.nodeType === 'case_statement_alternative') {
-                //c.gotoFirstChild();
-                c1 = c.currentNode ();
-                logger.Logger.log ("asd1 "+c1+"\n");
-                c2 = c1.nextNamedSibling;
-                try {
-                    let qs = `(case_statement_alternative (choices (simple_expression (simple_name))) (comment) @function.name1 (comment) @function.name2 (comment) @function.name3)`;
-                    const lang = this.parser.getLanguage ();
-                    let query1 = lang.query (qs);
-                    const captures = query1.captures(c1);
-                    for (const { name, node } of captures) {
-                        logger.Logger.log ("query "+name+","+node.text+"\n");
-                        let transition = this.implicity_ns (node);
-                        if (transition[0].destination !== undefined && transition[0].destination !== '') {
-                            logger.Logger.log ("transition ns "+transition[0].destination+"\n");
-                            const new_source = `aac_state := ${transition[0].destination};`;
-                            this.tmp_tree = this.tmp_parser.parse (new_source);
-//                            this.tree.edit({  
-//    startIndex: 760,
-//    oldEndIndex: 784,
-//    newEndIndex: 784,
-//    startPosition: {row: 29, column: 12},
-//    oldEndPosition: {row: 0, column: 18},
-//    newEndPosition: {row: 29, column: 12}
-//});
-//let sourceCode = this.tree.toString().slice(0, 760) + new_source + this.tree.toString().slice(784, -1); 
-//logger.Logger.log ("1111 "+sourceCode+"\n");
-// get the node position info
-const {
-    startPosition: originalStart,
-    endPosition: originalEnd,
-    startIndex: originalStartIndex,
-    endIndex: originalEndIndex 
-} = node;
-const newNumberOflines = new_source.match(/\n/g)?.length || 0;
-let newEndColumn = originalStart.column;
-if (newNumberOflines === 0) {
-    newEndColumn = originalStart.row + new_source.length;
-} else {
-    newEndColumn = new_source.split("\n").slice(-1)[0].length;
-}
-
-// (this updates all the indices of all the nodes)
-this.tree.edit({
-    startIndex: originalStartIndex,
-    oldEndIndex: originalEndIndex,
-    newEndIndex: originalStartIndex + new_source.length,
-    startPosition: originalStart,
-    oldEndPosition: originalEnd,
-    newEndPosition: { row: originalStart.row + newNumberOflines, column: newEndColumn,  } 
-});
-                            let sourceCode = this.tree.rootNode.text.slice(0, originalStartIndex) + new_source + this.tree.rootNode.text.slice(originalEndIndex);
-                            logger.Logger.log ("1111 "+sourceCode+"\n");
-                            const newTree = this.parser.parse(new_source, this.tree);
-                            function printTree(node: Parser.SyntaxNode, indent: string = ''): void {
-                                logger.Logger.log(`${indent}***${node.type}[${node.text}](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
-                                for (const child of node.children) {
-                                    printTree(child, indent + '  ');
-                                }
-                            }
-                            printTree(newTree.rootNode);
-                            //printTree(this.tree.rootNode);
-                        }
-                    }
-                    query1.delete ();
-                } catch (error) {
-                    logger.Logger.log ("Failed to compile or execute query:"+error);
-                    throw error;
-                }
-            }
-        } while (c.gotoNextSibling() !== false);
         return case_state;
     }
 
@@ -408,21 +409,7 @@ this.tree.edit({
 
         cursor.gotoFirstChild();
         do {
-            if (cursor.nodeType === 'comment') {
-                cursor.gotoFirstChild();
-                //do {
-                    const ns = ''; // normal
-                    //const ns = this.implicity_ns (cursor); // implicity
-                    //if_transitions = if_transitions.concat(ns);
-                    //last = 1;
-                    if (ns.length !== 0 && ns !== undefined) {
-                        //assign_transitions = ns;
-                        //last_transitions = assign_transitions;
-                        //last = 0;
-                        return ns;
-                    }
-                //} while (cursor.gotoNextSibling() !== false);
-            } else if (cursor.nodeType === 'sequence_of_statements') {
+            if (cursor.nodeType === 'sequence_of_statements') {
                 cursor.gotoFirstChild();
                 do {
                     if (cursor.nodeType === 'if_statement') {
