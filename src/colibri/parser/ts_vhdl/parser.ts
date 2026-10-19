@@ -81,7 +81,7 @@ export class Vhdl_parser extends Ts_base_parser implements Parser_base {
     // Common
     //**************************************************************************
     //**************************************************************************
-    private parse(code: string) {
+    public parse(code: string) {
         if (this.code !== code) {
             this.tree = this.parser.parse(code);
             this.code = code;

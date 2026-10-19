@@ -24,15 +24,19 @@ import * as logger from "../../logger/logger";
 import { ParserArg, ParserInput, ParserOutput } from "@oclif/core/lib/interfaces";
 
 export class Paser_fsm_vhdl extends Parser_fsm_base {
-    private parser: any;
+    private parser: Parser;
+    private tmp_parser: Parser;
     private loaded_wasm = false;
     private lang : any;
+    private tree : Parser.Tree;
+    private tmp_tree : Parser.Tree;
 
     constructor(comment_symbol: any, parser: any) {
         super();
         this.set_symbol(comment_symbol);
         if (parser !== undefined) {
             this.parser = parser;
+            this.tmp_parser = parser;
             this.loaded_wasm = true;
         }
     }
@@ -42,8 +46,10 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             try {
                 await Parser.init();
                 this.parser = new Parser();
+                this.tmp_parser = new Parser();
                 this.lang = await Parser.Language.load(getVhdlWasm());
                 this.parser.setLanguage(this.lang);
+                this.tmp_parser.setLanguage(this.parser.getLanguage());
                 this.loaded_wasm = true;
                 // eslint-disable-next-line no-empty
             } catch (e) { }
@@ -58,17 +64,16 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         this.set_comment_symbol(comment_symbol);
 
         let process;
-        let tree;
         try {
-            tree = this.parser.parse(code);
+            this.tree = this.parser.parse(code);
             function printTree(node: Parser.SyntaxNode, indent: string = ''): void {
-                logger.Logger.log(`${indent}***${node.type}[${node.text}](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
+                //logger.Logger.log(`${indent}***${node.type}[${node.text}](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
                 for (const child of node.children) {
                     printTree(child, indent + '  ');
                 }
             }
-            printTree(tree.rootNode);
-            process = this.get_process(tree);
+            printTree(this.tree.rootNode);
+            process = this.get_process(this.tree);
         } catch (e) {
             return { 'svg': [], 'stm': [] };
         }
@@ -150,7 +155,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             'start_position': {},
             'end_position': {}
         };
-        while ((m = regex_field.exec(p.nodeText)) !== null) {
+        while ((m = regex_field.exec(p.text)) !== null) {
             if (m.index === regex_field.lastIndex) {
                 regex_field.lastIndex++;
             }
@@ -172,8 +177,8 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                 'start_position': start_position,
                 'end_position': end_position
             };
-            transitions1.push(transition);
         }
+        transitions1.push(transition);
         return transitions1;
     }
 
@@ -328,7 +333,58 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                     let query1 = lang.query (qs);
                     const captures = query1.captures(c1);
                     for (const { name, node } of captures) {
-                        logger.Logger.log ("query "+name+","+node.text+"\n")
+                        logger.Logger.log ("query "+name+","+node.text+"\n");
+                        let transition = this.implicity_ns (node);
+                        if (transition[0].destination !== undefined && transition[0].destination !== '') {
+                            logger.Logger.log ("transition ns "+transition[0].destination+"\n");
+                            const new_source = `aac_state := ${transition[0].destination};`;
+                            this.tmp_tree = this.tmp_parser.parse (new_source);
+//                            this.tree.edit({  
+//    startIndex: 760,
+//    oldEndIndex: 784,
+//    newEndIndex: 784,
+//    startPosition: {row: 29, column: 12},
+//    oldEndPosition: {row: 0, column: 18},
+//    newEndPosition: {row: 29, column: 12}
+//});
+//let sourceCode = this.tree.toString().slice(0, 760) + new_source + this.tree.toString().slice(784, -1); 
+//logger.Logger.log ("1111 "+sourceCode+"\n");
+// get the node position info
+const {
+    startPosition: originalStart,
+    endPosition: originalEnd,
+    startIndex: originalStartIndex,
+    endIndex: originalEndIndex 
+} = node;
+const newNumberOflines = new_source.match(/\n/g)?.length || 0;
+let newEndColumn = originalStart.column;
+if (newNumberOflines === 0) {
+    newEndColumn = originalStart.row + new_source.length;
+} else {
+    newEndColumn = new_source.split("\n").slice(-1)[0].length;
+}
+
+// (this updates all the indices of all the nodes)
+this.tree.edit({
+    startIndex: originalStartIndex,
+    oldEndIndex: originalEndIndex,
+    newEndIndex: originalStartIndex + new_source.length,
+    startPosition: originalStart,
+    oldEndPosition: originalEnd,
+    newEndPosition: { row: originalStart.row + newNumberOflines, column: newEndColumn,  } 
+});
+                            let sourceCode = this.tree.rootNode.text.slice(0, originalStartIndex) + new_source + this.tree.rootNode.text.slice(originalEndIndex);
+                            logger.Logger.log ("1111 "+sourceCode+"\n");
+                            const newTree = this.parser.parse(new_source, this.tree);
+                            function printTree(node: Parser.SyntaxNode, indent: string = ''): void {
+                                logger.Logger.log(`${indent}***${node.type}[${node.text}](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
+                                for (const child of node.children) {
+                                    printTree(child, indent + '  ');
+                                }
+                            }
+                            printTree(newTree.rootNode);
+                            //printTree(this.tree.rootNode);
+                        }
                     }
                     query1.delete ();
                 } catch (error) {
