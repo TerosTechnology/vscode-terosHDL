@@ -61,19 +61,19 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         this.set_symbol(comment_symbol);
     }
 
+    printTree(node: Parser.SyntaxNode, indent: string = ''): void {
+        logger.Logger.log(`${indent}**${node.type}[${node.text.replace ('\n', '').substring (0, 72)} ...](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
+        for (const child of node.children) {
+            this.printTree(child, indent + '  ');
+        }
+    }
+
     async get_svg_sm(code: any, comment_symbol: any) {
         this.set_comment_symbol(comment_symbol);
 
         let process;
         try {
             this.tree = this.parser.parse(code);
-            function printTree(node: Parser.SyntaxNode, indent: string = ''): void {
-                logger.Logger.log(`${indent}**${node.type}[${node.text.substring (0, 10)} ...](${node.startPosition.row}, ${node.startPosition.column}) - (${node.endPosition.row}, ${node.endPosition.column})\n`);
-                for (const child of node.children) {
-                    printTree(child, indent + '  ');
-                }
-            }
-            printTree(this.tree.rootNode);
             process = this.get_process(this.tree);
         } catch (e) {
             return { 'svg': [], 'stm': [] };
@@ -167,7 +167,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             break;
         }
         if (ns !== undefined) {
-            logger.Logger.log ("implicity_ns "+ns+"\n");
+            //logger.Logger.log ("implicity_ns "+ns+"\n");
             s_position = p.startPosition;
             e_position = p.endPosition;
             start_position = [s_position.row, e_position.column - 1];
@@ -210,8 +210,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                         if (transition[0].destination !== undefined && transition[0].destination !== '') {
                             const state_variable_name = state_name.replace('(', '').replace(')', '');
                             //logger.Logger.log ("transition ns : "+transition[0].destination+"\n");
-                            const new_source_var = `${state_variable_name} := ${transition[0].destination};`;
-                            const new_source_sig = `${state_variable_name} := ${transition[0].destination};`;
+                            const new_source_var = `${state_variable_name} := ${transition[0].destination};`; // XXX also for <=
                             const {
                                 startPosition: originalStart,
                                 endPosition: originalEnd,
@@ -241,6 +240,8 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                 }
             }
         } while (cursor.gotoNextSibling() !== false);
+        //logger.Logger.log ("return_tree : "+return_tree.rootNode.toString()+"\n");
+        this.printTree (return_tree.rootNode);
         out (first, return_tree);
     }
 
@@ -248,17 +249,17 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         const stms = [];
 
         const p1 = proc.code;
-        const case_state_name = this.get_case_process(p1);
-        const state_variable_name = this.get_state_variable_name(case_state_name[0]);
-        let first : boolean;
+        const case_state_process = this.get_case_process(p1);
+        const state_variable_name = this.get_state_variable_name(case_state_process[0]);
+        let replace : boolean;
         let return_tree : Parser.Tree;
-        this.replace_implicity_ns (case_state_name[0], state_variable_name, (k1, k2) => {
-            first = k1;
+        this.replace_implicity_ns (case_state_process[0], state_variable_name, (k1, k2) => {
+            replace = k1;
             return_tree = k2;
         });
         let name : string;
         let case_statements : any[];
-        if (first === false) {
+        if (replace === false) {
             name = this.get_process_label(p1);
             case_statements = this.get_case_process(p1);
         } else {
@@ -363,7 +364,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
             }
         }
         while (cursor.gotoNextSibling() !== false);
-        logger.Logger.log ("state_names "+state_names+"\n");
+        //logger.Logger.log ("state_names "+state_names+"\n");
         return state_names;
     }
 
@@ -373,7 +374,6 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
         cursor.gotoFirstChild();
         do {
             if (cursor.nodeType === 'case_statement_alternative') {
-                const tc = cursor;
                 const init: any = [];
                 const state = {
                     'name': '',
