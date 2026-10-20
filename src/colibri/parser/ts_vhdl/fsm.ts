@@ -142,7 +142,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
     }
 
     implicity_ns (p: any) : any {
-        const regex_field = /\s*-- XXX (?<state_mode>[a-zA-Z_]+) = (?<state_name>[a-zA-Z0-9]+)/;
+        const regex_field = /\s*-- teroshdl\[(?<state_mode>[a-zA-Z_]+)\] = (?<state_name>[a-zA-Z0-9]+)/;
         let m;
         let ns;
         const transitions1 = [];
@@ -199,7 +199,7 @@ export class Paser_fsm_vhdl extends Parser_fsm_base {
                 //logger.Logger.log ("cursor : "+c1+"\n");
                 c2 = c1.nextNamedSibling;
                 try {
-                    let qs = `(case_statement_alternative (choices (simple_expression (simple_name))) (comment) @function.name1 (comment) @function.name2 (comment) @function.name3)`;
+                    let qs = `(case_statement_alternative (choices (simple_expression (simple_name))) (comment) @function.name1)`;
                     const language = this.parser.getLanguage ();
                     let query = language.query (qs);
                     const captures = query.captures (c1);
