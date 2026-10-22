@@ -112,5 +112,27 @@ describe('nextpnr Command Builder', () => {
             expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [''] }, 'design.json', 'out.asc'))
                 .toThrow('extra_options must contain non-empty strings');
         });
+
+        it('adds the report argument when requested and keeps it after passthrough options', () => {
+            const config = { ...defaultConfig(), extra_options: ['--ignore-loops'] };
+            expect(buildNextpnrArgs(config, 'design.json', 'design.asc', {
+                reportFile: 'nextpnr_report.json'
+            })).toEqual([
+                '--json', 'design.json', '--asc', 'design.asc', '--seed', '1',
+                '--ignore-loops', '--report', 'nextpnr_report.json'
+            ]);
+        });
+
+        it('adds --gui at the end only when explicitly requested', () => {
+            expect(buildNextpnrArgs(defaultConfig(), 'design.json', 'design.asc', { gui: true })).toEqual([
+                '--json', 'design.json', '--asc', 'design.asc', '--seed', '1', '--gui'
+            ]);
+            expect(buildNextpnrArgs(defaultConfig(), 'design.json', 'design.asc')).not.toContain('--gui');
+        });
+
+        it.each(['--gui', '--report', '--report=already.json'])('rejects %s in extra_options', (option) => {
+            expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
+                .toThrow(option.split('=')[0] + ' is managed');
+        });
     });
 });

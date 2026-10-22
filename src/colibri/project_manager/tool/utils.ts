@@ -1,7 +1,13 @@
-import { e_tools_general_select_tool } from 'colibri/config/config_declaration';
+import {
+    e_tools_general_select_tool,
+    e_tools_nextpnr_target_family
+} from 'colibri/config/config_declaration';
 import { e_iconType, e_taskExecutionType, e_taskState, e_taskType, t_taskRep } from './common';
 
-export function getTaskList(toolName: e_tools_general_select_tool): t_taskRep[] {
+export function getTaskList(
+    toolName: e_tools_general_select_tool,
+    targetFamily?: e_tools_nextpnr_target_family
+): t_taskRep[] {
     if (toolName === e_tools_general_select_tool.ghdl) {
         return [
             {
@@ -140,19 +146,53 @@ export function getTaskList(toolName: e_tools_general_select_tool): t_taskRep[] 
             }
         ];
     } else if (toolName === e_tools_general_select_tool.nextpnr) {
-        return [
+        const base: t_taskRep[] = [
             {
                 name: e_taskType.OPENFOLDER,
                 label: 'Open Project Folder',
                 executionType: e_taskExecutionType.OPENFOLDER
-            },
-            {
-                name: e_taskType.NEXTPNR_PNR,
-                label: 'Place and Route',
-                executionType: e_taskExecutionType.COMPLEXCOMMAND,
-                status: e_taskState.IDLE
             }
         ];
+        const isStable = targetFamily === e_tools_nextpnr_target_family.ice40 ||
+            targetFamily === e_tools_nextpnr_target_family.ecp5;
+        if (!isStable) {
+            base.push({
+                name: e_taskType.NEXTPNR_PNR,
+                label: 'Run Place & Route',
+                executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                status: e_taskState.IDLE
+            });
+            return base;
+        }
+        base.push({
+            name: e_taskType.NEXTPNR_PNR_GROUP,
+            label: 'Place & Route',
+            executionType: e_taskExecutionType.DISPLAYGROUP,
+            children: [
+                {
+                    name: e_taskType.NEXTPNR_PNR,
+                    label: 'Run Place & Route',
+                    executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                    icon: e_iconType.RUN,
+                    status: e_taskState.IDLE
+                },
+                {
+                    name: e_taskType.NEXTPNR_GUI,
+                    label: 'Open GUI',
+                    executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                    icon: e_iconType.CHIP,
+                    status: e_taskState.IDLE
+                },
+                {
+                    name: e_taskType.NEXTPNR_REPORT,
+                    label: 'Utilization & Timing',
+                    executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                    icon: e_iconType.REPORT,
+                    status: e_taskState.IDLE
+                }
+            ]
+        });
+        return base;
     }
     return [];
 }
