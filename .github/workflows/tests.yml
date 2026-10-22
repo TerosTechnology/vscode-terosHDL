@@ -45,6 +45,31 @@ jobs:
           thresholds: '45 60'
           indicators: true
 
+  nextpnr-ice40-e2e:
+    name: nextpnr iCE40 E2E
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install iCE40 toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yosys nextpnr-ice40 fpga-icestorm
+
+      - name: Synthesize, place and route, and pack fixture
+        working-directory: tests/fixtures/nextpnr/ice40_blinky
+        run: |
+          yosys -p 'read_verilog blinky.v; synth_ice40 -top blinky -json yosys_out.json'
+          nextpnr-ice40 --hx1k --package tq144 --json yosys_out.json --pcf blinky.pcf \
+            --asc nextpnr_out.asc --report nextpnr_report.json
+          icepack nextpnr_out.asc nextpnr_out.bin
+
+          test -s nextpnr_out.asc
+          test -s nextpnr_out.bin
+          test -s nextpnr_report.json
+          node -e 'JSON.parse(require("fs").readFileSync("nextpnr_report.json", "utf8"))'
+
   ui-tests:
     name: UI Tests
     runs-on: ubuntu-22.04

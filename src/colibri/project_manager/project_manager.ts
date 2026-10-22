@@ -65,6 +65,7 @@ import { getTaskList } from "./tool/utils";
 import { runTaskGHDL } from "./tool/ghdl/taskRunners";
 import { runTaskYosys } from "./tool/yosys/taskRunners";
 import { runTasknvc } from "./tool/nvc/taskRunners";
+import { runTaskNextpnr } from "./tool/nextpnr/taskRunners";
 import { LoggerBase } from "colibri/logger/logger";
 
 export const DEFAULT_LIBRARY = "teroshdlDefault";
@@ -708,7 +709,8 @@ export class Project_manager extends ConfigManager {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-    public runTask(taskType: e_taskType, logger: LoggerBase, callback: (result: p_result) => void): ChildProcess {
+    public runTask(taskType: e_taskType, logger: LoggerBase,
+        callback: (result: p_result) => void): ChildProcess | undefined {
         const toolName = this.get_config().tools.general.select_tool;
         if (toolName === e_tools_general_select_tool.ghdl) {
             const startTime = Date.now();
@@ -735,14 +737,24 @@ export class Project_manager extends ConfigManager {
             const resultProcess = runTasknvc(taskType, this.get_project_definition(), (result: p_result) => {
                 const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;
                 const endTime = Date.now();
-                const elapsedTime = endTime - startTime; // ms
+                const elapsedTime = endTime - startTime;
                 this.taskStateManager.updateTask(taskType, taskStatus, undefined, result.successful, elapsedTime);
                 this.emitUpdateStatus();
                 callback(result);
             });
             return resultProcess;
+        } else if (toolName === e_tools_general_select_tool.nextpnr) {
+            const startTime = Date.now();
+            return runTaskNextpnr(taskType, this.get_project_definition(), (result: p_result) => {
+                const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;
+                const endTime = Date.now();
+                const elapsedTime = endTime - startTime;
+                this.taskStateManager.updateTask(taskType, taskStatus, undefined, result.successful, elapsedTime);
+                this.emitUpdateStatus();
+                callback(result);
+            }, logger);
         }
-        return {} as ChildProcess;
+        return undefined;
     }
 
     public getTaskState(nameTask: e_taskType): e_taskState | undefined {
@@ -757,7 +769,12 @@ export class Project_manager extends ConfigManager {
         if (this.getProjectType() !== e_project_type.GENERIC) {
             return;
         }
-        const newTaskManager = new TaskStateManager(getTaskList(this.get_config().tools.general.select_tool));
+        const config = this.get_config();
+        const selectedTool = config.tools.general.select_tool;
+        const targetFamily = selectedTool === e_tools_general_select_tool.nextpnr
+            ? config.tools.nextpnr.target_family
+            : undefined;
+        const newTaskManager = new TaskStateManager(getTaskList(selectedTool, targetFamily));
         this.taskStateManager = newTaskManager;
         this.emitterProject.emitEvent(this.name, e_event.UPDATE_TASK);
     }

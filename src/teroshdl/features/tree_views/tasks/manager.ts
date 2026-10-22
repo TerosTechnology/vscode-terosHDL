@@ -18,6 +18,8 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as vscode from "vscode";
+import * as fs from 'fs';
+import * as path from 'path';
 import * as element from "./element";
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import { Task, TaskDecorator } from "./element";
@@ -33,9 +35,10 @@ import { TimingReportView } from "../../views/timing/timing_report";
 import { runSandpiperConversion, runSandpiperDiagramGeneration, runSandpiperNavTlvGeneration } from './sandpiper_utils';
 import { showSvgInWebview } from 'colibri/project_manager/tool/yosys/svgWebview';
 import { showResourceUtilizationWebview } from 'colibri/project_manager/tool/yosys/resourceUtilizationWebview';
+import { showNextpnrReportWebview } from 'colibri/project_manager/tool/nextpnr/reportWebview';
 import { getShowSvgFilePath } from 'colibri/project_manager/tool/yosys/utils';
 import { ProjectEmitter } from "colibri/project_manager/projectEmitter";
-import { e_artifact_type, e_element_type, e_reportType, e_taskState, e_taskType, terminalTypeMap } from "colibri/project_manager/tool/common";
+import { e_artifact_type, e_element_type, e_reportType, e_taskExecutionType, e_taskState, e_taskType, terminalTypeMap } from "colibri/project_manager/tool/common";
 import { check_if_path_exist } from "colibri/utils/file_utils";
 import { p_result } from "colibri/process/common";
 
@@ -196,6 +199,9 @@ export class Tasks_manager extends BaseView {
     }
 
     async run(taskItem: element.Task): Promise<string | undefined> {
+        if (taskItem.taskDefinition.executionType === e_taskExecutionType.DISPLAYGROUP) {
+            return undefined;
+        }
         if (taskItem.taskDefinition.name === e_taskType.QUARTUS_RTL_ANALYZER) {
             openRTLAnalyzer(this.project_manager, this.emitterProject);
             return undefined;
@@ -249,13 +255,13 @@ export class Tasks_manager extends BaseView {
                 this.refresh_tree();
 
                 toolLogger.show(true);
-                if (exec_i.stdout) {
+                if (exec_i?.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
                         const cleanOutput = data.replace(/File: /g, "file://");
                         toolLogger.log(cleanOutput);
                     });
                 }
-                if (exec_i.stderr) {
+                if (exec_i?.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
                         toolLogger.log(data);
                     });
@@ -303,13 +309,13 @@ export class Tasks_manager extends BaseView {
                 this.refresh_tree();
 
                 toolLogger.show(true);
-                if (exec_i.stdout) {
+                if (exec_i?.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
                         const cleanOutput = data.replace(/File: /g, "file://");
                         toolLogger.log(cleanOutput);
                     });
                 }
-                if (exec_i.stderr) {
+                if (exec_i?.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
                         toolLogger.log(data);
                     });
@@ -318,6 +324,23 @@ export class Tasks_manager extends BaseView {
                 this.hideStatusBar();
                 this.state = e_VIEW_STATE.IDLE;
                 vscode.window.showErrorMessage(`Error running Resource Utilization: ${error}`);
+            }
+            return;
+        }
+        if (taskItem.taskDefinition.name === e_taskType.NEXTPNR_REPORT) {
+            try {
+                const selectedProject = this.project_manager.get_selected_project();
+                const reportPath = path.join(selectedProject.projectDiskPath, 'nextpnr_report.json');
+                if (!fs.existsSync(reportPath) || !fs.statSync(reportPath).isFile()) {
+                    vscode.window.showInformationMessage(
+                        'Run Place and Route first to generate the report.'
+                    );
+                    return undefined;
+                }
+                const reportJsonContent = fs.readFileSync(reportPath, 'utf8');
+                showNextpnrReportWebview(reportJsonContent, this.context);
+            } catch (error) {
+                vscode.window.showErrorMessage(`Error displaying nextpnr report: ${error}`);
             }
             return;
         }
@@ -364,14 +387,14 @@ export class Tasks_manager extends BaseView {
                 this.refresh_tree();
 
                 toolLogger.show(true);
-                if (exec_i.stdout) {
+                if (exec_i?.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
                         const cleanOutput = data.replace(/File: /g, "file://");
                         toolLogger.log(cleanOutput);
                     });
                 }
 
-                if (exec_i.stderr) {
+                if (exec_i?.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
                         const cleanOutput = data.replace(/File: /g, "file://");
                         toolLogger.log(cleanOutput);
@@ -490,13 +513,13 @@ export class Tasks_manager extends BaseView {
                 this.refresh_tree();
 
                 toolLogger.show(true);
-                if (exec_i.stdout) {
+                if (exec_i?.stdout) {
                     exec_i.stdout.on('data', (data: string) => {
                         toolLogger.log(data);
                     });
                 }
 
-                if (exec_i.stderr) {
+                if (exec_i?.stderr) {
                     exec_i.stderr.on('data', (data: string) => {
                         toolLogger.log(data);
                     });

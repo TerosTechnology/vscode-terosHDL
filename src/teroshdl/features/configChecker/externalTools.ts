@@ -20,7 +20,8 @@ import {
     e_config,
     e_tools_general_execution_mode,
     e_tools_general_select_tool,
-    e_tools_general_waveform_viewer
+    e_tools_general_waveform_viewer,
+    e_tools_nextpnr_target_family
 } from 'colibri/config/config_declaration';
 import { appendMsg, buildTitle, INTROICON, replaceByResult } from './utils';
 import { checkBinary } from 'colibri/toolChecker/utils';
@@ -72,6 +73,26 @@ export async function checkExternalToolManager(currentConfig: e_config) {
             const tcl_result = await checkBinary('tclsh', '', tclsh, ['--version']);
             msg = appendMsg(tcl_result, msg, 'Tclsh');
             if (!tcl_result.successfulConfig) {
+                isOk = false;
+            }
+        }
+    } else if (selectedTool === e_tools_general_select_tool.nextpnr) {
+        const targetFamily = currentConfig.tools.nextpnr.target_family;
+        const binaryByFamily: Record<e_tools_nextpnr_target_family, string> = {
+            [e_tools_nextpnr_target_family.ice40]: 'nextpnr-ice40',
+            [e_tools_nextpnr_target_family.ecp5]: 'nextpnr-ecp5',
+            [e_tools_nextpnr_target_family.generic]: 'nextpnr-generic',
+        };
+        const binaryName = binaryByFamily[targetFamily];
+
+        if (!binaryName) {
+            msg += `${INTROICON} ❌ Unsupported nextpnr target family: ${targetFamily}\n`;
+            isOk = false;
+        } else {
+            result = await checkBinary('nextpnr', installationPath, binaryName, ['--version']);
+            msg = appendMsg(result, msg, `nextpnr (${targetFamily})`);
+            msg += '\n';
+            if (!result.successfulConfig) {
                 isOk = false;
             }
         }

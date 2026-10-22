@@ -1,0 +1,3 @@
+# iCEstick (iCE40HX1K-TQ144) clock and LED pins
+set_io clk 21
+set_io led 99
