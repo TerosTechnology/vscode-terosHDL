@@ -3,7 +3,8 @@ import { e_tools_nextpnr, e_tools_nextpnr_target_family } from 'colibri/config/c
 export function buildNextpnrArgs(
     config: e_tools_nextpnr,
     jsonFile: string,
-    outputFile: string
+    outputFile: string,
+    options?: { gui?: boolean; reportFile?: string }
 ): string[] {
     if (!Object.values(e_tools_nextpnr_target_family).includes(config.target_family)) {
         throw new Error(`Unsupported nextpnr target family: ${config.target_family}`);
@@ -51,7 +52,7 @@ export function buildNextpnrArgs(
     };
     const managedOptions = new Set([
         '--json', '--asc', '--textcfg', '--write', '--pcf', '--lpf',
-        '--freq', '--seed', '--placer', '--router', '--gui'
+        '--freq', '--seed', '--placer', '--router', '--gui', '--report'
     ]);
     const seenOptions = new Set<string>();
     for (const option of extraOptions) {
@@ -99,6 +100,15 @@ export function buildNextpnrArgs(
     }
 
     args.push(...extraOptions.map(option => option.trim()));
+    if (options?.reportFile !== undefined) {
+        if (options.reportFile.trim() === '') {
+            throw new Error('reportFile must be a non-empty path when provided.');
+        }
+        args.push('--report', options.reportFile);
+    }
+    if (options?.gui === true) {
+        args.push('--gui');
+    }
     return args;
 }
 
