@@ -6,6 +6,7 @@ import { executeGhdlCommand, executeCommand, buildChainedCommand, getBinary, quo
 import { getTopLevel, getVhdlFiles, groupFilesByLibrary, getRelativeFilePath } from './utils';
 import * as fs from 'fs';
 import * as path from 'path';
+import { isMapIterator } from 'util/types';
 
 /**
  * Individual GHDL task implementations
@@ -48,6 +49,16 @@ export function runGhdlAnalyze(
 
     // Group files by logical library
     const libraryGroups = groupFilesByLibrary(projectDefinition, config);
+    let v : string[];
+    for (const [key, val] of libraryGroups.entries()) {
+        if (key === 'work') {
+            // set work library at end of map - for analyze mode
+            v = libraryGroups.get (key);
+            libraryGroups.delete (key);
+            libraryGroups.set (key, v);
+            break;
+        }
+    }
 
     // Build command chain for each library
     const commandSpecs: Array<{ command: string; args: string[] }> = [];
@@ -114,7 +125,7 @@ export function runGhdlSimulate(
 
     // Build arguments from configuration
     const { baseArgs, runArgs } = buildGhdlArgs(config, 'run');
-    const args = ['-r', ...baseArgs, topLevel, ...runArgs];
+    const args = ['-r', ...baseArgs, ...runArgs, topLevel, `--vcd=${topLevel}.vcd`, `--ieee-asserts=disable` ];
 
     return executeGhdlCommand(config, args, projectDefinition.project_disk_path, callback);
 }
