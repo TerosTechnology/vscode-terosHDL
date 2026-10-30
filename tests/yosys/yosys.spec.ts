@@ -114,3 +114,137 @@ describe('Yosys', () => {
         });
     }, 10000);
 });
+
+describe('Yosys schematic ignorePaths', () => {
+    it('filter_schematic_sources returns all sources when no paths are ignored', () => {
+        const sources = getFileList(LANGUAGE.VERILOG);
+        expect(yosys.filter_schematic_sources(sources, [])).toBe(sources);
+        expect(yosys.filter_schematic_sources(sources, [""])).toEqual(sources);
+    });
+
+    it('filter_schematic_sources excludes sources matching a glob pattern', () => {
+        const sources = getFileList(LANGUAGE.VERILOG);
+        const mylib_dir = path_lib.join(__dirname, 'helpers', 'verilog', 'mylib');
+
+        const filtered = yosys.filter_schematic_sources(sources, [`${mylib_dir}/*.v`]);
+
+        expect(filtered).toHaveLength(1);
+        expect(filtered[0].name).toContain('counter_top.v');
+    });
+
+    it('filter_schematic_sources excludes sources matching an exact file path', () => {
+        const sources = getFileList(LANGUAGE.VERILOG);
+        const logic_path = path_lib.join(__dirname, 'helpers', 'verilog', 'mylib', 'counter_logic.v');
+
+        const filtered = yosys.filter_schematic_sources(sources, [logic_path]);
+
+        expect(filtered).toHaveLength(1);
+        expect(filtered[0].name).toContain('counter_top.v');
+    });
+
+    it('getSchematic does not pass the ignored files to Yosys', (done) => {
+        const defaultConfig = get_default_config();
+        defaultConfig.schematic.general.backend = e_schematic_general_backend.yosys;
+        const mylib_dir = path_lib.join(__dirname, 'helpers', 'verilog', 'mylib');
+        defaultConfig.schematic.general.ignorePaths = [`${mylib_dir}/*.v`];
+
+        let spawnargs: string[] = [];
+        yosys.getSchematic(defaultConfig, 'counter_top', getFileList(LANGUAGE.VERILOG), (result) => {
+            const cmd = spawnargs.join(" ");
+            expect(cmd).toContain('counter_top.v');
+            expect(cmd).not.toContain('counter_logic.v');
+            // The excluded file is not part of the generated design
+            const modules = Object.keys(JSON.parse(result.schematic).modules);
+            expect(modules).toEqual(['counter_top']);
+
+            done();
+        }).then((exec_i) => {
+            spawnargs = exec_i.spawnargs;
+        });
+    }, 10000);
+});
+
+describe('Yosys schematic libraries', () => {
+    const verilog_helpers = path_lib.join(__dirname, 'helpers', 'verilog');
+    const vhdl_helpers = path_lib.join(__dirname, 'helpers', 'vhdl');
+
+    it('get_schematic_libraries expands files and glob patterns and skips empty or missing rows', async () => {
+        const logic_file = path_lib.join(verilog_helpers, 'mylib', 'counter_logic.v');
+
+        const libraries = await yosys.get_schematic_libraries([
+            { name: 'extlib', path: path_lib.join(verilog_helpers, 'mylib', '*.v') },
+            { name: 'single', path: logic_file },
+            { name: '', path: logic_file },
+            { name: 'empty_path', path: '  ' },
+            { name: 'missing', path: path_lib.join(verilog_helpers, 'does_not_exist.v') },
+        ], []);
+
+        expect(libraries).toEqual([
+            { name: 'extlib', files: [logic_file] },
+            { name: 'single', files: [logic_file] },
+        ]);
+    });
+
+    it('get_schematic_libraries skips the files matching the ignore paths', async () => {
+        const mylib_dir = path_lib.join(verilog_helpers, 'mylib');
+
+        const libraries = await yosys.get_schematic_libraries([
+            { name: 'extlib', path: path_lib.join(mylib_dir, '*.v') },
+        ], [path_lib.join(mylib_dir, '*.v')]);
+
+        expect(libraries).toEqual([]);
+    });
+
+    it('getSchematic reads the configured libraries before the sources with Yosys (Verilog)', (done) => {
+        const defaultConfig = get_default_config();
+        defaultConfig.schematic.general.backend = e_schematic_general_backend.yosys;
+        const mylib_dir = path_lib.join(verilog_helpers, 'mylib');
+        defaultConfig.schematic.general.libraries = [{ name: 'extlib', path: path_lib.join(mylib_dir, '*.v') }];
+
+        const top_sources = getFileList(LANGUAGE.VERILOG).filter((file) => file.name.endsWith('counter_top.v'));
+
+        let spawnargs: string[] = [];
+        yosys.getSchematic(defaultConfig, 'counter_top', top_sources, (result) => {
+            expect(result.sucessful).toBe(true);
+            const cmd = spawnargs.join(" ");
+            // The library files are passed to Yosys and read before the sources
+            expect(cmd).toContain(`read_verilog -sv "${path_lib.join(mylib_dir, 'counter_logic.v')}"`);
+            expect(cmd.indexOf('counter_logic.v')).toBeLessThan(cmd.indexOf('counter_top.v'));
+            // The library module is part of the generated design
+            const modules = Object.keys(JSON.parse(result.schematic).modules);
+            expect(modules).toContain('counter_top');
+            expect(modules).toContain('counter_logic');
+
+            done();
+        }).then((exec_i) => {
+            spawnargs = exec_i.spawnargs;
+        });
+    }, 10000);
+
+    it('getSchematic reads the configured libraries into their library with GHDL + Yosys (VHDL)', (done) => {
+        const defaultConfig = get_default_config();
+        defaultConfig.schematic.general.backend = e_schematic_general_backend.yosys_ghdl;
+        const mylib_dir = path_lib.join(vhdl_helpers, 'mylib');
+        defaultConfig.schematic.general.libraries = [{ name: 'mylib', path: path_lib.join(mylib_dir, '*.vhd') }];
+
+        const top_sources = getFileList(LANGUAGE.VHDL).filter((file) => file.name.endsWith('counter_top.vhd'));
+
+        let spawnargs: string[] = [];
+        yosys.getSchematic(defaultConfig, 'counter_top', top_sources, (result) => {
+            expect(result.sucessful).toBe(true);
+            const cmd = spawnargs.join(" ");
+            // The library files are read into the configured library before the sources
+            expect(cmd).toContain(`--work=mylib "${path_lib.join(mylib_dir, 'counter_logic.vhd')}"`);
+            expect(cmd.indexOf('counter_logic.vhd')).toBeLessThan(cmd.indexOf('counter_top.vhd'));
+            // The library module is part of the generated design (the GHDL
+            // plugin mangles the module names with the architecture and library)
+            const modules = Object.keys(JSON.parse(result.schematic).modules);
+            expect(modules).toContain('counter_top');
+            expect(modules.some((module) => module.startsWith('counter_logic'))).toBe(true);
+
+            done();
+        }).then((exec_i) => {
+            spawnargs = exec_i.spawnargs;
+        });
+    }, 20000);
+});

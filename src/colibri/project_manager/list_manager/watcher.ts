@@ -63,7 +63,7 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
     }
 
 
-    add(watcher: t_watcher): t_action_result {
+    add(watcher: t_watcher, fire_callback = true): t_action_result {
         const result: t_action_result = {
             result: "",
             successful: true,
@@ -76,7 +76,9 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
         }
         this.watchers.push(watcher);
         this.watcher_manager.add(watcher.path);
-        this.watcher_callback_update(watcher.path);
+        if (fire_callback) {
+            this.watcher_callback_update(watcher.path);
+        }
         return result;
     }
 

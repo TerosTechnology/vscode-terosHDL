@@ -26,6 +26,7 @@ import { read_file_sync, remove_file, get_directory } from "../utils/file_utils"
 import { LANGUAGE } from "../common/general";
 import * as path_lib from "path";
 import * as file_utils from "../utils/file_utils";
+import glob = require('tiny-glob');
 
 export type e_schematic_result = {
     schematic: string,
@@ -34,6 +35,53 @@ export type e_schematic_result = {
     empty: boolean
 };
 
+/** Row of the libraries table of the schematic settings */
+export type t_schematic_library_setting = {
+    name: string,
+    path: string
+};
+
+/** Library of the schematic settings resolved to the files to read into it */
+export type t_schematic_library = {
+    name: string,
+    files: string[]
+};
+
+/**
+ * Remove the sources matching the ignore paths of the schematic settings: the
+ * excluded files are not passed to Yosys
+ */
+export function filter_schematic_sources(sources: t_file[], ignorePaths: string[]): t_file[] {
+    if (ignorePaths.length === 0) {
+        return sources;
+    }
+    return sources.filter((source) => !file_utils.is_path_matching(source.name, ignorePaths));
+}
+
+/**
+ * Resolve the libraries table of the schematic settings: the path of each row
+ * is a file or a glob pattern and is expanded to the files to read into the
+ * library. Rows with an empty name or path and files matching the ignore paths
+ * are skipped.
+ */
+export async function get_schematic_libraries(libraries: t_schematic_library_setting[],
+    ignorePaths: string[]): Promise<t_schematic_library[]> {
+    const resolved_libraries: t_schematic_library[] = [];
+    for (const library of libraries) {
+        const name = library.name.trim();
+        const library_path = library.path.trim();
+        if (name === "" || library_path === "") {
+            continue;
+        }
+        const files = (await glob(library_path, { absolute: true, filesOnly: true }))
+            .filter((file) => !file_utils.is_path_matching(file, ignorePaths));
+        if (files.length > 0) {
+            resolved_libraries.push({ name: name, files: files });
+        }
+    }
+    return resolved_libraries;
+}
+
 function removeEmptyCommands(cmd: string): string {
     return cmd.replace(/; ;/g, ";");
 }
@@ -41,25 +89,42 @@ function removeEmptyCommands(cmd: string): string {
 export async function getSchematic(config: e_config, topTevel: string, sources: t_file[],
     callback_stream: (stream_c: e_schematic_result) => void) : Promise<any>{
 
+    const filtered_sources = filter_schematic_sources(sources, config.schematic.general.ignorePaths);
+    const libraries = await get_schematic_libraries(config.schematic.general.libraries,
+        config.schematic.general.ignorePaths);
+
     const backend = config.schematic.general.backend;
     if (backend === e_schematic_general_backend.yosys || backend === e_schematic_general_backend.yowasp) {
-        return runYosysRaw(config, topTevel, sources, callback_stream);
+        return runYosysRaw(config, topTevel, filtered_sources, callback_stream, libraries);
     }
     else if (backend === e_schematic_general_backend.yosys_ghdl) {
-        return await runYosysGhdl(config, topTevel, sources, callback_stream);
+        return await runYosysGhdl(config, topTevel, filtered_sources, callback_stream, libraries);
     }
     else if (backend === e_schematic_general_backend.standalone) {
-        return runYosysStandalone(config, topTevel, sources, callback_stream);
+        return runYosysStandalone(config, topTevel, filtered_sources, callback_stream, libraries);
     }
 }
 
 export function runYosysRaw(config: e_config, topTevel: string, sources: t_file[],
-    callback: (result: e_schematic_result) => void): any {
+    callback: (result: e_schematic_result) => void, libraries: t_schematic_library[] = []): any {
 
     const yosysPath = getRawYosysPath(config);
 
-    // Command for files
+    // Command for the files of the configured libraries (e.g. UNISIM): they
+    // are read before the project sources so the sources can use them
     let cmdFiles = "";
+    for (const library of libraries) {
+        for (const library_file of library.files) {
+            const language = file_utils.get_language_from_filepath(library_file);
+            if (language === LANGUAGE.VERILOG || language === LANGUAGE.SYSTEMVERILOG) {
+                const normalizedPath = config.schematic.general.backend === e_schematic_general_backend.yowasp ?
+                    normalizePathForLinux(library_file) : library_file;
+                cmdFiles += getYosysReadFileCommandVerilog(normalizedPath) + "; ";
+            }
+        }
+    }
+
+    // Command for files
     sources.forEach(source => {
         if (source.file_type === LANGUAGE.VERILOG || source.file_type === LANGUAGE.SYSTEMVERILOG) {
             const normalizedPath = config.schematic.general.backend === e_schematic_general_backend.yowasp ?
@@ -113,7 +178,7 @@ export function runYosysRaw(config: e_config, topTevel: string, sources: t_file[
 }
 
 export async function runYosysGhdl(config: e_config, topTevel: string, sources: t_file[],
-    callback: (result: e_schematic_result) => void): Promise<any> {
+    callback: (result: e_schematic_result) => void, libraries: t_schematic_library[] = []): Promise<any> {
 
     const yosysPath = getRawYosysPath(config);
     let isVhdl = false;
@@ -124,11 +189,22 @@ export async function runYosysGhdl(config: e_config, topTevel: string, sources: 
     });
 
     if (!isVhdl) {
-        return runYosysRaw(config, topTevel, sources, callback);
+        return runYosysRaw(config, topTevel, sources, callback, libraries);
+    }
+
+    // Command for the files of the configured libraries (e.g. UNISIM): they
+    // are read into their library before the project sources so the sources
+    // can use them
+    let cmdFiles = "";
+    for (const library of libraries) {
+        for (const library_file of library.files) {
+            if (file_utils.get_language_from_filepath(library_file) === LANGUAGE.VHDL) {
+                cmdFiles += getYosysReadFileCommandVhdl(library_file, library.name) + " ";
+            }
+        }
     }
 
     // Command for files
-    let cmdFiles = "";
     sources.forEach(source => {
         if (source.file_type === LANGUAGE.VHDL) {
             cmdFiles += getYosysReadFileCommandVhdl(source.name, source.logical_name) + " ";
@@ -200,7 +276,7 @@ async function getGHDLCommnand(preArgument: string, yosysPath: string) : Promise
 }
 
 export async function runYosysStandalone(config: e_config, topTevel: string, sources: t_file[],
-    callback: (result: e_schematic_result) => void): Promise<any> {
+    callback: (result: e_schematic_result) => void, libraries: t_schematic_library[] = []): Promise<any> {
 
     try {
         const { runYosys } = await import('@yowasp/yosys');
@@ -208,14 +284,26 @@ export async function runYosysStandalone(config: e_config, topTevel: string, sou
         const fileDeclaration : any = {};
         let cmdFiles = "";
 
-        for (let i = 0; i < sources.length; i++) {
-            const source = sources[i];
-            if (source.file_type === LANGUAGE.VERILOG) {
-                const extension = path_lib.extname(source.name);
-                const newName = `file${i}${extension}`;
-                fileDeclaration[newName] = read_file_sync(source.name);
-                cmdFiles += getYosysReadFileCommandVerilog(`/${newName}`) + "; ";
+        // The files of the configured libraries are read before the project sources
+        const verilog_files: string[] = [];
+        for (const library of libraries) {
+            for (const library_file of library.files) {
+                if (file_utils.get_language_from_filepath(library_file) === LANGUAGE.VERILOG) {
+                    verilog_files.push(library_file);
+                }
             }
+        }
+        for (const source of sources) {
+            if (source.file_type === LANGUAGE.VERILOG) {
+                verilog_files.push(source.name);
+            }
+        }
+
+        for (let i = 0; i < verilog_files.length; i++) {
+            const extension = path_lib.extname(verilog_files[i]);
+            const newName = `file${i}${extension}`;
+            fileDeclaration[newName] = read_file_sync(verilog_files[i]);
+            cmdFiles += getYosysReadFileCommandVerilog(`/${newName}`) + "; ";
         }
 
         // Command for top level

@@ -403,3 +403,46 @@ export function copy_directory_recursive(sourceDir: string, destDir: string) {
         }
     }
 }
+/** Convert a glob pattern (*, **, ?) to an anchored RegExp */
+export function glob_pattern_to_regex(pattern: string): RegExp {
+    let regex = "^";
+    let i = 0;
+    while (i < pattern.length) {
+        if (pattern[i] === "*" && pattern[i + 1] === "*") {
+            if (pattern[i + 2] === "/") {
+                // '**/' matches zero or more path segments
+                regex += "(?:.*/)?";
+                i += 3;
+            } else {
+                regex += ".*";
+                i += 2;
+            }
+        } else if (pattern[i] === "*") {
+            regex += "[^/]*";
+            i += 1;
+        } else if (pattern[i] === "?") {
+            regex += "[^/]";
+            i += 1;
+        } else {
+            regex += pattern[i].replace(/[.+^${}()|[\]\\]/g, "\\$&");
+            i += 1;
+        }
+    }
+    return new RegExp(regex + "$");
+}
+
+/** Check if a file/library path matches one of the given paths (files or glob patterns) */
+export function is_path_matching(path: string, patterns: string[]): boolean {
+    if (patterns.length === 0) {
+        return false;
+    }
+    const candidates = [path, path_lib.resolve(path)];
+    return patterns.some((pattern) => {
+        const trimmed = pattern.trim();
+        if (trimmed === "") {
+            return false;
+        }
+        const regex = glob_pattern_to_regex(trimmed);
+        return candidates.some((candidate) => regex.test(candidate));
+    });
+}

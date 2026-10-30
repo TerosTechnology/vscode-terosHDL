@@ -1,5 +1,5 @@
 import { e_project_type, e_source_type } from "../../common";
-import { Project_manager } from "../../project_manager";
+import { Project_manager, get_legacy_config_diff } from "../../project_manager";
 import {
     e_taskType, t_taskRep,
     t_test_declaration,
@@ -13,6 +13,7 @@ import { TaskStateManager } from "../taskState";
 import { getDefaultTaskList } from "./common";
 import * as file_utils from "../../../utils/file_utils";
 import { get_config_from_json } from "../../../config/config_declaration";
+import { GlobalConfigManager } from "../../../config/config_manager";
 import { LoggerBase } from "colibri/logger/logger";
 
 export class SandpiperProjectManager extends Project_manager {
@@ -102,8 +103,21 @@ export class SandpiperProjectManager extends Project_manager {
             prj.add_file_to_watcher(watcher);
         });
 
-        if (jsonContent?.["configuration"] !== undefined) {
-            await prj.set_config(get_config_from_json(jsonContent?.["configuration"]));
+        // Project configuration
+        if (jsonContent?.["configuration_diff"] !== undefined) {
+            // Load the project configuration diff as is. Diffing the merged
+            // configuration against the global configuration would store the
+            // values inherited from the global configuration as project
+            // overrides when the global configuration changes.
+            await prj.set_config_diff(jsonContent["configuration_diff"]);
+        }
+        else if (jsonContent?.["configuration"] !== undefined) {
+            // Legacy project file without configuration diff: the stored
+            // configuration is the merged configuration.
+            const merged_config = get_config_from_json(jsonContent?.["configuration"]);
+            const config_diff = get_legacy_config_diff(merged_config,
+                GlobalConfigManager.getInstance().get_config());
+            await prj.set_config_diff(config_diff);
         }
 
         return prj;

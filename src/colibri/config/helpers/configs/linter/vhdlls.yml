@@ -8,11 +8,29 @@ standard:
   value: "v2008"
 
 ignoreVunit:
-  description: "It will ignore the VUnit library in vunit_lib."
+  description: "Do not lint the VUnit libraries: vunit_lib, tb_com_lib and osvvm are added to the vhdl_ls configuration as third-party libraries, including the ones VUnit added to the project."
   type: boolean
   value: false
 
 vunitPath:
-  description: "Path to the VUnit files. Example: '/home/myuser/.venvs/default/lib/python3.12/site-packages/vunit/vhdl/**/*.vhd'"
+  description: "Path to the VUnit VHDL directory. Example: '/home/myuser/.venvs/default/lib/python3.12/site-packages/vunit/vhdl' (a glob pattern such as '.../vunit/vhdl/**/*.vhd' is also accepted). Adds the VUnit libraries vunit_lib and osvvm to the vhdl_ls configuration."
   type: string
   value: ""
+
+ignorePaths:
+  description: "Paths of VHDL files or libraries to ignore in vhdl_ls: matching project files are not added to the vhdl_ls configuration, so they are not analyzed. Comma separated files or glob patterns. Example: '/home/myuser/firmware/sources/ip_cores/sim/*.vhdl'"
+  type: array
+  value: []
+
+thirdPartyPaths:
+  description: "Paths of VHDL files to mark as third-party in vhdl_ls: the library of a matching project file is added to the vhdl_ls configuration as a third-party library, so it is resolved but not linted. Comma separated files or glob patterns. Example: '/home/myuser/firmware/simulation/UVVM/**/*.vhd'"
+  type: array
+  value: []
+
+libraries:
+  description: "Additional libraries to include in the vhdl_ls configuration. Each row adds a library with the given name and path (a file or a glob pattern) as a third-party library, so e.g. 'library UNISIM;' is resolved. Example: name 'UNISIM', path '/opt/Xilinx/Vivado/2024.2/data/vhdl/src/unisims/unisim_retarget_VCOMP.vhd'"
+  type: table
+  columns:
+    - name
+    - path
+  value: []

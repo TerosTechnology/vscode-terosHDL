@@ -228,6 +228,43 @@ body {
     border-color: var(--vscode-focusBorder);
 }
 
+/* Table (list of records, e.g. extra vhdl_ls libraries) */
+.setting-table {
+    width: 100%;
+    max-width: 640px;
+    border-collapse: collapse;
+    margin-top: 4px;
+}
+
+.setting-table th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vscode-descriptionForeground);
+    padding: 4px 8px 4px 0;
+}
+
+.setting-table td {
+    padding: 2px 8px 2px 0;
+    vertical-align: middle;
+}
+
+.setting-table .setting-input-box {
+    width: 100%;
+}
+
+.setting-table-action-column {
+    width: 32px;
+}
+
+.setting-table-add-button {
+    margin-top: 6px;
+}
+
+.setting-table-remove-button {
+    padding: 2px 6px;
+}
+
 .setting-select-box {
     width: 320px;
     height: 26px;
@@ -1666,7 +1703,7 @@ body.vscode-high-contrast {
                         <div class="setting-checkbox">
                             <input type="checkbox" id="linter-vhdlls-ignoreVunit">
                             <label class="setting-checkbox-label" for="linter-vhdlls-ignoreVunit">
-                                It will ignore the VUnit library in vunit_lib.
+                                Do not lint the VUnit libraries: vunit_lib, tb_com_lib and osvvm are added to the vhdl_ls configuration as third-party libraries, including the ones VUnit added to the project.
                                 <span class="markConfig" id="mark_linter-vhdlls-ignoreVunit"></span>
                             </label>
                         </div>
@@ -1675,12 +1712,53 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Path to the VUnit files. Example: '/home/myuser/.venvs/default/lib/python3.12/site-packages/vunit/vhdl/**/*.vhd'
+                            Path to the VUnit VHDL directory. Example: '/home/myuser/.venvs/default/lib/python3.12/site-packages/vunit/vhdl' (a glob pattern such as '.../vunit/vhdl/**/*.vhd' is also accepted). Adds the VUnit libraries vunit_lib and osvvm to the vhdl_ls configuration.
                             <span class="markConfig" id="mark_linter-vhdlls-vunitPath"></span>
                         </div>
                             <input class="setting-input-box" id="linter-vhdlls-vunitPath" value="">
                     </div>
                   
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Paths of VHDL files or libraries to ignore in vhdl_ls: matching project files are not added to the vhdl_ls configuration, so they are not analyzed. Comma separated files or glob patterns. Example: '/home/myuser/firmware/sources/ip_cores/sim/*.vhdl'
+                            <span class="markConfig" id="mark_linter-vhdlls-ignorePaths"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="linter-vhdlls-ignorePaths">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Paths of VHDL files to mark as third-party in vhdl_ls: the library of a matching project file is added to the vhdl_ls configuration as a third-party library, so it is resolved but not linted. Comma separated files or glob patterns. Example: '/home/myuser/firmware/simulation/UVVM/**/*.vhd'
+                            <span class="markConfig" id="mark_linter-vhdlls-thirdPartyPaths"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="linter-vhdlls-thirdPartyPaths">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional libraries to include in the vhdl_ls configuration. Each row adds a library with the given name and path (a file or a glob pattern) as a third-party library, so e.g. 'library UNISIM;' is resolved. Example: name 'UNISIM', path '/opt/Xilinx/Vivado/2024.2/data/vhdl/src/unisims/unisim_retarget_VCOMP.vhd'
+                            <span class="markConfig" id="mark_linter-vhdlls-libraries"></span>
+                        </div>
+                        <table class="setting-table" id="linter-vhdlls-libraries">
+                            <thead>
+                                <tr>
+                                    <th data-column="name">Name</th>
+                                    <th data-column="path">Path</th>
+                                    <th class="setting-table-action-column"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <button type="button" class="setting-button secondary setting-table-add-button" onclick="add_table_row('linter-vhdlls-libraries')">
+                            <i class="codicon codicon-add"></i>
+                            Add row
+                        </button>
+                    </div>
                   
                   
             </div>
@@ -1879,6 +1957,37 @@ body.vscode-high-contrast {
                             <input class="setting-input-box" id="schematic-general-args_ghdl" value="">
                     </div>
                   
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Paths of files to exclude from the schematic viewer: matching files are not passed to Yosys. Comma separated files or glob patterns. Example: '/home/myuser/firmware/sources/ip_cores/sim/*.vhdl'
+                            <span class="markConfig" id="mark_schematic-general-ignorePaths"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="schematic-general-ignorePaths">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional libraries passed to Yosys. Each row reads the files of the given path (a file or a glob pattern) into the library with the given name, so e.g. 'library UNISIM;' is resolved by the GHDL + Yosys backend. Example: name 'UNISIM', path '/opt/Xilinx/Vivado/2024.2/data/vhdl/src/unisims/unisim_retarget_VCOMP.vhd'
+                            <span class="markConfig" id="mark_schematic-general-libraries"></span>
+                        </div>
+                        <table class="setting-table" id="schematic-general-libraries">
+                            <thead>
+                                <tr>
+                                    <th data-column="name">Name</th>
+                                    <th data-column="path">Path</th>
+                                    <th class="setting-table-action-column"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <button type="button" class="setting-button secondary setting-table-add-button" onclick="add_table_row('schematic-general-libraries')">
+                            <i class="codicon codicon-add"></i>
+                            Add row
+                        </button>
+                    </div>
                   
                   
             </div>
@@ -2234,6 +2343,7 @@ body.vscode-high-contrast {
                     </div>
                   
                   
+                  
             </div>
             <div class="settings-section" id="tools-cocotb">
                 <div class="settings-group-title-label">
@@ -2441,6 +2551,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-ghdl-library_paths">
                     </div>
                   
+                  
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Stage-Specific Options</div>
                     <hr class="setting-divider">
@@ -2455,6 +2566,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-ghdl-check_syntax_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Analyze options. Extra options used for the GHDL analyze stage (ghdl -a).
@@ -2463,6 +2575,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-ghdl-analyze_options">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -2473,6 +2586,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-ghdl-elaborate_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Run options. Extra options used when running GHDL simulations (ghdl -r).
@@ -2482,6 +2596,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-ghdl-run_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Synthesis options for GHDL synthesis (ghdl --synth):
@@ -2490,6 +2605,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-ghdl-synthesis_options">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Custom Configuration</div>
@@ -2504,6 +2620,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-ghdl-extra_flags">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Elaboration and Binding</div>
@@ -2624,6 +2741,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-ghdl-waveform_options">
                     </div>
                   
+                  
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Waveform Advanced Options</div>
                     <hr class="setting-divider">
@@ -2733,6 +2851,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-ghdl-suppress_warnings">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Assertions and Verification</div>
@@ -2872,6 +2991,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-ghdl-vpi_modules">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             VHPI modules to load (--vhpi):
@@ -2880,6 +3000,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-ghdl-vhpi_modules">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -3070,6 +3191,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-nvc-library_paths">
                     </div>
                   
+                  
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Stage-Specific Options</div>
                     <hr class="setting-divider">
@@ -3084,6 +3206,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-nvc-check_syntax_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Analyze options. Extra options used for the NVC analyze stage (nvc -a).
@@ -3092,6 +3215,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-nvc-analyze_options">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -3102,6 +3226,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-nvc-elaborate_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Run options. Extra options used when running NVC simulations (nvc -r).
@@ -3111,6 +3236,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-nvc-run_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Synthesis options for NVC synthesis (nvc --synth):
@@ -3119,6 +3245,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-nvc-synthesis_options">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Custom Configuration</div>
@@ -3133,6 +3260,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-nvc-extra_flags">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Elaboration and Binding</div>
@@ -3253,6 +3381,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-nvc-waveform_options">
                     </div>
                   
+                  
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Waveform Advanced Options</div>
                     <hr class="setting-divider">
@@ -3362,6 +3491,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-nvc-suppress_warnings">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Assertions and Verification</div>
@@ -3501,6 +3631,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-nvc-vpi_modules">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             VHPI modules to load (--vhpi):
@@ -3509,6 +3640,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-nvc-vhpi_modules">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -3621,6 +3753,7 @@ body.vscode-high-contrast {
                     </div>
                   
                   
+                  
             </div>
             <div class="settings-section" id="tools-icestorm">
                 <div class="settings-group-title-label">
@@ -3711,6 +3844,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-icestorm-arachne_pnr_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Options for NextPNR Place & Route.
@@ -3720,6 +3854,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-icestorm-nextpnr_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional options for the synth_ice40 command.
@@ -3728,6 +3863,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-icestorm-yosys_synth_options">
                     </div>
+                  
                   
                   
             </div>
@@ -3808,6 +3944,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-isem-fuse_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional run options for ISim.
@@ -3816,6 +3953,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-isem-isim_options">
                     </div>
+                  
                   
                   
             </div>
@@ -3843,6 +3981,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-modelsim-vcom_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional options for compilation with vlog.
@@ -3852,6 +3991,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-modelsim-vlog_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional run options for vsim.
@@ -3860,6 +4000,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-modelsim-vsim_options">
                     </div>
+                  
                   
                   
             </div>
@@ -3886,6 +4027,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-morty-morty_options">
                     </div>
+                  
                   
                   
             </div>
@@ -3948,6 +4090,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-rivierapro-vlog_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional run options for vsim.
@@ -3956,6 +4099,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-rivierapro-vsim_options">
                     </div>
+                  
                   
                   
             </div>
@@ -4056,6 +4200,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-spyglass-goals">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Spyglass Options
@@ -4065,6 +4210,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-spyglass-spyglass_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Rule Parameters
@@ -4073,6 +4219,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-spyglass-rule_parameters">
                     </div>
+                  
                   
                   
             </div>
@@ -4099,6 +4246,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-symbiyosys-tasknames">
                     </div>
+                  
                   
                   
             </div>
@@ -4260,6 +4408,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-trellis-nextpnr_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional options for the synth_ice40 command.
@@ -4268,6 +4417,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-trellis-yosys_synth_options">
                     </div>
+                  
                   
                   
             </div>
@@ -4295,6 +4445,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-vcs-vcs_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Runtime options passed to the simulation
@@ -4303,6 +4454,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-vcs-run_options">
                     </div>
+                  
                   
                   
             </div>
@@ -4362,6 +4514,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-verilator-libs">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional options for verilator.
@@ -4370,6 +4523,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-verilator-verilator_options">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -4380,6 +4534,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-verilator-make_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional arguments directly passed to the verilated model.
@@ -4388,6 +4543,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-verilator-run_options">
                     </div>
+                  
                   
                   
             </div>
@@ -4490,6 +4646,7 @@ body.vscode-high-contrast {
                                       <option value='ghdl'>GHDL</option>
                                       <option value='modelsim'>Mentor Graphics ModelSim/Questa</option>
                                       <option value='xsim'>XSIM (Not supported in official VUnit)</option>
+                                      <option value='nvc'>NVC</option>
                             </select>
                         </div>
                     </div>
@@ -4610,6 +4767,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-xcelium-xmvhdl_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional options for compilation with xmvlog.
@@ -4618,6 +4776,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-xcelium-xmvlog_options">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -4628,6 +4787,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-xcelium-xmsim_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional run options for xrun.
@@ -4636,6 +4796,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-xcelium-xrun_options">
                     </div>
+                  
                   
                   
             </div>
@@ -4663,6 +4824,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-xsim-xelab_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional run options for XSim.
@@ -4671,6 +4833,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-xsim-xsim_options">
                     </div>
+                  
                   
                   
             </div>
@@ -4708,6 +4871,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-read_verilog_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Options for read_verilog -sv command (SystemVerilog files):
@@ -4717,6 +4881,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-read_systemverilog_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Options for read_liberty command (technology library files):
@@ -4725,6 +4890,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-read_liberty_options">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Hierarchy Settings</div>
@@ -4740,6 +4906,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-hierarchy_options">
                     </div>
                   
+                  
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Elaborate: Optimizations</div>
                     <hr class="setting-divider">
@@ -4754,6 +4921,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-proc_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Options for opt command (optimization):
@@ -4762,6 +4930,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-opt_options">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-checkbox">
@@ -4783,6 +4952,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-flatten_options">
                     </div>
                   
+                  
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Elaborate: Memory and FSM Settings</div>
                     <hr class="setting-divider">
@@ -4796,6 +4966,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-memory_options">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-checkbox">
@@ -4816,6 +4987,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-fsm_options">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Elaborate: Technology Mapping</div>
@@ -4842,6 +5014,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-techmap_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-checkbox">
                             <input type="checkbox" id="tools-yosys-abc_enabled">
@@ -4861,6 +5034,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-abc_options">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Synthesis: General</div>
@@ -5366,6 +5540,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-custom_load_commands">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Custom commands to run during analysis:
@@ -5374,6 +5549,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-custom_analyze_commands">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
@@ -5384,6 +5560,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-custom_elaborate_commands">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Additional custom flags for Yosys commands:
@@ -5392,6 +5569,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-extra_flags">
                     </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Advanced Settings</div>
@@ -5418,6 +5596,7 @@ body.vscode-high-contrast {
                         <input class="setting-input-box" id="tools-yosys-check_options">
                     </div>
                   
+                  
                     <div class="setting-item">
                         <div class="setting-checkbox">
                             <input type="checkbox" id="tools-yosys-stat_enabled">
@@ -5437,6 +5616,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-stat_options">
                     </div>
+                  
                   
                   
             </div>
@@ -5472,6 +5652,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-openfpga-task_options">
                     </div>
+                  
                   
                   
             </div>
@@ -5712,6 +5893,7 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-raptor-sim_source_list">
                     </div>
+                  
                   
                     <div class="setting-item">
                         <div class="setting-checkbox">
@@ -6600,6 +6782,18 @@ body.vscode-high-contrast {
     config["linter"]["vhdlls"]["ignoreVunit"] = element_value
     element_value = document.getElementById("linter-vhdlls-vunitPath").value;
     config["linter"]["vhdlls"]["vunitPath"] = element_value
+    element_value = document.getElementById("linter-vhdlls-ignorePaths").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["linter"]["vhdlls"]["ignorePaths"] = element_value
+    element_value = document.getElementById("linter-vhdlls-thirdPartyPaths").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["linter"]["vhdlls"]["thirdPartyPaths"] = element_value
+    element_value = get_table_value("linter-vhdlls-libraries");
+    config["linter"]["vhdlls"]["libraries"] = element_value
     config["linter"]["ghdl"] = {}
     element_value = document.getElementById("linter-ghdl-arguments").value;
     config["linter"]["ghdl"]["arguments"] = element_value
@@ -6636,6 +6830,13 @@ body.vscode-high-contrast {
     config["schematic"]["general"]["args"] = element_value
     element_value = document.getElementById("schematic-general-args_ghdl").value;
     config["schematic"]["general"]["args_ghdl"] = element_value
+    element_value = document.getElementById("schematic-general-ignorePaths").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["schematic"]["general"]["ignorePaths"] = element_value
+    element_value = get_table_value("schematic-general-libraries");
+    config["schematic"]["general"]["libraries"] = element_value
     config["templates"] = {}
     config["templates"]["general"] = {}
     element_value = document.getElementById("templates-general-header_file_path").value;
@@ -7755,6 +7956,15 @@ body.vscode-high-contrast {
     if (config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["vunitPath"] !== undefined) {
         document.getElementById("linter-vhdlls-vunitPath").value = config["linter"]["vhdlls"]["vunitPath"];
     }
+    if (config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["ignorePaths"] !== undefined) {
+        element_value = document.getElementById("linter-vhdlls-ignorePaths").value = String(config["linter"]["vhdlls"]["ignorePaths"]);
+    }
+    if (config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["thirdPartyPaths"] !== undefined) {
+        element_value = document.getElementById("linter-vhdlls-thirdPartyPaths").value = String(config["linter"]["vhdlls"]["thirdPartyPaths"]);
+    }
+    if (config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["libraries"] !== undefined) {
+        set_table_value("linter-vhdlls-libraries", config["linter"]["vhdlls"]["libraries"]);
+    }
     if (config["linter"] && config["linter"]["ghdl"] && config["linter"]["ghdl"]["arguments"] !== undefined) {
         document.getElementById("linter-ghdl-arguments").value = config["linter"]["ghdl"]["arguments"];
     }
@@ -7793,6 +8003,12 @@ body.vscode-high-contrast {
     }
     if (config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["args_ghdl"] !== undefined) {
         document.getElementById("schematic-general-args_ghdl").value = config["schematic"]["general"]["args_ghdl"];
+    }
+    if (config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["ignorePaths"] !== undefined) {
+        element_value = document.getElementById("schematic-general-ignorePaths").value = String(config["schematic"]["general"]["ignorePaths"]);
+    }
+    if (config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["libraries"] !== undefined) {
+        set_table_value("schematic-general-libraries", config["schematic"]["general"]["libraries"]);
     }
     if (config["templates"] && config["templates"]["general"] && config["templates"]["general"]["header_file_path"] !== undefined) {
         document.getElementById("templates-general-header_file_path").value = config["templates"]["general"]["header_file_path"];
@@ -9044,6 +9260,21 @@ body.vscode-high-contrast {
     }
     document.getElementById("mark_linter-vhdlls-vunitPath").innerHTML = mark;
     mark = "";
+    if (projectName !== undefined && config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["ignorePaths"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_linter-vhdlls-ignorePaths").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["thirdPartyPaths"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_linter-vhdlls-thirdPartyPaths").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["libraries"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_linter-vhdlls-libraries").innerHTML = mark;
+    mark = "";
     if (projectName !== undefined && config["linter"] && config["linter"]["ghdl"] && config["linter"]["ghdl"]["arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
@@ -9108,6 +9339,16 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-args_ghdl").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["ignorePaths"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_schematic-general-ignorePaths").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["libraries"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_schematic-general-libraries").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["templates"] && config["templates"]["general"] && config["templates"]["general"]["header_file_path"] !== undefined) {
       mark = MODIFIEDMSG;
@@ -10723,6 +10964,77 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulation_options_pnr").innerHTML = mark;
+  }
+
+  function get_table_columns(table_id) {
+    const table = document.getElementById(table_id);
+    const columns = [];
+    Array.from(table.tHead.rows[0].cells).forEach((cell) => {
+      if (cell.dataset.column !== undefined) {
+        columns.push(cell.dataset.column);
+      }
+    });
+    return columns;
+  }
+
+  function add_table_row(table_id) {
+    const table = document.getElementById(table_id);
+    const columns = get_table_columns(table_id);
+    const row = table.tBodies[0].insertRow();
+    columns.forEach((column) => {
+      const cell = row.insertCell();
+      const input = document.createElement("input");
+      input.className = "setting-input-box";
+      input.setAttribute("data-column", column);
+      cell.appendChild(input);
+    });
+    const action_cell = row.insertCell();
+    const remove_button = document.createElement("button");
+    remove_button.type = "button";
+    remove_button.className = "setting-button danger setting-table-remove-button";
+    remove_button.title = "Remove row";
+    remove_button.innerHTML = '<i class="codicon codicon-trash"></i>';
+    remove_button.onclick = function () { remove_table_row(remove_button); };
+    action_cell.appendChild(remove_button);
+  }
+
+  function remove_table_row(button) {
+    button.closest("tr").remove();
+  }
+
+  function get_table_value(table_id) {
+    const table = document.getElementById(table_id);
+    const columns = get_table_columns(table_id);
+    const value = [];
+    Array.from(table.tBodies[0].rows).forEach((row) => {
+      const entry = {};
+      Array.from(row.cells).forEach((cell, index) => {
+        const input = cell.getElementsByTagName("input")[0];
+        if (input !== undefined && columns[index] !== undefined) {
+          entry[columns[index]] = input.value;
+        }
+      });
+      value.push(entry);
+    });
+    return value;
+  }
+
+  function set_table_value(table_id, value) {
+    const table = document.getElementById(table_id);
+    const columns = get_table_columns(table_id);
+    table.tBodies[0].innerHTML = "";
+    if (Array.isArray(value)) {
+      value.forEach((entry) => {
+        add_table_row(table_id);
+        const rows = table.tBodies[0].rows;
+        const row = rows[rows.length - 1];
+        columns.forEach((column, index) => {
+          if (entry[column] !== undefined) {
+            row.cells[index].getElementsByTagName("input")[0].value = entry[column];
+          }
+        });
+      });
+    }
   }
 
   function open_submenu_icon(x) {

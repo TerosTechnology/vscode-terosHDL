@@ -19,6 +19,7 @@
 
 import { t_project_definition } from "../../project_definition";
 import { Generic_tool_handler } from "../generic_handler";
+import { e_watcher_type } from "../../common";
 import {
     t_test_declaration, t_test_result, t_location, e_artifact_type, e_element_type,
     t_test_artifact
@@ -34,6 +35,7 @@ import * as t_config from "../../../config/config_declaration";
 import * as fxp from "fast-xml-parser";
 import * as paht_lib from 'path';
 import * as nunjucks from 'nunjucks';
+import { with_execution_lock } from "./execution_lock";
 import { e_tools_general_select_tool } from "../../../config/config_declaration";
 
 export class Vunit extends Generic_tool_handler {
@@ -55,24 +57,68 @@ export class Vunit extends Generic_tool_handler {
         return process_utils.create_temp_file(template);
     }
 
+    /**
+     * Get the VUnit run.py script(s) of the project.
+     * The toplevel path is used when it is a Python script. Otherwise the
+     * run.py scripts registered as VUnit file watchers are used. This way the
+     * VHDL testbench can be set as toplevel without being executed as Python.
+     * @param prj Project definition
+     * @returns List of run.py paths
+     */
+    private get_runpy_path_list(prj: t_project_definition): string[] {
+        const runpy_path_list: string[] = [];
+
+        // Toplevel path(s) set as Python script (run.py)
+        prj.toplevel_path_manager.get().forEach(toplevel_path => {
+            if (file_utils.check_file_extension(toplevel_path, ".py", false)
+                && runpy_path_list.includes(toplevel_path) === false) {
+                runpy_path_list.push(toplevel_path);
+            }
+        });
+
+        // VUnit file watchers (run.py)
+        prj.watcher_manager.get().forEach(watcher => {
+            if (watcher.watcher_type === e_watcher_type.VUNIT
+                && runpy_path_list.includes(watcher.path) === false) {
+                runpy_path_list.push(watcher.path);
+            }
+        });
+
+        return runpy_path_list;
+    }
+
+    /**
+     * Get the run.py script to execute. If no run.py is found, the first
+     * toplevel path is returned (legacy behavior).
+     * @param prj Project definition
+     * @returns run.py path
+     */
+    private get_runpy_script(prj: t_project_definition): string {
+        const runpy_path_list = this.get_runpy_path_list(prj);
+        if (runpy_path_list.length > 0) {
+            return runpy_path_list[0];
+        }
+        return prj.toplevel_path_manager.get()[0];
+    }
+
     public async get_test_list(prj: t_project_definition): Promise<t_test_declaration[]> {
 
-        let toplevel_path_list = prj.toplevel_path_manager.get();
         const config = prj.config;
+        let runpy_path_list: string[] = this.get_runpy_path_list(prj);
         // Create runpy
         if (config.tools.vunit.runpy_mode === t_config.e_tools_vunit_runpy_mode.creation) {
-            toplevel_path_list = [this.create_runpy(prj)];
+            runpy_path_list = [this.create_runpy(prj)];
         }
         let test_list: t_test_declaration[] = [];
 
-        for (let i = 0; i < toplevel_path_list.length; i++) {
-            const result = await this.get_runpy_test_list(config, toplevel_path_list[i]);
+        for (let i = 0; i < runpy_path_list.length; i++) {
+            const result = await this.get_runpy_test_list(config, runpy_path_list[i]);
             test_list = test_list.concat(result);
         }
 
         // Remove runpy
         if (config.tools.vunit.runpy_mode === t_config.e_tools_vunit_runpy_mode.creation) {
-            file_utils.remove_file(toplevel_path_list[0]);
+            file_utils.remove_file(runpy_path_list[0]);
         }
 
         return test_list;
@@ -89,8 +135,11 @@ export class Vunit extends Generic_tool_handler {
         const simulator_config = this.get_simulator_config(simulator_name, simulator_install_path);
 
         const test_list: t_test_declaration[] = [];
-        const result = await python.exec_python_script(config.general.general.pypath, runpy_path, args, 
-            simulator_config);
+        // Serialize VUnit executions per run.py directory: concurrent
+        // executions in the same folder share the "vunit_out" folder and collide.
+        const result = await with_execution_lock(file_utils.get_directory(runpy_path),
+            () => python.exec_python_script(config.general.general.pypath, runpy_path, args,
+                simulator_config));
 
         if (result.successful === true) {
             try {
@@ -139,7 +188,19 @@ export class Vunit extends Generic_tool_handler {
 
                 const path_f = path_lib.join(working_directory, 'config_summary.txt');
 
-                const python_script_dir = file_utils.get_directory(prj.toplevel_path_manager.get()[0]);
+                let python_script_dir = "";
+                if (prj.config.tools.vunit.runpy_mode === t_config.e_tools_vunit_runpy_mode.creation) {
+                    const toplevel_path_list = prj.toplevel_path_manager.get();
+                    if (toplevel_path_list.length > 0) {
+                        python_script_dir = file_utils.get_directory(toplevel_path_list[0]);
+                    }
+                }
+                else {
+                    const python_script = this.get_runpy_script(prj);
+                    if (python_script !== undefined) {
+                        python_script_dir = file_utils.get_directory(python_script);
+                    }
+                }
 
                 const result_xml = this.get_result_from_xml(python_script_dir, output_path, test_list);
                 const final_result: t_test_result[] = [];
@@ -220,7 +281,7 @@ export class Vunit extends Generic_tool_handler {
         const simulator_install_path = this.get_simulator_installation_path(prj.config);
         const simulator_config = this.get_simulator_config(simulator_name, simulator_install_path);
 
-        let python_script = prj.toplevel_path_manager.get()[0];
+        let python_script = this.get_runpy_script(prj);
         // Create runpy
         if (config.tools.vunit.runpy_mode === t_config.e_tools_vunit_runpy_mode.creation) {
             python_script = this.create_runpy(prj);
@@ -228,15 +289,22 @@ export class Vunit extends Generic_tool_handler {
 
         const python_script_directory = file_utils.get_directory(python_script);
 
-        const exec_i = python.exec_python_script_async(python_path,
-            python_script, args, simulator_config, python_script_directory, (result: p_result) => {
-                // Remove runpy
-                if (config.tools.vunit.runpy_mode === t_config.e_tools_vunit_runpy_mode.creation) {
-                    file_utils.remove_file(python_script);
-                }
-                callback(result);
-            }, callback_stream);
-        return exec_i;
+        // Serialize VUnit executions per run.py directory: concurrent
+        // executions in the same folder share the "vunit_out" folder and collide.
+        with_execution_lock(python_script_directory, () => new Promise<p_result>(resolve => {
+            python.exec_python_script_async(python_path,
+                python_script, args, simulator_config, python_script_directory, (result: p_result) => {
+                    // Remove runpy
+                    if (config.tools.vunit.runpy_mode === t_config.e_tools_vunit_runpy_mode.creation) {
+                        file_utils.remove_file(python_script);
+                    }
+                    callback(result);
+                    resolve(result);
+                }, callback_stream);
+        })).catch(error => {
+            // eslint-disable-next-line no-console
+            console.log(error);
+        });
     }
 
     get_test_list_argument(test_list: t_test_declaration[]) {

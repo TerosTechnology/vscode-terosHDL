@@ -24,3 +24,16 @@ args_ghdl:
   description: "Arguments passed to GHDL"
   type: string
   value: ""
+
+ignorePaths:
+  description: "Paths of files to exclude from the schematic viewer: matching files are not passed to Yosys. Comma separated files or glob patterns. Example: '/home/myuser/firmware/sources/ip_cores/sim/*.vhdl'"
+  type: array
+  value: []
+
+libraries:
+  description: "Additional libraries passed to Yosys. Each row reads the files of the given path (a file or a glob pattern) into the library with the given name, so e.g. 'library UNISIM;' is resolved by the GHDL + Yosys backend. Example: name 'UNISIM', path '/opt/Xilinx/Vivado/2024.2/data/vhdl/src/unisims/unisim_retarget_VCOMP.vhd'"
+  type: table
+  columns:
+    - name
+    - path
+  value: []

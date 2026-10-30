@@ -12,6 +12,7 @@ simulator_name:
     ghdl: "GHDL"
     modelsim: "Mentor Graphics ModelSim/Questa"
     xsim: "XSIM (Not supported in official VUnit)"
+    nvc: "NVC"
   value: ghdl
 
 runpy_mode:

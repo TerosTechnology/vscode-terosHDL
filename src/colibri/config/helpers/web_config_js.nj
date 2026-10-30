@@ -132,6 +132,8 @@
     if (element_value.length == 1 && element_value[0] == "") {
       element_value = [];
     }
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "table" %}
+    element_value = get_table_value("{{tp0}}-{{tp1}}-{{tp2}}");
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "number" %}
     element_value = parseInt(document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value, 10);
@@ -158,6 +160,10 @@
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
     if (config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
         element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = String(config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"]);
+    }
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "table" %}
+    if (config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
+        set_table_value("{{tp0}}-{{tp1}}-{{tp2}}", config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"]);
     }
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
                 {%- else %}
@@ -190,6 +196,12 @@
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_{{tp0}}-{{tp1}}-{{tp2}}").innerHTML = mark;
+                {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "table" %}
+    mark = "";
+    if (projectName !== undefined && config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_{{tp0}}-{{tp1}}-{{tp2}}").innerHTML = mark;
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
                 {%- else %}
     mark = "";
@@ -202,6 +214,77 @@
         {%- endfor %}
     {%- endfor %}
 {%- endfor %}
+  }
+
+  function get_table_columns(table_id) {
+    const table = document.getElementById(table_id);
+    const columns = [];
+    Array.from(table.tHead.rows[0].cells).forEach((cell) => {
+      if (cell.dataset.column !== undefined) {
+        columns.push(cell.dataset.column);
+      }
+    });
+    return columns;
+  }
+
+  function add_table_row(table_id) {
+    const table = document.getElementById(table_id);
+    const columns = get_table_columns(table_id);
+    const row = table.tBodies[0].insertRow();
+    columns.forEach((column) => {
+      const cell = row.insertCell();
+      const input = document.createElement("input");
+      input.className = "setting-input-box";
+      input.setAttribute("data-column", column);
+      cell.appendChild(input);
+    });
+    const action_cell = row.insertCell();
+    const remove_button = document.createElement("button");
+    remove_button.type = "button";
+    remove_button.className = "setting-button danger setting-table-remove-button";
+    remove_button.title = "Remove row";
+    remove_button.innerHTML = '<i class="codicon codicon-trash"></i>';
+    remove_button.onclick = function () { remove_table_row(remove_button); };
+    action_cell.appendChild(remove_button);
+  }
+
+  function remove_table_row(button) {
+    button.closest("tr").remove();
+  }
+
+  function get_table_value(table_id) {
+    const table = document.getElementById(table_id);
+    const columns = get_table_columns(table_id);
+    const value = [];
+    Array.from(table.tBodies[0].rows).forEach((row) => {
+      const entry = {};
+      Array.from(row.cells).forEach((cell, index) => {
+        const input = cell.getElementsByTagName("input")[0];
+        if (input !== undefined && columns[index] !== undefined) {
+          entry[columns[index]] = input.value;
+        }
+      });
+      value.push(entry);
+    });
+    return value;
+  }
+
+  function set_table_value(table_id, value) {
+    const table = document.getElementById(table_id);
+    const columns = get_table_columns(table_id);
+    table.tBodies[0].innerHTML = "";
+    if (Array.isArray(value)) {
+      value.forEach((entry) => {
+        add_table_row(table_id);
+        const rows = table.tBodies[0].rows;
+        const row = rows[rows.length - 1];
+        columns.forEach((column, index) => {
+          if (entry[column] !== undefined) {
+            row.cells[index].getElementsByTagName("input")[0].value = entry[column];
+          }
+        });
+      });
+    }
   }
 
   function open_submenu_icon(x) {

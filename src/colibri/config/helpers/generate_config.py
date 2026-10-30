@@ -22,6 +22,8 @@ def get_type_declaration(field):
             if "options" in field[key]:
                 options = field[key]["options"]
                 type_declaration["options"] = options
+            if "columns" in field[key]:
+                type_declaration["columns"] = field[key]["columns"]
             new_field[key] = type_declaration
     return new_field
 

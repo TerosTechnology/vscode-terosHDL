@@ -69,6 +69,63 @@ import { LoggerBase } from "colibri/logger/logger";
 
 export const DEFAULT_LIBRARY = "teroshdlDefault";
 
+/** Library added to the vhdl_ls configuration from the libraries table setting */
+export type t_vhdlls_library = {
+    name: string,
+    path: string
+};
+
+type t_project_library = {
+    name: string,
+    files: string[]
+};
+
+// Library names reserved by vhdl_ls. Defining them in the generated
+// configuration makes vhdl_ls reject (work) or crash (std) on the whole
+// configuration file, so every configured library (e.g. UNISIM) would stop
+// resolving. Project libraries with these names are not written to the
+// configuration: vhdl_ls analyzes their files in the default library.
+const VHDL_LS_RESERVED_LIBRARY_NAMES = ["work", "std", "ieee"];
+
+function is_reserved_vhdl_ls_library_name(name: string): boolean {
+    return VHDL_LS_RESERVED_LIBRARY_NAMES.includes(name.toLowerCase());
+}
+
+// Libraries that make up VUnit: vunit_lib holds the VUnit sources, tb_com_lib
+// the communication test library and osvvm the bundled OSVVM. Marking them as
+// third-party keeps vhdl_ls from linting them when the VUnit library is ignored
+const VUNIT_LIBRARY_NAMES = ["vunit_lib", "tb_com_lib", "osvvm"];
+
+function is_vunit_library_name(name: string): boolean {
+    return VUNIT_LIBRARY_NAMES.includes(name.toLowerCase());
+}
+
+// Source directories of the vunit_lib library within the VUnit vhdl directory.
+// The 'vunit' directory covers VUnit 4.x, where the sources lived there
+const VUNIT_LIB_SOURCE_DIRECTORIES = [
+    "core", "string_ops", "check", "dictionary", "run", "path",
+    "data_types", "random", "com", "verification_components", "logging"
+];
+
+/**
+ * Libraries and file patterns of the VUnit vhdl directory, following the layout
+ * VUnit itself uses: the vunit_lib sources are the top level files and the
+ * src directory of every builtin, the bundled OSVVM is a library of its own.
+ * A single pattern over the whole directory is not usable: it would also pull in
+ * the test files of the builtins and the OSVVM sources, which reference
+ * libraries (e.g. tb_com_lib, osvvm) that are then reported as missing.
+ */
+function get_vunit_libraries(vunit_dir: string): { name: string, paths: string[] }[] {
+    const vunit_lib_paths = [`${vunit_dir}/*.vhd`, `${vunit_dir}/vunit/**/*.vhd`];
+    for (const directory of VUNIT_LIB_SOURCE_DIRECTORIES) {
+        vunit_lib_paths.push(`${vunit_dir}/${directory}/src/*.vhd`);
+    }
+    return [
+        { name: "vunit_lib", paths: vunit_lib_paths },
+        { name: "osvvm", paths: [`${vunit_dir}/osvvm/*.vhd`] }
+    ];
+}
+
 export class Project_manager extends ConfigManager {
     /**  Name of the project */
     private name: string;
@@ -105,36 +162,65 @@ export class Project_manager extends ConfigManager {
         }
 
         this.emitterProject = emitterProject;
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const selfm = this;
-        this.watchers = new manager_watcher.Watcher_manager((function () {
-            selfm.files.clear_automatic_files();
-            selfm.watchers.get().forEach(async (watcher: any) => {
-                if (file_utils.check_if_path_exist(watcher.path)) {
-                    if (selfm.emitterProject !== undefined) {
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_LOADING);
-                    }
-                    if (watcher.watcher_type === e_watcher_type.CSV) {
-                        selfm.add_file_from_csv(watcher.path, false);
-                    }
-                    else if (watcher.watcher_type === e_watcher_type.VUNIT) {
-                        const result = await selfm.add_file_from_vunit(watcher.path, false);
-                        if (result.successful === false) {
-                            if (selfm.emitterProject !== undefined) {
-                                selfm.emitterProject.emitEventLog(result.msg, e_event.STDOUT_ERROR);
-                            }
-                        }
-                    }
-                    else if (watcher.watcher_type === e_watcher_type.VIVADO) {
-                        await selfm.add_file_from_vivado(watcher.path, false);
-                    }
-                    if (selfm.emitterProject !== undefined) {
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.ADD_SOURCE);
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_FINISHED);
-                    }
-                }
-            });
+        this.watchers = new manager_watcher.Watcher_manager((() => {
+            this.reload_watcher_files();
         }), emitterProject);
+    }
+
+    /**
+     * Reload the automatic files from the watchers (CSV, VUnit run.py, Vivado).
+     * The automatic files present before the reload are kept as a backup: if a
+     * watcher fails to reload (e.g. the VUnit run.py execution fails), the
+     * backup is restored so the source files are not lost from the file list.
+     */
+    private async reload_watcher_files(): Promise<void> {
+        const automatic_backup = this.files.get().filter(file => file.is_manual === false);
+        this.files.clear_automatic_files();
+
+        const load_list: Promise<t_action_result>[] = [];
+        this.watchers.get().forEach(watcher => {
+            if (file_utils.check_if_path_exist(watcher.path) === false) {
+                return;
+            }
+            if (this.emitterProject !== undefined) {
+                this.emitterProject.emitEvent(this.name, e_event.WATCHER_LOADING);
+            }
+            let load_promise: Promise<t_action_result>;
+            if (watcher.watcher_type === e_watcher_type.CSV) {
+                load_promise = Promise.resolve().then(() => this.add_file_from_csv(watcher.path, false));
+            }
+            else if (watcher.watcher_type === e_watcher_type.VUNIT) {
+                load_promise = this.add_file_from_vunit(watcher.path, false);
+            }
+            else if (watcher.watcher_type === e_watcher_type.VIVADO) {
+                load_promise = this.add_file_from_vivado(watcher.path, false);
+            }
+            else {
+                return;
+            }
+            load_list.push(load_promise.then(result => result, () => {
+                const failure: t_action_result = {
+                    result: undefined,
+                    successful: false,
+                    msg: "The watcher failed to reload"
+                };
+                return failure;
+            }));
+        });
+
+        const results = await Promise.all(load_list);
+
+        if (results.every(result => result.successful) === false) {
+            // Restore the automatic files present before the reload
+            automatic_backup.forEach(file => {
+                this.files.add(file);
+            });
+        }
+
+        if (this.emitterProject !== undefined) {
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+            this.emitterProject.emitEvent(this.name, e_event.WATCHER_FINISHED);
+        }
     }
 
     set taskStateManager(taskStateManager: TaskStateManager) {
@@ -259,8 +345,21 @@ export class Project_manager extends ConfigManager {
             prj.add_file_to_watcher(watcher);
         });
 
-        if (jsonContent?.["configuration"] !== undefined) {
-            await prj.set_config(get_config_from_json(jsonContent?.["configuration"]));
+        // Project configuration
+        if (jsonContent?.["configuration_diff"] !== undefined) {
+            // Load the project configuration diff as is. Diffing the merged
+            // configuration against the global configuration would store the
+            // values inherited from the global configuration as project
+            // overrides when the global configuration changes.
+            await prj.set_config_diff(jsonContent["configuration_diff"]);
+        }
+        else if (jsonContent?.["configuration"] !== undefined) {
+            // Legacy project file without configuration diff: the stored
+            // configuration is the merged configuration.
+            const merged_config = get_config_from_json(jsonContent?.["configuration"]);
+            const config_diff = get_legacy_config_diff(merged_config,
+                GlobalConfigManager.getInstance().get_config());
+            await prj.set_config_diff(config_diff);
         }
 
         return prj;
@@ -360,8 +459,8 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // Watcher
     ////////////////////////////////////////////////////////////////////////////
-    add_file_to_watcher(watcher: t_watcher): t_action_result {
-        const result = this.watchers.add(watcher);
+    add_file_to_watcher(watcher: t_watcher, fire_callback = true): t_action_result {
+        const result = this.watchers.add(watcher, fire_callback);
         this.emitterProject.emitEvent(this.name, e_event.ADD_WATCHER);
         return result;
     }
@@ -412,6 +511,14 @@ export class Project_manager extends ConfigManager {
         }
 
         this.add_file_from_array(result.file_list);
+
+        // Register the run.py as VUnit watcher to keep it associated with the
+        // project. The VUnit tool uses it to run the tests even when the
+        // toplevel path is a VHDL testbench. The callback is not fired because
+        // the files are already loaded: the watcher callback would run run.py
+        // again, and concurrent VUnit executions in the same folder collide.
+        this.add_file_to_watcher({ path: vunit_path, watcher_type: e_watcher_type.VUNIT }, false);
+
         const action_result: t_action_result = {
             result: result.file_list,
             successful: result.successful,
@@ -512,7 +619,19 @@ export class Project_manager extends ConfigManager {
     // Config
     ////////////////////////////////////////////////////////////////////////////
     public async set_config(config: e_config, emitEvent = true): Promise<void> {
-        super.set_config(diff_config(config, GlobalConfigManager.getInstance().get_config()));
+        // Store only the settings that differ from the global configuration
+        this.set_config_diff(diff_config(config, GlobalConfigManager.getInstance().get_config()), emitEvent);
+    }
+
+    /**
+     * Set the project configuration diff (settings overridden from the global
+     * configuration) directly, without diffing it against the global
+     * configuration again.
+     * @param config Project configuration diff
+     * @param emitEvent Emit configuration events
+     */
+    public async set_config_diff(config: e_config, emitEvent = true): Promise<void> {
+        super.set_config(config);
         this.updateTaskManager();
         if (emitEvent) {
             this.emitterProject.emitEvent(this.name, e_event.SAVE_SETTINGS);
@@ -569,20 +688,20 @@ export class Project_manager extends ConfigManager {
     }
 
     public get_edam_json(reference_path?: string) {
-        return utils.get_edam_json(this.get_project_definition(), undefined, reference_path);
+        const edam_json: any = utils.get_edam_json(this.get_project_definition(), undefined, reference_path);
+        // Save the project configuration diff (settings overridden from the
+        // global configuration) along with the merged configuration, so the
+        // overrides are kept when the global configuration changes.
+        edam_json.configuration_diff = this.get_diff_config();
+        return edam_json;
     }
 
     public get_edam_yaml(reference_path?: string) {
         return utils.get_edam_yaml(this.get_project_definition(), undefined, reference_path);
     }
 
-    public get_toml(reference_path?: string) {
-        type t_lib = {
-            name: string,
-            files: string[]
-        };
-
-        const libraries: t_lib[] = [];
+    private get_project_libraries(reference_path?: string): t_project_library[] {
+        const libraries: t_project_library[] = [];
         const vhdl_sources = this.files.get(reference_path).filter((element) => {
             return element.file_type === LANGUAGE.VHDL || file_utils.get_language_from_filepath(basename(element.name)) === LANGUAGE.VHDL;
         });
@@ -600,22 +719,34 @@ export class Project_manager extends ConfigManager {
                 }
             }
             if (!file_in_library) {
-                libraries.push(<t_lib>{
+                libraries.push(<t_project_library>{
                     name: source.logical_name,
                     files: [source.name]
                 });
             }
         }
 
+        for (const library of libraries) {
+            if (library.name === undefined || library.name === '') {
+                library.name = DEFAULT_LIBRARY;
+            }
+        }
+
+        return libraries;
+    }
+
+    public get_toml(reference_path?: string) {
+        const libraries = this.get_project_libraries(reference_path);
+
         let toml = "[libraries]\n\n";
 
         for (const library of libraries) {
+            if (is_reserved_vhdl_ls_library_name(library.name)) {
+                continue;
+            }
             let files_in_library = "";
             for (const file_in_library of library.files) {
                 files_in_library += `  '${file_in_library}',\n`;
-            }
-            if (library.name === undefined || library.name === '') {
-                library.name = DEFAULT_LIBRARY;
             }
             toml += `${library.name}.files = [\n${files_in_library}]\n\n`;
         }
@@ -632,19 +763,84 @@ export class Project_manager extends ConfigManager {
         file_utils.save_file_sync(output_path, edam_yaml);
     }
 
-    public save_toml(output_path: string, hdlVersion: string, ignoreVunit: boolean, vunitPath: string) {
-        let initString = `standard = "${hdlVersion}"\n`;
+    public save_toml(output_path: string, hdlVersion: string, ignoreVunit: boolean, vunitPath: string,
+        libraries: t_vhdlls_library[] = [], ignorePaths: string[] = [], thirdPartyPaths: string[] = []) {
+        // Merge the project libraries with the configured external libraries
+        // (VUnit and the libraries table) by name, so the generated
+        // configuration never defines the same library twice: vhdl_ls rejects
+        // the whole configuration file on duplicate keys.
+        const library_map = new Map<string, { files: string[], is_third_party: boolean }>();
 
-        let endString = "\n\n";
-        if (vunitPath !== "") {
-            endString += `vunit_lib.files = ['${vunitPath}']\n`;
-        }
-        if (ignoreVunit && vunitPath !== "") {
-            endString += "vunit_lib.is_third_party = true\n";
+        for (const library of this.get_project_libraries()) {
+            if (is_reserved_vhdl_ls_library_name(library.name)) {
+                continue;
+            }
+            // Ignored paths (files or glob patterns) are not added to the
+            // configuration, so vhdl_ls does not analyze them
+            const files = library.files.filter((file) => !file_utils.is_path_matching(file, ignorePaths));
+            if (files.length === 0) {
+                continue;
+            }
+            // The VUnit libraries are not linted when the VUnit library is
+            // ignored, also when they come from the project (e.g. added by
+            // VUnit). A library with a file matching the third-party paths is
+            // resolved but not linted either
+            library_map.set(library.name, {
+                files: files,
+                is_third_party: (ignoreVunit && is_vunit_library_name(library.name))
+                    || files.some((file) => file_utils.is_path_matching(file, thirdPartyPaths))
+            });
         }
 
-        const toml_text = initString + this.get_toml() + endString;
-        file_utils.save_file_sync(output_path, toml_text);
+        const configured_libraries: { name: string, paths: string[], is_third_party: boolean }[] = [];
+        if (vunitPath !== "" && !file_utils.is_path_matching(vunitPath, ignorePaths)) {
+            // The path points to the VUnit vhdl directory; a glob pattern (e.g.
+            // '.../vunit/vhdl/**/*.vhd') is also accepted, strip it to find the
+            // directory
+            const vunit_dir = vunitPath.split("*")[0].replace(/[\\/]+$/, "");
+            for (const library of get_vunit_libraries(vunit_dir)) {
+                configured_libraries.push({ ...library, is_third_party: ignoreVunit });
+            }
+        }
+        for (const library of libraries) {
+            const name = library.name.trim();
+            const library_path = library.path.trim();
+            if (name === "" || library_path === "" || file_utils.is_path_matching(library_path, ignorePaths)) {
+                continue;
+            }
+            configured_libraries.push({ name: name, paths: [library_path], is_third_party: true });
+        }
+
+        for (const library of configured_libraries) {
+            if (is_reserved_vhdl_ls_library_name(library.name)) {
+                continue;
+            }
+            const existing = library_map.get(library.name);
+            if (existing === undefined) {
+                library_map.set(library.name, { files: [...library.paths], is_third_party: library.is_third_party });
+            } else {
+                existing.files.push(...library.paths);
+                existing.is_third_party = existing.is_third_party || library.is_third_party;
+            }
+        }
+
+        let toml = `standard = "${hdlVersion}"\n[libraries]\n\n`;
+        if (library_map.size === 0) {
+            toml += `${DEFAULT_LIBRARY}.files = []\n\n`;
+        }
+        library_map.forEach((library, name) => {
+            let files_in_library = "";
+            for (const file_in_library of library.files) {
+                files_in_library += `  '${file_in_library}',\n`;
+            }
+            toml += `${name}.files = [\n${files_in_library}]\n`;
+            if (library.is_third_party) {
+                toml += `${name}.is_third_party = true\n`;
+            }
+            toml += "\n";
+        });
+
+        file_utils.save_file_sync(output_path, toml);
     }
     
     public saveFileList(output_path: string, hdlVersion: string, ignoreVunit: boolean, vunitPath: string) {
@@ -857,7 +1053,7 @@ function diff_config<T extends Record<string, any>>(config1: T, config2: T): T {
             const nestedDifferences = diff_config(value1, value2);
             differences[key] = nestedDifferences;
         } else if (Array.isArray(value1) && Array.isArray(value2)) {
-            if (value1.length === value2.length && value1.every((value, index) => value === value2[index])) {
+            if (JSON.stringify(value1) === JSON.stringify(value2)) {
                 differences[key] = undefined;
             } else {
                 differences[key] = value1;
@@ -870,4 +1066,36 @@ function diff_config<T extends Record<string, any>>(config1: T, config2: T): T {
     });
 
     return differences as T;
+}
+
+/**
+ * Get the project configuration diff from a legacy merged configuration.
+ * The merged configuration doesn't store the project overrides, so the values
+ * inherited from the global configuration can't be told apart from the explicit
+ * overrides. Values equal to the built-in defaults are treated as inherited, so
+ * global configuration changes are not stored as project overrides.
+ * @param merged_config Merged (project + global) configuration stored in the project file
+ * @param global_config Current global configuration
+ * @returns Project configuration diff
+ */
+export function get_legacy_config_diff(merged_config: e_config, global_config: e_config): e_config {
+    const config_diff = diff_config(merged_config, global_config);
+    remove_default_config_values(config_diff, get_default_config());
+    return config_diff;
+}
+
+function remove_default_config_values(config_diff: any, default_config: any): void {
+    for (const key of Object.keys(config_diff)) {
+        const diff_value = config_diff[key];
+        const default_value = default_config !== undefined ? default_config[key] : undefined;
+        if (diff_value !== undefined && diff_value !== null
+            && typeof diff_value === 'object' && !Array.isArray(diff_value)
+            && default_value !== undefined && default_value !== null
+            && typeof default_value === 'object' && !Array.isArray(default_value)) {
+            remove_default_config_values(diff_value, default_value);
+        }
+        else if (JSON.stringify(diff_value) === JSON.stringify(default_value)) {
+            config_diff[key] = undefined;
+        }
+    }
 }

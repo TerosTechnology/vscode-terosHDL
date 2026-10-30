@@ -43,6 +43,54 @@ jobs:
           now=`date +"%Y-%m-%d__%H_%M"`
           echo "version=$now" >> $GITHUB_ENV
 
+      - name: Checkout rust_hdl (vhdl_ls language server)
+        uses: actions/checkout@v4
+        with:
+          repository: fransschreuder/rust_hdl
+          ref: feat/411-enhanced-unused-detection
+          path: rust_hdl
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.95'
+
+      - name: Add Windows MSVC target
+        run: rustup target add x86_64-pc-windows-msvc
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            rust_hdl/target
+          key: ${{ runner.os }}-vhdl_ls-${{ hashFiles('rust_hdl/**/Cargo.lock') }}
+
+      - name: Install cargo-xwin
+        run: cargo install cargo-xwin
+
+      - name: Build vhdl_ls (Linux)
+        run: cargo build --release --manifest-path rust_hdl/vhdl_ls/Cargo.toml
+
+      - name: Build vhdl_ls (Windows)
+        run: cargo xwin build --release --target x86_64-pc-windows-msvc --manifest-path rust_hdl/vhdl_ls/Cargo.toml
+
+      - name: Assemble vhdl_ls binaries
+        run: |
+          VERSION=$(sed -n 's/^version = "\(.*\)"$/\1/p' rust_hdl/Cargo.toml | head -n 1)
+          mkdir -p server/vhdl_ls/${VERSION}/vhdl_ls-x86_64-unknown-linux-musl/bin
+          cp -R rust_hdl/vhdl_libraries server/vhdl_ls/${VERSION}/vhdl_ls-x86_64-unknown-linux-musl/
+          cp rust_hdl/target/release/vhdl_ls server/vhdl_ls/${VERSION}/vhdl_ls-x86_64-unknown-linux-musl/bin/
+          mkdir -p server/vhdl_ls/${VERSION}/vhdl_ls-x86_64-pc-windows-msvc/bin
+          cp -R rust_hdl/vhdl_libraries server/vhdl_ls/${VERSION}/vhdl_ls-x86_64-pc-windows-msvc/
+          cp rust_hdl/target/x86_64-pc-windows-msvc/release/vhdl_ls.exe server/vhdl_ls/${VERSION}/vhdl_ls-x86_64-pc-windows-msvc/bin/
+          
+      - name: Download verible-verilog-ls
+        run: |
+          cd server
+          ./update_verible.sh
+
       - name: Prepare teroshdl
         run: |
           npm install
@@ -80,7 +128,7 @@ jobs:
       - name: Archive vsix
         uses: actions/upload-artifact@v4
         with:
-          name: teroshld
+          name: teroshdl
           path: |
             *.vsix
 
