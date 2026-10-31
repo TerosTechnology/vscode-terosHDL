@@ -85,6 +85,6 @@ export class Logger extends LoggerBase {
     }
 }
 
-export const globalLogger: Logger = new Logger("TerosHDL: Global");
-export const toolLogger: Logger = new Logger("TerosHDL: Tool Manager");
-export const debugLogger: Logger = new Logger("TerosHDL: Debug");
+export const globalLogger: Logger = new Logger("TerosHDL Global");
+export const toolLogger: Logger = new Logger("TerosHDL Tool Manager");
+export const debugLogger: Logger = new Logger("TerosHDL Debug");
