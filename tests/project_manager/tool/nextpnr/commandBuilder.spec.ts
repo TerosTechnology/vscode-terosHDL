@@ -125,6 +125,24 @@ describe('nextpnr Command Builder', () => {
                 .toThrow('extra_options must contain non-empty strings');
         });
 
+        it('splits extra_options entries containing multiple flags separated by spaces', () => {
+            const args = buildNextpnrArgs(
+                { ...defaultConfig(), extra_options: ['--timing-allow-fail --no-tmdriv'] },
+                'design.json',
+                'out.asc'
+            );
+            expect(args).toContain('--timing-allow-fail');
+            expect(args).toContain('--no-tmdriv');
+        });
+
+        it('rejects managed options in extra_options even when values are passed as separate tokens', () => {
+            expect(() => buildNextpnrArgs(
+                { ...defaultConfig(), extra_options: ['--freq 50'] },
+                'design.json',
+                'out.asc'
+            )).toThrow('--freq is managed');
+        });
+
         it('adds the report argument when requested and keeps it after passthrough options', () => {
             const config = { ...defaultConfig(), extra_options: ['--ignore-loops'] };
             expect(buildNextpnrArgs(config, 'design.json', 'design.asc', {
@@ -142,9 +160,11 @@ describe('nextpnr Command Builder', () => {
             expect(buildNextpnrArgs(defaultConfig(), 'design.json', 'design.asc')).not.toContain('--gui');
         });
 
-        it.each(['--gui', '--report', '--report=already.json', '--pre-pack'])('rejects %s in extra_options', (option) => {
-            expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
-                .toThrow(option.split('=')[0] + ' is managed');
+        ['--gui', '--report', '--report=already.json', '--pre-pack'].forEach((option) => {
+            it(`rejects ${option} in extra_options`, () => {
+                expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
+                    .toThrow(option.split('=')[0] + ' is managed');
+            });
         });
 
         it('adds --package for stable families when configured', () => {
@@ -165,9 +185,11 @@ describe('nextpnr Command Builder', () => {
             ]);
         });
 
-        it.each(['--package', '--up5k'])('rejects managed device/package option %s in extra_options', (option) => {
-            expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
-                .toThrow(option + ' is managed');
+        ['--package', '--up5k'].forEach((option) => {
+            it(`rejects managed device/package option ${option} in extra_options`, () => {
+                expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
+                    .toThrow(option + ' is managed');
+            });
         });
 
         it('rejects managed ECP5 device option in extra_options', () => {

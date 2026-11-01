@@ -105,6 +105,6 @@ router:
   value: ""
 
 extra_options:
-  description: "Additional nextpnr command-line options (comma-separated):"
+  description: "Additional nextpnr command-line options (one option per entry, e.g. --timing-allow-fail). Paths with spaces are not supported here."
   type: array
   value: []

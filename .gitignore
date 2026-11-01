@@ -2,6 +2,7 @@ node_modules
 lib
 out
 test-report
+test-report.html
 *.xml
 out_doc_api
 dist
