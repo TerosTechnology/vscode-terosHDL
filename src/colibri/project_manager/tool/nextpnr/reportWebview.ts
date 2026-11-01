@@ -154,7 +154,7 @@ function renderTiming(report: t_parsed_report): string {
 		return [`<tr class="${meetsConstraint ? 'timing-pass' : 'timing-fail'}">
 			<td>${escapeHtml(clock)}</td><td class="numeric">${rawValue.achieved.toFixed(2)} MHz</td>
 			<td class="numeric">${rawValue.constraint.toFixed(2)} MHz</td>
-			<td>${meetsConstraint ? 'Sí' : 'No'}</td></tr>`];
+			<td>${meetsConstraint ? 'Yes' : 'No'}</td></tr>`];
 	}).join('');
 	return rows
 		? `<table><thead><tr><th>Clock</th><th>Achieved Fmax</th><th>Constraint</th><th>Meets constraint</th></tr></thead><tbody>${rows}</tbody></table>`
