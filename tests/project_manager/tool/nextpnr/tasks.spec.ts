@@ -172,7 +172,7 @@ describe('nextpnr tasks', () => {
         });
     });
 
-    it('requests GUI mode and the report when the GUI task is run', () => {
+    it('requests GUI mode without report generation when the GUI task is run', () => {
         const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
         const result = runNextpnrGui(project, logger, callback);
         const outputPath = path.join(tempDirectory, 'nextpnr_out.asc');
@@ -181,14 +181,19 @@ describe('nextpnr tasks', () => {
             project.config.tools.nextpnr,
             path.join(tempDirectory, 'synthesis/netlist.json'),
             outputPath,
-            { gui: true, reportFile: 'nextpnr_report.json' }
+            { gui: true }
+        );
+        expect(logger.appendLine).toHaveBeenCalledWith(
+            '[nextpnr] GUI opened with the synthesized netlist. ' +
+            'Use Pack, Place and Route in the GUI toolbar to view placement and routing.'
         );
         expect(result).toBe(childProcess);
     });
 
     [
         'GUI support not enabled in this build',
-        "unrecognised option '--gui'"
+        "unrecognised option '--gui'",
+        "the option '--gui' is unrecognised"
     ].forEach((stderr) => it(`reports a clear message when the nextpnr binary has no Qt GUI support (${stderr})`, () => {
         const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
         const processResult: p_result = {
