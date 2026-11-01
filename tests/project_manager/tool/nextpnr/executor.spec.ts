@@ -68,7 +68,7 @@ describe('nextpnr Executor', () => {
             expect(() => getBinary({
                 installation_path: '/missing/tools',
                 target_family: e_tools_nextpnr_target_family.generic
-            })).toThrow('was not found in configured directory');
+            })).toThrow('nextpnr-generic not found in /missing/tools');
         });
 
         it('rejects an unsupported target family instead of choosing generic', () => {
@@ -201,7 +201,7 @@ describe('nextpnr Executor', () => {
         it('throws when configured directory does not contain the binary', () => {
             jest.spyOn(process_utils, 'get_os').mockReturnValue(OS.LINUX);
             jest.spyOn(file_utils, 'check_if_path_exist').mockReturnValue(false);
-            expect(() => resolveBinary('icepack', '/missing/tools')).toThrow('was not found in configured directory');
+            expect(() => resolveBinary('icepack', '/missing/tools')).toThrow('icepack not found in /missing/tools');
         });
     });
 

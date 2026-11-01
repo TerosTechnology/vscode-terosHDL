@@ -169,6 +169,26 @@ describe('nextpnr tasks', () => {
         });
     });
 
+    it('returns a failed result when nextpnr binary resolution fails with configured installation_path', (done) => {
+        project.config.tools.nextpnr.installation_path = '/missing/nextpnr';
+        jest.mocked(executor.executeCommand).mockImplementation(() => {
+            throw new Error('nextpnr-ice40 not found in /missing/nextpnr');
+        });
+
+        const result = runNextpnrPnR(project, logger, (processResult: p_result) => {
+            expect(processResult.successful).toBe(false);
+            expect(processResult.return_value).toBe(1);
+            expect(processResult.command).toBe('nextpnr P&R');
+            expect(processResult.stderr).toContain('nextpnr-ice40 not found in /missing/nextpnr');
+            expect(logger.appendLine).toHaveBeenCalledWith(
+                '[nextpnr] Error: nextpnr-ice40 not found in /missing/nextpnr'
+            );
+            done();
+        });
+
+        expect(result).toEqual({});
+    });
+
     it('requests GUI mode without report generation when the GUI task is run', () => {
         const result = runNextpnrGui(project, logger, callback);
         const outputPath = path.join(tempDirectory, 'nextpnr_out.asc');
@@ -267,6 +287,30 @@ describe('nextpnr tasks', () => {
                 );
                 expect(result).toBe(childProcess);
             });
+        });
+
+        it('returns a failed result when packer binary resolution fails with configured directory', (done) => {
+            project.config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.ice40;
+            const inputPath = path.join(tempDirectory, 'nextpnr_out.asc');
+            fs.writeFileSync(inputPath, 'content');
+
+            jest.spyOn(executor, 'getPackerBinary').mockImplementation(() => {
+                throw new Error('icepack not found in /missing/packers');
+            });
+
+            const result = runNextpnrPack(project, logger, (processResult: p_result) => {
+                expect(processResult.successful).toBe(false);
+                expect(processResult.return_value).toBe(1);
+                expect(processResult.command).toBe('nextpnr pack');
+                expect(processResult.stderr).toContain('icepack not found in /missing/packers');
+                expect(logger.appendLine).toHaveBeenCalledWith(
+                    '[nextpnr] Error: icepack not found in /missing/packers'
+                );
+                done();
+            });
+
+            expect(result).toEqual({});
+            expect(executor.executeBinary).not.toHaveBeenCalled();
         });
     });
 });

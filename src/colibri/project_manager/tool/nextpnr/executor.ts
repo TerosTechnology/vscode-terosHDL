@@ -40,7 +40,7 @@ export function resolveBinary(binaryName: string, directory?: string): string {
             return fullPath;
         }
     }
-    throw new Error(`Binary "${binaryName}" was not found in configured directory: ${configuredDirectory}`);
+    throw new Error(`${binaryName} not found in ${configuredDirectory}`);
 }
 
 export function getBinary(config: t_nextpnr_executor_config): string {
