@@ -30,6 +30,28 @@ function isRecord(value: unknown): value is t_numeric_record {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function formatEndpoint(value: unknown): string {
+	if (typeof value === 'string') {
+		const trimmed = value.trim();
+		return trimmed !== '' ? trimmed : '—';
+	}
+	if (!isRecord(value)) {
+		return '—';
+	}
+	const cell = typeof value.cell === 'string' ? value.cell.trim() : '';
+	const port = typeof value.port === 'string' ? value.port.trim() : '';
+	if (cell !== '' && port !== '') {
+		return `${cell}.${port}`;
+	}
+	if (cell !== '') {
+		return cell;
+	}
+	if (port !== '') {
+		return port;
+	}
+	return '—';
+}
+
 function parseCriticalPaths(value: unknown): t_critical_path[] {
 	if (!Array.isArray(value)) {
 		return [];
@@ -48,9 +70,22 @@ function parseCriticalPaths(value: unknown): t_critical_path[] {
 			const delay = typeof segment.delay === 'number' && Number.isFinite(segment.delay)
 				? segment.delay
 				: undefined;
-			const label = [segment.type, segment.name, segment.from, segment.to, segment.net]
-				.filter((part): part is string => typeof part === 'string' && part.trim() !== '')
-				.join(' · ');
+			const typeLabel = typeof segment.type === 'string' && segment.type.trim() !== ''
+				? segment.type.trim()
+				: typeof segment.name === 'string' && segment.name.trim() !== ''
+					? segment.name.trim()
+					: '';
+			const fromLabel = formatEndpoint(segment.from);
+			const toLabel = formatEndpoint(segment.to);
+			const netLabel = typeof segment.net === 'string' && segment.net.trim() !== ''
+				? segment.net.trim()
+				: '';
+			const detailParts = [
+				typeLabel,
+				`${fromLabel} → ${toLabel}`,
+				netLabel !== '' ? `net ${netLabel}` : ''
+			].filter(part => part !== '');
+			const label = detailParts.join(' · ');
 			if (!label && delay === undefined) {
 				return [];
 			}
@@ -60,8 +95,8 @@ function parseCriticalPaths(value: unknown): t_critical_path[] {
 			return [];
 		}
 		return [{
-			from: typeof pathValue.from === 'string' ? pathValue.from : '—',
-			to: typeof pathValue.to === 'string' ? pathValue.to : '—',
+			from: formatEndpoint(pathValue.from),
+			to: formatEndpoint(pathValue.to),
 			segments
 		}];
 	});

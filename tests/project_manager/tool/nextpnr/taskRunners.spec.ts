@@ -57,27 +57,36 @@ describe('nextpnr task runner', () => {
         expect(result).toBe(childProcess);
     });
 
-    it.each([
+    const dispatchCases: Array<[e_taskType, 'runNextpnrPack' | 'runNextpnrGui']> = [
         [e_taskType.NEXTPNR_PACK, 'runNextpnrPack'],
         [e_taskType.NEXTPNR_GUI, 'runNextpnrGui']
-    ])('dispatches %s and returns its process', (taskType, functionName) => {
-        const task = nextpnrTasks[functionName as 'runNextpnrPack' | 'runNextpnrGui'];
-        jest.mocked(task).mockReturnValue(childProcess);
+    ];
 
-        const result = runTaskNextpnr(taskType, projectDefinition, callback, toolLogger);
+    dispatchCases.forEach(([taskType, functionName]) => {
+        it(`dispatches ${taskType} and returns its process`, () => {
+            const task = nextpnrTasks[functionName as 'runNextpnrPack' | 'runNextpnrGui'];
+            jest.mocked(task).mockReturnValue(childProcess);
 
-        if (functionName === 'runNextpnrPack') {
-            expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
-        } else if (functionName === 'runNextpnrGui') {
-            expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
-        } else {
-            expect(task).toHaveBeenCalledWith(projectDefinition, callback, toolLogger);
-        }
-        expect(result).toBe(childProcess);
+            const result = runTaskNextpnr(taskType, projectDefinition, callback, toolLogger);
+
+            if (functionName === 'runNextpnrPack') {
+                expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
+            } else if (functionName === 'runNextpnrGui') {
+                expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
+            } else {
+                expect(task).toHaveBeenCalledWith(projectDefinition, callback, toolLogger);
+            }
+            expect(result).toBe(childProcess);
+        });
     });
 
-    it.each([e_taskType.NEXTPNR_GUI, e_taskType.NEXTPNR_PACK])(
-        'rejects %s for generic target family', (taskType, done) => {
+    const genericRejectedCases: e_taskType[] = [
+        e_taskType.NEXTPNR_GUI,
+        e_taskType.NEXTPNR_PACK
+    ];
+
+    genericRejectedCases.forEach((taskType) => {
+        it(`rejects ${taskType} for generic target family`, (done) => {
             projectDefinition.config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.generic;
             const result = runTaskNextpnr(taskType, projectDefinition, (processResult) => {
                 expect(processResult.successful).toBe(false);
@@ -85,8 +94,8 @@ describe('nextpnr task runner', () => {
                 done();
             }, toolLogger);
             expect(result).toBeUndefined();
-        }
-    );
+        });
+    });
 
     it('treats backend report task as unsupported (frontend-only handling)', (done) => {
         const result = runTaskNextpnr(e_taskType.NEXTPNR_REPORT, projectDefinition, (processResult) => {
