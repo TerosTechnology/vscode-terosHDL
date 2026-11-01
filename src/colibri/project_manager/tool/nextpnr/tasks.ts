@@ -154,12 +154,19 @@ export function runNextpnrGui(
 	toolLogger: LoggerBase | undefined,
 	callback: (result: p_result) => void
 ): ChildProcess {
+	toolLogger?.appendLine(
+		'[nextpnr] GUI opened with the synthesized netlist. ' +
+		'Use Pack, Place and Route in the GUI toolbar to view placement and routing.'
+	);
+
 	const handleGuiResult = (result: p_result): void => {
 		const output = `${result.stderr}\n${result.stdout}`;
 		const unsupportedGuiPatterns = [
 			/(?:gui|qt)[^\n]*(?:not supported|not enabled|disabled|not compiled|unavailable|missing)/i,
 			/(?:not supported|not enabled|disabled|not compiled|unavailable|missing)[^\n]*(?:gui|qt)/i,
-			/(?:unrecogni[sz]ed|unknown|invalid|unexpected)\s+(?:option|argument|flag)[^\n]*--gui/i
+			/(?:unrecogni[sz]ed|unknown|invalid|unexpected)\s+(?:option|argument|flag)[^\n]*--gui/i,
+			/unrecogni[sz]ed option[^\n]*--gui/i,
+			/option[^\n]*--gui[^\n]*unrecogni[sz]ed/i
 		];
 		const missingGuiSupport = unsupportedGuiPatterns.some(pattern => pattern.test(output));
 		if (!result.successful && missingGuiSupport) {
@@ -178,7 +185,7 @@ export function runNextpnrGui(
 		projectDefinition,
 		handleGuiResult,
 		toolLogger,
-		{ gui: true, reportFile: 'nextpnr_report.json' },
+		{ gui: true },
 		'nextpnr GUI'
 	);
 }
