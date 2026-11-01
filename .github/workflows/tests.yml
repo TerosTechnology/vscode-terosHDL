@@ -52,23 +52,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Install iCE40 toolchain
         run: |
           sudo apt-get update
           sudo apt-get install -y yosys nextpnr-ice40 fpga-icestorm
 
-      - name: Synthesize, place and route, and pack fixture
+      - name: Synthesize fixture netlist with Yosys
         working-directory: tests/fixtures/nextpnr/ice40_blinky
         run: |
           yosys -p 'read_verilog blinky.v; synth_ice40 -top blinky -json yosys_out.json'
-          nextpnr-ice40 --hx1k --package tq144 --json yosys_out.json --pcf blinky.pcf \
-            --asc nextpnr_out.asc --report nextpnr_report.json
-          icepack nextpnr_out.asc nextpnr_out.bin
 
-          test -s nextpnr_out.asc
-          test -s nextpnr_out.bin
-          test -s nextpnr_report.json
-          node -e 'JSON.parse(require("fs").readFileSync("nextpnr_report.json", "utf8"))'
+      - name: Run nextpnr extension E2E test
+        run: |
+          NEXTPNR_E2E=1 NEXTPNR_E2E_JSON=$PWD/tests/fixtures/nextpnr/ice40_blinky/yosys_out.json \
+            node --experimental-vm-modules ./node_modules/.bin/jest --runInBand --config ./jest.config.json \
+            tests/project_manager/tool/nextpnr/e2e.spec.ts
 
   ui-tests:
     name: UI Tests
