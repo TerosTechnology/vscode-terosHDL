@@ -145,6 +145,7 @@ const taskDependencies: Record<e_taskType, e_taskType[]> = {
     [e_taskType.NVC_MAKEFILE]: [],
     [e_taskType.NEXTPNR_PNR_GROUP]: [],
     [e_taskType.NEXTPNR_PNR]: [],
+    [e_taskType.NEXTPNR_PACK]: [],
     [e_taskType.NEXTPNR_GUI]: [],
     [e_taskType.NEXTPNR_REPORT]: []
 };
@@ -256,6 +257,7 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
         [e_taskType.NVC_MAKEFILE]: "",
         [e_taskType.NEXTPNR_PNR_GROUP]: "",
         [e_taskType.NEXTPNR_PNR]: "",
+        [e_taskType.NEXTPNR_PACK]: "",
         [e_taskType.NEXTPNR_GUI]: "",
         [e_taskType.NEXTPNR_REPORT]: ""
     };

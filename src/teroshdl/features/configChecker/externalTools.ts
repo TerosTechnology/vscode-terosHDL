@@ -24,11 +24,61 @@ import {
     e_tools_nextpnr_target_family
 } from 'colibri/config/config_declaration';
 import { appendMsg, buildTitle, INTROICON, replaceByResult } from './utils';
-import { checkBinary } from 'colibri/toolChecker/utils';
+import { BinaryCheck, checkBinary } from 'colibri/toolChecker/utils';
+import { OS } from 'colibri/process/common';
+import { get_os } from 'colibri/process/utils';
+import * as file_utils from 'colibri/utils/file_utils';
 import * as fs from 'fs';
 import * as path_lib from 'path';
 
 const HELP = 'https://terostechnology.github.io/terosHDLdoc/docs/external_tools/';
+
+async function checkBinaryWithVersionFallback(
+    displayName: string,
+    installationPath: string,
+    binaryName: string
+): Promise<BinaryCheck> {
+    const versionArgCandidates: string[][] = [
+        ['--version'],
+        ['-V'],
+        []
+    ];
+    let lastResult: BinaryCheck | undefined;
+    for (const versionArgs of versionArgCandidates) {
+        lastResult = await checkBinary(displayName, installationPath, binaryName, versionArgs);
+        if (lastResult.successfulConfig) {
+            return lastResult;
+        }
+    }
+
+    const configuredInstallationPath = installationPath?.trim() ?? '';
+    if (configuredInstallationPath !== '') {
+        const binaryNames = get_os() === OS.WINDOWS ? [`${binaryName}.exe`, binaryName] : [binaryName];
+        for (const candidate of binaryNames) {
+            const fullPath = path_lib.join(configuredInstallationPath, candidate);
+            if (file_utils.check_if_path_exist(fullPath)) {
+                return {
+                    displayName,
+                    binaryPath: fullPath,
+                    messageList: [
+                        `🔎 Searching for the binary ${displayName} at "${fullPath}"`,
+                        `✅ ${displayName} found at "${fullPath}" (version query not supported by this binary).`
+                    ],
+                    successfulFind: true,
+                    successfulConfig: true
+                };
+            }
+        }
+    }
+
+    return lastResult ?? {
+        displayName,
+        binaryPath: '',
+        messageList: [`❌ ${displayName} not found`],
+        successfulFind: false,
+        successfulConfig: false
+    };
+}
 
 export async function checkExternalToolManager(currentConfig: e_config) {
     const selectedTool = currentConfig.tools.general.select_tool;
@@ -94,6 +144,29 @@ export async function checkExternalToolManager(currentConfig: e_config) {
             msg += '\n';
             if (!result.successfulConfig) {
                 isOk = false;
+            }
+
+            if (targetFamily === e_tools_nextpnr_target_family.ice40 ||
+                targetFamily === e_tools_nextpnr_target_family.ecp5) {
+                const packerByFamily: Record<Exclude<e_tools_nextpnr_target_family,
+                    e_tools_nextpnr_target_family.generic>, string> = {
+                    [e_tools_nextpnr_target_family.ice40]: 'icepack',
+                    [e_tools_nextpnr_target_family.ecp5]: 'ecppack',
+                };
+                const packerInstallationPath = currentConfig.tools.nextpnr.packer_installation_path?.trim() ||
+                    installationPath;
+                const packerBinary = packerByFamily[targetFamily];
+
+                result = await checkBinaryWithVersionFallback(
+                    'nextpnr packer',
+                    packerInstallationPath,
+                    packerBinary
+                );
+                msg = appendMsg(result, msg, `nextpnr packer (${targetFamily})`);
+                msg += '\n';
+                if (!result.successfulConfig) {
+                    isOk = false;
+                }
             }
         }
     } else if (selectedTool === e_tools_general_select_tool.nvc) {

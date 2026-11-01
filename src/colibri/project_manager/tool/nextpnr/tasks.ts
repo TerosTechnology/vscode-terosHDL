@@ -6,8 +6,8 @@ import {
 	e_tools_nextpnr_target_family,
 	e_tools_yosys_synthesis_target
 } from '../../../config/config_declaration';
-import { buildNextpnrArgs } from './commandBuilder';
-import { executeCommand } from './executor';
+import { buildNextpnrArgs, buildPackArgs } from './commandBuilder';
+import { executeBinary, executeCommand, getPackerBinary } from './executor';
 import { getConstraintsFile, validateJsonFile } from './utils';
 import { LoggerBase } from '../../../logger/logger';
 import * as fs from 'fs';
@@ -196,4 +196,47 @@ export function runNextpnrReport(
 		setTimeout(() => callback(createErrorResult('nextpnr report', message)), 0);
 	}
 	return {} as ChildProcess;
+}
+
+export function runNextpnrPack(
+	projectDefinition: t_project_definition,
+	toolLogger: LoggerBase | undefined,
+	callback: (result: p_result) => void
+): ChildProcess {
+	try {
+		const targetFamily = projectDefinition.config.tools.nextpnr.target_family;
+		const inputExtension = targetFamily === e_tools_nextpnr_target_family.ice40
+			? 'asc'
+			: targetFamily === e_tools_nextpnr_target_family.ecp5
+				? 'config'
+				: '';
+		const outputExtension = targetFamily === e_tools_nextpnr_target_family.ice40
+			? 'bin'
+			: targetFamily === e_tools_nextpnr_target_family.ecp5
+				? 'bit'
+				: '';
+
+		if (inputExtension === '' || outputExtension === '') {
+			throw new Error('Bitstream generation is not supported for the generic target family.');
+		}
+
+		const inputPath = path.join(projectDefinition.project_disk_path, `nextpnr_out.${inputExtension}`);
+		if (!fs.existsSync(inputPath) || !fs.statSync(inputPath).isFile()) {
+			throw new Error(`Place & Route output not found (${inputPath}). Run Place & Route first.`);
+		}
+
+		const outputPath = path.join(projectDefinition.project_disk_path, `nextpnr_out.${outputExtension}`);
+		const args = buildPackArgs(targetFamily, inputPath, outputPath);
+		const binary = getPackerBinary(projectDefinition.config.tools.nextpnr);
+
+		return executeBinary(binary, args, projectDefinition.project_disk_path, (result: p_result) => {
+			if (result.successful) {
+				toolLogger?.appendLine(`[nextpnr] Bitstream generated: ${outputPath}`);
+			}
+			callback(result);
+		}, toolLogger);
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		return reportError('nextpnr pack', message, callback, toolLogger);
+	}
 }

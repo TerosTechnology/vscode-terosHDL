@@ -9,34 +9,71 @@ import { e_tools_nextpnr, e_tools_nextpnr_target_family } from '../../../config/
 import { LoggerBase } from '../../../logger/logger';
 
 export type e_nextpnr_target_family = e_tools_nextpnr_target_family;
-export type t_nextpnr_executor_config = Partial<Pick<e_tools_nextpnr, 'installation_path' | 'target_family'>>;
+export type t_nextpnr_executor_config = Partial<Pick<e_tools_nextpnr,
+    'installation_path' | 'packer_installation_path' | 'target_family'>>;
+
+export const NEXTPNR_BINARY_BY_FAMILY: Record<e_tools_nextpnr_target_family, string> = {
+    [e_tools_nextpnr_target_family.ice40]: 'nextpnr-ice40',
+    [e_tools_nextpnr_target_family.ecp5]: 'nextpnr-ecp5',
+    [e_tools_nextpnr_target_family.generic]: 'nextpnr-generic',
+};
+
+export const PACKER_BINARY_BY_FAMILY: Partial<Record<e_tools_nextpnr_target_family, string>> = {
+    [e_tools_nextpnr_target_family.ice40]: 'icepack',
+    [e_tools_nextpnr_target_family.ecp5]: 'ecppack',
+};
 
 export function quoteArgs(args: string[]): string[] {
     return args.map(quoteArgument);
 }
 
+export function resolveBinary(binaryName: string, directory?: string): string {
+    const configuredDirectory = directory?.trim() ?? '';
+    if (configuredDirectory === '') {
+        return binaryName;
+    }
+
+    const binaryNames = get_os() === OS.WINDOWS ? [`${binaryName}.exe`, binaryName] : [binaryName];
+    for (const name of binaryNames) {
+        const fullPath = path.join(configuredDirectory, name);
+        if (file_utils.check_if_path_exist(fullPath)) {
+            return fullPath;
+        }
+    }
+    throw new Error(`Binary "${binaryName}" was not found in configured directory: ${configuredDirectory}`);
+}
+
 export function getBinary(config: t_nextpnr_executor_config): string {
     const family = config.target_family;
-    const binaryByFamily: Record<e_tools_nextpnr_target_family, string> = {
-        [e_tools_nextpnr_target_family.ice40]: 'nextpnr-ice40',
-        [e_tools_nextpnr_target_family.ecp5]: 'nextpnr-ecp5',
-        [e_tools_nextpnr_target_family.generic]: 'nextpnr-generic',
-    };
-    const binaryName = binaryByFamily[family];
+    const binaryName = NEXTPNR_BINARY_BY_FAMILY[family];
     if (!binaryName) {
         throw new Error(`Unsupported nextpnr target family: ${family}`);
     }
 
-    if (config.installation_path?.trim()) {
-        const binaryNames = get_os() === OS.WINDOWS ? [`${binaryName}.exe`, binaryName] : [binaryName];
-        for (const name of binaryNames) {
-            const fullPath = path.join(config.installation_path, name);
-            if (file_utils.check_if_path_exist(fullPath)) {
-                return fullPath;
-            }
-        }
+    return resolveBinary(binaryName, config.installation_path);
+}
+
+export function getPackerBinary(config: t_nextpnr_executor_config): string {
+    const family = config.target_family;
+    const binaryName = PACKER_BINARY_BY_FAMILY[family];
+    if (!binaryName) {
+        throw new Error(`Bitstream generation is not supported for target family: ${family}`);
     }
-    return binaryName;
+    const packerDirectory = config.packer_installation_path?.trim() || config.installation_path;
+    return resolveBinary(binaryName, packerDirectory);
+}
+
+export function executeBinary(
+    binary: string,
+    args: string[],
+    cwd: string,
+    callback: (result: p_result) => void,
+    toolLogger?: LoggerBase
+): ChildProcess {
+    const command = quoteArgs([binary, ...args]).join(' ');
+    toolLogger?.appendLine(`[nextpnr] Executing command: ${command}`);
+    const process = new Process();
+    return process.exec(command, { cwd }, callback);
 }
 
 export function executeCommand(
@@ -47,10 +84,7 @@ export function executeCommand(
     toolLogger?: LoggerBase
 ): ChildProcess {
     const binary = getBinary(config);
-    const command = quoteArgs([binary, ...args]).join(' ');
-    toolLogger?.appendLine(`[nextpnr] Executing command: ${command}`);
-    const process = new Process();
-    return process.exec(command, { cwd }, callback);
+    return executeBinary(binary, args, cwd, callback, toolLogger);
 }
 
 function quoteArgument(argument: string): string {

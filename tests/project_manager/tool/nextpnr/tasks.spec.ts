@@ -15,6 +15,7 @@ import * as executor from '../../../../src/colibri/project_manager/tool/nextpnr/
 import * as nextpnrUtils from '../../../../src/colibri/project_manager/tool/nextpnr/utils';
 import {
     runNextpnrGui,
+    runNextpnrPack,
     runNextpnrPnR,
     runNextpnrReport
 } from '../../../../src/colibri/project_manager/tool/nextpnr/tasks';
@@ -43,6 +44,7 @@ describe('nextpnr tasks', () => {
 
         jest.spyOn(commandBuilder, 'buildNextpnrArgs').mockReturnValue(['--json', 'input.json', '--asc', 'out.asc']);
         jest.spyOn(executor, 'executeCommand').mockReturnValue(childProcess);
+        jest.spyOn(executor, 'executeBinary').mockReturnValue(childProcess);
     });
 
     afterEach(() => {
@@ -211,6 +213,63 @@ describe('nextpnr tasks', () => {
                 expect(processResult.successful).toBe(false);
                 expect(processResult.stderr).toContain('missing utilization or fmax');
                 done();
+            });
+        });
+    });
+
+    describe('runNextpnrPack', () => {
+        it('reports a missing place-and-route output before invoking packer', (done) => {
+            const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
+
+            runNextpnrPack(project, logger, (processResult: p_result) => {
+                expect(processResult.successful).toBe(false);
+                expect(processResult.return_value).toBe(1);
+                expect(processResult.command).toBe('nextpnr pack');
+                expect(processResult.stderr).toContain('Place & Route output not found');
+                expect(processResult.stderr).toContain('Run Place & Route first');
+                expect(executor.executeBinary).not.toHaveBeenCalled();
+                done();
+            });
+        });
+
+        [
+            {
+                family: e_tools_nextpnr_target_family.ice40,
+                input: 'nextpnr_out.asc',
+                output: 'nextpnr_out.bin',
+                args: ['nextpnr_out.asc', 'nextpnr_out.bin'],
+                binary: 'icepack'
+            },
+            {
+                family: e_tools_nextpnr_target_family.ecp5,
+                input: 'nextpnr_out.config',
+                output: 'nextpnr_out.bit',
+                args: ['--input', 'nextpnr_out.config', '--bit', 'nextpnr_out.bit'],
+                binary: 'ecppack'
+            }
+        ].forEach(({ family, input, output, args, binary }) => {
+            it(`runs packer for ${family} with expected arguments`, () => {
+                const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
+                project.config.tools.nextpnr.target_family = family;
+                const inputPath = path.join(tempDirectory, input);
+                const outputPath = path.join(tempDirectory, output);
+                fs.writeFileSync(inputPath, 'content');
+
+                jest.spyOn(commandBuilder, 'buildPackArgs').mockReturnValue(args);
+                jest.spyOn(executor, 'getPackerBinary').mockReturnValue(binary);
+
+                const result = runNextpnrPack(project, logger, callback);
+
+                expect(commandBuilder.buildPackArgs).toHaveBeenCalledWith(family, inputPath, outputPath);
+                expect(executor.getPackerBinary).toHaveBeenCalledWith(project.config.tools.nextpnr);
+                expect(executor.executeBinary).toHaveBeenCalledWith(
+                    binary,
+                    args,
+                    tempDirectory,
+                    expect.any(Function),
+                    logger
+                );
+                expect(result).toBe(childProcess);
             });
         });
     });
