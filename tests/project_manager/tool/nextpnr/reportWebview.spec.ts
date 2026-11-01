@@ -62,6 +62,17 @@ describe('nextpnr report webview', () => {
         expect(webview.html).toContain('timing-pass');
     });
 
+    it('renders utilization even when fmax is missing and shows timing warning', () => {
+        showNextpnrReportWebview(JSON.stringify({
+            utilisation: { LUT4: { used: 22, available: 128 } }
+        }), context);
+
+        expect(webview.html).toContain('LUT4');
+        expect(webview.html).toContain('22');
+        expect(webview.html).toContain('128');
+        expect(webview.html).toContain('Timing data is not available in this report.');
+    });
+
     it('shows a controlled error for invalid JSON without creating a panel', () => {
         showNextpnrReportWebview('{bad json', context);
 
