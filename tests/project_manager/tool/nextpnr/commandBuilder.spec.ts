@@ -14,6 +14,7 @@ describe('nextpnr Command Builder', () => {
 
             expect(buildNextpnrArgs(config, 'design.json', 'design.asc')).toEqual([
                 '--json', 'design.json',
+                '--up5k',
                 '--pcf', 'board.pcf',
                 '--asc', 'design.asc',
                 '--seed', '1'
@@ -33,6 +34,7 @@ describe('nextpnr Command Builder', () => {
 
             expect(buildNextpnrArgs(config, 'design.json', 'design.config')).toEqual([
                 '--json', 'design.json',
+                '--45k',
                 '--lpf', 'board.lpf',
                 '--textcfg', 'design.config',
                 '--freq', '50',
@@ -118,14 +120,14 @@ describe('nextpnr Command Builder', () => {
             expect(buildNextpnrArgs(config, 'design.json', 'design.asc', {
                 reportFile: 'nextpnr_report.json'
             })).toEqual([
-                '--json', 'design.json', '--asc', 'design.asc', '--seed', '1',
+                '--json', 'design.json', '--up5k', '--asc', 'design.asc', '--seed', '1',
                 '--ignore-loops', '--report', 'nextpnr_report.json'
             ]);
         });
 
         it('adds --gui at the end only when explicitly requested', () => {
             expect(buildNextpnrArgs(defaultConfig(), 'design.json', 'design.asc', { gui: true })).toEqual([
-                '--json', 'design.json', '--asc', 'design.asc', '--seed', '1', '--gui'
+                '--json', 'design.json', '--up5k', '--asc', 'design.asc', '--seed', '1', '--gui'
             ]);
             expect(buildNextpnrArgs(defaultConfig(), 'design.json', 'design.asc')).not.toContain('--gui');
         });
@@ -134,5 +136,37 @@ describe('nextpnr Command Builder', () => {
             expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
                 .toThrow(option.split('=')[0] + ' is managed');
         });
+
+        it('adds --package for stable families when configured', () => {
+            expect(buildNextpnrArgs(
+                { ...defaultConfig(), target_family: e_tools_nextpnr_target_family.ice40, package: 'SG48' },
+                'design.json',
+                'design.asc'
+            )).toEqual([
+                '--json', 'design.json', '--up5k', '--package', 'SG48', '--asc', 'design.asc', '--seed', '1'
+            ]);
+
+            expect(buildNextpnrArgs(
+                { ...defaultConfig(), target_family: e_tools_nextpnr_target_family.ecp5, package: 'CABGA381' },
+                'design.json',
+                'design.config'
+            )).toEqual([
+                '--json', 'design.json', '--45k', '--package', 'CABGA381', '--textcfg', 'design.config', '--seed', '1'
+            ]);
+        });
+
+        it.each(['--package', '--up5k'])('rejects managed device/package option %s in extra_options', (option) => {
+            expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
+                .toThrow(option + ' is managed');
+        });
+
+        it('rejects managed ECP5 device option in extra_options', () => {
+            expect(() => buildNextpnrArgs(
+                { ...defaultConfig(), target_family: e_tools_nextpnr_target_family.ecp5, extra_options: ['--12k'] },
+                'design.json',
+                'out.config'
+            )).toThrow('--12k is managed');
+        });
     });
+
 });

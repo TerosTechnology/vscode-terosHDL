@@ -146,12 +146,15 @@ describe('nextpnr tasks', () => {
         expect(result).toBe(childProcess);
     });
 
-    it('reports a clear message when the nextpnr binary has no Qt GUI support', () => {
+    [
+        'GUI support not enabled in this build',
+        "unrecognised option '--gui'"
+    ].forEach((stderr) => it(`reports a clear message when the nextpnr binary has no Qt GUI support (${stderr})`, () => {
         const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
         const processResult: p_result = {
             command: 'nextpnr-ice40',
             stdout: '',
-            stderr: 'GUI support not enabled in this build',
+            stderr,
             return_value: 1,
             successful: false
         };
@@ -171,7 +174,7 @@ describe('nextpnr tasks', () => {
         expect(logger.appendLine).toHaveBeenCalledWith(
             '[nextpnr] Error: This nextpnr binary has no GUI (Qt) support.'
         );
-    });
+    }));
 
     describe('runNextpnrReport', () => {
         it('returns the generated report JSON for the frontend', (done) => {
