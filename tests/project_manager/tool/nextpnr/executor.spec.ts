@@ -6,7 +6,14 @@ import * as process_utils from '../../../../src/colibri/process/utils';
 import { Process } from '../../../../src/colibri/process/process';
 import { LoggerBase } from '../../../../src/colibri/logger/logger';
 import { get_default_config, e_tools_nextpnr_target_family } from '../../../../src/colibri/config/config_declaration';
-import { executeCommand, getBinary, quoteArgs } from '../../../../src/colibri/project_manager/tool/nextpnr/executor';
+import {
+    executeBinary,
+    executeCommand,
+    getBinary,
+    getPackerBinary,
+    quoteArgs,
+    resolveBinary
+} from '../../../../src/colibri/project_manager/tool/nextpnr/executor';
 
 describe('nextpnr Executor', () => {
     const baseConfig = () => get_default_config().tools.nextpnr;
@@ -50,14 +57,14 @@ describe('nextpnr Executor', () => {
             })).toBe(exePath);
         });
 
-        it('falls back to PATH if the configured directory has no executable', () => {
+        it('fails when installation_path is configured but does not contain the expected binary', () => {
             jest.spyOn(process_utils, 'get_os').mockReturnValue(OS.LINUX);
             jest.spyOn(file_utils, 'check_if_path_exist').mockReturnValue(false);
 
-            expect(getBinary({
+            expect(() => getBinary({
                 installation_path: '/missing/tools',
                 target_family: e_tools_nextpnr_target_family.generic
-            })).toBe('nextpnr-generic');
+            })).toThrow('was not found in configured directory');
         });
 
         it('rejects an unsupported target family instead of choosing generic', () => {
@@ -179,6 +186,72 @@ describe('nextpnr Executor', () => {
                 target_family: e_tools_nextpnr_target_family.ice40
             }, ['--json', 'input.json'], '/project', jest.fn()))
                 .toThrow('process launch failed');
+        });
+    });
+
+    describe('resolveBinary', () => {
+        it('uses PATH when no directory is configured', () => {
+            expect(resolveBinary('nextpnr-ice40', '')).toBe('nextpnr-ice40');
+        });
+
+        it('throws when configured directory does not contain the binary', () => {
+            jest.spyOn(process_utils, 'get_os').mockReturnValue(OS.LINUX);
+            jest.spyOn(file_utils, 'check_if_path_exist').mockReturnValue(false);
+            expect(() => resolveBinary('icepack', '/missing/tools')).toThrow('was not found in configured directory');
+        });
+    });
+
+    describe('getPackerBinary', () => {
+        it('uses packer_installation_path when configured', () => {
+            const packerDir = '/tools/packers';
+            const packerPath = path.join(packerDir, 'icepack');
+            jest.spyOn(process_utils, 'get_os').mockReturnValue(OS.LINUX);
+            jest.spyOn(file_utils, 'check_if_path_exist').mockImplementation(candidate => candidate === packerPath);
+
+            expect(getPackerBinary({
+                target_family: e_tools_nextpnr_target_family.ice40,
+                packer_installation_path: packerDir,
+                installation_path: '/tools/nextpnr'
+            })).toBe(packerPath);
+        });
+
+        it('falls back to installation_path when packer_installation_path is empty', () => {
+            const nextpnrDir = '/tools/nextpnr';
+            const packerPath = path.join(nextpnrDir, 'ecppack');
+            jest.spyOn(process_utils, 'get_os').mockReturnValue(OS.LINUX);
+            jest.spyOn(file_utils, 'check_if_path_exist').mockImplementation(candidate => candidate === packerPath);
+
+            expect(getPackerBinary({
+                target_family: e_tools_nextpnr_target_family.ecp5,
+                packer_installation_path: '',
+                installation_path: nextpnrDir
+            })).toBe(packerPath);
+        });
+
+        it('rejects generic target family', () => {
+            expect(() => getPackerBinary({ target_family: e_tools_nextpnr_target_family.generic }))
+                .toThrow('Bitstream generation is not supported for target family');
+        });
+    });
+
+    describe('executeBinary', () => {
+        it('executes a resolved binary path and logs the exact command', () => {
+            const childProcess = { pid: 999 } as ChildProcess;
+            const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
+            jest.spyOn(process_utils, 'get_os').mockReturnValue(OS.LINUX);
+            const exec = jest.spyOn(Process.prototype, 'exec').mockReturnValue(childProcess);
+
+            const result = executeBinary('/tools/bin/icepack', ['in.asc', 'out.bin'], '/project', jest.fn(), logger);
+
+            expect(result).toBe(childProcess);
+            expect(exec).toHaveBeenCalledWith(
+                "'/tools/bin/icepack' 'in.asc' 'out.bin'",
+                { cwd: '/project' },
+                expect.any(Function)
+            );
+            expect(logger.appendLine).toHaveBeenCalledWith(
+                "[nextpnr] Executing command: '/tools/bin/icepack' 'in.asc' 'out.bin'"
+            );
         });
     });
 });

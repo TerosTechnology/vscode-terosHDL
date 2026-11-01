@@ -29,6 +29,13 @@ describe('getTaskList', () => {
                         status: e_taskState.IDLE
                     },
                     {
+                        name: e_taskType.NEXTPNR_PACK,
+                        label: 'Generate Bitstream',
+                        executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                        icon: 'run',
+                        status: e_taskState.IDLE
+                    },
+                    {
                         name: e_taskType.NEXTPNR_GUI,
                         label: 'Open GUI',
                         executionType: e_taskExecutionType.COMPLEXCOMMAND,
@@ -60,6 +67,7 @@ describe('getTaskList', () => {
         expect(tasks[1].executionType).toBe(e_taskExecutionType.DISPLAYGROUP);
         expect(tasks[1].children?.map(task => task.name)).toEqual([
             e_taskType.NEXTPNR_PNR,
+            e_taskType.NEXTPNR_PACK,
             e_taskType.NEXTPNR_GUI,
             e_taskType.NEXTPNR_REPORT
         ]);

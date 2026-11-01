@@ -5873,6 +5873,15 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
+                            Directory containing icepack/ecppack. Empty = use the nextpnr installation directory, or PATH if that is also empty:
+                            <span class="markConfig" id="mark_tools-nextpnr-packer_installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-packer_installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
                             Target FPGA architecture:
                             <span class="markConfig" id="mark_tools-nextpnr-target_family"></span>
                         </div>
@@ -7762,6 +7771,8 @@ body.vscode-high-contrast {
     config["tools"]["nextpnr"]["section_basic"] = element_value
     element_value = document.getElementById("tools-nextpnr-installation_path").value;
     config["tools"]["nextpnr"]["installation_path"] = element_value
+    element_value = document.getElementById("tools-nextpnr-packer_installation_path").value;
+    config["tools"]["nextpnr"]["packer_installation_path"] = element_value
     element_value = document.getElementById("tools-nextpnr-target_family").value;
     config["tools"]["nextpnr"]["target_family"] = element_value
     element_value = document.getElementById("tools-nextpnr-ice40_device").value;
@@ -8968,6 +8979,9 @@ body.vscode-high-contrast {
     }
     if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["installation_path"] !== undefined) {
         document.getElementById("tools-nextpnr-installation_path").value = config["tools"]["nextpnr"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["packer_installation_path"] !== undefined) {
+        document.getElementById("tools-nextpnr-packer_installation_path").value = config["tools"]["nextpnr"]["packer_installation_path"];
     }
     if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["target_family"] !== undefined) {
         document.getElementById("tools-nextpnr-target_family").value = config["tools"]["nextpnr"]["target_family"];
@@ -10967,6 +10981,11 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-nextpnr-installation_path").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["packer_installation_path"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-packer_installation_path").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["target_family"] !== undefined) {
       mark = MODIFIEDMSG;

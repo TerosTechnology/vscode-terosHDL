@@ -177,6 +177,13 @@ export function getTaskList(
                     status: e_taskState.IDLE
                 },
                 {
+                    name: e_taskType.NEXTPNR_PACK,
+                    label: 'Generate Bitstream',
+                    executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                    icon: e_iconType.RUN,
+                    status: e_taskState.IDLE
+                },
+                {
                     name: e_taskType.NEXTPNR_GUI,
                     label: 'Open GUI',
                     executionType: e_taskExecutionType.COMPLEXCOMMAND,

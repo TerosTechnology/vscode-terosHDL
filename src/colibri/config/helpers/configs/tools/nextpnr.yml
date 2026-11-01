@@ -8,6 +8,11 @@ installation_path:
   type: string
   value: ""
 
+packer_installation_path:
+  description: "Directory containing icepack/ecppack. Empty = use the nextpnr installation directory, or PATH if that is also empty:"
+  type: string
+  value: ""
+
 target_family:
   description: "Target FPGA architecture:"
   type: select

@@ -1,5 +1,5 @@
 import { get_default_config, e_tools_nextpnr_target_family } from '../../../../src/colibri/config/config_declaration';
-import { buildNextpnrArgs } from '../../../../src/colibri/project_manager/tool/nextpnr/commandBuilder';
+import { buildNextpnrArgs, buildPackArgs } from '../../../../src/colibri/project_manager/tool/nextpnr/commandBuilder';
 
 describe('nextpnr Command Builder', () => {
     const defaultConfig = () => get_default_config().tools.nextpnr;
@@ -169,4 +169,29 @@ describe('nextpnr Command Builder', () => {
         });
     });
 
+    describe('buildPackArgs', () => {
+        it('builds iCE40 pack arguments as positional input/output', () => {
+            expect(buildPackArgs(
+                e_tools_nextpnr_target_family.ice40,
+                'nextpnr_out.asc',
+                'nextpnr_out.bin'
+            )).toEqual(['nextpnr_out.asc', 'nextpnr_out.bin']);
+        });
+
+        it('builds ECP5 pack arguments using --input/--bit flags', () => {
+            expect(buildPackArgs(
+                e_tools_nextpnr_target_family.ecp5,
+                'nextpnr_out.config',
+                'nextpnr_out.bit'
+            )).toEqual(['--input', 'nextpnr_out.config', '--bit', 'nextpnr_out.bit']);
+        });
+
+        it('rejects generic target family for bitstream generation', () => {
+            expect(() => buildPackArgs(
+                e_tools_nextpnr_target_family.generic,
+                'nextpnr_out.json',
+                'nextpnr_out.bit'
+            )).toThrow('Bitstream generation is not supported for the generic target family.');
+        });
+    });
 });

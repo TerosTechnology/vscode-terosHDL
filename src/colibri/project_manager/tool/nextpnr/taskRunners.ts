@@ -4,7 +4,7 @@ import { t_project_definition } from '../../project_definition';
 import * as file_utils from '../../../utils/file_utils';
 import { e_tools_nextpnr_target_family } from '../../../config/config_declaration';
 import { e_taskType } from '../common';
-import { runNextpnrGui, runNextpnrPnR, runNextpnrReport } from './tasks';
+import { runNextpnrGui, runNextpnrPack, runNextpnrPnR, runNextpnrReport } from './tasks';
 import { LoggerBase } from '../../../logger/logger';
 
 /** Dispatch nextpnr task types to their task implementations. */
@@ -20,7 +20,11 @@ export function runTaskNextpnr(
 	const targetFamily = projectDefinition.config.tools.nextpnr.target_family;
 	const stableTarget = targetFamily === e_tools_nextpnr_target_family.ice40 ||
 		targetFamily === e_tools_nextpnr_target_family.ecp5;
-	if (!stableTarget && (taskType === e_taskType.NEXTPNR_GUI || taskType === e_taskType.NEXTPNR_REPORT)) {
+	if (!stableTarget && (
+		taskType === e_taskType.NEXTPNR_GUI ||
+		taskType === e_taskType.NEXTPNR_REPORT ||
+		taskType === e_taskType.NEXTPNR_PACK
+	)) {
 		const result: p_result = {
 			command: '',
 			stdout: '',
@@ -36,6 +40,8 @@ export function runTaskNextpnr(
 	switch (taskType) {
 		case e_taskType.NEXTPNR_PNR:
 			return runNextpnrPnR(projectDefinition, callback, toolLogger);
+		case e_taskType.NEXTPNR_PACK:
+			return runNextpnrPack(projectDefinition, toolLogger, callback);
 		case e_taskType.NEXTPNR_GUI:
 			return runNextpnrGui(projectDefinition, toolLogger, callback);
 		case e_taskType.NEXTPNR_REPORT:
@@ -56,7 +62,7 @@ export function runTaskNextpnr(
 }
 
 export { runNextpnrPnR } from './tasks';
-export { runNextpnrGui, runNextpnrReport } from './tasks';
+export { runNextpnrPack, runNextpnrGui, runNextpnrReport } from './tasks';
 export { buildNextpnrArgs } from './commandBuilder';
-export { getBinary, executeCommand } from './executor';
+export { getBinary, getPackerBinary, executeCommand, executeBinary } from './executor';
 export { getConstraintsFile, validateJsonFile } from './utils';

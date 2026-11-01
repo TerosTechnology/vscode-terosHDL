@@ -652,6 +652,7 @@ export type e_tools_raptor = {
     
 export type e_tools_nextpnr = {
     installation_path : string,
+    packer_installation_path : string,
     target_family : e_tools_nextpnr_target_family,
     ice40_device : e_tools_nextpnr_ice40_device,
     ecp5_device : e_tools_nextpnr_ecp5_device,
@@ -1652,6 +1653,7 @@ export function get_default_config(): e_config {
             },
             nextpnr: {
                 installation_path : "",
+                packer_installation_path : "",
                 target_family : e_tools_nextpnr_target_family.ice40,
                 ice40_device : e_tools_nextpnr_ice40_device.up5k,
                 ecp5_device : e_tools_nextpnr_ecp5_device.ecp5_45k,
@@ -6229,159 +6231,169 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['tools']['nextpnr']['installation_path'] = current_value_393;
     }
             
-    // tools -> nextpnr -> target_family
+    // tools -> nextpnr -> packer_installation_path
     let current_value_394 = undefined;
     try {
-        current_value_394 = json_config['tools']['nextpnr']['target_family'];
+        current_value_394 = json_config['tools']['nextpnr']['packer_installation_path'];
     }
     catch(e){}
-    if ( current_value_394 === "ice40"){
+    if (typeof current_value_394 === 'string'){
+        default_config['tools']['nextpnr']['packer_installation_path'] = current_value_394;
+    }
+            
+    // tools -> nextpnr -> target_family
+    let current_value_395 = undefined;
+    try {
+        current_value_395 = json_config['tools']['nextpnr']['target_family'];
+    }
+    catch(e){}
+    if ( current_value_395 === "ice40"){
         default_config['tools']['nextpnr']['target_family'] = e_tools_nextpnr_target_family.ice40;
     }
-    if ( current_value_394 === "ecp5"){
+    if ( current_value_395 === "ecp5"){
         default_config['tools']['nextpnr']['target_family'] = e_tools_nextpnr_target_family.ecp5;
     }
-    if ( current_value_394 === "generic"){
+    if ( current_value_395 === "generic"){
         default_config['tools']['nextpnr']['target_family'] = e_tools_nextpnr_target_family.generic;
     }
             
     // tools -> nextpnr -> ice40_device
-    let current_value_395 = undefined;
+    let current_value_396 = undefined;
     try {
-        current_value_395 = json_config['tools']['nextpnr']['ice40_device'];
+        current_value_396 = json_config['tools']['nextpnr']['ice40_device'];
     }
     catch(e){}
-    if ( current_value_395 === "hx1k"){
+    if ( current_value_396 === "hx1k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.hx1k;
     }
-    if ( current_value_395 === "hx4k"){
+    if ( current_value_396 === "hx4k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.hx4k;
     }
-    if ( current_value_395 === "hx8k"){
+    if ( current_value_396 === "hx8k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.hx8k;
     }
-    if ( current_value_395 === "lp384"){
+    if ( current_value_396 === "lp384"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp384;
     }
-    if ( current_value_395 === "lp1k"){
+    if ( current_value_396 === "lp1k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp1k;
     }
-    if ( current_value_395 === "lp8k"){
+    if ( current_value_396 === "lp8k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp8k;
     }
-    if ( current_value_395 === "up3k"){
+    if ( current_value_396 === "up3k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.up3k;
     }
-    if ( current_value_395 === "up5k"){
+    if ( current_value_396 === "up5k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.up5k;
     }
-    if ( current_value_395 === "u1k"){
+    if ( current_value_396 === "u1k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.u1k;
     }
-    if ( current_value_395 === "u2k"){
+    if ( current_value_396 === "u2k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.u2k;
     }
-    if ( current_value_395 === "u4k"){
+    if ( current_value_396 === "u4k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.u4k;
     }
             
     // tools -> nextpnr -> ecp5_device
-    let current_value_396 = undefined;
+    let current_value_397 = undefined;
     try {
-        current_value_396 = json_config['tools']['nextpnr']['ecp5_device'];
+        current_value_397 = json_config['tools']['nextpnr']['ecp5_device'];
     }
     catch(e){}
-    if ( current_value_396 === "ecp5_12k"){
+    if ( current_value_397 === "ecp5_12k"){
         default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_12k;
     }
-    if ( current_value_396 === "ecp5_25k"){
+    if ( current_value_397 === "ecp5_25k"){
         default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_25k;
     }
-    if ( current_value_396 === "ecp5_45k"){
+    if ( current_value_397 === "ecp5_45k"){
         default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_45k;
     }
-    if ( current_value_396 === "ecp5_85k"){
+    if ( current_value_397 === "ecp5_85k"){
         default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_85k;
     }
             
     // tools -> nextpnr -> package
-    let current_value_397 = undefined;
-    try {
-        current_value_397 = json_config['tools']['nextpnr']['package'];
-    }
-    catch(e){}
-    if (typeof current_value_397 === 'string'){
-        default_config['tools']['nextpnr']['package'] = current_value_397;
-    }
-            
-    // tools -> nextpnr -> pcf_file
     let current_value_398 = undefined;
     try {
-        current_value_398 = json_config['tools']['nextpnr']['pcf_file'];
+        current_value_398 = json_config['tools']['nextpnr']['package'];
     }
     catch(e){}
     if (typeof current_value_398 === 'string'){
-        default_config['tools']['nextpnr']['pcf_file'] = current_value_398;
+        default_config['tools']['nextpnr']['package'] = current_value_398;
     }
             
-    // tools -> nextpnr -> lpf_file
+    // tools -> nextpnr -> pcf_file
     let current_value_399 = undefined;
     try {
-        current_value_399 = json_config['tools']['nextpnr']['lpf_file'];
+        current_value_399 = json_config['tools']['nextpnr']['pcf_file'];
     }
     catch(e){}
     if (typeof current_value_399 === 'string'){
-        default_config['tools']['nextpnr']['lpf_file'] = current_value_399;
+        default_config['tools']['nextpnr']['pcf_file'] = current_value_399;
+    }
+            
+    // tools -> nextpnr -> lpf_file
+    let current_value_400 = undefined;
+    try {
+        current_value_400 = json_config['tools']['nextpnr']['lpf_file'];
+    }
+    catch(e){}
+    if (typeof current_value_400 === 'string'){
+        default_config['tools']['nextpnr']['lpf_file'] = current_value_400;
     }
             
     // tools -> nextpnr -> freq
-    let current_value_400 = undefined;
-    try {
-        current_value_400 = json_config['tools']['nextpnr']['freq'];
-    }
-    catch(e){}
-    if (typeof current_value_400 === 'number'){
-        default_config['tools']['nextpnr']['freq'] = current_value_400;
-    }
-            
-    // tools -> nextpnr -> seed
     let current_value_401 = undefined;
     try {
-        current_value_401 = json_config['tools']['nextpnr']['seed'];
+        current_value_401 = json_config['tools']['nextpnr']['freq'];
     }
     catch(e){}
     if (typeof current_value_401 === 'number'){
-        default_config['tools']['nextpnr']['seed'] = current_value_401;
+        default_config['tools']['nextpnr']['freq'] = current_value_401;
+    }
+            
+    // tools -> nextpnr -> seed
+    let current_value_402 = undefined;
+    try {
+        current_value_402 = json_config['tools']['nextpnr']['seed'];
+    }
+    catch(e){}
+    if (typeof current_value_402 === 'number'){
+        default_config['tools']['nextpnr']['seed'] = current_value_402;
     }
             
     // tools -> nextpnr -> placer
-    let current_value_402 = undefined;
-    try {
-        current_value_402 = json_config['tools']['nextpnr']['placer'];
-    }
-    catch(e){}
-    if (typeof current_value_402 === 'string'){
-        default_config['tools']['nextpnr']['placer'] = current_value_402;
-    }
-            
-    // tools -> nextpnr -> router
     let current_value_403 = undefined;
     try {
-        current_value_403 = json_config['tools']['nextpnr']['router'];
+        current_value_403 = json_config['tools']['nextpnr']['placer'];
     }
     catch(e){}
     if (typeof current_value_403 === 'string'){
-        default_config['tools']['nextpnr']['router'] = current_value_403;
+        default_config['tools']['nextpnr']['placer'] = current_value_403;
+    }
+            
+    // tools -> nextpnr -> router
+    let current_value_404 = undefined;
+    try {
+        current_value_404 = json_config['tools']['nextpnr']['router'];
+    }
+    catch(e){}
+    if (typeof current_value_404 === 'string'){
+        default_config['tools']['nextpnr']['router'] = current_value_404;
     }
             
     // tools -> nextpnr -> extra_options
-    let current_value_404 = undefined;
+    let current_value_405 = undefined;
     try {
-        current_value_404 = json_config['tools']['nextpnr']['extra_options'];
+        current_value_405 = json_config['tools']['nextpnr']['extra_options'];
     }
     catch(e){}
-    if (Array.isArray(current_value_404)){
-        default_config['tools']['nextpnr']['extra_options'] = current_value_404;
+    if (Array.isArray(current_value_405)){
+        default_config['tools']['nextpnr']['extra_options'] = current_value_405;
     }
             
 

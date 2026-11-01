@@ -59,6 +59,7 @@ export enum e_taskType {
     // nextpnr tasks
     NEXTPNR_PNR_GROUP = "Place and Route Group",
     NEXTPNR_PNR = "nextpnr Place and Route",
+    NEXTPNR_PACK = "Generate Bitstream",
     NEXTPNR_GUI = "Place and Route (GUI)",
     NEXTPNR_REPORT = "Utilization & Timing Report",
     // SandPiper tasks

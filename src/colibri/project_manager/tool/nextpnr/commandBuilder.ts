@@ -162,3 +162,24 @@ export function buildNextpnrArgs(
     return args;
 }
 
+export function buildPackArgs(
+    family: e_tools_nextpnr_target_family,
+    inputFile: string,
+    outputFile: string
+): string[] {
+    if (typeof inputFile !== 'string' || inputFile.trim() === '') {
+        throw new Error('A non-empty input file is required for bitstream generation.');
+    }
+    if (typeof outputFile !== 'string' || outputFile.trim() === '') {
+        throw new Error('A non-empty output file is required for bitstream generation.');
+    }
+
+    if (family === e_tools_nextpnr_target_family.ice40) {
+        return [inputFile, outputFile];
+    }
+    if (family === e_tools_nextpnr_target_family.ecp5) {
+        return ['--input', inputFile, '--bit', outputFile];
+    }
+    throw new Error('Bitstream generation is not supported for the generic target family.');
+}
+

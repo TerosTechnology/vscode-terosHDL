@@ -13,6 +13,7 @@ import { runTaskNextpnr } from '../../../../src/colibri/project_manager/tool/nex
 
 jest.mock('../../../../src/colibri/project_manager/tool/nextpnr/tasks', () => ({
     runNextpnrPnR: jest.fn(),
+    runNextpnrPack: jest.fn(),
     runNextpnrGui: jest.fn(),
     runNextpnrReport: jest.fn()
 }));
@@ -58,15 +59,18 @@ describe('nextpnr task runner', () => {
     });
 
     it.each([
+        [e_taskType.NEXTPNR_PACK, 'runNextpnrPack'],
         [e_taskType.NEXTPNR_GUI, 'runNextpnrGui'],
         [e_taskType.NEXTPNR_REPORT, 'runNextpnrReport']
     ])('dispatches %s and returns its process', (taskType, functionName) => {
-        const task = nextpnrTasks[functionName as 'runNextpnrGui' | 'runNextpnrReport'];
+        const task = nextpnrTasks[functionName as 'runNextpnrPack' | 'runNextpnrGui' | 'runNextpnrReport'];
         jest.mocked(task).mockReturnValue(childProcess);
 
         const result = runTaskNextpnr(taskType, projectDefinition, callback, toolLogger);
 
-        if (functionName === 'runNextpnrGui') {
+        if (functionName === 'runNextpnrPack') {
+            expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
+        } else if (functionName === 'runNextpnrGui') {
             expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
         } else {
             expect(task).toHaveBeenCalledWith(projectDefinition, callback, toolLogger);
@@ -74,7 +78,7 @@ describe('nextpnr task runner', () => {
         expect(result).toBe(childProcess);
     });
 
-    it.each([e_taskType.NEXTPNR_GUI, e_taskType.NEXTPNR_REPORT])(
+    it.each([e_taskType.NEXTPNR_GUI, e_taskType.NEXTPNR_REPORT, e_taskType.NEXTPNR_PACK])(
         'rejects %s for generic target family', (taskType, done) => {
             projectDefinition.config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.generic;
             const result = runTaskNextpnr(taskType, projectDefinition, (processResult) => {
