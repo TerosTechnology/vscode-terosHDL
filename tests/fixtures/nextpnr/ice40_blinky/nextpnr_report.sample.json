@@ -1,0 +1,31 @@
+{
+  "utilisation": {
+    "ICESTORM_LC": { "used": 12, "available": 128 },
+    "ICESTORM_RAM": { "used": 1, "available": 16 }
+  },
+  "fmax": {
+    "clk": { "achieved": 62.47, "constraint": 50.0 }
+  },
+  "critical_paths": [
+    {
+      "from": "posedge clk",
+      "to": "posedge clk",
+      "path": [
+        {
+          "type": "logic",
+          "from": { "cell": "top.counter_SB_DFFR_Q_0", "port": "Q" },
+          "to": { "cell": "top.counter_SB_LUT4_I3", "port": "I3" },
+          "net": "counter[0]",
+          "delay": 1.085
+        },
+        {
+          "type": "routing",
+          "from": { "cell": "top.counter_SB_LUT4_I3", "port": "O" },
+          "to": { "cell": "top.led_SB_IO", "port": "D_OUT_0" },
+          "net": "led",
+          "delay": 2.317
+        }
+      ]
+    }
+  ]
+}

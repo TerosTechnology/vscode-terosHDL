@@ -1,6 +1,9 @@
 const createWebviewPanel = jest.fn();
 const showErrorMessage = jest.fn();
 
+import * as fs from 'fs';
+import * as path from 'path';
+
 jest.mock('vscode', () => ({
     ViewColumn: { One: 1 },
     window: {
@@ -23,17 +26,13 @@ describe('nextpnr report webview', () => {
     });
 
     it('renders utilization, timing status and detailed critical path segments', () => {
-        const report = {
-            utilisation: { 'ICESTORM_LC': { used: 12, available: 100 } },
-            fmax: { clk: { achieved: 48.5, constraint: 50 } },
-            critical_paths: [{
-                from: 'counter[0]',
-                to: 'led',
-                path: [{ type: 'logic', delay: 1.25 }, { type: 'routing', delay: 2.5 }]
-            }]
-        };
+        const fixturePath = path.resolve(
+            __dirname,
+            '../../../fixtures/nextpnr/ice40_blinky/nextpnr_report.sample.json'
+        );
+        const report = fs.readFileSync(fixturePath, 'utf8');
 
-        showNextpnrReportWebview(JSON.stringify(report), context);
+        showNextpnrReportWebview(report, context);
 
         expect(createWebviewPanel).toHaveBeenCalledWith(
             'nextpnrReport',
@@ -43,12 +42,15 @@ describe('nextpnr report webview', () => {
         );
         expect(webview.html).toContain('ICESTORM_LC');
         expect(webview.html).toContain('12');
-        expect(webview.html).toContain('100');
-        expect(webview.html).toContain('48.50 MHz');
-        expect(webview.html).toContain('timing-fail');
+        expect(webview.html).toContain('128');
+        expect(webview.html).toContain('62.47 MHz');
+        expect(webview.html).toContain('timing-pass');
         expect(webview.html).toContain('Critical paths');
-        expect(webview.html).toContain('logic');
-        expect(webview.html).toContain('1.250 ns');
+        expect(webview.html).toContain('posedge clk');
+        expect(webview.html).toContain('top.counter_SB_DFFR_Q_0.Q');
+        expect(webview.html).toContain('top.counter_SB_LUT4_I3.I3');
+        expect(webview.html).toContain('logic · top.counter_SB_DFFR_Q_0.Q → top.counter_SB_LUT4_I3.I3 · net counter[0]');
+        expect(webview.html).toContain('1.085 ns');
     });
 
     it('renders present sections, warns for missing utilization and omits absent critical paths', () => {
