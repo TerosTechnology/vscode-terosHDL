@@ -36,6 +36,22 @@ function reportError(
 function resolveJsonInput(projectDefinition: t_project_definition): string {
 	const nextpnrConfig = projectDefinition.config.tools.nextpnr;
 	const yosysConfig = projectDefinition.config.tools.yosys;
+	const configuredJsonFile = nextpnrConfig.json_file?.trim() ?? '';
+	if (configuredJsonFile !== '') {
+		const jsonPath = path.isAbsolute(configuredJsonFile)
+			? configuredJsonFile
+			: path.resolve(projectDefinition.project_disk_path, configuredJsonFile);
+		const validation = validateJsonFile(jsonPath);
+		if (!validation.valid) {
+			throw new Error(`${validation.error}. Configure json_file with a valid JSON netlist.`);
+		}
+		return jsonPath;
+	}
+
+	if (nextpnrConfig.target_family === e_tools_nextpnr_target_family.generic) {
+		throw new Error('json_file is required for the generic target family.');
+	}
+
 	let configuredJson = '';
 
 	if (yosysConfig.synthesis_target === e_tools_yosys_synthesis_target.ice40) {
@@ -66,8 +82,7 @@ function resolveJsonInput(projectDefinition: t_project_definition): string {
 	}
 
 	// A device-specific Yosys netlist must match the nextpnr architecture.
-	if (nextpnrConfig.target_family !== e_tools_nextpnr_target_family.generic &&
-		String(nextpnrConfig.target_family) !== String(yosysConfig.synthesis_target)) {
+	if (String(nextpnrConfig.target_family) !== String(yosysConfig.synthesis_target)) {
 		throw new Error(
 			`Yosys synthesis target (${yosysConfig.synthesis_target}) does not match ` +
 			`nextpnr target family (${nextpnrConfig.target_family}).`
@@ -91,7 +106,8 @@ function runNextpnr(
 		const constraintsConfig = {
 			...config,
 			pcf_file: resolveProjectPath(projectDefinition.project_disk_path, config.pcf_file),
-			lpf_file: resolveProjectPath(projectDefinition.project_disk_path, config.lpf_file)
+			lpf_file: resolveProjectPath(projectDefinition.project_disk_path, config.lpf_file),
+			generic_arch_script: resolveProjectPath(projectDefinition.project_disk_path, config.generic_arch_script)
 		};
 		const constraintsFile = getConstraintsFile(constraintsConfig, config.target_family);
 		const outputExtension = config.target_family === e_tools_nextpnr_target_family.ice40
@@ -102,11 +118,11 @@ function runNextpnr(
 		const outputFile = path.join(projectDefinition.project_disk_path, `nextpnr_out.${outputExtension}`);
 		const commandConfig = constraintsFile
 			? {
-				...config,
+				...constraintsConfig,
 				pcf_file: config.target_family === e_tools_nextpnr_target_family.ice40 ? constraintsFile : '',
 				lpf_file: config.target_family === e_tools_nextpnr_target_family.ecp5 ? constraintsFile : ''
 			}
-			: config;
+			: constraintsConfig;
 		const args = buildNextpnrArgs(commandConfig, jsonFile, outputFile, options);
 
 		return executeCommand(config, args, projectDefinition.project_disk_path, callback, toolLogger);

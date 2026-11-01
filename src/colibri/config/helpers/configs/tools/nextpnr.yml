@@ -54,6 +54,16 @@ package:
   type: string
   value: ""
 
+json_file:
+  description: "Input JSON netlist. Empty = use the Yosys output for the selected family (required for Generic):"
+  type: string
+  value: ""
+
+generic_arch_script:
+  description: "Python architecture script passed as --pre-pack (required for Generic):"
+  type: string
+  value: ""
+
 # Device Constraints
 section_constraints:
   description: "Device Constraints"

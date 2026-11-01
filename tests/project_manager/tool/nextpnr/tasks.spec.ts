@@ -119,6 +119,44 @@ describe('nextpnr tasks', () => {
         });
     });
 
+    it('requires json_file when the target family is generic', (done) => {
+        project.config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.generic;
+        project.config.tools.nextpnr.json_file = '';
+        project.config.tools.nextpnr.generic_arch_script = 'generic_arch.py';
+
+        runNextpnrPnR(project, (processResult: p_result) => {
+            expect(processResult.successful).toBe(false);
+            expect(processResult.return_value).toBe(1);
+            expect(processResult.command).toBe('nextpnr P&R');
+            expect(processResult.stderr).toContain('json_file is required for the generic target family.');
+            expect(executor.executeCommand).not.toHaveBeenCalled();
+            done();
+        });
+    });
+
+    it('uses an explicit nextpnr json_file for ice40 without requiring Yosys family match', () => {
+        const explicitJsonRelativePath = 'manual/custom_input.json';
+        const explicitJsonAbsolutePath = path.join(tempDirectory, explicitJsonRelativePath);
+        fs.mkdirSync(path.dirname(explicitJsonAbsolutePath), { recursive: true });
+        fs.writeFileSync(explicitJsonAbsolutePath, '{"modules":{}}');
+
+        project.config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.ice40;
+        project.config.tools.nextpnr.json_file = explicitJsonRelativePath;
+        project.config.tools.yosys.synthesis_target = e_tools_yosys_synthesis_target.ecp5;
+        project.config.tools.yosys.ecp5_output_json = '';
+
+        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
+        runNextpnrPnR(project, callback, logger);
+
+        expect(commandBuilder.buildNextpnrArgs).toHaveBeenCalledWith(
+            project.config.tools.nextpnr,
+            explicitJsonAbsolutePath,
+            path.join(tempDirectory, 'nextpnr_out.asc'),
+            { reportFile: 'nextpnr_report.json' }
+        );
+        expect(executor.executeCommand).toHaveBeenCalled();
+    });
+
     it('rejects malformed Yosys JSON before starting nextpnr', (done) => {
         const jsonPath = path.join(tempDirectory, 'synthesis/netlist.json');
         fs.writeFileSync(jsonPath, '{invalid json}');

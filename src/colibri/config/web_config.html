@@ -5922,6 +5922,24 @@ body.vscode-high-contrast {
                     </div>
                   
                   
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Input JSON netlist. Empty = use the Yosys output for the selected family (required for Generic):
+                            <span class="markConfig" id="mark_tools-nextpnr-json_file"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-json_file" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Python architecture script passed as --pre-pack (required for Generic):
+                            <span class="markConfig" id="mark_tools-nextpnr-generic_arch_script"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-generic_arch_script" value="">
+                    </div>
+                  
+                  
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Device Constraints</div>
                     <hr class="setting-divider">
@@ -7760,6 +7778,10 @@ body.vscode-high-contrast {
     config["tools"]["nextpnr"]["ecp5_device"] = element_value
     element_value = document.getElementById("tools-nextpnr-package").value;
     config["tools"]["nextpnr"]["package"] = element_value
+    element_value = document.getElementById("tools-nextpnr-json_file").value;
+    config["tools"]["nextpnr"]["json_file"] = element_value
+    element_value = document.getElementById("tools-nextpnr-generic_arch_script").value;
+    config["tools"]["nextpnr"]["generic_arch_script"] = element_value
     config["tools"]["nextpnr"]["section_constraints"] = element_value
     element_value = document.getElementById("tools-nextpnr-pcf_file").value;
     config["tools"]["nextpnr"]["pcf_file"] = element_value
@@ -8973,6 +8995,12 @@ body.vscode-high-contrast {
     }
     if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["package"] !== undefined) {
         document.getElementById("tools-nextpnr-package").value = config["tools"]["nextpnr"]["package"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["json_file"] !== undefined) {
+        document.getElementById("tools-nextpnr-json_file").value = config["tools"]["nextpnr"]["json_file"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["generic_arch_script"] !== undefined) {
+        document.getElementById("tools-nextpnr-generic_arch_script").value = config["tools"]["nextpnr"]["generic_arch_script"];
     }
     if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["pcf_file"] !== undefined) {
         document.getElementById("tools-nextpnr-pcf_file").value = config["tools"]["nextpnr"]["pcf_file"];
@@ -10985,6 +11013,16 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-nextpnr-package").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["json_file"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-json_file").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["generic_arch_script"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-generic_arch_script").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["pcf_file"] !== undefined) {
       mark = MODIFIEDMSG;
