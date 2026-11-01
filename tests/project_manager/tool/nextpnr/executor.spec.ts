@@ -23,14 +23,18 @@ describe('nextpnr Executor', () => {
     });
 
     describe('getBinary', () => {
-        it.each([
+        const pathBinaryCases: Array<[e_tools_nextpnr_target_family, string]> = [
             [e_tools_nextpnr_target_family.ice40, 'nextpnr-ice40'],
             [e_tools_nextpnr_target_family.ecp5, 'nextpnr-ecp5'],
             [e_tools_nextpnr_target_family.generic, 'nextpnr-generic'],
-        ])('uses the PATH executable for %s when no installation directory is set', (family, binary) => {
-            const exists = jest.spyOn(file_utils, 'check_if_path_exist');
-            expect(getBinary({ target_family: family })).toBe(binary);
-            expect(exists).not.toHaveBeenCalled();
+        ];
+
+        pathBinaryCases.forEach(([family, binary]) => {
+            it(`uses the PATH executable for ${family} when no installation directory is set`, () => {
+                const exists = jest.spyOn(file_utils, 'check_if_path_exist');
+                expect(getBinary({ target_family: family })).toBe(binary);
+                expect(exists).not.toHaveBeenCalled();
+            });
         });
 
         it('resolves the architecture binary inside installation_path', () => {

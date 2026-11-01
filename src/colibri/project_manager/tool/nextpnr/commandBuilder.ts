@@ -66,6 +66,7 @@ export function buildNextpnrArgs(
     if (invalidExtraOption) {
         throw new Error('extra_options must contain non-empty strings.');
     }
+    const extraOptionTokens = extraOptions.flatMap(option => option.trim().split(/\s+/).filter(token => token !== ''));
 
     const familySpecificOptions: Record<string, e_tools_nextpnr_target_family[]> = {
         '--hx1k': [e_tools_nextpnr_target_family.ice40],
@@ -95,8 +96,11 @@ export function buildNextpnrArgs(
         '--12k', '--25k', '--45k', '--85k'
     ]);
     const seenOptions = new Set<string>();
-    for (const option of extraOptions) {
-        const optionName = option.trim().split('=', 1)[0];
+    for (const token of extraOptionTokens) {
+        if (!token.startsWith('-')) {
+            continue;
+        }
+        const optionName = token.split('=', 1)[0];
         const validFamilies = familySpecificOptions[optionName];
         if (validFamilies && !validFamilies.includes(family)) {
             throw new Error(`${optionName} is not valid for the ${family} target family.`);
@@ -154,7 +158,7 @@ export function buildNextpnrArgs(
         args.push('--router', config.router.trim());
     }
 
-    args.push(...extraOptions.map(option => option.trim()));
+    args.push(...extraOptionTokens);
     if (options?.reportFile !== undefined) {
         if (options.reportFile.trim() === '') {
             throw new Error('reportFile must be a non-empty path when provided.');
