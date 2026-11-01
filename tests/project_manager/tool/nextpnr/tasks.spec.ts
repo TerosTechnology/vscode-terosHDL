@@ -24,6 +24,7 @@ describe('nextpnr tasks', () => {
     let project: t_project_definition;
     let callback: jest.Mock;
     let childProcess: ChildProcess;
+    let logger: LoggerBase;
 
     beforeEach(() => {
         tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'teroshdl-nextpnr-tasks-'));
@@ -40,6 +41,7 @@ describe('nextpnr tasks', () => {
         } as t_project_definition;
         callback = jest.fn();
         childProcess = { pid: 4242 } as ChildProcess;
+        logger = { appendLine: jest.fn() } as unknown as LoggerBase;
 
         jest.spyOn(commandBuilder, 'buildNextpnrArgs').mockReturnValue(['--json', 'input.json', '--asc', 'out.asc']);
         jest.spyOn(executor, 'executeCommand').mockReturnValue(childProcess);
@@ -52,8 +54,7 @@ describe('nextpnr tasks', () => {
     });
 
     it('resolves configured Yosys JSON relative to project, builds P&R args and executes', () => {
-        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
-        const result = runNextpnrPnR(project, callback, logger);
+        const result = runNextpnrPnR(project, logger, callback);
         const jsonPath = path.join(tempDirectory, 'synthesis/netlist.json');
         const outputPath = path.join(tempDirectory, 'nextpnr_out.asc');
 
@@ -76,9 +77,7 @@ describe('nextpnr tasks', () => {
 
     it('reports a missing Yosys JSON output with an instruction to run synthesis', (done) => {
         project.config.tools.yosys.ice40_output_json = 'missing.json';
-        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
-
-        const result = runNextpnrPnR(project, (processResult: p_result) => {
+        const result = runNextpnrPnR(project, logger, (processResult: p_result) => {
             expect(processResult.successful).toBe(false);
             expect(processResult.return_value).toBe(1);
             expect(processResult.command).toBe('nextpnr P&R');
@@ -86,7 +85,7 @@ describe('nextpnr tasks', () => {
             expect(logger.appendLine).toHaveBeenCalledWith(`[nextpnr] Error: ${processResult.stderr}`);
             expect(executor.executeCommand).not.toHaveBeenCalled();
             done();
-        }, logger);
+        });
 
         expect(result).toEqual({});
     });
@@ -94,7 +93,7 @@ describe('nextpnr tasks', () => {
     it('reports an unset Yosys JSON output path without inventing one', (done) => {
         project.config.tools.yosys.ice40_output_json = '';
 
-        runNextpnrPnR(project, (processResult: p_result) => {
+        runNextpnrPnR(project, logger, (processResult: p_result) => {
             expect(processResult.successful).toBe(false);
             expect(processResult.return_value).toBe(1);
             expect(processResult.command).toBe('nextpnr P&R');
@@ -108,7 +107,7 @@ describe('nextpnr tasks', () => {
     it('reports a mismatch between Yosys synthesis target and nextpnr family', (done) => {
         project.config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.ecp5;
 
-        runNextpnrPnR(project, (processResult: p_result) => {
+        runNextpnrPnR(project, logger, (processResult: p_result) => {
             expect(processResult.successful).toBe(false);
             expect(processResult.return_value).toBe(1);
             expect(processResult.command).toBe('nextpnr P&R');
@@ -123,7 +122,7 @@ describe('nextpnr tasks', () => {
         project.config.tools.nextpnr.json_file = '';
         project.config.tools.nextpnr.generic_arch_script = 'generic_arch.py';
 
-        runNextpnrPnR(project, (processResult: p_result) => {
+        runNextpnrPnR(project, logger, (processResult: p_result) => {
             expect(processResult.successful).toBe(false);
             expect(processResult.return_value).toBe(1);
             expect(processResult.command).toBe('nextpnr P&R');
@@ -144,8 +143,7 @@ describe('nextpnr tasks', () => {
         project.config.tools.yosys.synthesis_target = e_tools_yosys_synthesis_target.ecp5;
         project.config.tools.yosys.ecp5_output_json = '';
 
-        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
-        runNextpnrPnR(project, callback, logger);
+        runNextpnrPnR(project, logger, callback);
 
         expect(commandBuilder.buildNextpnrArgs).toHaveBeenCalledWith(
             project.config.tools.nextpnr,
@@ -160,7 +158,7 @@ describe('nextpnr tasks', () => {
         const jsonPath = path.join(tempDirectory, 'synthesis/netlist.json');
         fs.writeFileSync(jsonPath, '{invalid json}');
 
-        runNextpnrPnR(project, (processResult: p_result) => {
+        runNextpnrPnR(project, logger, (processResult: p_result) => {
             expect(processResult.successful).toBe(false);
             expect(processResult.return_value).toBe(1);
             expect(processResult.command).toBe('nextpnr P&R');
@@ -172,7 +170,6 @@ describe('nextpnr tasks', () => {
     });
 
     it('requests GUI mode without report generation when the GUI task is run', () => {
-        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
         const result = runNextpnrGui(project, logger, callback);
         const outputPath = path.join(tempDirectory, 'nextpnr_out.asc');
 
@@ -194,7 +191,6 @@ describe('nextpnr tasks', () => {
         "unrecognised option '--gui'",
         "the option '--gui' is unrecognised"
     ].forEach((stderr) => it(`reports a clear message when the nextpnr binary has no Qt GUI support (${stderr})`, () => {
-        const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
         const processResult: p_result = {
             command: 'nextpnr-ice40',
             stdout: '',
@@ -222,8 +218,6 @@ describe('nextpnr tasks', () => {
 
     describe('runNextpnrPack', () => {
         it('reports a missing place-and-route output before invoking packer', (done) => {
-            const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
-
             runNextpnrPack(project, logger, (processResult: p_result) => {
                 expect(processResult.successful).toBe(false);
                 expect(processResult.return_value).toBe(1);
@@ -252,7 +246,6 @@ describe('nextpnr tasks', () => {
             }
         ].forEach(({ family, input, output, args, binary }) => {
             it(`runs packer for ${family} with expected arguments`, () => {
-                const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
                 project.config.tools.nextpnr.target_family = family;
                 const inputPath = path.join(tempDirectory, input);
                 const outputPath = path.join(tempDirectory, output);

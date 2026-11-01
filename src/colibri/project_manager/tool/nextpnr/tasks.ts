@@ -26,9 +26,9 @@ function reportError(
 	command: string,
 	errorMessage: string,
 	callback: (result: p_result) => void,
-	toolLogger?: LoggerBase
+	toolLogger: LoggerBase
 ): ChildProcess {
-	toolLogger?.appendLine(`[nextpnr] Error: ${errorMessage}`);
+	toolLogger.appendLine(`[nextpnr] Error: ${errorMessage}`);
 	setTimeout(() => callback(createErrorResult(command, errorMessage)), 0);
 	return {} as ChildProcess;
 }
@@ -94,8 +94,8 @@ function resolveJsonInput(projectDefinition: t_project_definition): string {
 
 function runNextpnr(
 	projectDefinition: t_project_definition,
+	toolLogger: LoggerBase,
 	callback: (result: p_result) => void,
-	toolLogger?: LoggerBase,
 	options: { gui?: boolean; reportFile?: string } = {},
 	taskName = 'nextpnr P&R'
 ): ChildProcess {
@@ -142,19 +142,19 @@ function resolveProjectPath(projectPath: string, filePath: string): string {
 /** Run nextpnr place-and-route from the JSON output configured in Yosys. */
 export function runNextpnrPnR(
 	projectDefinition: t_project_definition,
-	callback: (result: p_result) => void,
-	toolLogger?: LoggerBase
+	toolLogger: LoggerBase,
+	callback: (result: p_result) => void
 ): ChildProcess {
-	return runNextpnr(projectDefinition, callback, toolLogger, { reportFile: 'nextpnr_report.json' });
+	return runNextpnr(projectDefinition, toolLogger, callback, { reportFile: 'nextpnr_report.json' });
 }
 
 /** Open the native nextpnr GUI for supported architectures. */
 export function runNextpnrGui(
 	projectDefinition: t_project_definition,
-	toolLogger: LoggerBase | undefined,
+	toolLogger: LoggerBase,
 	callback: (result: p_result) => void
 ): ChildProcess {
-	toolLogger?.appendLine(
+	toolLogger.appendLine(
 		'[nextpnr] GUI opened with the synthesized netlist. ' +
 		'Use Pack, Place and Route in the GUI toolbar to view placement and routing.'
 	);
@@ -171,7 +171,7 @@ export function runNextpnrGui(
 		const missingGuiSupport = unsupportedGuiPatterns.some(pattern => pattern.test(output));
 		if (!result.successful && missingGuiSupport) {
 			const errorMessage = 'This nextpnr binary has no GUI (Qt) support.';
-			toolLogger?.appendLine(`[nextpnr] Error: ${errorMessage}`);
+			toolLogger.appendLine(`[nextpnr] Error: ${errorMessage}`);
 			callback({
 				...result,
 				stderr: errorMessage
@@ -183,8 +183,8 @@ export function runNextpnrGui(
 
 	return runNextpnr(
 		projectDefinition,
-		handleGuiResult,
 		toolLogger,
+		handleGuiResult,
 		{ gui: true },
 		'nextpnr GUI'
 	);
@@ -192,7 +192,7 @@ export function runNextpnrGui(
 
 export function runNextpnrPack(
 	projectDefinition: t_project_definition,
-	toolLogger: LoggerBase | undefined,
+	toolLogger: LoggerBase,
 	callback: (result: p_result) => void
 ): ChildProcess {
 	try {
@@ -223,7 +223,7 @@ export function runNextpnrPack(
 
 		return executeBinary(binary, args, projectDefinition.project_disk_path, (result: p_result) => {
 			if (result.successful) {
-				toolLogger?.appendLine(`[nextpnr] Bitstream generated: ${outputPath}`);
+				toolLogger.appendLine(`[nextpnr] Bitstream generated: ${outputPath}`);
 			}
 			callback(result);
 		}, toolLogger);
