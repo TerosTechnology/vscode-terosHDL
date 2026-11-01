@@ -16,8 +16,7 @@ import * as nextpnrUtils from '../../../../src/colibri/project_manager/tool/next
 import {
     runNextpnrGui,
     runNextpnrPack,
-    runNextpnrPnR,
-    runNextpnrReport
+    runNextpnrPnR
 } from '../../../../src/colibri/project_manager/tool/nextpnr/tasks';
 
 describe('nextpnr tasks', () => {
@@ -220,45 +219,6 @@ describe('nextpnr tasks', () => {
             '[nextpnr] Error: This nextpnr binary has no GUI (Qt) support.'
         );
     }));
-
-    describe('runNextpnrReport', () => {
-        it('returns the generated report JSON for the frontend', (done) => {
-            const report = JSON.stringify({ utilization: {}, fmax: {} });
-            fs.writeFileSync(path.join(tempDirectory, 'nextpnr_report.json'), report);
-
-            const result = runNextpnrReport(project, (processResult: p_result) => {
-                expect(processResult).toMatchObject({
-                    command: 'nextpnr report',
-                    stdout: report,
-                    stderr: '',
-                    return_value: 0,
-                    successful: true
-                });
-                done();
-            });
-
-            expect(result).toEqual({});
-        });
-
-        it('reports a missing generated report clearly', (done) => {
-            runNextpnrReport(project, (processResult: p_result) => {
-                expect(processResult.successful).toBe(false);
-                expect(processResult.return_value).toBe(1);
-                expect(processResult.stderr).toContain('Run Place & Route');
-                done();
-            });
-        });
-
-        it('rejects report JSON without the expected sections', (done) => {
-            fs.writeFileSync(path.join(tempDirectory, 'nextpnr_report.json'), '{"unexpected":true}');
-
-            runNextpnrReport(project, (processResult: p_result) => {
-                expect(processResult.successful).toBe(false);
-                expect(processResult.stderr).toContain('missing utilization or fmax');
-                done();
-            });
-        });
-    });
 
     describe('runNextpnrPack', () => {
         it('reports a missing place-and-route output before invoking packer', (done) => {

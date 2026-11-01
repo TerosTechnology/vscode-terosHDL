@@ -14,8 +14,7 @@ import { runTaskNextpnr } from '../../../../src/colibri/project_manager/tool/nex
 jest.mock('../../../../src/colibri/project_manager/tool/nextpnr/tasks', () => ({
     runNextpnrPnR: jest.fn(),
     runNextpnrPack: jest.fn(),
-    runNextpnrGui: jest.fn(),
-    runNextpnrReport: jest.fn()
+    runNextpnrGui: jest.fn()
 }));
 
 describe('nextpnr task runner', () => {
@@ -60,10 +59,9 @@ describe('nextpnr task runner', () => {
 
     it.each([
         [e_taskType.NEXTPNR_PACK, 'runNextpnrPack'],
-        [e_taskType.NEXTPNR_GUI, 'runNextpnrGui'],
-        [e_taskType.NEXTPNR_REPORT, 'runNextpnrReport']
+        [e_taskType.NEXTPNR_GUI, 'runNextpnrGui']
     ])('dispatches %s and returns its process', (taskType, functionName) => {
-        const task = nextpnrTasks[functionName as 'runNextpnrPack' | 'runNextpnrGui' | 'runNextpnrReport'];
+        const task = nextpnrTasks[functionName as 'runNextpnrPack' | 'runNextpnrGui'];
         jest.mocked(task).mockReturnValue(childProcess);
 
         const result = runTaskNextpnr(taskType, projectDefinition, callback, toolLogger);
@@ -78,7 +76,7 @@ describe('nextpnr task runner', () => {
         expect(result).toBe(childProcess);
     });
 
-    it.each([e_taskType.NEXTPNR_GUI, e_taskType.NEXTPNR_REPORT, e_taskType.NEXTPNR_PACK])(
+    it.each([e_taskType.NEXTPNR_GUI, e_taskType.NEXTPNR_PACK])(
         'rejects %s for generic target family', (taskType, done) => {
             projectDefinition.config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.generic;
             const result = runTaskNextpnr(taskType, projectDefinition, (processResult) => {
@@ -89,6 +87,16 @@ describe('nextpnr task runner', () => {
             expect(result).toBeUndefined();
         }
     );
+
+    it('treats backend report task as unsupported (frontend-only handling)', (done) => {
+        const result = runTaskNextpnr(e_taskType.NEXTPNR_REPORT, projectDefinition, (processResult) => {
+            expect(processResult.successful).toBe(false);
+            expect(processResult.stderr).toContain(`Unsupported nextpnr task type: ${e_taskType.NEXTPNR_REPORT}`);
+            done();
+        }, toolLogger);
+
+        expect(result).toBeUndefined();
+    });
 
     it('reports unsupported task types asynchronously without returning a fake process', (done) => {
         const result = runTaskNextpnr(e_taskType.GHDL_ANALYZE, projectDefinition, (processResult) => {

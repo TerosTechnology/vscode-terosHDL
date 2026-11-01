@@ -190,37 +190,6 @@ export function runNextpnrGui(
 	);
 }
 
-/** Load the report produced by the most recent P&R run for display in the frontend. */
-export function runNextpnrReport(
-	projectDefinition: t_project_definition,
-	callback: (result: p_result) => void,
-	toolLogger?: LoggerBase
-): ChildProcess {
-	const reportPath = path.join(projectDefinition.project_disk_path, 'nextpnr_report.json');
-	try {
-		if (!fs.existsSync(reportPath) || !fs.statSync(reportPath).isFile()) {
-			throw new Error('nextpnr report not found. Run Place & Route before opening the report.');
-		}
-		const report = fs.readFileSync(reportPath, 'utf8');
-		const parsed = JSON.parse(report) as { utilization?: unknown; fmax?: unknown };
-		if (!parsed || typeof parsed !== 'object' || !parsed.utilization || !parsed.fmax) {
-			throw new Error('nextpnr report JSON is missing utilization or fmax data. Run Place & Route again.');
-		}
-		setTimeout(() => callback({
-			command: 'nextpnr report',
-			stdout: report,
-			stderr: '',
-			return_value: 0,
-			successful: true
-		}), 0);
-	} catch (error) {
-		const message = error instanceof Error ? error.message : String(error);
-		toolLogger?.appendLine(`[nextpnr] Error: ${message}`);
-		setTimeout(() => callback(createErrorResult('nextpnr report', message)), 0);
-	}
-	return {} as ChildProcess;
-}
-
 export function runNextpnrPack(
 	projectDefinition: t_project_definition,
 	toolLogger: LoggerBase | undefined,
