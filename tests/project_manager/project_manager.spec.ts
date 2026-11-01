@@ -65,7 +65,7 @@ describe('project_manager', () => {
         };
         const process = {} as ChildProcess;
         const logger = { appendLine: jest.fn() } as unknown as LoggerBase;
-        (runTaskNextpnr as jest.Mock).mockImplementation((_task, _definition, callback, _logger) => {
+        (runTaskNextpnr as jest.Mock).mockImplementation((_task, _definition, _logger, callback) => {
             callback(result);
             return process;
         });
@@ -73,7 +73,7 @@ describe('project_manager', () => {
 
         const returnedProcess = project_manager.runTask(taskType, logger, callback);
 
-        expect(runTaskNextpnr).toHaveBeenCalledWith(taskType, expect.any(Object), expect.any(Function), logger);
+        expect(runTaskNextpnr).toHaveBeenCalledWith(taskType, expect.any(Object), logger, expect.any(Function));
         expect(returnedProcess).toBe(process);
         expect(callback).toHaveBeenCalledWith(result);
         expect(project_manager.getTaskState(taskType)).toBe(expectedState);
