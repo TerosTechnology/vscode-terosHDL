@@ -745,14 +745,14 @@ export class Project_manager extends ConfigManager {
             return resultProcess;
         } else if (toolName === e_tools_general_select_tool.nextpnr) {
             const startTime = Date.now();
-            return runTaskNextpnr(taskType, this.get_project_definition(), (result: p_result) => {
+            return runTaskNextpnr(taskType, this.get_project_definition(), logger, (result: p_result) => {
                 const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;
                 const endTime = Date.now();
                 const elapsedTime = endTime - startTime;
                 this.taskStateManager.updateTask(taskType, taskStatus, undefined, result.successful, elapsedTime);
                 this.emitUpdateStatus();
                 callback(result);
-            }, logger);
+            });
         }
         return undefined;
     }

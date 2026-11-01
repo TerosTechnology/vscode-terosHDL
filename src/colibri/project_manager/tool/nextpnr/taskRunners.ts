@@ -11,8 +11,8 @@ import { LoggerBase } from '../../../logger/logger';
 export function runTaskNextpnr(
 	taskType: e_taskType,
 	projectDefinition: t_project_definition,
-	callback: (result: p_result) => void,
-	toolLogger?: LoggerBase
+	toolLogger: LoggerBase,
+	callback: (result: p_result) => void
 ): ChildProcess | undefined {
 	if (!file_utils.check_if_path_exist(projectDefinition.project_disk_path)) {
 		file_utils.create_directory(projectDefinition.project_disk_path);
@@ -31,14 +31,14 @@ export function runTaskNextpnr(
 			return_value: 1,
 			successful: false
 		};
-		toolLogger?.appendLine(`[nextpnr] Error: ${result.stderr}`);
+		toolLogger.appendLine(`[nextpnr] Error: ${result.stderr}`);
 		setTimeout(() => callback(result), 0);
 		return undefined;
 	}
 
 	switch (taskType) {
 		case e_taskType.NEXTPNR_PNR:
-			return runNextpnrPnR(projectDefinition, callback, toolLogger);
+			return runNextpnrPnR(projectDefinition, toolLogger, callback);
 		case e_taskType.NEXTPNR_PACK:
 			return runNextpnrPack(projectDefinition, toolLogger, callback);
 		case e_taskType.NEXTPNR_GUI:
@@ -51,7 +51,7 @@ export function runTaskNextpnr(
 				return_value: 1,
 				successful: false
 			};
-			toolLogger?.appendLine(`[nextpnr] Error: ${result.stderr}`);
+			toolLogger.appendLine(`[nextpnr] Error: ${result.stderr}`);
 			setTimeout(() => callback(result), 0);
 			return undefined;
 		}
