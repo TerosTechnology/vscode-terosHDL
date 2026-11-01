@@ -28,6 +28,10 @@ import { BinaryCheck, checkBinary } from 'colibri/toolChecker/utils';
 import { OS } from 'colibri/process/common';
 import { get_os } from 'colibri/process/utils';
 import * as file_utils from 'colibri/utils/file_utils';
+import {
+    NEXTPNR_BINARY_BY_FAMILY,
+    PACKER_BINARY_BY_FAMILY
+} from 'colibri/project_manager/tool/nextpnr/executor';
 import * as fs from 'fs';
 import * as path_lib from 'path';
 
@@ -128,12 +132,7 @@ export async function checkExternalToolManager(currentConfig: e_config) {
         }
     } else if (selectedTool === e_tools_general_select_tool.nextpnr) {
         const targetFamily = currentConfig.tools.nextpnr.target_family;
-        const binaryByFamily: Record<e_tools_nextpnr_target_family, string> = {
-            [e_tools_nextpnr_target_family.ice40]: 'nextpnr-ice40',
-            [e_tools_nextpnr_target_family.ecp5]: 'nextpnr-ecp5',
-            [e_tools_nextpnr_target_family.generic]: 'nextpnr-generic',
-        };
-        const binaryName = binaryByFamily[targetFamily];
+        const binaryName = NEXTPNR_BINARY_BY_FAMILY[targetFamily];
 
         if (!binaryName) {
             msg += `${INTROICON} ❌ Unsupported nextpnr target family: ${targetFamily}\n`;
@@ -148,24 +147,24 @@ export async function checkExternalToolManager(currentConfig: e_config) {
 
             if (targetFamily === e_tools_nextpnr_target_family.ice40 ||
                 targetFamily === e_tools_nextpnr_target_family.ecp5) {
-                const packerByFamily: Record<Exclude<e_tools_nextpnr_target_family,
-                    e_tools_nextpnr_target_family.generic>, string> = {
-                    [e_tools_nextpnr_target_family.ice40]: 'icepack',
-                    [e_tools_nextpnr_target_family.ecp5]: 'ecppack',
-                };
                 const packerInstallationPath = currentConfig.tools.nextpnr.packer_installation_path?.trim() ||
                     installationPath;
-                const packerBinary = packerByFamily[targetFamily];
+                const packerBinary = PACKER_BINARY_BY_FAMILY[targetFamily];
 
-                result = await checkBinaryWithVersionFallback(
-                    'nextpnr packer',
-                    packerInstallationPath,
-                    packerBinary
-                );
-                msg = appendMsg(result, msg, `nextpnr packer (${targetFamily})`);
-                msg += '\n';
-                if (!result.successfulConfig) {
+                if (!packerBinary) {
+                    msg += `${INTROICON} ❌ Unsupported nextpnr packer target family: ${targetFamily}\n`;
                     isOk = false;
+                } else {
+                    result = await checkBinaryWithVersionFallback(
+                        'nextpnr packer',
+                        packerInstallationPath,
+                        packerBinary
+                    );
+                    msg = appendMsg(result, msg, `nextpnr packer (${targetFamily})`);
+                    msg += '\n';
+                    if (!result.successfulConfig) {
+                        isOk = false;
+                    }
                 }
             }
         }
