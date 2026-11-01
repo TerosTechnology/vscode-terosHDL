@@ -17,6 +17,38 @@ target_family:
     generic: "Generic"
   value: ice40
 
+ice40_device:
+  description: "iCE40 device selection (ignored for non-iCE40 targets):"
+  type: select
+  options:
+    hx1k: "HX1K"
+    hx4k: "HX4K"
+    hx8k: "HX8K"
+    lp384: "LP384"
+    lp1k: "LP1K"
+    lp8k: "LP8K"
+    up3k: "UP3K"
+    up5k: "UP5K"
+    u1k: "U1K"
+    u2k: "U2K"
+    u4k: "U4K"
+  value: up5k
+
+ecp5_device:
+  description: "ECP5 device selection (ignored for non-ECP5 targets):"
+  type: select
+  options:
+    ecp5_12k: "12K"
+    ecp5_25k: "25K"
+    ecp5_45k: "45K"
+    ecp5_85k: "85K"
+  value: ecp5_45k
+
+package:
+  description: "FPGA package (required by many architectures, e.g. SG48, CABGA381):"
+  type: string
+  value: ""
+
 # Device Constraints
 section_constraints:
   description: "Device Constraints"

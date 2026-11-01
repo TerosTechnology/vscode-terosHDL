@@ -1,4 +1,9 @@
-import { e_tools_nextpnr, e_tools_nextpnr_target_family } from 'colibri/config/config_declaration';
+import {
+    e_tools_nextpnr,
+    e_tools_nextpnr_ecp5_device,
+    e_tools_nextpnr_ice40_device,
+    e_tools_nextpnr_target_family
+} from 'colibri/config/config_declaration';
 
 export function buildNextpnrArgs(
     config: e_tools_nextpnr,
@@ -19,11 +24,25 @@ export function buildNextpnrArgs(
     const family = config.target_family;
     const pcfFile = config.pcf_file?.trim() ?? '';
     const lpfFile = config.lpf_file?.trim() ?? '';
+    const packageName = config.package?.trim() ?? '';
     if (family !== e_tools_nextpnr_target_family.ice40 && pcfFile !== '') {
         throw new Error('pcf_file is only valid for the iCE40 target family.');
     }
     if (family !== e_tools_nextpnr_target_family.ecp5 && lpfFile !== '') {
         throw new Error('lpf_file is only valid for the ECP5 target family.');
+    }
+    if (!Object.values(e_tools_nextpnr_ice40_device).includes(config.ice40_device)) {
+        throw new Error(`Unsupported iCE40 device: ${config.ice40_device}`);
+    }
+    if (!Object.values(e_tools_nextpnr_ecp5_device).includes(config.ecp5_device)) {
+        throw new Error(`Unsupported ECP5 device: ${config.ecp5_device}`);
+    }
+
+    if (family !== e_tools_nextpnr_target_family.ice40 && config.ice40_device !== e_tools_nextpnr_ice40_device.up5k) {
+        throw new Error('ice40_device is only valid for the iCE40 target family.');
+    }
+    if (family !== e_tools_nextpnr_target_family.ecp5 && config.ecp5_device !== e_tools_nextpnr_ecp5_device.ecp5_45k) {
+        throw new Error('ecp5_device is only valid for the ECP5 target family.');
     }
 
     if (!Number.isFinite(config.freq) || config.freq < 0) {
@@ -45,6 +64,21 @@ export function buildNextpnrArgs(
     }
 
     const familySpecificOptions: Record<string, e_tools_nextpnr_target_family[]> = {
+        '--hx1k': [e_tools_nextpnr_target_family.ice40],
+        '--hx4k': [e_tools_nextpnr_target_family.ice40],
+        '--hx8k': [e_tools_nextpnr_target_family.ice40],
+        '--lp384': [e_tools_nextpnr_target_family.ice40],
+        '--lp1k': [e_tools_nextpnr_target_family.ice40],
+        '--lp8k': [e_tools_nextpnr_target_family.ice40],
+        '--up3k': [e_tools_nextpnr_target_family.ice40],
+        '--up5k': [e_tools_nextpnr_target_family.ice40],
+        '--u1k': [e_tools_nextpnr_target_family.ice40],
+        '--u2k': [e_tools_nextpnr_target_family.ice40],
+        '--u4k': [e_tools_nextpnr_target_family.ice40],
+        '--12k': [e_tools_nextpnr_target_family.ecp5],
+        '--25k': [e_tools_nextpnr_target_family.ecp5],
+        '--45k': [e_tools_nextpnr_target_family.ecp5],
+        '--85k': [e_tools_nextpnr_target_family.ecp5],
         '--pcf': [e_tools_nextpnr_target_family.ice40],
         '--asc': [e_tools_nextpnr_target_family.ice40],
         '--lpf': [e_tools_nextpnr_target_family.ecp5],
@@ -52,7 +86,9 @@ export function buildNextpnrArgs(
     };
     const managedOptions = new Set([
         '--json', '--asc', '--textcfg', '--write', '--pcf', '--lpf',
-        '--freq', '--seed', '--placer', '--router', '--gui', '--report'
+        '--freq', '--seed', '--placer', '--router', '--gui', '--report', '--package',
+        '--hx1k', '--hx4k', '--hx8k', '--lp384', '--lp1k', '--lp8k', '--up3k', '--up5k', '--u1k', '--u2k', '--u4k',
+        '--12k', '--25k', '--45k', '--85k'
     ]);
     const seenOptions = new Set<string>();
     for (const option of extraOptions) {
@@ -74,11 +110,25 @@ export function buildNextpnrArgs(
 
     const args: string[] = ['--json', jsonFile];
     if (family === e_tools_nextpnr_target_family.ice40) {
+        args.push(`--${config.ice40_device}`);
+        if (packageName !== '') {
+            args.push('--package', packageName);
+        }
         if (pcfFile !== '') {
             args.push('--pcf', pcfFile);
         }
         args.push('--asc', outputFile);
     } else if (family === e_tools_nextpnr_target_family.ecp5) {
+        const ecp5DeviceMap: Record<e_tools_nextpnr_ecp5_device, string> = {
+            [e_tools_nextpnr_ecp5_device.ecp5_12k]: '--12k',
+            [e_tools_nextpnr_ecp5_device.ecp5_25k]: '--25k',
+            [e_tools_nextpnr_ecp5_device.ecp5_45k]: '--45k',
+            [e_tools_nextpnr_ecp5_device.ecp5_85k]: '--85k',
+        };
+        args.push(ecp5DeviceMap[config.ecp5_device]);
+        if (packageName !== '') {
+            args.push('--package', packageName);
+        }
         if (lpfFile !== '') {
             args.push('--lpf', lpfFile);
         }

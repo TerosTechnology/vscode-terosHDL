@@ -5865,6 +5865,54 @@ body.vscode-high-contrast {
                     </div>
                   
                   
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            iCE40 device selection (ignored for non-iCE40 targets):
+                            <span class="markConfig" id="mark_tools-nextpnr-ice40_device"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-nextpnr-ice40_device">
+                                      <option value='hx1k'>HX1K</option>
+                                      <option value='hx4k'>HX4K</option>
+                                      <option value='hx8k'>HX8K</option>
+                                      <option value='lp384'>LP384</option>
+                                      <option value='lp1k'>LP1K</option>
+                                      <option value='lp8k'>LP8K</option>
+                                      <option value='up3k'>UP3K</option>
+                                      <option value='up5k'>UP5K</option>
+                                      <option value='u1k'>U1K</option>
+                                      <option value='u2k'>U2K</option>
+                                      <option value='u4k'>U4K</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            ECP5 device selection (ignored for non-ECP5 targets):
+                            <span class="markConfig" id="mark_tools-nextpnr-ecp5_device"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-nextpnr-ecp5_device">
+                                      <option value='ecp5_12k'>12K</option>
+                                      <option value='ecp5_25k'>25K</option>
+                                      <option value='ecp5_45k'>45K</option>
+                                      <option value='ecp5_85k'>85K</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA package (required by many architectures, e.g. SG48, CABGA381):
+                            <span class="markConfig" id="mark_tools-nextpnr-package"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-nextpnr-package" value="">
+                    </div>
+                  
+                  
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Device Constraints</div>
                     <hr class="setting-divider">
@@ -7695,6 +7743,12 @@ body.vscode-high-contrast {
     config["tools"]["nextpnr"]["installation_path"] = element_value
     element_value = document.getElementById("tools-nextpnr-target_family").value;
     config["tools"]["nextpnr"]["target_family"] = element_value
+    element_value = document.getElementById("tools-nextpnr-ice40_device").value;
+    config["tools"]["nextpnr"]["ice40_device"] = element_value
+    element_value = document.getElementById("tools-nextpnr-ecp5_device").value;
+    config["tools"]["nextpnr"]["ecp5_device"] = element_value
+    element_value = document.getElementById("tools-nextpnr-package").value;
+    config["tools"]["nextpnr"]["package"] = element_value
     config["tools"]["nextpnr"]["section_constraints"] = element_value
     element_value = document.getElementById("tools-nextpnr-pcf_file").value;
     config["tools"]["nextpnr"]["pcf_file"] = element_value
@@ -8896,6 +8950,15 @@ body.vscode-high-contrast {
     }
     if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["target_family"] !== undefined) {
         document.getElementById("tools-nextpnr-target_family").value = config["tools"]["nextpnr"]["target_family"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["ice40_device"] !== undefined) {
+        document.getElementById("tools-nextpnr-ice40_device").value = config["tools"]["nextpnr"]["ice40_device"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["ecp5_device"] !== undefined) {
+        document.getElementById("tools-nextpnr-ecp5_device").value = config["tools"]["nextpnr"]["ecp5_device"];
+    }
+    if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["package"] !== undefined) {
+        document.getElementById("tools-nextpnr-package").value = config["tools"]["nextpnr"]["package"];
     }
     if (config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["pcf_file"] !== undefined) {
         document.getElementById("tools-nextpnr-pcf_file").value = config["tools"]["nextpnr"]["pcf_file"];
@@ -10888,6 +10951,21 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-nextpnr-target_family").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["ice40_device"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-ice40_device").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["ecp5_device"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-ecp5_device").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["package"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-nextpnr-package").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["nextpnr"] && config["tools"]["nextpnr"]["pcf_file"] !== undefined) {
       mark = MODIFIEDMSG;

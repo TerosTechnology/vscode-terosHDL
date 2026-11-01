@@ -142,7 +142,8 @@ export function runNextpnrGui(
 		const output = `${result.stderr}\n${result.stdout}`;
 		const unsupportedGuiPatterns = [
 			/(?:gui|qt)[^\n]*(?:not supported|not enabled|disabled|not compiled|unavailable|missing)/i,
-			/(?:not supported|not enabled|disabled|not compiled|unavailable|missing)[^\n]*(?:gui|qt)/i
+			/(?:not supported|not enabled|disabled|not compiled|unavailable|missing)[^\n]*(?:gui|qt)/i,
+			/(?:unrecogni[sz]ed|unknown|invalid|unexpected)\s+(?:option|argument|flag)[^\n]*--gui/i
 		];
 		const missingGuiSupport = unsupportedGuiPatterns.some(pattern => pattern.test(output));
 		if (!result.successful && missingGuiSupport) {

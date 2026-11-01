@@ -653,6 +653,9 @@ export type e_tools_raptor = {
 export type e_tools_nextpnr = {
     installation_path : string,
     target_family : e_tools_nextpnr_target_family,
+    ice40_device : e_tools_nextpnr_ice40_device,
+    ecp5_device : e_tools_nextpnr_ecp5_device,
+    package : string,
     pcf_file : string,
     lpf_file : string,
     freq : number,
@@ -1108,6 +1111,25 @@ export enum e_tools_nextpnr_target_family {
     ice40 = "ice40",
     ecp5 = "ecp5",
     generic = "generic",
+}
+export enum e_tools_nextpnr_ice40_device {
+    hx1k = "hx1k",
+    hx4k = "hx4k",
+    hx8k = "hx8k",
+    lp384 = "lp384",
+    lp1k = "lp1k",
+    lp8k = "lp8k",
+    up3k = "up3k",
+    up5k = "up5k",
+    u1k = "u1k",
+    u2k = "u2k",
+    u4k = "u4k",
+}
+export enum e_tools_nextpnr_ecp5_device {
+    ecp5_12k = "ecp5_12k",
+    ecp5_25k = "ecp5_25k",
+    ecp5_45k = "ecp5_45k",
+    ecp5_85k = "ecp5_85k",
 }
 
 export function get_default_config(): e_config {
@@ -1631,6 +1653,9 @@ export function get_default_config(): e_config {
             nextpnr: {
                 installation_path : "",
                 target_family : e_tools_nextpnr_target_family.ice40,
+                ice40_device : e_tools_nextpnr_ice40_device.up5k,
+                ecp5_device : e_tools_nextpnr_ecp5_device.ecp5_45k,
+                package : "",
                 pcf_file : "",
                 lpf_file : "",
                 freq : 0,
@@ -6220,74 +6245,143 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['tools']['nextpnr']['target_family'] = e_tools_nextpnr_target_family.generic;
     }
             
-    // tools -> nextpnr -> pcf_file
+    // tools -> nextpnr -> ice40_device
     let current_value_395 = undefined;
     try {
-        current_value_395 = json_config['tools']['nextpnr']['pcf_file'];
+        current_value_395 = json_config['tools']['nextpnr']['ice40_device'];
     }
     catch(e){}
-    if (typeof current_value_395 === 'string'){
-        default_config['tools']['nextpnr']['pcf_file'] = current_value_395;
+    if ( current_value_395 === "hx1k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.hx1k;
+    }
+    if ( current_value_395 === "hx4k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.hx4k;
+    }
+    if ( current_value_395 === "hx8k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.hx8k;
+    }
+    if ( current_value_395 === "lp384"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp384;
+    }
+    if ( current_value_395 === "lp1k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp1k;
+    }
+    if ( current_value_395 === "lp8k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp8k;
+    }
+    if ( current_value_395 === "up3k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.up3k;
+    }
+    if ( current_value_395 === "up5k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.up5k;
+    }
+    if ( current_value_395 === "u1k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.u1k;
+    }
+    if ( current_value_395 === "u2k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.u2k;
+    }
+    if ( current_value_395 === "u4k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.u4k;
+    }
+            
+    // tools -> nextpnr -> ecp5_device
+    let current_value_396 = undefined;
+    try {
+        current_value_396 = json_config['tools']['nextpnr']['ecp5_device'];
+    }
+    catch(e){}
+    if ( current_value_396 === "ecp5_12k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_12k;
+    }
+    if ( current_value_396 === "ecp5_25k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_25k;
+    }
+    if ( current_value_396 === "ecp5_45k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_45k;
+    }
+    if ( current_value_396 === "ecp5_85k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_85k;
+    }
+            
+    // tools -> nextpnr -> package
+    let current_value_397 = undefined;
+    try {
+        current_value_397 = json_config['tools']['nextpnr']['package'];
+    }
+    catch(e){}
+    if (typeof current_value_397 === 'string'){
+        default_config['tools']['nextpnr']['package'] = current_value_397;
+    }
+            
+    // tools -> nextpnr -> pcf_file
+    let current_value_398 = undefined;
+    try {
+        current_value_398 = json_config['tools']['nextpnr']['pcf_file'];
+    }
+    catch(e){}
+    if (typeof current_value_398 === 'string'){
+        default_config['tools']['nextpnr']['pcf_file'] = current_value_398;
     }
             
     // tools -> nextpnr -> lpf_file
-    let current_value_396 = undefined;
-    try {
-        current_value_396 = json_config['tools']['nextpnr']['lpf_file'];
-    }
-    catch(e){}
-    if (typeof current_value_396 === 'string'){
-        default_config['tools']['nextpnr']['lpf_file'] = current_value_396;
-    }
-            
-    // tools -> nextpnr -> freq
-    let current_value_397 = undefined;
-    try {
-        current_value_397 = json_config['tools']['nextpnr']['freq'];
-    }
-    catch(e){}
-    if (typeof current_value_397 === 'number'){
-        default_config['tools']['nextpnr']['freq'] = current_value_397;
-    }
-            
-    // tools -> nextpnr -> seed
-    let current_value_398 = undefined;
-    try {
-        current_value_398 = json_config['tools']['nextpnr']['seed'];
-    }
-    catch(e){}
-    if (typeof current_value_398 === 'number'){
-        default_config['tools']['nextpnr']['seed'] = current_value_398;
-    }
-            
-    // tools -> nextpnr -> placer
     let current_value_399 = undefined;
     try {
-        current_value_399 = json_config['tools']['nextpnr']['placer'];
+        current_value_399 = json_config['tools']['nextpnr']['lpf_file'];
     }
     catch(e){}
     if (typeof current_value_399 === 'string'){
-        default_config['tools']['nextpnr']['placer'] = current_value_399;
+        default_config['tools']['nextpnr']['lpf_file'] = current_value_399;
+    }
+            
+    // tools -> nextpnr -> freq
+    let current_value_400 = undefined;
+    try {
+        current_value_400 = json_config['tools']['nextpnr']['freq'];
+    }
+    catch(e){}
+    if (typeof current_value_400 === 'number'){
+        default_config['tools']['nextpnr']['freq'] = current_value_400;
+    }
+            
+    // tools -> nextpnr -> seed
+    let current_value_401 = undefined;
+    try {
+        current_value_401 = json_config['tools']['nextpnr']['seed'];
+    }
+    catch(e){}
+    if (typeof current_value_401 === 'number'){
+        default_config['tools']['nextpnr']['seed'] = current_value_401;
+    }
+            
+    // tools -> nextpnr -> placer
+    let current_value_402 = undefined;
+    try {
+        current_value_402 = json_config['tools']['nextpnr']['placer'];
+    }
+    catch(e){}
+    if (typeof current_value_402 === 'string'){
+        default_config['tools']['nextpnr']['placer'] = current_value_402;
     }
             
     // tools -> nextpnr -> router
-    let current_value_400 = undefined;
+    let current_value_403 = undefined;
     try {
-        current_value_400 = json_config['tools']['nextpnr']['router'];
+        current_value_403 = json_config['tools']['nextpnr']['router'];
     }
     catch(e){}
-    if (typeof current_value_400 === 'string'){
-        default_config['tools']['nextpnr']['router'] = current_value_400;
+    if (typeof current_value_403 === 'string'){
+        default_config['tools']['nextpnr']['router'] = current_value_403;
     }
             
     // tools -> nextpnr -> extra_options
-    let current_value_401 = undefined;
+    let current_value_404 = undefined;
     try {
-        current_value_401 = json_config['tools']['nextpnr']['extra_options'];
+        current_value_404 = json_config['tools']['nextpnr']['extra_options'];
     }
     catch(e){}
-    if (Array.isArray(current_value_401)){
-        default_config['tools']['nextpnr']['extra_options'] = current_value_401;
+    if (Array.isArray(current_value_404)){
+        default_config['tools']['nextpnr']['extra_options'] = current_value_404;
     }
             
 
