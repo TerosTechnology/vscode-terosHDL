@@ -48,16 +48,26 @@ describe('nextpnr Command Builder', () => {
             const config = {
                 ...defaultConfig(),
                 target_family: e_tools_nextpnr_target_family.generic,
+                generic_arch_script: 'generic_arch.py',
                 extra_options: ['--timing-allow-fail', '--ignore-loops']
             };
 
             expect(buildNextpnrArgs(config, 'design.json', 'placed.json')).toEqual([
                 '--json', 'design.json',
+                '--pre-pack', 'generic_arch.py',
                 '--write', 'placed.json',
                 '--seed', '1',
                 '--timing-allow-fail',
                 '--ignore-loops'
             ]);
+        });
+
+        it('requires generic_arch_script for the generic target family', () => {
+            expect(() => buildNextpnrArgs(
+                { ...defaultConfig(), target_family: e_tools_nextpnr_target_family.generic, generic_arch_script: '' },
+                'design.json',
+                'placed.json'
+            )).toThrow('generic_arch_script is required for the generic target family.');
         });
 
         it('adds frequency only when it is greater than zero', () => {
@@ -132,7 +142,7 @@ describe('nextpnr Command Builder', () => {
             expect(buildNextpnrArgs(defaultConfig(), 'design.json', 'design.asc')).not.toContain('--gui');
         });
 
-        it.each(['--gui', '--report', '--report=already.json'])('rejects %s in extra_options', (option) => {
+        it.each(['--gui', '--report', '--report=already.json', '--pre-pack'])('rejects %s in extra_options', (option) => {
             expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
                 .toThrow(option.split('=')[0] + ' is managed');
         });

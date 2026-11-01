@@ -25,6 +25,7 @@ export function buildNextpnrArgs(
     const pcfFile = config.pcf_file?.trim() ?? '';
     const lpfFile = config.lpf_file?.trim() ?? '';
     const packageName = config.package?.trim() ?? '';
+    const genericArchScript = config.generic_arch_script?.trim() ?? '';
     if (family !== e_tools_nextpnr_target_family.ice40 && pcfFile !== '') {
         throw new Error('pcf_file is only valid for the iCE40 target family.');
     }
@@ -43,6 +44,9 @@ export function buildNextpnrArgs(
     }
     if (family !== e_tools_nextpnr_target_family.ecp5 && config.ecp5_device !== e_tools_nextpnr_ecp5_device.ecp5_45k) {
         throw new Error('ecp5_device is only valid for the ECP5 target family.');
+    }
+    if (family === e_tools_nextpnr_target_family.generic && genericArchScript === '') {
+        throw new Error('generic_arch_script is required for the generic target family.');
     }
 
     if (!Number.isFinite(config.freq) || config.freq < 0) {
@@ -86,7 +90,7 @@ export function buildNextpnrArgs(
     };
     const managedOptions = new Set([
         '--json', '--asc', '--textcfg', '--write', '--pcf', '--lpf',
-        '--freq', '--seed', '--placer', '--router', '--gui', '--report', '--package',
+        '--freq', '--seed', '--placer', '--router', '--gui', '--report', '--package', '--pre-pack',
         '--hx1k', '--hx4k', '--hx8k', '--lp384', '--lp1k', '--lp8k', '--up3k', '--up5k', '--u1k', '--u2k', '--u4k',
         '--12k', '--25k', '--45k', '--85k'
     ]);
@@ -134,6 +138,7 @@ export function buildNextpnrArgs(
         }
         args.push('--textcfg', outputFile);
     } else {
+        args.push('--pre-pack', genericArchScript);
         args.push('--write', outputFile);
     }
 
