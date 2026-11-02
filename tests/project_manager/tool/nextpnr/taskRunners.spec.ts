@@ -14,7 +14,8 @@ import { runTaskNextpnr } from '../../../../src/colibri/project_manager/tool/nex
 jest.mock('../../../../src/colibri/project_manager/tool/nextpnr/tasks', () => ({
     runNextpnrPnR: jest.fn(),
     runNextpnrPack: jest.fn(),
-    runNextpnrGui: jest.fn()
+    runNextpnrGui: jest.fn(),
+    runNextpnrReport: jest.fn()
 }));
 
 describe('nextpnr task runner', () => {
@@ -57,25 +58,20 @@ describe('nextpnr task runner', () => {
         expect(result).toBe(childProcess);
     });
 
-    const dispatchCases: Array<[e_taskType, 'runNextpnrPack' | 'runNextpnrGui']> = [
+    const dispatchCases: Array<[e_taskType, 'runNextpnrPack' | 'runNextpnrGui' | 'runNextpnrReport']> = [
         [e_taskType.NEXTPNR_PACK, 'runNextpnrPack'],
-        [e_taskType.NEXTPNR_GUI, 'runNextpnrGui']
+        [e_taskType.NEXTPNR_GUI, 'runNextpnrGui'],
+        [e_taskType.NEXTPNR_REPORT, 'runNextpnrReport']
     ];
 
     dispatchCases.forEach(([taskType, functionName]) => {
         it(`dispatches ${taskType} and returns its process`, () => {
-            const task = nextpnrTasks[functionName as 'runNextpnrPack' | 'runNextpnrGui'];
+            const task = nextpnrTasks[functionName as 'runNextpnrPack' | 'runNextpnrGui' | 'runNextpnrReport'];
             jest.mocked(task).mockReturnValue(childProcess);
 
             const result = runTaskNextpnr(taskType, projectDefinition, toolLogger, callback);
 
-            if (functionName === 'runNextpnrPack') {
-                expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
-            } else if (functionName === 'runNextpnrGui') {
-                expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
-            } else {
-                expect(task).toHaveBeenCalledWith(projectDefinition, callback, toolLogger);
-            }
+            expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
             expect(result).toBe(childProcess);
         });
     });
@@ -95,16 +91,6 @@ describe('nextpnr task runner', () => {
             });
             expect(result).toBeUndefined();
         });
-    });
-
-    it('treats backend report task as unsupported (frontend-only handling)', (done) => {
-        const result = runTaskNextpnr(e_taskType.NEXTPNR_REPORT, projectDefinition, toolLogger, (processResult) => {
-            expect(processResult.successful).toBe(false);
-            expect(processResult.stderr).toContain(`Unsupported nextpnr task type: ${e_taskType.NEXTPNR_REPORT}`);
-            done();
-        });
-
-        expect(result).toBeUndefined();
     });
 
     it('reports unsupported task types asynchronously without returning a fake process', (done) => {

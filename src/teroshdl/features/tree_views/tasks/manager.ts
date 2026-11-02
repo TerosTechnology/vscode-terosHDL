@@ -18,8 +18,6 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as vscode from "vscode";
-import * as fs from 'fs';
-import * as path from 'path';
 import * as element from "./element";
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import { Task, TaskDecorator } from "./element";
@@ -328,18 +326,49 @@ export class Tasks_manager extends BaseView {
             return;
         }
         if (taskItem.taskDefinition.name === e_taskType.NEXTPNR_REPORT) {
+            if (this.checkRunning()) {
+                return undefined;
+            }
+
+            this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
             try {
                 const selectedProject = this.project_manager.get_selected_project();
-                const reportPath = path.join(selectedProject.projectDiskPath, 'nextpnr_report.json');
-                if (!fs.existsSync(reportPath) || !fs.statSync(reportPath).isFile()) {
-                    vscode.window.showInformationMessage(
-                        'Run Place and Route first to generate the report.'
-                    );
-                    return undefined;
+
+                this.state = e_VIEW_STATE.RUNNING;
+                this.setStatusBarText(undefined);
+                this.statusBar.show();
+
+                const exec_i = selectedProject.runTask(e_taskType.NEXTPNR_REPORT, toolLogger, (result: p_result) => {
+                    this.hideStatusBar();
+                    this.state = e_VIEW_STATE.IDLE;
+                    this.refresh_tree();
+
+                    if (result.successful) {
+                        showNextpnrReportWebview(result.stdout, this.context);
+                    } else {
+                        vscode.window.showErrorMessage(result.stderr || 'Unable to display nextpnr report.');
+                    }
+                });
+
+                this.latesRunTask = exec_i;
+                this.latestTask = taskItem.taskDefinition.name;
+                this.refresh_tree();
+
+                toolLogger.show(true);
+                if (exec_i?.stdout) {
+                    exec_i.stdout.on('data', (data: string) => {
+                        const cleanOutput = data.replace(/File: /g, "file://");
+                        toolLogger.log(cleanOutput);
+                    });
                 }
-                const reportJsonContent = fs.readFileSync(reportPath, 'utf8');
-                showNextpnrReportWebview(reportJsonContent, this.context);
+                if (exec_i?.stderr) {
+                    exec_i.stderr.on('data', (data: string) => {
+                        toolLogger.log(data);
+                    });
+                }
             } catch (error) {
+                this.hideStatusBar();
+                this.state = e_VIEW_STATE.IDLE;
                 vscode.window.showErrorMessage(`Error displaying nextpnr report: ${error}`);
             }
             return;

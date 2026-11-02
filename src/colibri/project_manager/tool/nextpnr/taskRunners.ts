@@ -4,7 +4,7 @@ import { t_project_definition } from '../../project_definition';
 import * as file_utils from '../../../utils/file_utils';
 import { e_tools_nextpnr_target_family } from '../../../config/config_declaration';
 import { e_taskType } from '../common';
-import { runNextpnrGui, runNextpnrPack, runNextpnrPnR } from './tasks';
+import { runNextpnrGui, runNextpnrPack, runNextpnrPnR, runNextpnrReport } from './tasks';
 import { LoggerBase } from '../../../logger/logger';
 
 /** Dispatch nextpnr task types to their task implementations. */
@@ -43,6 +43,8 @@ export function runTaskNextpnr(
 			return runNextpnrPack(projectDefinition, toolLogger, callback);
 		case e_taskType.NEXTPNR_GUI:
 			return runNextpnrGui(projectDefinition, toolLogger, callback);
+		case e_taskType.NEXTPNR_REPORT:
+			return runNextpnrReport(projectDefinition, toolLogger, callback);
 		default: {
 			const result: p_result = {
 				command: '',
@@ -59,7 +61,7 @@ export function runTaskNextpnr(
 }
 
 export { runNextpnrPnR } from './tasks';
-export { runNextpnrPack, runNextpnrGui } from './tasks';
+export { runNextpnrPack, runNextpnrGui, runNextpnrReport } from './tasks';
 export { buildNextpnrArgs } from './commandBuilder';
 export { getBinary, getPackerBinary, executeCommand, executeBinary } from './executor';
 export { getConstraintsFile, validateJsonFile } from './utils';
