@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import { execSync } from 'child_process';
 import {
     e_tools_general_select_tool,
     e_tools_nextpnr_ice40_device,
@@ -25,6 +26,15 @@ function runPack(project: t_project_definition, logger: LoggerBase): Promise<p_r
     return new Promise((resolve) => {
         runNextpnrPack(project, logger, (result: p_result) => resolve(result));
     });
+}
+
+function hasCommand(command: string): boolean {
+    try {
+        execSync(`command -v ${command}`, { stdio: 'ignore', shell: '/bin/bash' });
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 describeE2E('nextpnr iCE40 e2e', () => {
@@ -80,6 +90,10 @@ describeE2E('nextpnr iCE40 e2e', () => {
         const utilization = (report.utilisation ?? report.utilization) as Record<string, unknown> | undefined;
         expect(utilization).toBeDefined();
         expect(Object.keys(utilization || {})).not.toHaveLength(0);
+
+        if (!hasCommand('icepack')) {
+            return;
+        }
 
         const packResult = await runPack(project, logger);
         expect(packResult.successful).toBe(true);
