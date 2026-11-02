@@ -55,6 +55,8 @@ describeE2E('nextpnr iCE40 e2e', () => {
         config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.ice40;
         config.tools.nextpnr.ice40_device = e_tools_nextpnr_ice40_device.hx1k;
         config.tools.nextpnr.package = 'tq144';
+        config.tools.nextpnr.installation_path = '';
+        config.tools.nextpnr.packer_installation_path = '';
         config.tools.nextpnr.pcf_file = pcfPath;
         config.tools.nextpnr.json_file = jsonPath;
 
