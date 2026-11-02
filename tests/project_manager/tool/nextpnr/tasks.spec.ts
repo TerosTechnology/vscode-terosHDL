@@ -16,7 +16,8 @@ import * as nextpnrUtils from '../../../../src/colibri/project_manager/tool/next
 import {
     runNextpnrGui,
     runNextpnrPack,
-    runNextpnrPnR
+    runNextpnrPnR,
+    runNextpnrReport
 } from '../../../../src/colibri/project_manager/tool/nextpnr/tasks';
 
 describe('nextpnr tasks', () => {
@@ -311,6 +312,40 @@ describe('nextpnr tasks', () => {
 
             expect(result).toEqual({});
             expect(executor.executeBinary).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('runNextpnrReport', () => {
+        it('returns report JSON even when fmax is absent (e.g. combinational design)', (done) => {
+            const report = JSON.stringify({ utilization: { LUT4: { used: 1, available: 2 } } });
+            fs.writeFileSync(path.join(tempDirectory, 'nextpnr_report.json'), report);
+
+            const result = runNextpnrReport(project, logger, (processResult: p_result) => {
+                expect(processResult).toMatchObject({
+                    command: 'nextpnr report',
+                    stdout: report,
+                    stderr: '',
+                    return_value: 0,
+                    successful: true
+                });
+                done();
+            });
+
+            expect(result).toEqual({});
+        });
+
+        it('fails with a clear message when report JSON is invalid', (done) => {
+            fs.writeFileSync(path.join(tempDirectory, 'nextpnr_report.json'), '{invalid json}');
+
+            const result = runNextpnrReport(project, logger, (processResult: p_result) => {
+                expect(processResult.successful).toBe(false);
+                expect(processResult.return_value).toBe(1);
+                expect(processResult.command).toBe('nextpnr report');
+                expect(processResult.stderr).toMatch(/JSON|token|property name|position/i);
+                done();
+            });
+
+            expect(result).toEqual({});
         });
     });
 });
