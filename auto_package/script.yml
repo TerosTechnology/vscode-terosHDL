@@ -45,3 +45,6 @@
 
 - name : "test"
   command: "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json"
+
+- name: "test:ui"
+  command: "npm run compile && cross-env TEROSHDL_UI_TEST_EXAMPLE_DESTINATION=1 extest setup-and-run './tests/ui/test-*.ts' --code_version max --extensions_dir .vscode-test/extensions"
