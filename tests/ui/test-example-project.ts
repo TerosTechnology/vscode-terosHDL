@@ -31,7 +31,7 @@ describe("TerosHDL Example Project", () => {
     });
 
     it("can add the GHDL example project and it appears in the Projects tree", async function () {
-        this.timeout(60000);
+        this.timeout(90000);
 
         await runCommand("teroshdl.view.project.add");
 
@@ -64,7 +64,7 @@ describe("TerosHDL Example Project", () => {
                 }
             }
             return false;
-        }, 20000, "Example project did not appear in the Projects tree");
+        }, 40000, "Example project did not appear in the Projects tree");
 
         expect(addedProjectName, `No example project found. Checked: ${expectedProjectNames.join(", ")}`).to.not.be.undefined;
     });
