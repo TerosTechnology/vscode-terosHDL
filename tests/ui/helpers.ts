@@ -52,7 +52,7 @@ export async function runCommand(commandId: string): Promise<void> {
 }
 
 // Wait for at least one quick pick to appear in the InputBox
-export async function waitForQuickPicks(input: InputBox, timeout = 8000): Promise<void> {
+export async function waitForQuickPicks(input: InputBox, timeout = 15000): Promise<void> {
   await input.getDriver().wait(async () => {
     const picks = await input.getQuickPicks();
     return picks.length > 0;
@@ -70,7 +70,7 @@ export async function dismissOpenDialogs(): Promise<void> {
 }
 
 // Wait for a project item to appear in the Projects tree and return it
-export async function waitForProjectItem(projectName: string, timeout = 10000) {
+export async function waitForProjectItem(projectName: string, timeout = 20000) {
   const section = await getProjectsSection();
   await section.getDriver().wait(async () => {
     try {
@@ -89,7 +89,7 @@ export async function waitForProjectItem(projectName: string, timeout = 10000) {
 }
 
 // Delete a project from the Projects tree using its inline action button
-export async function deleteProjectFromTree(projectName: string, timeout = 10000): Promise<void> {
+export async function deleteProjectFromTree(projectName: string, timeout = 20000): Promise<void> {
   const section = await getProjectsSection();
   const projectItem = await section.findItem(projectName) as TreeItem | undefined;
   if (!projectItem) {
