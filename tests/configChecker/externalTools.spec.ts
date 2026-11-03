@@ -36,11 +36,10 @@ describe('nextpnr Verify Setup', () => {
         jest.restoreAllMocks();
     });
 
-    it.each([
-        [e_tools_nextpnr_target_family.ice40, 'nextpnr-ice40'],
-        [e_tools_nextpnr_target_family.ecp5, 'nextpnr-ecp5'],
-        [e_tools_nextpnr_target_family.generic, 'nextpnr-generic']
-    ])('checks the executable for target family %s', async (targetFamily, binaryName) => {
+    async function expectExecutableCheckForFamily(
+        targetFamily: e_tools_nextpnr_target_family,
+        binaryName: string
+    ): Promise<void> {
         const config = get_default_config();
         config.tools.general.select_tool = e_tools_general_select_tool.nextpnr;
         config.tools.nextpnr.target_family = targetFamily;
@@ -79,6 +78,18 @@ describe('nextpnr Verify Setup', () => {
             );
         }
         expect(report).toContain('Correctly configured');
+    }
+
+    it('checks the executable for target family ice40', async () => {
+        await expectExecutableCheckForFamily(e_tools_nextpnr_target_family.ice40, 'nextpnr-ice40');
+    });
+
+    it('checks the executable for target family ecp5', async () => {
+        await expectExecutableCheckForFamily(e_tools_nextpnr_target_family.ecp5, 'nextpnr-ecp5');
+    });
+
+    it('checks the executable for target family generic', async () => {
+        await expectExecutableCheckForFamily(e_tools_nextpnr_target_family.generic, 'nextpnr-generic');
     });
 
     it('reports a missing architecture-specific executable as a Verify Setup failure', async () => {
