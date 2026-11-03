@@ -17,11 +17,16 @@
     "@types/cli-color": "^2.0.2",
     "@types/jest": "^29.4.3",
     "@types/js-yaml": "^4.0.5",
+    "@types/mocha": "^10.0.10",
     "@types/temp": "^0.9.4",
     "typescript": "^4.8.2",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^4.0.0"
+    "eslint-plugin-prettier": "^4.0.0",
+    "cross-env": "^10.1.0",
+    "mocha": "^11.7.6",
+    "ts-node": "^10.9.2",
+    "vscode-extension-tester": "^8.23.0"
 }

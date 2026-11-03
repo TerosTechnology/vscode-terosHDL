@@ -73,10 +73,7 @@ describe('getTaskList', () => {
         ]);
     });
 
-    it.each([
-        undefined,
-        e_tools_nextpnr_target_family.generic
-    ])('provides a flat tree for generic or undefined target (%s)', (targetFamily) => {
+    function expectFlatNextpnrTree(targetFamily?: e_tools_nextpnr_target_family): void {
         expect(getTaskList(e_tools_general_select_tool.nextpnr, targetFamily)).toEqual([
             {
                 name: e_taskType.OPENFOLDER,
@@ -90,6 +87,14 @@ describe('getTaskList', () => {
                 status: e_taskState.IDLE
             }
         ]);
+    }
+
+    it('provides a flat tree for undefined target', () => {
+        expectFlatNextpnrTree(undefined);
+    });
+
+    it('provides a flat tree for generic target', () => {
+        expectFlatNextpnrTree(e_tools_nextpnr_target_family.generic);
     });
 
     it('ignores target family for other tools', () => {
