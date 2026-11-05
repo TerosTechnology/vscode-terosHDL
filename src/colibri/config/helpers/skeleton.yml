@@ -288,3 +288,8 @@ tools:
       title: Raptor Design Suite
       description: "Raptor Design Suite."
       page: ./configs/tools/raptor.yml
+
+    nextpnr:
+      title: nextpnr
+      description: "Open-source FPGA place-and-route tool."
+      page: ./configs/tools/nextpnr.yml

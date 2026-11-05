@@ -183,7 +183,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stdout).toContain('Yosys script executed successfully');
                 done();
             });
-        }, 10000);
+        });
 
         it('should return error when no files are present', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -199,7 +199,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('No Verilog or SystemVerilog files found');
                 done();
             });
-        }, 10000);
+        });
 
         it('should handle missing files', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -211,7 +211,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('Missing files: missing_file.v');
                 done();
             });
-        }, 10000);
+        });
     });
 
     describe('runYosysAnalyze', (): void => {
@@ -222,7 +222,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stdout).toContain('Yosys script executed successfully');
                 done();
             });
-        }, 10000);
+        });
 
         it('should check for prerequisite load stage', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -235,7 +235,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('Load Files');
                 done();
             });
-        }, 10000);
+        });
 
         it('should handle missing top level module', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -247,7 +247,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('No top level module specified');
                 done();
             });
-        }, 10000);
+        });
     });
 
     describe('runYosysElaborate', (): void => {
@@ -258,7 +258,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stdout).toContain('Yosys script executed successfully');
                 done();
             });
-        }, 10000);
+        });
 
         it('should check for prerequisite analyze stage', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -271,7 +271,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('Analyze');
                 done();
             });
-        }, 10000);
+        });
     });
 
     describe('runYosysSynthesis', (): void => {
@@ -282,7 +282,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stdout).toContain('Yosys script executed successfully');
                 done();
             });
-        }, 10000);
+        });
 
         it('should check for prerequisite elaborate stage', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -295,7 +295,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('Elaborate');
                 done();
             });
-        }, 10000);
+        });
 
         it('should handle missing top level module', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -307,7 +307,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('No top level module specified');
                 done();
             });
-        }, 10000);
+        });
     });
 
     describe('runYosysCompileAll', (): void => {
@@ -318,7 +318,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stdout).toContain('Yosys script executed successfully');
                 done();
             });
-        }, 10000);
+        });
 
         it('should return error when no files are present', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -333,7 +333,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('No Verilog or SystemVerilog files found');
                 done();
             });
-        }, 10000);
+        });
 
         it('should handle missing top level module', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -345,7 +345,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('No top level module specified');
                 done();
             });
-        }, 10000);
+        });
     });
 
     describe('runYosysShow', (): void => {
@@ -356,7 +356,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stdout).toContain('Yosys script executed successfully');
                 done();
             });
-        }, 10000);
+        });
 
         it('should generate show diagram successfully when state file exists', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -369,7 +369,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stdout).toContain('Yosys script executed successfully');
                 done();
             });
-        }, 10000);
+        });
 
         it('should handle missing state files', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -381,7 +381,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('No state files found');
                 done();
             });
-        }, 10000);
+        });
     });
 
     describe('runYosysResourceUtilization', (): void => {
@@ -392,7 +392,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stdout).toContain('Yosys script executed successfully');
                 done();
             });
-        }, 10000);
+        });
 
         it('should return error when no synthesis state is available', (done): void => {
             const mockUtils = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/utils') as any;
@@ -404,7 +404,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('No state files found');
                 done();
             });
-        }, 10000);
+        });
     });
 
     describe('runYosysOpenProjectFolder', (): void => {
@@ -414,7 +414,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.successful).toBe(true);
                 done();
             });
-        }, 10000);
+        });
 
         it('should handle non-existent project directory', (done): void => {
             const mockExecutor = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/executor') as any;
@@ -441,7 +441,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('Directory not found');
                 done();
             });
-        }, 10000);
+        });
     });
 
     describe('Error Handling and Edge Cases', (): void => {
@@ -471,7 +471,7 @@ describe('Yosys Tasks', (): void => {
                 expect(result.stderr).toContain('Yosys execution failed');
                 done();
             });
-        }, 10000);
+        });
 
         it('should handle missing project configuration', (): void => {
             const projectWithoutConfig: t_project_definition = { ...testProject };
@@ -491,7 +491,7 @@ describe('Yosys Tasks', (): void => {
                 // The actual behavior depends on the implementation
                 done();
             });
-        }, 10000);
+        });
 
         it('should handle command builder failures', (): void => {
             const mockBuilder = jest.requireMock('../../../../src/colibri/project_manager/tool/yosys/commandBuilder') as any;

@@ -26,6 +26,7 @@ select_tool:
     sandpiper: "SandPiper"
     yosys: "Yosys"
     nvc: "NVC"
+    nextpnr: "nextpnr"
 
   value: "ghdl"
 

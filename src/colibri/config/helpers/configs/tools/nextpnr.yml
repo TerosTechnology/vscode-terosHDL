@@ -1,0 +1,110 @@
+# Basic Configuration
+section_basic:
+  description: "Basic nextpnr Configuration"
+  type: divider
+
+installation_path:
+  description: "Installation directory containing the nextpnr executable(s):"
+  type: string
+  value: ""
+
+packer_installation_path:
+  description: "Directory containing icepack/ecppack. Empty = use the nextpnr installation directory, or PATH if that is also empty:"
+  type: string
+  value: ""
+
+target_family:
+  description: "Target FPGA architecture:"
+  type: select
+  options:
+    ice40: "iCE40"
+    ecp5: "ECP5"
+    generic: "Generic"
+  value: ice40
+
+ice40_device:
+  description: "iCE40 device selection (ignored for non-iCE40 targets):"
+  type: select
+  options:
+    hx1k: "HX1K"
+    hx4k: "HX4K"
+    hx8k: "HX8K"
+    lp384: "LP384"
+    lp1k: "LP1K"
+    lp8k: "LP8K"
+    up3k: "UP3K"
+    up5k: "UP5K"
+    u1k: "U1K"
+    u2k: "U2K"
+    u4k: "U4K"
+  value: up5k
+
+ecp5_device:
+  description: "ECP5 device selection (ignored for non-ECP5 targets):"
+  type: select
+  options:
+    ecp5_12k: "12K"
+    ecp5_25k: "25K"
+    ecp5_45k: "45K"
+    ecp5_85k: "85K"
+  value: ecp5_45k
+
+package:
+  description: "FPGA package (required by many architectures, e.g. SG48, CABGA381):"
+  type: string
+  value: ""
+
+json_file:
+  description: "Input JSON netlist. Empty = use the Yosys output for the selected family (required for Generic):"
+  type: string
+  value: ""
+
+generic_arch_script:
+  description: "Python architecture script passed as --pre-pack (required for Generic):"
+  type: string
+  value: ""
+
+# Device Constraints
+section_constraints:
+  description: "Device Constraints"
+  type: divider
+
+pcf_file:
+  description: "PCF pin constraints file (iCE40 only; leave empty if unused):"
+  type: string
+  value: ""
+
+lpf_file:
+  description: "LPF pin constraints file (ECP5 only; leave empty if unused):"
+  type: string
+  value: ""
+
+freq:
+  description: "Target frequency in MHz (0 means no explicit frequency constraint):"
+  type: number
+  value: 0
+
+# Placement and Routing
+section_placement_routing:
+  description: "Placement and Routing"
+  type: divider
+
+seed:
+  description: "Random seed for reproducible placement and routing:"
+  type: number
+  value: 1
+
+placer:
+  description: "Optional placer selection supported by the selected nextpnr build:"
+  type: string
+  value: ""
+
+router:
+  description: "Optional router selection supported by the selected nextpnr build:"
+  type: string
+  value: ""
+
+extra_options:
+  description: "Additional nextpnr command-line options (one option per entry, e.g. --timing-allow-fail). Paths with spaces are not supported here."
+  type: array
+  value: []

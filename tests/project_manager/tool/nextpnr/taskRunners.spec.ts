@@ -1,0 +1,114 @@
+import { ChildProcess } from 'child_process';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
+import { e_taskType } from '../../../../src/colibri/project_manager/tool/common';
+import { t_project_definition } from '../../../../src/colibri/project_manager/project_definition';
+import { p_result } from '../../../../src/colibri/process/common';
+import { LoggerBase } from '../../../../src/colibri/logger/logger';
+import { get_default_config } from '../../../../src/colibri/config/config_declaration';
+import { e_tools_nextpnr_target_family } from '../../../../src/colibri/config/config_declaration';
+import * as nextpnrTasks from '../../../../src/colibri/project_manager/tool/nextpnr/tasks';
+import { runTaskNextpnr } from '../../../../src/colibri/project_manager/tool/nextpnr/taskRunners';
+
+jest.mock('../../../../src/colibri/project_manager/tool/nextpnr/tasks', () => ({
+    runNextpnrPnR: jest.fn(),
+    runNextpnrPack: jest.fn(),
+    runNextpnrGui: jest.fn(),
+    runNextpnrReport: jest.fn()
+}));
+
+describe('nextpnr task runner', () => {
+    let tempDirectory: string;
+    let projectDefinition: t_project_definition;
+    const callback = jest.fn<void, [p_result]>();
+    const childProcess = { pid: 2468 } as ChildProcess;
+    const toolLogger = { appendLine: jest.fn() } as unknown as LoggerBase;
+
+    beforeEach(() => {
+        tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'teroshdl-nextpnr-runner-'));
+        projectDefinition = {
+            project_disk_path: tempDirectory,
+            config: get_default_config()
+        } as t_project_definition;
+        jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+        fs.rmSync(tempDirectory, { recursive: true, force: true });
+    });
+
+    it('dispatches NEXTPNR_PNR and returns the process from the task', () => {
+        jest.mocked(nextpnrTasks.runNextpnrPnR).mockReturnValue(childProcess);
+
+        const result = runTaskNextpnr(e_taskType.NEXTPNR_PNR, projectDefinition, toolLogger, callback);
+
+        expect(nextpnrTasks.runNextpnrPnR).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
+        expect(result).toBe(childProcess);
+    });
+
+    it('creates the project directory if it does not exist before dispatching', () => {
+        jest.mocked(nextpnrTasks.runNextpnrPnR).mockReturnValue(childProcess);
+        fs.rmSync(tempDirectory, { recursive: true, force: true });
+
+        const result = runTaskNextpnr(e_taskType.NEXTPNR_PNR, projectDefinition, toolLogger, callback);
+
+        expect(fs.existsSync(tempDirectory)).toBe(true);
+        expect(nextpnrTasks.runNextpnrPnR).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
+        expect(result).toBe(childProcess);
+    });
+
+    const dispatchCases: Array<[e_taskType, 'runNextpnrPack' | 'runNextpnrGui' | 'runNextpnrReport']> = [
+        [e_taskType.NEXTPNR_PACK, 'runNextpnrPack'],
+        [e_taskType.NEXTPNR_GUI, 'runNextpnrGui'],
+        [e_taskType.NEXTPNR_REPORT, 'runNextpnrReport']
+    ];
+
+    dispatchCases.forEach(([taskType, functionName]) => {
+        it(`dispatches ${taskType} and returns its process`, () => {
+            const task = nextpnrTasks[functionName as 'runNextpnrPack' | 'runNextpnrGui' | 'runNextpnrReport'];
+            jest.mocked(task).mockReturnValue(childProcess);
+
+            const result = runTaskNextpnr(taskType, projectDefinition, toolLogger, callback);
+
+            expect(task).toHaveBeenCalledWith(projectDefinition, toolLogger, callback);
+            expect(result).toBe(childProcess);
+        });
+    });
+
+    const genericRejectedCases: e_taskType[] = [
+        e_taskType.NEXTPNR_GUI,
+        e_taskType.NEXTPNR_PACK
+    ];
+
+    genericRejectedCases.forEach((taskType) => {
+        it(`rejects ${taskType} for generic target family`, (done) => {
+            projectDefinition.config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.generic;
+            const result = runTaskNextpnr(taskType, projectDefinition, toolLogger, (processResult) => {
+                expect(processResult.successful).toBe(false);
+                expect(processResult.stderr).toContain('for target family generic');
+                done();
+            });
+            expect(result).toBeUndefined();
+        });
+    });
+
+    it('reports unsupported task types asynchronously without returning a fake process', (done) => {
+        const result = runTaskNextpnr(e_taskType.GHDL_ANALYZE, projectDefinition, toolLogger, (processResult) => {
+            expect(processResult).toEqual({
+                command: '',
+                stdout: '',
+                stderr: `Unsupported nextpnr task type: ${e_taskType.GHDL_ANALYZE}`,
+                return_value: 1,
+                successful: false
+            });
+            done();
+        });
+
+        expect(result).toBeUndefined();
+        expect(toolLogger.appendLine).toHaveBeenCalledWith(
+            `[nextpnr] Error: Unsupported nextpnr task type: ${e_taskType.GHDL_ANALYZE}`
+        );
+        expect(nextpnrTasks.runNextpnrPnR).not.toHaveBeenCalled();
+    });
+});
