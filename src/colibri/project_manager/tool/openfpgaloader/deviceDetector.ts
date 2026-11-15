@@ -16,12 +16,18 @@ function parseDetectJsonOutput(stdout: string): ReturnType<typeof parseDetectOut
 
     const lines: string[] = [];
     for (const item of devices) {
+        if (typeof item !== 'object' || item === null || Array.isArray(item)) {
+            continue;
+        }
+
         const device = item as Record<string, unknown>;
         const family = String(device.family ?? '').trim();
         const model = String(device.model ?? '').trim();
+
         if (family === '' || model === '') {
             continue;
         }
+
         lines.push(`family ${family}`);
         lines.push(`model ${model}`);
         lines.push('');
@@ -47,7 +53,7 @@ export async function detectDevices(
             return {
                 board_list: boardList,
                 successful: true,
-                msg: boardList.length > 0 ? '' : 'No se encontraron dispositivos'
+                msg: boardList.length > 0 ? '' : 'No devices found'
             };
         }
         catch (_error) {
@@ -74,6 +80,6 @@ export async function detectDevices(
     return {
         board_list: boardList,
         successful: true,
-        msg: boardList.length > 0 ? '' : 'No se encontraron dispositivos'
+        msg: boardList.length > 0 ? '' : 'No devices found'
     };
 }

@@ -134,7 +134,7 @@ describe('openfpgaloader deviceDetector', () => {
         expect(result).toEqual({
             board_list: [],
             successful: false,
-            msg: 'Timeout en la detección de dispositivos. Compruebe cable y drivers.'
+            msg: 'Timeout while detecting devices. Check the cable and drivers.'
         });
     });
 
@@ -146,7 +146,7 @@ describe('openfpgaloader deviceDetector', () => {
         const result = await detectDevices(config, cwd);
 
         expect(result.successful).toBe(false);
-        expect(result.msg).toContain('backend o driver USB/JTAG');
+        expect(result.msg).toContain('USB/JTAG backend or driver');
     });
 
     it('returns an error when device access is denied', async () => {
@@ -159,7 +159,7 @@ describe('openfpgaloader deviceDetector', () => {
         expect(result).toEqual({
             board_list: [],
             successful: false,
-            msg: 'Permiso denegado. Configure las reglas udev para su cable JTAG.'
+            msg: 'Permission denied. Configure the udev rules for your JTAG cable.'
         });
     });
 
@@ -171,7 +171,7 @@ describe('openfpgaloader deviceDetector', () => {
         const result = await detectDevices(config, cwd);
 
         expect(result.successful).toBe(false);
-        expect(result.msg).toContain('No se encuentra el dispositivo o cable JTAG');
+        expect(result.msg).toContain('JTAG device or cable not found');
     });
 
     it('returns an empty board list when no devices are detected', async () => {
@@ -182,7 +182,35 @@ describe('openfpgaloader deviceDetector', () => {
         expect(result).toEqual({
             board_list: [],
             successful: true,
-            msg: 'No se encontraron dispositivos'
+            msg: 'No devices found'
+        });
+    });
+
+    it('ignores invalid entries in JSON output', async () => {
+        const jsonOutput = JSON.stringify({
+            devices: [
+                null,
+                42,
+                'invalid device',
+                [],
+                { family: 'ice40', model: 'LP384-CM49' },
+                { family: '', model: 'INVALID' },
+                { family: 'ice40', model: '' }
+            ]
+        });
+
+        mockedExecuteCommandWait.mockResolvedValueOnce(createResult(jsonOutput));
+
+        const result = await detectDevices(config, cwd);
+
+        expect(mockedExecuteCommandWait).toHaveBeenCalledTimes(1);
+
+        expect(result).toEqual({
+            board_list: [
+                { family: 'ice40', part_list: ['LP384-CM49'] }
+            ],
+            successful: true,
+            msg: ''
         });
     });
 });

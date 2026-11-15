@@ -1,12 +1,10 @@
 import * as path from 'path';
 import * as file_utils from 'colibri/utils/file_utils';
 import { executeCommandWait } from 'colibri/project_manager/tool/openfpgaloader/executor';
-import {
-	buildLoadArgs,
-	extractProgressPercent,
-	loadBitstream,
-	loadBitstreamStream
-} from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
+
+import { buildLoadArgs, extractProgressPercent, loadBitstream, loadBitstreamStream } 
+from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
+
 import { t_openfpgaloader_config } from 'colibri/project_manager/tool/openfpgaloader/utils';
 import * as executor from 'colibri/project_manager/tool/openfpgaloader/executor';
 import { EventEmitter } from 'events';
@@ -33,6 +31,8 @@ class MockStream extends EventEmitter {
 class MockChildProcess extends EventEmitter {
 	stdout = new MockStream();
 	stderr = new MockStream();
+
+	kill = jest.fn(() => true)
 }
 
 describe('bitstreamLoader', () => {
@@ -413,5 +413,132 @@ describe('bitstreamLoader', () => {
 		);
 
 		expect(child).toBeUndefined();
+	});
+
+	it('loadBitstreamStream should terminate the process when timeout expires', () => {
+    	jest.useFakeTimers();
+
+    	try {
+        	const proc = new MockChildProcess();
+        	childProcess.spawn.mockReturnValue(proc);
+
+        	const callback = jest.fn();
+
+        	loadBitstreamStream(
+            	config,
+            	boardId,
+            	bitstreamPath,
+            	{ timeoutSeconds: 2 },
+            	() => undefined,
+            	callback
+        	);
+
+        	jest.advanceTimersByTime(2000);
+
+        	expect(proc.kill).toHaveBeenCalledTimes(1);
+
+        	expect(callback).toHaveBeenCalledTimes(1);
+        	expect(callback).toHaveBeenCalledWith({
+            	successful: false,
+            	msg: 'Bitstream load timed out.'
+        	});
+
+        	proc.emit('close', null);
+
+        	expect(callback).toHaveBeenCalledTimes(1);
+    	}
+    	finally {
+        	jest.useRealTimers();
+    	}
+	});
+
+	it('loadBitstreamStream should call callback only once after a process error', () => {
+    	const proc = new MockChildProcess();
+    	childProcess.spawn.mockReturnValue(proc);
+
+    	const callback = jest.fn();
+
+    	loadBitstreamStream(
+        	config,
+        	boardId,
+        	bitstreamPath,
+        	{},
+        	() => undefined,
+        	callback
+    	);
+
+    	proc.emit('error', new Error('Process execution failed.'));
+    	proc.emit('close', -1);
+
+    	expect(callback).toHaveBeenCalledTimes(1);
+
+    	expect(callback).toHaveBeenCalledWith({
+        	successful: false,
+        	msg: 'Process execution failed.'
+    	});
+	});
+
+	it('loadBitstreamStream should detect progress split across chunks', () => {
+    	const proc = new MockChildProcess();
+    	childProcess.spawn.mockReturnValue(proc);
+
+    	const progress: number[] = [];
+    	const callback = jest.fn();
+
+    	loadBitstreamStream(
+        	config,
+        	boardId,
+        	bitstreamPath,
+        	{},
+        	() => undefined,
+        	callback,
+        	(percent) => progress.push(percent)
+    	);
+
+    	proc.stdout.emit('data', Buffer.from('[=========='));
+    	proc.stdout.emit('data', Buffer.from('] 45%\n'));
+
+    	expect(progress).toContain(45);
+
+    	proc.emit('close', 0);
+
+    	expect(callback).toHaveBeenCalledTimes(1);
+    	expect(callback).toHaveBeenCalledWith({
+        	successful: true,
+        	msg: '[==========] 45%'
+    	});
+     });
+
+	it('loadBitstreamStream should handle a synchronous spawn exception', (done) => {
+		const spawnError = new Error('Failed to start OpenFPGALoader.');
+
+		childProcess.spawn.mockImplementation(() => {
+			throw spawnError;
+		});
+
+		const onOutput = jest.fn();
+
+		const callback = jest.fn((result) => {
+			expect(result).toEqual({
+				successful: false,
+				msg: 'Failed to start OpenFPGALoader.'
+			});
+
+		expect(onOutput).not.toHaveBeenCalled();
+		expect(callback).toHaveBeenCalledTimes(1);
+
+		done();
+	});
+
+	const child = loadBitstreamStream(
+		config,
+		boardId,
+		bitstreamPath,
+		{},
+		onOutput,
+		callback
+	);
+
+	expect(child).toBeUndefined();
 	});
 });

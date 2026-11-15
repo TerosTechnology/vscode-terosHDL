@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
+import { t_loader_action_result } from 'colibri/project_manager/tool/common';
 import { detectDevices } from 'colibri/project_manager/tool/openfpgaloader/deviceDetector';
 import { listBoards, t_openfpgaloader_board } from 'colibri/project_manager/tool/openfpgaloader/boardDetector';
-import { loadBitstream } from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
+import { loadBitstreamStream } from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
 
 import { toolLogger } from '../../logger';
 
@@ -12,9 +13,13 @@ const SELECTED_DEVICE_KEY = 'openfpgaloader.selectedDevice';
 type SelectedDevice = {
     family: string;
     model: string;
+    projectPath: string;
 };
 
-type DeviceQuickPickItem = vscode.QuickPickItem & SelectedDevice;
+type DeviceQuickPickItem = vscode.QuickPickItem & {
+    family: string;
+    model: string;
+};
 
 type BoardQuickPickItem = vscode.QuickPickItem & {
     board: t_openfpgaloader_board;
@@ -93,7 +98,8 @@ export class OpenFPGALoaderManager {
 
             const device: SelectedDevice = {
                 family: selected.family,
-                model: selected.model
+                model: selected.model,
+                projectPath: project.projectDiskPath
             };
 
             await this.context.globalState.update(
@@ -140,6 +146,14 @@ export class OpenFPGALoaderManager {
                 return;
             }
 
+            if (selectedDevice.projectPath !== project.projectDiskPath) {
+                vscode.window.showWarningMessage(
+                    'OpenFPGALoader: the selected device belongs to another project.' +
+                    ' Detect a device again before loading a bitstream.'
+                );
+                return;
+            }
+
             toolLogger.appendLine('OpenFPGALoader: checking supported boards...');
             toolLogger.show();
 
@@ -163,9 +177,8 @@ export class OpenFPGALoaderManager {
             const boardItems: BoardQuickPickItem[] = boardsResult.board_list.map(
                 board => ({
                     label: board.name,
-                    description: board.cable
-                        ? `Cable: ${board.cable}`
-                        : 'Cable not specified',
+                    description: `Cable: ${board.cable || 'Not specified'}`,
+                    detail: `Detected FPGA: ${selectedDevice.family} — ${selectedDevice.model}`,
                     board
                 })
             );
@@ -208,13 +221,36 @@ export class OpenFPGALoaderManager {
                 `OpenFPGALoader: loading ${filePath} into ${selectedBoard.board.name}...`
             );
 
-            const result = await loadBitstream(
-                config,
-                selectedBoard.board.name,
-                filePath,
+            const result = await vscode.window.withProgress(
                 {
-                    verify: true,
-                    reset: false
+                    location: vscode.ProgressLocation.Notification,
+                    title: `Loading bitstream to ${selectedBoard.board.name}`,
+                    cancellable: false
+                },
+                (progress) => {
+                    return new Promise<t_loader_action_result>((resolve) => {
+                        loadBitstreamStream(
+                            config,
+                            selectedBoard.board.name,
+                            filePath,
+                            {
+                                cable: selectedBoard.board.cable || undefined,
+                                verify: true,
+                                reset: false
+                            },
+                            (output) => {
+                                toolLogger.append(output);
+                            },
+                            (loadResult) => {
+                                resolve(loadResult);
+                            },
+                            (percent) => {
+                                progress.report({
+                                    message: `${percent}%`
+                                });
+                            }
+                        );
+                    });
                 }
             );
 

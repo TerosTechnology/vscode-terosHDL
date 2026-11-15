@@ -4,12 +4,13 @@ import { Multi_project_manager } from 'colibri/project_manager/multi_project_man
 
 import { detectDevices } from 'colibri/project_manager/tool/openfpgaloader/deviceDetector';
 import { listBoards } from 'colibri/project_manager/tool/openfpgaloader/boardDetector';
-import { loadBitstream } from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
+import { loadBitstreamStream } from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
 
 import { OpenFPGALoaderManager } from '../../../../src/teroshdl/features/openfpgaloader/manager';
 
 jest.mock('vscode', () => {
     const commandHandlers = new Map<string, (...args: unknown[]) => unknown>();
+    const progressReport = jest.fn();
 
     return {
         commands: {
@@ -18,14 +19,22 @@ jest.mock('vscode', () => {
                 return { dispose: jest.fn() };
             })
         },
+        ProgressLocation: {
+            Notification: 15
+        },
         window: {
             showQuickPick: jest.fn(),
             showOpenDialog: jest.fn(),
             showErrorMessage: jest.fn(),
             showWarningMessage: jest.fn(),
-            showInformationMessage: jest.fn()
+            showInformationMessage: jest.fn(),
+            withProgress: jest.fn(
+                (_options: unknown, task: (progress: { report: jest.Mock }) => Promise<unknown>) =>
+                    task({ report: progressReport })
+            )
         },
-        commandHandlers
+        commandHandlers,
+        progressReport
     };
 }, { virtual: true });
 
@@ -38,11 +47,12 @@ jest.mock('colibri/project_manager/tool/openfpgaloader/boardDetector', () => ({
 }));
 
 jest.mock('colibri/project_manager/tool/openfpgaloader/bitstreamLoader', () => ({
-    loadBitstream: jest.fn()
+    loadBitstreamStream: jest.fn()
 }));
 
 jest.mock('../../../../src/teroshdl/logger', () => ({
     toolLogger: {
+        append: jest.fn(),
         appendLine: jest.fn(),
         show: jest.fn()
     }
@@ -52,21 +62,27 @@ type VscodeMock = {
     commands: {
         registerCommand: jest.Mock;
     };
+    ProgressLocation: {
+        Notification: number;
+    };
     window: {
         showQuickPick: jest.Mock;
         showOpenDialog: jest.Mock;
         showErrorMessage: jest.Mock;
         showWarningMessage: jest.Mock;
         showInformationMessage: jest.Mock;
+        withProgress: jest.Mock;
     };
     commandHandlers: Map<string, (...args: unknown[]) => unknown>;
+    progressReport: jest.Mock;
 };
 
 const vscodeMock = jest.requireMock('vscode') as VscodeMock;
 
 const mockedDetectDevices = detectDevices as jest.MockedFunction<typeof detectDevices>;
 const mockedListBoards = listBoards as jest.MockedFunction<typeof listBoards>;
-const mockedLoadBitstream = loadBitstream as jest.MockedFunction<typeof loadBitstream>;
+const mockedLoadBitstreamStream = loadBitstreamStream as jest.MockedFunction<typeof loadBitstreamStream>;
+const mockChildProcess = {} as NonNullable<ReturnType<typeof loadBitstreamStream>>;
 
 const COMMAND_DETECT = 'teroshdl.devices.detect';
 const COMMAND_LOAD = 'teroshdl.devices.load_bitstream';
@@ -107,7 +123,8 @@ const context = {
 
 const selectedDevice = {
     family: 'Xilinx',
-    model: 'xc7a35t'
+    model: 'xc7a35t',
+    projectPath: '/workspace/project'
 };
 
 const selectedBoard = {
@@ -150,6 +167,20 @@ describe('OpenFPGALoaderManager', () => {
         context.subscriptions.length = 0;
 
         registerCommandMock();
+
+        mockedLoadBitstreamStream.mockImplementation(
+            (_config, _boardId, _bitstreamPath, _options, onOutput, callback, onProgress) => {
+                onOutput('Programming started.\n');
+                onProgress?.(50);
+                onProgress?.(100);
+
+                callback({
+                    successful: true,
+                    msg: 'Programming completed successfully.'
+                });
+                return mockChildProcess;
+            }
+        );
     });
 
     describe('command registration', () => {
@@ -270,7 +301,7 @@ describe('OpenFPGALoaderManager', () => {
     });
 
     describe('bitstream loading', () => {
-        it('shows a warning when no device is selected', async () => {
+        it('stops before board selection when no device has been detected', async () => {
             createManager();
 
             await executeCommand(COMMAND_LOAD);
@@ -279,7 +310,27 @@ describe('OpenFPGALoaderManager', () => {
                 'OpenFPGALoader: first detect a device before loading a bitstream.'
             );
             expect(mockedListBoards).not.toHaveBeenCalled();
-            expect(mockedLoadBitstream).not.toHaveBeenCalled();
+            expect(mockedLoadBitstreamStream).not.toHaveBeenCalled();
+        });
+
+        it('does not load a bitstream when the selected device belongs to another project', async () => {
+            createManager();
+
+            globalStateValues.set(SELECTED_DEVICE_KEY, {
+                ...selectedDevice,
+                projectPath: '/workspace/another-project'
+            });
+
+            await executeCommand(COMMAND_LOAD);
+
+            expect(vscodeMock.window.showWarningMessage).toHaveBeenCalledWith(
+                'OpenFPGALoader: the selected device belongs to another project. Detect a device again before loading a bitstream.'
+            );
+
+            expect(mockedListBoards).not.toHaveBeenCalled();
+            expect(vscodeMock.window.showQuickPick).not.toHaveBeenCalled();
+            expect(vscodeMock.window.showOpenDialog).not.toHaveBeenCalled();
+            expect(mockedLoadBitstreamStream).not.toHaveBeenCalled();
         });
 
         it('shows an error when listing supported boards fails', async () => {
@@ -302,7 +353,7 @@ describe('OpenFPGALoaderManager', () => {
             expect(vscodeMock.window.showErrorMessage).toHaveBeenCalledWith(
                 'OpenFPGALoader: Unable to list boards'
             );
-            expect(mockedLoadBitstream).not.toHaveBeenCalled();
+            expect(mockedLoadBitstreamStream).not.toHaveBeenCalled();
         });
 
         it('shows a warning when no supported boards are found', async () => {
@@ -347,25 +398,79 @@ describe('OpenFPGALoaderManager', () => {
                 }
             ]);
 
-            mockedLoadBitstream.mockResolvedValueOnce({
-                successful: true,
-                msg: ''
-            });
+            mockedLoadBitstreamStream.mockImplementationOnce(
+                (_config, _boardId, _bitstreamPath, _options, onOutput, callback, onProgress) => {
+                    onOutput('Programming started.\n');
+                    onProgress?.(25);
+                    onProgress?.(75);
+                    onProgress?.(100);
+
+                    callback({
+                        successful: true,
+                        msg: 'Programming completed successfully.'
+                    });
+                    return mockChildProcess;
+                }
+            );
 
             await executeCommand(COMMAND_LOAD);
 
-            expect(mockedLoadBitstream).toHaveBeenCalledWith(
+            expect(vscodeMock.window.withProgress).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    location: vscode.ProgressLocation.Notification,
+                    title: 'Loading bitstream to arty',
+                    cancellable: false
+                }),
+                expect.any(Function)
+            );
+            expect(vscodeMock.progressReport).toHaveBeenCalledWith({ message: '25%' });
+            expect(vscodeMock.progressReport).toHaveBeenCalledWith({ message: '75%' });
+            expect(vscodeMock.progressReport).toHaveBeenCalledWith({ message: '100%' });
+            expect(mockedLoadBitstreamStream).toHaveBeenCalledWith(
                 config,
                 'arty',
                 '/workspace/project/design.bit',
                 {
+                    cable: 'digilent',
                     verify: true,
                     reset: false
-                }
+                },
+                expect.any(Function),
+                expect.any(Function),
+                expect.any(Function)
             );
+
             expect(vscodeMock.window.showInformationMessage).toHaveBeenCalledWith(
                 'OpenFPGALoader: bitstream loaded to arty'
             );
+        });
+
+        it('shows the detected FPGA alongside the selected supported board', async () => {
+            createManager();
+
+            globalStateValues.set(SELECTED_DEVICE_KEY, selectedDevice);
+
+            mockedListBoards.mockResolvedValueOnce({
+                board_list: [selectedBoard],
+                successful: true,
+                msg: ''
+            });
+            vscodeMock.window.showQuickPick.mockResolvedValueOnce(undefined);
+
+            await executeCommand(COMMAND_LOAD);
+
+            expect(vscodeMock.window.showQuickPick).toHaveBeenCalledWith(
+                [
+                    expect.objectContaining({
+                        label: selectedBoard.name,
+                        detail: 'Detected FPGA: Xilinx — xc7a35t'
+                    })
+                ],
+                expect.objectContaining({
+                    placeHolder: 'Select the board you want to program'
+                })
+            );
+            expect(mockedLoadBitstreamStream).not.toHaveBeenCalled();
         });
 
         it('does not open the file dialog when board selection is cancelled', async () => {
@@ -384,7 +489,7 @@ describe('OpenFPGALoaderManager', () => {
             await executeCommand(COMMAND_LOAD);
 
             expect(vscodeMock.window.showOpenDialog).not.toHaveBeenCalled();
-            expect(mockedLoadBitstream).not.toHaveBeenCalled();
+            expect(mockedLoadBitstreamStream).not.toHaveBeenCalled();
         });
 
         it('does not load a bitstream when file selection is cancelled', async () => {
@@ -408,7 +513,7 @@ describe('OpenFPGALoaderManager', () => {
 
             await executeCommand(COMMAND_LOAD);
 
-            expect(mockedLoadBitstream).not.toHaveBeenCalled();
+            expect(mockedLoadBitstreamStream).not.toHaveBeenCalled();
         });
 
         it('rejects unsupported bitstream file extensions', async () => {
@@ -439,7 +544,7 @@ describe('OpenFPGALoaderManager', () => {
             expect(vscodeMock.window.showErrorMessage).toHaveBeenCalledWith(
                 'OpenFPGALoader: unsupported bitstream file extension.'
             );
-            expect(mockedLoadBitstream).not.toHaveBeenCalled();
+            expect(mockedLoadBitstreamStream).not.toHaveBeenCalled();
         });
 
         it('shows an error when bitstream loading fails', async () => {
@@ -465,15 +570,78 @@ describe('OpenFPGALoaderManager', () => {
                 }
             ]);
 
-            mockedLoadBitstream.mockResolvedValueOnce({
-                successful: false,
-                msg: 'Programming failed'
-            });
+            mockedLoadBitstreamStream.mockImplementationOnce(
+                (_config, _boardId, _bitstreamPath, _options, _onOutput, callback) => {
+                    callback({
+                        successful: false,
+                        msg: 'Programming failed'
+                    });
+                    return mockChildProcess;
+                }
+            );
 
             await executeCommand(COMMAND_LOAD);
 
             expect(vscodeMock.window.showErrorMessage).toHaveBeenCalledWith(
                 'OpenFPGALoader: Programming failed'
+            );
+        });
+
+        it('surfaces an FPGA and board incompatibility reported by OpenFPGALoader', async () => {
+            createManager();
+
+            globalStateValues.set(SELECTED_DEVICE_KEY, selectedDevice);
+
+            mockedListBoards.mockResolvedValueOnce({
+                board_list: [selectedBoard],
+                successful: true,
+                msg: ''
+            });
+
+            vscodeMock.window.showQuickPick.mockResolvedValueOnce({
+                label: selectedBoard.name,
+                description: 'Cable: digilent',
+                detail: 'Detected FPGA: Xilinx — xc7a35t',
+                board: selectedBoard
+            });
+
+            vscodeMock.window.showOpenDialog.mockResolvedValueOnce([
+                {
+                    fsPath: '/workspace/project/design.bit'
+                }
+            ]);
+
+            mockedLoadBitstreamStream.mockImplementationOnce(
+                (_config, _boardId, _bitstreamPath, _options, _onOutput, callback) => {
+                    callback({
+                        successful: false,
+                        msg: 'FPGA ID mismatch: detected device is incompatible with board arty'
+                    });
+                    return mockChildProcess;
+                }
+            );
+
+            await executeCommand(COMMAND_LOAD);
+
+            expect(mockedLoadBitstreamStream).toHaveBeenCalledWith(
+                config,
+                selectedBoard.name,
+                '/workspace/project/design.bit',
+                {
+                    cable: 'digilent',
+                    verify: true,
+                    reset: false
+                },
+                expect.any(Function),
+                expect.any(Function),
+                expect.any(Function)
+            );
+
+            expect(vscodeMock.window.showErrorMessage).toHaveBeenCalledWith(
+                'OpenFPGALoader: FPGA ID mismatch: detected device is incompatible with board arty'
+            );
+            expect(vscodeMock.window.showInformationMessage).not.toHaveBeenCalledWith(
+                'OpenFPGALoader: bitstream loaded to arty'
             );
         });
     });
@@ -511,7 +679,7 @@ describe('OpenFPGALoaderManager', () => {
                 'OpenFPGALoader: you must first select a project.'
             );
             expect(mockedListBoards).not.toHaveBeenCalled();
-            expect(mockedLoadBitstream).not.toHaveBeenCalled();
+            expect(mockedLoadBitstreamStream).not.toHaveBeenCalled();
         });
     });
 });

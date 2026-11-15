@@ -71,8 +71,29 @@ export function parseDetectionError(stderr: string): string {
         (lower.includes('openfpgaloader') && lower.includes('not found')) ||
         lower.includes('command not found') ||
         lower.includes('not recognized as an internal');
+
     if (binaryMissing) {
-        return 'openFPGALoader no encontrado. Verifique installation_path o instale la herramienta.';
+        return 'openFPGALoader not found. Check installation_path or install the tool.';
+    }
+
+    if (
+        lower.includes('permission denied') ||
+        lower.includes('access denied')
+    ) {
+        return 'Permission denied. Configure the udev rules for your JTAG cable.';
+    }
+
+    if (lower.includes('timeout')) {
+        return 'Timeout while detecting devices. Check the cable and drivers.';
+    }
+
+    if (
+        lower.includes('no device') ||
+        lower.includes('device not found') ||
+        lower.includes('no cable') ||
+        lower.includes('unable to open ftdi device')
+    ) {
+        return 'JTAG device or cable not found. Check the USB connection, power, and that the cable is compatible.';
     }
 
     if (
@@ -86,33 +107,17 @@ export function parseDetectionError(stderr: string): string {
         lower.includes('driver not found') ||
         lower.includes('no driver')
     ) {
-        return 'No se encuentra el backend o driver USB/JTAG necesario. Instale las dependencias de libusb/libftdi y compruebe la configuración de OpenFPGALoader.';
-    }
-
-    if (lower.includes('permission denied') || lower.includes('access denied')) {
-        return 'Permiso denegado. Configure las reglas udev para su cable JTAG.';
-    }
-
-    if (lower.includes('timeout')) {
-        return 'Timeout en la detección de dispositivos. Compruebe cable y drivers.';
-    }
-
-    if (
-        lower.includes('no device') ||
-        lower.includes('device not found') ||
-        lower.includes('no cable') ||
-        lower.includes('unable to open ftdi device')
-    ) {
-        return 'No se encuentra el dispositivo o cable JTAG. Compruebe la conexión USB, la alimentación y que el cable sea compatible.';
+        return 'The required USB/JTAG backend or driver is missing. ' +
+        'Install the libusb/libftdi dependencies and check the OpenFPGALoader configuration.';
     }
 
     if (lower.includes('not found')) {
-        return 'No se encontró el recurso solicitado. Compruebe la instalación y configuración de OpenFPGALoader.';
+        return 'The requested resource was not found. Check the installation and configuration of OpenFPGALoader.';
     }
 
     if (message === '') {
-        return 'No se pudieron detectar dispositivos con openFPGALoader.';
+        return 'No devices could be detected with openFPGALoader.';
     }
 
     return message;
-}
+};
