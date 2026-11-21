@@ -205,23 +205,23 @@ export function loadBitstreamStream(
     const args = buildLoadArgs(boardId, absoluteBitstreamPath, options);
     const binary = getBinary(config);
 
-	let child: ChildProcess;
+    let child: ChildProcess;
 
-	try {
-    	child = spawn(binary, args, {
-        	cwd: path.dirname(absoluteBitstreamPath),
-        	shell: false
-    	});
-	}
-	catch (error) {
-    	setTimeout(() => {
-        	callback({
-            	successful: false,
-            	msg: error instanceof Error
-                	? error.message
-                	: 'Unknown error while starting OpenFPGALoader.'
-        	});
-    	}, 0);
+    try {
+        child = spawn(binary, args, {
+            cwd: path.dirname(absoluteBitstreamPath),
+            shell: false
+        });
+    }
+    catch (error) {
+        setTimeout(() => {
+            callback({
+                successful: false,
+                msg: error instanceof Error
+                    ? error.message
+                    : 'Unknown error while starting OpenFPGALoader.'
+            });
+        }, 0);
 
     return undefined;
 }

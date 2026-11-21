@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as file_utils from 'colibri/utils/file_utils';
 import { executeCommandWait } from 'colibri/project_manager/tool/openfpgaloader/executor';
 
-import { buildLoadArgs, extractProgressPercent, loadBitstream, loadBitstreamStream } 
+import { buildLoadArgs, extractProgressPercent, loadBitstream, loadBitstreamStream }
 from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
 
 import { t_openfpgaloader_config } from 'colibri/project_manager/tool/openfpgaloader/utils';
