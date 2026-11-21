@@ -24,56 +24,41 @@ export class Local_process {
 
     async exec_wait(command: string, opt: p_options): Promise<p_result> {
         return new Promise((resolve) => {
+            const timeoutSeconds = opt.timeout ?? 0;
+            const timeoutMs = timeoutSeconds > 0 ? timeoutSeconds * 1000 : 0;
+
             const options = {
                 cwd: opt.cwd,
                 maxBuffer: 1024 * 1024 * 1024,
+                timeout: timeoutMs,
             };
 
-            const timeoutSeconds = opt.timeout || 0; // Get the timeout from opt.timeout or set it to 0 if not defined
-            const timeoutMs = timeoutSeconds * 1000; // Convert seconds to milliseconds
+            exec(command, options, (error: ExecException | null, stdout: string, stderr: string) => {
+                const timedOut = timeoutMs > 0 &&
+                    error !== null &&
+                    error !== undefined &&
+                    error.killed;
 
-            let resolved = false;
-
-            const timeoutId = timeoutMs > 0 ? setTimeout(() => {
-                if (!resolved) {
-                    resolved = true;
-                    // Return a specific result for the timeout
-                    const result: p_result = {
+                if (timedOut) {
+                    resolve({
                         command,
                         stdout: '',
                         stderr: TIMEOUTMSG,
                         return_value: -1,
                         successful: false,
-                    };
-                    resolve(result);
-                }
-            }, timeoutMs) : null;
-
-            exec(command, options, (error: ExecException | null, stdout: string, stderr: string) => {
-                // Clear the timeout if it's reached before the call completes
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
+                    });
+                    return;
                 }
 
-                if (!resolved) {
-                    resolved = true;
-                    let error_code = 0;
-                    let successful = true;
-                    if (error !== undefined && error !== null) {
-                        error_code = -1;
-                        successful = false;
-                    }
+                const successful = error === null || error === undefined;
 
-                    const result: p_result = {
-                        command,
-                        stdout: stdout.trim(),
-                        stderr: stderr.trim(),
-                        return_value: error_code,
-                        successful,
-                    };
-
-                    resolve(result);
-                }
+                resolve({
+                    command,
+                    stdout: stdout.trim(),
+                    stderr: stderr.trim(),
+                    return_value: successful ? 0 : -1,
+                    successful,
+                });
             });
         });
     }

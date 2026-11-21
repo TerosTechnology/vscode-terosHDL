@@ -889,6 +889,9 @@ body.vscode-high-contrast {
                             <div class="settings-toc-child" id="btn-tools-openfpga">
                                 OpenFPGA
                             </div>
+                            <div class="settings-toc-child" id="btn-tools-openfpgaloader">
+                                OpenFPGALoader
+                            </div>
                             <div class="settings-toc-child" id="btn-tools-activehdl">
                                 Active-HDL
                             </div>
@@ -5475,6 +5478,23 @@ body.vscode-high-contrast {
                   
                   
             </div>
+            <div class="settings-section" id="tools-openfpgaloader">
+                <div class="settings-group-title-label">
+                    Tools: OpenFPGALoader
+                </div>
+                <div class="settings-group-description">Open-source FPGA programming tool supporting multiple FPGA vendors and JTAG adapters.</div>
+
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-openfpgaloader-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-openfpgaloader-installation_path" value="">
+                    </div>
+
+
+
+            </div>
             <div class="settings-section" id="tools-activehdl">
                 <div class="settings-group-title-label">
                     Tools: Active-HDL
@@ -5923,6 +5943,7 @@ body.vscode-high-contrast {
     document.getElementById("tools-xsim").classList.remove('active');
     document.getElementById("tools-yosys").classList.remove('active');
     document.getElementById("tools-openfpga").classList.remove('active');
+    document.getElementById("tools-openfpgaloader").classList.remove('active');
     document.getElementById("tools-activehdl").classList.remove('active');
     document.getElementById("tools-questa").classList.remove('active');
     document.getElementById("tools-raptor").classList.remove('active');
@@ -6075,6 +6096,9 @@ body.vscode-high-contrast {
     }
     if (document.getElementById("btn-tools-openfpga")) {
         document.getElementById("btn-tools-openfpga").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-openfpgaloader")) {
+        document.getElementById("btn-tools-openfpgaloader").classList.remove('selected');
     }
     if (document.getElementById("btn-tools-activehdl")) {
         document.getElementById("btn-tools-activehdl").classList.remove('selected');
@@ -6397,6 +6421,12 @@ body.vscode-high-contrast {
     document.getElementById("btn-tools-openfpga").addEventListener("click", function(e) {
       e.preventDefault();
       enable_tab("tools", "openfpga");
+    });
+  }
+  if (document.getElementById("btn-tools-openfpgaloader")) {
+    document.getElementById("btn-tools-openfpgaloader").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "openfpgaloader");
     });
   }
   if (document.getElementById("btn-tools-activehdl")) {
@@ -7520,6 +7550,9 @@ body.vscode-high-contrast {
       element_value = [];
     }
     config["tools"]["openfpga"]["task_options"] = element_value
+    config["tools"]["openfpgaloader"] = {}
+    element_value = document.getElementById("tools-openfpgaloader-installation_path").value;
+    config["tools"]["openfpgaloader"]["installation_path"] = element_value
     config["tools"]["activehdl"] = {}
     element_value = document.getElementById("tools-activehdl-installation_path").value;
     config["tools"]["activehdl"]["installation_path"] = element_value
@@ -8675,6 +8708,9 @@ body.vscode-high-contrast {
     }
     if (config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["task_options"] !== undefined) {
         element_value = document.getElementById("tools-openfpga-task_options").value = String(config["tools"]["openfpga"]["task_options"]);
+    }
+    if (config["tools"] && config["tools"]["openfpgaloader"] && config["tools"]["openfpgaloader"]["installation_path"] !== undefined) {
+        document.getElementById("tools-openfpgaloader-installation_path").value = config["tools"]["openfpgaloader"]["installation_path"];
     }
     if (config["tools"] && config["tools"]["activehdl"] && config["tools"]["activehdl"]["installation_path"] !== undefined) {
         document.getElementById("tools-activehdl-installation_path").value = config["tools"]["activehdl"]["installation_path"];
@@ -10578,6 +10614,11 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-openfpga-task_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["openfpgaloader"] && config["tools"]["openfpgaloader"]["installation_path"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-openfpgaloader-installation_path").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["activehdl"] && config["tools"]["activehdl"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;

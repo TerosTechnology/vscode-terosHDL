@@ -47,6 +47,7 @@ import { get_home_directory } from 'colibri/process/utils';
 import { GlobalConfigManager } from 'colibri/config/config_manager';
 import { configCheckerManager } from './features/configChecker/manager';
 import { getVSCodeWorkspaceStorage } from './features/utils/utils';
+import { OpenFPGALoaderManager } from './features/openfpgaloader/manager';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -82,6 +83,8 @@ export class Teroshdl {
 
     public async init_teroshdl() {
         await this.init_multi_project_manager();
+
+        this.init_openfpgaloader();
 
         await this.init_language_provider();
         debugLogger.info('activated language provider');
@@ -133,6 +136,10 @@ export class Teroshdl {
         } catch (error) {
             debugLogger.warn('There have been errors loading project list from disk.');
         }
+    }
+
+    private init_openfpgaloader() {
+        new OpenFPGALoaderManager(this.context, this.manager);
     }
 
     private init_configChecker(

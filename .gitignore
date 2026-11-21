@@ -35,3 +35,5 @@ __pycache__/
 extest.log
 .extester/
 test-resources/
+
+test-report.html

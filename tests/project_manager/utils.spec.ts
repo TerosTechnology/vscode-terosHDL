@@ -23,6 +23,10 @@ import * as os from 'os';
 import { createRandomFolderFromBasePath } from '../../src/colibri/project_manager/utils/utils';
 import * as file_utils from '../../src/colibri/utils/file_utils';
 
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 describe('Project Manager Utils', () => {
     let tempDir: string;
 
@@ -98,6 +102,17 @@ describe('Project Manager Utils', () => {
             const result = createRandomFolderFromBasePath(baseName, subDir);
             
             expect(path.dirname(result)).toBe(subDir);
+            expect(fs.existsSync(result)).toBe(true);
+        });
+
+        test('should not create temporary project folders under the project root', () => {
+            const baseName = 'Project1';
+            const result = createRandomFolderFromBasePath(baseName, process.cwd());
+            const projectRoot = path.resolve(process.cwd());
+
+            expect(path.isAbsolute(result)).toBe(true);
+            expect(result.startsWith(projectRoot)).toBe(false);
+            expect(path.dirname(result)).toMatch(new RegExp(`^${escapeRegExp(path.join(os.tmpdir(), 'teroshdl', 'tmp-projects'))}`));
             expect(fs.existsSync(result)).toBe(true);
         });
 

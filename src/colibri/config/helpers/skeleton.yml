@@ -274,6 +274,11 @@ tools:
       description: "The award-winning OpenFPGA framework is the first open-source FPGA IP generator with silicon proofs supporting highly-customizable FPGA architectures."
       page: ./configs/tools/openfpga.yml
 
+    openfpgaloader:
+      title: OpenFPGALoader
+      description: "Open-source FPGA programming tool supporting multiple FPGA vendors and JTAG adapters."
+      page: ./configs/tools/openfpgaloader.yml
+
     activehdl:
       title: Active-HDL
       description: "Active-HDL™ is a Windows based, integrated FPGA Design Creation and Simulation solution for team-based environments."

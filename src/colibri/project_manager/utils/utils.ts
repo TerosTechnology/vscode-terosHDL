@@ -21,9 +21,43 @@ import { t_project_definition } from "../project_definition";
 import * as file_utils from "../../utils/file_utils";
 import * as general from "../../common/general";
 import * as jsYaml from 'js-yaml';
+import * as os from 'os';
 import * as path from 'path';
+import * as fs from 'fs';
 import { randomBytes } from 'crypto';
 const initSqlJs = require('sql.js');
+
+const TEMP_PROJECTS_ROOT = path.join(os.tmpdir(), 'teroshdl', 'tmp-projects');
+const createdTemporaryFolders = new Set<string>();
+
+function resolveTemporaryBasePath(basePath?: string): string {
+    const projectRoot = path.resolve(process.cwd());
+    const candidateBasePath = basePath ? path.resolve(basePath) : projectRoot;
+
+    if (!basePath || candidateBasePath === projectRoot || candidateBasePath.startsWith(projectRoot + path.sep)) {
+        return TEMP_PROJECTS_ROOT;
+    }
+
+    return basePath;
+}
+
+export function cleanupTemporaryProjectFolders(): void {
+    for (const folderPath of createdTemporaryFolders) {
+        try {
+            fs.rmSync(folderPath, { recursive: true, force: true });
+        }
+        catch (error) {
+            // Ignore cleanup errors; the folder is already ephemeral and best-effort cleanup is enough.
+        }
+        finally {
+            createdTemporaryFolders.delete(folderPath);
+        }
+    }
+}
+
+process.once('exit', cleanupTemporaryProjectFolders);
+process.once('SIGINT', cleanupTemporaryProjectFolders);
+process.once('SIGTERM', cleanupTemporaryProjectFolders);
 
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
     refrence_path?: string, standartized_file_type_notation = false) {
@@ -189,9 +223,15 @@ export async function execQuery(db: any, query: string): Promise<any[]> {
 }
 
 export function createRandomFolderFromBasePath(baseName: string, basePath: string): string {
+    const safeBasePath = resolveTemporaryBasePath(basePath);
+    file_utils.create_directory(safeBasePath);
+
     const dateStr = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
     const randomSuffix = baseName + '_' + dateStr + '_' + randomBytes(8).toString('hex');
-    const newFolderPath = path.join(basePath, randomSuffix);
+    const newFolderPath = path.join(safeBasePath, randomSuffix);
+
     file_utils.create_directory(newFolderPath);
+    createdTemporaryFolders.add(newFolderPath);
+
     return newFolderPath;
 }
