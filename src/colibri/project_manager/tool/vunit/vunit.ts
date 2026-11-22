@@ -32,7 +32,6 @@ import * as file_utils from "../../../utils/file_utils";
 import { p_result } from "../../../process/common";
 import * as t_config from "../../../config/config_declaration";
 import * as fxp from "fast-xml-parser";
-import * as paht_lib from 'path';
 import * as nunjucks from 'nunjucks';
 import { e_tools_general_select_tool } from "../../../config/config_declaration";
 
@@ -44,11 +43,11 @@ export class Vunit extends Generic_tool_handler {
     }
 
     private create_runpy(prj: t_project_definition): string {
-        const template_path = paht_lib.join(__dirname, 'run.nj');
+        const template_path = path_lib.join(__dirname, 'run.nj');
         const vunit_config = prj.config.tools.vunit;
 
         const template = nunjucks.render(template_path, {
-            file_list: prj.file_manager.get(),
+            file_list: prj.file_manager.get_compile_order(),
             config: vunit_config
         });
 

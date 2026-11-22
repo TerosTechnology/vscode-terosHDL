@@ -60,7 +60,9 @@ function makeProject(overrides: Partial<t_project_definition> = {}): t_project_d
         project_disk_path: '/project',
         config: { tools: { nvc: makeConfig() } },
         toplevel_path_manager: { get: jest.fn().mockReturnValue([]) },
-        file_manager: { get: jest.fn().mockReturnValue([]) },
+        file_manager: {
+            get: jest.fn().mockReturnValue([]),
+            get_compile_order: jest.fn().mockReturnValue([]) },
         ...overrides,
     } as any;
 }
@@ -118,7 +120,10 @@ describe('getVhdlFiles', () => {
             { name: 'c.vhd', file_type: LANGUAGE.VHDL },
         ];
         const project = makeProject({
-            file_manager: { get: jest.fn().mockReturnValue(files) } as any,
+            file_manager: {
+                get: jest.fn().mockReturnValue(files),
+                get_compile_order: jest.fn().mockReturnValue(files)
+             } as any,
         });
         const result = getVhdlFiles(project);
         expect(result).toHaveLength(2);
@@ -128,7 +133,10 @@ describe('getVhdlFiles', () => {
     it('returns an empty array when there are no VHDL files', () => {
         const files = [{ name: 'top.v', file_type: LANGUAGE.VERILOG }];
         const project = makeProject({
-            file_manager: { get: jest.fn().mockReturnValue(files) } as any,
+            file_manager: {
+                get: jest.fn().mockReturnValue(files),
+                get_compile_order: jest.fn().mockReturnValue(files)
+            } as any,
         });
         expect(getVhdlFiles(project)).toHaveLength(0);
     });
@@ -151,7 +159,10 @@ describe('groupFilesByLibrary', () => {
             { name: '/project/c.vhd', file_type: LANGUAGE.VHDL, logical_name: 'lib_a' },
         ];
         const project = makeProject({
-            file_manager: { get: jest.fn().mockReturnValue(files) } as any,
+            file_manager: {
+                get: jest.fn().mockReturnValue(files),
+                get_compile_order: jest.fn().mockReturnValue(files)
+            } as any,
         });
         const groups = groupFilesByLibrary(project, makeConfig());
         expect(groups.get('lib_a')).toHaveLength(2);
@@ -163,7 +174,10 @@ describe('groupFilesByLibrary', () => {
             { name: '/project/a.vhd', file_type: LANGUAGE.VHDL },
         ];
         const project = makeProject({
-            file_manager: { get: jest.fn().mockReturnValue(files) } as any,
+            file_manager: {
+                get: jest.fn().mockReturnValue(files),
+                get_compile_order: jest.fn().mockReturnValue(files)
+            } as any,
         });
         const config = makeConfig({ work_library: 'mywork' });
         const groups = groupFilesByLibrary(project, config);
@@ -175,7 +189,10 @@ describe('groupFilesByLibrary', () => {
             { name: '/project/a.vhd', file_type: LANGUAGE.VHDL },
         ];
         const project = makeProject({
-            file_manager: { get: jest.fn().mockReturnValue(files) } as any,
+            file_manager: {
+                get: jest.fn().mockReturnValue(files),
+                get_compile_order: jest.fn().mockReturnValue(files)
+            } as any,
         });
         const config = makeConfig({ work_library: '' });
         const groups = groupFilesByLibrary(project, config);
@@ -188,7 +205,10 @@ describe('groupFilesByLibrary', () => {
         ];
         const project = makeProject({
             project_disk_path: '/project',
-            file_manager: { get: jest.fn().mockReturnValue(files) } as any,
+            file_manager: {
+                get: jest.fn().mockReturnValue(files),
+                get_compile_order: jest.fn().mockReturnValue(files)
+            } as any,
         });
         const groups = groupFilesByLibrary(project, makeConfig());
         expect(groups.get('work')).toContain(path.join('src', 'a.vhd'));
@@ -200,7 +220,10 @@ describe('groupFilesByLibrary', () => {
         ];
         const project = makeProject({
             project_disk_path: '/project',
-            file_manager: { get: jest.fn().mockReturnValue(files) } as any,
+            file_manager: {
+                get: jest.fn().mockReturnValue(files),
+                get_compile_order: jest.fn().mockReturnValue(files)
+            } as any,
         });
         const groups = groupFilesByLibrary(project, makeConfig());
         expect(groups.get('work')).toContain('/external/lib/a.vhd');
@@ -209,7 +232,10 @@ describe('groupFilesByLibrary', () => {
     it('returns an empty map when there are no VHDL files', () => {
         const files = [{ name: 'top.v', file_type: LANGUAGE.VERILOG }];
         const project = makeProject({
-            file_manager: { get: jest.fn().mockReturnValue(files) } as any,
+            file_manager: {
+                get: jest.fn().mockReturnValue(files),
+                get_compile_order: jest.fn().mockReturnValue(files)
+            } as any,
         });
         expect(groupFilesByLibrary(project, makeConfig()).size).toBe(0);
     });

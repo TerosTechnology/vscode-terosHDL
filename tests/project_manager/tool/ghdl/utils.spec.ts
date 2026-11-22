@@ -117,7 +117,8 @@ describe('GHDL Utils', () => {
                 get: jest.fn().mockReturnValue([])
             },
             file_manager: {
-                get: jest.fn().mockReturnValue([])
+                get: jest.fn().mockReturnValue([]),
+                get_compile_order: jest.fn().mockReturnValue([])
             }
         } as any;
     });
@@ -173,7 +174,7 @@ describe('GHDL Utils', () => {
 
     describe('getVhdlFiles', () => {
         test('should return empty array when no files are configured', () => {
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue([]);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue([]);
             
             const result = getVhdlFiles(mockProjectDefinition);
             expect(result).toEqual([]);
@@ -187,7 +188,7 @@ describe('GHDL Utils', () => {
                 { name: 'test4.sv', file_type: LANGUAGE.SYSTEMVERILOG, logical_name: 'work' }
             ];
             
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue(allFiles);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue(allFiles);
             
             const result = getVhdlFiles(mockProjectDefinition);
             expect(result).toHaveLength(2);
@@ -204,7 +205,7 @@ describe('GHDL Utils', () => {
                 { name: 'package1.vhd', file_type: LANGUAGE.VHDL }
             ];
             
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue(vhdlFiles);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue(vhdlFiles);
             
             const result = getVhdlFiles(mockProjectDefinition);
             expect(result).toEqual(vhdlFiles);
@@ -220,7 +221,7 @@ describe('GHDL Utils', () => {
                 { name: 'lib2.vhd', file_type: LANGUAGE.VHDL, logical_name: 'mylib' }
             ];
             
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue(vhdlFiles);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue(vhdlFiles);
             
             const result: Map<string, string[]> = groupFilesByLibrary(mockProjectDefinition, defaultConfig);
             
@@ -236,7 +237,7 @@ describe('GHDL Utils', () => {
             ];
             const config = { ...defaultConfig, work_library: 'custom_work' };
             
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue(vhdlFiles);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue(vhdlFiles);
             
             const result: Map<string, string[]> = groupFilesByLibrary(mockProjectDefinition, config);
             
@@ -251,7 +252,7 @@ describe('GHDL Utils', () => {
             ];
             const config = { ...defaultConfig, work_library: '' };
             
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue(vhdlFiles);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue(vhdlFiles);
             
             const result: Map<string, string[]> = groupFilesByLibrary(mockProjectDefinition, config);
             
@@ -265,7 +266,7 @@ describe('GHDL Utils', () => {
                 { name: absolutePath, file_type: LANGUAGE.VHDL, logical_name: 'work' }
             ];
             
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue(vhdlFiles);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue(vhdlFiles);
             
             const result: Map<string, string[]> = groupFilesByLibrary(mockProjectDefinition, defaultConfig);
             
@@ -279,7 +280,7 @@ describe('GHDL Utils', () => {
                 { name: outsidePath, file_type: LANGUAGE.VHDL, logical_name: 'work' }
             ];
             
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue(vhdlFiles);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue(vhdlFiles);
             
             const result: Map<string, string[]> = groupFilesByLibrary(mockProjectDefinition, defaultConfig);
             
@@ -288,7 +289,7 @@ describe('GHDL Utils', () => {
         });
 
         test('should return empty map when no VHDL files exist', () => {
-            (mockProjectDefinition.file_manager.get as jest.Mock).mockReturnValue([]);
+            (mockProjectDefinition.file_manager.get_compile_order as jest.Mock).mockReturnValue([]);
             
             const result: Map<string, string[]> = groupFilesByLibrary(mockProjectDefinition, defaultConfig);
             

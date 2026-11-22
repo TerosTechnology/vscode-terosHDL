@@ -26,58 +26,74 @@ import { get_files_from_csv } from "../prj_loaders/csv_loader";
 
 export class File_manager extends Manager<t_file, undefined, string, string> {
     private files: t_file[] = [];
+    private compile_order: t_file[] = [];
 
-    async order(python_path: string, compileOrderPath: string) {
-        try {
-            if (compileOrderPath !== "") {
-                const orderResult = get_files_from_csv(compileOrderPath, false);
-                if (orderResult.successful && orderResult.file_list.length > 0) {
-                    const fileListInOrder = orderResult.file_list;
+async order(python_path: string, compileOrderPath: string) {
+    let ordered_files = [...this.files];
 
-                    const orderedFiles = fileListInOrder.filter(fileInOrder =>
-                        this.files.some(file =>
-                            file.name === fileInOrder.name && file.logical_name === fileInOrder.logical_name
-                        )
-                    );
+    try {
+        if (compileOrderPath !== "") {
+            const orderResult = get_files_from_csv(compileOrderPath, false);
 
-                    const remainingFiles = this.files.filter(file =>
-                        !fileListInOrder.some(fileInOrder =>
-                            file.name === fileInOrder.name && file.logical_name === fileInOrder.logical_name
-                        )
-                    );
+            if (orderResult.successful && orderResult.file_list.length > 0) {
+                const fileListInOrder = orderResult.file_list;
 
-                    this.files = [...orderedFiles, ...remainingFiles];
-                }
+                const orderedFiles = fileListInOrder.filter(fileInOrder =>
+                    ordered_files.some(file =>
+                        file.name === fileInOrder.name &&
+                        file.logical_name === fileInOrder.logical_name
+                    )
+                );
+
+                const remainingFiles = ordered_files.filter(file =>
+                    !fileListInOrder.some(fileInOrder =>
+                        file.name === fileInOrder.name &&
+                        file.logical_name === fileInOrder.logical_name
+                    )
+                );
+
+                ordered_files = [...orderedFiles, ...remainingFiles];
             }
         }
-        catch (error) { /* empty */ }
+    }
+    catch (error) { /* empty */ }
 
-        // Get compile order from dependency graph
-        const dep_manger = new Dependency_graph();
-        const dep_result = await dep_manger.get_compile_order(this.files, python_path);
-        if (dep_result.successful) {
-            this.files = dep_result.file_order;
-            return;
+    const dep_manager = new Dependency_graph();
+    const dep_result = await dep_manager.get_compile_order(ordered_files, python_path);
+
+    if (dep_result.successful) {
+        this.compile_order = dep_result.file_order;
+        return;
+    }
+
+    const lib_files: t_file[] = [];
+    const non_lib_files: t_file[] = [];
+
+    ordered_files.forEach(element => {
+        if (element.logical_name === "") {
+            non_lib_files.push(element);
         }
+        else {
+            lib_files.push(element);
+        }
+    });
 
-        // Order by lib
-        const lib_files: t_file[] = [];
-        const non_lib_files: t_file[] = [];
+    this.compile_order = lib_files.concat(non_lib_files);
+}
 
-        this.files.forEach(element => {
-            if (element.logical_name === "") {
-                non_lib_files.push(element);
-            }
-            else {
-                lib_files.push(element);
-            }
-        });
+    get_compile_order(): t_file[] {
+        return this.compile_order.length > 0
+        ? [...this.compile_order]
+        : [...this.files];
+    }
 
-        this.files = lib_files.concat(non_lib_files);
+    private invalidate_compile_order(): void {
+        this.compile_order = [];
     }
 
     clear() {
         this.files = [];
+        this.invalidate_compile_order();
     }
 
     clear_automatic_files() {
@@ -88,6 +104,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
             }
         });
         this.files = new_files;
+        this.invalidate_compile_order();
     }
 
     get(reference_file_path?: string): t_file[] {
@@ -147,6 +164,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         };
 
         this.files.push(complete_file);
+        this.invalidate_compile_order();
         return result;
     }
 
@@ -178,6 +196,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         }
 
         file.logical_name = to_library;
+        this.invalidate_compile_order();
         return result;
     }
 
@@ -234,6 +253,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         files_to_move.forEach(file => {
             file.logical_name = to_library;
         });
+        this.invalidate_compile_order();
         return result;
     }
 
@@ -275,10 +295,11 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
             }
             return existing_file;
         });
+        this.invalidate_compile_order();
         return result;
     }
 
-        reorder_files(names: string[], library: string, new_index: number): t_action_result {
+    reorder_files(names: string[], library: string, new_index: number): t_action_result {
         const result: t_action_result = {
             result: "",
             successful: true,
@@ -338,6 +359,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
             }
             return existing_file;
         });
+        this.invalidate_compile_order();
         return result;
     }
 
@@ -363,6 +385,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
                 fileInst.source_type = sourceType;
             }
         }
+        this.invalidate_compile_order();
         return result;
     }
 
@@ -385,6 +408,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
             }
         });
         this.files = new_files;
+        this.invalidate_compile_order();
         return result;
     }
 
@@ -397,6 +421,7 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         this.files.forEach(file_inst => {
             if (logical_name === file_inst.logical_name) {
                 this.delete(file_inst.name, logical_name);
+                this.invalidate_compile_order();
                 result.successful = true;
             }
         });
