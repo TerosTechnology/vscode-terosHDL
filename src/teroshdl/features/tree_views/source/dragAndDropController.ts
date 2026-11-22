@@ -1,10 +1,7 @@
 import * as vscode from "vscode";
 import * as path_lib from "path";
 import * as element from "./element";
-import {
-    e_source_type,
-    t_file
-} from "colibri/project_manager/common";
+import { e_source_type, t_file } from "colibri/project_manager/common";
 import {
     get_default_version_for_filepath,
     get_language_from_filepath
@@ -22,9 +19,8 @@ export class SourceDragAndDropController
 
     readonly dropMimeTypes = [
         "text/uri-list",
-        "application/vnd.code.tree.teroshdl-view-source",
-        "text/plain",
-        INTERNAL_MIME_TYPE
+        INTERNAL_MIME_TYPE,
+        "text/plain"
     ];
 
     readonly dragMimeTypes = [
@@ -47,11 +43,6 @@ export class SourceDragAndDropController
             }));
 
         if (files.length === 0) {
-            return;
-        }
-
-        if (files.length > 1) {
-            vscode.window.showWarningMessage("Please drag one source file at a time.");
             return;
         }
 
@@ -91,34 +82,92 @@ export class SourceDragAndDropController
     ): Promise<void> {
 
         const rawData = await data.asString();
-        const draggedFiles: t_dragged_file[] = JSON.parse(rawData);
+        const draggedFiles: unknown = JSON.parse(rawData);
 
-        if (!Array.isArray(draggedFiles) || draggedFiles.length !== 1) {
+        if (!Array.isArray(draggedFiles) || draggedFiles.length === 0) {
             return;
         }
 
-        const draggedFile = draggedFiles[0];
+        const files = draggedFiles as t_dragged_file[];
 
-        if (
-            typeof draggedFile.name !== "string" ||
-            typeof draggedFile.logical_name !== "string"
-        ) {
+        if (files.some(file =>
+            file === null ||
+            typeof file !== "object" ||
+            Array.isArray(file) ||
+            typeof file.name !== "string" ||
+            typeof file.logical_name !== "string"
+        )) {
+            return;
+        }
+
+        const selectedNames = files.map(file => file.name);
+
+        if (new Set(selectedNames).size !== selectedNames.length) {
+            vscode.window.showErrorMessage(
+                "The selection contains files with duplicate names."
+            );
             return;
         }
 
         const prj = this.project_manager.get_selected_project();
 
-        if (target === undefined || target.contextValue === "library") {
-            const targetLibrary = target?.get_logical_name() ?? "";
+        const projectFiles = prj.get_file();
 
-            const result = await prj.move_file(
-                draggedFile.name,
-                draggedFile.logical_name,
-                targetLibrary
+        // Preserve the original project order of the selected files.
+        const orderedFiles = [...files].sort((a, b) => {
+            const indexA = projectFiles.findIndex(file =>
+                file.name === a.name &&
+                file.logical_name === a.logical_name
             );
+
+            const indexB = projectFiles.findIndex(file =>
+                file.name === b.name &&
+                file.logical_name === b.logical_name
+            );
+            return indexA - indexB;
+        });
+
+        const orderedNames = orderedFiles.map(file => file.name);
+
+        // Drop on empty tree: move all selected files to the root library.
+        if (target === undefined) {
+            const result = await prj.move_files(files, "");
 
             if (!result.successful) {
                 vscode.window.showErrorMessage(result.msg);
+            }
+            return;
+        }
+
+        // Drop on a library.
+        if (target.contextValue === "library") {
+            const targetLibrary = target.get_logical_name();
+
+            const libraryFiles = prj.get_file().filter(file =>
+                file.logical_name === targetLibrary &&
+                file.name !== ""
+            );
+
+            const remainingFiles = libraryFiles.filter(
+                file => !selectedNames.includes(file.name)
+            );
+
+            const moveResult = await prj.move_files(files, targetLibrary);
+
+            if (!moveResult.successful) {
+                vscode.window.showErrorMessage(moveResult.msg);
+                return;
+            }
+
+            // Move all selected files to the end of the target library.
+            const reorderResult = await prj.reorder_files(
+                orderedNames,
+                targetLibrary,
+                remainingFiles.length
+            );
+
+            if (!reorderResult.successful) {
+                vscode.window.showErrorMessage(reorderResult.msg);
             }
 
             return;
@@ -131,53 +180,57 @@ export class SourceDragAndDropController
         const targetName = target.get_name();
         const targetLibrary = target.get_logical_name();
 
-        if (draggedFile.name === targetName &&
-            draggedFile.logical_name === targetLibrary) {
+        // Do nothing if the drop target is part of the selection.
+        if (files.some(file =>
+                file.name === targetName &&
+                file.logical_name === targetLibrary
+            )
+        ) {
             return;
         }
 
-        if (draggedFile.logical_name !== targetLibrary) {
-            const result = await prj.move_file(
-                draggedFile.name,
-                draggedFile.logical_name,
-                targetLibrary
-            );
-
-            if (!result.successful) {
-                vscode.window.showErrorMessage(result.msg);
-            }
-
-            return;
-        }
-
+        // Calculate the target position before moving the selected files.
         const libraryFiles = prj.get_file().filter(file =>
-            file.logical_name === targetLibrary && file.name !== ""
+            file.logical_name === targetLibrary &&
+            file.name !== ""
         );
 
-        const currentIndex = libraryFiles.findIndex(file =>
-            file.name === draggedFile.name
+        const remainingFiles = libraryFiles.filter(
+            file => !selectedNames.includes(file.name)
         );
 
-        const targetIndex = libraryFiles.findIndex(file =>
-            file.name === targetName
+        const targetIndex = remainingFiles.findIndex(
+            file => file.name === targetName
         );
 
-        if (currentIndex === -1 || targetIndex === -1) {
+        if (targetIndex === -1) {
             return;
         }
 
-        const newIndex = targetIndex > currentIndex
-            ? targetIndex - 1
+        // Insert after the last file when it is used as the drop target.
+        const insertionIndex = targetIndex === remainingFiles.length - 1
+            ? targetIndex + 1
             : targetIndex;
 
-        const result = await prj.reorder_file(
-            draggedFile.name,
-            draggedFile.logical_name,
-            newIndex
+
+
+        // Move all selected files to the target library.
+        const moveResult = await prj.move_files(files, targetLibrary);
+
+        if (!moveResult.successful) {
+            vscode.window.showErrorMessage(moveResult.msg);
+            return;
+        }
+
+        // Insert all selected files immediately before the target.
+        const reorderResult = await prj.reorder_files(
+            orderedNames,
+            targetLibrary,
+            insertionIndex
         );
 
-        if (!result.successful) {
-            vscode.window.showErrorMessage(result.msg);
+        if (!reorderResult.successful) {
+            vscode.window.showErrorMessage(reorderResult.msg);
         }
     }
 
@@ -188,14 +241,13 @@ export class SourceDragAndDropController
 
         const uriList = await data.asString();
 
-        const paths = uriList
+        const uris = uriList
             .split(/\r?\n/)
             .filter(line => line.trim() !== "" && !line.startsWith("#"))
             .map(line => vscode.Uri.parse(line))
-            .filter(uri => uri.scheme === "file")
-            .map(uri => uri.fsPath);
+            .filter(uri => uri.scheme === "file");
 
-        if (paths.length === 0) {
+        if (uris.length === 0) {
             return;
         }
 
@@ -213,7 +265,28 @@ export class SourceDragAndDropController
 
         const prj = this.project_manager.get_selected_project();
 
-        for (const sourcePath of paths) {
+        for (const uri of uris) {
+            const sourcePath = uri.fsPath;
+
+            let stat: vscode.FileStat;
+
+            try {
+                stat = await vscode.workspace.fs.stat(uri);
+            } catch (error) {
+                vscode.window.showWarningMessage(
+                    `Could not access ${path_lib.basename(sourcePath)}: ${String(error)}`
+                );
+                continue;
+            }
+
+            // Reject directories.
+            if ((stat.type & vscode.FileType.Directory) !== 0) {
+                vscode.window.showWarningMessage(
+                    `Cannot add directory: ${path_lib.basename(sourcePath)}`
+                );
+                continue;
+            }
+
             const file: t_file = {
                 name: path_lib.normalize(sourcePath),
                 is_include_file: false,

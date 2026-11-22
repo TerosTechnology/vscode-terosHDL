@@ -178,7 +178,62 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         }
 
         file.logical_name = to_library;
+        return result;
+    }
 
+    move_files(files: { name: string; logical_name: string }[], to_library: string): t_action_result {
+        const result: t_action_result = {
+            result: "",
+            successful: true,
+            msg: ""
+        };
+
+        if (files.length === 0) {
+            return result;
+        }
+
+        // Validate that the selection does not contain duplicate files.
+        const selected_files = new Set(
+            files.map(file => `${file.logical_name}\0${file.name}`)
+        );
+
+        if (selected_files.size !== files.length) {
+            result.successful = false;
+            result.msg = "The selection contains duplicate files";
+            return result;
+        }
+
+        // Validate all files before changing anything.
+        const files_to_move: t_file[] = [];
+
+        for (const selected_file of files) {
+            const file = this.files.find(element =>
+                element.name === selected_file.name &&
+                element.logical_name === selected_file.logical_name
+            );
+
+            if (file === undefined) {
+                result.successful = false;
+                result.msg = `File doesn't exist in its source library: ${selected_file.name}`;
+                return result;
+            }
+
+            if (
+                selected_file.logical_name !== to_library &&
+                this.check_if_exists(selected_file.name, to_library)
+            ) {
+                result.successful = false;
+                result.msg = `The file already exists in the destination library: ${selected_file.name}`;
+                return result;
+            }
+
+            files_to_move.push(file);
+        }
+
+        // Move all selected files to the destination library.
+        files_to_move.forEach(file => {
+            file.logical_name = to_library;
+        });
         return result;
     }
 
@@ -220,7 +275,69 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
             }
             return existing_file;
         });
+        return result;
+    }
 
+        reorder_files(names: string[], library: string, new_index: number): t_action_result {
+        const result: t_action_result = {
+            result: "",
+            successful: true,
+            msg: ""
+        };
+
+        if (names.length === 0) {
+            return result;
+        }
+
+        // Validate that the selection does not contain duplicate files.
+        const selected_names = new Set(names);
+
+        if (selected_names.size !== names.length) {
+            result.successful = false;
+            result.msg = "The selection contains duplicate files";
+            return result;
+        }
+
+        const library_files = this.files.filter(file =>
+            file.logical_name === library && file.name !== ""
+        );
+
+        const selected_files: t_file[] = [];
+
+        for (const name of names) {
+            const file = library_files.find(element => element.name === name);
+
+            if (file === undefined) {
+                result.successful = false;
+                result.msg = `File doesn't exist in the specified library: ${name}`;
+                return result;
+            }
+
+            selected_files.push(file);
+        }
+
+        const remaining_files = library_files.filter(file =>
+            !selected_names.has(file.name)
+        );
+
+        if (!Number.isInteger(new_index) || new_index < 0 ||
+            new_index > remaining_files.length
+        ) {
+            result.successful = false;
+            result.msg = "Invalid file position";
+            return result;
+        }
+
+        remaining_files.splice(new_index, 0, ...selected_files);
+
+        let library_index = 0;
+
+        this.files = this.files.map(existing_file => {
+            if (existing_file.logical_name === library && existing_file.name !== "") {
+                return remaining_files[library_index++];
+            }
+            return existing_file;
+        });
         return result;
     }
 

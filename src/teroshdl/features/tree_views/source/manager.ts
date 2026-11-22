@@ -56,7 +56,8 @@ export class Source_manager extends BaseView {
             {
                 treeDataProvider: this.tree as unknown as element.BaseTreeDataProvider<element.Source_tree_element>,
                 dragAndDropController: dragAndDropController,
-                showCollapseAll: true
+                showCollapseAll: true,
+                canSelectMany: true
             }
         );
         context.subscriptions.push(treeView);
