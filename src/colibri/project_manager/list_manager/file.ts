@@ -150,6 +150,80 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         return result;
     }
 
+    move_file(name: string, from_library: string, to_library: string): t_action_result {
+        const result: t_action_result = {
+            result: "",
+            successful: true,
+            msg: ""
+        };
+
+        if (from_library === to_library) {
+            return result;
+        }
+
+        const file = this.files.find(element =>
+            element.name === name && element.logical_name === from_library
+        );
+
+        if (file === undefined) {
+            result.successful = false;
+            result.msg = "File doesn't exist in the source library";
+            return result;
+        }
+
+        if (this.check_if_exists(name, to_library)) {
+            result.successful = false;
+            result.msg = "The file already exists in the destination library";
+            return result;
+        }
+
+        file.logical_name = to_library;
+
+        return result;
+    }
+
+    reorder_file(name: string, library: string, new_index: number): t_action_result {
+        const result: t_action_result = {
+            result: "",
+            successful: true,
+            msg: ""
+        };
+
+        const library_files = this.files.filter(file =>
+            file.logical_name === library && file.name !== ""
+        );
+
+        const current_index = library_files.findIndex(file =>
+            file.name === name
+        );
+
+        if (current_index === -1) {
+            result.successful = false;
+            result.msg = "File doesn't exist in the specified library";
+            return result;
+        }
+
+        if (!Number.isInteger(new_index) || new_index < 0 || new_index >= library_files.length) {
+            result.successful = false;
+            result.msg = "Invalid file position";
+            return result;
+        }
+
+        const file = library_files.splice(current_index, 1)[0];
+        library_files.splice(new_index, 0, file);
+
+        let library_index = 0;
+
+        this.files = this.files.map(existing_file => {
+            if (existing_file.logical_name === library && existing_file.name !== "") {
+                return library_files[library_index++];
+            }
+            return existing_file;
+        });
+
+        return result;
+    }
+
     configureSource(name: string, logical_name: string, fileType: LANGUAGE, fileVersion: t_version_inst,
         sourceType: e_source_type): t_action_result {
 

@@ -30,6 +30,7 @@ import { e_project_type, e_source_type } from 'colibri/project_manager/common';
 import { getQsysPath } from 'colibri/project_manager/tool/quartus/utils';
 import { spawn } from 'child_process';
 
+import { SourceDragAndDropController } from "./dragAndDropController";
 export class Source_manager extends BaseView {
     private tree: element.ProjectProvider;
     private project_manager: Multi_project_manager;
@@ -48,13 +49,19 @@ export class Source_manager extends BaseView {
         const provider = new SourcetDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
 
-        context.subscriptions.push(
-            vscode.window.registerTreeDataProvider(
-                element.ProjectProvider.getViewID(),
-                this.tree as unknown as element.BaseTreeDataProvider<element.Source_tree_element>
-            )
+        const dragAndDropController = new SourceDragAndDropController(this.project_manager);
+
+        const treeView = vscode.window.createTreeView(
+            element.ProjectProvider.getViewID(),
+            {
+                treeDataProvider: this.tree as unknown as element.BaseTreeDataProvider<element.Source_tree_element>,
+                dragAndDropController: dragAndDropController,
+                showCollapseAll: true
+            }
         );
+        context.subscriptions.push(treeView);
     }
+
 
     set_commands() {
         vscode.commands.registerCommand('teroshdl.view.source.search', () => this.search());

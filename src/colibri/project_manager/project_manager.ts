@@ -438,6 +438,22 @@ export class Project_manager extends ConfigManager {
         return result;
     }
 
+    public async move_file(name: string, from_library: string, to_library: string): Promise<t_action_result> {
+        const result = this.files.move_file(name, from_library, to_library);
+        if (result.successful) {
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        }
+        return result;
+    }
+
+    public async reorder_file(name: string, library: string, new_index: number): Promise<t_action_result> {
+        const result = this.files.reorder_file(name, library, new_index);
+        if (result.successful) {
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        }
+        return result;
+    }
+
     public async add_file_from_array(file_list: t_file[], emitEvent = true): Promise<t_action_result> {
         file_list.forEach(file => {
             this.files.add(file);
