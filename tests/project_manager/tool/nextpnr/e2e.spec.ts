@@ -91,9 +91,7 @@ describeE2E('nextpnr iCE40 e2e', () => {
         expect(utilization).toBeDefined();
         expect(Object.keys(utilization || {})).not.toHaveLength(0);
 
-        if (!hasCommand('icepack')) {
-            return;
-        }
+        expect(hasCommand('icepack')).toBe(true);
 
         const packResult = await runPack(project, logger);
         expect(packResult.successful).toBe(true);
