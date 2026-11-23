@@ -5886,6 +5886,7 @@ body.vscode-high-contrast {
                                       <option value='hx8k'>HX8K</option>
                                       <option value='lp384'>LP384</option>
                                       <option value='lp1k'>LP1K</option>
+                                      <option value='lp4k'>LP4K</option>
                                       <option value='lp8k'>LP8K</option>
                                       <option value='up3k'>UP3K</option>
                                       <option value='up5k'>UP5K</option>
@@ -5908,6 +5909,12 @@ body.vscode-high-contrast {
                                       <option value='ecp5_25k'>25K</option>
                                       <option value='ecp5_45k'>45K</option>
                                       <option value='ecp5_85k'>85K</option>
+                                      <option value='ecp5_um_25k'>UM-25K</option>
+                                      <option value='ecp5_um_45k'>UM-45K</option>
+                                      <option value='ecp5_um_85k'>UM-85K</option>
+                                      <option value='ecp5_um5g_25k'>UM5G-25K</option>
+                                      <option value='ecp5_um5g_45k'>UM5G-45K</option>
+                                      <option value='ecp5_um5g_85k'>UM5G-85K</option>
                             </select>
                         </div>
                     </div>
@@ -5915,7 +5922,7 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            FPGA package (required by many architectures, e.g. SG48, CABGA381):
+                            Device package. Empty = nextpnr default for the device. iCE40: lowercase (e.g. sg48, tq144); ECP5: uppercase (e.g. CABGA381):
                             <span class="markConfig" id="mark_tools-nextpnr-package"></span>
                         </div>
                             <input class="setting-input-box" id="tools-nextpnr-package" value="">

@@ -31,6 +31,7 @@ ice40_device:
     hx8k: "HX8K"
     lp384: "LP384"
     lp1k: "LP1K"
+    lp4k: "LP4K"
     lp8k: "LP8K"
     up3k: "UP3K"
     up5k: "UP5K"
@@ -47,10 +48,16 @@ ecp5_device:
     ecp5_25k: "25K"
     ecp5_45k: "45K"
     ecp5_85k: "85K"
+    ecp5_um_25k: "UM-25K"
+    ecp5_um_45k: "UM-45K"
+    ecp5_um_85k: "UM-85K"
+    ecp5_um5g_25k: "UM5G-25K"
+    ecp5_um5g_45k: "UM5G-45K"
+    ecp5_um5g_85k: "UM5G-85K"
   value: ecp5_45k
 
 package:
-  description: "FPGA package (required by many architectures, e.g. SG48, CABGA381):"
+  description: "Device package. Empty = nextpnr default for the device. iCE40: lowercase (e.g. sg48, tq144); ECP5: uppercase (e.g. CABGA381):"
   type: string
   value: ""
 
