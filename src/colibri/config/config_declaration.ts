@@ -1121,6 +1121,7 @@ export enum e_tools_nextpnr_ice40_device {
     hx8k = "hx8k",
     lp384 = "lp384",
     lp1k = "lp1k",
+    lp4k = "lp4k",
     lp8k = "lp8k",
     up3k = "up3k",
     up5k = "up5k",
@@ -1133,6 +1134,12 @@ export enum e_tools_nextpnr_ecp5_device {
     ecp5_25k = "ecp5_25k",
     ecp5_45k = "ecp5_45k",
     ecp5_85k = "ecp5_85k",
+    ecp5_um_25k = "ecp5_um_25k",
+    ecp5_um_45k = "ecp5_um_45k",
+    ecp5_um_85k = "ecp5_um_85k",
+    ecp5_um5g_25k = "ecp5_um5g_25k",
+    ecp5_um5g_45k = "ecp5_um5g_45k",
+    ecp5_um5g_85k = "ecp5_um5g_85k",
 }
 
 export function get_default_config(): e_config {
@@ -6282,6 +6289,9 @@ export function get_config_from_json(json_config: any): e_config {
     if ( current_value_396 === "lp1k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp1k;
     }
+    if ( current_value_396 === "lp4k"){
+        default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp4k;
+    }
     if ( current_value_396 === "lp8k"){
         default_config['tools']['nextpnr']['ice40_device'] = e_tools_nextpnr_ice40_device.lp8k;
     }
@@ -6318,6 +6328,24 @@ export function get_config_from_json(json_config: any): e_config {
     }
     if ( current_value_397 === "ecp5_85k"){
         default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_85k;
+    }
+    if ( current_value_397 === "ecp5_um_25k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_um_25k;
+    }
+    if ( current_value_397 === "ecp5_um_45k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_um_45k;
+    }
+    if ( current_value_397 === "ecp5_um_85k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_um_85k;
+    }
+    if ( current_value_397 === "ecp5_um5g_25k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_um5g_25k;
+    }
+    if ( current_value_397 === "ecp5_um5g_45k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_um5g_45k;
+    }
+    if ( current_value_397 === "ecp5_um5g_85k"){
+        default_config['tools']['nextpnr']['ecp5_device'] = e_tools_nextpnr_ecp5_device.ecp5_um5g_85k;
     }
             
     // tools -> nextpnr -> package

@@ -145,7 +145,31 @@ export function runNextpnrPnR(
 	toolLogger: LoggerBase,
 	callback: (result: p_result) => void
 ): ChildProcess {
-	return runNextpnr(projectDefinition, toolLogger, callback, { reportFile: 'nextpnr_report.json' });
+	const outputFiles = [
+		'nextpnr_out.asc',
+		'nextpnr_out.config',
+		'nextpnr_out.bit',
+		'nextpnr_out.bin',
+		'nextpnr_out.json',
+		'nextpnr_report.json'
+	];
+
+	try { 
+		for (const file of outputFiles) {
+			fs.rmSync(path.join(projectDefinition.project_disk_path, file), { force: true });
+		}
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		return reportError('nextpnr P&R', message, callback, toolLogger);
+	}
+
+	return runNextpnr(
+		projectDefinition,
+		toolLogger,
+		callback,
+		{ reportFile: 'nextpnr_report.json' },
+		'nextpnr P&R'
+	);
 }
 
 /** Open the native nextpnr GUI for supported architectures. */
