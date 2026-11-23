@@ -2,7 +2,6 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "types": ["node", "jest"],
-    "typeRoots": ["../node_modules/@types"],
     "noEmit": true,
     "rootDir": ".."
   },
