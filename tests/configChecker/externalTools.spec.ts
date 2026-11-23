@@ -152,4 +152,44 @@ describe('nextpnr Verify Setup', () => {
             fs.rmSync(tempDirectory, { recursive: true, force: true });
         }
     });
+
+    it('accepts packer binaries found in PATH when version check is unsupported', async () => {
+        const config = get_default_config();
+        config.tools.general.select_tool = e_tools_general_select_tool.nextpnr;
+        config.tools.nextpnr.target_family = e_tools_nextpnr_target_family.ice40;
+
+        const tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'teroshdl-packer-path-'));
+        const originalPath = process.env.PATH;
+        try {
+            config.tools.nextpnr.installation_path = '';
+            config.tools.nextpnr.packer_installation_path = '';
+            fs.writeFileSync(path.join(tempDirectory, 'icepack'), '');
+            process.env.PATH = tempDirectory;
+
+            mockedCheckBinary.mockImplementation(async (_displayName, _path, binaryName) => {
+                if (binaryName === 'nextpnr-ice40') {
+                    return successfulResult;
+                }
+                return {
+                    ...successfulResult,
+                    successfulFind: false,
+                    successfulConfig: false,
+                    messageList: ['version check unsupported']
+                };
+            });
+
+            const report = await checkExternalToolManager(config);
+
+            expect(report).toContain('Correctly configured');
+            expect(report).toContain(`"${path.join(tempDirectory, 'icepack')}"`);
+            expect(report).toContain('version query not supported');
+        } finally {
+            if (originalPath === undefined) {
+                delete process.env.PATH;
+            } else {
+                process.env.PATH = originalPath;
+            }
+            fs.rmSync(tempDirectory, { recursive: true, force: true });
+        }
+    });
 });

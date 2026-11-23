@@ -348,4 +348,61 @@ describe('nextpnr tasks', () => {
             expect(result).toEqual({});
         });
     });
+
+    it('removes previous P&R outputs before executing nextpnr', () => {
+        const outputFiles = [
+            'nextpnr_out.asc',
+            'nextpnr_out.config',
+            'nextpnr_out.json',
+            'nextpnr_out.bin',
+            'nextpnr_out.bit',
+            'nextpnr_report.json'
+        ];
+
+        outputFiles.forEach((file) => {
+            fs.writeFileSync(path.join(tempDirectory, file), 'old output');
+        });
+
+        jest.mocked(executor.executeCommand).mockImplementation(() => {
+            outputFiles.forEach((file) => {
+                expect(fs.existsSync(path.join(tempDirectory, file))).toBe(false);
+            });
+            return childProcess;
+        });
+
+        runNextpnrPnR(project, logger, callback);
+
+        expect(executor.executeCommand).toHaveBeenCalled();
+    });
+
+    it('does not allow packing stale output after P&R fails', (done) => {
+        const oldOutput = path.join(tempDirectory, 'nextpnr_out.asc');
+        fs.writeFileSync(oldOutput, 'old output');
+
+        const failedResult: p_result = {
+            command: 'nextpnr-ice40',
+            stdout: '',
+            stderr: 'Place & Route failed',
+            return_value: 1,
+            successful: false
+        };
+
+        jest.mocked(executor.executeCommand).mockImplementation(
+            (_config, _args, _cwd, executeCallback) => {
+                executeCallback(failedResult);
+                return childProcess;
+            }
+        );
+
+        runNextpnrPnR(project, logger, () => {
+            expect(fs.existsSync(oldOutput)).toBe(false);
+            
+            runNextpnrPack(project, logger, (packResult: p_result) => {
+                expect(packResult.successful).toBe(false);
+                expect(packResult.stderr).toContain('Place & Route output not found');
+                expect(executor.executeBinary).not.toHaveBeenCalled();
+                done();
+            });
+        });
+    });
 });

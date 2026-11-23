@@ -39,12 +39,6 @@ export function buildNextpnrArgs(
         throw new Error(`Unsupported ECP5 device: ${config.ecp5_device}`);
     }
 
-    if (family !== e_tools_nextpnr_target_family.ice40 && config.ice40_device !== e_tools_nextpnr_ice40_device.up5k) {
-        throw new Error('ice40_device is only valid for the iCE40 target family.');
-    }
-    if (family !== e_tools_nextpnr_target_family.ecp5 && config.ecp5_device !== e_tools_nextpnr_ecp5_device.ecp5_45k) {
-        throw new Error('ecp5_device is only valid for the ECP5 target family.');
-    }
     if (family === e_tools_nextpnr_target_family.generic && genericArchScript === '') {
         throw new Error('generic_arch_script is required for the generic target family.');
     }
@@ -74,6 +68,7 @@ export function buildNextpnrArgs(
         '--hx8k': [e_tools_nextpnr_target_family.ice40],
         '--lp384': [e_tools_nextpnr_target_family.ice40],
         '--lp1k': [e_tools_nextpnr_target_family.ice40],
+        '--lp4k': [e_tools_nextpnr_target_family.ice40],
         '--lp8k': [e_tools_nextpnr_target_family.ice40],
         '--up3k': [e_tools_nextpnr_target_family.ice40],
         '--up5k': [e_tools_nextpnr_target_family.ice40],
@@ -84,6 +79,12 @@ export function buildNextpnrArgs(
         '--25k': [e_tools_nextpnr_target_family.ecp5],
         '--45k': [e_tools_nextpnr_target_family.ecp5],
         '--85k': [e_tools_nextpnr_target_family.ecp5],
+        '--um-25k': [e_tools_nextpnr_target_family.ecp5],
+        '--um-45k': [e_tools_nextpnr_target_family.ecp5],
+        '--um-85k': [e_tools_nextpnr_target_family.ecp5],
+        '--um5g-25k': [e_tools_nextpnr_target_family.ecp5],
+        '--um5g-45k': [e_tools_nextpnr_target_family.ecp5],
+        '--um5g-85k': [e_tools_nextpnr_target_family.ecp5],
         '--pcf': [e_tools_nextpnr_target_family.ice40],
         '--asc': [e_tools_nextpnr_target_family.ice40],
         '--lpf': [e_tools_nextpnr_target_family.ecp5],
@@ -92,8 +93,11 @@ export function buildNextpnrArgs(
     const managedOptions = new Set([
         '--json', '--asc', '--textcfg', '--write', '--pcf', '--lpf',
         '--freq', '--seed', '--placer', '--router', '--gui', '--report', '--package', '--pre-pack',
-        '--hx1k', '--hx4k', '--hx8k', '--lp384', '--lp1k', '--lp8k', '--up3k', '--up5k', '--u1k', '--u2k', '--u4k',
-        '--12k', '--25k', '--45k', '--85k'
+        '--hx1k', '--hx4k', '--hx8k', '--lp384', '--lp1k', '--lp4k', '--lp8k',
+        '--up3k', '--up5k', '--u1k', '--u2k', '--u4k',
+        '--12k', '--25k', '--45k', '--85k',
+        '--um-25k', '--um-45k', '--um-85k',
+        '--um5g-25k', '--um5g-45k', '--um5g-85k'
     ]);
     const seenOptions = new Set<string>();
     for (const token of extraOptionTokens) {
@@ -120,7 +124,7 @@ export function buildNextpnrArgs(
     if (family === e_tools_nextpnr_target_family.ice40) {
         args.push(`--${config.ice40_device}`);
         if (packageName !== '') {
-            args.push('--package', packageName);
+            args.push('--package', packageName.toLowerCase());
         }
         if (pcfFile !== '') {
             args.push('--pcf', pcfFile);
@@ -132,10 +136,16 @@ export function buildNextpnrArgs(
             [e_tools_nextpnr_ecp5_device.ecp5_25k]: '--25k',
             [e_tools_nextpnr_ecp5_device.ecp5_45k]: '--45k',
             [e_tools_nextpnr_ecp5_device.ecp5_85k]: '--85k',
+            [e_tools_nextpnr_ecp5_device.ecp5_um_25k]: '--um-25k',
+            [e_tools_nextpnr_ecp5_device.ecp5_um_45k]: '--um-45k',
+            [e_tools_nextpnr_ecp5_device.ecp5_um_85k]: '--um-85k',
+            [e_tools_nextpnr_ecp5_device.ecp5_um5g_25k]: '--um5g-25k',
+            [e_tools_nextpnr_ecp5_device.ecp5_um5g_45k]: '--um5g-45k',
+            [e_tools_nextpnr_ecp5_device.ecp5_um5g_85k]: '--um5g-85k',
         };
         args.push(ecp5DeviceMap[config.ecp5_device]);
         if (packageName !== '') {
-            args.push('--package', packageName);
+            args.push('--package', packageName.toUpperCase());
         }
         if (lpfFile !== '') {
             args.push('--lpf', lpfFile);

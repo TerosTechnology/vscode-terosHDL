@@ -1,4 +1,9 @@
-import { get_default_config, e_tools_nextpnr_target_family } from '../../../../src/colibri/config/config_declaration';
+import {
+    get_default_config,
+    e_tools_nextpnr_target_family,
+    e_tools_nextpnr_ice40_device,
+    e_tools_nextpnr_ecp5_device
+} from '../../../../src/colibri/config/config_declaration';
 import { buildNextpnrArgs, buildPackArgs } from '../../../../src/colibri/project_manager/tool/nextpnr/commandBuilder';
 
 describe('nextpnr Command Builder', () => {
@@ -167,28 +172,40 @@ describe('nextpnr Command Builder', () => {
             });
         });
 
-        it('adds --package for stable families when configured', () => {
+        it('normalizes package names according to the target family', () => {
             expect(buildNextpnrArgs(
                 { ...defaultConfig(), target_family: e_tools_nextpnr_target_family.ice40, package: 'SG48' },
                 'design.json',
                 'design.asc'
-            )).toEqual([
-                '--json', 'design.json', '--up5k', '--package', 'SG48', '--asc', 'design.asc', '--seed', '1'
-            ]);
+        )).toEqual([
+            '--json', 'design.json', '--up5k', '--package', 'sg48', '--asc', 'design.asc', '--seed', '1'
+        ]);
 
-            expect(buildNextpnrArgs(
-                { ...defaultConfig(), target_family: e_tools_nextpnr_target_family.ecp5, package: 'CABGA381' },
-                'design.json',
-                'design.config'
-            )).toEqual([
-                '--json', 'design.json', '--45k', '--package', 'CABGA381', '--textcfg', 'design.config', '--seed', '1'
-            ]);
-        });
+        expect(buildNextpnrArgs(
+            { ...defaultConfig(), target_family: e_tools_nextpnr_target_family.ecp5, package: 'cabga381' },
+            'design.json',
+            'design.config'
+        )).toEqual([
+            '--json', 'design.json', '--45k', '--package', 'CABGA381', '--textcfg', 'design.config', '--seed', '1'
+        ]);
+    });
 
-        ['--package', '--up5k'].forEach((option) => {
+        [
+        '--package', '--up5k', '--lp4k', '--um-25k','--um-45k', '--um-85k',
+        '--um5g-25k', '--um5g-45k', '--um5g-85k'
+        ].forEach((option) => {
             it(`rejects managed device/package option ${option} in extra_options`, () => {
-                expect(() => buildNextpnrArgs({ ...defaultConfig(), extra_options: [option] }, 'design.json', 'out.asc'))
-                    .toThrow(option + ' is managed');
+                expect(() => buildNextpnrArgs(
+                    {
+                        ...defaultConfig(),
+                        target_family: option.startsWith('--um')
+                            ? e_tools_nextpnr_target_family.ecp5
+                            : e_tools_nextpnr_target_family.ice40,
+                        extra_options: [option]
+                    },
+                        'design.json',
+                        'out.asc'
+                )).toThrow(option + ' is managed');
             });
         });
 
@@ -198,6 +215,37 @@ describe('nextpnr Command Builder', () => {
                 'design.json',
                 'out.config'
             )).toThrow('--12k is managed');
+        });
+
+        ([
+            [e_tools_nextpnr_ecp5_device.ecp5_um_25k, '--um-25k'],
+            [e_tools_nextpnr_ecp5_device.ecp5_um_45k, '--um-45k'],
+            [e_tools_nextpnr_ecp5_device.ecp5_um_85k, '--um-85k'],
+            [e_tools_nextpnr_ecp5_device.ecp5_um5g_25k, '--um5g-25k'],
+            [e_tools_nextpnr_ecp5_device.ecp5_um5g_45k, '--um5g-45k'],
+            [e_tools_nextpnr_ecp5_device.ecp5_um5g_85k, '--um5g-85k']
+        ] as const).forEach(([device, flag]) => {
+            it(`builds ECP5 arguments for device ${device} with flag ${flag}`, () => {
+                const config = {
+                    ...defaultConfig(),
+                    target_family: e_tools_nextpnr_target_family.ecp5,
+                    ecp5_device: device
+                };
+
+                const args = buildNextpnrArgs(config, 'design.json', 'design.config');
+
+                expect(args).toContain(flag);
+            });
+        });
+
+        it('builds iCE40 arguments with the LP4K device', () => {
+            const config = {
+                ...defaultConfig(),
+                target_family: e_tools_nextpnr_target_family.ice40,
+                ice40_device: e_tools_nextpnr_ice40_device.lp4k
+            };
+            const args = buildNextpnrArgs(config, 'design.json', 'design.asc');
+            expect(args).toContain('--lp4k');
         });
     });
 
@@ -225,5 +273,34 @@ describe('nextpnr Command Builder', () => {
                 'nextpnr_out.bit'
             )).toThrow('Bitstream generation is not supported for the generic target family.');
         });
+
+    });
+
+    it('ignores the ECP5 device when building iCE40 arguments', () => {
+        const config = {
+            ...defaultConfig(),
+            target_family: e_tools_nextpnr_target_family.ice40,
+            ice40_device: e_tools_nextpnr_ice40_device.hx8k,
+            ecp5_device: e_tools_nextpnr_ecp5_device.ecp5_85k
+        };
+
+        const args = buildNextpnrArgs(config, 'design.json', 'design.asc');
+
+        expect(args).toContain('--hx8k');
+        expect(args).not.toContain('--85k');
+    });
+
+    it('ignores the iCE40 device when building ECP5 arguments', () => {
+        const config = {
+            ...defaultConfig(),
+            target_family: e_tools_nextpnr_target_family.ecp5,
+            ecp5_device: e_tools_nextpnr_ecp5_device.ecp5_25k,
+            ice40_device: e_tools_nextpnr_ice40_device.hx8k
+        };
+
+        const args = buildNextpnrArgs(config, 'design.json', 'design.config');
+
+        expect(args).toContain('--25k');
+        expect(args).not.toContain('--hx8k');
     });
 });

@@ -14,7 +14,7 @@
   command: "eslint src"
 
 - name: "watch"
-  command: npm run-script copy-files & tsc --watch --p ./tsconfig.json & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"
+  command: npm run-script copy-files && tsc --watch --p ./tsconfig.json && nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"
 
 - name: "generate-examples"
   command: "cd ./resources/project_manager; ./copy_examples.sh"
@@ -32,13 +32,13 @@
   command: "cd auto_package & ./gen.sh"
 
 - name : "build-webviews"
-  command: "NODE_ENV=production node resources/webviews/reporters/esbuild.js"
+  command: "cross-env NODE_ENV=production node resources/webviews/reporters/esbuild.js"
 
 - name : "build-webviews-configuration"
-  command: "NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js"
+  command: "cross-env NODE_ENV=production node resources/webviews/fileConfiguration/esbuild.js"
 
 - name : "compile-esbuild"
-  command: "NODE_ENV=production node ./esbuild.js"
+  command: "cross-env NODE_ENV=production node ./esbuild.js"
 
 - name : "copy-files"
   command: "python3 copy_files.py "

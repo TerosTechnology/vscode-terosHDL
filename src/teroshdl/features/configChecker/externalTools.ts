@@ -44,8 +44,6 @@ async function checkBinaryWithVersionFallback(
 ): Promise<BinaryCheck> {
     const versionArgCandidates: string[][] = [
         ['--version'],
-        ['-V'],
-        []
     ];
     let lastResult: BinaryCheck | undefined;
     for (const versionArgs of versionArgCandidates) {
@@ -71,6 +69,35 @@ async function checkBinaryWithVersionFallback(
                     successfulFind: true,
                     successfulConfig: true
                 };
+            }
+        }
+    }
+
+    if (configuredInstallationPath === '') {
+        const pathDirectories = (process.env.PATH ?? '')
+            .split(path_lib.delimiter)
+            .filter(directory => directory !== '');
+
+        const binaryNames = get_os() === OS.WINDOWS
+            ? [binaryName, `${binaryName}.exe`]
+            : [binaryName];
+
+        for (const directory of pathDirectories) {
+            for (const candidate of binaryNames) {
+                const fullPath = path_lib.join(directory, candidate);
+
+                if (fs.existsSync(fullPath)) {
+                    return {
+                        displayName,
+                        binaryPath: fullPath,
+                        messageList: [
+                            `🔎 Searching for the binary ${displayName} at "${fullPath}"`,
+                            `✅ ${displayName} found at "${fullPath}" (version query not supported by this binary).`
+                        ],
+                        successfulFind: true,
+                        successfulConfig: true
+                    };
+                }
             }
         }
     }
