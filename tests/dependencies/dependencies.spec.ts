@@ -26,8 +26,6 @@ const HELPER_FOLDER = path_lib.join(__dirname, 'helpers');
 const dependency_graph = new Dependency_graph();
 
 describe('dependencies', () => {
-    jest.setTimeout(100000);
-
     it('compile order', async () => {
         const file_list : t_file[] = [
             {
@@ -57,7 +55,7 @@ describe('dependencies', () => {
         expect(compile_order.file_order[1]).toStrictEqual(file_list[0]);
 
         expect(compile_order.successful).toBe(true);
-    });
+    }, 100000);
 
     // Fix with: https://github.com/pyodide/pyodide/issues/4261
 
@@ -85,7 +83,7 @@ describe('dependencies', () => {
     //     const compile_order = await dependency_graph.get_dependency_tree_pyodide(file_list);
     //     expect(compile_order.successful).toBe(true);
 
-    // });
+    // }, 100000);
 
     // it('dependency graph', async () => {
     //     const file_list : t_file[] = [
@@ -110,7 +108,7 @@ describe('dependencies', () => {
     //     const compile_order = await dependency_graph.get_dependency_graph_svg(file_list, "");
 
     //     expect(compile_order.successful).toBe(true);
-    // });
+    // }, 100000);
 
 });
 
