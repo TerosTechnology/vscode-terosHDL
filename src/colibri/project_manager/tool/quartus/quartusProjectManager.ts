@@ -1,7 +1,9 @@
 // This code only can be used for Quartus boards
 
-import { e_project_type, e_source_type, e_timing_mode, t_action_result, t_file, t_terminalCommandDefinition, 
-    t_timing_path } from "../../common";
+import {
+    e_file_origin, e_project_type, e_source_type, e_timing_mode, t_action_result, t_file,
+    t_terminalCommandDefinition, t_timing_path
+} from "../../common";
 import { Project_manager } from "../../project_manager";
 import * as chokidar from "chokidar";
 import {
@@ -11,7 +13,7 @@ import {
 } from "./utils";
 import { getIpCatalog } from "./ipCatalog";
 import {
-    e_config, e_tools_general_execution_mode,
+    e_config, e_tools_general_execution_mode, get_config_from_json,
     e_tools_quartus_optimization_mode
 } from "../../../config/config_declaration";
 import * as path_lib from 'path';
@@ -35,7 +37,7 @@ import { ProjectEmitter, e_event } from "../../projectEmitter";
 // import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import { Process } from "../../../process/process";
 import * as process_utils from "../../../process/utils";
-import { LoggerBase } from "colibri/logger/logger";
+import { Logger, LoggerBase } from "colibri/logger/logger";
 
 function getVersionDirectory(basePath: string): string {
     const defaultVersionDirectory = "23.3.0";
@@ -97,7 +99,7 @@ export class QuartusProjectManager extends Project_manager {
                 this.updateStatus(false);
             }
             if (path === this.projectDiskPath) {
-                this.syncWithDisk();
+                this.requestSyncWithDisk();
             }
         });
         this.quartusStatusWatcher.on('unlink', (path: any, _stats: any) => {
@@ -105,7 +107,7 @@ export class QuartusProjectManager extends Project_manager {
                 this.updateStatus(false);
             }
             if (path === this.projectDiskPath) {
-                this.syncWithDisk();
+                this.requestSyncWithDisk();
             }
         });
     }
@@ -118,16 +120,28 @@ export class QuartusProjectManager extends Project_manager {
         return e_project_type.QUARTUS;
     }
 
-    static async fromJson(jsonContent: any, _reference_path: string,
+    static async fromJson(jsonContent: any, reference_path: string,
         emitterProject: ProjectEmitter): Promise<QuartusProjectManager> {
-        try {
-            const projectPath = jsonContent.project_disk_path;
-            return await this.fromExistingQuartusProject(
-                GlobalConfigManager.getInstance().get_config(), projectPath, emitterProject);
-        }
-        catch (error) {
-            throw new QuartusExecutionError("Error in Quartus execution");
-        }
+        const projectPath = jsonContent.project_disk_path;
+        const project = await this.fromExistingQuartusProject(
+            GlobalConfigManager.getInstance().get_config(), projectPath, emitterProject);
+        await project.with_source_update(async () => {
+            const quartusFiles = project.get_file().map(file => ({ ...file }));
+            project.clearFiles(false);
+            await project.restore_project_files(jsonContent, reference_path);
+            const result = project.get_project_definition().file_manager.replace_quartus_contributions(quartusFiles);
+            if (!result.successful) {
+                const message = `Error synchronizing Quartus project: ${result.msg}`;
+                if (!project.emitterProject.emitEventLog(message, e_event.STDOUT_ERROR)) {
+                    Logger.logger.error(message);
+                }
+            }
+            if (jsonContent?.configuration !== undefined) {
+                await project.restoreConfiguration(jsonContent.configuration);
+            }
+        });
+        await project.restore_project_watchers(jsonContent, reference_path);
+        return project;
     }
 
     /**
@@ -192,17 +206,31 @@ export class QuartusProjectManager extends Project_manager {
             quartusProject.setTopLevelTestbench(projectInfo.eda_test_bench_top_module);
 
             // Add all files to project
-            await quartusProject.add_file_from_array_no_quartus_update(projectFiles);
+            const result = quartusProject.get_project_definition().file_manager
+                .replace_quartus_contributions(projectFiles);
+            if (!result.successful) {
+                throw new QuartusExecutionError(result.msg);
+            }
             await quartusProject.updateStatus(true);
             return quartusProject;
         }
         catch (error) {
-            throw new QuartusExecutionError("Error in Quartus execution");
+            throw new QuartusExecutionError(`Error loading Quartus project: ${String(error)}`);
         }
     }
 
     public setTopLevelTestbench(topLevelTestbench: string) {
         this.topLevelTestbench = topLevelTestbench;
+    }
+
+    private async restoreConfiguration(saved: unknown): Promise<void> {
+        const config = get_config_from_json(saved);
+        const quartus = this.get_config().tools.quartus;
+        config.tools.quartus.family = quartus.family;
+        config.tools.quartus.device = quartus.device;
+        config.tools.quartus.optimization_mode = quartus.optimization_mode;
+        config.tools.quartus.allow_register_retiming = quartus.allow_register_retiming;
+        await super.set_config(config, false);
     }
 
     private async setConfigFromQuartusProject(family: string, part: string,
@@ -222,32 +250,46 @@ export class QuartusProjectManager extends Project_manager {
         super.emitUpdateStatus();
     }
 
+    private requestSyncWithDisk(): void {
+        void this.syncWithDisk().catch((error: unknown) => {
+            const message = `Error synchronizing Quartus project: ${String(error)}`;
+            if (!this.emitterProject.emitEventLog(message, e_event.STDOUT_ERROR)) {
+                Logger.logger.error(message);
+            }
+        });
+    }
+
     async syncWithDisk(): Promise<void> {
-        const config = super.get_config();
-        const projectInfo = await getProjectInfo(config, this.projectDiskPath, this.emitterProject);
-        const quartusProjectFileList = projectInfo.file_list;
+        await this.with_source_update(async () => {
+            const config = super.get_config();
+            const projectInfo = await getProjectInfo(config, this.projectDiskPath, this.emitterProject);
+            const quartusProjectFileList = projectInfo.file_list;
+            const result = this.get_project_definition().file_manager
+                .replace_quartus_contributions(quartusProjectFileList);
+            if (!result.successful) {
+                throw new QuartusExecutionError(result.msg);
+            }
 
-        super.clearFiles(false);
-        await super.add_file_from_array(quartusProjectFileList, false);
-
-        if (projectInfo.topEntity !== "") {
-            for (const file of quartusProjectFileList) {
-                if (get_filename(file.name, false) === projectInfo.topEntity) {
-                    super.add_toplevel_path(file.name, false);
-                    break;
+            if (projectInfo.topEntity !== "") {
+                for (const file of quartusProjectFileList) {
+                    if (get_filename(file.name, false) === projectInfo.topEntity) {
+                        super.add_toplevel_path(file.name, false);
+                        break;
+                    }
                 }
             }
-        }
 
-        await this.setConfigFromQuartusProject(
-            projectInfo.family,
-            projectInfo.part,
-            projectInfo.optimization_mode,
-            projectInfo.allow_register_retiming,
-            false,
-        );
-        this.setTopLevelTestbench(projectInfo.eda_test_bench_top_module);
-        super.notifyProjectChanged();
+            await this.setConfigFromQuartusProject(
+                projectInfo.family,
+                projectInfo.part,
+                projectInfo.optimization_mode,
+                projectInfo.allow_register_retiming,
+                false,
+            );
+            this.setTopLevelTestbench(projectInfo.eda_test_bench_top_module);
+            this.delete_phantom_toplevel();
+            await super.notifyProjectChanged();
+        });
     }
 
     public async add_toplevel_path_no_quartus_update(toplevel_path_inst: string): Promise<t_action_result> {
@@ -268,67 +310,165 @@ export class QuartusProjectManager extends Project_manager {
         return await this.add_file_from_array([file]);
     }
 
+    public async move_file(name: string, from_library: string, to_library: string): Promise<t_action_result> {
+        return this.with_source_update(() => super.move_file(name, from_library, to_library));
+    }
+
+    public async move_files(
+        files: { name: string; logical_name: string }[], to_library: string
+    ): Promise<t_action_result> {
+        return this.with_source_update(() => super.move_files(files, to_library));
+    }
+
+    public async reorder_file(name: string, library: string, new_index: number): Promise<t_action_result> {
+        return this.with_source_update(() => super.reorder_file(name, library, new_index));
+    }
+
+    public async reorder_files(names: string[], library: string, new_index: number): Promise<t_action_result> {
+        return this.with_source_update(() => super.reorder_files(names, library, new_index));
+    }
+
     public async modifyFileSourceType(filePath: string, logicalName: string,
         newSourceType: e_source_type): Promise<boolean> {
 
-        const result = await super.modifyFileSourceType(filePath, logicalName, newSourceType);
-        if (result) {
-            const allTestenchFiles = super.get_file().filter(file => file.source_type === e_source_type.SIMULATION);
-            await setTestbenchFileList(this.get_config(), this.projectDiskPath, allTestenchFiles, this.emitterProject);
-        }
-        return result;
+        return this.with_source_update(async () => {
+            const source = super.get_file().find(file => file.name === filePath && file.logical_name === logicalName);
+            if (source === undefined || source.source_type === newSourceType) {
+                return false;
+            }
+            if (source.origins?.includes(e_file_origin.QUARTUS)) {
+                const files = this.get_project_definition().file_manager;
+                const physical = (await getProjectInfo(
+                    this.get_config(), this.projectDiskPath, this.emitterProject
+                )).file_list;
+                const matching = (file: t_file) => super.get_file().find(existing =>
+                    existing.name === file.name && existing.origins?.includes(e_file_origin.QUARTUS) &&
+                    existing.logical_name === files.get_automatic_library(file.name, file.logical_name)
+                );
+                if (!physical.some(file => matching(file) === source)) {
+                    throw new QuartusExecutionError(
+                        "Quartus source assignments changed; synchronize the project and retry"
+                    );
+                }
+                const testbenchFiles = physical.filter(file => {
+                    const existing = matching(file);
+                    return (existing === source ? newSourceType : existing?.source_type ?? file.source_type)
+                        === e_source_type.SIMULATION;
+                });
+                await setTestbenchFileList(
+                    this.get_config(), this.projectDiskPath, testbenchFiles, this.emitterProject
+                );
+            }
+            return super.modifyFileSourceType(filePath, logicalName, newSourceType);
+        });
     }
 
     public async add_file_from_array(file_list: t_file[]): Promise<t_action_result> {
-        const config = super.get_config();
-        try {
-            await addFilesToProject(config, this.projectDiskPath, file_list, this.emitterProject);
-        } catch (error) {
-            throw new QuartusExecutionError("Error in Quartus execution");
-        }
-        return await super.add_file_from_array(file_list);
+        return this.with_source_update(async () => {
+            const files = this.get_project_definition().file_manager;
+            const contributions = file_list.map(file => ({
+                ...file, origins: [e_file_origin.QUARTUS], watcher_paths: []
+            }));
+            const validation = files.add_contributions(contributions, true);
+            if (!validation.successful) {
+                return validation;
+            }
+            const pending = new Set<string>();
+            const to_add = file_list.filter(file => {
+                const library = file.is_manual
+                    ? file.logical_name : files.get_automatic_library(file.name, file.logical_name);
+                const key = JSON.stringify([file.name, file.logical_name]);
+                if (pending.has(key) || files.get().some(existing => existing.name === file.name &&
+                    existing.logical_name === library && existing.origins?.includes(e_file_origin.QUARTUS))) {
+                    return false;
+                }
+                pending.add(key);
+                return true;
+            });
+            if (to_add.length > 0) {
+                await addFilesToProject(super.get_config(), this.projectDiskPath, to_add, this.emitterProject);
+            }
+            const result = files.add_contributions(contributions);
+            if (!result.successful) {
+                throw new QuartusExecutionError(`Could not register Quartus sources: ${result.msg}`);
+            }
+            await super.notifyProjectChanged();
+            return result;
+        });
     }
 
-    private async add_file_from_array_no_quartus_update(file_list: t_file[]): Promise<t_action_result> {
-        return await super.add_file_from_array(file_list);
+    private async remove_quartus_sources(selected: t_file[]): Promise<t_action_result> {
+        if (selected.length === 0) {
+            return { result: "", successful: false, msg: "No Quartus contribution found" };
+        }
+        const files = this.get_project_definition().file_manager;
+        const projectInfo = await getProjectInfo(super.get_config(), this.projectDiskPath, this.emitterProject);
+        const assignments = projectInfo.file_list.filter(file => selected.some(item =>
+            item.name === file.name &&
+            item.logical_name === files.get_automatic_library(file.name, file.logical_name)
+        ));
+        if (selected.some(item => !assignments.some(file => item.name === file.name &&
+            item.logical_name === files.get_automatic_library(file.name, file.logical_name)))) {
+            throw new QuartusExecutionError("Quartus source assignments changed; synchronize the project and retry");
+        }
+        await removeFilesFromProject(super.get_config(), this.projectDiskPath, assignments, this.emitterProject);
+        for (const file of selected) {
+            const result = files.remove_origin_contribution(file.name, file.logical_name, e_file_origin.QUARTUS);
+            if (!result.successful) {
+                throw new QuartusExecutionError(result.msg);
+            }
+        }
+        this.delete_phantom_toplevel();
+        await super.notifyChanged();
+        return { result: "", successful: true, msg: "" };
+    }
+
+    private async remove_manual_sources(selected: t_file[]): Promise<t_action_result> {
+        if (selected.length === 0) {
+            return { result: "", successful: false, msg: "No Quartus or manual contribution found" };
+        }
+        const files = this.get_project_definition().file_manager;
+        for (const file of selected) {
+            const result = files.remove_manual_contribution(file.name, file.logical_name);
+            if (!result.successful) {
+                throw new Error(result.msg);
+            }
+        }
+        this.delete_phantom_toplevel();
+        await super.notifyChanged();
+        return { result: "", successful: true, msg: "" };
     }
 
     public async delete_file_by_logical_name(logical_name: string): Promise<t_action_result> {
-        const fileList = super.get_file();
-        const fileListToRemove = fileList.filter(file => file.logical_name === logical_name);
-
-        const config = super.get_config();
-        try {
-            await removeFilesFromProject(config, this.projectDiskPath, fileListToRemove, this.emitterProject);
-        } catch (error) {
-            throw new QuartusExecutionError("Error in Quartus execution");
-        }
-        super.notifyChanged();
-        return super.delete_file_by_logical_name(logical_name);
+        return this.with_source_update(async () => {
+            const libraryFiles = super.get_file().filter(file => file.logical_name === logical_name);
+            if (libraryFiles.length > 0 && libraryFiles.every(file => file.name === "")) {
+                return super.delete_file_by_logical_name(logical_name);
+            }
+            const quartusFiles = libraryFiles.filter(file => file.origins?.includes(e_file_origin.QUARTUS));
+            const result = quartusFiles.length > 0
+                ? await this.remove_quartus_sources(quartusFiles)
+                : await this.remove_manual_sources(libraryFiles.filter(file => file.is_manual));
+            if (result.successful && !super.get_file().some(file =>
+                file.logical_name === logical_name && file.name !== ""
+            ) && super.get_file().some(file => file.logical_name === logical_name && file.name === "")) {
+                await super.delete_file_by_logical_name(logical_name);
+            }
+            return result;
+        });
     }
 
     public async delete_file(name: string, logical_name: string) {
-        const projectFileList = super.get_file();
-        let fileToDelete: undefined | t_file = undefined;
-        for (const file of projectFileList) {
-            if (file.name === name && file.logical_name === logical_name) {
-                fileToDelete = file;
-                break;
+        return this.with_source_update(async () => {
+            const file = super.get_file().find(item => item.name === name && item.logical_name === logical_name);
+            if (file === undefined) {
+                return { result: "", successful: false, msg: "File not found" };
             }
-        }
-
-        if (fileToDelete === undefined) {
-            throw new Error("File not found");
-        }
-
-        const config = super.get_config();
-        try {
-            await removeFilesFromProject(config, this.projectDiskPath, [fileToDelete], this.emitterProject);
-        } catch (error) {
-            throw new QuartusExecutionError("Error in Quartus execution");
-        }
-        super.notifyChanged();
-        return super.delete_file(name, logical_name);
+            if (file.origins?.includes(e_file_origin.QUARTUS)) {
+                return this.remove_quartus_sources([file]);
+            }
+            return this.remove_manual_sources(file.is_manual ? [file] : []);
+        });
     }
 
     public getTaskStatus(): { "taskList": t_taskRep[], "currentTask": e_taskType | undefined } {

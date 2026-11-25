@@ -243,7 +243,16 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
         if (line_split.length > 3) {
             const fileListStr = line_split.slice(3).join('\n');
             const csvFileList = process_utils.create_temp_file(fileListStr);
-            const fileList = get_files_from_csv(csvFileList, false).file_list;
+            let fileList: t_file[];
+            try {
+                const loaded = get_files_from_csv(csvFileList, false);
+                if (!loaded.successful) {
+                    throw new QuartusExecutionError(loaded.msg);
+                }
+                fileList = loaded.file_list;
+            } finally {
+                file_utils.remove_file(csvFileList);
+            }
 
             for (const file of fileList) {
                 if (testbenchFileList.includes(file.name)) {
@@ -251,11 +260,10 @@ export async function getProjectInfo(config: e_config, projectPath: string, emit
                 }
             }
 
-            file_utils.remove_file(csvFileList);
             result.file_list = fileList;
         }
     } catch (error) {
-        throw new QuartusExecutionError("Error in Quartus execution");
+        throw new QuartusExecutionError(`Error reading Quartus project: ${String(error)}`);
     }
 
     for (const key in e_tools_quartus_optimization_mode) {

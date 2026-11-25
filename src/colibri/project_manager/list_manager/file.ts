@@ -17,7 +17,8 @@
 // You should have received a copy of the GNU General Public License
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
-import { t_file, t_action_result, t_logical, e_source_type } from "../common";
+import * as path from "path";
+import { t_file, t_action_result, t_logical, e_file_origin, e_source_type } from "../common";
 import * as file_utils from "../../utils/file_utils";
 import { Manager } from "./manager";
 import { Dependency_graph } from "../dependency/dependency";
@@ -94,6 +95,11 @@ export class File_manager extends Manager<t_file, undefined, string, string> {
         );
             this.library_overrides.set(key, { ...override });
         });
+    }
+
+    public get_automatic_library(name: string, original_library: string): string {
+        return this.library_overrides.get(this.get_library_override_key(name, original_library))?.target_library
+            ?? original_library;
     }
 
     public get_visual_order(): string[] {
@@ -196,7 +202,7 @@ async order(python_path: string, compileOrderPath: string) {
     clear_automatic_files() {
         const new_files: t_file[] = [];
         this.files.forEach(file => {
-            if (file.is_manual === true) {
+            if (file.is_manual === true || file.name === "") {
                 new_files.push(file);
             }
         });
@@ -244,10 +250,9 @@ async order(python_path: string, compileOrderPath: string) {
             msg: ""
         };
 
-        const override_key = this.get_library_override_key(file.name, file.logical_name);
         const target_library = file.is_manual
             ? file.logical_name
-            : this.library_overrides.get(override_key)?.target_library ?? file.logical_name;
+            : this.get_automatic_library(file.name, file.logical_name);
 
         if (this.check_if_exists(file.name, target_library)) {
             result.successful = false;
@@ -269,6 +274,203 @@ async order(python_path: string, compileOrderPath: string) {
         this.files.push(complete_file);
         this.invalidate_compile_order();
         return result;
+    }
+
+    /** Merge provenance for the same file and library; conflicting metadata is rejected. */
+    add_contribution(file: t_file): t_action_result {
+        const origins = Array.from(new Set(file.origins ?? []));
+        const watcher_paths = file.watcher_paths ?? [];
+        const invalid = (msg: string): t_action_result => ({ result: "", successful: false, msg });
+
+        if (file.name === "") {
+            return invalid("An empty library entry cannot have file contributions");
+        }
+        if (origins.some(origin => !Object.values(e_file_origin).includes(origin))) {
+            return invalid("Invalid file origin");
+        }
+        if (!file.is_manual && origins.length === 0) {
+            return invalid("An automatic contribution must have an origin");
+        }
+        if (watcher_paths.some(watcher_path => !path.isAbsolute(watcher_path))) {
+            return invalid("Watcher paths must be absolute");
+        }
+        const normalized_paths = Array.from(new Set(watcher_paths.map(watcher_path => path.normalize(watcher_path))));
+        if (origins.includes(e_file_origin.WATCHER) !== (normalized_paths.length > 0)) {
+            return invalid("Watcher origins and watcher paths must be specified together");
+        }
+
+        const target_library = file.is_manual
+            ? file.logical_name
+            : this.get_automatic_library(file.name, file.logical_name);
+        const existing = this.files.find(item => item.name === file.name && item.logical_name === target_library);
+        const version = file_utils.check_default_version_for_filepath(file.name, file.file_version);
+
+        if (existing !== undefined) {
+            if (existing.file_type !== file.file_type || existing.file_version !== version ||
+                existing.is_include_file !== file.is_include_file || existing.include_path !== file.include_path ||
+                existing.source_type !== file.source_type) {
+                return invalid("Conflicting file metadata");
+            }
+
+            const existing_origins = existing.origins ?? (
+                existing.is_manual ? [] : [e_file_origin.UNKNOWN]
+            );
+            existing.origins = Array.from(new Set([...existing_origins, ...origins]));
+            existing.watcher_paths = Array.from(new Set([...(existing.watcher_paths ?? []), ...normalized_paths]));
+            existing.is_manual = existing.is_manual || file.is_manual;
+            return { result: "", successful: true, msg: "" };
+        }
+
+        const result = this.add(file);
+        if (result.successful) {
+            const added = this.files[this.files.length - 1];
+            added.origins = origins;
+            added.watcher_paths = normalized_paths;
+        }
+        return result;
+    }
+
+    remove_watcher_contribution(watcher_path: string): t_action_result {
+        if (!path.isAbsolute(watcher_path)) {
+            return { result: "", successful: false, msg: "Watcher paths must be absolute" };
+        }
+        const normalized_path = path.normalize(watcher_path);
+        let removed = false;
+        this.files = this.files.filter(file => {
+            if (!file.watcher_paths?.includes(normalized_path)) {
+                return true;
+            }
+            file.watcher_paths = file.watcher_paths.filter(item => item !== normalized_path);
+            if (file.watcher_paths.length === 0) {
+                file.origins = file.origins?.filter(origin => origin !== e_file_origin.WATCHER);
+            }
+            const keep = file.is_manual || (file.origins?.length ?? 0) > 0;
+            removed ||= !keep;
+            return keep;
+        });
+        if (removed) {
+            this.invalidate_compile_order();
+        }
+        return { result: "", successful: true, msg: "" };
+    }
+
+    remove_origin_contribution(
+        name: string,
+        logical_name: string,
+        origin: e_file_origin.QUARTUS | e_file_origin.OTHER
+    ): t_action_result {
+        if (origin !== e_file_origin.QUARTUS && origin !== e_file_origin.OTHER) {
+            return { result: "", successful: false, msg: "Invalid removable origin" };
+        }
+        const file = this.files.find(item => item.name === name && item.logical_name === logical_name);
+        if (file === undefined || !file.origins?.includes(origin)) {
+            return { result: "", successful: false, msg: "File origin does not exist" };
+        }
+
+        file.origins = file.origins.filter(item => item !== origin);
+        if (!file.is_manual && file.origins.length === 0) {
+            this.files = this.files.filter(item => item !== file);
+            this.invalidate_compile_order();
+        }
+        return { result: "", successful: true, msg: "" };
+    }
+
+    remove_manual_contribution(name: string, logical_name: string): t_action_result {
+        const file = this.files.find(item => item.name === name && item.logical_name === logical_name);
+        if (file === undefined || !file.is_manual) {
+            return { result: "", successful: false, msg: "Manual contribution does not exist" };
+        }
+        file.is_manual = false;
+        if ((file.origins?.length ?? 0) === 0) {
+            this.files = this.files.filter(item => item !== file);
+            this.invalidate_compile_order();
+        }
+        return { result: "", successful: true, msg: "" };
+    }
+
+    private copy_for_contributions(): File_manager {
+        const candidate = new File_manager();
+        candidate.files = this.files.map(file => ({
+            ...file,
+            origins: file.origins?.slice(),
+            watcher_paths: file.watcher_paths?.slice()
+        }));
+        candidate.library_overrides = new Map(this.library_overrides);
+        return candidate;
+    }
+
+    private commit_contributions(candidate: File_manager): void {
+        candidate.apply_visual_order(this.get_visual_order());
+        const compileInputs = (files: t_file[]) => files.map(file => [
+            file.name, file.logical_name, file.file_type, file.file_version,
+            file.is_include_file, file.include_path, file.source_type
+        ]);
+        if (JSON.stringify(compileInputs(this.files)) !== JSON.stringify(compileInputs(candidate.files))) {
+            this.invalidate_compile_order();
+        }
+        this.files = candidate.files;
+    }
+
+    add_contributions(files: t_file[], validate_only = false): t_action_result {
+        const candidate = this.copy_for_contributions();
+        for (const file of files) {
+            const result = candidate.add_contribution(file);
+            if (!result.successful) {
+                return { ...result, msg: `File ${file.name} (${file.logical_name}): ${result.msg}` };
+            }
+        }
+        if (!validate_only) {
+            this.commit_contributions(candidate);
+        }
+        return { result: "", successful: true, msg: "" };
+    }
+
+    replace_quartus_contributions(files: t_file[]): t_action_result {
+        const candidate = this.copy_for_contributions();
+        for (const file of [...candidate.files]) {
+            if (file.origins?.includes(e_file_origin.QUARTUS)) {
+                candidate.remove_origin_contribution(file.name, file.logical_name, e_file_origin.QUARTUS);
+            }
+        }
+        for (const file of files) {
+            const result = candidate.add_contribution({
+                ...file, is_manual: false, origins: [e_file_origin.QUARTUS], watcher_paths: []
+            });
+            if (!result.successful) {
+                return { ...result, msg: `Quartus file ${file.name} (${file.logical_name}): ${result.msg}` };
+            }
+        }
+        this.commit_contributions(candidate);
+        return { result: "", successful: true, msg: "" };
+    }
+
+    replace_watcher_contributions(contributions: { file: t_file; watcher_path: string }[]): t_action_result {
+        const candidate = this.copy_for_contributions();
+        const previous_paths = new Set(candidate.files.flatMap(file => file.watcher_paths ?? []));
+        for (const watcher_path of previous_paths) {
+            const result = candidate.remove_watcher_contribution(watcher_path);
+            if (!result.successful) {
+                return result;
+            }
+        }
+
+        for (const { file, watcher_path } of contributions) {
+            const result = candidate.add_contribution({
+                ...file,
+                is_manual: false,
+                origins: [e_file_origin.WATCHER],
+                watcher_paths: [watcher_path]
+            });
+            if (!result.successful) {
+                return {
+                    ...result,
+                    msg: `Watcher ${watcher_path}, file ${file.name} (${file.logical_name}): ${result.msg}`
+                };
+            }
+        }
+
+        this.commit_contributions(candidate);
+        return { result: "", successful: true, msg: "" };
     }
 
     move_file(name: string, from_library: string, to_library: string): t_action_result {
@@ -298,7 +500,8 @@ async order(python_path: string, compileOrderPath: string) {
             return result;
         }
 
-        this.update_override(name, from_library, to_library, file.is_manual);
+        this.update_override(name, from_library, to_library,
+            file.is_manual && (file.origins?.length ?? 0) === 0);
 
         file.logical_name = to_library;
         this.invalidate_compile_order();
@@ -358,7 +561,7 @@ async order(python_path: string, compileOrderPath: string) {
                 file.name,
                 file.logical_name,
                 to_library,
-                file.is_manual
+                file.is_manual && (file.origins?.length ?? 0) === 0
             );
 
             file.logical_name = to_library;

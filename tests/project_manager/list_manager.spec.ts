@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { LANGUAGE } from '../../src/colibri/common/general';
-import { e_source_type, t_file } from '../../src/colibri/project_manager/common';
+import { e_file_origin, e_source_type, t_file } from '../../src/colibri/project_manager/common';
 import {File_manager} from '../../src/colibri/project_manager/list_manager/file';
 
 import { Dependency_graph } from '../../src/colibri/project_manager/dependency/dependency';
@@ -270,6 +270,158 @@ describe('list_manager: file', () => {
         file_manager.add(file);
         const duplicatedResult = file_manager.add(file);
         expect(duplicatedResult.successful).toBe(false);
+    });
+
+    test('combines normalized watcher contributions and removes only the requested watcher', () => {
+        const file = createFile('/sources/shared.py');
+        expect(file_manager.add_contribution({
+            ...file, origins: [e_file_origin.WATCHER], watcher_paths: ['/watchers/a/../one.csv'],
+        }).successful).toBe(true);
+        expect(file_manager.add_contribution({
+            ...file, origins: [e_file_origin.WATCHER], watcher_paths: ['/watchers/one.csv', '/watchers/two.csv'],
+        }).successful).toBe(true);
+        expect(file_manager.get()).toHaveLength(1);
+        expect(file_manager.get()[0]).toEqual(expect.objectContaining({
+            origins: [e_file_origin.WATCHER],
+            watcher_paths: ['/watchers/one.csv', '/watchers/two.csv'],
+        }));
+
+        expect(file_manager.remove_watcher_contribution('/watchers/one.csv').successful).toBe(true);
+        expect(file_manager.get()[0].watcher_paths).toEqual(['/watchers/two.csv']);
+        expect(file_manager.remove_watcher_contribution('/watchers/./two.csv').successful).toBe(true);
+        expect(file_manager.get()).toHaveLength(0);
+    });
+
+    for (const first of ['watcher', 'quartus']) {
+        test(`preserves a shared file when removing the ${first} contribution first`, () => {
+            const file = createFile('/sources/shared.py');
+            file_manager.add_contribution({ ...file, origins: [e_file_origin.QUARTUS] });
+            file_manager.add_contribution({
+                ...file, origins: [e_file_origin.WATCHER], watcher_paths: ['/watchers/one.csv'],
+            });
+
+            if (first === 'watcher') {
+                file_manager.remove_watcher_contribution('/watchers/one.csv');
+                expect(file_manager.get()[0].origins).toEqual([e_file_origin.QUARTUS]);
+                file_manager.remove_origin_contribution(file.name, file.logical_name, e_file_origin.QUARTUS);
+            } else {
+                file_manager.remove_origin_contribution(file.name, file.logical_name, e_file_origin.QUARTUS);
+                expect(file_manager.get()[0].origins).toEqual([e_file_origin.WATCHER]);
+                file_manager.remove_watcher_contribution('/watchers/one.csv');
+            }
+            expect(file_manager.get()).toHaveLength(0);
+        });
+    }
+
+    for (const manualFirst of [true, false]) {
+        test(`keeps a shared manual file regardless of insertion order: ${manualFirst}`, () => {
+            const file = createFile('/sources/shared.py');
+            const manual = { ...file, is_manual: true };
+            const automatic = { ...file, origins: [e_file_origin.QUARTUS] };
+            const contributions = manualFirst ? [manual, automatic] : [automatic, manual];
+            contributions.forEach(item => expect(file_manager.add_contribution(item).successful).toBe(true));
+
+            file_manager.remove_origin_contribution(file.name, file.logical_name, e_file_origin.QUARTUS);
+            expect(file_manager.get()).toHaveLength(1);
+            expect(file_manager.get()[0].is_manual).toBe(true);
+        });
+    }
+
+    test('retains the unknown origin of a legacy automatic file after removing a new contribution', () => {
+        const file = createFile('/sources/legacy.py');
+        file_manager.add(file);
+        expect(file_manager.add_contribution({
+            ...file, origins: [e_file_origin.WATCHER], watcher_paths: ['/watchers/one.csv'],
+        }).successful).toBe(true);
+        file_manager.remove_watcher_contribution('/watchers/one.csv');
+        expect(file_manager.get()).toHaveLength(1);
+        expect(file_manager.get()[0].origins).toEqual([e_file_origin.UNKNOWN]);
+    });
+
+    test('rejects conflicting metadata without registering the new contribution', () => {
+        const file = createFile('/sources/shared.py');
+        file_manager.add_contribution({ ...file, origins: [e_file_origin.QUARTUS] });
+        const result = file_manager.add_contribution({
+            ...file, source_type: e_source_type.SIMULATION,
+            origins: [e_file_origin.WATCHER], watcher_paths: ['/watchers/one.csv'],
+        });
+        expect(result.successful).toBe(false);
+        expect(result.msg).toContain('metadata');
+        expect(file_manager.get()[0]).toEqual(expect.objectContaining({
+            source_type: e_source_type.NONE, origins: [e_file_origin.QUARTUS], watcher_paths: [],
+        }));
+    });
+
+    test('rejects inconsistent watcher provenance without changing files', () => {
+        const file = createFile('/sources/shared.py');
+        for (const contribution of [
+            { ...file, origins: [e_file_origin.WATCHER] },
+            { ...file, origins: [e_file_origin.QUARTUS], watcher_paths: ['/watchers/one.csv'] },
+            { ...file, origins: [e_file_origin.WATCHER], watcher_paths: ['relative.csv'] },
+            file,
+        ]) {
+            expect(file_manager.add_contribution(contribution).successful).toBe(false);
+        }
+        expect(file_manager.remove_watcher_contribution('relative.csv').successful).toBe(false);
+        expect(file_manager.get()).toHaveLength(0);
+    });
+
+    test('keeps separate libraries and applies an automatic library override to a contribution', () => {
+        const file = createFile('/sources/shared.py', 'work');
+        file_manager.add_contribution({ ...file, origins: [e_file_origin.QUARTUS] });
+        file_manager.add_contribution({ ...file, logical_name: 'other', origins: [e_file_origin.OTHER] });
+        file_manager.move_file(file.name, 'work', 'custom');
+        expect(file_manager.add_contribution({
+            ...file, origins: [e_file_origin.WATCHER], watcher_paths: ['/watchers/one.csv'],
+        }).successful).toBe(true);
+        expect(file_manager.get().map(item => [item.logical_name, item.origins])).toEqual([
+            ['custom', [e_file_origin.QUARTUS, e_file_origin.WATCHER]],
+            ['other', [e_file_origin.OTHER]],
+        ]);
+        file_manager.remove_origin_contribution(file.name, 'other', e_file_origin.OTHER);
+        expect(file_manager.get()).toHaveLength(1);
+    });
+
+    test('preserves compile and visual order when only provenance changes', async () => {
+        const first = createFile('/sources/first.py');
+        const second = createFile('/sources/second.py');
+        file_manager.add_contribution({ ...first, origins: [e_file_origin.QUARTUS] });
+        file_manager.add_contribution({ ...second, origins: [e_file_origin.QUARTUS] });
+        await calculateCompileOrder([second, first]);
+
+        file_manager.add_contribution({
+            ...first, origins: [e_file_origin.WATCHER], watcher_paths: ['/watchers/one.csv'],
+        });
+        file_manager.remove_origin_contribution(first.name, first.logical_name, e_file_origin.QUARTUS);
+        expect(file_manager.get().map(file => file.name)).toEqual([first.name, second.name]);
+        expect(file_manager.get_compile_order().map(file => file.name)).toEqual([second.name, first.name]);
+
+        file_manager.remove_watcher_contribution('/watchers/one.csv');
+        expect(file_manager.get().map(file => file.name)).toEqual([second.name]);
+        expect(file_manager.get_compile_order().map(file => file.name)).toEqual([second.name]);
+    });
+
+    test('replacing watcher contributions preserves other origins and unchanged compile order', async () => {
+        const first = createFile('/sources/first.py');
+        const second = createFile('/sources/second.py');
+        file_manager.add_contribution({ ...first, origins: [e_file_origin.QUARTUS] });
+        expect(file_manager.replace_watcher_contributions([
+            { file: first, watcher_path: '/watchers/one.csv' },
+            { file: second, watcher_path: '/watchers/one.csv' },
+        ]).successful).toBe(true);
+        await calculateCompileOrder([second, first]);
+
+        expect(file_manager.replace_watcher_contributions([
+            { file: first, watcher_path: '/watchers/two.csv' },
+            { file: second, watcher_path: '/watchers/two.csv' },
+        ]).successful).toBe(true);
+        expect(file_manager.get().map(file => file.name)).toEqual([first.name, second.name]);
+        expect(file_manager.get_compile_order().map(file => file.name)).toEqual([second.name, first.name]);
+        expect(file_manager.get()[0].origins).toEqual([e_file_origin.QUARTUS, e_file_origin.WATCHER]);
+
+        file_manager.replace_watcher_contributions([]);
+        expect(file_manager.get()).toHaveLength(1);
+        expect(file_manager.get()[0].origins).toEqual([e_file_origin.QUARTUS]);
     });
 
     test('clear', () => {

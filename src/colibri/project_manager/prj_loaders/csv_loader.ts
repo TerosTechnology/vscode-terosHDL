@@ -29,40 +29,38 @@ export function get_files_from_csv(csv_path: string, is_manual: boolean): t_load
         const element = file_list_array[i].trim();
         if (element !== '') {
             try {
-                let proc_error = false;
                 let lib_inst = "";
                 let file_inst = "";
                 const element_split = element.split(',');
-                if (element_split.length === 1) {
-                    file_inst = element.split(',')[0].trim();
+                if (element_split.length > 2 || element_split[element_split.length - 1].trim() === "") {
+                    return {
+                        file_list: [],
+                        successful: false,
+                        msg: `Error processing CSV at line ${i + 1}.`
+                    };
                 }
-                else if (element_split.length === 2) {
-                    lib_inst = element.split(',')[0].trim();
-                    file_inst = element.split(',')[1].trim();
+                if (element_split.length === 1) {
+                    file_inst = element_split[0].trim();
                 }
                 else {
-                    proc_error = true;
+                    lib_inst = element_split[0].trim();
+                    file_inst = element_split[1].trim();
                 }
 
-                if (proc_error === false) {
-                    if (lib_inst === "") {
-                        lib_inst = "";
-                    }
-                    const dirname_csv = file_utils.get_directory(csv_path);
-                    const complete_file_path = file_utils.get_absolute_path(dirname_csv, file_inst);
+                const dirname_csv = file_utils.get_directory(csv_path);
+                const complete_file_path = file_utils.get_absolute_path(dirname_csv, file_inst);
 
-                    const file_edam: t_file = {
-                        name: complete_file_path,
-                        is_include_file: false,
-                        include_path: "",
-                        logical_name: lib_inst,
-                        is_manual: is_manual,
-                        file_type: file_utils.get_language_from_filepath(complete_file_path),
-                        file_version: file_utils.get_default_version_for_filepath(complete_file_path),
-                        source_type: e_source_type.NONE,
-                    };
-                    result_file_list.push(file_edam);
-                }
+                const file_edam: t_file = {
+                    name: complete_file_path,
+                    is_include_file: false,
+                    include_path: "",
+                    logical_name: lib_inst,
+                    is_manual: is_manual,
+                    file_type: file_utils.get_language_from_filepath(complete_file_path),
+                    file_version: file_utils.get_default_version_for_filepath(complete_file_path),
+                    source_type: e_source_type.NONE,
+                };
+                result_file_list.push(file_edam);
             }
             catch (e) {
                 const result: t_loader_file_list_result = {

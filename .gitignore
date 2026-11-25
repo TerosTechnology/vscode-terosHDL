@@ -25,6 +25,8 @@ resources/project_manager/help
 *.cf
 *.o
 Project**
+# Test project build directories
+/def_name_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*/
 venv/
 work/
 

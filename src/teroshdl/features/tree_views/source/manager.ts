@@ -187,15 +187,25 @@ export class Source_manager extends BaseView {
     async delete_library(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
-            await prj.delete_file_by_logical_name(item.get_logical_name());
-        } catch (error) {}
+            const result = await prj.delete_file_by_logical_name(item.get_logical_name());
+            if (!result.successful) {
+                vscode.window.showErrorMessage(result.msg);
+            }
+        } catch (error) {
+            vscode.window.showErrorMessage(`Could not remove library: ${String(error)}`);
+        }
     }
 
     async delete_source(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
-            await prj.delete_file(item.get_name(), item.get_logical_name());
-        } catch (error) {}
+            const result = await prj.delete_file(item.get_name(), item.get_logical_name());
+            if (!result.successful) {
+                vscode.window.showErrorMessage(result.msg);
+            }
+        } catch (error) {
+            vscode.window.showErrorMessage(`Could not remove source: ${String(error)}`);
+        }
     }
 
     async select_top(item: element.Source_tree_element) {

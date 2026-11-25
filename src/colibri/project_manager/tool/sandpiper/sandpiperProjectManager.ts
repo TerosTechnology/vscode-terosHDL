@@ -1,4 +1,4 @@
-import { e_project_type, e_source_type } from "../../common";
+import { e_project_type } from "../../common";
 import { Project_manager } from "../../project_manager";
 import {
     e_taskType, t_taskRep,
@@ -66,26 +66,7 @@ export class SandpiperProjectManager extends Project_manager {
 
         const prj = new SandpiperProjectManager(jsonContent.name, emitterProject, projectDiskPath);
         
-        // Files
-        jsonContent.files.forEach((file: any) => {
-            const name = file_utils.get_absolute_path(file_utils.get_directory(reference_path), file.name);
-
-            const is_include_file = file?.["is_include_file"] ?? false;
-            const include_path = file?.["include_path"] ?? "";
-            const logical_name = file?.["logical_name"] ?? "";
-            const is_manual = file?.["is_manual"] ?? true;
-            const file_type = file_utils.get_language_from_filepath(name);
-            const file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
-            const source_type = file?.["source_type"] ?? e_source_type.NONE;
-
-            prj.add_file({
-                name: name, is_include_file: is_include_file,
-                include_path: include_path, logical_name: logical_name,
-                is_manual: is_manual, file_type: file_type,
-                file_version: file_version,
-                source_type: source_type,
-            });
-        });
+        await prj.restore_project_files(jsonContent, reference_path);
         // Toplevel
 
         if (jsonContent.toplevel !== undefined) {
@@ -96,16 +77,11 @@ export class SandpiperProjectManager extends Project_manager {
             }
         }
 
-        // Watchers
-        const watcher_list = jsonContent?.["watchers"] ?? [];
-        watcher_list.forEach((watcher: any) => {
-            prj.add_file_to_watcher(watcher);
-        });
-
         if (jsonContent?.["configuration"] !== undefined) {
             await prj.set_config(get_config_from_json(jsonContent?.["configuration"]));
         }
 
+        await prj.restore_project_watchers(jsonContent, reference_path);
         return prj;
     }
 

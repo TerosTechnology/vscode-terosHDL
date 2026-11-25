@@ -36,12 +36,12 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
     ) {
         super();
         this.watcher_callback_update = watcher_callback_update;
-        this.watcher_manager = chokidar.watch('file', {
-            usePolling: true, interval: 2000
+        this.watcher_manager = chokidar.watch([], {
+            usePolling: true, interval: 2000, ignoreInitial: true
         });
-        this.watcher_manager.on('change', (path, _stats) => {
-            this.request_refresh(path);
-        });
+        this.watcher_manager.on('change', path => this.request_refresh(path));
+        this.watcher_manager.on('unlink', path => this.request_refresh(path));
+        this.watcher_manager.on('add', path => this.request_refresh(path));
     }
 
     public refresh(path = ""): Promise<void> {
@@ -53,9 +53,7 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
     private request_refresh(path: string): void {
         void this.refresh(path).catch((error: unknown) => {
             const message = `Error updating watchers: ${String(error)}`;
-            if (this.emitter !== undefined) {
-                this.emitter.emitEventLog(message, e_event.STDOUT_ERROR);
-            } else {
+            if (!this.emitter?.emitEventLog(message, e_event.STDOUT_ERROR)) {
                 Logger.logger.error(message);
             }
         });
@@ -69,14 +67,13 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
     }
 
     get(reference_path?: string): t_watcher[] {
-        if (reference_path !== undefined){
-            const new_watchers =  [...this.watchers];
-            for (let i = 0; i < new_watchers.length; i++) {
-                new_watchers[i].path = file_utils.get_relative_path(new_watchers[i].path, reference_path);
-            }
-            return new_watchers;
+        if (reference_path !== undefined) {
+            return this.watchers.map(watcher => ({
+                ...watcher,
+                path: file_utils.get_relative_path(watcher.path, reference_path)
+            }));
         }
-        return this.watchers;  
+        return this.watchers;
     }
 
     add(watcher: t_watcher): t_action_result {

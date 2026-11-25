@@ -54,9 +54,12 @@ export function get_edam_json(
         top_level = top_level_list[0];
     }
 
-    const files = use_compile_order && refrence_path === undefined
+    const project_files = use_compile_order && refrence_path === undefined
         ? prj.file_manager.get_compile_order()
         : prj.file_manager.get(refrence_path);
+    const files = project_files.some(file => 'origins' in file || 'watcher_paths' in file)
+        ? project_files.map(({ origins: _origins, watcher_paths: _watcher_paths, ...file }) => file)
+        : project_files;
 
     type t_edam_file = {
         /** File name with (absolute or relative) path */

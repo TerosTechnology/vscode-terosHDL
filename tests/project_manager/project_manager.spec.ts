@@ -18,13 +18,15 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as paht_lib from "path";
+import * as fs from "fs";
+import * as os from "os";
 
-import { e_source_type, e_watcher_type, t_file } from '../../src/colibri/project_manager/common';
+import { e_file_origin, e_source_type, e_watcher_type, t_file } from '../../src/colibri/project_manager/common';
 import { Project_manager, DEFAULT_LIBRARY } from '../../src/colibri/project_manager/project_manager';
 import { LANGUAGE, VERILOG_LANG_VERSION, VHDL_LANG_VERSION } from "../../src/colibri/common/general";
 import { get_default_config } from '../../src/colibri/config/config_declaration';
 import { GlobalConfigManager } from "../../src/colibri/config/config_manager";
-import { ProjectEmitter } from "../../src/colibri/project_manager/projectEmitter";
+import { ProjectEmitter, e_event } from "../../src/colibri/project_manager/projectEmitter";
 import { e_tools_general_select_tool } from '../../src/colibri/config/config_declaration';
 import { e_taskState, e_taskType } from '../../src/colibri/project_manager/tool/common';
 import { runTaskNextpnr } from '../../src/colibri/project_manager/tool/nextpnr/taskRunners';
@@ -32,6 +34,12 @@ import { LoggerBase } from '../../src/colibri/logger/logger';
 import { ChildProcess } from 'child_process';
 import * as file_utils from '../../src/colibri/utils/file_utils';
 import { Watcher_manager } from '../../src/colibri/project_manager/list_manager/watcher';
+import * as vunit_loader from '../../src/colibri/project_manager/prj_loaders/vunit_loader';
+import * as vivado_loader from '../../src/colibri/project_manager/prj_loaders/vivado_loader';
+import { Multi_project_manager } from '../../src/colibri/project_manager/multi_project_manager';
+import { Logger } from '../../src/colibri/logger/logger';
+import { SandpiperProjectManager } from '../../src/colibri/project_manager/tool/sandpiper/sandpiperProjectManager';
+import { get_edam_json } from '../../src/colibri/project_manager/utils/utils';
 
 jest.mock('../../src/colibri/project_manager/tool/nextpnr/taskRunners', () => ({
     runTaskNextpnr: jest.fn()
@@ -90,8 +98,7 @@ describe('project_manager', () => {
         const firstPath = '/project/first.vhd';
         const secondPath = '/project/second.vhd';
         const calls: string[] = [];
-        const addSource = async (project: Project_manager, name: string) => {
-            await project.add_file({
+        const source = (name: string): t_file => ({
                 name,
                 is_include_file: false,
                 include_path: '',
@@ -101,20 +108,17 @@ describe('project_manager', () => {
                 file_version: VHDL_LANG_VERSION.v2008,
                 source_type: e_source_type.NONE,
             });
-        };
         jest.spyOn(file_utils, 'check_if_path_exist').mockReturnValue(true);
-        jest.spyOn(Project_manager.prototype, 'add_file_from_vunit').mockImplementation(async function () {
+        jest.spyOn(vunit_loader, 'get_files_from_vunit').mockImplementation(async () => {
             calls.push('vunit-start');
             await Promise.resolve();
-            await addSource(this, firstPath);
             calls.push('vunit-end');
-            return { successful: true, msg: '', result: '' };
+            return { successful: true, msg: '', file_list: [source(firstPath)] };
         });
-        jest.spyOn(Project_manager.prototype, 'add_file_from_vivado').mockImplementation(async function () {
+        jest.spyOn(vivado_loader, 'get_files_from_vivado').mockImplementation(async () => {
             calls.push('vivado-start');
-            await addSource(this, secondPath);
             calls.push('vivado-end');
-            return { successful: true, msg: '', result: '' };
+            return { successful: true, msg: '', file_list: [source(secondPath)] };
         });
         const saved = {
             ...project_manager.get_edam_json(),
@@ -181,6 +185,325 @@ describe('project_manager', () => {
         await second;
         expect(calls).toEqual(['first-start', 'first-end', 'second-start', 'second-end']);
     });
+
+    test('reopens CSV watchers and removes only sources unique to deleted watchers', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-'));
+        const firstWatcher = paht_lib.join(directory, 'first.csv');
+        const secondWatcher = paht_lib.join(directory, 'second.csv');
+        const firstSource = paht_lib.join(directory, 'first.vhd');
+        const sharedSource = paht_lib.join(directory, 'shared.vhd');
+        const manualSource = paht_lib.join(directory, 'manual.vhd');
+        const configPath = paht_lib.join(directory, 'projects.json');
+        const restoredProjects: Project_manager[] = [];
+
+        try {
+            for (const source of [firstSource, sharedSource, manualSource]) {
+                fs.writeFileSync(source, '');
+            }
+            fs.writeFileSync(firstWatcher, 'work,first.vhd\nwork,shared.vhd\n');
+            fs.writeFileSync(secondWatcher, 'work,shared.vhd\n');
+            project_manager.add_logical('empty_library');
+            await project_manager.add_file({
+                name: manualSource,
+                is_include_file: false,
+                include_path: '',
+                logical_name: 'work',
+                is_manual: true,
+                file_type: LANGUAGE.VHDL,
+                file_version: VHDL_LANG_VERSION.v2008,
+                source_type: e_source_type.NONE,
+            });
+            project_manager.add_file_to_watcher({ path: firstWatcher, watcher_type: e_watcher_type.CSV }, false);
+            project_manager.add_file_to_watcher({ path: secondWatcher, watcher_type: e_watcher_type.CSV }, false);
+            await project_manager.refresh_watchers();
+            expect((await project_manager.move_file(firstSource, 'work', 'custom')).successful).toBe(true);
+            expect((await project_manager.reorder_file(sharedSource, 'work', 0)).successful).toBe(true);
+            const expected = project_manager.get_file().map(file => [file.name, file.logical_name]);
+
+            const emitter = new ProjectEmitter();
+            const manager = new Multi_project_manager(emitter, configPath);
+            manager.add_project(project_manager);
+            manager.save();
+            const reopened = new Multi_project_manager(emitter, configPath);
+            await reopened.load(emitter, directory);
+            const restored = reopened.get_project_by_name(DEFAULT_NAME);
+            restoredProjects.push(restored);
+            expect(restored.get_file().map(file => [file.name, file.logical_name])).toEqual(expected);
+            expect(restored.get_file().find(file => file.name === sharedSource)).toEqual(expect.objectContaining({
+                origins: [e_file_origin.WATCHER],
+                watcher_paths: [firstWatcher, secondWatcher],
+            }));
+            const externalEdam = get_edam_json(restored.get_project_definition(), undefined);
+            expect(externalEdam.files.every(file => !('origins' in file) && !('watcher_paths' in file))).toBe(true);
+
+            expect(restored.delete_file_in_watcher(firstWatcher).successful).toBe(true);
+            await restored.refresh_watchers();
+            expect(restored.get_file().map(file => file.name)).toEqual(['', sharedSource, manualSource]);
+            expect(restored.delete_file_in_watcher(secondWatcher).successful).toBe(true);
+            await restored.refresh_watchers();
+            expect(restored.get_file().map(file => file.name)).toEqual(['', manualSource]);
+            expect([firstSource, sharedSource, manualSource].every(source => fs.existsSync(source))).toBe(true);
+        } finally {
+            await project_manager['watchers']['watcher_manager'].close();
+            for (const project of restoredProjects) {
+                await project['watchers']['watcher_manager'].close();
+            }
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('retains existing sources when a watcher is missing or fails to load', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-failure-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        const source = paht_lib.join(directory, 'source.vhd');
+        let restored: Project_manager | undefined;
+        try {
+            fs.writeFileSync(csvPath, 'work,source.vhd\n');
+            project_manager.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await project_manager.refresh_watchers();
+            expect(project_manager.get_file().map(file => file.name)).toEqual([source]);
+            const saved = project_manager.get_edam_json();
+            fs.renameSync(csvPath, `${csvPath}.missing`);
+            await expect(project_manager.refresh_watchers()).rejects.toThrow('Watcher file does not exist');
+            expect(project_manager.get_file().map(file => file.name)).toEqual([source]);
+            const errorLog = jest.spyOn(Logger.logger, 'error').mockImplementation(() => {});
+            restored = await Project_manager.fromJson(saved, paht_lib.join(directory, 'projects.json'),
+                new ProjectEmitter(), directory);
+            expect(restored.get_file().map(file => file.name)).toEqual([source]);
+            expect(errorLog).toHaveBeenCalledWith(expect.stringContaining('Watcher file does not exist'));
+            fs.renameSync(`${csvPath}.missing`, csvPath);
+            await project_manager.refresh_watchers();
+            expect(project_manager.get_file().map(file => file.name)).toEqual([source]);
+        } finally {
+            await project_manager['watchers']['watcher_manager'].close();
+            if (restored !== undefined) {
+                await restored['watchers']['watcher_manager'].close();
+            }
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('keeps previous sources if a later watcher import fails', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-error-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        const vunitPath = paht_lib.join(directory, 'run.py');
+        try {
+            fs.writeFileSync(csvPath, 'work,original.vhd\n');
+            fs.writeFileSync(vunitPath, '');
+            project_manager.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await project_manager.refresh_watchers();
+            const previous = project_manager.get_file().map(file => file.name);
+            fs.writeFileSync(csvPath, 'work,changed.vhd\n');
+            project_manager.add_file_to_watcher({ path: vunitPath, watcher_type: e_watcher_type.VUNIT }, false);
+            jest.spyOn(vunit_loader, 'get_files_from_vunit').mockResolvedValue({
+                successful: false,
+                msg: 'import failed',
+                file_list: [],
+            });
+
+            await expect(project_manager.refresh_watchers()).rejects.toThrow('import failed');
+            expect(project_manager.get_file().map(file => file.name)).toEqual(previous);
+        } finally {
+            await project_manager['watchers']['watcher_manager'].close();
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('rejects conflicting watcher metadata without applying any part of the refresh', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-conflict-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        const vunitPath = paht_lib.join(directory, 'run.py');
+        const sharedSource = paht_lib.join(directory, 'shared.vhd');
+        try {
+            fs.writeFileSync(csvPath, 'work,original.vhd\n');
+            fs.writeFileSync(vunitPath, '');
+            project_manager.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await project_manager.refresh_watchers();
+            const previous = JSON.parse(JSON.stringify(project_manager.get_file()));
+            fs.writeFileSync(csvPath, 'work,shared.vhd\n');
+            project_manager.add_file_to_watcher({ path: vunitPath, watcher_type: e_watcher_type.VUNIT }, false);
+            jest.spyOn(vunit_loader, 'get_files_from_vunit').mockResolvedValue({
+                successful: true,
+                msg: '',
+                file_list: [{
+                    name: sharedSource, logical_name: 'work', is_manual: false,
+                    is_include_file: false, include_path: '', file_type: LANGUAGE.VHDL,
+                    file_version: file_utils.get_default_version_for_filepath(sharedSource),
+                    source_type: e_source_type.SIMULATION,
+                }],
+            });
+
+            await expect(project_manager.refresh_watchers()).rejects.toThrow('Conflicting file metadata');
+            expect(JSON.parse(JSON.stringify(project_manager.get_file()))).toEqual(previous);
+        } finally {
+            await project_manager['watchers']['watcher_manager'].close();
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('keeps sources when a watched CSV contains an invalid row', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-invalid-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        try {
+            fs.writeFileSync(csvPath, 'work,original.vhd\n');
+            project_manager.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await project_manager.refresh_watchers();
+            const previous = JSON.parse(JSON.stringify(project_manager.get_file()));
+            fs.writeFileSync(csvPath, 'work,changed.vhd\nwork,bad,extra\n');
+
+            await expect(project_manager.refresh_watchers()).rejects.toThrow('line 2');
+            expect(JSON.parse(JSON.stringify(project_manager.get_file()))).toEqual(previous);
+        } finally {
+            await project_manager['watchers']['watcher_manager'].close();
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('retains a manually added watcher source and unrelated automatic sources', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-manual-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        try {
+            fs.writeFileSync(csvPath, 'work,source.vhd\n');
+            const unrelated: t_file = {
+                name: paht_lib.join(directory, 'legacy.vhd'), logical_name: 'work', is_manual: false,
+                is_include_file: false, include_path: '', file_type: LANGUAGE.VHDL,
+                file_version: VHDL_LANG_VERSION.v2008, source_type: e_source_type.NONE,
+            };
+            await project_manager.add_file(unrelated);
+            project_manager.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await project_manager.refresh_watchers();
+            const watched = project_manager.get_file().find(file => file.name !== unrelated.name);
+            expect(watched).toBeDefined();
+            if (watched === undefined) {
+                throw new Error('Expected watcher source');
+            }
+            expect((await project_manager.add_file_from_array([{
+                ...watched, is_manual: true, origins: undefined, watcher_paths: undefined,
+            }])).successful)
+                .toBe(true);
+            project_manager.delete_file_in_watcher(csvPath);
+            await project_manager.refresh_watchers();
+            expect(project_manager.get_file().map(file => [file.name, file.is_manual])).toEqual([
+                [unrelated.name, false],
+                [watched.name, true],
+            ]);
+        } finally {
+            await project_manager['watchers']['watcher_manager'].close();
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('preserves unknown legacy provenance when reopening and deleting its watcher', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-legacy-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        let restored: Project_manager | undefined;
+        try {
+            fs.writeFileSync(csvPath, 'work,source.vhd\n');
+            project_manager.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await project_manager.refresh_watchers();
+            const legacy = JSON.parse(JSON.stringify(project_manager.get_edam_json()));
+            delete legacy.teroshdl_state.file_origins;
+            restored = await Project_manager.fromJson(legacy, paht_lib.join(directory, 'project.json'),
+                new ProjectEmitter(), directory);
+            restored.delete_file_in_watcher(csvPath);
+            await restored.refresh_watchers();
+            expect(restored.get_file()).toHaveLength(1);
+            expect(restored.get_file()[0].origins).toEqual([e_file_origin.UNKNOWN]);
+        } finally {
+            await project_manager['watchers']['watcher_manager'].close();
+            if (restored !== undefined) {
+                await restored['watchers']['watcher_manager'].close();
+            }
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('reconciles persisted watcher contributions when no watchers remain', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-reconcile-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        let restored: Project_manager | undefined;
+        try {
+            fs.writeFileSync(csvPath, 'work,source.vhd\n');
+            project_manager.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await project_manager.refresh_watchers();
+            project_manager.delete_file_in_watcher(csvPath);
+            const saved = project_manager.get_edam_json();
+            restored = await Project_manager.fromJson(saved, paht_lib.join(directory, 'project.json'),
+                new ProjectEmitter(), directory);
+            expect(restored.get_file()).toHaveLength(0);
+        } finally {
+            await project_manager['watchers']['watcher_manager'].close();
+            if (restored !== undefined) {
+                await restored['watchers']['watcher_manager'].close();
+            }
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('restores Sandpiper watcher provenance before refreshing', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-sandpiper-watcher-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        const project = new SandpiperProjectManager('sandpiper', new ProjectEmitter(), directory);
+        let restored: SandpiperProjectManager | undefined;
+        try {
+            fs.writeFileSync(csvPath, 'work,source.vhd\n');
+            project.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await project.refresh_watchers();
+            restored = await SandpiperProjectManager.fromJson(project.get_edam_json(),
+                paht_lib.join(directory, 'project.json'), new ProjectEmitter());
+            expect(restored.get_file()[0].watcher_paths).toEqual([csvPath]);
+            restored.delete_file_in_watcher(csvPath);
+            await restored.refresh_watchers();
+            expect(restored.get_file()).toHaveLength(0);
+        } finally {
+            await project['watchers']['watcher_manager'].close();
+            if (restored !== undefined) {
+                await restored['watchers']['watcher_manager'].close();
+            }
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('reloads sources when a watched CSV changes on disk', async () => {
+        GlobalConfigManager.newInstance("");
+        const directory = fs.mkdtempSync(paht_lib.join(os.tmpdir(), 'teros-watcher-event-'));
+        const csvPath = paht_lib.join(directory, 'files.csv');
+        const emitter = new ProjectEmitter();
+        const watchedProject = new Project_manager('watched', '', emitter, undefined);
+        try {
+            fs.writeFileSync(csvPath, 'work,first.vhd\n');
+            watchedProject.add_file_to_watcher({ path: csvPath, watcher_type: e_watcher_type.CSV }, false);
+            await new Promise<void>(resolve => watchedProject['watchers']['watcher_manager'].once('ready', resolve));
+            await watchedProject.refresh_watchers();
+            emitter.enable();
+            const reloaded = new Promise<void>((resolve, reject) => {
+                const timer = setTimeout(() => reject(new Error('Watcher change event timed out')), 10000);
+                emitter.addProjectListener(async (_name, event) => {
+                    if (event === e_event.ADD_SOURCE) {
+                        clearTimeout(timer);
+                        resolve();
+                    }
+                });
+            });
+            fs.writeFileSync(csvPath, 'work,second.vhd\n');
+            await reloaded;
+            expect(watchedProject.get_file().map(file => file.name)).toEqual([
+                paht_lib.join(directory, 'second.vhd'),
+            ]);
+        } finally {
+            await watchedProject['watchers']['watcher_manager'].close();
+            fs.rmSync(directory, { recursive: true, force: true });
+        }
+    }, 15000);
 
     test('rename', () => {
         const new_name = "sancho_panza";
