@@ -6,6 +6,12 @@
 //!
 //! Example of description beakline
 //!
+//! Example of unordered list:
+//! * Normal operation mode
+//! * Low power mode  
+//! * Debug mode
+//! * Test mode
+//!
 //! Example of Wavedrom
 //! image:	
 //! { signal: [

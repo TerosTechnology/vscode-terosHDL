@@ -7,6 +7,11 @@ use ieee.std_logic_1164.all;
 --! @version 1.0.1
 --! @brief Some description can be added here
 --!
+--! Example of unordered list:
+--! * Normal operation mode
+--! * Low power mode  
+--! * Debug mode
+--! * Test mode
 --!
 --! Example of multiline code snipet:
 --! ``` C
