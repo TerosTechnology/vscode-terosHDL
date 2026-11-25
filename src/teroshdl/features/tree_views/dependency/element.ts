@@ -111,6 +111,7 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             const element = this.hdl_tree[i];
             if (element.filename === toplevel_path) {
                 current_dep = element;
+                break;
             }
         }
         // const current_dep = await this.get_deps(toplevel_path);
@@ -118,14 +119,34 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
             return [];
         }
 
+
+
+
+
         // Dependencie view
         const dependency_view = this.get_dep_view(current_dep);
 
         if (element) {
+            
+            dependency_view.forEach(item => {
+
+                const filename = item.label?.toString() || '';
+
+                if (filename.endsWith(".vhd")) {
+                    item.iconPath = get_icon("vhdl");
+                    item.label = filename.slice(0, -4);
+                }
+                else if (filename.endsWith(".v")) {
+                    item.label = filename.slice(0, -2);
+                    item.iconPath = get_icon("verilog");
+                }
+
+                item.description = filename;
+            });
             return dependency_view;
         }
         else {
-            return [new Dependency((<any>current_dep).filename, (<any>current_dep).entity, dependency_view)];
+            return [new Dependency((current_dep).filename, (current_dep).entity, dependency_view)];
         }
     }
 
@@ -165,7 +186,6 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     }
 
     private async get_deps(top_path: string) {
-        let current_dep = undefined;
         const hdl_tree = await this.get_hdl_tree();
 
         if (hdl_tree === undefined) {
@@ -175,10 +195,9 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
         for (let i = 0; i < this.hdl_tree.length; i++) {
             const element = this.hdl_tree[i];
             if (element.filename === top_path) {
-                current_dep = element;
+                return element;
             }
         }
-        return current_dep;
     }
 
     get_dep_view(deps) {
@@ -234,4 +253,3 @@ export class TreeItem extends vscode.TreeItem {
         this.children = children;
     }
 }
-
