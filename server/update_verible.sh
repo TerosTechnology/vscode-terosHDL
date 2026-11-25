@@ -11,11 +11,11 @@ do
   
   if [[ $FILE == *.zip ]]; then
     unzip $FILE
-    mv verible-$VERSION-win64/* $OUTPUT_FOLDER/
+    mv verible-$VERSION-win64/verible-verilog-ls.exe $OUTPUT_FOLDER/
     rm -rf verible-$VERSION-win64
   elif [[ $FILE == *.tar.gz ]]; then
     tar -xzf $FILE
-    mv verible-$VERSION/bin/* $OUTPUT_FOLDER/
+    mv verible-$VERSION/bin/verible-verilog-ls $OUTPUT_FOLDER/
     rm -rf verible-$VERSION
   fi
   

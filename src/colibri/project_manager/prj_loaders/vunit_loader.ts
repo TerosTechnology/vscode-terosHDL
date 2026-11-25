@@ -20,6 +20,7 @@ import { e_config } from "../../config/config_declaration";
 import { python } from "../../process/export_t";
 import { e_source_type, t_file } from "../common";
 import { Vunit } from "../tool/vunit/vunit";
+import { with_execution_lock } from "../tool/vunit/execution_lock";
 import * as process_utils from "../../process/utils";
 import * as file_utils from "../../utils/file_utils";
 import { t_loader_file_list_result } from "../tool/common";
@@ -36,7 +37,10 @@ export async function get_files_from_vunit(config: e_config, vunit_path: string,
     const py_path = config.general.general.pypath;
     const json_path = process_utils.create_temp_file("");
     const args = `--export-json ${json_path}`;
-    const result = await python.exec_python_script(py_path, vunit_path, args, simulator_conf);
+    // Serialize VUnit executions per run.py directory: concurrent executions
+    // in the same folder share the "vunit_out" folder and collide.
+    const result = await with_execution_lock(file_utils.get_directory(vunit_path),
+        () => python.exec_python_script(py_path, vunit_path, args, simulator_conf));
 
     if (result.successful === true) {
         try {

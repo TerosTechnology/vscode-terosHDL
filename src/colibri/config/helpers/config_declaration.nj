@@ -40,6 +40,8 @@ export type e_{{tp0}}_{{tp1}} = {
     {{tp2}} : number,
             {%- elif type_declaration[tp0][tp1][tp2]["type"] == "array" %}
     {{tp2}} : any[],
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "table" %}
+    {{tp2}} : Array<{ {% for column in type_declaration[tp0][tp1][tp2]["columns"] %}{{column}}: string; {% endfor %} }>,
             {%- elif type_declaration[tp0][tp1][tp2]["type"] == "string" %}
     {{tp2}} : string,
             {%- elif type_declaration[tp0][tp1][tp2]["type"] == "select" %}
@@ -129,7 +131,7 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'] = current_value_{{ns.counter}};
     }
 
-            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "array" %}
+            {%- elif type_declaration[tp0][tp1][tp2]["type"] == "array" or type_declaration[tp0][tp1][tp2]["type"] == "table" %}
     if (Array.isArray(current_value_{{ns.counter}})){
         default_config['{{ tp0 }}']['{{ tp1 }}']['{{ tp2 }}'] = current_value_{{ns.counter}};
     }

@@ -196,6 +196,43 @@ body {
     border-color: var(--vscode-focusBorder);
 }
 
+/* Table (list of records, e.g. extra vhdl_ls libraries) */
+.setting-table {
+    width: 100%;
+    max-width: 640px;
+    border-collapse: collapse;
+    margin-top: 4px;
+}
+
+.setting-table th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vscode-descriptionForeground);
+    padding: 4px 8px 4px 0;
+}
+
+.setting-table td {
+    padding: 2px 8px 2px 0;
+    vertical-align: middle;
+}
+
+.setting-table .setting-input-box {
+    width: 100%;
+}
+
+.setting-table-action-column {
+    width: 32px;
+}
+
+.setting-table-add-button {
+    margin-top: 6px;
+}
+
+.setting-table-remove-button {
+    padding: 2px 6px;
+}
+
 .setting-select-box {
     width: 320px;
     height: 26px;

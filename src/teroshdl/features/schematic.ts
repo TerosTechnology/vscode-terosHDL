@@ -30,6 +30,7 @@ import { check_if_path_exist, get_default_version_for_filepath, get_language_fro
 import { e_source_type, t_file } from 'colibri/project_manager/common';
 import { check_if_hdl_file, get_toplevel_from_path } from 'colibri/utils/hdl_utils';
 import { e_schematic_result, getSchematic } from 'colibri/yosys/yosys';
+import { findNetInSources, getNetsSourceInfo, makeBitIdsUnique, t_nets_source_info } from 'colibri/yosys/utils';
 import { e_schematic_general_backend } from 'colibri/config/config_declaration';
 
 const activation_command = 'teroshdl.netlist.viewer';
@@ -40,6 +41,7 @@ export class Schematic_manager extends Base_webview {
     private working_directory = "";
     private output_path = "";
     private childp;
+    private last_sources: t_file[] = [];
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -121,6 +123,9 @@ export class Schematic_manager extends Base_webview {
                     case 'export':
                         this.export_as(message.type, message.svg);
                         return;
+                    case 'go_to_net':
+                        this.go_to_net_source(message.file, message.line, message.name);
+                        return;
                 }
             },
             undefined,
@@ -154,11 +159,13 @@ export class Schematic_manager extends Base_webview {
             }
 
             let result = '';
+            let nets: t_nets_source_info = {};
             if (schematic.empty === false) {
                 result = schematic.result;
+                nets = schematic.nets || {};
             }
 
-            await this.panel?.webview.postMessage({ command: "update", result: result });
+            await this.panel?.webview.postMessage({ command: "update", result: result, nets: nets });
         }
         catch (error) {
             vscode.window.showInformationMessage((error as Error).message);
@@ -221,11 +228,13 @@ export class Schematic_manager extends Base_webview {
         }
 
         let result = '';
+        let nets: t_nets_source_info = {};
         if (netlist.empty === false) {
             result = netlist.result;
+            nets = netlist.nets || {};
         }
 
-        await this.panel?.webview.postMessage({ command: "update", result: result });
+        await this.panel?.webview.postMessage({ command: "update", result: result, nets: nets });
     }
 
     async generateFromProject() {
@@ -289,8 +298,10 @@ export class Schematic_manager extends Base_webview {
     }
 
     async run_yosys_script(topLevel: string, sources: t_file[]) {
+        this.last_sources = sources;
         let netlist = {
             'result': '',
+            'nets': {} as t_nets_source_info,
             'error': false,
             'empty': false
         };
@@ -312,6 +323,7 @@ export class Schematic_manager extends Base_webview {
                     this.getSvgFromJson(result_yosys)
                         .then(netlist_svg => {
                             netlist.result = netlist_svg["result"];
+                            netlist.nets = netlist_svg["nets"] || {};
                             resolve(netlist);
                         })
                         .catch(error => {
@@ -348,6 +360,10 @@ export class Schematic_manager extends Base_webview {
     async getSvgFromJson(jsonSchematic: any) {
         let outputYosys = { result: jsonSchematic };
         outputYosys.result = normalizeNetlist(outputYosys.result);
+        // Make the bit ids unique across the modules so every net line of the
+        // SVG maps to a single net, and get the source location of every net
+        makeBitIdsUnique(outputYosys.result);
+        const nets_info = getNetsSourceInfo(outputYosys.result);
         const netlistsvg = require("netlistsvg");
         const skinPath = path_lib.join(this.context.extensionPath, "resources",
             "webviews", "netlist_viewer", "default.svg");
@@ -378,7 +394,52 @@ export class Schematic_manager extends Base_webview {
             return "";
         }
 
-        return outputYosys;
+        return { result: outputYosys.result, nets: nets_info };
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Go to the source of a net
+    //////////////////////////////////////////////////////////////////////////////
+    async go_to_net_source(file: string, line: number, net_name: string) {
+        let target_file = file;
+        let target_line = line;
+
+        if (target_file === '' || !check_if_path_exist(target_file)) {
+            // The netlist does not have the source location of the net (e.g. VHDL
+            // netlists): search the net declaration in the source files
+            const found = this.find_net_in_sources(net_name);
+            if (found !== undefined) {
+                target_file = found.file;
+                target_line = found.line;
+            }
+        }
+
+        if (target_file === '' || target_line <= 0) {
+            vscode.window.showWarningMessage(
+                `TerosHDL: the source location of the net '${net_name}' was not found.`);
+            return;
+        }
+
+        try {
+            const document = await vscode.workspace.openTextDocument(target_file);
+            const editor = await vscode.window.showTextDocument(document, vscode.ViewColumn.One);
+            const line_index = Math.min(Math.max(target_line - 1, 0), document.lineCount - 1);
+            const position = new vscode.Position(line_index, 0);
+            editor.selection = new vscode.Selection(position, position);
+            editor.revealRange(new vscode.Range(position, position));
+        }
+        catch (error) {
+            vscode.window.showWarningMessage(`TerosHDL: could not open '${target_file}'.`);
+        }
+    }
+
+    /**
+     * Search the declaration of a net in the source files used to generate the
+     * schematic. Used as a fallback when the netlist does not have the source
+     * location of the net.
+     */
+    find_net_in_sources(net_name: string): { file: string, line: number } | undefined {
+        return findNetInSources(net_name, this.last_sources.map((source) => source.name));
     }
 }
 

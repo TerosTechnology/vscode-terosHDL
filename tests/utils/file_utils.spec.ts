@@ -143,4 +143,34 @@ describe('File Utils', () => {
         const path_1 = "/this/is/space";
         expect(file_utils.normalize_path(path_1)).toBe(path_1);
     });
+
+    describe('is_path_matching', () => {
+        it('matches an exact file path', () => {
+            expect(file_utils.is_path_matching('/home/user/src/tb.vhd', ['/home/user/src/tb.vhd'])).toBe(true);
+            expect(file_utils.is_path_matching('/home/user/src/tb.vhd', ['/home/user/src/other.vhd'])).toBe(false);
+        });
+
+        it('matches a single star within a path segment', () => {
+            expect(file_utils.is_path_matching('/home/user/src/tb.vhd', ['/home/user/src/*.vhd'])).toBe(true);
+            expect(file_utils.is_path_matching('/home/user/src/tb.vhd', ['/home/user/src/*.v'])).toBe(false);
+            expect(file_utils.is_path_matching('/home/user/src/ip/tb.vhd', ['/home/user/src/*.vhd'])).toBe(false);
+        });
+
+        it('matches a double star over multiple path segments', () => {
+            expect(file_utils.is_path_matching('/home/user/src/ip/sim/tb.vhd', ['/home/user/**/*.vhd'])).toBe(true);
+            expect(file_utils.is_path_matching('/home/user/src/tb.vhd', ['/home/user/**/*.vhd'])).toBe(true);
+            expect(file_utils.is_path_matching('/home/other/tb.vhd', ['/home/user/**/*.vhd'])).toBe(false);
+        });
+
+        it('matches a relative path through its resolved path', () => {
+            const relative = path_lib.relative(process.cwd(), __filename);
+            expect(file_utils.is_path_matching(relative, [__filename])).toBe(true);
+        });
+
+        it('does not match with empty patterns', () => {
+            expect(file_utils.is_path_matching('/home/user/src/tb.vhd', [])).toBe(false);
+            expect(file_utils.is_path_matching('/home/user/src/tb.vhd', [''])).toBe(false);
+            expect(file_utils.is_path_matching('/home/user/src/tb.vhd', ['  '])).toBe(false);
+        });
+    });
 });

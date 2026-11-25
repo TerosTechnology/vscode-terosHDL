@@ -77,6 +77,29 @@
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="{{tp0}}-{{tp1}}-{{tp2}}">
                     </div>
+                  {# Table #}
+                  {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "table" %}
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            {{type_declaration[tp0]["pages"][tp1][tp2]["description"]}}
+                            <span class="markConfig" id="mark_{{tp0}}-{{tp1}}-{{tp2}}"></span>
+                        </div>
+                        <table class="setting-table" id="{{tp0}}-{{tp1}}-{{tp2}}">
+                            <thead>
+                                <tr>
+                                    {%- for column in type_declaration[tp0]["pages"][tp1][tp2]["columns"] %}
+                                    <th data-column="{{column}}">{{column|capitalize}}</th>
+                                    {%- endfor %}
+                                    <th class="setting-table-action-column"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <button type="button" class="setting-button secondary setting-table-add-button" onclick="add_table_row('{{tp0}}-{{tp1}}-{{tp2}}')">
+                            <i class="codicon codicon-add"></i>
+                            Add row
+                        </button>
+                    </div>
                   {%- endif %}
                 {%- endfor %}
             </div>
