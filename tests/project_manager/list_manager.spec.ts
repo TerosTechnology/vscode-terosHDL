@@ -171,6 +171,90 @@ describe('list_manager: file', () => {
         expect(result[0]).toEqual(expect.objectContaining(file_1));
     });
 
+    test('preserves the original library across automatic file moves and watcher reloads', () => {
+        const file = createFile('file.vhd', 'work');
+        file_manager.add(file);
+
+        expect(file_manager.move_file(file.name, 'work', 'custom_lib').successful).toBe(true);
+        file_manager.clear_automatic_files();
+        file_manager.add(file);
+        expect(file_manager.get()[0].logical_name).toBe('custom_lib');
+
+        expect(file_manager.move_file(file.name, 'custom_lib', 'another_lib').successful).toBe(true);
+        file_manager.clear_automatic_files();
+        file_manager.add(file);
+        expect(file_manager.get()[0].logical_name).toBe('another_lib');
+        expect(Array.from(file_manager['library_overrides'].values())).toEqual([{
+            name: file.name,
+            original_library: 'work',
+            target_library: 'another_lib',
+        }]);
+
+        expect(file_manager.move_file(file.name, 'another_lib', 'work').successful).toBe(true);
+        expect(file_manager['library_overrides'].size).toBe(0);
+        file_manager.clear_automatic_files();
+        file_manager.add(file);
+        expect(file_manager.get()[0].logical_name).toBe('work');
+    });
+
+    test('preserves bulk moves on reload without applying overrides to manual files', () => {
+        const automatic = createFile('automatic.vhd', 'work');
+        const manual = { ...createFile('manual.vhd', 'work'), is_manual: true };
+        file_manager.add(automatic);
+        file_manager.add(manual);
+
+        const result = file_manager.move_files([
+            { name: automatic.name, logical_name: 'work' },
+            { name: manual.name, logical_name: 'work' },
+        ], 'custom_lib');
+        expect(result.successful).toBe(true);
+
+        file_manager.clear_automatic_files();
+        file_manager.add(automatic);
+        expect(file_manager.get().map(file => [file.name, file.logical_name])).toEqual([
+            ['manual.vhd', 'custom_lib'],
+            ['automatic.vhd', 'custom_lib'],
+        ]);
+
+        const manualCopy = { ...automatic, is_manual: true };
+        expect(file_manager.add(manualCopy).successful).toBe(true);
+        expect(file_manager.get().find(file => file.name === automatic.name && file.is_manual)?.logical_name)
+            .toBe('work');
+    });
+
+    test('tracks consecutive bulk moves back to the original library', () => {
+        const file = createFile('file.vhd', 'work');
+        file_manager.add(file);
+
+        for (const [from, to] of [
+            ['work', 'custom_lib'],
+            ['custom_lib', 'another_lib'],
+            ['another_lib', 'work'],
+        ]) {
+            expect(file_manager.move_files([{ name: file.name, logical_name: from }], to).successful).toBe(true);
+            file_manager.clear_automatic_files();
+            file_manager.add(file);
+            expect(file_manager.get()[0].logical_name).toBe(to);
+        }
+
+        expect(file_manager['library_overrides'].size).toBe(0);
+    });
+
+    test('rejects bulk moves that would create duplicate destination files', () => {
+        const file = createFile('shared.vhd', 'work');
+        file_manager.add(file);
+        file_manager.add({ ...file, logical_name: 'other' });
+
+        const result = file_manager.move_files([
+            { name: file.name, logical_name: 'work' },
+            { name: file.name, logical_name: 'other' },
+        ], 'target');
+
+        expect(result.successful).toBe(false);
+        expect(file_manager.get().map(item => item.logical_name)).toEqual(['work', 'other']);
+        expect(file_manager['library_overrides'].size).toBe(0);
+    });
+
     test('adding a duplicated file', () => {
         const file = {
             name: 'example.py',
@@ -658,5 +742,79 @@ describe('list_manager: file', () => {
 
         expect(result.successful).toBe(false);
         expect(result.msg).toBe('Invalid file position');
+    });
+
+    test('moving an automatic file persists its library after clearing automatic files', () => {
+        const file = createFile('file1.py', 'library1');
+
+        file_manager.add(file);
+
+        const result = file_manager.move_file(
+            'file1.py',
+            'library1',
+            'library2'
+        );
+
+        expect(result.successful).toBe(true);
+
+        file_manager.clear_automatic_files();
+        file_manager.add(file);
+
+        expect(file_manager.get()).toHaveLength(1);
+        expect(file_manager.get()[0]).toEqual(
+            expect.objectContaining({
+                name: 'file1.py',
+                logical_name: 'library2',
+                is_manual: false
+            })
+        );
+    });
+
+    test('moving an automatic file multiple times persists its last library', () => {
+        const file = createFile('file1.py', 'library1');
+
+        file_manager.add(file);
+
+        const first_result = file_manager.move_file(
+            'file1.py',
+            'library1',
+            'library2'
+        );
+
+        const second_result = file_manager.move_file(
+            'file1.py',
+            'library2',
+            'library3'
+        );
+
+        expect(first_result.successful).toBe(true);
+        expect(second_result.successful).toBe(true);
+
+        file_manager.clear_automatic_files();
+        file_manager.add(file);
+
+        expect(file_manager.get()).toHaveLength(1);
+        expect(file_manager.get()[0].logical_name).toBe('library3');
+    });
+
+    test('moving an automatic file back to its original library clears its override', () => {
+        const file = createFile('file1.py', 'library1');
+
+        file_manager.add(file);
+
+        file_manager.move_file('file1.py', 'library1', 'library2');
+
+        const result = file_manager.move_file(
+            'file1.py',
+            'library2',
+            'library1'
+        );
+
+        expect(result.successful).toBe(true);
+        file_manager.clear_automatic_files();
+        file_manager.add(file);
+
+        expect(file_manager.get()).toHaveLength(1);
+        expect(file_manager.get()[0].logical_name).toBe('library1');
     });
 });

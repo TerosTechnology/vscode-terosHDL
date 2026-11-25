@@ -108,34 +108,41 @@ export class Project_manager extends ConfigManager {
         this.emitterProject = emitterProject;
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const selfm = this;
-        this.watchers = new manager_watcher.Watcher_manager((function () {
+        this.watchers = new manager_watcher.Watcher_manager(async (_path: string) => {
+            const visual_order = selfm.files.get_visual_order();
             selfm.files.clear_automatic_files();
-            selfm.watchers.get().forEach(async (watcher: any) => {
-                if (file_utils.check_if_path_exist(watcher.path)) {
-                    if (selfm.emitterProject !== undefined) {
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_LOADING);
-                    }
+
+            for (const watcher of selfm.watchers.get()) {
+                if (!file_utils.check_if_path_exist(watcher.path)) {
+                    continue;
+                }
+
+                selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_LOADING);
+                try {
                     if (watcher.watcher_type === e_watcher_type.CSV) {
-                        selfm.add_file_from_csv(watcher.path, false);
+                    const result = selfm.add_file_from_csv(watcher.path, false);
+                    if (!result.successful) {
+                        selfm.emitterProject.emitEventLog(result.msg, e_event.STDOUT_ERROR);
+                    }
                     }
                     else if (watcher.watcher_type === e_watcher_type.VUNIT) {
-                        const result = await selfm.add_file_from_vunit(watcher.path, false);
-                        if (result.successful === false) {
-                            if (selfm.emitterProject !== undefined) {
-                                selfm.emitterProject.emitEventLog(result.msg, e_event.STDOUT_ERROR);
-                            }
-                        }
+                    await selfm.add_file_from_vunit(watcher.path, false);
                     }
                     else if (watcher.watcher_type === e_watcher_type.VIVADO) {
-                        await selfm.add_file_from_vivado(watcher.path, false);
+                    const result = await selfm.add_file_from_vivado(watcher.path, false);
+                    if (!result.successful) {
+                        selfm.emitterProject.emitEventLog(result.msg, e_event.STDOUT_ERROR);
                     }
-                    if (selfm.emitterProject !== undefined) {
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.ADD_SOURCE);
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_FINISHED);
                     }
                 }
-            });
-        }), emitterProject);
+                finally {
+                    selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_FINISHED);
+                }
+            }
+
+            selfm.files.apply_visual_order(visual_order);
+            selfm.emitterProject.emitEvent(selfm.name, e_event.ADD_SOURCE);
+        }, emitterProject);
     }
 
     set taskStateManager(taskStateManager: TaskStateManager) {
@@ -224,6 +231,13 @@ export class Project_manager extends ConfigManager {
             jsonContent.project_disk_path : utils.createRandomFolderFromBasePath(jsonContent.name, buildBasePath);
 
         const prj = new Project_manager(jsonContent.name, buildPath, emitterProject, buildBasePath);
+
+        const teroshdl_state = jsonContent?.["teroshdl_state"] ?? {};
+
+        if (teroshdl_state?.library_overrides) {
+            prj.files.set_library_overrides(teroshdl_state.library_overrides);
+        }
+
         // Files
         jsonContent.files.forEach((file: any) => {
             const name = file_utils.get_absolute_path(file_utils.get_directory(reference_path), file.name);
@@ -254,14 +268,23 @@ export class Project_manager extends ConfigManager {
             }
         }
 
-        // Watchers
-        const watcher_list = jsonContent?.["watchers"] ?? [];
-        watcher_list.forEach((watcher: any) => {
-            prj.add_file_to_watcher(watcher);
-        });
-
         if (jsonContent?.["configuration"] !== undefined) {
             await prj.set_config(get_config_from_json(jsonContent?.["configuration"]));
+        }
+
+        // Watchers
+        const watcher_list = jsonContent?.["watchers"] ?? [];
+        watcher_list.forEach((watcher: t_watcher) => {
+            prj.add_file_to_watcher(watcher, false);
+        });
+
+        if (watcher_list.length > 0) {
+            await prj.refresh_watchers();
+        }
+
+        if (Array.isArray(teroshdl_state.visual_order)) {
+            prj.files.apply_visual_order(teroshdl_state.visual_order);
+            prj.emitterProject.emitEvent(prj.name, e_event.ADD_SOURCE);
         }
 
         return prj;
@@ -361,8 +384,8 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // Watcher
     ////////////////////////////////////////////////////////////////////////////
-    add_file_to_watcher(watcher: t_watcher): t_action_result {
-        const result = this.watchers.add(watcher);
+    add_file_to_watcher(watcher: t_watcher, update = true): t_action_result {
+        const result = update ? this.watchers.add(watcher) : this.watchers.add_without_update(watcher);
         this.emitterProject.emitEvent(this.name, e_event.ADD_WATCHER);
         return result;
     }
@@ -371,6 +394,10 @@ export class Project_manager extends ConfigManager {
         const result = this.watchers.delete(watcher_path);
         this.emitterProject.emitEvent(this.name, e_event.REMOVE_WATCHER);
         return result;
+    }
+
+    public async refresh_watchers(): Promise<void> {
+        await this.watchers.refresh();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -604,7 +631,19 @@ export class Project_manager extends ConfigManager {
     }
 
     public get_edam_json(reference_path?: string) {
-        return utils.get_edam_json(this.get_project_definition(), undefined, reference_path);
+        const json = utils.get_edam_json(
+            this.get_project_definition(),
+            undefined,
+            reference_path
+        );
+
+        if (reference_path === undefined) {
+            (json as any).teroshdl_state = {
+                library_overrides: this.files.get_library_overrides(),
+                visual_order: this.files.get_visual_order()
+            };
+        }
+        return json;
     }
 
     public get_edam_yaml(reference_path?: string) {

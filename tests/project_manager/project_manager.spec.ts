@@ -19,7 +19,7 @@
 
 import * as paht_lib from "path";
 
-import { e_source_type, t_file } from '../../src/colibri/project_manager/common';
+import { e_source_type, e_watcher_type, t_file } from '../../src/colibri/project_manager/common';
 import { Project_manager, DEFAULT_LIBRARY } from '../../src/colibri/project_manager/project_manager';
 import { LANGUAGE, VERILOG_LANG_VERSION, VHDL_LANG_VERSION } from "../../src/colibri/common/general";
 import { get_default_config } from '../../src/colibri/config/config_declaration';
@@ -30,6 +30,8 @@ import { e_taskState, e_taskType } from '../../src/colibri/project_manager/tool/
 import { runTaskNextpnr } from '../../src/colibri/project_manager/tool/nextpnr/taskRunners';
 import { LoggerBase } from '../../src/colibri/logger/logger';
 import { ChildProcess } from 'child_process';
+import * as file_utils from '../../src/colibri/utils/file_utils';
+import { Watcher_manager } from '../../src/colibri/project_manager/list_manager/watcher';
 
 jest.mock('../../src/colibri/project_manager/tool/nextpnr/taskRunners', () => ({
     runTaskNextpnr: jest.fn()
@@ -77,6 +79,107 @@ describe('project_manager', () => {
         expect(returnedProcess).toBe(process);
         expect(callback).toHaveBeenCalledWith(result);
         expect(project_manager.getTaskState(taskType)).toBe(expectedState);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('restores watcher libraries and visual order after sequential reload', async () => {
+        GlobalConfigManager.newInstance("");
+        const firstPath = '/project/first.vhd';
+        const secondPath = '/project/second.vhd';
+        const calls: string[] = [];
+        const addSource = async (project: Project_manager, name: string) => {
+            await project.add_file({
+                name,
+                is_include_file: false,
+                include_path: '',
+                logical_name: 'work',
+                is_manual: false,
+                file_type: LANGUAGE.VHDL,
+                file_version: VHDL_LANG_VERSION.v2008,
+                source_type: e_source_type.NONE,
+            });
+        };
+        jest.spyOn(file_utils, 'check_if_path_exist').mockReturnValue(true);
+        jest.spyOn(Project_manager.prototype, 'add_file_from_vunit').mockImplementation(async function () {
+            calls.push('vunit-start');
+            await Promise.resolve();
+            await addSource(this, firstPath);
+            calls.push('vunit-end');
+            return { successful: true, msg: '', result: '' };
+        });
+        jest.spyOn(Project_manager.prototype, 'add_file_from_vivado').mockImplementation(async function () {
+            calls.push('vivado-start');
+            await addSource(this, secondPath);
+            calls.push('vivado-end');
+            return { successful: true, msg: '', result: '' };
+        });
+        const saved = {
+            ...project_manager.get_edam_json(),
+            watchers: [
+                { path: '/project/vunit.py', watcher_type: e_watcher_type.VUNIT },
+                { path: '/project/vivado.xpr', watcher_type: e_watcher_type.VIVADO },
+            ],
+            teroshdl_state: {
+                library_overrides: [{ name: firstPath, original_library: 'work', target_library: 'custom' }],
+                visual_order: [JSON.stringify([secondPath, 'work']), JSON.stringify([firstPath, 'custom'])],
+            },
+        };
+
+        const restored = await Project_manager.fromJson(saved, '/project/config.json', new ProjectEmitter(), '');
+
+        expect(calls).toEqual(['vunit-start', 'vunit-end', 'vivado-start', 'vivado-end']);
+        expect(restored.get_file().map(file => [file.name, file.logical_name])).toEqual([
+            [secondPath, 'work'],
+            [firstPath, 'custom'],
+        ]);
+    });
+
+    test('loading a project without watchers preserves its automatic files', async () => {
+        GlobalConfigManager.newInstance("");
+        const file: t_file = {
+            name: '/project/source.vhd',
+            is_include_file: false,
+            include_path: '',
+            logical_name: 'work',
+            is_manual: false,
+            file_type: LANGUAGE.VHDL,
+            file_version: VHDL_LANG_VERSION.v2008,
+            source_type: e_source_type.NONE,
+        };
+        await project_manager.add_file(file);
+
+        const restored = await Project_manager.fromJson(
+            project_manager.get_edam_json(), '/project/config.json', new ProjectEmitter(), ''
+        );
+
+        expect(restored.get_file()).toEqual([file]);
+    });
+
+    test('serializes watcher refreshes and continues after a failure', async () => {
+        let release: () => void;
+        const gate = new Promise<void>(resolve => { release = resolve; });
+        const calls: string[] = [];
+        const watcherManager = new Watcher_manager(async path => {
+            calls.push(`${path}-start`);
+            if (path === 'first') {
+                await gate;
+                calls.push('first-end');
+                throw new Error('reload failed');
+            }
+            calls.push('second-end');
+        }, undefined);
+
+        const first = watcherManager.refresh('first');
+        const second = watcherManager.refresh('second');
+        await Promise.resolve();
+        expect(calls).toEqual(['first-start']);
+        release();
+        await expect(first).rejects.toThrow('reload failed');
+        await second;
+        expect(calls).toEqual(['first-start', 'first-end', 'second-start', 'second-end']);
     });
 
     test('rename', () => {

@@ -27,6 +27,102 @@ import { get_files_from_csv } from "../prj_loaders/csv_loader";
 export class File_manager extends Manager<t_file, undefined, string, string> {
     private files: t_file[] = [];
     private compile_order: t_file[] = [];
+    private library_overrides = new Map<string, {
+        name: string;
+        original_library: string;
+        target_library: string;
+    }>();
+
+    private get_library_override_key(name: string, original_library: string): string {
+        return JSON.stringify([name, original_library]);
+    }
+
+    private update_override(
+        name: string,
+        from_library: string,
+        to_library: string,
+        is_manual: boolean
+    ): void {
+        if (is_manual || from_library === to_library) {
+            return;
+        }
+
+        let original_library = from_library;
+
+        for (const override of this.library_overrides.values()) {
+            if (override.name === name && override.target_library === from_library) {
+                original_library = override.original_library;
+                break;
+            }
+        }
+
+        const override_key = this.get_library_override_key(name, original_library);
+
+        if (to_library === original_library) {
+            this.library_overrides.delete(override_key);
+        }
+        else {
+            this.library_overrides.set(override_key, {
+                name,
+                original_library,
+                target_library: to_library
+            });
+        }
+    }
+
+    public get_library_overrides(): {
+        name: string;
+        original_library: string;
+        target_library: string;
+    }[] {
+        return Array.from(this.library_overrides.values()).map(override => ({
+            ...override
+        }));
+    }
+
+    public set_library_overrides(overrides: {
+        name: string;
+        original_library: string;
+        target_library: string;
+    }[]): void {
+        this.library_overrides.clear();
+
+        overrides.forEach(override => {
+            const key = this.get_library_override_key(
+                override.name,
+                override.original_library
+        );
+            this.library_overrides.set(key, { ...override });
+        });
+    }
+
+    public get_visual_order(): string[] {
+        return this.files.map(file =>
+            JSON.stringify([file.name, file.logical_name])
+        );
+    }
+
+    public apply_visual_order(order: string[]): void {
+        if (order.length === 0) {
+            return;
+        }
+
+        const ordered_files: t_file[] = [];
+        const remaining_files = [...this.files];
+
+        order.forEach(key => {
+            const index = remaining_files.findIndex(file =>
+                JSON.stringify([file.name, file.logical_name]) === key
+            );
+
+            if (index !== -1) {
+                ordered_files.push(remaining_files.splice(index, 1)[0]);
+            }
+        });
+
+        this.files = [...ordered_files, ...remaining_files];
+        this.invalidate_compile_order();
+    }
 
 async order(python_path: string, compileOrderPath: string) {
     let ordered_files = [...this.files];
@@ -93,6 +189,7 @@ async order(python_path: string, compileOrderPath: string) {
 
     clear() {
         this.files = [];
+        this.library_overrides.clear();
         this.invalidate_compile_order();
     }
 
@@ -146,7 +243,13 @@ async order(python_path: string, compileOrderPath: string) {
             successful: true,
             msg: ""
         };
-        if (this.check_if_exists(file.name, file.logical_name)) {
+
+        const override_key = this.get_library_override_key(file.name, file.logical_name);
+        const target_library = file.is_manual
+            ? file.logical_name
+            : this.library_overrides.get(override_key)?.target_library ?? file.logical_name;
+
+        if (this.check_if_exists(file.name, target_library)) {
             result.successful = false;
             result.msg = "The file is duplicated";
             return result;
@@ -158,7 +261,7 @@ async order(python_path: string, compileOrderPath: string) {
             file_version: file_utils.check_default_version_for_filepath(file.name, file.file_version),
             is_include_file: file.is_include_file,
             include_path: file.include_path,
-            logical_name: file.logical_name,
+            logical_name: target_library,
             is_manual: file.is_manual,
             source_type: file.source_type,
         };
@@ -195,6 +298,8 @@ async order(python_path: string, compileOrderPath: string) {
             return result;
         }
 
+        this.update_override(name, from_library, to_library, file.is_manual);
+
         file.logical_name = to_library;
         this.invalidate_compile_order();
         return result;
@@ -212,9 +317,7 @@ async order(python_path: string, compileOrderPath: string) {
         }
 
         // Validate that the selection does not contain duplicate files.
-        const selected_files = new Set(
-            files.map(file => `${file.logical_name}\0${file.name}`)
-        );
+        const selected_files = new Set(files.map(file => file.name));
 
         if (selected_files.size !== files.length) {
             result.successful = false;
@@ -251,6 +354,13 @@ async order(python_path: string, compileOrderPath: string) {
 
         // Move all selected files to the destination library.
         files_to_move.forEach(file => {
+            this.update_override(
+                file.name,
+                file.logical_name,
+                to_library,
+                file.is_manual
+            );
+
             file.logical_name = to_library;
         });
         this.invalidate_compile_order();

@@ -21,30 +21,47 @@ import { t_watcher, t_action_result } from "../common";
 import { Manager } from "./manager";
 import * as chokidar from "chokidar";
 import * as file_utils from "../../utils/file_utils";
-import { ProjectEmitter } from "../projectEmitter";
+import { ProjectEmitter, e_event } from "../projectEmitter";
+import { Logger } from "../../logger/logger";
 
 export class Watcher_manager extends Manager<t_watcher, undefined, string, string> {
     private watchers: t_watcher[] = [];
     private watcher_manager: chokidar.FSWatcher;
-    private watcher_callback_update: (path: string) => void;
+    private watcher_callback_update: (path: string) => void | Promise<void>;
+    private update_promise: Promise<void> = Promise.resolve();
 
-    constructor(watcher_callback_update: (path: string) => void, _emitter: ProjectEmitter | undefined) {
+    constructor(
+        watcher_callback_update: (path: string) => void | Promise<void>,
+        private emitter: ProjectEmitter | undefined
+    ) {
         super();
         this.watcher_callback_update = watcher_callback_update;
         this.watcher_manager = chokidar.watch('file', {
             usePolling: true, interval: 2000
         });
-        this.watcher_manager.on('change', (_path, _stats) => {
-            // if (this.emitter !== undefined) {
-            //     this.emitter.emit('refresh');
-            // }
-        });
         this.watcher_manager.on('change', (path, _stats) => {
-            watcher_callback_update(path);
+            this.request_refresh(path);
         });
     }
 
-    clear() {
+    public refresh(path = ""): Promise<void> {
+        const update = this.update_promise.then(() => this.watcher_callback_update(path));
+        this.update_promise = update.then(() => undefined, () => undefined);
+        return update;
+    }
+
+    private request_refresh(path: string): void {
+        void this.refresh(path).catch((error: unknown) => {
+            const message = `Error updating watchers: ${String(error)}`;
+            if (this.emitter !== undefined) {
+                this.emitter.emitEventLog(message, e_event.STDOUT_ERROR);
+            } else {
+                Logger.logger.error(message);
+            }
+        });
+    }
+
+    clear(): void{
         this.watchers.forEach(watcher_inst => {
             this.watcher_manager.unwatch(watcher_inst.path);
         });
@@ -53,17 +70,24 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
 
     get(reference_path?: string): t_watcher[] {
         if (reference_path !== undefined){
-            const new_files =  [...this.watchers];
-            for (let i = 0; i < new_files.length; i++) {
-                new_files[i].path = file_utils.get_relative_path(new_files[i].path, reference_path);
+            const new_watchers =  [...this.watchers];
+            for (let i = 0; i < new_watchers.length; i++) {
+                new_watchers[i].path = file_utils.get_relative_path(new_watchers[i].path, reference_path);
             }
-            return new_files;
+            return new_watchers;
         }
         return this.watchers;  
     }
 
-
     add(watcher: t_watcher): t_action_result {
+        const result = this.add_without_update(watcher);
+        if (result.successful) {
+            this.request_refresh(watcher.path);
+        }
+        return result;
+    }
+
+    add_without_update(watcher: t_watcher): t_action_result {
         const result: t_action_result = {
             result: "",
             successful: true,
@@ -76,7 +100,6 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
         }
         this.watchers.push(watcher);
         this.watcher_manager.add(watcher.path);
-        this.watcher_callback_update(watcher.path);
         return result;
     }
 
@@ -102,7 +125,7 @@ export class Watcher_manager extends Manager<t_watcher, undefined, string, strin
             }
         });
         this.watchers = new_watchers;
-        this.watcher_callback_update(watcher_path);
+        this.request_refresh(watcher_path);
         return result;
     }
 
