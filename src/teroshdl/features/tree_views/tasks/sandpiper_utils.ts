@@ -103,7 +103,7 @@ function showSvgInWebview(svgFilePath: string) {
     const panel = vscode.window.createWebviewPanel(
         'TL-Verilog Diagram',
         'TL-Verilog Diagram Viewer',
-        vscode.ViewColumn.Two,
+        vscode.ViewColumn.Beside,
         {
             enableScripts: true,
             retainContextWhenHidden: true
@@ -267,7 +267,7 @@ export async function runSandpiperNavTlvGeneration(
 }
 
 function showNavTlvInWebview(navTlvHtml: string) {
-    const panel = vscode.window.createWebviewPanel('navTlvViewer', 'Nav TLV Viewer', vscode.ViewColumn.Two, {
+    const panel = vscode.window.createWebviewPanel('navTlvViewer', 'Nav TLV Viewer', vscode.ViewColumn.Beside, {
         enableScripts: true,
         retainContextWhenHidden: true
     });
