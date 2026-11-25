@@ -12,12 +12,12 @@ module test_entity_name_tb;
   wire d;
   wire e;
 
-  test_entity_name  test_entity_name_inst (
-    .a(a),
-    .b(b),
-    .c(c),
-    .d(d),
-    .e(e)
+  test_entity_name_inst (
+      .a                         ( a                              ),
+      .b                         ( b                              ),
+      .c                         ( c                              ),
+      .d                         ( d                              ),
+      .e                         ( e                              )
   );
 
   `TEST_SUITE begin

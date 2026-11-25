@@ -28,28 +28,7 @@ export const clock =
 //{{ indent[1] }}end
 {% endif -%}`;
 
-export const hdl_element_instance = 
-`{{ name -}}
-{% for generic_inst in generic -%}
-{% if loop.first -%}
-{{special_char_1}}# (
-{% endif -%}
-{% if loop.last -%}
-{{ indent[2] }}.{{generic_inst['info']['name']}}({{generic_inst['info']['name']}})
-{{ indent[1] }})
-{% else -%}
-{{ indent[2] }}.{{generic_inst['info']['name']}}({{generic_inst['info']['name']}}),
-{% endif -%}
-{% endfor -%}
-{{indent[1]}}{{ name }}_inst (
-{% for port_inst in port -%}
-{% if loop.last -%}
-{{ indent[2] }}.{{port_inst['info']['name']}}({{port_inst['info']['name']}})
-{% else -%}
-{{ indent[2] }}.{{port_inst['info']['name']}}({{port_inst['info']['name']}}),
-{% endif -%}
-{% endfor -%}
-{{ indent[1] }});`;
+export const hdl_element_instance = `{{ instance_text }}`;
 
 export const hdl_element_component = "";
 
@@ -86,7 +65,7 @@ module {{ name }}_tb;
 {% endif -%}
 {% endif -%}
 {% endfor %}
-{{ indent[1] }}{{ instance }}
+{{ instance_indented }}
 
 {{ clock }}
 endmodule`;
@@ -117,7 +96,7 @@ module {{ name }}_tb;
 {% endif -%}
 {% endif -%}
 {% endfor %}
-{{ indent[1] }}{{ instance }}
+{{ instance_indented }}
 
 {{ indent[1] }}\`TEST_SUITE begin
 {{ indent[2] }}// It is possible to create a basic test bench without any test cases
