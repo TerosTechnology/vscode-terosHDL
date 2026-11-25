@@ -9,11 +9,9 @@ import * as path from 'path';
 import semver = require('semver');
 import vscode = require('vscode');
 import { ExtensionContext } from 'vscode';
-import util = require('util');
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import * as utils from '../../utils/utils';
-
-const exec = util.promisify(require('child_process').exec);
+import { checkServerRuns } from './server_check';
 
 import {
     LanguageClient,
@@ -86,7 +84,7 @@ export class Rusthdl_lsp {
         this.client = new LanguageClient('vhdlls', 'VHDL LS', serverOptions, clientOptions);
 
         let server_path = this.context.asAbsolutePath(languageServer);
-        let is_alive = await this.check_rust_hdl(server_path);
+        let is_alive = await checkServerRuns(server_path, languageServerBinaryName);
         if (is_alive === false) {
             return false;
         }
@@ -96,25 +94,6 @@ export class Rusthdl_lsp {
         this.context.subscriptions.push(this.languageServerDisposable);
 
         return true;
-    }
-
-    async check_rust_hdl(rust_hdl_bin_path: string) {
-        let command = rust_hdl_bin_path + ' --version';
-        // eslint-disable-next-line no-console
-        console.log(`[colibri][info] Linting with command: ${command}`);
-        const exec = require('child_process').exec;
-        return new Promise((resolve) => {
-            exec(command, (err, stdout, stderr) => {
-                if (stderr !== '') {
-                    console.log(`[rusthdl][error] ${stderr}`);
-                }
-                if (stderr === '') {
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
-            });
-        });
     }
 
     async deactivate() {
@@ -154,6 +133,7 @@ export class Rusthdl_lsp {
                 args: args,
                 options: {
                     env: {
+                        ...process.env,
                         VHDL_LS_CONFIG: this.fileListPath
                     }
                 }
@@ -163,6 +143,7 @@ export class Rusthdl_lsp {
                 args: args,
                 options: {
                     env: {
+                        ...process.env,
                         VHDL_LS_CONFIG: this.fileListPath
                     }
                 }
