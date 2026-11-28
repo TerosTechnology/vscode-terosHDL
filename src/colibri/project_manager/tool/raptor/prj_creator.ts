@@ -36,7 +36,8 @@ export function get_tcl_script(prj: t_project_definition, is_clean_mode: boolean
     ////////////////////////////////////////////////////////////////////////////
     // Design files
     ////////////////////////////////////////////////////////////////////////////
-    const design_file_list = get_design_files(config, file_list);
+    const compile_file_list = prj.file_manager.get_compile_order();
+    const design_file_list = get_design_files(config, compile_file_list);
 
     ////////////////////////////////////////////////////////////////////////////
     // Top module

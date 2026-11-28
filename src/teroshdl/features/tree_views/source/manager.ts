@@ -30,6 +30,7 @@ import { e_project_type, e_source_type } from 'colibri/project_manager/common';
 import { getQsysPath } from 'colibri/project_manager/tool/quartus/utils';
 import { spawn } from 'child_process';
 
+import { SourceDragAndDropController } from "./dragAndDropController";
 export class Source_manager extends BaseView {
     private tree: element.ProjectProvider;
     private project_manager: Multi_project_manager;
@@ -48,13 +49,20 @@ export class Source_manager extends BaseView {
         const provider = new SourcetDecorator();
         context.subscriptions.push(vscode.window.registerFileDecorationProvider(provider));
 
-        context.subscriptions.push(
-            vscode.window.registerTreeDataProvider(
-                element.ProjectProvider.getViewID(),
-                this.tree as unknown as element.BaseTreeDataProvider<element.Source_tree_element>
-            )
+        const dragAndDropController = new SourceDragAndDropController(this.project_manager);
+
+        const treeView = vscode.window.createTreeView(
+            element.ProjectProvider.getViewID(),
+            {
+                treeDataProvider: this.tree as unknown as element.BaseTreeDataProvider<element.Source_tree_element>,
+                dragAndDropController: dragAndDropController,
+                showCollapseAll: true,
+                canSelectMany: true
+            }
         );
+        context.subscriptions.push(treeView);
     }
+
 
     set_commands() {
         vscode.commands.registerCommand('teroshdl.view.source.search', () => this.search());
@@ -179,15 +187,25 @@ export class Source_manager extends BaseView {
     async delete_library(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
-            await prj.delete_file_by_logical_name(item.get_logical_name());
-        } catch (error) {}
+            const result = await prj.delete_file_by_logical_name(item.get_logical_name());
+            if (!result.successful) {
+                vscode.window.showErrorMessage(result.msg);
+            }
+        } catch (error) {
+            vscode.window.showErrorMessage(`Could not remove library: ${String(error)}`);
+        }
     }
 
     async delete_source(item: element.Source_tree_element) {
         try {
             const prj = this.project_manager.get_selected_project();
-            await prj.delete_file(item.get_name(), item.get_logical_name());
-        } catch (error) {}
+            const result = await prj.delete_file(item.get_name(), item.get_logical_name());
+            if (!result.successful) {
+                vscode.window.showErrorMessage(result.msg);
+            }
+        } catch (error) {
+            vscode.window.showErrorMessage(`Could not remove source: ${String(error)}`);
+        }
     }
 
     async select_top(item: element.Source_tree_element) {

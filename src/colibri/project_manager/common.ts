@@ -128,6 +128,11 @@ export type t_file = {
     file_version: t_version_inst;
     /** Source type */
     source_type: e_source_type;
+
+    /** Automatic origins that provide this file */
+    origins?: e_file_origin[];
+    /** Absolute watcher paths that provide this file */
+    watcher_paths?: string[];
 }
 
 /** Type of watcher */
@@ -223,4 +228,12 @@ export type t_parameter = {
 export type t_toplevel = {
     path: string;
     logical_name: string;
+}
+
+export enum e_file_origin {
+    WATCHER = "watcher",
+    QUARTUS = "quartus",
+    OTHER = "other",
+    /** Automatic contribution whose provider is unknown, including legacy files */
+    UNKNOWN = "unknown"
 }

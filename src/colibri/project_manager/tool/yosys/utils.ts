@@ -36,7 +36,7 @@ export function getTopLevel(projectDefinition: t_project_definition): string | n
  * @returns Object with arrays of Verilog and SystemVerilog files
  */
 export function getVerilogFiles(projectDefinition: t_project_definition): FileTypeGroup {
-    const files = projectDefinition.file_manager.get();
+    const files = projectDefinition.file_manager.get_compile_order();
     const verilogFiles: string[] = [];
     const systemVerilogFiles: string[] = [];
 

@@ -25,8 +25,13 @@ import * as path from 'path';
 import { randomBytes } from 'crypto';
 const initSqlJs = require('sql.js');
 
-export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
-    refrence_path?: string, standartized_file_type_notation = false) {
+export function get_edam_json(
+    prj: t_project_definition,
+    top_level_list: undefined | string[],
+    refrence_path?: string,
+    standartized_file_type_notation = false,
+    use_compile_order = false
+) {
 
     // Set tool options in EDAM format
     const tool_name = prj.config.tools.general.select_tool;
@@ -49,7 +54,12 @@ export function get_edam_json(prj: t_project_definition, top_level_list: undefin
         top_level = top_level_list[0];
     }
 
-    const files = prj.file_manager.get(refrence_path);
+    const project_files = use_compile_order && refrence_path === undefined
+        ? prj.file_manager.get_compile_order()
+        : prj.file_manager.get(refrence_path);
+    const files = project_files.some(file => 'origins' in file || 'watcher_paths' in file)
+        ? project_files.map(({ origins: _origins, watcher_paths: _watcher_paths, ...file }) => file)
+        : project_files;
 
     type t_edam_file = {
         /** File name with (absolute or relative) path */

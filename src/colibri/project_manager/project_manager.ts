@@ -21,6 +21,7 @@
 import {
     t_file, t_action_result, t_watcher,
     e_watcher_type,
+    e_file_origin,
     e_project_type,
     t_timing_path,
     e_source_type,
@@ -59,14 +60,14 @@ import { p_result } from "../process/common";
 import { TaskStateManager } from "./tool/taskState";
 import { ProjectEmitter, e_event } from "./projectEmitter";
 import { LANGUAGE } from "../common/general";
-import { basename } from "path";
+import { basename, dirname, resolve } from "path";
 import { get } from "lodash";
 import { getTaskList } from "./tool/utils";
 import { runTaskGHDL } from "./tool/ghdl/taskRunners";
 import { runTaskYosys } from "./tool/yosys/taskRunners";
 import { runTasknvc } from "./tool/nvc/taskRunners";
 import { runTaskNextpnr } from "./tool/nextpnr/taskRunners";
-import { LoggerBase } from "colibri/logger/logger";
+import { Logger, LoggerBase } from "colibri/logger/logger";
 
 export const DEFAULT_LIBRARY = "teroshdlDefault";
 
@@ -78,6 +79,7 @@ export class Project_manager extends ConfigManager {
     /** Contains all the HDL source files, constraint files, vendor IP description files, 
      * memory initialization files etc. for the project. */
     private files = new manager_file.File_manager();
+    private source_update: Promise<void> = Promise.resolve();
     /** File watcher. */
     private watchers: manager_watcher.Watcher_manager;
     /** A dictionary of extra commands to execute at various stages of the project build/run. */
@@ -106,36 +108,50 @@ export class Project_manager extends ConfigManager {
         }
 
         this.emitterProject = emitterProject;
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const selfm = this;
-        this.watchers = new manager_watcher.Watcher_manager((function () {
-            selfm.files.clear_automatic_files();
-            selfm.watchers.get().forEach(async (watcher: any) => {
-                if (file_utils.check_if_path_exist(watcher.path)) {
-                    if (selfm.emitterProject !== undefined) {
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_LOADING);
-                    }
+        this.watchers = new manager_watcher.Watcher_manager(() => this.with_source_update(async () => {
+            const importedFiles: { file: t_file; watcher_path: string }[] = [];
+            for (const watcher of this.watchers.get().map(item => ({ ...item }))) {
+                if (!file_utils.check_if_path_exist(watcher.path)) {
+                    throw new Error(`Watcher file does not exist: ${watcher.path}`);
+                }
+
+                this.emitterProject.emitEvent(this.name, e_event.WATCHER_LOADING);
+                try {
+                    let result;
                     if (watcher.watcher_type === e_watcher_type.CSV) {
-                        selfm.add_file_from_csv(watcher.path, false);
+                        result = get_files_from_csv(watcher.path, false);
                     }
                     else if (watcher.watcher_type === e_watcher_type.VUNIT) {
-                        const result = await selfm.add_file_from_vunit(watcher.path, false);
-                        if (result.successful === false) {
-                            if (selfm.emitterProject !== undefined) {
-                                selfm.emitterProject.emitEventLog(result.msg, e_event.STDOUT_ERROR);
-                            }
-                        }
+                        result = await get_files_from_vunit(this.get_config(), watcher.path, false);
                     }
                     else if (watcher.watcher_type === e_watcher_type.VIVADO) {
-                        await selfm.add_file_from_vivado(watcher.path, false);
+                        result = await get_files_from_vivado(this.get_config(), watcher.path, false);
                     }
-                    if (selfm.emitterProject !== undefined) {
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.ADD_SOURCE);
-                        selfm.emitterProject.emitEvent(selfm.name, e_event.WATCHER_FINISHED);
+                    else {
+                        throw new Error(`Unsupported watcher type: ${watcher.watcher_type}`);
                     }
+                    if (!result.successful) {
+                        throw new Error(`Could not load watcher ${watcher.path}: ${result.msg}`);
+                    }
+                    importedFiles.push(...result.file_list.map(file => ({ file, watcher_path: watcher.path })));
                 }
-            });
+                finally {
+                    this.emitterProject.emitEvent(this.name, e_event.WATCHER_FINISHED);
+                }
+            }
+
+            const result = this.files.replace_watcher_contributions(importedFiles);
+            if (!result.successful) {
+                throw new Error(result.msg);
+            }
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
         }), emitterProject);
+    }
+
+    protected with_source_update<T>(operation: () => Promise<T>): Promise<T> {
+        const update = this.source_update.then(operation);
+        this.source_update = update.then(() => undefined, () => undefined);
+        return update;
     }
 
     set taskStateManager(taskStateManager: TaskStateManager) {
@@ -224,27 +240,7 @@ export class Project_manager extends ConfigManager {
             jsonContent.project_disk_path : utils.createRandomFolderFromBasePath(jsonContent.name, buildBasePath);
 
         const prj = new Project_manager(jsonContent.name, buildPath, emitterProject, buildBasePath);
-        // Files
-        jsonContent.files.forEach((file: any) => {
-            const name = file_utils.get_absolute_path(file_utils.get_directory(reference_path), file.name);
-
-            const is_include_file = file?.["is_include_file"] ?? false;
-            const include_path = file?.["include_path"] ?? "";
-            const logical_name = file?.["logical_name"] ?? "";
-            const is_manual = file?.["is_manual"] ?? true;
-            const file_type = file_utils.get_language_from_filepath(name);
-            const file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
-            const source_type = file?.["source_type"] ?? e_source_type.NONE;
-
-            prj.add_file({
-                name: name, is_include_file: is_include_file,
-                include_path: include_path, logical_name: logical_name,
-                is_manual: is_manual, file_type: file_type,
-                file_version: file_version,
-                source_type: source_type,
-            });
-        });
-        // Toplevel
+        await prj.restore_project_files(jsonContent, reference_path);
 
         if (jsonContent.toplevel !== undefined) {
             const toplevel_path = file_utils.get_absolute_path(file_utils.get_directory(reference_path),
@@ -254,17 +250,122 @@ export class Project_manager extends ConfigManager {
             }
         }
 
-        // Watchers
-        const watcher_list = jsonContent?.["watchers"] ?? [];
-        watcher_list.forEach((watcher: any) => {
-            prj.add_file_to_watcher(watcher);
-        });
-
         if (jsonContent?.["configuration"] !== undefined) {
             await prj.set_config(get_config_from_json(jsonContent?.["configuration"]));
         }
-
+        await prj.restore_project_watchers(jsonContent, reference_path);
         return prj;
+    }
+
+    protected async restore_project_files(jsonContent: any, reference_path: string): Promise<void> {
+        const teroshdl_state = jsonContent?.["teroshdl_state"] ?? {};
+
+        if (teroshdl_state?.library_overrides) {
+            this.files.set_library_overrides(teroshdl_state.library_overrides);
+        }
+
+        const saved_origins: unknown = teroshdl_state.file_origins;
+        const origins_by_file = new Map<string, { origins: e_file_origin[]; watcher_paths: string[] }>();
+        if (saved_origins !== undefined) {
+            if (!Array.isArray(saved_origins)) {
+                throw new Error("Invalid saved file origins");
+            }
+            for (const entry of saved_origins) {
+                if (typeof entry !== "object" || entry === null ||
+                    typeof entry.name !== "string" || entry.name === "" || typeof entry.logical_name !== "string" ||
+                    !Array.isArray(entry.origins) || !Array.isArray(entry.watcher_paths) ||
+                    !entry.origins.every((origin: unknown) =>
+                        Object.values(e_file_origin).some(value => value === origin)) ||
+                    !entry.watcher_paths.every((watcher_path: unknown) =>
+                        typeof watcher_path === "string" && watcher_path !== "")) {
+                    throw new Error("Invalid saved file origins");
+                }
+                const name = resolve(dirname(reference_path), entry.name);
+                const key = JSON.stringify([name, entry.logical_name]);
+                if (origins_by_file.has(key)) {
+                    throw new Error(`Duplicate saved file origins: ${name}`);
+                }
+                origins_by_file.set(key, {
+                    origins: entry.origins,
+                    watcher_paths: entry.watcher_paths.map((watcher_path: string) =>
+                        resolve(dirname(reference_path), watcher_path))
+                });
+            }
+        }
+
+        // Files
+        for (const file of jsonContent.files) {
+            const name = file.name === "" ? "" :
+                file_utils.get_absolute_path(file_utils.get_directory(reference_path), file.name);
+
+            const is_include_file = file?.["is_include_file"] ?? false;
+            const include_path = file?.["include_path"] ?? "";
+            const logical_name = file?.["logical_name"] ?? "";
+            const is_manual = file?.["is_manual"] ?? true;
+            const file_type = file_utils.get_language_from_filepath(name);
+            const file_version = file_utils.check_default_version_for_filepath(name, file.file_version);
+            const source_type = file?.["source_type"] ?? e_source_type.NONE;
+
+            const source: t_file = {
+                name: name, is_include_file: is_include_file,
+                include_path: include_path, logical_name: logical_name,
+                is_manual: is_manual, file_type: file_type,
+                file_version: file_version,
+                source_type: source_type,
+            };
+            const key = JSON.stringify([resolve(dirname(reference_path), file.name), logical_name]);
+            const provenance = origins_by_file.get(key);
+            if (provenance !== undefined) {
+                const result = this.files.add_contribution({ ...source, ...provenance });
+                if (!result.successful) {
+                    throw new Error(`Invalid saved file origins for ${name}: ${result.msg}`);
+                }
+                origins_by_file.delete(key);
+                this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+            } else {
+                const result = this.add_source(source);
+                if (!result.successful) {
+                    throw new Error(`Could not restore file ${name}: ${result.msg}`);
+                }
+                this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+            }
+        }
+        if (origins_by_file.size > 0) {
+            throw new Error("Saved file origins refer to a missing file");
+        }
+    }
+
+    protected async restore_project_watchers(jsonContent: any, reference_path: string): Promise<void> {
+        const teroshdl_state = jsonContent?.["teroshdl_state"] ?? {};
+        const watcher_list = jsonContent?.["watchers"] ?? [];
+        watcher_list.forEach((watcher: t_watcher) => {
+            if (watcher.path === "") {
+                throw new Error("Invalid saved watcher path");
+            }
+            const result = this.add_file_to_watcher({
+                ...watcher,
+                path: resolve(dirname(reference_path), watcher.path)
+            }, false);
+            if (!result.successful) {
+                throw new Error(`Could not restore watcher ${watcher.path}: ${result.msg}`);
+            }
+        });
+
+        if (watcher_list.length > 0 || this.files.get().some(file => (file.watcher_paths?.length ?? 0) > 0)) {
+            try {
+                await this.refresh_watchers();
+            } catch (error) {
+                const message = `Error updating watchers: ${String(error)}`;
+                if (!this.emitterProject.emitEventLog(message, e_event.STDOUT_ERROR)) {
+                    Logger.logger.error(message);
+                }
+            }
+        }
+
+        if (Array.isArray(teroshdl_state.visual_order)) {
+            this.files.apply_visual_order(teroshdl_state.visual_order);
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -361,16 +462,27 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // Watcher
     ////////////////////////////////////////////////////////////////////////////
-    add_file_to_watcher(watcher: t_watcher): t_action_result {
-        const result = this.watchers.add(watcher);
+    add_file_to_watcher(watcher: t_watcher, update = true): t_action_result {
+        if (watcher.path === "") {
+            return { result: "", successful: false, msg: "Watcher path cannot be empty" };
+        }
+        const normalized = { ...watcher, path: resolve(watcher.path) };
+        const result = update ? this.watchers.add(normalized) : this.watchers.add_without_update(normalized);
         this.emitterProject.emitEvent(this.name, e_event.ADD_WATCHER);
         return result;
     }
 
     delete_file_in_watcher(watcher_path: string): t_action_result {
-        const result = this.watchers.delete(watcher_path);
+        if (watcher_path === "") {
+            return { result: "", successful: false, msg: "Watcher path cannot be empty" };
+        }
+        const result = this.watchers.delete(resolve(watcher_path));
         this.emitterProject.emitEvent(this.name, e_event.REMOVE_WATCHER);
         return result;
+    }
+
+    public async refresh_watchers(): Promise<void> {
+        await this.watchers.refresh();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -432,23 +544,79 @@ export class Project_manager extends ConfigManager {
         return action_result;
     }
 
+    private add_source(file: t_file): t_action_result {
+        const existing = this.files.get().find(item =>
+            item.name === file.name && item.logical_name === file.logical_name
+        );
+        return file.is_manual && existing !== undefined && !existing.is_manual
+            ? this.files.add_contribution(file)
+            : this.files.add(file);
+    }
+
     public async add_file(file: t_file): Promise<t_action_result> {
-        const result = this.files.add(file);
+        const result = this.add_source(file);
         this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
         return result;
     }
 
+    public async move_file(name: string, from_library: string, to_library: string): Promise<t_action_result> {
+        const result = this.files.move_file(name, from_library, to_library);
+        if (result.successful) {
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        }
+        return result;
+    }
+
+    public async reorder_file(name: string, library: string, new_index: number): Promise<t_action_result> {
+        const result = this.files.reorder_file(name, library, new_index);
+        if (result.successful) {
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        }
+        return result;
+    }
+
+    public async move_files(files: { name: string; logical_name: string }[], to_library: string): Promise<t_action_result> {
+        const result = this.files.move_files(files, to_library);
+
+        if (result.successful) {
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        }
+        return result;
+    }
+
+    public async reorder_files(names: string[], library: string, new_index: number): Promise<t_action_result> {
+        const result = this.files.reorder_files(names, library, new_index);
+
+        if (result.successful) {
+            this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
+        }
+        return result;
+    }
+
     public async add_file_from_array(file_list: t_file[], emitEvent = true): Promise<t_action_result> {
+        const errors: string[] = [];
         file_list.forEach(file => {
-            this.files.add(file);
+            const merging_manual = file.is_manual && this.files.get().some(item =>
+                item.name === file.name && item.logical_name === file.logical_name && !item.is_manual
+            );
+            const result = this.add_source(file);
+            if (!result.successful && merging_manual) {
+                errors.push(`${file.name}: ${result.msg}`);
+            }
         });
+        if (errors.length > 0) {
+            const message = errors.join("; ");
+            if (!this.emitterProject.emitEventLog(message, e_event.STDOUT_ERROR)) {
+                Logger.logger.error(message);
+            }
+        }
         if (emitEvent) {
             this.emitterProject.emitEvent(this.name, e_event.ADD_SOURCE);
         }
         return {
             result: undefined,
-            successful: true,
-            msg: ""
+            successful: errors.length === 0,
+            msg: errors.join("; ")
         };
     }
 
@@ -570,7 +738,25 @@ export class Project_manager extends ConfigManager {
     }
 
     public get_edam_json(reference_path?: string) {
-        return utils.get_edam_json(this.get_project_definition(), undefined, reference_path);
+        const json = utils.get_edam_json(
+            this.get_project_definition(),
+            undefined,
+            reference_path
+        );
+
+        if (reference_path === undefined) {
+            (json as any).teroshdl_state = {
+                library_overrides: this.files.get_library_overrides(),
+                visual_order: this.files.get_visual_order(),
+                file_origins: this.files.get().filter(file => file.origins !== undefined).map(file => ({
+                    name: file.name,
+                    logical_name: file.logical_name,
+                    origins: file.origins,
+                    watcher_paths: file.watcher_paths ?? []
+                }))
+            };
+        }
+        return json;
     }
 
     public get_edam_yaml(reference_path?: string) {

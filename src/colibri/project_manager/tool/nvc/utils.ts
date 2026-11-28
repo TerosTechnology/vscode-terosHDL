@@ -35,7 +35,7 @@ export function getTopLevel(projectDefinition: t_project_definition): string | n
  * @returns Array of VHDL files
  */
 export function getVhdlFiles(projectDefinition: t_project_definition): Array<{ name: string; logical_name?: string }> {
-    const files = projectDefinition.file_manager.get();
+    const files = projectDefinition.file_manager.get_compile_order();
     return files.filter((file) => file.file_type === LANGUAGE.VHDL);
 }
 

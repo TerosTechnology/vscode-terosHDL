@@ -20,7 +20,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
-import { createRandomFolderFromBasePath } from '../../src/colibri/project_manager/utils/utils';
+import { createRandomFolderFromBasePath, get_edam_json } from '../../src/colibri/project_manager/utils/utils';
 import * as file_utils from '../../src/colibri/utils/file_utils';
 
 describe('Project Manager Utils', () => {
@@ -165,6 +165,88 @@ describe('Project Manager Utils', () => {
             expect(minute).toBeLessThanOrEqual(59);
             expect(second).toBeGreaterThanOrEqual(0);
             expect(second).toBeLessThanOrEqual(59);
+        });
+    });
+
+    describe('get_edam_json', () => {
+        const createFile = (name: string) => ({
+            name,
+            is_include_file: false,
+            include_path: '',
+            logical_name: 'work',
+            is_manual: false,
+            file_type: 'vhdl',
+            file_version: undefined,
+            source_type: 'NONE',
+        });
+
+        const visualFiles = [
+            createFile('file1.vhd'),
+            createFile('file2.vhd'),
+        ];
+
+        const compileFiles = [
+            createFile('file2.vhd'),
+            createFile('file1.vhd'),
+        ];
+
+        const createProject = () => ({
+            name: 'test_project',
+            project_disk_path: '',
+            project_type: '',
+            config: {
+                tools: {
+                    general: {
+                        select_tool: 'ghdl',
+                    },
+                    ghdl: {
+                        installation_path: '',
+                    },
+                },
+            },
+            file_manager: {
+                get: jest.fn().mockReturnValue(visualFiles),
+                get_compile_order: jest.fn().mockReturnValue(compileFiles),
+            },
+            toplevel_path_manager: {
+                get: jest.fn().mockReturnValue([]),
+            },
+            hook_manager: {
+                get: jest.fn().mockReturnValue([]),
+            },
+            watcher_manager: {
+                get: jest.fn().mockReturnValue([]),
+            },
+        });
+
+        test('uses visual order by default', () => {
+            const project = createProject();
+
+            const result = get_edam_json(project as any, []);
+
+            expect(result.files).toBe(visualFiles);
+            expect(project.file_manager.get).toHaveBeenCalledWith(undefined);
+            expect(project.file_manager.get_compile_order).not.toHaveBeenCalled();
+        });
+
+        test('uses compilation order when enabled', () => {
+            const project = createProject();
+
+            const result = get_edam_json(project as any, [], undefined, false, true);
+
+            expect(result.files).toBe(compileFiles);
+            expect(project.file_manager.get_compile_order).toHaveBeenCalledTimes(1);
+            expect(project.file_manager.get).not.toHaveBeenCalled();
+        });
+
+        test('uses visual order when reference path is provided', () => {
+            const project = createProject();
+            const referencePath = '/tmp/reference';
+
+            get_edam_json(project as any, [], referencePath, false, true);
+
+            expect(project.file_manager.get).toHaveBeenCalledWith(referencePath);
+            expect(project.file_manager.get_compile_order).not.toHaveBeenCalled();
         });
     });
 });
